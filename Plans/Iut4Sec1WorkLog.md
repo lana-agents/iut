@@ -24,8 +24,10 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 
 ## Current status / open questions
 
-- P0 through P4 and both user-directed amendments are complete. P5 reports GO
-  for all five local-field feasibility items; P6 has not started.
+- P0 through P4 and both user-directed amendments are complete. P5 round 1
+  received CHANGES REQUESTED on valuation normalization and log/exp convergence;
+  the round-2 implementation strengthens both probes and reports implementer GO
+  pending review. P6 has not started and remains forbidden until acceptance.
 - The mathlib-only comparator challenge has ten theorem targets. Five project
   proofs are exported by Solution and listed in comparator config.
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
@@ -449,3 +451,35 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P5: local-field feasibility gate` (this commit; see `git log -1` for
   its local hash).
 - Next: submit P5 for review. Do not start P6 in this round.
+
+### 2026-07-19 — P5 review round-1 correction
+
+- Goal/status: addressed the adversarial P5 review without starting P6. Both
+  rejected items were strengthened rather than marked NO-GO; the implementer
+  verdict remains **GO**, pending round-2 review.
+- Item 2: `.pi/probes/P5ValuationData.lean` now proves an existential theorem
+  for arbitrary finite-dimensional `L/ℚ_[p]`. It constructs the canonical DVR
+  field valuation, the positive exponent `e = (-log(w(p))).toNat`, and a
+  rational normalized order with zero sent to `⊤`; it proves `0 < e` and
+  `ord(algebraMap ℚ_[p] L p) = 1` without caller hypotheses carrying either
+  conclusion. The report now uses this valuation-theoretic `e` and records that
+  compatibility with `Ideal.ramificationIdx` is a P6 proof obligation.
+- Item 4: `.pi/probes/P5LogExp.lean` now proves actual `Summable` statements for
+  log on `‖x‖ < 1` and exp on
+  `‖x‖ < ‖algebraMap ℚ_[p] L p‖`. Spectral-norm transport and explicit
+  coefficient majorants handle arbitrary finite `L` and every prime, including
+  `p = 2`.
+- Documentation: corrected the overall-verdict paragraph and item 2/item 4
+  evidence in `Plans/LocalFieldFeasibility.md`; fixed the amendment hash and
+  appended the amendment/P5 round-1 rows in the specification Review log. The
+  round-1 P5 work-log entry above is retained as historical evidence and this
+  entry supersedes its unsupported probe claims.
+- Checks: all five `lake env lean .pi/probes/P5*.lean` commands passed;
+  `AUDIT_FEASIBILITY_PHASE=P5 ./scripts/audit_trust.sh`,
+  `./scripts/audit_axioms.sh`, `lake build`, `git diff --check`, and the
+  probes-are-ignored/untracked check passed. Build output had only the existing
+  linter and challenge-placeholder warnings.
+- Commit: `P5: address feasibility review round 1` (local fix-round commit; see
+  `git log -1 --format=%h`).
+- Next: submit this correction for P5 round-2 review. Do not start P6 until the
+  reviewer accepts the strengthened probes; do not push.

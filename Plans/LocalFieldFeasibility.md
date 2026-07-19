@@ -7,14 +7,19 @@ Date: 2026-07-19
 | Item | Verdict | Reason |
 |---|---|---|
 | Finite complete normed extension of `ℚ_[p]` | **GO** | The spectral-norm API constructs compatible nontrivially normed-field and normed-algebra structures from a finite field extension, and supplies completeness. |
-| Valuation ring, normalized order, ramification/residue data, and different | **GO** | The spectral valuation ring is compact, hence a DVR with finite residue field; valuation-extension instances then expose ramification, inertia, and the different. Normalizing the resulting discrete field valuation by the ramification index gives the planned order with `ord(p) = 1`. |
+| Valuation ring, normalized order, ramification/residue data, and different | **GO** | The compact spectral integer ring yields a DVR and finite residue field. For its canonical discrete field valuation `w`, the probe constructs `e = (-log(w(p))).toNat`, proves `0 < e`, defines the rational order with zero sent to `⊤`, and proves `ord(p) = 1`. Inertia, the ideal-theoretic ramification expression, and the different also elaborate. |
 | Finite tensor over `ℤ_[p]`, reduction, total quotient ring, normalization | **GO** | `PiTensorProduct`, quotient by `nilradical`, localization at `nonZeroDivisors`, and `integralClosure` compose at the type/instance level. |
-| Log/exp convergence ball | **GO** | The formal series and generic radius APIs elaborate, and existing `p`-adic valuation estimates give a non-circular comparison route: log on `‖x‖ < 1`, exp on the smaller uniform ball `‖x‖ < ‖p‖`. |
+| Log/exp convergence ball | **GO** | For every prime `p`, every arbitrary finite-dimensional `L/ℚ_[p]`, and the transported spectral norm, the probe proves `Summable` for log on `‖x‖ < 1` and exp on `‖x‖ < ‖p‖`; the proof includes `p = 2`. |
 | Haar measure normalized on the integer ring | **GO** | Finite dimensionality gives properness; the integer ring is the compact closed unit ball with nonempty interior, so `addHaarMeasure` normalizes it to mass one. |
 
-**Overall P5 verdict: GO.** All five prototypes identify a construction/proof
-route without adding the desired conclusions as assumptions. This is a
-feasibility verdict, not a proof of P6--P11. P6 was not started.
+**Overall P5 implementer verdict after review correction: GO, pending round-2
+review.** All five items now have elaborated constructions. In particular, the
+item 2 probe returns a discrete valuation, positive normalization exponent, and
+normalized order together with `ord(p) = 1`, while item 4 proves both requested
+`Summable` statements for arbitrary finite extensions and all primes. No caller
+hypothesis carries either conclusion. This remains a feasibility verdict, not a
+proof of P6--P11; P6 was not started and remains forbidden until review accepts
+this correction.
 
 All probe sources are ignored files below `.pi/probes/`; none is imported by the
 project or tracked by Git.
@@ -72,7 +77,7 @@ spectralNorm.completeSpace ℚ_[p] L
 This supplies a canonical construction from the algebraic extension data and
 avoids asking callers for a separately chosen norm or completeness proof.
 
-## 2. Valuation ring, normalized order, `e`, `f`, and different — GO
+## 2. Valuation ring, normalized order, `e`, `f`, and different — GO (strengthened after review)
 
 Probe: `.pi/probes/P5ValuationData.lean`.
 
@@ -104,6 +109,8 @@ import Mathlib.Topology.Algebra.Valued.NormedValued
 * `differentIdeal`
 * `IsDiscreteValuationRing.addVal`
 * `IsDiscreteValuationRing.maximalIdeal`, `IsDiscreteValuationRing.isRankOneDiscrete`
+* `IsDedekindDomain.HeightOneSpectrum.valuation_lt_one_iff_mem`
+* `WithZero.log_lt_log`, `Int.toNat_of_nonneg`
 * `IsDedekindDomain.HeightOneSpectrum.valuation_liesOver`
 * `Ideal.ramificationIdx'_eq_ramificationIdx`
 
@@ -119,6 +126,27 @@ elaborate:
 (IsLocalRing.maximalIdeal vL.integer).inertiaDeg vK.integer
 differentIdeal vK.integer vL.integer
 ```
+
+The correction probe then takes the height-one maximal ideal of the DVR and its
+canonical discrete field valuation
+
+```lean
+w : IsDedekindDomain.HeightOneSpectrum vL.integer
+wv : Valuation L ℤᵐ⁰ := w.valuation L
+```
+
+and proves an existential result returning `wv`, `e : ℕ`, and
+`ord : L → WithTop ℚ`. It derives `wv (algebraMap ℚ_[p] L p) < 1` from
+`‖algebraMap ℚ_[p] L p‖ = p⁻¹ < 1`, sets
+`e = (-WithZero.log (wv (algebraMap ℚ_[p] L p))).toNat`, proves `0 < e`, sends
+zero to `⊤`, and divides the nonzero integer exponent by `e`. The returned
+result proves
+
+```lean
+ord (algebraMap ℚ_[p] L p) = 1
+```
+
+without an assumption containing that equality or the positivity conclusion.
 
 ### Minimal errors
 
@@ -138,22 +166,26 @@ API. No unresolved error remains.
 
 Let `vK` and `vL` be the norm valuations on `ℚ_[p]` and `L`, and let
 `OK := vK.integer`, `OL := vL.integer`. The spectral restriction theorem proves
-`vK.HasExtension vL`. Define:
+`vK.HasExtension vL`. Use the canonical discrete valuation
 
-* `e` as `(IsLocalRing.maximalIdeal OL).ramificationIdx OK`;
-* `f` as `(IsLocalRing.maximalIdeal OL).inertiaDeg OK`;
-* the local different as `differentIdeal OK OL`;
-* the uniformizer-normalized field valuation by
-  `(IsDiscreteValuationRing.maximalIdeal OL).valuation L`;
-* `ord` by converting that discrete multiplicative valuation to its additive
-  integer exponent and dividing by `e`.
+```lean
+wv := (IsDiscreteValuationRing.maximalIdeal OL).valuation L
+```
 
-The P6 proof uses
-`IsDedekindDomain.HeightOneSpectrum.valuation_liesOver` at `p`, then rewrites the
-older multiplicity definition with `Ideal.ramificationIdx'_eq_ramificationIdx`.
-This connects the discrete valuation of the image of `p` with `e` and yields
-`ord(p) = 1` after scaling. The data above are constructed independently of that
-equality; storing `ord(p) = 1` as caller data would violate the honesty rule.
+and define `e` to be the positive integer exponent of the image of `p` under
+`wv`. Define `ord 0 = ⊤`; for nonzero `x`, convert `wv x` to its additive integer
+exponent with `-WithZero.log` and divide by `e`. This is the representation
+actually constructed by the strengthened probe and it yields `ord(p) = 1` by
+reduction, after proving positivity of `e` from the strict norm inequality.
+Define `f` as `(IsLocalRing.maximalIdeal OL).inertiaDeg OK` and the local
+different as `differentIdeal OK OL`.
+
+The alternate ideal-theoretic expression
+`(IsLocalRing.maximalIdeal OL).ramificationIdx OK` also elaborates. P6 should
+prove its compatibility with the valuation-theoretic `e` before using lemmas
+stated with that expression; `valuation_liesOver` and
+`ramificationIdx'_eq_ramificationIdx` remain the identified bridge. This
+compatibility is not stored as caller data and is not claimed as a P5 theorem.
 
 ## 3. Finite tensor, reduction, total quotient ring, normalization — GO
 
@@ -202,7 +234,7 @@ integral closure of the reduced tensor in that localization. P8 must still prove
 the finiteness, product decomposition, and different inclusions needed by
 Proposition 1.1; P5 only confirms that the objects themselves compose honestly.
 
-## 4. Log/exp convergence ball — GO
+## 4. Log/exp convergence ball — GO (strengthened after review)
 
 Probe: `.pi/probes/P5LogExp.lean`.
 
@@ -210,54 +242,70 @@ Probe: `.pi/probes/P5LogExp.lean`.
 
 ```lean
 import Mathlib.Analysis.Normed.Algebra.Exponential
+import Mathlib.Analysis.Normed.Algebra.Ultra
+import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
 import Mathlib.NumberTheory.Padics.PadicNumbers
 import Mathlib.NumberTheory.Padics.PadicVal.Basic
-import Mathlib.RingTheory.PowerSeries.Log
+import Mathlib.Topology.Algebra.InfiniteSum.Nonarchimedean
 ```
 
 ### Declarations tried
 
-* `PowerSeries.log`, `PowerSeries.exp`
-* `PowerSeries.coeff_log`, `PowerSeries.coeff_exp`
-* `NormedSpace.expSeries`
-* `NormedSpace.expSeries_summable_of_mem_ball`
-* `NormedSpace.expSeries_hasSum_exp_of_mem_ball`
-* `FormalMultilinearSeries.le_radius_of_summable_norm`
-* `padicValNat_le_nat_log`
-* `padicValNat_factorial`, `padicValNat_factorial_le`
-* `Padic.norm_p`
-* `summable_pow_mul_geometric_of_norm_lt_one`
+* `Algebra.IsAlgebraic.of_finite`
+* `spectralNorm.nontriviallyNormedField`, `spectralNorm.normedAlgebra`,
+  `spectralNorm.completeSpace`, `spectralNorm_extends`
+* `Padic.norm_eq_zpow_neg_valuation`, `Padic.valuation_natCast`, `Padic.norm_p`
+* `pow_padicValNat_dvd`, `padicValNat_factorial_le`
+* `summable_pow_mul_geometric_of_norm_lt_one`,
+  `summable_geometric_of_norm_lt_one`
+* `Summable.of_nonneg_of_le`, `Summable.of_norm`
 
-The probe defines the termwise log, its `tsum`, the generic exponential, and the
-exact convergence propositions without proving them by assumption.
+The strengthened probe quantifies an arbitrary prime `p` and arbitrary
+
+```lean
+[Field L] [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L]
+```
+
+installs the spectral norm and completeness, and proves the conjunction of the
+two actual convergence statements:
+
+```lean
+∀ x : L, ‖x‖ < 1 → Summable (fun n => logTerm L n x)
+∀ x : L, ‖x‖ < ‖algebraMap ℚ_[p] L p‖ →
+  Summable (fun n => x ^ n / n.factorial)
+```
 
 ### Proof route and ball
 
-For log, `padicValNat_le_nat_log` bounds the norm of `1/(n+1)` by a polynomial
-factor in `n+1`. Thus the log terms are dominated by a polynomial times
-`‖x‖^(n+1)`, summable for `‖x‖ < 1` by
+`spectralNorm_extends` first proves that every natural-number coefficient has
+the same norm in `L` as in `ℚ_[p]`. For log, `pow_padicValNat_dvd` bounds
+`‖(n+1)⁻¹‖` by `n+1`; the norm of the `n`th term is therefore dominated by
+`(n+1) * ‖x‖^(n+1)`, whose summability follows from
 `summable_pow_mul_geometric_of_norm_lt_one`.
 
-For exp, `padicValNat_factorial_le` gives the coarse bound needed to dominate
-`‖x^n/n!‖` by a geometric series whenever `‖x‖ < ‖p‖ = p⁻¹`. This strict ball
-works uniformly, including `p = 2`. `spectralNorm_extends` transports the
-coefficient norm calculations from `ℚ_[p]` to `L`. The generic formal
-multilinear radius theorem then packages the resulting summability.
+For exp, `padicValNat_factorial_le` bounds `‖(n!)⁻¹‖` by `p^n`. Hence the term
+norm is dominated by `(p * ‖x‖)^n`. The hypothesis
+`‖x‖ < ‖algebraMap ℚ_[p] L p‖ = p⁻¹` makes this a summable geometric series.
+No step assumes that `p` is odd, so the same proof covers `p = 2`. Both final
+results are obtained with `Summable.of_norm`; they are proof terms, not named
+`Prop` definitions.
 
 ### Minimal errors
 
-No remaining elaboration error. Mathlib has no ready local-field logarithm with
-the P7 inverse/image/kernel package, so P7 must implement the comparison proofs
-above. The GO verdict concerns convergence on these balls and does not claim the
-later inverse or torsion-kernel results.
+The round-1 probe only defined convergence propositions and was rejected. The
+strengthened arbitrary-extension theorem now elaborates with no remaining
+error. Mathlib still has no ready local-field logarithm with the P7
+inverse/image/kernel package. The GO verdict proves convergence on these balls
+and does not claim those later inverse or torsion-kernel results.
 
 ### Proposed representation
 
-Define `padicLog x` by the `log(1+x)` termwise `tsum` and use
-`NormedSpace.exp`/`NormedSpace.expSeries` for exponential, with project lemmas
-that expose the proven strict balls. Keep the `p = 2` radius explicit. Do not add
-a `LogExpPackage` certificate.
+Define `padicLog x` by the `log(1+x)` termwise `tsum` and define exponential by
+the proved factorial series on the strict ball. The probe's norm-majorant
+lemmas provide the convergence API; P7 may compare this sum with
+`NormedSpace.exp` where its radius API applies. Keep the `p = 2` radius explicit.
+Do not add a `LogExpPackage` certificate.
 
 ## 5. Haar measure normalized on the integer ring — GO
 
