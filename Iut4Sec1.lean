@@ -1,4 +1,3 @@
-import Iut4Sec1.Basic
 import Iut4Sec1.Combinatorics.RangeAverages
 import Iut4Sec1.Combinatorics.WeightedAverage
 import Iut4Sec1.Global.ArithmeticDivisor
