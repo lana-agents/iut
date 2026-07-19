@@ -19,8 +19,10 @@ in $`R_i^\times`.
    $`\logvol((R_E)^\sim)=0`, $`\logvol(p(R_E)^\sim)=-\log p`.
 2. $`\logvol(\log_p(R_i^\times))
    =-(e_i^{-1}+m_i/(e_if_i))\log p`.
-3. If $`I^*\subseteq I` and $`e_i\le p-2` for $`i\notin I^*`, then the
-   inclusions of Proposition 1.2(2) hold and
+3. Choose a distinguished $`i^\dagger\in I` and let
+   $`\lambda\in (1/e_{i^\dagger})\mathbb Z`. If $`I^*\subseteq I` and
+   $`e_i\le p-2` for $`i\notin I^*`, then the inclusions of Proposition 1.2(2)
+   hold and
 
    $`\logvol(p^{\lfloor\lambda-d_I-a_I\rfloor}\log_p(R_I^\times))
    \le(-\lambda+d_I+1+4|I^*|/p)\log p`,

@@ -24,8 +24,9 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 
 ## Current status / open questions
 
-- P0 specification and repository bootstrap are complete locally and await
-  reviewer acceptance before P1.
+- P0 specification and repository bootstrap are accepted.
+- P1 is complete locally with review-round-1 fixes and awaits re-review before
+  P2.
 - The comparator headline is the self-contained ramification-error sum bound
   from the numerical core of Proposition 1.4(iii).
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
@@ -100,3 +101,41 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P1: add Verso scaffold and trust audits` (this phase commit; see
   `git log -1` for its local hash).
 - Next: submit P1 for review; do not start P2 before acceptance.
+
+### 2026-07-19 — P1 review round 1 fixes
+
+- Goal/status: resolved findings 1--4 from `.pi/parallel-review.md`; P1 now
+  awaits re-review, and no P2 work was started.
+- Changed: made PR blueprint builds unprivileged (`pull_request`,
+  `contents: read`), restricted `contents: write` to the push-to-main deploy
+  job, and removed the obsolete PR-preview deploy/cleanup paths. Reworked
+  `scripts/audit_trust.sh` to use literal `(path, line, token, reason)` records,
+  reject glob/directory exceptions, and reject ignored `.pi/**/*.lean` outside
+  explicit P5/P14 probe mode. Restored the distinguished
+  `i^\dagger \in I` and `\lambda \in (1/e_{i^\dagger})\mathbb Z` hypothesis in
+  Proposition 1.4(iii), and corrected the current-status section above.
+- Feasibility-mode policy: ignored Lean files are allowed only below
+  `.pi/probes/` when the audit is invoked with
+  `AUDIT_FEASIBILITY_PHASE=P5` or `AUDIT_FEASIBILITY_PHASE=P14`; any such use
+  must be recorded in the phase work-log entry. Feasibility mode was not
+  enabled during this P1 fix round; `AUDIT_FEASIBILITY_PHASE=P1` was checked
+  and rejected with exit 1.
+- Required negative test: created ignored
+  `.pi/P1ReviewerTrustEvasion.lean` containing `axiom X : False`. The audit
+  exited 1 with:
+
+  ```text
+  audit_trust: ignored .pi Lean source is not permitted outside explicit P5/P14 feasibility mode: .pi/P1ReviewerTrustEvasion.lean
+  audit_trust: rejected token: .pi/P1ReviewerTrustEvasion.lean:1: axiom
+  audit_trust: trust audit failed
+  ```
+
+  The probe was deleted, and the clean trust audit passed again.
+- Checks: `(cd blueprint-verso && lake build Iut4Sec1Blueprint)`,
+  `./blueprint-verso/scripts/ci-pages.sh`, nonempty site/manifest/cache checks
+  with exactly ten manifest previews and ten cache entries, root `lake build`,
+  `./scripts/audit_trust.sh`, `./scripts/audit_axioms.sh`, and both range/current
+  `git diff --check` checks passed.
+- Commit: `P1: address review round 1 findings` (this fix-round commit; see
+  `git log -1` for its local hash).
+- Next: request P1 re-review; do not begin P2 until acceptance.

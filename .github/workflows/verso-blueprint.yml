@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  pull_request_target:
+  pull_request:
     paths:
       - 'blueprint-verso/**'
       - 'Iut4Sec1/**'
@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ${{ github.repository }}-verso-blueprint-${{ github.ref }}
@@ -29,8 +29,6 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Install elan
         run: |
@@ -65,9 +63,11 @@ jobs:
 
   deploy:
     name: Deploy to GitHub Pages (/verso-blueprint)
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     concurrency:
       group: gh-pages
       cancel-in-progress: false
@@ -89,30 +89,3 @@ jobs:
           target-folder: verso-blueprint
           force: false
           commit-message: 'deploy verso blueprint for ${{ github.sha }}'
-
-  deploy-preview:
-    name: Deploy PR preview (/preview/<pr>/verso-blueprint)
-    if: github.event_name == 'pull_request_target'
-    needs: build
-    runs-on: ubuntu-latest
-    concurrency:
-      group: gh-pages
-      cancel-in-progress: false
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-
-      - name: Download site artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: verso-blueprint-site
-          path: _site
-
-      - name: Deploy preview to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: _site
-          branch: gh-pages
-          target-folder: preview/${{ github.event.pull_request.number }}/verso-blueprint
-          force: false
-          commit-message: 'deploy verso blueprint preview for PR #${{ github.event.pull_request.number }} (${{ github.sha }})'
