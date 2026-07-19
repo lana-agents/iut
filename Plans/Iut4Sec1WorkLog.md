@@ -24,11 +24,11 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 
 ## Current status / open questions
 
-- P0, P1, and P2 are accepted; P3 is implemented locally.
-- A user-directed specification amendment adds P3b before P4: the mathlib-only
-  comparator challenge expands from one theorem to ten sorried targets, while
-  config continues to list only targets already proved and re-exported by
-  Solution.
+- P0 through P3 and the user-directed amendment are accepted. P3b is
+  implemented locally and awaits review; P4 has not started.
+- The mathlib-only comparator challenge now has ten theorem targets, while
+  config continues to list only the P3 theorem already proved and re-exported
+  by Solution.
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
   certificate until missing moduli/Néron-model infrastructure is formalized.
 
@@ -280,3 +280,44 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
   fix-round commit; use `git log -1 --format=%h` for its local hash).
 - Next: submit the amended specification and implemented path guard for
   re-review; do not begin P3b before acceptance.
+
+### 2026-07-19 — P3b multi-statement comparator expansion
+
+- Goal/status: completed P3b only. Expanded the mathlib-only challenge to the
+  ten targets in specification §3.2 without adding project mathematics or
+  starting P4.
+- Changed: added the nine new challenge targets and their placeholder-free
+  auxiliary definitions; left the P3 error-sum declaration unchanged; kept
+  `Solution.lean` import/re-export only and config at its exact singleton.
+  Updated `Comparator/README.md`, made the trust audit enumerate all ten targets
+  and their one-per-target placeholders, and upgraded the signature audit to
+  intersect isolated public manifests and compare every shared declaration.
+- Statement-fidelity elaboration note: mathlib v4.32.0 has no declaration named
+  `Complex.conj` (the exact probe reports `Unknown constant`), so
+  `complexTensorToProd` uses the scoped canonical notation `conj z`, which
+  elaborates to `starRingEnd ℂ` and gives exactly the specified conjugation map.
+  Lean also reserves the token `λ` in binder position, so the tuple-weight
+  argument is spelled `weight`. These are vocabulary/binder deviations only;
+  there are no mathematical theorem-type deviations from §3.2.
+- Blueprint: no chapter changed. P3b adds challenge placeholders rather than
+  project proofs, while blueprint declaration links continue to denote project
+  formalization; importing Challenge with the existing project module would
+  also violate the duplicate-root separation. The existing P3 links remain.
+- Axiom evidence: a fixture importing `Challenge` printed axioms for all ten
+  targets; every target listed `sorryAx` (ten of ten). Separate project and
+  Solution prints for `nonarchimedean_logError_sum_le` listed only `propext`,
+  `Classical.choice`, and `Quot.sound`.
+- Negative-test evidence: staged `.path-audit-negative-test.txt` with a
+  forbidden Users-home prefix; the trust audit exited 1 at line 1 for the
+  machine-local path. The fixture was removed from the index and working tree,
+  and the clean audit passed.
+- Checks: `lake env lean` on both comparator files; `lake build Challenge
+  Solution checkdecls Iut4Sec1`; all-shared signature diff; all ten challenge
+  axiom prints; configured project/Solution axiom prints; trust audit and path
+  negative test; all-public axiom audit; tracked-path search; and
+  `git diff --check` passed. Final default build and clean-tree checks are
+  recorded at commit handoff. The nested blueprint was not rebuilt because no
+  chapter changed.
+- Commit: `P3b: expand comparator challenge to Section 1 suite` (this phase
+  commit; use `git log -1 --format=%h` for its local hash).
+- Next: submit P3b for review; do not start P4 before acceptance.

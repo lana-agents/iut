@@ -7,9 +7,7 @@ cd "$repo_root"
 
 # Reviewed exceptions are exact (path, line, token, reason) records. Paths must
 # name one Lean file; directory and glob exceptions are rejected below.
-readonly trust_exceptions=(
-  'Comparator/Challenge.lean|21|sorry|Comparator challenge theorem placeholder reviewed in Plans/Iut4Sec1Spec.md sections 3 and 4'
-)
+readonly trust_exceptions=()
 readonly rejected_token_pattern='axiom|constant|sorry|admit|native_decide|Lean\.ofReduceBool|ofReduceBool|implemented_by|unsafe'
 readonly rejected_line_pattern="(^|[^[:alnum:]_])(${rejected_token_pattern})([^[:alnum:]_]|$)"
 
@@ -45,7 +43,7 @@ audit_failed=0
 validate_exceptions() {
   local record path line token reason
   local index=0
-  for record in "${trust_exceptions[@]}"; do
+  for record in ${trust_exceptions[@]+"${trust_exceptions[@]}"}; do
     IFS='|' read -r path line token reason <<< "$record"
     if [[ -z "$path" || -z "$line" || -z "$token" || -z "$reason" ||
           "$path" == /* || "$path" == */ || "$path" != *.lean ||
@@ -94,7 +92,7 @@ allow_exception() {
   local candidate_token="$3"
   local record path line token reason
   local index=0
-  for record in "${trust_exceptions[@]}"; do
+  for record in ${trust_exceptions[@]+"${trust_exceptions[@]}"}; do
     IFS='|' read -r path line token reason <<< "$record"
     if [[ "$candidate_path" == "$path" && "$candidate_line" == "$line" &&
           "$candidate_token" == "$token" ]]; then
@@ -122,6 +120,71 @@ scan_file() {
     echo "audit_trust: rejected token: $path:$line: $token" >&2
     audit_failed=1
   done < <(perl -ne 'while (/(?<![[:alnum:]_])(axiom|constant|sorry|admit|native_decide|Lean\.ofReduceBool|ofReduceBool|implemented_by|unsafe)(?![[:alnum:]_])/g) { print "$.|$1\n" }' "$path")
+}
+
+readonly challenge_file='Comparator/Challenge.lean'
+readonly challenge_targets=(
+  'localParameters_eq_of_smallRamification'
+  'nonarchimedean_logError_sum_le'
+  'nonarchimedean_secondError_sum_le'
+  'complexTensorToProd_bijective'
+  'complexTensorToProd_normSq'
+  'eventually_primeCounting_le_four_thirds'
+  'weighted_average_eq'
+  'average_range_sum'
+  'average_range_sq_sum'
+  'normalizedArithmeticDivisorDegree_nonneg'
+)
+
+audit_challenge() {
+  local line token target declaration_count block_count
+  local token_count=0
+  local theorem_count
+
+  while IFS='|' read -r line token; do
+    [[ -n "$line" ]] || continue
+    token_count=$((token_count + 1))
+    if [[ "$token" != sorry ]]; then
+      echo "audit_trust: rejected challenge token: $challenge_file:$line: $token" >&2
+      audit_failed=1
+    fi
+  done < <(perl -ne 'while (/(?<![[:alnum:]_])(axiom|constant|sorry|admit|native_decide|Lean\.ofReduceBool|ofReduceBool|implemented_by|unsafe)(?![[:alnum:]_])/g) { print "$.|$1\n" }' "$challenge_file")
+
+  if [[ "$token_count" != 10 ]]; then
+    echo "audit_trust: $challenge_file must contain exactly ten reviewed proof placeholders (found $token_count)" >&2
+    audit_failed=1
+  fi
+
+  theorem_count="$(grep -Ec '^theorem[[:space:]]+' "$challenge_file" || true)"
+  if [[ "$theorem_count" != 10 ]]; then
+    echo "audit_trust: $challenge_file must declare exactly ten theorems (found $theorem_count)" >&2
+    audit_failed=1
+  fi
+
+  for target in "${challenge_targets[@]}"; do
+    declaration_count="$(grep -Ec "^theorem[[:space:]]+${target}([[:space:]]|$)" "$challenge_file" || true)"
+    if [[ "$declaration_count" != 1 ]]; then
+      echo "audit_trust: expected exactly one challenge theorem declaration for Iut4Sec1.$target (found $declaration_count)" >&2
+      audit_failed=1
+      continue
+    fi
+    block_count="$(awk -v target="$target" '
+      $0 ~ ("^theorem[[:space:]]+" target "([[:space:]]|$)") { active = 1; next }
+      active && /^theorem[[:space:]]+/ { exit }
+      active {
+        line = $0
+        while (match(line, /(^|[^[:alnum:]_])sorry([^[:alnum:]_]|$)/)) {
+          count++
+          line = substr(line, RSTART + RLENGTH)
+        }
+      }
+      END { print count + 0 }
+    ' "$challenge_file")"
+    if [[ "$block_count" != 1 ]]; then
+      echo "audit_trust: Iut4Sec1.$target must have exactly one proof placeholder (found $block_count)" >&2
+      audit_failed=1
+    fi
+  done
 }
 
 allow_machine_local_path_exception() {
@@ -182,7 +245,10 @@ done < "$path_scan_results"
 # files, then identify each exact token occurrence for literal exception checks.
 while IFS= read -r -d '' path; do
   scan_file "$path" 1
-done < <(git grep -l -z -E "$rejected_line_pattern" -- '*.lean' || true)
+done < <(git grep -l -z -E "$rejected_line_pattern" -- '*.lean' \
+  ':(exclude)Comparator/Challenge.lean' || true)
+
+audit_challenge
 
 while IFS= read -r -d '' path; do
   echo "audit_trust: untracked Lean source is not permitted: $path" >&2
@@ -214,7 +280,7 @@ if [[ -d .pi ]]; then
 fi
 
 index=0
-for record in "${trust_exceptions[@]}"; do
+for record in ${trust_exceptions[@]+"${trust_exceptions[@]}"}; do
   IFS='|' read -r path line token reason <<< "$record"
   if [[ -f "$path" && "${exception_seen[index]}" != 1 ]]; then
     echo "audit_trust: expected reviewed exception was not found exactly at $path:$line: $token" >&2
