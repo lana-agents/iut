@@ -106,6 +106,14 @@ while IFS= read -r -d '' path; do
 done < <(git ls-files --others --exclude-standard -z -- '*.lean')
 
 if [[ -d .pi ]]; then
+  # Fail closed on every symlink in the ignored probe boundary. In particular,
+  # feasibility mode must never permit a probe to escape .pi through a link.
+  while IFS= read -r -d '' path; do
+    path="${path#./}"
+    echo "audit_trust: symlink is not permitted under .pi: $path" >&2
+    audit_failed=1
+  done < <(find .pi -type l -print0)
+
   while IFS= read -r -d '' path; do
     path="${path#./}"
     if ! git check-ignore -q -- "$path"; then

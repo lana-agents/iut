@@ -25,8 +25,8 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 ## Current status / open questions
 
 - P0 specification and repository bootstrap are accepted.
-- P1 is complete locally with review-round-1 fixes and awaits re-review before
-  P2.
+- P1 is complete locally through the review-round-2 fixes and awaits re-review
+  before P2.
 - The comparator headline is the self-contained ramification-error sum bound
   from the numerical core of Proposition 1.4(iii).
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
@@ -137,5 +137,36 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
   `./scripts/audit_trust.sh`, `./scripts/audit_axioms.sh`, and both range/current
   `git diff --check` checks passed.
 - Commit: `P1: address review round 1 findings` (this fix-round commit; see
+  `git log -1` for its local hash).
+- Next: request P1 re-review; do not begin P2 until acceptance.
+
+### 2026-07-19 — P1 review round 2 fixes
+
+- Goal/status: fixed only the two new findings in `.pi/parallel-review.md`:
+  write/OIDC privileges in pull-request Lean CI and symlink evasion under the
+  `.pi` trust-audit boundary. No blueprint or P2 files changed.
+- Changed: `.github/workflows/lean_action_ci.yml` now gives the PR-capable
+  `build` job only `contents: read`; the Pages/OIDC-enabled `deploy-docs` job
+  runs only after a successful build on a push to `refs/heads/main`.
+  `scripts/audit_trust.sh` now rejects every symlink below `.pi` before
+  considering P5/P14 feasibility exceptions.
+- Permanent symlink negative-test evidence: linked the ignored
+  `.pi/P1SymlinkEvasion.lean` to a temporary file containing
+  `axiom X : False`. The audit exited 1 with:
+
+  ```text
+  audit_trust: symlink is not permitted under .pi: .pi/P1SymlinkEvasion.lean
+  audit_trust: trust audit failed
+  ```
+
+  A non-Lean-named symlink at `.pi/probes/P1NonLeanSymlinkEvasion` also exited
+  1 under `AUDIT_FEASIBILITY_PHASE=P5`, confirming that feasibility mode does
+  not bypass the all-symlink rejection. Both probes and targets were removed;
+  the clean trust audit then passed.
+- Checks: root `lake build`, `./scripts/audit_trust.sh`,
+  `./scripts/audit_axioms.sh`, `bash -n scripts/audit_trust.sh`, and
+  `git diff --check` all passed. The blueprint site was not rebuilt because no
+  blueprint files changed.
+- Commit: `P1: address review round 2 findings` (this fix-round commit; see
   `git log -1` for its local hash).
 - Next: request P1 re-review; do not begin P2 until acceptance.
