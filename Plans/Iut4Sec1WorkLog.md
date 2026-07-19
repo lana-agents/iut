@@ -201,3 +201,29 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Next: submit P2 for review. P3 must simultaneously add the project proof,
   replace `Solution.lean` by the specified re-export, and remove both temporary
   P2 allowances.
+
+### 2026-07-19 — P3 comparator arithmetic and solution re-export
+
+- Goal/status: completed P3 only. Proved the finite-sum ramification-error
+  comparator theorem and did not begin P4.
+- Changed: added `Iut4Sec1/Real/LogError.lean` with the ceiling-error definition,
+  three pointwise lemmas, and `nonarchimedean_logError_sum_le`; imported it from
+  `Iut4Sec1.lean`; replaced `Comparator/Solution.lean` by a direct project import
+  and `#check`; removed the P2 trust/logical-dependency allowances; and added
+  `scripts/check_comparator_signature.sh` with isolated Challenge/Solution
+  fixtures. Added declaration links only to blueprint items 1.2 and 1.4 and the
+  root package path dependency needed to resolve them.
+- Proof route: positivity gives a positive ratio and ceiling at least one;
+  `Int.ceil_lt_add_one` gives error strictly below `1/(p-2)`, which is at most
+  `4/p`; the error vanishes when `e ≤ p-2`; the sum is bounded pointwise and
+  filtered to `Istar` using `Istar ⊆ I`.
+- Checks: project module/root, Challenge, Solution, and default `lake build`
+  passed; the comparator signature diff was empty; project-imported and
+  Solution-exported axiom prints both listed exactly `propext`,
+  `Classical.choice`, and `Quot.sound`; trust and all-public axiom audits passed;
+  the nested blueprint build, `ci-pages.sh`, nonempty site/manifest/cache checks,
+  and checks for all five linked declaration names passed; `git diff --check`
+  passed.
+- Commit: `P3: prove comparator arithmetic and re-export solution` (this phase
+  commit; use `git log -1 --format=%h` for its local hash).
+- Next: submit P3 for review; do not begin P4 before acceptance.

@@ -2,6 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import Iut4Sec1Blueprint.TexPrelude
+import Iut4Sec1.Real.LogError
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -34,5 +35,11 @@ in $`R_i^\times`.
 4. If $`p>2` and all $`e_i=1`, then
    $`\varphi((R_I)^\sim)\subseteq(R_I)^\sim` and its log-volume is zero.
 
-*Status: not started.*
+*Status: partial.* The finite-sum ceiling-error estimate in part (3) is
+formalized below; the log-volume constructions and remaining estimates are not
+started.
+:::
+
+:::lemma_ "lemma:log-error-sum-bound" (lean := "Iut4Sec1.nonarchimedean_logError_sum_le")
+This is the finite-sum ceiling-error estimate used in Proposition 1.4(iii).
 :::

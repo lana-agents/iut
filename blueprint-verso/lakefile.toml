@@ -9,13 +9,14 @@ defaultTargets = ["Iut4Sec1Blueprint"]
 experimental.module = true
 verso.blueprint.foldCodeBlocks = true
 
-# P1 has no declaration links, so VersoBlueprint is the only dependency.
-# A path dependency on the root package will be added when declaration links
-# first appear.
 [[require]]
 name = "VersoBlueprint"
 git = "https://github.com/leanprover/verso-blueprint"
 rev = "v4.32.0"
+
+[[require]]
+name = "iut4-sec1"
+path = ".."
 
 [[lean_lib]]
 name = "Iut4Sec1Blueprint"

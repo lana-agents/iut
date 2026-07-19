@@ -2,6 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import Iut4Sec1Blueprint.TexPrelude
+import Iut4Sec1.Real.LogError
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -33,5 +34,22 @@ $`\log_p(R_I^\times)`, then:
 4. If $`p>2` and every $`e_i=1`, then
    $`\varphi((R_I)^\sim)\subseteq(R_I)^\sim`.
 
-*Status: not started.*
+*Status: partial.* The ceiling-error term and its vanishing in the
+small-ramification range are formalized below; the logarithmic lattice
+inclusions remain to be proved.
+:::
+
+:::definition "def:nonarchimedean-log-error" (lean := "Iut4Sec1.nonarchimedeanLogError")
+For $`p>2` and positive $`e`, define the nonarchimedean ceiling error
+
+$`\epsilon_p(e)=e^{-1}\lceil e/(p-2)\rceil-e^{-1}`.
+:::
+
+:::lemma_ "lemma:nonarchimedean-log-error-zero" (uses := "def:nonarchimedean-log-error") (lean := "Iut4Sec1.nonarchimedeanLogError_eq_zero_of_le")
+If $`0<e\le p-2`, then $`\epsilon_p(e)=0`.
+:::
+
+:::lemma_ "lemma:nonarchimedean-log-error-pointwise" (uses := "def:nonarchimedean-log-error") (lean := "Iut4Sec1.nonarchimedeanLogError_nonneg, Iut4Sec1.nonarchimedeanLogError_le_four_div")
+For $`p>2` prime and $`e>0`, the error $`\epsilon_p(e)` is nonnegative and at
+most $`4/p`.
 :::

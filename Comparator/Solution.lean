@@ -1,23 +1,15 @@
-import Mathlib
-
-/-!
-# Temporary independent solution: nonarchimedean log-error sum
-
-This mathlib-only P2 module copies the comparator core until its P3 replacement.
+/-
+Copyright (c) 2026 Dagur Asgeirsson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Dagur Asgeirsson
 -/
 
-namespace Iut4Sec1
+import Iut4Sec1.Real.LogError
 
-noncomputable def nonarchimedeanLogError (p e : ℕ) : ℝ :=
-  ((⌈(e : ℝ) / (p - 2 : ℕ)⌉ : ℤ) : ℝ) / e - 1 / e
+/-!
+# Comparator solution: nonarchimedean log-error sum
 
-theorem nonarchimedean_logError_sum_le {ι : Type*} [DecidableEq ι]
-    (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
-    (hp : p.Prime) (hp2 : 2 < p) (hIstar : Istar ⊆ I)
-    (he : ∀ i ∈ I, 0 < e i)
-    (hsmall : ∀ i ∈ I, i ∉ Istar → e i ≤ p - 2) :
-    ∑ i ∈ I, nonarchimedeanLogError p (e i) ≤
-      4 * (Istar.card : ℝ) / p := by
-  sorry
+The solution exports the fully proved project theorem without a wrapper.
+-/
 
-end Iut4Sec1
+#check Iut4Sec1.nonarchimedean_logError_sum_le
