@@ -1,7 +1,7 @@
 name = "iut4-sec1"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["Iut4Sec1"]
+defaultTargets = ["Iut4Sec1", "Challenge", "Solution"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -16,3 +16,20 @@ rev = "v4.32.0"
 
 [[lean_lib]]
 name = "Iut4Sec1"
+
+# Comparator challenge/solution roots for the Proposition 1.4(iii) arithmetic
+# core. They declare matching names and must remain in separate environments.
+[[lean_lib]]
+name = "Challenge"
+srcDir = "Comparator"
+
+[[lean_lib]]
+name = "Solution"
+srcDir = "Comparator"
+
+# Local replacement for checkdecls that omits the duplicate comparator roots.
+[[lean_exe]]
+name = "checkdecls"
+root = "CheckDecls"
+supportInterpreter = true
+weakLinkArgs = ["-lLake"]

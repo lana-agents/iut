@@ -31,6 +31,6 @@ echo "audit_axioms: manifest covers $(wc -l < "$manifest" | tr -d ' ') declarati
 lake env lean scripts/AuditAxioms.lean
 
 if [[ -f Comparator/Solution.lean ]]; then
-  echo "audit_axioms: Comparator/Solution.lean exists but its separate audit is not implemented" >&2
-  exit 1
+  echo "audit_axioms: auditing Comparator/Solution.lean in its separate environment"
+  lake env lean scripts/AuditComparatorSolution.lean
 fi

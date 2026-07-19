@@ -170,3 +170,34 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P1: address review round 2 findings` (this fix-round commit; see
   `git log -1` for its local hash).
 - Next: request P1 re-review; do not begin P2 until acceptance.
+
+### 2026-07-19 — P2 comparator challenge and temporary independent solution
+
+- Goal/status: completed P2 only. Added the mathlib-only comparator challenge
+  and temporary independent solution for
+  `Iut4Sec1.nonarchimedean_logError_sum_le`; no P3 project theorem or solution
+  re-export was started.
+- Changed: added `Comparator/{README.md,Challenge.lean,Solution.lean,config.json}`,
+  separate `Challenge`/`Solution` Lake roots, the duplicate-root-aware
+  `CheckDecls.lean` executable, and the read-only comparator workflow. Extended
+  the axiom audit to inspect `Solution` in its own environment.
+- Identity/security: after stripping imports and module documentation, the two
+  comparator declaration bodies are byte-identical (527 bytes). Neither root
+  imports `Iut4Sec1`, and no file imports both. The workflow has only
+  `contents: read` permission and no write or OIDC credentials.
+- Temporary exception: `scripts/audit_trust.sh` has the literal P2 record
+  `Comparator/Solution.lean|21|sorry|Temporary P2 independent-solution placeholder; remove in P3 when Solution re-exports the project theorem`.
+  The separate solution logical-dependency audit likewise permits its one
+  temporary `sorryAx` dependency. Both allowances expire in P3.
+- Checks: `lake env lean Comparator/Challenge.lean`; `lake env lean
+  Comparator/Solution.lean`; `lake build Challenge`; `lake build Solution`;
+  `lake build checkdecls`; `lake build`; challenge `#print axioms` (listed
+  `sorryAx`, with the three permitted standard axioms); `./scripts/audit_trust.sh`;
+  `./scripts/audit_axioms.sh`; `git diff --check`; and
+  `git diff --cached --check` all passed. A smoke test of `lake exe checkdecls`
+  against `hello` also passed.
+- Commit: `P2: add comparator challenge infrastructure` (local phase commit;
+  use `git log -1 --format=%h` for its hash).
+- Next: submit P2 for review. P3 must simultaneously add the project proof,
+  replace `Solution.lean` by the specified re-export, and remove both temporary
+  P2 allowances.

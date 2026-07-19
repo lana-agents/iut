@@ -8,7 +8,8 @@ cd "$repo_root"
 # Reviewed exceptions are exact (path, line, token, reason) records. Paths must
 # name one Lean file; directory and glob exceptions are rejected below.
 readonly trust_exceptions=(
-  'Comparator/Challenge.lean|18|sorry|Comparator challenge theorem placeholder reviewed in Plans/Iut4Sec1Spec.md sections 3 and 4'
+  'Comparator/Challenge.lean|21|sorry|Comparator challenge theorem placeholder reviewed in Plans/Iut4Sec1Spec.md sections 3 and 4'
+  'Comparator/Solution.lean|21|sorry|Temporary P2 independent-solution placeholder; remove in P3 when Solution re-exports the project theorem'
 )
 readonly rejected_token_pattern='axiom|constant|sorry|admit|native_decide|Lean\.ofReduceBool|ofReduceBool|implemented_by|unsafe'
 readonly rejected_line_pattern="(^|[^[:alnum:]_])(${rejected_token_pattern})([^[:alnum:]_]|$)"

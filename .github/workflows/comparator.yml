@@ -1,0 +1,72 @@
+name: Comparator
+
+# P2 provides the temporary independent challenge/solution pair. Automatic
+# comparator execution begins after P3 removes the solution placeholder.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  comparator:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          path: project
+
+      - name: Checkout comparator
+        uses: actions/checkout@v4
+        with:
+          repository: leanprover/comparator
+          path: comparator-tool
+
+      - name: Checkout lean4export
+        uses: actions/checkout@v4
+        with:
+          repository: leanprover/lean4export
+          path: lean4export
+
+      - name: Checkout landrun
+        uses: actions/checkout@v4
+        with:
+          repository: Zouuup/landrun
+          path: landrun
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Build landrun
+        working-directory: landrun
+        run: go build -o landrun cmd/landrun/main.go
+
+      - name: Build challenge and solution
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: project
+          build-args: "Challenge Solution"
+
+      # lean4export runs against the project's environment, so it must use the
+      # project's pinned Lean toolchain.
+      - name: Build lean4export
+        working-directory: lean4export
+        run: |
+          cp "$GITHUB_WORKSPACE/project/lean-toolchain" lean-toolchain
+          lake build
+
+      - name: Build comparator
+        working-directory: comparator-tool
+        run: lake build comparator
+
+      - name: Run comparator
+        working-directory: project
+        run: |
+          export COMPARATOR_LANDRUN="$GITHUB_WORKSPACE/landrun/landrun"
+          export COMPARATOR_LEAN4EXPORT="$GITHUB_WORKSPACE/lean4export/.lake/build/bin/lean4export"
+          lake env "$GITHUB_WORKSPACE/comparator-tool/.lake/build/bin/comparator" Comparator/config.json
