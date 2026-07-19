@@ -24,8 +24,8 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 
 ## Current status / open questions
 
-- P0 through P4 and the earlier user-directed amendment are accepted. The
-  user-directed PNT/credential amendment is implemented; P5 is next.
+- P0 through P4 and both user-directed amendments are complete. P5 reports GO
+  for all five local-field feasibility items; P6 has not started.
 - The mathlib-only comparator challenge has ten theorem targets. Five project
   proofs are exported by Solution and listed in comparator config.
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
@@ -418,3 +418,34 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
   (this commit; see `git log -1` for its local hash).
 - Next: commit this amendment separately, then run P5 probes only under
   ignored `.pi/probes/`; do not start P6.
+
+### 2026-07-19 — P5 local-field feasibility gate
+
+- Goal/status: completed P5 probes and the reviewed report only; no public Lean
+  formalization was added and P6 was not started. Overall verdict: **GO**.
+- Verdict table: finite complete spectral extension — **GO**; valuation
+  ring/normalized order/ramification/residue/different — **GO**; finite tensor,
+  reduction, total quotient, normalization — **GO**; log/exp convergence ball —
+  **GO**; normalized additive Haar measure — **GO**.
+- Key findings: `spectralNorm` constructs the normed extension and completeness;
+  compactness of the spectral integer ring derives its DVR and finite-residue
+  instances without caller assumptions; `PiTensorProduct` composes with
+  nilradical reduction, total localization, and integral closure; existing
+  `p`-adic valuation estimates give routes for log on `‖x‖ < 1` and exp on
+  `‖x‖ < ‖p‖`; `addHaarMeasure` normalizes the compact integer ring to mass one.
+- Files: added tracked `Plans/LocalFieldFeasibility.md`. All five Lean probes
+  remain ignored under `.pi/probes/` and are absent from `git ls-files`.
+- Taxis: sourced the ignored orchestration environment and checked issue #4;
+  its P5--P11 scope already covers every substantial prerequisite found. No new
+  child issue was filed.
+- Feasibility audit mode: ran only the documented command
+  `AUDIT_FEASIBILITY_PHASE=P5 ./scripts/audit_trust.sh`; it passed while allowing
+  the ignored `.pi/probes/*.lean` files. No other phase value or probe path was
+  used.
+- Checks: all five `lake env lean .pi/probes/P5*.lean` probes passed;
+  `AUDIT_FEASIBILITY_PHASE=P5 ./scripts/audit_trust.sh`,
+  `./scripts/audit_axioms.sh`, `lake build`, `git diff --check`, and the
+  probes-not-tracked check passed.
+- Commit: `P5: local-field feasibility gate` (this commit; see `git log -1` for
+  its local hash).
+- Next: submit P5 for review. Do not start P6 in this round.
