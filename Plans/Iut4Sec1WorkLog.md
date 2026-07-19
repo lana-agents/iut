@@ -257,3 +257,26 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
   (this commit; see `git log -1`).
 - Next: implement P3b after the amendment and applicable phase gates are
   accepted; do not fold the expansion into already completed P2/P3 history.
+
+### 2026-07-19 — Specification amendment fix round
+
+- Goal/status: fixed only the three B findings from the combined P3/amendment
+  review; P3 remains accepted and P3b has not started.
+- Changed: `scripts/audit_trust.sh` now scans every tracked text file for the two
+  forbidden absolute-home prefixes and supports only exact reviewed
+  `(path, line, matched token, reason)` exceptions (the list is empty).
+  `Plans/Iut4Sec1Spec.md` now records the guard as implemented, defers every
+  `InitialThetaCarriers`-indexed reduction declaration from P14 to P15, and
+  records amendment commit `20c7e3f` in the review log.
+- Negative-test evidence: staged `.path-audit-negative-test.txt` with the
+  forbidden Users-home prefix on line 1. `./scripts/audit_trust.sh` exited 1 and
+  reported `rejected machine-local path` for that file and line. The probe was
+  removed from the index and working tree; the clean audit then passed.
+- Checks: `bash -n scripts/audit_trust.sh`, the clean trust audit,
+  `./scripts/audit_axioms.sh`, `lake build`, `git diff --check`, and the required
+  tracked-literal search all passed; the staged negative audit failed as
+  expected with exit 1.
+- Commit: `P0: amendment fix round — path audit and phase ordering` (this
+  fix-round commit; use `git log -1 --format=%h` for its local hash).
+- Next: submit the amended specification and implemented path guard for
+  re-review; do not begin P3b before acceptance.

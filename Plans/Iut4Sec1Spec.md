@@ -42,9 +42,12 @@ may not contain an advertised proposition under another name.
 
 ### 2.2 Imported-IUT interfaces: exact signatures
 
-There are exactly five imported-IUT structures. Their ambient carriers and all
-containers are defined first in `Iut4Sec1/IUT/Carriers.lean`; the interfaces in
-`Iut4Sec1/IUT/Interfaces.lean` do not get to choose them. In particular:
+There are exactly five imported-IUT structures. P15 first adds their ambient
+carriers and all containers in `Iut4Sec1/IUT/Carriers.lean`, then adds the
+carrier-indexed reduction family, and only then defines the five interfaces in
+`Iut4Sec1/IUT/Interfaces.lean`; the interfaces do not get to choose the
+carriers. P14 contains no declaration indexed by `InitialThetaCarriers`. In
+particular:
 
 * `InitialThetaCarriers` is a data-only record whose fields are the types
   `Fmod`, `Ftpd`, `F`, and `K` with their `Field`/`NumberField` instances; the
@@ -251,7 +254,12 @@ but not the needed package of abelian varieties, polarized automorphism groups,
 Tate modules, elliptic moduli stacks with level structure, scheme-automorphism
 descent, Néron/semi-abelian models, or inertia consequences.
 
-`Iut4Sec1/Elliptic/ReductionInterface.lean` may therefore define a family
+After P14 has recorded feasibility and proved any unconditional core lemmas,
+P15 may add `Iut4Sec1/Elliptic/Carriers.lean` and
+`Iut4Sec1/Elliptic/ReductionInterface.lean`. This happens after
+`Iut4Sec1/IUT/Carriers.lean` has introduced `InitialThetaCarriers`, so the
+reduction interface may define the following indexed family without a forward
+reference:
 
 ```lean
 inductive ReductionUse (D : InitialThetaCarriers)
@@ -590,9 +598,9 @@ names, universes, binder information, and types remain in the diff.
   exact file, line, token, and reason. In particular, the reviewed-exception
   list for `axiom`, `constant`, `admit`, `native_decide`,
   `Lean.ofReduceBool`, `ofReduceBool`, `implemented_by`, and `unsafe` is empty.
-* Tracked files must use repository-relative paths or public URLs. Machine-local
-  absolute home paths are rejected from P3b onward; documentation, plans,
-  workflows, and source files are all in scope.
+* Tracked files must use repository-relative paths or public URLs. The trust
+  audit rejects machine-local absolute home paths in every tracked text file;
+  documentation, plans, workflows, and source files are all in scope.
 * A reviewer must accept each phase before the next begins. Prototype phases
   have an explicit GO/NO-GO verdict; NO-GO prohibits the dependent phase until
   this specification is amended and reviewed.
@@ -615,12 +623,15 @@ ignored `.pi/` probe files during a feasibility phase. Any future exception is
 a literal allow-list entry `(path, line, token, reason)` reviewed in the phase
 that introduces it; glob or directory exceptions are forbidden.
 
-P3b also makes the trust script scan every tracked file and reject a
-machine-local absolute home path matching `/(Users|home)/`. This path check has
-no allow-list: tracked plans and CI files must cite a public URL or use a
-repository-relative path. The check is tested with a temporary tracked-index
-fixture, the expected failure is recorded, and the fixture is removed before
-the clean audit.
+The trust script also scans every tracked text file and rejects a machine-local
+absolute home path matching `/(Users|home)/`. This check is implemented before
+P3b. Any exception uses a literal `(path, line, matched path token, reason)`
+record under the same exact-match, single-use rules as token exceptions; glob
+and directory exceptions are forbidden, and the reviewed list is currently
+empty. The grouped pattern definition in the script contains neither matched
+literal, so it needs no exception. A temporary tracked-index fixture tests the
+negative path, the expected failure is recorded, and the fixture is removed
+before the clean audit.
 
 ### 4.2 Generated all-public-declaration axiom audit
 
@@ -756,8 +767,8 @@ assuming that every sorried challenge target has a Solution declaration. Update
 the comparator README with the ten-target manifest and the config semantics.
 
 Upgrade `scripts/audit_trust.sh` to require exactly ten named challenge targets
-and ten `sorry` occurrences, and add the tracked-file machine-local-path guard
-from §4.1 with a temporary negative test.
+and ten `sorry` occurrences. Preserve the already implemented tracked-text
+machine-local-path guard from §4.1 and rerun its temporary negative test.
 
 **Checks.** Build Challenge, Solution, checkdecls, and the root; run the upgraded
 all-shared signature diff; print axioms for the configured project/Solution
@@ -928,18 +939,26 @@ the challenge target does not.
 **Scope.** First create ignored `.pi/probes/` files and a reviewed
 `Plans/EllipticFeasibility.md` inventory for polarized abelian varieties, Tate
 modules, moduli/level structures, descent, semi-abelian/Néron models, and inertia.
-Then prove only feasible finite-group/linear-algebra lemmas. Define the exact
-`ReductionUse` type, fixed conclusion predicate, finite `D.reductionUses` set,
-`ReductionCertificate`, and conditional wrappers from §2.3. Do not promise unconditional geometric
-Proposition 1.8 declarations.
+Then prove only feasible finite-group/linear-algebra lemmas. Record the exact
+planned cases and fixed geometric conclusions for the §2.3 certificate family,
+but do not define `ReductionUse D`, `D.reductionUses`, `ReductionCertificate D`,
+or any other declaration indexed by `InitialThetaCarriers`; that carrier does
+not exist until P15. Do not promise unconditional geometric Proposition 1.8
+declarations.
 
 **Gate.** Report GO only for each unconditional lemma actually prototyped.
 Blueprint 1.8 lists the unconditional core separately and marks every geometric
-clause conditional/partial. Print every certificate field type.
+clause conditional/partial. Review the planned certificate-case inventory
+against Proposition 1.8; certificate field printing is deferred to P15.
 
-### P15 — Exact five IUT interfaces and statement signature gate
+### P15 — Data-only carriers, reduction family, five IUT interfaces, and statement signature gate
 
-**Scope.** Add `IUT/Carriers.lean` and `IUT/Interfaces.lean` exactly as §2.2.
+**Scope.** First add `IUT/Carriers.lean` with `InitialThetaCarriers` and the
+fixed containers exactly as §2.2. Next add `Elliptic/Carriers.lean` and
+`Elliptic/ReductionInterface.lean` with `ReductionUse D`,
+`ReductionConclusion D`, `D.reductionUses`, `ReductionCertificate D`, and the
+conditional wrappers exactly as §2.3. Only after those indexed declarations
+elaborate, add `IUT/Interfaces.lean` with the five imported-IUT structures.
 Add setup definitions for Theorem 1.10 and the proposition-valued
 `ThetaPilotEstimateStatement`. Its signature is exactly:
 
@@ -970,11 +989,11 @@ must see, separately, the five IUT packages
 packages total; `D` is their data-only carrier). Omitting or bundling any one is
 a phase failure.
 
-**Additional gate.** Run `#print` on each of the five structures and inspect the
-type of every field. Confirm realization proposition fields are containments,
-there is no realization log-volume upper bound, Corollary 3.12 has only its
-exact equality and `-1 ≤ CTheta`, and normalized-weight sum is a theorem rather
-than a field.
+**Additional gate.** Run `#print` on each of the five structures and on every
+reduction certificate field, and inspect the type of every field. Confirm
+realization proposition fields are containments, there is no realization
+log-volume upper bound, Corollary 3.12 has only its exact equality and
+`-1 ≤ CTheta`, and normalized-weight sum is a theorem rather than a field.
 
 ### P16 — Local Θ-pilot bounds and procession averaging
 
@@ -1055,4 +1074,4 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 | P1 (round 2) | `51ab4b6` | pi | CHANGES REQUESTED | 2026-07-19 | Round-1 findings resolved; new: lean_action_ci.yml write/OIDC on PR job; symlink audit bypass. |
 | P1 (round 3) | `22b8cb9` | pi | ACCEPTED | 2026-07-19 | CI permissions scoped; symlinks fail closed with permanent negative test. P1 gate closed. |
 | P2 (round 1) | `3d4c5c0` | pi | ACCEPTED | 2026-07-19 | Challenge/Solution byte-identical payloads, isolated mathlib-only roots, exact config, literal single-line P2 audit exception. P2 gate closed. |
-| P0 (user-directed amendment) | `this commit` | project owner | DIRECTED AMENDMENT | 2026-07-19 | Replace the single-theorem comparator design by the mathlib-only Section 1 suite; keep challenge-only targets out of config; remove tracked machine-local repository references. |
+| P0 (user-directed amendment) | `20c7e3f` | project owner | DIRECTED AMENDMENT | 2026-07-19 | Replace the single-theorem comparator design by the mathlib-only Section 1 suite; keep challenge-only targets out of config; remove tracked machine-local repository references. |
