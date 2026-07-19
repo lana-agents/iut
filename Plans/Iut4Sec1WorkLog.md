@@ -69,3 +69,34 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P0: revise specification per review round 1` (this commit; see
   `git log -1`).
 - Next: obtain P0 review round 2 acceptance; do not begin P1 before that gate.
+
+### 2026-07-19 — P1 Verso scaffold and trust-audit infrastructure
+
+- Goal/status: completed P1 only; no comparator or mathematical formalization
+  from P2 or later was added.
+- Changed: added the self-contained `blueprint-verso/` package at Lean 4.32.0,
+  ten source-faithful nodes for items 1.1--1.10, site-generation scripts and
+  workflows, and the three trust-audit files under `scripts/`.
+- Honesty labels: item 1.6 is conditional on `PrimeCountingCertificate`; item
+  1.8 is conditional/partial and labels clauses (v)--(vii) with
+  `ReductionCertificate`; item 1.10 labels the five IUT I--III packages,
+  `PrimeCountingCertificate`, and the `ReductionCertificate` family as explicit
+  conditions.
+- Negative-test evidence: temporarily added the ignored
+  `.pi/probes/Iut4Sec1/TrustProbe.lean`, imported it through a temporary symlink,
+  and gave `contaminatedPublicDeclaration` a placeholder proof. The all-public
+  audit exited 1 and reported
+  `contaminatedPublicDeclaration\tsorryAx` followed by
+  `disallowed logical dependencies: contaminatedPublicDeclaration: sorryAx`.
+  The probe, symlink, and temporary root import were removed, and the clean root
+  was rebuilt.
+- Checks: `(cd blueprint-verso && lake update)`; `(cd blueprint-verso && lake
+  build Iut4Sec1Blueprint)`; `./blueprint-verso/scripts/ci-pages.sh`; explicit
+  checks for `index.html`, `blueprint-manifest.json`, and
+  `blueprint-html-cache.json` (the manifest contains ten previews); root `lake
+  build`; `./scripts/audit_trust.sh`; `./scripts/audit_axioms.sh`; and `git diff
+  --check` all passed. Only `.lake/`, `.pi/`, `blueprint-verso/.lake/`, and
+  `blueprint-verso/_out/` appear in ignored status.
+- Commit: `P1: add Verso scaffold and trust audits` (this phase commit; see
+  `git log -1` for its local hash).
+- Next: submit P1 for review; do not start P2 before acceptance.
