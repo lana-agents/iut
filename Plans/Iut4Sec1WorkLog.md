@@ -46,3 +46,26 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
   `lake build`, `git diff --check`, and final status audit (recorded at handoff).
 - Commit: `P0: bootstrap repository and specification` (see `git log -1`).
 - Next: reviewer accepts P0, then an implementer starts P1 only.
+
+### 2026-07-19 — P0 specification revision after review round 1
+
+- Goal: resolve all seven findings in `.pi/parallel-review.md` without starting
+  any implementation phase.
+- Changed: rewrote `Plans/Iut4Sec1Spec.md`; recorded the round-1 verdict in its
+  Review log. No file outside `Plans/` changed.
+- Decisions: P3 simultaneously adds the comparator theorem and turns Solution
+  into a re-export; exact Proposition 1.6 uses an explicit non-IUT
+  `PrimeCountingCertificate` while Chebyshev yields a weaker unconditional
+  theorem; the final signature carries all five IUT packages, the finite
+  `ReductionCertificate` family, and `PrimeCountingCertificate`; local-field
+  and elliptic work now has reviewed GO/NO-GO prototype gates.
+- API recheck: confirmed mathlib v4.32.0's
+  `Chebyshev.eventually_primeCounting_le` coefficient `log 4 + ε`, local
+  completion/DVR support, lack of the required general p-adic log/exp package,
+  the scope of the Dedekind different API, and the limited Weierstrass good
+  reduction API.
+- Checks: `lake build` and `git diff --check` passed; only `.lake/` and `.pi/`
+  are ignored.
+- Commit: `P0: revise specification per review round 1` (this commit; see
+  `git log -1`).
+- Next: obtain P0 review round 2 acceptance; do not begin P1 before that gate.
