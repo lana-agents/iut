@@ -1078,3 +1078,4 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 | P3 (round 1) | `abe17b7` | pi | ACCEPTED | 2026-07-19 | Comparator theorem proved; solution re-export and signature script verified; proof-quality pass clean. P3 gate closed. |
 | P0 amendment (round 1) | `20c7e3f` | pi | CHANGES REQUESTED | 2026-07-19 | Path audit specified but unimplemented; P14 used carriers introduced in P15; review-log hash placeholder. |
 | P0 amendment (round 2) | `7329e2a` | pi | ACCEPTED | 2026-07-19 | Path audit implemented with negative test; carrier ordering fixed; amendment gate closed. |
+| P3b (round 1) | `5730dab` | pi | ACCEPTED | 2026-07-19 | Ten-target suite faithful to §3.2 and the paper; all statements verified true; two cosmetic elaboration deviations logged. P3b gate closed. |
