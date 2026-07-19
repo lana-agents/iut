@@ -15,7 +15,7 @@ This file implements both finite- and infinite-place pullback for a finite
 extension of number fields. At a finite place the coefficient is multiplied by
 the ramification index. At an infinite place it is multiplied by the local
 completion degree (one or two). The ramification--inertia sum formulas prove
-invariance of normalized degree.
+invariance of normalized global degree and of the related raw-degree local ratio.
 -/
 
 open NumberField
@@ -179,7 +179,7 @@ theorem normalizedArithmeticDivisorDegree_pullback (D : ArithmeticDivisor K) :
   rw [htower]
   field_simp
 
-/-! ## Parts and normalized local degree -/
+/-! ## Divisor parts and local-degree ratios -/
 
 /-- The degree of a completion over the corresponding completion of `ℚ`. -/
 noncomputable def arithmeticPlaceLocalDegree : ArithmeticPlace K → ℕ
@@ -197,8 +197,9 @@ lemma arithmeticPlaceLocalDegree_pos (v : ArithmeticPlace K) :
   | inr v => exact NumberField.InfinitePlace.mult_pos
 
 /-- The raw degree of the part of `D` supported on `E`, divided by the total
-local degree of the places in `E`. -/
-noncomputable def normalizedLocalDegree
+local degree of the places in `E`. This is the pullback-invariant raw-degree
+variant, not the globally normalized numerator displayed in Definition 1.9(ii). -/
+noncomputable def rawLocalDegreeRatio
     (D : ArithmeticDivisor K) (E : Finset (ArithmeticPlace K)) : ℝ :=
   arithmeticDivisorDegree (arithmeticDivisorPart D (· ∈ E)) /
     ∑ v ∈ E, (arithmeticPlaceLocalDegree v : ℝ)
@@ -308,18 +309,19 @@ private lemma localDegreeSum_pos
     exact_mod_cast arithmeticPlaceLocalDegree_pos v
   · simpa using hE
 
-/-- Definition 1.9(ii): normalized local degree is invariant after pulling back
-both the divisor part and its finite/infinite place fibers. -/
-theorem normalizedLocalDegree_pullback
+/-- The raw-degree local ratio is invariant after pulling back both the divisor
+part and its finite/infinite place fibers. This related variant does not assert
+Definition 1.9(ii), whose numerator uses globally normalized degree. -/
+theorem rawLocalDegreeRatio_pullback
     (D : ArithmeticDivisor K) (E : Finset (ArithmeticPlace K))
     (hE : E.Nonempty) :
     arithmeticDivisorDegree
           (arithmeticDivisorPullback (L := L)
             (arithmeticDivisorPart D (· ∈ E))) /
         pullbackLocalDegreeSum (L := L) E =
-      normalizedLocalDegree D E := by
+      rawLocalDegreeRatio D E := by
   rw [arithmeticDivisorDegree_pullback, pullbackLocalDegreeSum_eq,
-    normalizedLocalDegree]
+    rawLocalDegreeRatio]
   have hExt : (Module.finrank K L : ℝ) ≠ 0 := by
     exact_mod_cast (Module.finrank_pos : 0 < Module.finrank K L).ne'
   have hLocal : (∑ v ∈ E, (arithmeticPlaceLocalDegree v : ℝ)) ≠ 0 :=

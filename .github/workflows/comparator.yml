@@ -1,7 +1,6 @@
 name: Comparator
 
-# P2 provides the temporary independent challenge/solution pair. Automatic
-# comparator execution begins after P3 removes the solution placeholder.
+# Read-only comparator CI, run manually through workflow_dispatch.
 on:
   workflow_dispatch:
 

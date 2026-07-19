@@ -24,11 +24,11 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 
 ## Current status / open questions
 
-- P0 through P3 and the user-directed amendment are accepted. P3b is
-  implemented locally and awaits review; P4 has not started.
-- The mathlib-only comparator challenge now has ten theorem targets, while
-  config continues to list only the P3 theorem already proved and re-exported
-  by Solution.
+- P0 through P3b and the user-directed amendment are accepted. P4 is
+  implemented and under re-review after the first review requested changes;
+  P5 has not started.
+- The mathlib-only comparator challenge has ten theorem targets. Five project
+  proofs are exported by Solution and listed in comparator config.
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
   certificate until missing moduli/Néron-model infrastructure is formalized.
 
@@ -361,3 +361,34 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P4: finite combinatorics and Definition 1.9 foundations` (this phase
   commit; use `git log -1 --format=%h` for its local hash).
 - Next: submit P4 for review. Do not start P5 before acceptance.
+
+### 2026-07-19 — P4 review round 2 publication fixes
+
+- Goal/status: addressed all six round-1 review findings; P4 is ready for
+  re-review, and P5 was not started.
+- Definition 1.9(ii) decision: took the reviewer's fallback route. Renamed the
+  implemented quantity and theorem to `rawLocalDegreeRatio` and
+  `rawLocalDegreeRatio_pullback`, and labeled them as a related raw-degree
+  variant in Lean, the specification, README, and blueprint. The paper's
+  displayed numerator is the globally normalized degree: it remains invariant
+  under pullback while the displayed local-degree denominator scales by
+  `[L : K]`, so the quotient as written cannot satisfy the claimed invariance.
+  Requiring all places of `E` to lie over one rational place does not cancel
+  that extension factor. Rather than assert a false theorem or alter the
+  displayed definition, part (ii) is now marked not formalized.
+- Publication/docs: replaced the template root README with the project scope,
+  honesty boundary, five-of-ten comparator status, blueprint URL/local command,
+  and build/audit instructions. Updated current status and the removed-scaffold
+  P0 commands, added the Apache 2.0 `LICENSE`, verified all existing Lean source
+  headers consistently name Dagur Asgeirsson, and corrected comparator workflow
+  and Lake comments.
+- Checks: `lake env lean Iut4Sec1/Global/Pullback.lean`; `lake build`;
+  `./scripts/check_comparator_signature.sh`; `./scripts/audit_trust.sh`;
+  `./scripts/audit_axioms.sh` (59 public project declarations and five Solution
+  exports); `#print axioms Iut4Sec1.rawLocalDegreeRatio_pullback` (only
+  `propext`, `Classical.choice`, and `Quot.sound`); nested `lake build
+  Iut4Sec1Blueprint`; `blueprint-verso/scripts/ci-pages.sh`; `lake exe vbp
+  --help` to verify the documented command; and `git diff --check` all passed.
+- Commit: `P4: address review findings and prepare for publication` (this
+  fix-round commit; use `git log -1 --format=%h` for its local hash).
+- Next: submit P4 for round-2 review; do not push or start P5 before acceptance.

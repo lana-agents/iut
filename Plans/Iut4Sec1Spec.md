@@ -34,8 +34,11 @@ The following results require Lean proof terms rather than certificate fields.
   `4 / 3` result of Proposition 1.6 is conditional for the reason stated there.
 * The finite-group and linear-algebra lemmas isolated from Proposition 1.8.
   Elliptic/abelian geometry outside current mathlib is conditional under §2.3.
-* Definition 1.9 and all elementary assembly in Theorem 1.10 after every
-  interface/certificate argument has been supplied.
+* Definition 1.9(i), together with the related raw-degree local-ratio variant
+  recorded in P4, and all elementary assembly in Theorem 1.10 after every
+  interface/certificate argument has been supplied. Definition 1.9(ii)'s
+  displayed quotient is not currently claimed for the scaling reason recorded
+  in P4 and the blueprint.
 
 A helper structure may package ambient operations and their standard laws. It
 may not contain an advertised proposition under another name.
@@ -674,14 +677,17 @@ git diff --check
 `Plans/Iut4Sec1WorkLog.md`. P0 and its review revisions contain no blueprint,
 comparator, or formalization code.
 
-**Checks.**
+**Checks.** The bootstrap scaffold and its demonstration declaration were
+removed after P4 by project-owner direction. The command listing below was
+amended after that removal to give the current root-module equivalents; the P0
+work-log entry remains the historical record of what was run at P0.
 
 ```bash
-lake env lean Iut4Sec1/Basic.lean
+lake env lean Iut4Sec1.lean
 lake build Iut4Sec1
 lake build
-printf 'import Iut4Sec1.Basic\n#print axioms hello\n' > /tmp/Iut4Sec1Axioms.lean
-lake env lean /tmp/Iut4Sec1Axioms.lean
+printf 'import Iut4Sec1\n' > /tmp/Iut4Sec1Import.lean
+lake env lean /tmp/Iut4Sec1Import.lean
 git diff --check
 git status --short --ignored
 ```
@@ -787,9 +793,13 @@ and no tracked file contains a machine-local absolute home path.
 normalized weights in `Combinatorics/`. The public `tupleWeight`, `tupleValue`,
 `weighted_average_eq`, `average_range_sum`, and `average_range_sq_sum` have the
 exact challenge signatures. Define finite-support arithmetic divisors, support,
-effectiveness, degree, normalized degree, pullback, parts, and normalized local
-degree in `Global/`, with pullback invariance. The foundational place/Finsupp
-model and `normalizedArithmeticDivisorDegree_nonneg` match §3.2 exactly.
+effectiveness, degree, normalized degree, pullback, and parts in `Global/`,
+with global normalized-degree pullback invariance. Also prove pullback
+invariance of the related raw-degree local ratio. Definition 1.9(ii)'s displayed
+quotient remains outside the formalized claim: its globally normalized numerator
+is invariant while its local-degree denominator scales by the extension degree.
+The foundational place/Finsupp model and
+`normalizedArithmeticDivisorDegree_nonneg` match §3.2 exactly.
 
 In the same commit, add these four proved challenge theorems to Solution by
 project import/`#check` only and append their names to config, taking
@@ -798,7 +808,7 @@ project import/`#check` only and append their names to config, taking
 **Gate.** Check positive denominators and empty-index exclusions. Print axioms
 for `weighted_average_eq`, both range identities,
 `normalizedArithmeticDivisorDegree_nonneg`,
-`sum_normalizedPacketWeight_eq_one`, and `normalizedLocalDegree_pullback`; run
+`sum_normalizedPacketWeight_eq_one`, and `rawLocalDegreeRatio_pullback`; run
 the all-shared comparator signature check and all audits.
 
 ### P5 — Reviewed local-field feasibility/prototype gate
