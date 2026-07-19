@@ -24,9 +24,8 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 
 ## Current status / open questions
 
-- P0 through P3b and the user-directed amendment are accepted. P4 is
-  implemented and under re-review after the first review requested changes;
-  P5 has not started.
+- P0 through P4 and the earlier user-directed amendment are accepted. The
+  user-directed PNT/credential amendment is implemented; P5 is next.
 - The mathlib-only comparator challenge has ten theorem targets. Five project
   proofs are exported by Solution and listed in comparator config.
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
@@ -392,3 +391,30 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P4: address review findings and prepare for publication` (this
   fix-round commit; use `git log -1 --format=%h` for its local hash).
 - Next: submit P4 for round-2 review; do not push or start P5 before acceptance.
+
+### 2026-07-19 — User-directed PNT and credential-audit amendment
+
+- Goal/status: completed the two specification amendments before P5; no P5
+  prototype or public formalization was included in this commit.
+- PNT scope: Proposition 1.6 remains conditional on
+  `PrimeCountingCertificate`. The spec identifies PrimeNumberTheoremAnd as the
+  known potential future discharge path, keeps that dependency out of scope
+  under taxis issue #6, permits only trivial wrappers around already available
+  Chebyshev results, and leaves the comparator's exact `4 / 3` target out of
+  config.
+- Credential audit: `scripts/audit_trust.sh` now scans every tracked text file
+  for lower-case PAT-shaped hex strings and common GitHub token forms. It has an
+  empty exact path/line/literal/reason exception list with single-use checking,
+  and failure diagnostics do not echo a possibly live payload.
+- Negative-test evidence: staged a temporary tracked-index fixture containing
+  an obviously synthetic issues-PAT shape with a 40-hex-character payload made
+  from repeated `deadbeef`. The trust audit exited 1 and reported
+  `rejected credential-shaped string` at the fixture's line 1 without printing
+  the payload. The fixture was removed from the index and working tree; the
+  clean audit then passed.
+- Checks: `bash -n scripts/audit_trust.sh`, the expected-failing credential
+  negative test, clean `./scripts/audit_trust.sh`, and `git diff --check` passed.
+- Commit: `P0: amend spec — PNT external discharge and credential audit (user directives)`
+  (this commit; see `git log -1` for its local hash).
+- Next: commit this amendment separately, then run P5 probes only under
+  ignored `.pi/probes/`; do not start P6.

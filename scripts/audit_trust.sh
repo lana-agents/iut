@@ -21,6 +21,18 @@ readonly home_path_component='home'
 readonly machine_local_path_exceptions=()
 readonly machine_local_path_pattern='/(Users|home)/'
 
+# Credential exceptions are exact (path, line, matched literal, reason)
+# records, with the same single-use rule as the other exception classes. Keep
+# the list empty unless a review approves a synthetic documentation fixture;
+# real credentials must never be committed. Split any approved synthetic
+# literal across shell fragments so this file does not itself trigger the scan.
+readonly credential_exceptions=()
+readonly credential_pat_marker='_p''at_'
+readonly ghp_prefix='gh''p_'
+readonly gho_prefix='gh''o_'
+readonly github_pat_prefix='github_''pat_'
+readonly credential_pattern="[[:lower:]]+${credential_pat_marker}[[:xdigit:]]{16,}|${ghp_prefix}[[:alnum:]]{16,}|${gho_prefix}[[:alnum:]]{16,}|${github_pat_prefix}[[:alnum:]_]{16,}"
+
 # Ignored Lean probes are permitted only in the two feasibility phases from the
 # specification, only below .pi/probes/, and only with an explicit phase ID:
 #   AUDIT_FEASIBILITY_PHASE=P5 ./scripts/audit_trust.sh
@@ -38,6 +50,7 @@ esac
 
 exception_seen=()
 machine_local_path_exception_seen=()
+credential_exception_seen=()
 audit_failed=0
 
 validate_exceptions() {
@@ -82,6 +95,27 @@ validate_exceptions() {
       exit 1
     fi
     machine_local_path_exception_seen[index]=0
+    index=$((index + 1))
+  done
+
+  index=0
+  for record in ${credential_exceptions[@]+"${credential_exceptions[@]}"}; do
+    IFS='|' read -r path line token reason <<< "$record"
+    if [[ -z "$path" || -z "$line" || -z "$token" || -z "$reason" ||
+          "$path" == /* || "$path" == */ ||
+          "$path" == *'*'* || "$path" == *'?'* || "$path" == *'['* ||
+          "$path" == *']'* || "$path" == *'{'* || "$path" == *'}'* ||
+          "$path" == *'//'* || "$path" == './'* || "$path" == *'/./'* ||
+          "$path" == '../'* || "$path" == *'/../'* || ! "$line" =~ ^[1-9][0-9]*$ ||
+          ! "$token" =~ ^(${credential_pattern})$ ]]; then
+      echo "audit_trust: invalid credential exception (literal file, line, matched synthetic literal, and reason required)" >&2
+      exit 1
+    fi
+    if [[ -e "$path" && ! -f "$path" ]]; then
+      echo "audit_trust: credential exception path must name a file, not a directory: $path" >&2
+      exit 1
+    fi
+    credential_exception_seen[index]=0
     index=$((index + 1))
   done
 }
@@ -222,6 +256,44 @@ scan_machine_local_paths() {
   done < <(perl -ne 'while (m{/(Users|home)/}g) { print "$.|/$1/\n" }' "$path")
 }
 
+allow_credential_exception() {
+  local candidate_path="$1"
+  local candidate_line="$2"
+  local candidate_token="$3"
+  local record path line token reason
+  local index=0
+  for record in ${credential_exceptions[@]+"${credential_exceptions[@]}"}; do
+    IFS='|' read -r path line token reason <<< "$record"
+    if [[ "$candidate_path" == "$path" && "$candidate_line" == "$line" &&
+          "$candidate_token" == "$token" ]]; then
+      if [[ "${credential_exception_seen[index]}" == 1 ]]; then
+        return 1
+      fi
+      credential_exception_seen[index]=1
+      echo "audit_trust: reviewed credential exception: $path:$line ($reason)" >&2
+      return 0
+    fi
+    index=$((index + 1))
+  done
+  return 1
+}
+
+scan_credentials() {
+  local path="$1"
+  local line token
+  while IFS='|' read -r line token; do
+    [[ -n "$line" ]] || continue
+    if allow_credential_exception "$path" "$line" "$token"; then
+      continue
+    fi
+    # Do not copy a possibly live credential into CI output.
+    echo "audit_trust: rejected credential-shaped string: $path:$line" >&2
+    audit_failed=1
+  done < <(CREDENTIAL_PATTERN="$credential_pattern" perl -ne '
+    while (/$ENV{CREDENTIAL_PATTERN}/g) { print "$.|$&\n" }
+  ' "$path")
+}
+
 validate_exceptions
 
 # Scan all tracked text files. `-I` excludes binary files; an unexpected git
@@ -240,6 +312,21 @@ fi
 while IFS= read -r -d '' path; do
   scan_machine_local_paths "$path"
 done < "$path_scan_results"
+
+credential_scan_results="$(mktemp "${TMPDIR:-/tmp}/iut4-sec1-credential-audit.XXXXXX")"
+trap 'rm -f "$path_scan_results" "$credential_scan_results"' EXIT
+if git grep -l -z -I -E "$credential_pattern" > "$credential_scan_results"; then
+  :
+else
+  grep_status=$?
+  if [[ "$grep_status" != 1 ]]; then
+    echo "audit_trust: tracked-file credential scan failed (git grep exit $grep_status)" >&2
+    exit 1
+  fi
+fi
+while IFS= read -r -d '' path; do
+  scan_credentials "$path"
+done < "$credential_scan_results"
 
 # Use the specification's ERE with git grep to select contaminated tracked
 # files, then identify each exact token occurrence for literal exception checks.
@@ -299,9 +386,19 @@ for record in ${machine_local_path_exceptions[@]+"${machine_local_path_exception
   index=$((index + 1))
 done
 
+index=0
+for record in ${credential_exceptions[@]+"${credential_exceptions[@]}"}; do
+  IFS='|' read -r path line token reason <<< "$record"
+  if [[ -f "$path" && "${credential_exception_seen[index]}" != 1 ]]; then
+    echo "audit_trust: expected reviewed credential exception was not found exactly at $path:$line" >&2
+    audit_failed=1
+  fi
+  index=$((index + 1))
+done
+
 if [[ "$audit_failed" != 0 ]]; then
   echo "audit_trust: trust audit failed" >&2
   exit 1
 fi
 
-echo "audit_trust: tracked text path and tracked, untracked, and ignored .pi Lean source checks passed"
+echo "audit_trust: tracked text path, credential, and tracked, untracked, and ignored .pi Lean source checks passed"

@@ -30,8 +30,10 @@ The following results require Lean proof terms rather than certificate fields.
   gates in §5 establish that the intended finite-extension model is constructible.
   Desired local conclusions may not be fields of `MixedCharLocalFieldData`.
 * Proposition 1.5.
-* The unconditional Chebyshev-strength prime-counting bound in §2.3. The exact
-  `4 / 3` result of Proposition 1.6 is conditional for the reason stated there.
+* Only prime-counting consequences that are immediate from mathlib's existing
+  Chebyshev theorem may be included unconditionally. Proposition 1.6 is stated
+  conditionally on `PrimeCountingCertificate`; this repository does not pursue
+  a stronger unconditional bound.
 * The finite-group and linear-algebra lemmas isolated from Proposition 1.8.
   Elliptic/abelian geometry outside current mathlib is conditional under §2.3.
 * Definition 1.9(i), together with the related raw-degree local-ratio variant
@@ -226,16 +228,23 @@ structure PrimeCountingCertificate : Prop where
       Filter.atTop (nhds 1)
 ```
 
-This is a clearly named external, non-IUT assumption. Proposition 1.6 is proved
-as `proposition16_of_primeCountingCertificate`; its `n₀`, `ηprm`, exact
-`4 / 3` nth-prime bound, and exact `4 / 3` prime-counting bound are derived from
-`PrimeCountingCertificate.pnt`, rather than stored as certificate fields.
+This is a clearly named external, non-IUT assumption. Proposition 1.6 is stated
+conditionally as `proposition16_of_primeCountingCertificate`; its `n₀`,
+`ηprm`, exact `4 / 3` nth-prime bound, and exact `4 / 3` prime-counting bound are
+derived from `PrimeCountingCertificate.pnt`, rather than stored as certificate
+fields.
 
-The same phase also proves an unconditional theorem
-`eventually_primeCounting_le_logFour_add` directly from
-`Chebyshev.eventually_primeCounting_le`, for a specified positive rational
-`ε` (initially `1 / 100`). This is real proved mathematics but is not substituted
-for Proposition 1.6 and is not used to claim the paper's exact statement.
+The PrimeNumberTheoremAnd project of Kontorovich, Tao, et al. is the known Lean
+discharge path for this certificate. Adapting it as a potential future
+repository dependency is outside this project's scope and is tracked externally
+as taxis issue #6. This repository does not reprove the prime number theorem.
+
+P13 may include only unconditional consequences obtained as trivial direct
+applications of existing mathlib Chebyshev results, such as a wrapper around
+`Chebyshev.eventually_primeCounting_le` at a specified positive rational `ε`.
+No effort is allocated to proving or sharpening unconditional prime-counting
+bounds here. Such a wrapper is not substituted for Proposition 1.6 and is not
+used to claim the paper's exact statement.
 
 All downstream constant tracking uses
 `proposition16_of_primeCountingCertificate`: in Step (viii),
@@ -545,8 +554,9 @@ Thus the array has one name after P3b, five after P4, six after P6, seven after
 P11, and nine after P12. The challenge still has ten sorried targets. P13 proves
 only a theorem conditional on `PrimeCountingCertificate`; that theorem does not
 prove the no-argument challenge declaration, so the Proposition 1.6 target stays
-out of config. Comparator success never converts a challenge placeholder into a
-project axiom or certificate.
+out of config. PrimeNumberTheoremAnd's status as a known future discharge path
+does not change this configuration decision. Comparator success never converts
+a challenge placeholder into a project axiom or certificate.
 
 ### 3.4 Solution and definition bridges
 
@@ -602,8 +612,9 @@ names, universes, binder information, and types remain in the diff.
   list for `axiom`, `constant`, `admit`, `native_decide`,
   `Lean.ofReduceBool`, `ofReduceBool`, `implemented_by`, and `unsafe` is empty.
 * Tracked files must use repository-relative paths or public URLs. The trust
-  audit rejects machine-local absolute home paths in every tracked text file;
-  documentation, plans, workflows, and source files are all in scope.
+  audit rejects machine-local absolute home paths and credential-shaped strings
+  in every tracked text file; documentation, plans, workflows, and source files
+  are all in scope.
 * A reviewer must accept each phase before the next begins. Prototype phases
   have an explicit GO/NO-GO verdict; NO-GO prohibits the dependent phase until
   this specification is amended and reviewed.
@@ -635,6 +646,17 @@ empty. The grouped pattern definition in the script contains neither matched
 literal, so it needs no exception. A temporary tracked-index fixture tests the
 negative path, the expected failure is recorded, and the fixture is removed
 before the clean audit.
+
+The same tracked-text scan rejects credential-shaped strings. Its patterns
+include `[a-z]+_pat_[0-9a-f]{16,}` and the common `ghp_`, `gho_`, and
+`github_pat_` token forms with credential-length alphanumeric payloads. Pattern
+components in the script are split so the audit definition does not match
+itself. Credential exceptions, if ever reviewed for synthetic documentation,
+are exact single-use `(path, line, matched literal, reason)` entries; glob and
+directory exceptions are forbidden, and real credentials are never eligible.
+Diagnostics report only path and line, not the matched payload. A temporary
+tracked-index fixture containing an obviously synthetic token-shaped string
+must fail, be removed, and be followed by a clean audit.
 
 ### 4.2 Generated all-public-declaration axiom audit
 
@@ -928,18 +950,21 @@ only and append both names to config, taking the count from seven to nine.
 complex factors, and all primitive automorphisms. Run the all-shared comparator
 signature check on both definitions and theorems.
 
-### P13 — Conditional Proposition 1.6 plus unconditional Chebyshev theorem
+### P13 — Conditional Proposition 1.6 statement
 
-**Scope.** Add `PrimeCountingCertificate` with exactly the field in §2.3. Derive
-`proposition16_of_primeCountingCertificate`, including both clauses and indexing
-`p₁ = 2`. Independently prove
-`eventually_primeCounting_le_logFour_add` from the exact mathlib theorem using
-`ε = 1 / 100` (or another reviewed explicit positive rational). Do not call the
-weaker result Proposition 1.6.
+**Scope.** Add `PrimeCountingCertificate` with exactly the field in §2.3 and
+state `proposition16_of_primeCountingCertificate` conditionally, including both
+clauses and indexing `p₁ = 2`. PrimeNumberTheoremAnd is the known future
+discharge path, but adding or adapting that dependency is out of scope. At most,
+include trivial direct consequences of mathlib's existing Chebyshev theorem;
+do not spend effort proving or sharpening an unconditional PNT-strength bound,
+and do not call a weaker result Proposition 1.6.
 
-**Gate.** Print every certificate field type; print axioms for both results; the
-conditional theorem visibly takes the certificate. Record that the exact
-`4 / 3` constant, not the Chebyshev coefficient, feeds P17. Do not add
+**Gate.** Print every certificate field type and the conditional result's
+axioms; the theorem visibly takes the certificate. Any unconditional
+prime-counting lemma must be a direct consequence of an already available
+mathlib theorem and remains separate. Record that the exact `4 / 3` constant,
+not the Chebyshev coefficient, feeds P17. Do not add
 `eventually_primeCounting_le_four_thirds` to Solution or config: the available
 project theorem with that constant still takes `PrimeCountingCertificate`, while
 the challenge target does not.
@@ -1091,3 +1116,4 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 | P3b (round 1) | `5730dab` | pi | ACCEPTED | 2026-07-19 | Ten-target suite faithful to §3.2 and the paper; all statements verified true; two cosmetic elaboration deviations logged. P3b gate closed. |
 | P4 (round 1) | `696cc65`+`975b455` | pi | CHANGES REQUESTED | 2026-07-19 | Def 1.9(ii) normalization overclaim; pre-publication hygiene (README, LICENSE, stale statuses, dangling scaffold refs). |
 | P4 (round 2) | `f2d37ba` | pi | ACCEPTED | 2026-07-19 | Def 1.9(ii) honestly relabeled raw-degree variant; publication hygiene complete. P4 gate closed; repository made public at this gate. |
+| P0 (user-directed PNT/credential amendment) | this commit | project owner | DIRECTED AMENDMENT | 2026-07-19 | Keep Proposition 1.6 conditional with PrimeNumberTheoremAnd as the out-of-scope discharge path (issue #6); add tracked-file credential-pattern rejection and a synthetic negative test. |
