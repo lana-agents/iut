@@ -1089,3 +1089,5 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 | P0 amendment (round 1) | `20c7e3f` | pi | CHANGES REQUESTED | 2026-07-19 | Path audit specified but unimplemented; P14 used carriers introduced in P15; review-log hash placeholder. |
 | P0 amendment (round 2) | `7329e2a` | pi | ACCEPTED | 2026-07-19 | Path audit implemented with negative test; carrier ordering fixed; amendment gate closed. |
 | P3b (round 1) | `5730dab` | pi | ACCEPTED | 2026-07-19 | Ten-target suite faithful to §3.2 and the paper; all statements verified true; two cosmetic elaboration deviations logged. P3b gate closed. |
+| P4 (round 1) | `696cc65`+`975b455` | pi | CHANGES REQUESTED | 2026-07-19 | Def 1.9(ii) normalization overclaim; pre-publication hygiene (README, LICENSE, stale statuses, dangling scaffold refs). |
+| P4 (round 2) | `f2d37ba` | pi | ACCEPTED | 2026-07-19 | Def 1.9(ii) honestly relabeled raw-degree variant; publication hygiene complete. P4 gate closed; repository made public at this gate. |
