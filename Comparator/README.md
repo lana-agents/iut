@@ -5,28 +5,27 @@ This directory contains the mathlib-only Section 1 challenge selected in
 with one proof placeholder. Its auxiliary definitions are statement vocabulary,
 not comparator tasks.
 
-`Solution.lean` is import/re-export only: it currently imports the proved project
-theorem from P3 and declares no wrappers. Challenge and Solution are separate
+`Solution.lean` is import/re-export only: it imports the five project theorems
+proved through P4 and declares no wrappers. Challenge and Solution are separate
 Lake roots and must never be imported into the same Lean environment.
 
 ## Target and config schedule
 
-| Challenge target | Project proving phase | Config status after P3b |
+| Challenge target | Project proving phase | Config status after P4 |
 |---|---:|---|
 | `Iut4Sec1.nonarchimedean_logError_sum_le` | P3 (complete) | included |
-| `Iut4Sec1.weighted_average_eq` | P4 | not yet included |
-| `Iut4Sec1.average_range_sum` | P4 | not yet included |
-| `Iut4Sec1.average_range_sq_sum` | P4 | not yet included |
-| `Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg` | P4 | not yet included |
+| `Iut4Sec1.weighted_average_eq` | P4 (complete) | included |
+| `Iut4Sec1.average_range_sum` | P4 (complete) | included |
+| `Iut4Sec1.average_range_sq_sum` | P4 (complete) | included |
+| `Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg` | P4 (complete) | included |
 | `Iut4Sec1.localParameters_eq_of_smallRamification` | P6 | not yet included |
 | `Iut4Sec1.nonarchimedean_secondError_sum_le` | P11 | not yet included |
 | `Iut4Sec1.complexTensorToProd_bijective` | P12 | not yet included |
 | `Iut4Sec1.complexTensorToProd_normSq` | P12 | not yet included |
 | `Iut4Sec1.eventually_primeCounting_le_four_thirds` | no unconditional phase | never under the current honesty boundary |
 
-`config.json` therefore keeps `theorem_names` equal to
-`["Iut4Sec1.nonarchimedean_logError_sum_le"]`. A target enters that array only
-when Solution exports a project proof with exactly the challenge type. The exact
+`config.json` therefore has five `theorem_names`. A target enters that array
+only when Solution exports a project proof with exactly the challenge type. The exact
 `4 / 3` prime-counting target remains outside config because the planned project
 result requires an explicit `PrimeCountingCertificate`.
 

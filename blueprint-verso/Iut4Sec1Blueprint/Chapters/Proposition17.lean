@@ -2,6 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import Iut4Sec1Blueprint.TexPrelude
+import Iut4Sec1.Combinatorics.WeightedAverage
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -27,5 +28,14 @@ $`\frac{\sum_{\vec e\in E^n}\beta_{\vec e}\lambda^\Pi_{\vec e}}
         {\sum_{\vec e\in E^n}\lambda^\Pi_{\vec e}}
  =n\beta_{\rm avg}`.
 
-*Status: not started.*
+*Status: formalized.*
+:::
+
+:::lemma_ "lemma:weighted-average" (lean := "Iut4Sec1.weighted_average_eq")
+The two weighted tuple averages agree and equal $`n\beta_{\rm avg}`.
+:::
+
+:::lemma_ "lemma:normalized-packet-weight" (lean := "Iut4Sec1.rawPacketWeight_pos, Iut4Sec1.rawPacketWeight_sum_pos, Iut4Sec1.sum_normalizedPacketWeight_eq_one")
+Positive local degrees give positive raw weights, a positive normalizing
+denominator, and normalized packet weights summing to one.
 :::

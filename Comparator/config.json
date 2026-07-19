@@ -1,7 +1,13 @@
 {
     "challenge_module": "Challenge",
     "solution_module": "Solution",
-    "theorem_names": ["Iut4Sec1.nonarchimedean_logError_sum_le"],
+    "theorem_names": [
+        "Iut4Sec1.nonarchimedean_logError_sum_le",
+        "Iut4Sec1.weighted_average_eq",
+        "Iut4Sec1.average_range_sum",
+        "Iut4Sec1.average_range_sq_sum",
+        "Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg"
+    ],
     "definition_names": [],
     "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
     "enable_nanoda": false

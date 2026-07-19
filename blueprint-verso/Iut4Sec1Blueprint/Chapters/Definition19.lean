@@ -2,6 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import Iut4Sec1Blueprint.TexPrelude
+import Iut4Sec1.Global.Pullback
 
 open Verso.Genre
 open Verso.Genre.Manual
@@ -25,5 +26,26 @@ Let $`F` be a number field with nonarchimedean and archimedean places.
    If $`E|_K` denotes the places of $`K` above $`E`, then
    $`\deg_{E|_K}(a|_K)=\deg_E(a)`.
 
-*Status: not started.*
+*Status: formalized.* The pullback is constructed separately over finite and
+infinite places; its invariance follows from the finite ramification--inertia
+sum and the infinite completion-degree sum.
+:::
+
+:::definition "def:arithmetic-divisor-model" (lean := "Iut4Sec1.ArithmeticPlace, Iut4Sec1.ArithmeticDivisor, Iut4Sec1.arithmeticDivisorSupport, Iut4Sec1.ArithmeticDivisorEffective, Iut4Sec1.arithmeticDivisorDegree, Iut4Sec1.normalizedArithmeticDivisorDegree")
+Arithmetic divisors are finitely supported real-valued functions on the sum of
+the finite and infinite place types.
+:::
+
+:::lemma_ "lemma:effective-degree-nonnegative" (uses := "def:arithmetic-divisor-model") (lean := "Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg")
+The normalized degree of an effective arithmetic divisor is nonnegative.
+:::
+
+:::lemma_ "lemma:arithmetic-divisor-pullback" (uses := "def:arithmetic-divisor-model") (lean := "Iut4Sec1.normalizedArithmeticDivisorDegree_pullback")
+Normalized global degree is invariant under pullback through a finite extension
+of number fields.
+:::
+
+:::lemma_ "lemma:normalized-local-degree-pullback" (uses := "def:arithmetic-divisor-model") (lean := "Iut4Sec1.normalizedLocalDegree_pullback")
+For a nonempty finite part of the place set, raw part degree and total local
+degree scale by the same extension degree, including both place kinds.
 :::

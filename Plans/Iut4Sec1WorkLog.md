@@ -321,3 +321,43 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P3b: expand comparator challenge to Section 1 suite` (this phase
   commit; use `git log -1 --format=%h` for its local hash).
 - Next: submit P3b for review; do not start P4 before acceptance.
+
+### 2026-07-19 — P4 finite combinatorics and Definition 1.9 foundations
+
+- Goal/status: completed P4 only; P5 was not started.
+- Combinatorics: added the exact challenge declarations `tupleWeight`,
+  `tupleValue`, `weighted_average_eq`, `average_range_sum`, and
+  `average_range_sq_sum`. Added product raw packet weights, positivity of each
+  raw weight and their finite sum, normalized weights, and
+  `sum_normalizedPacketWeight_eq_one`; all normalizing denominators are proved
+  positive from positive local degrees and nonempty packet types.
+- Arithmetic divisors: added the exact challenge place/Finsupp model, finite
+  support, effectiveness, weighted degree, normalized degree, divisor parts,
+  absolute local degrees, and `normalizedArithmeticDivisorDegree_nonneg`.
+  Pullback is constructed over actual finite-place prime-ideal fibers and actual
+  infinite-place fibers. Ramification/inertia and completion-degree sum formulas
+  prove raw degree scaling, normalized global invariance, and
+  `normalizedLocalDegree_pullback` for nonempty finite parts. Both place kinds
+  elaborate without a weakened interface or theorem statement.
+- Comparator/docs: Solution remains import/`#check` only and now exports the five
+  configured proofs; config grew from one theorem to five. The separate Solution
+  axiom audit now checks all five. Updated root imports and blueprint items 1.7,
+  1.9, and Theorem 1.10's (E1)/(E2) notes with declaration-backed links.
+- Signature/axiom evidence: the all-shared comparator script reports identical
+  elaborated types for all shared declarations, including all four P4 challenge
+  targets. A fixture importing Solution printed only `propext`, `Quot.sound`,
+  and `Classical.choice` for all five configured theorems and for
+  `sum_normalizedPacketWeight_eq_one` and `normalizedLocalDegree_pullback`.
+  There was no §3.2 signature failure or mathematical deviation to log.
+- Negative-test evidence: staged `.path-audit-negative-test.txt` with a forbidden
+  Users-home prefix; the trust audit rejected it at line 1. The fixture was
+  removed from the index and working tree, and the clean trust audit passed.
+- Checks: `lake build`; explicit `lake build Challenge Solution checkdecls`;
+  `./scripts/check_comparator_signature.sh`; `./scripts/audit_trust.sh`;
+  `./scripts/audit_axioms.sh` (60 public project declarations and all five
+  Solution exports); headline axiom prints; path negative test; nested
+  `lake build Iut4Sec1Blueprint`; `blueprint-verso/scripts/ci-pages.sh`; and
+  `git diff --check` passed.
+- Commit: `P4: finite combinatorics and Definition 1.9 foundations` (this phase
+  commit; use `git log -1 --format=%h` for its local hash).
+- Next: submit P4 for review. Do not start P5 before acceptance.
