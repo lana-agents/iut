@@ -786,3 +786,6 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 |---|---|---|---|---|---|
 | P0 (round 1) | `957878c` | pi | CHANGES REQUESTED | 2026-07-19 | Duplicate comparator declarations, unavailable `4/3` prime API, omitted final inputs, loose interfaces, feasibility, and audit coverage required revision. |
 | P0 (round 2) | `9b8c485` | pi | ACCEPTED | 2026-07-19 | All seven round-1 findings resolved; one non-blocking work-log wording note. P0 gate closed. |
+| P1 (round 1) | `01a95ef` | pi | CHANGES REQUESTED | 2026-07-19 | PR workflow ran head code with write token; ignored-.pi audit bypass; missing λ domain in Prop 1.4 chapter. |
+| P1 (round 2) | `51ab4b6` | pi | CHANGES REQUESTED | 2026-07-19 | Round-1 findings resolved; new: lean_action_ci.yml write/OIDC on PR job; symlink audit bypass. |
+| P1 (round 3) | `22b8cb9` | pi | ACCEPTED | 2026-07-19 | CI permissions scoped; symlinks fail closed with permanent negative test. P1 gate closed. |
