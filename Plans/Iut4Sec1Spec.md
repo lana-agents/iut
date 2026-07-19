@@ -11,9 +11,8 @@ contain a Verso blueprint and a `leanprover/comparator` challenge/solution pair.
 
 The mathematical source of truth is the paper, checked against
 `references/iut4-section1.txt`; `references/iut4.txt` is only a searchable
-extraction. The finished `proetale` project at
-`/Users/dagur/leanprojects/anabelian/.lake/packages/proetale` is the repository
-shape to copy for Verso and comparator infrastructure.
+extraction. The public [`proetale`](https://github.com/chrisflav/proetale) repository is the
+template for the Verso and comparator infrastructure.
 
 A conditional Lean theorem must expose every imported IUT result and every
 non-IUT library gap as an ordinary explicit argument. It must not be described
@@ -329,55 +328,252 @@ from another release.
   tensor-normalization and upper-bound package requested in Propositions
   1.1/1.3. Generic additive Haar measure exists, without the normalized local
   volume computations in Proposition 1.4.
+* `Mathlib/Analysis/InnerProductSpace/TensorProduct.lean` gives the real inner
+  product and norm on `ℂ ⊗[ℝ] ℂ`, including `TensorProduct.norm_tmul`; this
+  supports the Proposition 1.5 challenge map and factor-two metric statement.
+* `NumberField.FinitePlace` exposes the associated maximal ideal and its
+  `Ideal.absNorm`, while `NumberField.InfinitePlace` represents archimedean
+  places modulo conjugation. Together with `Finsupp`, these support the
+  Definition 1.9(i) challenge model, but no checked API uniformly pulls both
+  place types through a finite field extension with the local-degree identity.
 * `Mathlib/AlgebraicGeometry/EllipticCurve/Reduction.lean` defines integral and
-  minimal Weierstrass equations and good reduction. The abelian-variety,
-  moduli/descent, semi-abelian/Néron, Tate-module, and inertia APIs listed in
-  §2.3 were not found.
+  minimal Weierstrass equations and good reduction; the affine/projective point
+  files provide point groups, and `Weierstrass.lean` provides the two-torsion
+  polynomial. The abelian-variety, moduli/descent, semi-abelian/Néron,
+  Tate-module, and inertia APIs listed in §2.3 were not found, so these pieces do
+  not suffice to state a complete clause of Proposition 1.8.
 
-## 3. Comparator core and justification
+## 3. Comparator challenge suite and justification
 
-The comparator core is the finite-sum ramification-error estimate used in
-Proposition 1.4(iii):
-`Iut4Sec1.nonarchimedean_logError_sum_le`.
+### 3.1 Inclusion rule and Section 1 inventory
 
-```lean
-noncomputable def nonarchimedeanLogError (p e : ℕ) : ℝ :=
-  ((⌈(e : ℝ) / (p - 2 : ℕ)⌉ : ℤ) : ℝ) / e - 1 / e
+`Comparator/Challenge.lean` remains a standalone `import Mathlib` module. It
+contains every Section 1 target that can be stated without importing this
+project and without manufacturing a surrogate for unavailable IUT or
+arithmetic-geometry infrastructure. Small definitions assembled directly from
+mathlib primitives are allowed, as in the public `proetale` comparator template.
+Every theorem target below has a proof body consisting of one `sorry`.
+Auxiliary definitions contain no placeholder.
 
-theorem nonarchimedean_logError_sum_le {ι : Type*} [DecidableEq ι]
-    (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
-    (hp : p.Prime) (hp2 : 2 < p) (hIstar : Istar ⊆ I)
-    (he : ∀ i ∈ I, 0 < e i)
-    (hsmall : ∀ i ∈ I, i ∉ Istar → e i ≤ p - 2) :
-    ∑ i ∈ I, nonarchimedeanLogError p (e i) ≤
-      4 * (Istar.card : ℝ) / p := by
-  sorry
-```
+The following inventory is binding for the P3b expansion.
 
-The final line is present only in `Comparator/Challenge.lean`. For the pointwise
-bound put `d = p - 2 > 0`. Positivity of `e` gives
-`ceil (e / d) - 1 < e / d`, hence the error is `< 1 / d ≤ 4 / p` for
-`p ≥ 3`. If `e ≤ d`, then `0 < e / d ≤ 1`, so the ceiling is exactly `1` and
-the error is zero. This covers `e = 1`, `e = p - 1`, and arbitrarily large `e`.
-Summing over the complement of the small indices gives the stated estimate.
+| Section item | Decision | Challenge representation or reason |
+|---|---|---|
+| Proposition 1.1 | **OUT** | The statement needs the normalization of a reduced iterated tensor product of local integer rings, total quotient rings, normalized different exponents, and fractional-ideal scalar actions. Mathlib primitives exist separately, but assembling this just to state the inclusion is the substantive P5/P8 representation project. |
+| Proposition 1.2 | **IN (numerical clause)** | State the displayed small-ramification equality `aParam p e = 1/e ∧ bParam p e = -1/e`; define `aParam` and `bParam` by the paper's ceiling/floor formulas. The requested unit-log-lattice equality for arbitrary finite extensions of `ℚ_[p]` stays out: v4.32.0 has `Padic`, completions, and abstract finite extensions, but no general local-field logarithm with the required image lattice, and no turnkey model connecting all of these to normalized ramification data. |
+| Proposition 1.3 | **OUT** | Its actual assertions quantify normalized local different orders in towers and tame/Galois ramification; those objects are not connected by a fairly easy mathlib-only interface. Replacing them by arbitrary real variables plus the desired inequalities would merely assume the proposition. |
+| Proposition 1.4 | **IN (two arithmetic cores)** | Keep the proved ceiling-error sum and add the second finite-sum error bound with the paper's `∑ (3 + log eᵢ)` term. Haar log-volume, torsion quotients, tensor normalization, and the displayed lattice inclusions remain outside the challenge. |
+| Proposition 1.5 | **IN (part (i))** | Define the canonical real-linear CRT map `ℂ ⊗[ℝ] ℂ →ₗ[ℝ] ℂ × ℂ`, `z ⊗ₜ w ↦ (z*w, conj z*w)`, and the direct-sum squared metric. State bijectivity and the factor-two norm identity for every tensor. The multiple-factor integral-container clauses are deferred to P12 rather than rebuilt in the challenge. |
+| Proposition 1.6 | **IN** | State the unconditional eventual `4/3` prime-counting inequality using `Nat.primeCounting ⌊x⌋₊`. It is a valid mathlib-vocabulary statement even though v4.32.0 cannot prove it. Its solution-side consequence is recorded in §3.4. |
+| Proposition 1.7 | **IN** | State the full finite weighted-average identity using tuples `Fin n → E`, with positive weights, `Nonempty E`, and `NeZero n`. Auxiliary tuple weight/value definitions are copied into the challenge. |
+| Proposition 1.8 | **OUT** | Mathlib's `WeierstrassCurve`, point groups, two-torsion polynomial, variable changes, and good-reduction predicates do not provide any complete clause of Proposition 1.8: Serre's criterion needs polarized abelian varieties and Tate modules, while clauses (ii)–(vii) need Galois descent, moduli, semistable models, or inertia. Restating the existing discriminant identity would be related elliptic algebra, but would not state one of the proposition's claims. |
+| Definition 1.9 | **IN (part (i))** | Define places as `FinitePlace K ⊕ InfinitePlace K`, `ArithmeticDivisor K` as a finitely supported real function, finite-place weight `log (Ideal.absNorm v.maximalIdeal.asIdeal)`, infinite-place weight `1`, effectiveness, degree, and normalized degree divided by `finrank ℚ K`. State nonnegativity of normalized degree for effective divisors. Pullback invariance and part (ii)'s `E`-degree stay out because mathlib has no fairly easy uniform pullback map on both kinds of places with the required local-degree formula. |
+| Theorem 1.10 | **OUT** | The theorem proper quantifies initial Θ-data, log-shells, Θ-pilot realizations, procession normalization, and Corollary 3.12; these are precisely the IUT I–III interfaces forbidden in the mathlib-only challenge. |
 
-This is the self-contained arithmetic core of Proposition 1.4(iii), not the
-overall mathematical headline of Section 1. The challenge imports `Mathlib`
-only.
+The proof of Theorem 1.10 also uses the elementary identities (E1) and (E2).
+They are **IN** as two additional targets because they are standalone finite-sum
+identities over `ℝ`; this does not bring any Θ-pilot content into the challenge.
 
-Comparator configuration:
+### 3.2 Exact target manifest
 
-* challenge module: `Challenge`;
-* solution module: `Solution`;
-* theorem: `Iut4Sec1.nonarchimedean_logError_sum_le`;
-* permitted axioms: at most `propext`, `Quot.sound`, and `Classical.choice`,
-  reduced if the final audit permits fewer.
+The P3b challenge has the following ten theorem targets and therefore exactly
+ten `sorry` occurrences, one in each listed proof and nowhere else.
+Binder spelling may change only as required by elaboration; the mathematical
+types and fully qualified names are fixed here.
 
-The challenge permanently keeps its independent copied declaration. The
-solution keeps a copied declaration only in P2, while the project declaration
-does not exist. P3 adds the project theorem and, in the same phase, replaces the
-solution copy by a module that only imports/re-exports the project theorem. No
-phase imports or declares two constants with the same name in one environment.
+1. **Proposition 1.2 parameter equality.** The challenge defines
+   `Iut4Sec1.aParam` and `Iut4Sec1.bParam` from
+   ```lean
+   aParam p e = if 2 < p then
+     ((⌈(e : ℝ) / (p - 2 : ℕ)⌉ : ℤ) : ℝ) / e else 2
+   bParam p e =
+     ((⌊Real.log (((p : ℝ) * e) / (p - 1 : ℕ)) / Real.log p⌋ : ℤ) : ℝ) - 1 / e
+   ```
+   and states
+   ```lean
+   theorem localParameters_eq_of_smallRamification
+       (p e : ℕ) (hp : p.Prime) (hp2 : 2 < p)
+       (he : 0 < e) (hsmall : e ≤ p - 2) :
+       aParam p e = 1 / (e : ℝ) ∧ bParam p e = -1 / (e : ℝ) := by
+     sorry
+   ```
+
+2. **First Proposition 1.4(iii) error sum.** Keep the existing
+   `nonarchimedeanLogError` definition and declaration:
+   ```lean
+   theorem nonarchimedean_logError_sum_le {ι : Type*} [DecidableEq ι]
+       (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
+       (hp : p.Prime) (hp2 : 2 < p) (hIstar : Istar ⊆ I)
+       (he : ∀ i ∈ I, 0 < e i)
+       (hsmall : ∀ i ∈ I, i ∉ Istar → e i ≤ p - 2) :
+       ∑ i ∈ I, nonarchimedeanLogError p (e i) ≤
+         4 * (Istar.card : ℝ) / p := by
+     sorry
+   ```
+   Its project proof remains the P3 theorem.
+
+3. **Second Proposition 1.4(iii) error sum.** State
+   ```lean
+   theorem nonarchimedean_secondError_sum_le {ι : Type*} [DecidableEq ι]
+       (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
+       (hp : p.Prime) (hIstar : Istar ⊆ I)
+       (he : ∀ i ∈ I, 0 < e i)
+       (hsmall : ∀ i ∈ I, i ∉ Istar → e i ≤ p - 2) :
+       (∑ i ∈ I, (aParam p (e i) + bParam p (e i))) * Real.log p ≤
+         ∑ i ∈ Istar, (3 + Real.log (e i)) := by
+     sorry
+   ```
+   This is exactly the numerical estimate used after log-volume scaling in the
+   second display; it does not pretend to define Haar log-volume.
+
+4. **Proposition 1.5 CRT map.** Define `complexTensorToProd` by
+   `TensorProduct.lift` from the bilinear map
+   `z, w ↦ (z * w, Complex.conj z * w)`, and state
+   ```lean
+   theorem complexTensorToProd_bijective :
+       Function.Bijective complexTensorToProd := by
+     sorry
+   ```
+
+5. **Proposition 1.5 factor-two metric.** Define
+   `complexPairNormSq u = Complex.normSq u.1 + Complex.normSq u.2` and state
+   ```lean
+   theorem complexTensorToProd_normSq (x : ℂ ⊗[ℝ] ℂ) :
+       complexPairNormSq (complexTensorToProd x) = 2 * ‖x‖ ^ 2 := by
+     sorry
+   ```
+   Here the tensor norm is mathlib's inner-product tensor norm. The explicit
+   `complexPairNormSq` avoids the max norm on the ordinary product type and is
+   the direct-sum Hermitian squared metric meant in Proposition 1.5(i).
+
+6. **Proposition 1.6 prime counting.** State
+   ```lean
+   theorem eventually_primeCounting_le_four_thirds :
+       ∀ᶠ x : ℝ in Filter.atTop,
+         (Nat.primeCounting ⌊x⌋₊ : ℝ) ≤
+           4 * x / (3 * Real.log x) := by
+     sorry
+   ```
+
+7. **Proposition 1.7 weighted averages.** Define, for
+   `x : Fin n → E`,
+   ```lean
+   tupleWeight λ x = ∏ j, λ (x j)
+   tupleValue β x = ∑ j, β (x j)
+   ```
+   and state `Iut4Sec1.weighted_average_eq` for a finite nonempty `E`,
+   `[NeZero n]`, positive `λ`, and `i : Fin n`: the two quotients
+   ```text
+   (Σ x, tupleValue β x * tupleWeight λ x) / (Σ x, tupleWeight λ x)
+   (Σ x, n * β (x i) * tupleWeight λ x) / (Σ x, tupleWeight λ x)
+   ```
+   are equal and both equal
+   `n * ((Σ e, β e * λ e) / (Σ e, λ e))`. This conjunction of two equalities
+   is the exact planned theorem type.
+
+8. **(E1).** State `Iut4Sec1.average_range_sum` for `0 < n`:
+   ```text
+   (1 / n) * Σ m in range n, (m + 1) = (n + 1) / 2
+   ```
+   with every term coerced to `ℝ`.
+
+9. **(E2).** State `Iut4Sec1.average_range_sq_sum` for `0 < n`:
+   ```text
+   (1 / n) * Σ m in range n, (m + 1)^2 = ((2*n + 1) * (n + 1)) / 6
+   ```
+   with every term coerced to `ℝ`.
+
+10. **Definition 1.9 degree positivity.** The challenge defines
+    `ArithmeticPlace`, `ArithmeticDivisor`, `arithmeticPlaceWeight`,
+    `ArithmeticDivisorEffective`, `arithmeticDivisorDegree`, and
+    `normalizedArithmeticDivisorDegree` exactly as described in §3.1, then states
+    ```lean
+    theorem normalizedArithmeticDivisorDegree_nonneg
+        {K : Type*} [Field K] [NumberField K]
+        (D : ArithmeticDivisor K)
+        (hD : ArithmeticDivisorEffective D) :
+        0 ≤ normalizedArithmeticDivisorDegree D := by
+      sorry
+    ```
+
+The first error-sum proof still uses the argument already reviewed in P3: for
+`d = p - 2 > 0`, positivity gives
+`ceil (e / d) - 1 < e / d`, hence the error is below
+`1 / d ≤ 4 / p`; it vanishes when `e ≤ d`, and summation filters the exceptional
+indices. The other targets are present because they are faithful, compact
+mathlib-only statements, regardless of current proof availability.
+
+### 3.3 Comparator configuration and phase growth
+
+Comparator configuration always has challenge module `Challenge`, solution
+module `Solution`, `definition_names: []`, and the reviewed permitted-axiom list
+contained in `{propext, Quot.sound, Classical.choice}`. Auxiliary definitions are
+part of the statement vocabulary, not comparator tasks.
+
+`theorem_names` means exactly: theorem declarations currently exported by
+`Solution` with project proof terms and required to pass comparator. A sorried
+challenge target may remain outside that array. P3b therefore expands the file
+to ten targets while leaving only the already proved first error sum in
+`theorem_names`; later phases append names only in the same commit that adds the
+corresponding project proof and Solution import.
+
+| Challenge theorem | Project proving phase | First config inclusion |
+|---|---:|---:|
+| `Iut4Sec1.nonarchimedean_logError_sum_le` | P3 (complete) | P3 |
+| `Iut4Sec1.weighted_average_eq` | P4 | P4 |
+| `Iut4Sec1.average_range_sum` | P4 | P4 |
+| `Iut4Sec1.average_range_sq_sum` | P4 | P4 |
+| `Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg` | P4 | P4 |
+| `Iut4Sec1.localParameters_eq_of_smallRamification` | P6 | P6 |
+| `Iut4Sec1.nonarchimedean_secondError_sum_le` | P11 | P11 |
+| `Iut4Sec1.complexTensorToProd_bijective` | P12 | P12 |
+| `Iut4Sec1.complexTensorToProd_normSq` | P12 | P12 |
+| `Iut4Sec1.eventually_primeCounting_le_four_thirds` | no unconditional proving phase | never under the present honesty boundary |
+
+Thus the array has one name after P3b, five after P4, six after P6, seven after
+P11, and nine after P12. The challenge still has ten sorried targets. P13 proves
+only a theorem conditional on `PrimeCountingCertificate`; that theorem does not
+prove the no-argument challenge declaration, so the Proposition 1.6 target stays
+out of config. Comparator success never converts a challenge placeholder into a
+project axiom or certificate.
+
+### 3.4 Solution and definition bridges
+
+`Comparator/Solution.lean` is permanently import/re-export only after P3. It may
+contain project imports and `#check` commands, but no `def`, `abbrev`, `instance`,
+`lemma`, `theorem`, or wrapper declaration. In particular it never copies a
+challenge auxiliary definition.
+
+The challenge uses the eventual project names and signatures for `aParam`,
+`bParam`, `nonarchimedeanLogError`, tuple weight/value,
+`complexTensorToProd`, `complexPairNormSq`, and the arithmetic-divisor
+vocabulary. P4, P6, P11, and P12 must either implement those project
+constants with the same definitions or first prove project-side
+`..._eq_comparatorFormula` lemmas and use those lemmas in the project theorem.
+The exported target itself always has exactly the challenge type. Per target:
+
+* the P3 first error sum is already a direct re-export;
+* P4 directly re-exports the weighted-average, (E1), (E2), and divisor-positivity
+  project theorems; its challenge-local Finsupp divisor model is copied as the
+  project foundation, so no conversion structure is introduced;
+* P6 directly re-exports the parameter equality after its `aParam`/`bParam`
+  definitions are checked against the challenge formulas;
+* P11 directly re-exports the second error sum, using equality lemmas if its
+  internal log-volume notation unfolds through a differently organized helper;
+* P12 directly re-exports both complex-tensor theorems after checking the CRT
+  map and squared-metric definitions by definitional equality;
+* the unconditional prime-counting target has no Solution declaration or bridge.
+  `proposition16_of_primeCountingCertificate` has an extra hypothesis and cannot
+  be used to populate config.
+
+Challenge and Solution remain separate roots and are never imported together.
+The signature script builds isolated declaration manifests for both roots,
+intersects them, and diffs the complete elaborated type of **every shared
+public declaration**, including shared auxiliary definitions and every
+config-listed theorem. It also checks that every config name occurs in that
+intersection and that no proved shared theorem target is omitted from config.
+Normalization may remove only source locations and warning headers; declaration
+names, universes, binder information, and types remain in the diff.
 
 ## 4. Repository conventions, trust audit, and phase gates
 
@@ -388,12 +584,15 @@ phase imports or declares two constants with the same name in one environment.
 * Keep `Iut4Sec1.lean` as the import root and update it with each public module.
 * Do not commit `.lake/`, `.pi/`, `blueprint-verso/.lake/`, or generated
   `blueprint-verso/_out/`.
-* `Comparator/Challenge.lean` has the sole reviewed placeholder exception: one
-  occurrence of `sorry` in the challenge theorem. There are no other reviewed
-  exceptions unless a later review records an exact file, line, token, and
-  reason. In particular, the initial reviewed-exception list for `axiom`,
-  `constant`, `admit`, `native_decide`, `Lean.ofReduceBool`, `ofReduceBool`,
-  `implemented_by`, and `unsafe` is empty.
+* `Comparator/Challenge.lean` has the sole reviewed placeholder exception. It
+  has one `sorry` in P2/P3 and exactly ten after P3b, one for each target in
+  §3.2. There are no other reviewed exceptions unless a later review records an
+  exact file, line, token, and reason. In particular, the reviewed-exception
+  list for `axiom`, `constant`, `admit`, `native_decide`,
+  `Lean.ofReduceBool`, `ofReduceBool`, `implemented_by`, and `unsafe` is empty.
+* Tracked files must use repository-relative paths or public URLs. Machine-local
+  absolute home paths are rejected from P3b onward; documentation, plans,
+  workflows, and source files are all in scope.
 * A reviewer must accept each phase before the next begins. Prototype phases
   have an explicit GO/NO-GO verdict; NO-GO prohibits the dependent phase until
   this specification is amended and reviewed.
@@ -409,11 +608,19 @@ expression:
 ```
 
 The script excludes `Comparator/Challenge.lean` from the broad scan, then checks
-that this file has exactly one `sorry` occurrence and none of the other rejected
-tokens. It fails on an untracked Lean file as well, except ignored `.pi/` probe
-files during a feasibility phase. Any future exception is a literal allow-list
-entry `(path, line, token, reason)` reviewed in the phase that introduces it;
-glob or directory exceptions are forbidden.
+the phase-appropriate count: one `sorry` through P3 and exactly ten from P3b
+onward, with the ten theorem names matching §3.2. It also rejects every other
+listed token in that file. It fails on an untracked Lean file as well, except
+ignored `.pi/` probe files during a feasibility phase. Any future exception is
+a literal allow-list entry `(path, line, token, reason)` reviewed in the phase
+that introduces it; glob or directory exceptions are forbidden.
+
+P3b also makes the trust script scan every tracked file and reject a
+machine-local absolute home path matching `/(Users|home)/`. This path check has
+no allow-list: tracked plans and CI files must cite a public URL or use a
+repository-relative path. The check is tested with a temporary tracked-index
+fixture, the expected failure is recorded, and the fixture is removed before
+the clean audit.
 
 ### 4.2 Generated all-public-declaration axiom audit
 
@@ -477,7 +684,8 @@ P1 waits for acceptance.
 **Scope.** Add the nested Verso package and ten chapters for items 1.1–1.10,
 adapted from `proetale`. Every node is either linked to an existing declaration
 or marked not started/conditional. Add `scripts/audit_trust.sh`,
-`scripts/AuditAxioms.lean`, and `scripts/audit_axioms.sh` exactly as §4 specifies.
+`scripts/AuditAxioms.lean`, and `scripts/audit_axioms.sh` as the then-current §4
+specifies.
 The all-public audit must detect a temporary deliberately contaminated public
 declaration in an ignored `.pi/` probe, after which the probe is removed.
 
@@ -531,16 +739,56 @@ full §4 audits with no solution exception.
 **Gate.** The diff of elaborated types is empty, only Challenge contains the
 placeholder, and no duplicate declaration can occur in P3 or any later phase.
 
+### P3b — User-directed multi-statement comparator expansion
+
+**Scope.** Implement §3 without changing project mathematics. Expand
+`Comparator/Challenge.lean` from one theorem to the ten-target mathlib-only
+suite and copy in only the auxiliary definitions enumerated there. Every target
+ends in one `sorry`; auxiliary definitions contain none. Keep
+`Comparator/Solution.lean` as its P3 project import/re-export, and keep config's
+`theorem_names` equal to the singleton already proved in P3.
+
+Upgrade `scripts/check_comparator_signature.sh` to produce isolated public
+manifests for Challenge and Solution, intersect them, and diff complete
+elaborated types for all shared declarations as required by §3.4. It verifies
+config completeness for the currently proved shared theorem targets rather than
+assuming that every sorried challenge target has a Solution declaration. Update
+the comparator README with the ten-target manifest and the config semantics.
+
+Upgrade `scripts/audit_trust.sh` to require exactly ten named challenge targets
+and ten `sorry` occurrences, and add the tracked-file machine-local-path guard
+from §4.1 with a temporary negative test.
+
+**Checks.** Build Challenge, Solution, checkdecls, and the root; run the upgraded
+all-shared signature diff; print axioms for the configured project/Solution
+theorem; run both trust audits and the path negative test; run
+`git diff --check`. Confirm the tracked source search required by the
+user-directed amendment is empty.
+
+**Gate.** Challenge imports only `Mathlib`; each §3.2 target occurs exactly once
+and has exactly one placeholder; Solution declares nothing; config still has
+exactly one theorem; all shared declarations have identical elaborated types;
+and no tracked file contains a machine-local absolute home path.
+
 ### P4 — Finite combinatorics and Definition 1.9 foundations
 
 **Scope.** Prove Proposition 1.7, (E1)/(E2), positive raw-weight arithmetic, and
-normalized weights in `Combinatorics/`. Define finite-support arithmetic
-divisors, support, effectiveness, degree, normalized degree, pullback, parts,
-and normalized local degree in `Global/`, with pullback invariance.
+normalized weights in `Combinatorics/`. The public `tupleWeight`, `tupleValue`,
+`weighted_average_eq`, `average_range_sum`, and `average_range_sq_sum` have the
+exact challenge signatures. Define finite-support arithmetic divisors, support,
+effectiveness, degree, normalized degree, pullback, parts, and normalized local
+degree in `Global/`, with pullback invariance. The foundational place/Finsupp
+model and `normalizedArithmeticDivisorDegree_nonneg` match §3.2 exactly.
+
+In the same commit, add these four proved challenge theorems to Solution by
+project import/`#check` only and append their names to config, taking
+`theorem_names` from one entry to five.
 
 **Gate.** Check positive denominators and empty-index exclusions. Print axioms
-for `weighted_average_eq`, `sum_normalizedPacketWeight_eq_one`, and
-`normalizedLocalDegree_pullback` and run all audits.
+for `weighted_average_eq`, both range identities,
+`normalizedArithmeticDivisorDegree_nonneg`,
+`sum_normalizedPacketWeight_eq_one`, and `normalizedLocalDegree_pullback`; run
+the all-shared comparator signature check and all audits.
 
 ### P5 — Reviewed local-field feasibility/prototype gate
 
@@ -581,12 +829,15 @@ end-to-end concrete example that constructs the data and evaluates the ring of
 integers, normalized order, ramification index, and different. A degree-one
 `ℚ_[p]` example alone does not pass.
 
-Also define fractional powers and `aParam`/`bParam` with the elementary
-small-ramification identities.
+Also define fractional powers and `aParam`/`bParam` with exactly the challenge
+formulas, and export `localParameters_eq_of_smallRamification`. Add that theorem
+to Solution by import/`#check` only and append it to config, taking the count
+from five to six.
 
-**Gate.** Reviewer checks constructor universality for the chosen representation
-and the nontrivial example. Failure is NO-GO, not permission to add conclusion
-fields.
+**Gate.** Reviewer checks constructor universality for the chosen representation,
+the nontrivial example, and the all-shared signature match for `aParam`,
+`bParam`, and the parameter theorem. Failure is NO-GO, not permission to add
+conclusion fields.
 
 ### P7 — Analytic prerequisite: local `p`-adic log and exp
 
@@ -623,7 +874,8 @@ argument. Print axioms for all three public estimates.
 **Scope.** Use P7 and P8 to define unit-log lattices, prove the two local
 inclusions and small-ramification equality, then prove the tensor inclusions and
 parts (ii)–(iv) of Proposition 1.2. Automorphisms are explicit linear
-equivalences preserving the log lattice.
+equivalences preserving the log lattice. The P6 comparator parameter theorem
+and config are unchanged.
 
 **Gate.** Floors/ceilings and fractional exponents match the paper; no desired
 inclusion is a structure field.
@@ -633,20 +885,27 @@ inclusion is a structure field.
 **Scope.** Construct normalized additive Haar log-volume for P6 fields; prove
 integer-ring and `p`-scaling normalization, finite direct-sum/tensor laws,
 torsion quotient contribution, and all parts of Proposition 1.4. Use the P3
-project theorem for the first numerical sum bound. The comparator solution is
-already only a re-export and is unchanged.
+project theorem for the first numerical sum bound and export
+`nonarchimedean_secondError_sum_le` for the second. Add the latter to Solution
+by import/`#check` only and append it to config, taking the count from six to
+seven.
 
 **Gate.** Check division by local degree, the exact `m/(ef)` term, both bounds in
-1.4(iii), and the `3 + log e` term. Run comparator and all audits.
+1.4(iii), and the `3 + log e` term. Run the all-shared comparator signature
+check and all audits.
 
 ### P12 — Archimedean metric estimates
 
-**Scope.** Define the eight primitive real-linear isometries of `ℂ`; prove the
-two-factor and finite tensor/direct-sum metric comparisons and integral
-container statement of Proposition 1.5.
+**Scope.** Define `complexTensorToProd` and `complexPairNormSq` exactly as in
+the challenge, then define the eight primitive real-linear isometries of `ℂ`;
+prove the two-factor and finite tensor/direct-sum metric comparisons and
+integral container statement of Proposition 1.5. Export the challenge
+bijectivity and factor-two norm theorems. Add both to Solution by import/`#check`
+only and append both names to config, taking the count from seven to nine.
 
 **Gate.** Document squared-norm convention, factor `2^(|I|-1)`, number of
-complex factors, and all primitive automorphisms.
+complex factors, and all primitive automorphisms. Run the all-shared comparator
+signature check on both definitions and theorems.
 
 ### P13 — Conditional Proposition 1.6 plus unconditional Chebyshev theorem
 
@@ -659,7 +918,10 @@ weaker result Proposition 1.6.
 
 **Gate.** Print every certificate field type; print axioms for both results; the
 conditional theorem visibly takes the certificate. Record that the exact
-`4 / 3` constant, not the Chebyshev coefficient, feeds P17.
+`4 / 3` constant, not the Chebyshev coefficient, feeds P17. Do not add
+`eventually_primeCounting_le_four_thirds` to Solution or config: the available
+project theorem with that constant still takes `PrimeCountingCertificate`, while
+the challenge target does not.
 
 ### P14 — Elliptic feasibility gate and honest Proposition 1.8 scope
 
@@ -773,10 +1035,13 @@ all-public `scripts/audit_axioms.sh`; headline `#print axioms` for each item and
 Theorem 1.10; signature fixture; blueprint site; `git diff --check`; and ignored
 status audit.
 
-**Gate.** Only the challenge has its one reviewed placeholder; no public helper
-escapes the all-declaration audit; a clean checkout reproduces all products.
-The project is described as a conditional Section 1 formalization while any IUT,
-prime-counting, or reduction certificate remains.
+**Gate.** Only the challenge has reviewed placeholders: exactly ten, one for
+each §3.2 target. Final config has the nine project-proved targets from §3.3;
+the unconditional Proposition 1.6 target remains visibly out. No public helper
+escapes the all-declaration audit; the all-shared signature diff is empty; a
+clean checkout reproduces all products. The project is described as a
+conditional Section 1 formalization while any IUT, prime-counting, or reduction
+certificate remains.
 
 ## 6. Review log
 
@@ -790,3 +1055,4 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 | P1 (round 2) | `51ab4b6` | pi | CHANGES REQUESTED | 2026-07-19 | Round-1 findings resolved; new: lean_action_ci.yml write/OIDC on PR job; symlink audit bypass. |
 | P1 (round 3) | `22b8cb9` | pi | ACCEPTED | 2026-07-19 | CI permissions scoped; symlinks fail closed with permanent negative test. P1 gate closed. |
 | P2 (round 1) | `3d4c5c0` | pi | ACCEPTED | 2026-07-19 | Challenge/Solution byte-identical payloads, isolated mathlib-only roots, exact config, literal single-line P2 audit exception. P2 gate closed. |
+| P0 (user-directed amendment) | `this commit` | project owner | DIRECTED AMENDMENT | 2026-07-19 | Replace the single-theorem comparator design by the mathlib-only Section 1 suite; keep challenge-only targets out of config; remove tracked machine-local repository references. |

@@ -24,11 +24,11 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 
 ## Current status / open questions
 
-- P0 specification and repository bootstrap are accepted.
-- P1 is complete locally through the review-round-2 fixes and awaits re-review
-  before P2.
-- The comparator headline is the self-contained ramification-error sum bound
-  from the numerical core of Proposition 1.4(iii).
+- P0, P1, and P2 are accepted; P3 is implemented locally.
+- A user-directed specification amendment adds P3b before P4: the mathlib-only
+  comparator challenge expands from one theorem to ten sorried targets, while
+  config continues to list only targets already proved and re-exported by
+  Solution.
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
   certificate until missing moduli/Néron-model infrastructure is formalized.
 
@@ -227,3 +227,33 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P3: prove comparator arithmetic and re-export solution` (this phase
   commit; use `git log -1 --format=%h` for its local hash).
 - Next: submit P3 for review; do not begin P4 before acceptance.
+
+### 2026-07-19 — User-directed multi-statement comparator amendment
+
+- Goal/status: amended the specification only; no Lean, comparator, workflow,
+  or audit implementation file was changed.
+- Directive: keep `Comparator/Challenge.lean` mathlib-only but state every
+  Section 1 target that is fairly easy to express from mathlib primitives, with
+  one placeholder per target; remove tracked references to machine-local
+  repositories.
+- Design: added P3b and a ten-target manifest covering the Proposition 1.2
+  parameter equality, both Proposition 1.4 numerical sums, two Proposition 1.5
+  tensor/metric claims, exact Proposition 1.6 prime counting, Proposition 1.7,
+  (E1), (E2), and Definition 1.9 degree positivity. Propositions 1.1, 1.3, 1.8,
+  and Theorem 1.10 remain out for explicit API/interface reasons.
+- Comparator semantics: Challenge will retain all ten sorried statements;
+  `theorem_names` grows from one to nine only as unconditional project proofs
+  land in P4/P6/P11/P12. The exact prime-counting challenge stays out because
+  the planned project result is conditional. Solution remains declaration-free
+  and re-exports only by project imports; the signature audit will compare every
+  declaration shared by the isolated roots.
+- Guardrail: the specification now cites the public `proetale` repository and
+  requires the trust audit to reject machine-local absolute home paths in all
+  tracked files.
+- Checks: the requested tracked-path search returned zero hits;
+  `git diff --check` passed; `git diff --name-only` listed only the two `Plans/`
+  files.
+- Commit: `P0: amend spec — multi-statement comparator challenge (user directive)`
+  (this commit; see `git log -1`).
+- Next: implement P3b after the amendment and applicable phase gates are
+  accepted; do not fold the expansion into already completed P2/P3 history.
