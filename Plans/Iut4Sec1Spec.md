@@ -789,3 +789,4 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 | P1 (round 1) | `01a95ef` | pi | CHANGES REQUESTED | 2026-07-19 | PR workflow ran head code with write token; ignored-.pi audit bypass; missing λ domain in Prop 1.4 chapter. |
 | P1 (round 2) | `51ab4b6` | pi | CHANGES REQUESTED | 2026-07-19 | Round-1 findings resolved; new: lean_action_ci.yml write/OIDC on PR job; symlink audit bypass. |
 | P1 (round 3) | `22b8cb9` | pi | ACCEPTED | 2026-07-19 | CI permissions scoped; symlinks fail closed with permanent negative test. P1 gate closed. |
+| P2 (round 1) | `3d4c5c0` | pi | ACCEPTED | 2026-07-19 | Challenge/Solution byte-identical payloads, isolated mathlib-only roots, exact config, literal single-line P2 audit exception. P2 gate closed. |
