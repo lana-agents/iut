@@ -1075,3 +1075,6 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 | P1 (round 3) | `22b8cb9` | pi | ACCEPTED | 2026-07-19 | CI permissions scoped; symlinks fail closed with permanent negative test. P1 gate closed. |
 | P2 (round 1) | `3d4c5c0` | pi | ACCEPTED | 2026-07-19 | Challenge/Solution byte-identical payloads, isolated mathlib-only roots, exact config, literal single-line P2 audit exception. P2 gate closed. |
 | P0 (user-directed amendment) | `20c7e3f` | project owner | DIRECTED AMENDMENT | 2026-07-19 | Replace the single-theorem comparator design by the mathlib-only Section 1 suite; keep challenge-only targets out of config; remove tracked machine-local repository references. |
+| P3 (round 1) | `abe17b7` | pi | ACCEPTED | 2026-07-19 | Comparator theorem proved; solution re-export and signature script verified; proof-quality pass clean. P3 gate closed. |
+| P0 amendment (round 1) | `20c7e3f` | pi | CHANGES REQUESTED | 2026-07-19 | Path audit specified but unimplemented; P14 used carriers introduced in P15; review-log hash placeholder. |
+| P0 amendment (round 2) | `7329e2a` | pi | ACCEPTED | 2026-07-19 | Path audit implemented with negative test; carrier ordering fixed; amendment gate closed. |
