@@ -2,6 +2,17 @@
 
 Date: 2026-07-19
 
+> **PROJECT STATUS (2026-07-20): PAUSED AFTER P6 — AWAITING EXTERNAL INPUT.**
+> Work through phase P6 is complete, reviewed, and pushed (see the Review log).
+> Continuing past the remaining unconditional phases into P15–P18 requires the
+> **actual statement of [IUTchIII], Corollary 3.12** as input from the project
+> owner: the `Corollary312Input` interface in §2.2 is a placeholder pinned to
+> the paper's *citation* of that result, and both it and the downstream phase
+> plan (P15–P18, and possibly the §2.2 carrier/interface signatures) are
+> expected to need revision once the real statement is supplied. Tracked on
+> taxis issue #3. Do not resume phase work before a reviewed spec amendment
+> incorporates that statement.
+
 ## 1. Objective and source of truth
 
 Formalize Section 1, “Log-volume Estimates,” of Mochizuki’s *Inter-universal
@@ -1120,3 +1131,6 @@ The orchestrator appends one line per verdict. Old verdicts are not rewritten.
 | P0 PNT/credential amendment (round 1) | `1b7aca9` | pi | ACCEPTED | 2026-07-19 | PNT scope and credential audit passed; the review-log self-reference is corrected in the P5 fix round. |
 | P5 (round 1) | `adec501` | pi | CHANGES REQUESTED | 2026-07-19 | Items 1, 3, and 5 accepted; item 2 lacked a constructed normalized order and positivity proof, and item 4 proved no summability statement. P6 remained forbidden pending correction. |
 | P5 (round 2) | `ade49ff` | pi | ACCEPTED | 2026-07-19 | Items 2 and 4 strengthened with constructed normalized order (ord(p)=1, 0<e) and genuine log/exp summability proofs for arbitrary finite extensions; reviewer concurs five-GO. P5 gate closed; P6 authorized. |
+| P6 (round 1) | `250f92f` | pi | CHANGES REQUESTED | 2026-07-20 | Constructor universality confirmed; ℚ₂(√2) example proved only generic specializations, not concrete invariants; stale comparator README and overclaiming docs. |
+| P6 (round 2) | `c646cd5` | pi | ACCEPTED | 2026-07-20 | Concrete invariants proved and independently verified (e=2, f=1, ord(√2)=1/2, different (2√2)=𝔪³, normalized order 3/2); docs accurate. P6 gate closed. |
+| — (project pause) | `c646cd5` | project owner | PAUSED | 2026-07-20 | Work stops after P6 pending the actual statement of [IUTchIII] Corollary 3.12 (see status banner); spec amendment expected before resumption. |
