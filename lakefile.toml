@@ -1,7 +1,7 @@
 name = "iut"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["Iut"]
+defaultTargets = ["Iut", "Iut4Sec1", "Challenge", "Solution"]
 
 [leanOptions]
 pp.unicode.fun = true # pretty-prints `fun a ↦ b`
@@ -14,5 +14,27 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.32.0"
 
+# Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
 name = "Iut"
+
+# Section 1 of IUT IV, "Log-volume Estimates".
+[[lean_lib]]
+name = "Iut4Sec1"
+
+# Comparator challenge/solution roots for the ten-target Section 1 suite.
+# They declare matching names and must remain in separate environments.
+[[lean_lib]]
+name = "Challenge"
+srcDir = "Comparator"
+
+[[lean_lib]]
+name = "Solution"
+srcDir = "Comparator"
+
+# Local replacement for checkdecls that omits the duplicate comparator roots.
+[[lean_exe]]
+name = "checkdecls"
+root = "CheckDecls"
+supportInterpreter = true
+weakLinkArgs = ["-lLake"]

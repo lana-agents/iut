@@ -12,6 +12,7 @@ fi
 
 # Verify all .lean files are imported.
 lake exe mk_all --lib Iut --git --check || exit 1
+lake exe mk_all --lib Iut4Sec1 --git --check || exit 1
 
 # Fetch build cache
 lake exe cache get

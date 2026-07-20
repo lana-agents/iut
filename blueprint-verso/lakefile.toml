@@ -1,0 +1,26 @@
+# The Verso blueprint is a self-contained Lake package nested in the
+# iut4-sec1 repository. It does not modify the top-level Lake package.
+
+name = "Iut4Sec1Blueprint"
+precompileModules = false
+defaultTargets = ["Iut4Sec1Blueprint"]
+
+[leanOptions]
+experimental.module = true
+verso.blueprint.foldCodeBlocks = true
+
+[[require]]
+name = "VersoBlueprint"
+git = "https://github.com/leanprover/verso-blueprint"
+rev = "v4.32.0"
+
+[[require]]
+name = "iut4-sec1"
+path = ".."
+
+[[lean_lib]]
+name = "Iut4Sec1Blueprint"
+
+[[lean_exe]]
+name = "blueprint-gen"
+root = "Iut4Sec1BlueprintMain"
