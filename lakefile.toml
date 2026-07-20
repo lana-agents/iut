@@ -8,6 +8,7 @@ pp.unicode.fun = true # pretty-prints `fun a ↦ b`
 relaxedAutoImplicit = false
 weak.linter.mathlibStandardSet = true
 maxSynthPendingDepth = 3
+warn.sorry = false # `sorry` is load-bearing in Comparator/Challenge.lean
 
 [[require]]
 name = "mathlib"
