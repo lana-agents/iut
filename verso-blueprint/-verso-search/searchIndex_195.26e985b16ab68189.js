@@ -1,0 +1,1 @@
+window.docContents[195].resolve({"/Blueprint-Summary/#IUT-IV___-Section-1___-Log-volume-Estimates--Blueprint-Summary":{"contents":"\n\n","context":"IUT IV, Section 1: Log-volume Estimates","header":"Blueprint Summary","id":"/Blueprint-Summary/#IUT-IV___-Section-1___-Log-volume-Estimates--Blueprint-Summary"}});

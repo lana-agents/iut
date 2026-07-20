@@ -1,0 +1,424 @@
+{"99":
+ "<code class=\"docstring\">The universe of propositions. `Prop ≡ Sort 0`.\n\nEvery proposition is propositionally equal to either `True` or `False`. </code>",
+ "98":
+ "<code>Iut4Sec1.ArithmeticDivisorEffective.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K) :\n  Prop</code>",
+ "97": "<code>Iut4Sec1.ArithmeticDivisor K</code>",
+ "96":
+ "<code>Iut4Sec1.arithmeticDivisorSupport.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K) :\n  Finset (Iut4Sec1.ArithmeticPlace K)</code><span class=\"sep\"></span><code class=\"docstring\">The finite support of an arithmetic divisor. </code>",
+ "95":
+ "<code>Iut4Sec1.ArithmeticDivisor.{u_1} (K : Type u_1) [Field K] [NumberField K] : Type u_1</code>",
+ "94":
+ "<code>NumberField.{u_1} (K : Type u_1) [Field K] : Prop</code><span class=\"sep\"></span><code class=\"docstring\">A number field is a field which has characteristic zero and is finite\ndimensional over ℚ. </code>",
+ "93":
+ "<code>Iut4Sec1.ArithmeticPlace.{u_1} (K : Type u_1) [Field K] [NumberField K] : Type u_1</code>",
+ "92":
+ "<code>Iut4Sec1.normalizedPacketWeight.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] [DecidableEq A] [Fintype E]\n  (localDegree : E → ℝ) (t : A → E) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">A packet weight normalized by the sum of all raw weights. </code>",
+ "91":
+ "<code>Iut4Sec1.sum_normalizedPacketWeight_eq_one.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] [DecidableEq A]\n  [Fintype E] [Nonempty E] (localDegree : E → ℝ) (hlocalDegree : ∀ (e : E), 0 &lt; localDegree e) :\n  ∑ t, Iut4Sec1.normalizedPacketWeight localDegree t = 1</code><span class=\"sep\"></span><code class=\"docstring\">Positive raw packet weights normalize to a probability distribution. </code>",
+ "90":
+ "<code>Iut4Sec1.rawPacketWeight_sum_pos.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] [DecidableEq A] [Fintype E]\n  [Nonempty E] (localDegree : E → ℝ) (hlocalDegree : ∀ (e : E), 0 &lt; localDegree e) :\n  0 &lt; ∑ t, Iut4Sec1.rawPacketWeight localDegree t</code>",
+ "9": "<code>ℕ</code>",
+ "89":
+ "<code>Iut4Sec1.rawPacketWeight.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] (localDegree : E → ℝ) (t : A → E) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">The raw weight of a packet tuple is the product of its positive local degrees. </code>",
+ "88": "<code>A → E</code>",
+ "87": "<code>∀ (e : E), 0 &lt; localDegree e</code>",
+ "86": "<code>Type u_2</code>",
+ "85":
+ "<code>Iut4Sec1.rawPacketWeight_pos.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] (localDegree : E → ℝ)\n  (hlocalDegree : ∀ (e : E), 0 &lt; localDegree e) (t : A → E) : 0 &lt; Iut4Sec1.rawPacketWeight localDegree t</code>",
+ "84":
+ "<code>Iut4Sec1.tupleWeight.{u_1} {n : ℕ} {E : Type u_1} (weight : E → ℝ) (x : Fin n → E) : ℝ</code>",
+ "83":
+ "<code>Iut4Sec1.tupleValue.{u_1} {n : ℕ} {E : Type u_1} (β : E → ℝ) (x : Fin n → E) : ℝ</code>",
+ "82": "<code>Fin n → E</code>",
+ "81":
+ "<code>Fin (n : ℕ) : Type</code><span class=\"sep\"></span><code class=\"docstring\">Natural numbers less than some upper bound.\n\nIn particular, a `Fin n` is a natural number `i` with the constraint that `i &lt; n`. It is the\ncanonical type with `n` elements.\n</code>",
+ "80": "<code>Fin n</code>",
+ "8":
+ "<code>Iut4Sec1.spectralValuation.{u_1} (p : ℕ) [Fact (Nat.Prime p)] (L : Type u_1) [Field L] [Algebra ℚ_[p] L]\n  [FiniteDimensional ℚ_[p] L] : Valuation L NNReal</code><span class=\"sep\"></span><code class=\"docstring\">The norm valuation associated to the spectral norm on a finite extension of `ℚ_[p]`. </code>",
+ "79": "<code>E</code>",
+ "78": "<code>∀ (e : E), 0 &lt; weight e</code>",
+ "77": "<code>E → ℝ</code>",
+ "76":
+ "<code>NeZero.{u_1} {R : Type u_1} [Zero R] (n : R) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">A type-class version of `n ≠ 0`.  </code>",
+ "75":
+ "<code>Nonempty.{u} (α : Sort u) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">`Nonempty α` is a typeclass that says that `α` is not an empty type,\nthat is, there exists an element in the type. It differs from `Inhabited α`\nin that `Nonempty α` is a `Prop`, which means that it does not actually carry\nan element of `α`, only a proof that *there exists* such an element.\nGiven `Nonempty α`, you can construct an element of `α` *nonconstructively*\nusing `Classical.choice`.\n</code>",
+ "74":
+ "<code>Fintype.{u_4} (α : Type u_4) : Type u_4</code><span class=\"sep\"></span><code class=\"docstring\">`Fintype α` means that `α` is finite, i.e. there are only\nfinitely many distinct elements of type `α`. The evidence of this\nis a finset `elems` (a list up to permutation without duplicates),\ntogether with a proof that everything of type `α` is in the list. </code>",
+ "73":
+ "<code>Iut4Sec1.weighted_average_eq.{u_1} {E : Type u_1} [Fintype E] [Nonempty E] {n : ℕ} [NeZero n] (weight β : E → ℝ)\n  (hweight : ∀ (e : E), 0 &lt; weight e) (i : Fin n) :\n  (∑ x, Iut4Sec1.tupleValue β x * Iut4Sec1.tupleWeight weight x) / ∑ x, Iut4Sec1.tupleWeight weight x =\n      (∑ x, ↑n * β (x i) * Iut4Sec1.tupleWeight weight x) / ∑ x, Iut4Sec1.tupleWeight weight x ∧\n    (∑ x, ↑n * β (x i) * Iut4Sec1.tupleWeight weight x) / ∑ x, Iut4Sec1.tupleWeight weight x =\n      ↑n * ((∑ e, β e * weight e) / ∑ e, weight e)</code><span class=\"sep\"></span><code class=\"docstring\">Proposition 1.7: the symmetrized and fixed-coordinate weighted averages agree. </code>",
+ "72":
+ "<code>Finset.card.{u_1} {α : Type u_1} (s : Finset α) : ℕ</code><span class=\"sep\"></span><code class=\"docstring\">`s.card` is the number of elements of `s`, aka its cardinality.\n\nThe notation `#s` can be accessed in the `Finset` locale. </code>",
+ "71":
+ "<code>HMul.hMul.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HMul α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a * b` computes the product of `a` and `b`.\nThe meaning of this notation is type-dependent. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `*` in identifiers is `mul`.</code>",
+ "70": "<code>∀ i ∈ I, i ∉ Istar → e i ≤ p - 2</code>",
+ "7":
+ "<code>Eq.{u_1} {α : Sort u_1} : α → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The equality relation. It has one introduction rule, `Eq.refl`.\nWe use `a = b` as notation for `Eq a b`.\nA fundamental property of equality is that it is an equivalence relation.\n```\nvariable (α : Type) (a b c d : α)\nvariable (hab : a = b) (hcb : c = b) (hcd : c = d)\n\nexample : a = d :=\n  Eq.trans (Eq.trans hab (Eq.symm hcb)) hcd\n```\nEquality is much more than an equivalence relation, however. It has the important property that every assertion\nrespects the equivalence, in the sense that we can substitute equal expressions without changing the truth value.\nThat is, given `h1 : a = b` and `h2 : p a`, we can construct a proof for `p b` using substitution: `Eq.subst h1 h2`.\nExample:\n```\nexample (α : Type) (a b : α) (p : α → Prop)\n        (h1 : a = b) (h2 : p a) : p b :=\n  Eq.subst h1 h2\n\nexample (α : Type) (a b : α) (p : α → Prop)\n    (h1 : a = b) (h2 : p a) : p b :=\n  h1 ▸ h2\n```\nThe triangle in the second presentation is a macro built on top of `Eq.subst` and `Eq.symm`, and you can enter it by typing `\\t`.\nFor more information: [Equality](https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html#equality)\n\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `=` in identifiers is `eq`.</code>",
+ "69": "<code>ι</code>",
+ "68": "<code>∀ i ∈ I, 0 &lt; e i</code>",
+ "67": "<code>Istar ⊆ I</code>",
+ "66": "<code>ι → ℕ</code>",
+ "65":
+ "<code>Finset.{u_4} (α : Type u_4) : Type u_4</code><span class=\"sep\"></span><code class=\"docstring\">`Finset α` is the type of finite sets of elements of `α`. It is implemented\nas a multiset (a list up to permutation) which has no duplicate elements. </code>",
+ "64": "<code>Finset ι</code>",
+ "63":
+ "<code>DecidableEq.{u} (α : Sort u) : Sort (max 1 u)</code><span class=\"sep\"></span><code class=\"docstring\">Propositional equality is `Decidable` for all elements of a type.\n\nIn other words, an instance of `DecidableEq α` is a means of deciding the proposition `a = b` is\nfor all `a b : α`.\n</code>",
+ "62":
+ "<code>Iut4Sec1.nonarchimedean_logError_sum_le.{u_1} {ι : Type u_1} [DecidableEq ι] (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)\n  (hp : Nat.Prime p) (hp2 : 2 &lt; p) (hIstar : Istar ⊆ I) (he : ∀ i ∈ I, 0 &lt; e i)\n  (hsmall : ∀ i ∈ I, i ∉ Istar → e i ≤ p - 2) : ∑ i ∈ I, Iut4Sec1.nonarchimedeanLogError p (e i) ≤ 4 * ↑Istar.card / ↑p</code><span class=\"sep\"></span><code class=\"docstring\">The total ceiling error is supported on the exceptional index set. </code>",
+ "61":
+ "<code>Iut4Sec1.nonarchimedeanLogError_le_four_div (p e : ℕ) (hp : Nat.Prime p) (hp2 : 2 &lt; p) (he : 0 &lt; e) :\n  Iut4Sec1.nonarchimedeanLogError p e ≤ 4 / ↑p</code>",
+ "60":
+ "<code>Iut4Sec1.nonarchimedeanLogError_nonneg (p e : ℕ) (hp2 : 2 &lt; p) (he : 0 &lt; e) : 0 ≤ Iut4Sec1.nonarchimedeanLogError p e</code>",
+ "6":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.valuation.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L] [Algebra ℚ_[p] L]\n  [FiniteDimensional ℚ_[p] L] (self : Iut4Sec1.MixedCharLocalFieldData p L) : Valuation L NNReal</code><span class=\"sep\"></span><code class=\"docstring\">The multiplicative norm valuation on the extension. </code>",
+ "59":
+ "<code>Iut4Sec1.nonarchimedeanLogError_eq_zero_of_le (p e : ℕ) (hp2 : 2 &lt; p) (he : 0 &lt; e) (hle : e ≤ p - 2) :\n  Iut4Sec1.nonarchimedeanLogError p e = 0</code>",
+ "58": "<code>Iut4Sec1.nonarchimedeanLogError (p e : ℕ) : ℝ</code>",
+ "57":
+ "<code>HDiv.hDiv.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HDiv α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a / b` computes the result of dividing `a` by `b`.\nThe meaning of this notation is type-dependent.\n* For most types like `Nat`, `Int`, `Rat`, `Real`, `a / 0` is defined to be `0`.\n* For `Nat`, `a / b` rounds downwards.\n* For `Int`, `a / b` rounds downwards if `b` is positive or upwards if `b` is negative.\n  It is implemented as `Int.ediv`, the unique function satisfying\n  `a % b + b * (a / b) = a` and `0 ≤ a % b &lt; natAbs b` for `b ≠ 0`.\n  Other rounding conventions are available using the functions\n  `Int.fdiv` (floor rounding) and `Int.tdiv` (truncation rounding).\n* For `Float`, `a / 0` follows the IEEE 754 semantics for division,\n  usually resulting in `inf` or `nan`. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `/` in identifiers is `div`.</code>",
+ "56":
+ "<code>HSub.hSub.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HSub α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a - b` computes the difference of `a` and `b`.\nThe meaning of this notation is type-dependent.\n* For natural numbers, this operator saturates at 0: `a - b = 0` when `a ≤ b`. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `-` in identifiers is `sub` (when used as a binary operator).</code>",
+ "55":
+ "<code>LE.le.{u} {α : Type u} [self : LE α] : α → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The less-equal relation: `x ≤ y` \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `≤` in identifiers is `le`.</code>",
+ "54": "<code>e ≤ p - 2</code>",
+ "53": "<code>0 &lt; e</code>",
+ "52": "<code>2 &lt; p</code>",
+ "51": "<code>Nat.Prime p</code>",
+ "50":
+ "<code>Iut4Sec1.localParameters_eq_of_smallRamification (p e : ℕ) (hp : Nat.Prime p) (hp2 : 2 &lt; p) (he : 0 &lt; e)\n  (hsmall : e ≤ p - 2) : Iut4Sec1.aParam p e = 1 / ↑e ∧ Iut4Sec1.bParam p e = -1 / ↑e</code><span class=\"sep\"></span><code class=\"docstring\">For `0 &lt; e ≤ p - 2`, the two Proposition 1.2 parameters are `±1/e`. </code>",
+ "5": "<code>Iut4Sec1.MixedCharLocalFieldData p L</code>",
+ "49":
+ "<code>Iut4Sec1.bParam (p e : ℕ) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">The lower logarithmic-lattice exponent from Proposition 1.2. </code>",
+ "48":
+ "<code>Real : Type</code><span class=\"sep\"></span><code class=\"docstring\">The type `ℝ` of real numbers constructed as equivalence classes of Cauchy sequences of rational\nnumbers. </code>",
+ "47":
+ "<code>Iut4Sec1.aParam (p e : ℕ) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">The upper logarithmic-lattice exponent from Proposition 1.2. </code>",
+ "46":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.RingOfIntegers : Subring Iut4Sec1.RamifiedQuadraticExample.Extension</code><span class=\"sep\"></span><code class=\"docstring\">The spectral integer ring of the quadratic extension. </code>",
+ "45":
+ "<code>HPow.hPow.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HPow α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a ^ b` computes `a` to the power of `b`.\nThe meaning of this notation is type-dependent. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `^` in identifiers is `pow`.</code>",
+ "44":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.maximalIdeal.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : Ideal ↥D.ringOfIntegers</code><span class=\"sep\"></span><code class=\"docstring\">The maximal ideal of the spectral integer ring. </code>",
+ "43":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.differentGenerator : ↥Iut4Sec1.RamifiedQuadraticExample.RingOfIntegers</code><span class=\"sep\"></span><code class=\"docstring\">The generator `2√2` of the quadratic different. </code>",
+ "42":
+ "<code>Singleton.singleton.{u, v} {α : outParam (Type u)} {β : Type v} [self : Singleton α β] : α → β</code><span class=\"sep\"></span><code class=\"docstring\">`singleton x` is a collection with the single element `x` (notation: `{x}`). \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `{x}` in identifiers is `singleton`.</code>",
+ "41":
+ "<code>Ideal.span.{u} {α : Type u} [Semiring α] (s : Set α) : Ideal α</code><span class=\"sep\"></span><code class=\"docstring\">The ideal generated by a subset of a ring </code>",
+ "40":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.different.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L] [Algebra ℚ_[p] L]\n  [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : Ideal ↥D.ringOfIntegers</code><span class=\"sep\"></span><code class=\"docstring\">The local different of the spectral integer ring over the base integer ring. </code>",
+ "4":
+ "<code>self.valuation = Iut4Sec1.spectralValuation p L</code><span class=\"sep\"></span><code class=\"docstring\">Compatibility with the canonical spectral norm. </code>",
+ "39":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.normalizedOrder.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) (x : L) : WithTop ℚ</code><span class=\"sep\"></span><code class=\"docstring\">The rational order normalized to send `p` to `1`, and `0` to `⊤`. </code>",
+ "38":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.residueDegree.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : ℕ</code><span class=\"sep\"></span><code class=\"docstring\">The inertia degree of the extension's maximal ideal over `ℤ_[p]`. </code>",
+ "37":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.ramificationIndex.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : ℕ</code><span class=\"sep\"></span><code class=\"docstring\">The positive exponent of `p` under the canonical discrete valuation. </code>",
+ "36":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.root : Iut4Sec1.RamifiedQuadraticExample.Extension</code><span class=\"sep\"></span><code class=\"docstring\">The distinguished square root of `2`. </code>",
+ "35":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.BaseIntegers : Subring ℚ_[2]</code><span class=\"sep\"></span><code class=\"docstring\">The spectral integer ring of `ℚ_[2]`. </code>",
+ "34":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.ringOfIntegers.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : Subring L</code>",
+ "33":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.data : Iut4Sec1.MixedCharLocalFieldData 2 Iut4Sec1.RamifiedQuadraticExample.Extension</code><span class=\"sep\"></span><code class=\"docstring\">Constructed local-field data for the ramified quadratic example. </code>",
+ "32":
+ "<code>And (a b : Prop) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">`And a b`, or `a ∧ b`, is the conjunction of propositions. It can be\nconstructed and destructed like a pair: if `ha : a` and `hb : b` then\n`⟨ha, hb⟩ : a ∧ b`, and if `h : a ∧ b` then `h.left : a` and `h.right : b`.\n\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `∧` in identifiers is `and`.</code>",
+ "31":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.Extension : Type</code><span class=\"sep\"></span><code class=\"docstring\">The degree-two extension `ℚ_[2](√2)`. </code>",
+ "30":
+ "<code>Module.finrank.{u_1, u_2} (R : Type u_1) (M : Type u_2) [Semiring R] [AddCommMonoid M] [Module R M] : ℕ</code><span class=\"sep\"></span><code class=\"docstring\">The rank of a module as a natural number.\n\nFor a finite-dimensional vector space `V` over a field `k`, `Module.finrank k V` is equal to\nthe dimension of `V` over `k`.\n\nFor a general module `M` over a ring `R`, `Module.finrank R M` is defined to be the supremum of the\ncardinalities of the `R`-linearly independent subsets of `M`, if this supremum is finite. It is\ndefined by convention to be `0` if this supremum is infinite. See `Module.rank` for a\ncardinal-valued version where infinite rank modules have rank an infinite cardinal.\n\nNote that if `R` is not a field then there can exist modules `M` with `¬(Module.Finite R M)` but\n`finrank R M ≠ 0`. For example `ℚ` has `finrank` equal to `1` over `ℤ`, because the nonempty\n`ℤ`-linearly independent subsets of `ℚ` are precisely the nonzero singletons. </code>",
+ "3":
+ "<code>NNReal : Type</code><span class=\"sep\"></span><code class=\"docstring\">Nonnegative real numbers, denoted as `ℝ≥0` within the NNReal namespace </code>",
+ "29":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.ramifiedQuadratic_evaluation :\n  Module.finrank ℚ_[2] Iut4Sec1.RamifiedQuadraticExample.Extension = 2 ∧\n    ↑Iut4Sec1.RamifiedQuadraticExample.data.ringOfIntegers =\n        ↑(↥Iut4Sec1.RamifiedQuadraticExample.BaseIntegers)[Iut4Sec1.RamifiedQuadraticExample.root] ∧\n      Iut4Sec1.RamifiedQuadraticExample.data.ramificationIndex = 2 ∧\n        Iut4Sec1.RamifiedQuadraticExample.data.residueDegree = 1 ∧\n          Iut4Sec1.RamifiedQuadraticExample.data.normalizedOrder Iut4Sec1.RamifiedQuadraticExample.root = ↑(1 / 2) ∧\n            Iut4Sec1.RamifiedQuadraticExample.data.different =\n                Ideal.span {Iut4Sec1.RamifiedQuadraticExample.differentGenerator} ∧\n              Iut4Sec1.RamifiedQuadraticExample.data.different =\n                  Iut4Sec1.RamifiedQuadraticExample.data.maximalIdeal ^ 3 ∧\n                Iut4Sec1.RamifiedQuadraticExample.data.normalizedOrder\n                    ((algebraMap (↥Iut4Sec1.RamifiedQuadraticExample.RingOfIntegers)\n                        Iut4Sec1.RamifiedQuadraticExample.Extension)\n                      Iut4Sec1.RamifiedQuadraticExample.differentGenerator) =\n                  ↑(3 / 2)</code><span class=\"sep\"></span><code class=\"docstring\">For `ℚ_[2](√2)`, the spectral integer ring is `ℤ_[2][√2]`, the extension is\ntotally ramified with `e = 2` and `f = 1`, `ord(√2) = 1/2`, and the different\nis `(2√2) = 𝔪^3`; its normalized different order is `3/2`.\n</code>",
+ "28":
+ "<code>Iut4Sec1.mixedCharLocalFieldData_of_finiteExtension.{u_1} (p : ℕ) [Fact (Nat.Prime p)] (L : Type u_1) [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] : Iut4Sec1.MixedCharLocalFieldData p L</code><span class=\"sep\"></span><code class=\"docstring\">Construct mixed-characteristic local-field data for every finite-dimensional\nfield extension of `ℚ_[p]`. Completeness follows from finite-dimensionality of\nthe spectral norm, and compactness then supplies the DVR and finite-residue\ninstances.\n</code>",
+ "27":
+ "<code>FiniteDimensional.{u_1, u_2} (K : Type u_1) (V : Type u_2) [DivisionRing K] [AddCommGroup V] [Module K V] : Prop</code><span class=\"sep\"></span><code class=\"docstring\">`FiniteDimensional` vector spaces are defined to be finite modules.\nUse `Module.Basis.finiteDimensional_of_finite` to prove finite dimension from another definition. </code>",
+ "26":
+ "<code>Algebra.{u, v} (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] : Type (max u v)</code><span class=\"sep\"></span><code class=\"docstring\">An associative unital `R`-algebra is a semiring `A` equipped with a map into its center `R → A`.\n\nSee the implementation notes in this file for discussion of the details of this definition.\n</code>",
+ "25":
+ "<code>Field.{u} (K : Type u) : Type u</code><span class=\"sep\"></span><code class=\"docstring\">A `Field` is a `CommRing` with multiplicative inverses for nonzero elements.\n\nAn instance of `Field K` includes maps `ratCast : ℚ → K` and `qsmul : ℚ → K → K`.\nThose two fields are needed to implement the `DivisionRing K → Algebra ℚ K` instance since we need\nto control the specific definitions for some special cases of `K` (in particular `K = ℚ` itself).\nSee also note [forgetful inheritance].\n\nIf the field has positive characteristic `p`, our division by zero convention forces\n`ratCast (1 / p) = 1 / 0 = 0`. </code>",
+ "24":
+ "<code class=\"docstring\">A type universe. `Type ≡ Type 0`, `Type u ≡ Sort (u + 1)`. </code>",
+ "23":
+ "<code>Nat.Prime (p : ℕ) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">`Nat.Prime p` means that `p` is a prime number, that is, a natural number\nat least 2 whose only divisors are `p` and `1`.\nThe theorem `Nat.prime_def` witnesses this description of a prime number. </code>",
+ "22":
+ "<code>Fact (p : Prop) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">Wrapper for adding elementary propositions to the type class systems.\nWarning: this can easily be abused. See the rest of this docstring for details.\n\nCertain propositions should not be treated as a class globally,\nbut sometimes it is very convenient to be able to use the type class system\nin specific circumstances.\n\nFor example, `ZMod p` is a field if and only if `p` is a prime number.\nIn order to be able to find this field instance automatically by type class search,\nwe have to turn `p.Prime` into an instance implicit assumption.\n\nOn the other hand, making `Nat.Prime` a class would require a major refactoring of the library,\nand it is questionable whether making `Nat.Prime` a class is desirable at all.\nThe compromise is to add the assumption `[Fact p.Prime]` to `ZMod.instField`.\n\nIn particular, this class is not intended for turning the type class system\ninto an automated theorem prover for first-order logic. </code>",
+ "21":
+ "<code>Nat : Type</code><span class=\"sep\"></span><code class=\"docstring\">The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n</code>",
+ "20":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.{u_1} (p : ℕ) [Fact (Nat.Prime p)] (L : Type u_1) [Field L] [Algebra ℚ_[p] L]\n  [FiniteDimensional ℚ_[p] L] : Type u_1</code><span class=\"sep\"></span><code class=\"docstring\">Standard valuation data for a finite extension of `ℚ_[p]`.\n\nThe fields record only the spectral valuation and its usual local-ring laws.\nThe normalized order, positive ramification index, residue degree, and different\nare definitions or theorems below rather than assumed conclusions.\n</code>",
+ "2": "<code>Type u_1</code>",
+ "19":
+ "<code>LT.lt.{u} {α : Type u} [self : LT α] : α → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The less-than relation: `x &lt; y` \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `&lt;` in identifiers is `lt`.</code>",
+ "18":
+ "<code>Padic (p : ℕ) [Fact (Nat.Prime p)] : Type</code><span class=\"sep\"></span><code class=\"docstring\">The `p`-adic numbers `ℚ_[p]` are the Cauchy completion of `ℚ` with respect to the `p`-adic norm.\n</code>",
+ "17":
+ "<code>Algebra.algebraMap.{u, v} (R : Type u) (A : Type v) {inst✝ : CommSemiring R} {inst✝¹ : Semiring A}\n  [self : Algebra R A] : R →+* A</code><span class=\"sep\"></span><code class=\"docstring\">Embedding `R →+* A` given by `Algebra` structure. </code>",
+ "16":
+ "<code>self.valuation ((algebraMap ℚ_[p] L) ↑p) &lt; 1</code><span class=\"sep\"></span><code class=\"docstring\">The image of `p` belongs to the maximal ideal. </code>",
+ "15":
+ "<code>Valuation.integer.{u, v} {R : Type u} {Γ₀ : Type v} [Ring R] [LinearOrderedCommGroupWithZero Γ₀] (v : Valuation R Γ₀) :\n  Subring R</code><span class=\"sep\"></span><code class=\"docstring\">The ring of integers under a given valuation is the subring of elements with valuation ≤ 1. </code>",
+ "14":
+ "<code>IsDiscreteValuationRing.{u} (R : Type u) [CommRing R] [IsDomain R] : Prop</code><span class=\"sep\"></span><code class=\"docstring\">An integral domain is a *discrete valuation ring* (DVR) if it's a local PID which\nis not a field. </code>",
+ "13":
+ "<code>IsDiscreteValuationRing ↥self.valuation.integer</code><span class=\"sep\"></span><code class=\"docstring\">The spectral integer ring is a discrete valuation ring. </code>",
+ "12":
+ "<code>Valuation.HasExtension.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {ΓR : Type u_3} {ΓA : Type u_4} [CommRing R]\n  [Ring A] [LinearOrderedCommMonoidWithZero ΓR] [LinearOrderedCommMonoidWithZero ΓA] [Algebra R A] (vR : Valuation R ΓR)\n  (vA : Valuation A ΓA) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">The class `Valuation.HasExtension vR vA` states that the valuation `vA` on `A` is an extension of\nthe valuation `vR` on `R`. More precisely, `vR` is equivalent to the comap of the valuation `vA`.\n</code>",
+ "119":
+ "<code>Iut4Sec1.average_range_sq_sum (n : ℕ) (hn : 0 &lt; n) :\n  1 / ↑n * ∑ m ∈ Finset.range n, (↑m + 1) ^ 2 = (2 * ↑n + 1) * (↑n + 1) / 6</code><span class=\"sep\"></span><code class=\"docstring\">Identity (E2): the average of the squares `1², ..., n²`. </code>",
+ "118":
+ "<code>HAdd.hAdd.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HAdd α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a + b` computes the sum of `a` and `b`.\nThe meaning of this notation is type-dependent. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `+` in identifiers is `add`.</code>",
+ "117":
+ "<code>Finset.range (n : ℕ) : Finset ℕ</code><span class=\"sep\"></span><code class=\"docstring\">`range n` is the set of natural numbers less than `n`. </code>",
+ "116": "<code>0 &lt; n</code>",
+ "115":
+ "<code>Iut4Sec1.average_range_sum (n : ℕ) (hn : 0 &lt; n) : 1 / ↑n * ∑ m ∈ Finset.range n, (↑m + 1) = (↑n + 1) / 2</code><span class=\"sep\"></span><code class=\"docstring\">Identity (E1): the average of `1, ..., n` is `(n + 1) / 2`. </code>",
+ "114":
+ "<code>Iut4Sec1.rawLocalDegreeRatio.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K)\n  (E : Finset (Iut4Sec1.ArithmeticPlace K)) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">The raw degree of the part of `D` supported on `E`, divided by the total\nlocal degree of the places in `E`. This is the pullback-invariant raw-degree\nvariant, not the globally normalized numerator displayed in Definition 1.9(ii). </code>",
+ "113":
+ "<code>Iut4Sec1.pullbackLocalDegreeSum.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [NumberField K]\n  [NumberField L] [Algebra K L] (E : Finset (Iut4Sec1.ArithmeticPlace K)) : ℝ</code>",
+ "112":
+ "<code>Membership.mem.{u, v} {α : outParam (Type u)} {γ : Type v} [self : Membership α γ] : γ → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The membership relation `a ∈ s : Prop` where `a : α`, `s : γ`. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `∈` in identifiers is `mem`.</code>",
+ "111": "<code>Iut4Sec1.ArithmeticPlace K</code>",
+ "110":
+ "<code>Iut4Sec1.arithmeticDivisorPart.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K)\n  (p : Iut4Sec1.ArithmeticPlace K → Prop) : Iut4Sec1.ArithmeticDivisor K</code><span class=\"sep\"></span><code class=\"docstring\">The part of a divisor supported on the places satisfying `p`. </code>",
+ "11":
+ "<code>Iut4Sec1.baseValuation (p : ℕ) [Fact (Nat.Prime p)] : Valuation ℚ_[p] NNReal</code><span class=\"sep\"></span><code class=\"docstring\">The norm valuation on `ℚ_[p]`. </code>",
+ "109":
+ "<code>Finset.Nonempty.{u_1} {α : Type u_1} (s : Finset α) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">The property `s.Nonempty` expresses the fact that the finset `s` is not empty. It should be used\nin theorem assumptions instead of `∃ x, x ∈ s` or `s ≠ ∅` as it gives access to a nice API thanks\nto the dot notation. </code>",
+ "108": "<code>E.Nonempty</code>",
+ "107": "<code>Finset (Iut4Sec1.ArithmeticPlace K)</code>",
+ "106":
+ "<code>Iut4Sec1.rawLocalDegreeRatio_pullback.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [NumberField K]\n  [NumberField L] [Algebra K L] (D : Iut4Sec1.ArithmeticDivisor K) (E : Finset (Iut4Sec1.ArithmeticPlace K))\n  (hE : E.Nonempty) :\n  Iut4Sec1.arithmeticDivisorDegree\n        (Iut4Sec1.arithmeticDivisorPullback (Iut4Sec1.arithmeticDivisorPart D fun x =&gt; x ∈ E)) /\n      Iut4Sec1.pullbackLocalDegreeSum E =\n    Iut4Sec1.rawLocalDegreeRatio D E</code><span class=\"sep\"></span><code class=\"docstring\">The raw-degree local ratio is invariant after pulling back both the divisor\npart and its finite/infinite place fibers. This related variant does not assert\nDefinition 1.9(ii), whose numerator uses globally normalized degree. </code>",
+ "105":
+ "<code>Iut4Sec1.arithmeticDivisorPullback.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [NumberField K]\n  [NumberField L] [Algebra K L] (D : Iut4Sec1.ArithmeticDivisor K) : Iut4Sec1.ArithmeticDivisor L</code><span class=\"sep\"></span><code class=\"docstring\">Pullback of an arithmetic divisor through a finite extension of number fields. </code>",
+ "104":
+ "<code>Iut4Sec1.normalizedArithmeticDivisorDegree_pullback.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]\n  [NumberField K] [NumberField L] [Algebra K L] (D : Iut4Sec1.ArithmeticDivisor K) :\n  Iut4Sec1.normalizedArithmeticDivisorDegree (Iut4Sec1.arithmeticDivisorPullback D) =\n    Iut4Sec1.normalizedArithmeticDivisorDegree D</code><span class=\"sep\"></span><code class=\"docstring\">The normalized degree of Definition 1.9(i) is invariant under pullback. </code>",
+ "103": "<code>Iut4Sec1.ArithmeticDivisorEffective D</code>",
+ "102":
+ "<code>Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg.{u_1} {K : Type u_1} [Field K] [NumberField K]\n  (D : Iut4Sec1.ArithmeticDivisor K) (hD : Iut4Sec1.ArithmeticDivisorEffective D) :\n  0 ≤ Iut4Sec1.normalizedArithmeticDivisorDegree D</code><span class=\"sep\"></span><code class=\"docstring\">Effective arithmetic divisors have nonnegative normalized degree. </code>",
+ "101":
+ "<code>Iut4Sec1.normalizedArithmeticDivisorDegree.{u_1} {K : Type u_1} [Field K] [NumberField K]\n  (D : Iut4Sec1.ArithmeticDivisor K) : ℝ</code>",
+ "1000119":
+ "<code>Iut4Sec1.tupleWeight.{u_1} {n : ℕ} {E : Type u_1} (weight : E → ℝ) (x : Fin n → E) : ℝ</code>",
+ "1000118":
+ "<code>Iut4Sec1.tupleValue.{u_1} {n : ℕ} {E : Type u_1} (β : E → ℝ) (x : Fin n → E) : ℝ</code>",
+ "1000117": "<code>Fin n → E</code>",
+ "1000116":
+ "<code>Fin (n : ℕ) : Type</code><span class=\"sep\"></span><code class=\"docstring\">Natural numbers less than some upper bound.\n\nIn particular, a `Fin n` is a natural number `i` with the constraint that `i &lt; n`. It is the\ncanonical type with `n` elements.\n</code>",
+ "1000115": "<code>Fin n</code>",
+ "1000114": "<code>∀ (e : E), 0 &lt; weight e</code>",
+ "1000113":
+ "<code>NeZero.{u_1} {R : Type u_1} [Zero R] (n : R) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">A type-class version of `n ≠ 0`.  </code>",
+ "1000112":
+ "<code>Iut4Sec1.weighted_average_eq.{u_1} {E : Type u_1} [Fintype E] [Nonempty E] {n : ℕ} [NeZero n] (weight β : E → ℝ)\n  (hweight : ∀ (e : E), 0 &lt; weight e) (i : Fin n) :\n  (∑ x, Iut4Sec1.tupleValue β x * Iut4Sec1.tupleWeight weight x) / ∑ x, Iut4Sec1.tupleWeight weight x =\n      (∑ x, ↑n * β (x i) * Iut4Sec1.tupleWeight weight x) / ∑ x, Iut4Sec1.tupleWeight weight x ∧\n    (∑ x, ↑n * β (x i) * Iut4Sec1.tupleWeight weight x) / ∑ x, Iut4Sec1.tupleWeight weight x =\n      ↑n * ((∑ e, β e * weight e) / ∑ e, weight e)</code><span class=\"sep\"></span><code class=\"docstring\">Proposition 1.7: the symmetrized and fixed-coordinate weighted averages agree. </code>",
+ "1000111":
+ "<code>Iut4Sec1.normalizedPacketWeight.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] [DecidableEq A] [Fintype E]\n  (localDegree : E → ℝ) (t : A → E) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">A packet weight normalized by the sum of all raw weights. </code>",
+ "1000110":
+ "<code>Iut4Sec1.sum_normalizedPacketWeight_eq_one.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] [DecidableEq A]\n  [Fintype E] [Nonempty E] (localDegree : E → ℝ) (hlocalDegree : ∀ (e : E), 0 &lt; localDegree e) :\n  ∑ t, Iut4Sec1.normalizedPacketWeight localDegree t = 1</code><span class=\"sep\"></span><code class=\"docstring\">Positive raw packet weights normalize to a probability distribution. </code>",
+ "1000109":
+ "<code>Nonempty.{u} (α : Sort u) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">`Nonempty α` is a typeclass that says that `α` is not an empty type,\nthat is, there exists an element in the type. It differs from `Inhabited α`\nin that `Nonempty α` is a `Prop`, which means that it does not actually carry\nan element of `α`, only a proof that *there exists* such an element.\nGiven `Nonempty α`, you can construct an element of `α` *nonconstructively*\nusing `Classical.choice`.\n</code>",
+ "1000108":
+ "<code>Iut4Sec1.rawPacketWeight_sum_pos.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] [DecidableEq A] [Fintype E]\n  [Nonempty E] (localDegree : E → ℝ) (hlocalDegree : ∀ (e : E), 0 &lt; localDegree e) :\n  0 &lt; ∑ t, Iut4Sec1.rawPacketWeight localDegree t</code>",
+ "1000107":
+ "<code>Iut4Sec1.rawPacketWeight.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] (localDegree : E → ℝ) (t : A → E) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">The raw weight of a packet tuple is the product of its positive local degrees. </code>",
+ "1000106": "<code>A → E</code>",
+ "1000105": "<code>E</code>",
+ "1000104": "<code>∀ (e : E), 0 &lt; localDegree e</code>",
+ "1000103": "<code>E → ℝ</code>",
+ "1000102":
+ "<code>Fintype.{u_4} (α : Type u_4) : Type u_4</code><span class=\"sep\"></span><code class=\"docstring\">`Fintype α` means that `α` is finite, i.e. there are only\nfinitely many distinct elements of type `α`. The evidence of this\nis a finset `elems` (a list up to permutation without duplicates),\ntogether with a proof that everything of type `α` is in the list. </code>",
+ "1000101":
+ "<code>Iut4Sec1.rawPacketWeight_pos.{u_1, u_2} {A : Type u_1} {E : Type u_2} [Fintype A] (localDegree : E → ℝ)\n  (hlocalDegree : ∀ (e : E), 0 &lt; localDegree e) (t : A → E) : 0 &lt; Iut4Sec1.rawPacketWeight localDegree t</code>",
+ "1000100":
+ "<code>Iut4Sec1.rawLocalDegreeRatio.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K)\n  (E : Finset (Iut4Sec1.ArithmeticPlace K)) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">The raw degree of the part of `D` supported on `E`, divided by the total\nlocal degree of the places in `E`. This is the pullback-invariant raw-degree\nvariant, not the globally normalized numerator displayed in Definition 1.9(ii). </code>",
+ "1000099":
+ "<code>Iut4Sec1.pullbackLocalDegreeSum.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [NumberField K]\n  [NumberField L] [Algebra K L] (E : Finset (Iut4Sec1.ArithmeticPlace K)) : ℝ</code>",
+ "1000098":
+ "<code>Membership.mem.{u, v} {α : outParam (Type u)} {γ : Type v} [self : Membership α γ] : γ → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The membership relation `a ∈ s : Prop` where `a : α`, `s : γ`. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `∈` in identifiers is `mem`.</code>",
+ "1000097": "<code>Iut4Sec1.ArithmeticPlace K</code>",
+ "1000096":
+ "<code>Iut4Sec1.arithmeticDivisorPart.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K)\n  (p : Iut4Sec1.ArithmeticPlace K → Prop) : Iut4Sec1.ArithmeticDivisor K</code><span class=\"sep\"></span><code class=\"docstring\">The part of a divisor supported on the places satisfying `p`. </code>",
+ "1000095":
+ "<code>Finset.Nonempty.{u_1} {α : Type u_1} (s : Finset α) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">The property `s.Nonempty` expresses the fact that the finset `s` is not empty. It should be used\nin theorem assumptions instead of `∃ x, x ∈ s` or `s ≠ ∅` as it gives access to a nice API thanks\nto the dot notation. </code>",
+ "1000094": "<code>E.Nonempty</code>",
+ "1000093": "<code>Finset (Iut4Sec1.ArithmeticPlace K)</code>",
+ "1000092":
+ "<code>Iut4Sec1.rawLocalDegreeRatio_pullback.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [NumberField K]\n  [NumberField L] [Algebra K L] (D : Iut4Sec1.ArithmeticDivisor K) (E : Finset (Iut4Sec1.ArithmeticPlace K))\n  (hE : E.Nonempty) :\n  Iut4Sec1.arithmeticDivisorDegree\n        (Iut4Sec1.arithmeticDivisorPullback (Iut4Sec1.arithmeticDivisorPart D fun x =&gt; x ∈ E)) /\n      Iut4Sec1.pullbackLocalDegreeSum E =\n    Iut4Sec1.rawLocalDegreeRatio D E</code><span class=\"sep\"></span><code class=\"docstring\">The raw-degree local ratio is invariant after pulling back both the divisor\npart and its finite/infinite place fibers. This related variant does not assert\nDefinition 1.9(ii), whose numerator uses globally normalized degree. </code>",
+ "1000091":
+ "<code>Iut4Sec1.arithmeticDivisorPullback.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [NumberField K]\n  [NumberField L] [Algebra K L] (D : Iut4Sec1.ArithmeticDivisor K) : Iut4Sec1.ArithmeticDivisor L</code><span class=\"sep\"></span><code class=\"docstring\">Pullback of an arithmetic divisor through a finite extension of number fields. </code>",
+ "1000090": "<code>Type u_2</code>",
+ "1000089":
+ "<code>Iut4Sec1.normalizedArithmeticDivisorDegree_pullback.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]\n  [NumberField K] [NumberField L] [Algebra K L] (D : Iut4Sec1.ArithmeticDivisor K) :\n  Iut4Sec1.normalizedArithmeticDivisorDegree (Iut4Sec1.arithmeticDivisorPullback D) =\n    Iut4Sec1.normalizedArithmeticDivisorDegree D</code><span class=\"sep\"></span><code class=\"docstring\">The normalized degree of Definition 1.9(i) is invariant under pullback. </code>",
+ "1000088": "<code>Iut4Sec1.ArithmeticDivisorEffective D</code>",
+ "1000087":
+ "<code>Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg.{u_1} {K : Type u_1} [Field K] [NumberField K]\n  (D : Iut4Sec1.ArithmeticDivisor K) (hD : Iut4Sec1.ArithmeticDivisorEffective D) :\n  0 ≤ Iut4Sec1.normalizedArithmeticDivisorDegree D</code><span class=\"sep\"></span><code class=\"docstring\">Effective arithmetic divisors have nonnegative normalized degree. </code>",
+ "1000086":
+ "<code>Iut4Sec1.normalizedArithmeticDivisorDegree.{u_1} {K : Type u_1} [Field K] [NumberField K]\n  (D : Iut4Sec1.ArithmeticDivisor K) : ℝ</code>",
+ "1000085":
+ "<code>Finset.card.{u_1} {α : Type u_1} (s : Finset α) : ℕ</code><span class=\"sep\"></span><code class=\"docstring\">`s.card` is the number of elements of `s`, aka its cardinality.\n\nThe notation `#s` can be accessed in the `Finset` locale. </code>",
+ "1000084": "<code>∀ i ∈ I, i ∉ Istar → e i ≤ p - 2</code>",
+ "1000083": "<code>ι</code>",
+ "1000082": "<code>∀ i ∈ I, 0 &lt; e i</code>",
+ "1000081": "<code>Istar ⊆ I</code>",
+ "1000080": "<code>ι → ℕ</code>",
+ "1000079": "<code>Finset ι</code>",
+ "1000078":
+ "<code>DecidableEq.{u} (α : Sort u) : Sort (max 1 u)</code><span class=\"sep\"></span><code class=\"docstring\">Propositional equality is `Decidable` for all elements of a type.\n\nIn other words, an instance of `DecidableEq α` is a means of deciding the proposition `a = b` is\nfor all `a b : α`.\n</code>",
+ "1000077":
+ "<code>Iut4Sec1.nonarchimedean_logError_sum_le.{u_1} {ι : Type u_1} [DecidableEq ι] (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)\n  (hp : Nat.Prime p) (hp2 : 2 &lt; p) (hIstar : Istar ⊆ I) (he : ∀ i ∈ I, 0 &lt; e i)\n  (hsmall : ∀ i ∈ I, i ∉ Istar → e i ≤ p - 2) : ∑ i ∈ I, Iut4Sec1.nonarchimedeanLogError p (e i) ≤ 4 * ↑Istar.card / ↑p</code><span class=\"sep\"></span><code class=\"docstring\">The total ceiling error is supported on the exceptional index set. </code>",
+ "1000076":
+ "<code>Iut4Sec1.nonarchimedeanLogError_nonneg (p e : ℕ) (hp2 : 2 &lt; p) (he : 0 &lt; e) : 0 ≤ Iut4Sec1.nonarchimedeanLogError p e</code>",
+ "1000075":
+ "<code>Iut4Sec1.nonarchimedeanLogError_le_four_div (p e : ℕ) (hp : Nat.Prime p) (hp2 : 2 &lt; p) (he : 0 &lt; e) :\n  Iut4Sec1.nonarchimedeanLogError p e ≤ 4 / ↑p</code>",
+ "1000074":
+ "<code>Iut4Sec1.nonarchimedeanLogError_eq_zero_of_le (p e : ℕ) (hp2 : 2 &lt; p) (he : 0 &lt; e) (hle : e ≤ p - 2) :\n  Iut4Sec1.nonarchimedeanLogError p e = 0</code>",
+ "1000073": "<code>Iut4Sec1.nonarchimedeanLogError (p e : ℕ) : ℝ</code>",
+ "1000072":
+ "<code>Iut4Sec1.mixedCharLocalFieldData_of_finiteExtension.{u_1} (p : ℕ) [Fact (Nat.Prime p)] (L : Type u_1) [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] : Iut4Sec1.MixedCharLocalFieldData p L</code><span class=\"sep\"></span><code class=\"docstring\">Construct mixed-characteristic local-field data for every finite-dimensional\nfield extension of `ℚ_[p]`. Completeness follows from finite-dimensionality of\nthe spectral norm, and compactness then supplies the DVR and finite-residue\ninstances.\n</code>",
+ "1000071":
+ "<code>HSub.hSub.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HSub α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a - b` computes the difference of `a` and `b`.\nThe meaning of this notation is type-dependent.\n* For natural numbers, this operator saturates at 0: `a - b = 0` when `a ≤ b`. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `-` in identifiers is `sub` (when used as a binary operator).</code>",
+ "1000070":
+ "<code>LE.le.{u} {α : Type u} [self : LE α] : α → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The less-equal relation: `x ≤ y` \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `≤` in identifiers is `le`.</code>",
+ "1000069": "<code>e ≤ p - 2</code>",
+ "1000068": "<code>0 &lt; e</code>",
+ "1000067": "<code>2 &lt; p</code>",
+ "1000066": "<code>Nat.Prime p</code>",
+ "1000065":
+ "<code>Iut4Sec1.localParameters_eq_of_smallRamification (p e : ℕ) (hp : Nat.Prime p) (hp2 : 2 &lt; p) (he : 0 &lt; e)\n  (hsmall : e ≤ p - 2) : Iut4Sec1.aParam p e = 1 / ↑e ∧ Iut4Sec1.bParam p e = -1 / ↑e</code><span class=\"sep\"></span><code class=\"docstring\">For `0 &lt; e ≤ p - 2`, the two Proposition 1.2 parameters are `±1/e`. </code>",
+ "1000064":
+ "<code>Iut4Sec1.bParam (p e : ℕ) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">The lower logarithmic-lattice exponent from Proposition 1.2. </code>",
+ "1000063":
+ "<code>Iut4Sec1.average_range_sum (n : ℕ) (hn : 0 &lt; n) : 1 / ↑n * ∑ m ∈ Finset.range n, (↑m + 1) = (↑n + 1) / 2</code><span class=\"sep\"></span><code class=\"docstring\">Identity (E1): the average of `1, ..., n` is `(n + 1) / 2`. </code>",
+ "1000062":
+ "<code>HAdd.hAdd.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HAdd α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a + b` computes the sum of `a` and `b`.\nThe meaning of this notation is type-dependent. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `+` in identifiers is `add`.</code>",
+ "1000061":
+ "<code>Finset.range (n : ℕ) : Finset ℕ</code><span class=\"sep\"></span><code class=\"docstring\">`range n` is the set of natural numbers less than `n`. </code>",
+ "1000060":
+ "<code>HMul.hMul.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HMul α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a * b` computes the product of `a` and `b`.\nThe meaning of this notation is type-dependent. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `*` in identifiers is `mul`.</code>",
+ "1000059":
+ "<code>HDiv.hDiv.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HDiv α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a / b` computes the result of dividing `a` by `b`.\nThe meaning of this notation is type-dependent.\n* For most types like `Nat`, `Int`, `Rat`, `Real`, `a / 0` is defined to be `0`.\n* For `Nat`, `a / b` rounds downwards.\n* For `Int`, `a / b` rounds downwards if `b` is positive or upwards if `b` is negative.\n  It is implemented as `Int.ediv`, the unique function satisfying\n  `a % b + b * (a / b) = a` and `0 ≤ a % b &lt; natAbs b` for `b ≠ 0`.\n  Other rounding conventions are available using the functions\n  `Int.fdiv` (floor rounding) and `Int.tdiv` (truncation rounding).\n* For `Float`, `a / 0` follows the IEEE 754 semantics for division,\n  usually resulting in `inf` or `nan`. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `/` in identifiers is `div`.</code>",
+ "1000058": "<code>0 &lt; n</code>",
+ "1000057":
+ "<code>Iut4Sec1.average_range_sq_sum (n : ℕ) (hn : 0 &lt; n) :\n  1 / ↑n * ∑ m ∈ Finset.range n, (↑m + 1) ^ 2 = (2 * ↑n + 1) * (↑n + 1) / 6</code><span class=\"sep\"></span><code class=\"docstring\">Identity (E2): the average of the squares `1², ..., n²`. </code>",
+ "1000056":
+ "<code>Finset.{u_4} (α : Type u_4) : Type u_4</code><span class=\"sep\"></span><code class=\"docstring\">`Finset α` is the type of finite sets of elements of `α`. It is implemented\nas a multiset (a list up to permutation) which has no duplicate elements. </code>",
+ "1000055":
+ "<code>Iut4Sec1.arithmeticDivisorSupport.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K) :\n  Finset (Iut4Sec1.ArithmeticPlace K)</code><span class=\"sep\"></span><code class=\"docstring\">The finite support of an arithmetic divisor. </code>",
+ "1000054":
+ "<code>Iut4Sec1.arithmeticDivisorDegree.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K) : ℝ</code>",
+ "1000053":
+ "<code>Real : Type</code><span class=\"sep\"></span><code class=\"docstring\">The type `ℝ` of real numbers constructed as equivalence classes of Cauchy sequences of rational\nnumbers. </code>",
+ "1000052":
+ "<code>Iut4Sec1.aParam (p e : ℕ) : ℝ</code><span class=\"sep\"></span><code class=\"docstring\">The upper logarithmic-lattice exponent from Proposition 1.2. </code>",
+ "1000051":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.RingOfIntegers : Subring Iut4Sec1.RamifiedQuadraticExample.Extension</code><span class=\"sep\"></span><code class=\"docstring\">The spectral integer ring of the quadratic extension. </code>",
+ "1000050":
+ "<code>HPow.hPow.{u, v, w} {α : Type u} {β : Type v} {γ : outParam (Type w)} [self : HPow α β γ] : α → β → γ</code><span class=\"sep\"></span><code class=\"docstring\">`a ^ b` computes `a` to the power of `b`.\nThe meaning of this notation is type-dependent. \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `^` in identifiers is `pow`.</code>",
+ "1000049":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.maximalIdeal.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : Ideal ↥D.ringOfIntegers</code><span class=\"sep\"></span><code class=\"docstring\">The maximal ideal of the spectral integer ring. </code>",
+ "1000048":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.differentGenerator : ↥Iut4Sec1.RamifiedQuadraticExample.RingOfIntegers</code><span class=\"sep\"></span><code class=\"docstring\">The generator `2√2` of the quadratic different. </code>",
+ "1000047":
+ "<code>Singleton.singleton.{u, v} {α : outParam (Type u)} {β : Type v} [self : Singleton α β] : α → β</code><span class=\"sep\"></span><code class=\"docstring\">`singleton x` is a collection with the single element `x` (notation: `{x}`). \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `{x}` in identifiers is `singleton`.</code>",
+ "1000046":
+ "<code>Ideal.span.{u} {α : Type u} [Semiring α] (s : Set α) : Ideal α</code><span class=\"sep\"></span><code class=\"docstring\">The ideal generated by a subset of a ring </code>",
+ "1000045":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.different.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L] [Algebra ℚ_[p] L]\n  [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : Ideal ↥D.ringOfIntegers</code><span class=\"sep\"></span><code class=\"docstring\">The local different of the spectral integer ring over the base integer ring. </code>",
+ "1000044":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.normalizedOrder.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) (x : L) : WithTop ℚ</code><span class=\"sep\"></span><code class=\"docstring\">The rational order normalized to send `p` to `1`, and `0` to `⊤`. </code>",
+ "1000043":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.residueDegree.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : ℕ</code><span class=\"sep\"></span><code class=\"docstring\">The inertia degree of the extension's maximal ideal over `ℤ_[p]`. </code>",
+ "1000042":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.ramificationIndex.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : ℕ</code><span class=\"sep\"></span><code class=\"docstring\">The positive exponent of `p` under the canonical discrete valuation. </code>",
+ "1000041":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.root : Iut4Sec1.RamifiedQuadraticExample.Extension</code><span class=\"sep\"></span><code class=\"docstring\">The distinguished square root of `2`. </code>",
+ "1000040":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.BaseIntegers : Subring ℚ_[2]</code><span class=\"sep\"></span><code class=\"docstring\">The spectral integer ring of `ℚ_[2]`. </code>",
+ "1000039":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.ringOfIntegers.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L]\n  [Algebra ℚ_[p] L] [FiniteDimensional ℚ_[p] L] (D : Iut4Sec1.MixedCharLocalFieldData p L) : Subring L</code>",
+ "1000038":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.data : Iut4Sec1.MixedCharLocalFieldData 2 Iut4Sec1.RamifiedQuadraticExample.Extension</code><span class=\"sep\"></span><code class=\"docstring\">Constructed local-field data for the ramified quadratic example. </code>",
+ "1000037":
+ "<code>And (a b : Prop) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">`And a b`, or `a ∧ b`, is the conjunction of propositions. It can be\nconstructed and destructed like a pair: if `ha : a` and `hb : b` then\n`⟨ha, hb⟩ : a ∧ b`, and if `h : a ∧ b` then `h.left : a` and `h.right : b`.\n\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `∧` in identifiers is `and`.</code>",
+ "1000036":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.Extension : Type</code><span class=\"sep\"></span><code class=\"docstring\">The degree-two extension `ℚ_[2](√2)`. </code>",
+ "1000035":
+ "<code>Module.finrank.{u_1, u_2} (R : Type u_1) (M : Type u_2) [Semiring R] [AddCommMonoid M] [Module R M] : ℕ</code><span class=\"sep\"></span><code class=\"docstring\">The rank of a module as a natural number.\n\nFor a finite-dimensional vector space `V` over a field `k`, `Module.finrank k V` is equal to\nthe dimension of `V` over `k`.\n\nFor a general module `M` over a ring `R`, `Module.finrank R M` is defined to be the supremum of the\ncardinalities of the `R`-linearly independent subsets of `M`, if this supremum is finite. It is\ndefined by convention to be `0` if this supremum is infinite. See `Module.rank` for a\ncardinal-valued version where infinite rank modules have rank an infinite cardinal.\n\nNote that if `R` is not a field then there can exist modules `M` with `¬(Module.Finite R M)` but\n`finrank R M ≠ 0`. For example `ℚ` has `finrank` equal to `1` over `ℤ`, because the nonempty\n`ℤ`-linearly independent subsets of `ℚ` are precisely the nonzero singletons. </code>",
+ "1000034":
+ "<code>Iut4Sec1.RamifiedQuadraticExample.ramifiedQuadratic_evaluation :\n  Module.finrank ℚ_[2] Iut4Sec1.RamifiedQuadraticExample.Extension = 2 ∧\n    ↑Iut4Sec1.RamifiedQuadraticExample.data.ringOfIntegers =\n        ↑(↥Iut4Sec1.RamifiedQuadraticExample.BaseIntegers)[Iut4Sec1.RamifiedQuadraticExample.root] ∧\n      Iut4Sec1.RamifiedQuadraticExample.data.ramificationIndex = 2 ∧\n        Iut4Sec1.RamifiedQuadraticExample.data.residueDegree = 1 ∧\n          Iut4Sec1.RamifiedQuadraticExample.data.normalizedOrder Iut4Sec1.RamifiedQuadraticExample.root = ↑(1 / 2) ∧\n            Iut4Sec1.RamifiedQuadraticExample.data.different =\n                Ideal.span {Iut4Sec1.RamifiedQuadraticExample.differentGenerator} ∧\n              Iut4Sec1.RamifiedQuadraticExample.data.different =\n                  Iut4Sec1.RamifiedQuadraticExample.data.maximalIdeal ^ 3 ∧\n                Iut4Sec1.RamifiedQuadraticExample.data.normalizedOrder\n                    ((algebraMap (↥Iut4Sec1.RamifiedQuadraticExample.RingOfIntegers)\n                        Iut4Sec1.RamifiedQuadraticExample.Extension)\n                      Iut4Sec1.RamifiedQuadraticExample.differentGenerator) =\n                  ↑(3 / 2)</code><span class=\"sep\"></span><code class=\"docstring\">For `ℚ_[2](√2)`, the spectral integer ring is `ℤ_[2][√2]`, the extension is\ntotally ramified with `e = 2` and `f = 1`, `ord(√2) = 1/2`, and the different\nis `(2√2) = 𝔪^3`; its normalized different order is `3/2`.\n</code>",
+ "1000033":
+ "<code>FiniteDimensional.{u_1, u_2} (K : Type u_1) (V : Type u_2) [DivisionRing K] [AddCommGroup V] [Module K V] : Prop</code><span class=\"sep\"></span><code class=\"docstring\">`FiniteDimensional` vector spaces are defined to be finite modules.\nUse `Module.Basis.finiteDimensional_of_finite` to prove finite dimension from another definition. </code>",
+ "1000032":
+ "<code>Algebra.{u, v} (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] : Type (max u v)</code><span class=\"sep\"></span><code class=\"docstring\">An associative unital `R`-algebra is a semiring `A` equipped with a map into its center `R → A`.\n\nSee the implementation notes in this file for discussion of the details of this definition.\n</code>",
+ "1000031":
+ "<code>Nat.Prime (p : ℕ) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">`Nat.Prime p` means that `p` is a prime number, that is, a natural number\nat least 2 whose only divisors are `p` and `1`.\nThe theorem `Nat.prime_def` witnesses this description of a prime number. </code>",
+ "1000030":
+ "<code>Fact (p : Prop) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">Wrapper for adding elementary propositions to the type class systems.\nWarning: this can easily be abused. See the rest of this docstring for details.\n\nCertain propositions should not be treated as a class globally,\nbut sometimes it is very convenient to be able to use the type class system\nin specific circumstances.\n\nFor example, `ZMod p` is a field if and only if `p` is a prime number.\nIn order to be able to find this field instance automatically by type class search,\nwe have to turn `p.Prime` into an instance implicit assumption.\n\nOn the other hand, making `Nat.Prime` a class would require a major refactoring of the library,\nand it is questionable whether making `Nat.Prime` a class is desirable at all.\nThe compromise is to add the assumption `[Fact p.Prime]` to `ZMod.instField`.\n\nIn particular, this class is not intended for turning the type class system\ninto an automated theorem prover for first-order logic. </code>",
+ "1000029":
+ "<code>Nat : Type</code><span class=\"sep\"></span><code class=\"docstring\">The natural numbers, starting at zero.\n\nThis type is special-cased by both the kernel and the compiler, and overridden with an efficient\nimplementation. Both use a fast arbitrary-precision arithmetic library (usually\n[GMP](https://gmplib.org/)); at runtime, `Nat` values that are sufficiently small are unboxed.\n</code>",
+ "1000028":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.{u_1} (p : ℕ) [Fact (Nat.Prime p)] (L : Type u_1) [Field L] [Algebra ℚ_[p] L]\n  [FiniteDimensional ℚ_[p] L] : Type u_1</code><span class=\"sep\"></span><code class=\"docstring\">Standard valuation data for a finite extension of `ℚ_[p]`.\n\nThe fields record only the spectral valuation and its usual local-ring laws.\nThe normalized order, positive ramification index, residue degree, and different\nare definitions or theorems below rather than assumed conclusions.\n</code>",
+ "1000027":
+ "<code>LT.lt.{u} {α : Type u} [self : LT α] : α → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The less-than relation: `x &lt; y` \n\nConventions for notations in identifiers:\n\n * The recommended spelling of `&lt;` in identifiers is `lt`.</code>",
+ "1000026":
+ "<code>Padic (p : ℕ) [Fact (Nat.Prime p)] : Type</code><span class=\"sep\"></span><code class=\"docstring\">The `p`-adic numbers `ℚ_[p]` are the Cauchy completion of `ℚ` with respect to the `p`-adic norm.\n</code>",
+ "1000025":
+ "<code>Algebra.algebraMap.{u, v} (R : Type u) (A : Type v) {inst✝ : CommSemiring R} {inst✝¹ : Semiring A}\n  [self : Algebra R A] : R →+* A</code><span class=\"sep\"></span><code class=\"docstring\">Embedding `R →+* A` given by `Algebra` structure. </code>",
+ "1000024":
+ "<code>self.valuation ((algebraMap ℚ_[p] L) ↑p) &lt; 1</code><span class=\"sep\"></span><code class=\"docstring\">The image of `p` belongs to the maximal ideal. </code>",
+ "1000023":
+ "<code>Valuation.integer.{u, v} {R : Type u} {Γ₀ : Type v} [Ring R] [LinearOrderedCommGroupWithZero Γ₀] (v : Valuation R Γ₀) :\n  Subring R</code><span class=\"sep\"></span><code class=\"docstring\">The ring of integers under a given valuation is the subring of elements with valuation ≤ 1. </code>",
+ "1000022":
+ "<code>IsDiscreteValuationRing.{u} (R : Type u) [CommRing R] [IsDomain R] : Prop</code><span class=\"sep\"></span><code class=\"docstring\">An integral domain is a *discrete valuation ring* (DVR) if it's a local PID which\nis not a field. </code>",
+ "1000021":
+ "<code>IsDiscreteValuationRing ↥self.valuation.integer</code><span class=\"sep\"></span><code class=\"docstring\">The spectral integer ring is a discrete valuation ring. </code>",
+ "1000020":
+ "<code>Valuation.HasExtension.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {ΓR : Type u_3} {ΓA : Type u_4} [CommRing R]\n  [Ring A] [LinearOrderedCommMonoidWithZero ΓR] [LinearOrderedCommMonoidWithZero ΓA] [Algebra R A] (vR : Valuation R ΓR)\n  (vA : Valuation A ΓA) : Prop</code><span class=\"sep\"></span><code class=\"docstring\">The class `Valuation.HasExtension vR vA` states that the valuation `vA` on `A` is an extension of\nthe valuation `vR` on `R`. More precisely, `vR` is equivalent to the comap of the valuation `vA`.\n</code>",
+ "1000019":
+ "<code>Iut4Sec1.baseValuation (p : ℕ) [Fact (Nat.Prime p)] : Valuation ℚ_[p] NNReal</code><span class=\"sep\"></span><code class=\"docstring\">The norm valuation on `ℚ_[p]`. </code>",
+ "1000018":
+ "<code>(Iut4Sec1.baseValuation p).HasExtension self.valuation</code><span class=\"sep\"></span><code class=\"docstring\">Compatibility with the norm valuation on `ℚ_[p]`. </code>",
+ "1000017": "<code>ℕ</code>",
+ "1000016":
+ "<code>Iut4Sec1.spectralValuation.{u_1} (p : ℕ) [Fact (Nat.Prime p)] (L : Type u_1) [Field L] [Algebra ℚ_[p] L]\n  [FiniteDimensional ℚ_[p] L] : Valuation L NNReal</code><span class=\"sep\"></span><code class=\"docstring\">The norm valuation associated to the spectral norm on a finite extension of `ℚ_[p]`. </code>",
+ "1000015":
+ "<code>Eq.{u_1} {α : Sort u_1} : α → α → Prop</code><span class=\"sep\"></span><code class=\"docstring\">The equality relation. It has one introduction rule, `Eq.refl`.\nWe use `a = b` as notation for `Eq a b`.\nA fundamental property of equality is that it is an equivalence relation.\n```\nvariable (α : Type) (a b c d : α)\nvariable (hab : a = b) (hcb : c = b) (hcd : c = d)\n\nexample : a = d :=\n  Eq.trans (Eq.trans hab (Eq.symm hcb)) hcd\n```\nEquality is much more than an equivalence relation, however. It has the important property that every assertion\nrespects the equivalence, in the sense that we can substitute equal expressions without changing the truth value.\nThat is, given `h1 : a = b` and `h2 : p a`, we can construct a proof for `p b` using substitution: `Eq.subst h1 h2`.\nExample:\n```\nexample (α : Type) (a b : α) (p : α → Prop)\n        (h1 : a = b) (h2 : p a) : p b :=\n  Eq.subst h1 h2\n\nexample (α : Type) (a b : α) (p : α → Prop)\n    (h1 : a = b) (h2 : p a) : p b :=\n  h1 ▸ h2\n```\nThe triangle in the second presentation is a macro built on top of `Eq.subst` and `Eq.symm`, and you can enter it by typing `\\t`.\nFor more information: [Equality](https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html#equality)\n\n\nConventions for notations in identifiers:\n\n * The recommended spelling of `=` in identifiers is `eq`.</code>",
+ "1000014":
+ "<code>Iut4Sec1.MixedCharLocalFieldData.valuation.{u_1} {p : ℕ} [Fact (Nat.Prime p)] {L : Type u_1} [Field L] [Algebra ℚ_[p] L]\n  [FiniteDimensional ℚ_[p] L] (self : Iut4Sec1.MixedCharLocalFieldData p L) : Valuation L NNReal</code><span class=\"sep\"></span><code class=\"docstring\">The multiplicative norm valuation on the extension. </code>",
+ "1000013": "<code>Iut4Sec1.MixedCharLocalFieldData p L</code>",
+ "1000012":
+ "<code>self.valuation = Iut4Sec1.spectralValuation p L</code><span class=\"sep\"></span><code class=\"docstring\">Compatibility with the canonical spectral norm. </code>",
+ "1000011":
+ "<code>NNReal : Type</code><span class=\"sep\"></span><code class=\"docstring\">Nonnegative real numbers, denoted as `ℝ≥0` within the NNReal namespace </code>",
+ "1000010":
+ "<code>Valuation.{u_3, u_4} (R : Type u_3) (Γ₀ : Type u_4) [LinearOrderedCommMonoidWithZero Γ₀] [Ring R] : Type (max u_3 u_4)</code><span class=\"sep\"></span><code class=\"docstring\">The type of `Γ₀`-valued valuations on `R`.\n\nWhen you extend this structure, make sure to extend `ValuationClass`. </code>",
+ "1000009":
+ "<code>Valuation L NNReal</code><span class=\"sep\"></span><code class=\"docstring\">The multiplicative norm valuation on the extension. </code>",
+ "1000008":
+ "<code>Iut4Sec1.ArithmeticPlace.{u_1} (K : Type u_1) [Field K] [NumberField K] : Type u_1</code>",
+ "1000007":
+ "<code class=\"docstring\">The universe of propositions. `Prop ≡ Sort 0`.\n\nEvery proposition is propositionally equal to either `True` or `False`. </code>",
+ "1000006": "<code>Iut4Sec1.ArithmeticDivisor K</code>",
+ "1000005":
+ "<code>Iut4Sec1.ArithmeticDivisorEffective.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K) :\n  Prop</code>",
+ "1000004":
+ "<code>NumberField.{u_1} (K : Type u_1) [Field K] : Prop</code><span class=\"sep\"></span><code class=\"docstring\">A number field is a field which has characteristic zero and is finite\ndimensional over ℚ. </code>",
+ "1000003":
+ "<code>Field.{u} (K : Type u) : Type u</code><span class=\"sep\"></span><code class=\"docstring\">A `Field` is a `CommRing` with multiplicative inverses for nonzero elements.\n\nAn instance of `Field K` includes maps `ratCast : ℚ → K` and `qsmul : ℚ → K → K`.\nThose two fields are needed to implement the `DivisionRing K → Algebra ℚ K` instance since we need\nto control the specific definitions for some special cases of `K` (in particular `K = ℚ` itself).\nSee also note [forgetful inheritance].\n\nIf the field has positive characteristic `p`, our division by zero convention forces\n`ratCast (1 / p) = 1 / 0 = 0`. </code>",
+ "1000002":
+ "<code class=\"docstring\">A type universe. `Type ≡ Type 0`, `Type u ≡ Sort (u + 1)`. </code>",
+ "1000001": "<code>Type u_1</code>",
+ "1000000":
+ "<code>Iut4Sec1.ArithmeticDivisor.{u_1} (K : Type u_1) [Field K] [NumberField K] : Type u_1</code>",
+ "100":
+ "<code>Iut4Sec1.arithmeticDivisorDegree.{u_1} {K : Type u_1} [Field K] [NumberField K] (D : Iut4Sec1.ArithmeticDivisor K) : ℝ</code>",
+ "10":
+ "<code>(Iut4Sec1.baseValuation p).HasExtension self.valuation</code><span class=\"sep\"></span><code class=\"docstring\">Compatibility with the norm valuation on `ℚ_[p]`. </code>",
+ "1":
+ "<code>Valuation.{u_3, u_4} (R : Type u_3) (Γ₀ : Type u_4) [LinearOrderedCommMonoidWithZero Γ₀] [Ring R] : Type (max u_3 u_4)</code><span class=\"sep\"></span><code class=\"docstring\">The type of `Γ₀`-valued valuations on `R`.\n\nWhen you extend this structure, make sure to extend `ValuationClass`. </code>",
+ "0":
+ "<code>Valuation L NNReal</code><span class=\"sep\"></span><code class=\"docstring\">The multiplicative norm valuation on the extension. </code>"}
