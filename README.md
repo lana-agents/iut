@@ -6,11 +6,12 @@ Inter-universal Teichmüller theory: the ABC/IUT trunk.
 
 This repository holds the IUT-specific material — the parts of the programme that are particular to Mochizuki's papers rather than independently established mathematics.
 
-It covers three strands:
+Its content is **the Corollary 3.12 variant**: a project-owner-specified variant of IUT III, Corollary 3.12 — initial Θ-data (IUT I, Definition 3.1), processions and tensor-packets of log-shells, the large volume container, its log-volume, and the holomorphic hull. It also carries the ABC target statement that the programme aims at.
 
-* **ABC / `genl`** — the target statement, and Mochizuki's *Arithmetic Elliptic Curves in General Position*.
-* **IUT4 §1** — Section 1 of the fourth IUT paper. The analytic, reduction-theoretic and prime-counting inputs it needs are kept out of this repository behind explicit certificate interfaces (see *Related repositories*), so that IUT4 §1 states its results conditionally and the certificates are discharged elsewhere.
-* **The Corollary 3.12 variant** — a project-owner-specified variant of IUT III, Corollary 3.12: initial Θ-data (IUT I, Definition 3.1), processions and tensor-packets of log-shells, the large volume container, its log-volume, and the holomorphic hull.
+Two neighbouring strands already have their own homes and are **not** developed here:
+
+* **`genl`** — Mochizuki's *Arithmetic Elliptic Curves in General Position*, in [`LANA-Project/genl`](https://github.com/LANA-Project/genl).
+* **IUT4 §1** — Section 1 of the fourth IUT paper, in [`LANA-Project/iut4-sec1`](https://github.com/LANA-Project/iut4-sec1). The analytic, reduction-theoretic and prime-counting inputs it needs sit behind explicit certificate interfaces, so that IUT4 §1 states its results conditionally and the certificates are discharged in `padic-log-volume`, `elliptic-reduction` and `prime-counting`.
 
 ## Scope boundary
 
@@ -48,4 +49,4 @@ Run it locally with `bash .orchestra/validation.sh`.
 
 ## Tracker
 
-Work is tracked in taxis: [#1](https://taxis.lana.merten.dev/issues/1), [#2](https://taxis.lana.merten.dev/issues/2), [#3](https://taxis.lana.merten.dev/issues/3), [#33](https://taxis.lana.merten.dev/issues/33), [#34](https://taxis.lana.merten.dev/issues/34), [#35](https://taxis.lana.merten.dev/issues/35), [#38](https://taxis.lana.merten.dev/issues/38), [#39](https://taxis.lana.merten.dev/issues/39), [#40](https://taxis.lana.merten.dev/issues/40), [#41](https://taxis.lana.merten.dev/issues/41), [#42](https://taxis.lana.merten.dev/issues/42), [#43](https://taxis.lana.merten.dev/issues/43), [#44](https://taxis.lana.merten.dev/issues/44), [#45](https://taxis.lana.merten.dev/issues/45)
+Work is tracked in taxis: [#1](https://taxis.lana.merten.dev/issues/1), [#33](https://taxis.lana.merten.dev/issues/33), [#34](https://taxis.lana.merten.dev/issues/34), [#35](https://taxis.lana.merten.dev/issues/35), [#38](https://taxis.lana.merten.dev/issues/38), [#39](https://taxis.lana.merten.dev/issues/39), [#40](https://taxis.lana.merten.dev/issues/40), [#41](https://taxis.lana.merten.dev/issues/41), [#42](https://taxis.lana.merten.dev/issues/42), [#43](https://taxis.lana.merten.dev/issues/43), [#44](https://taxis.lana.merten.dev/issues/44), [#45](https://taxis.lana.merten.dev/issues/45)
