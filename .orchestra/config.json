@@ -1,0 +1,5 @@
+{
+    "validation": {
+            "retry_prompt": "Validation failed. Re-run the bash script in .orchestra/validation.sh to check what the error was."
+    }
+}
