@@ -25,7 +25,8 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 ## Current status / open questions
 
 - P0 through P5 and both user-directed amendments are complete. P5 round 2 was
-  accepted. P6 has been implemented and is pending review; P7 has not started.
+  accepted. P6 review-round-1 findings are fixed and pending re-review; P7 has
+  not started.
 - The mathlib-only comparator challenge has ten theorem targets. Six project
   proofs are exported by Solution and listed in comparator config.
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
@@ -516,3 +517,32 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 - Commit: `P6: constructible mixed-characteristic local fields` (this commit;
   see `git log -1 --format=%h`).
 - Next: submit P6 for review; do not start P7 or push.
+
+### 2026-07-20 — P6 review round-1 correction
+
+- Goal/status: addressed every P6 `CHANGES REQUESTED` finding without starting
+  P7. The concrete ramified example now satisfies the P6 end-to-end gate.
+- Concrete computation: strengthened
+  `RamifiedQuadraticExample.ramifiedQuadratic_evaluation` to prove
+  `O_{ℚ₂(√2)} = ℤ₂[√2]`, `e = 2`, `f = 1`, and `ord(√2) = 1/2`. The proof
+  identifies spectral integrality with integrality over `ℤ₂`, applies the
+  Eisenstein integral-basis argument, and uses the local `e f = 2` identity
+  together with the parity forced by `(√2)^2 = 2`.
+- Different: computed the power-basis discriminant as `8`, used the conductor
+  formula to prove `𝔇 = (2√2)`, proved `√2` is a uniformizer, and concluded
+  `𝔇 = 𝔪^3` and `ord(2√2) = 3/2` in the normalization `ord(2) = 1`.
+- Documentation: updated the Proposition 1.2 blueprint chapter to state those
+  exact values and corrected `Comparator/README.md` to the six-theorem/P6
+  state.
+- Checks: `lake build Iut4Sec1.LocalField.Basic`, full `lake build` (8666
+  jobs), `./scripts/check_comparator_signature.sh`, `#print axioms` for
+  `mem_ringOfIntegers_iff_isIntegral` and `ramifiedQuadratic_evaluation`,
+  `./scripts/audit_trust.sh`, `./scripts/audit_axioms.sh` (144 public project
+  declarations and six Solution exports), nested `lake build
+  Iut4Sec1Blueprint`, `blueprint-verso/scripts/ci-pages.sh`, and
+  `git diff --check` passed. The new/changed theorems use only `propext`,
+  `Classical.choice`, and `Quot.sound`; the trust audit passed after removal of
+  ignored implementation probes.
+- Commit: `P6: address review round 1 findings` (this commit; see
+  `git log -1 --format=%h`).
+- Next: submit the P6 correction for re-review; do not start P7 or push.
