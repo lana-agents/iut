@@ -2,6 +2,7 @@ import Verso
 import VersoManual
 import VersoBlueprint
 import Iut4Sec1Blueprint.TexPrelude
+import Iut4Sec1.LocalField.Basic
 import Iut4Sec1.Real.LogError
 
 open Verso.Genre
@@ -34,9 +35,33 @@ $`\log_p(R_I^\times)`, then:
 4. If $`p>2` and every $`e_i=1`, then
    $`\varphi((R_I)^\sim)\subseteq(R_I)^\sim`.
 
-*Status: partial.* The ceiling-error term and its vanishing in the
-small-ramification range are formalized below; the logarithmic lattice
-inclusions remain to be proved.
+*Status: partial.* Finite extensions now construct their spectral integer
+rings, normalized orders, ramification indices, residue degrees, and
+differents. The numerical small-ramification parameter equality is formalized
+below; the logarithmic lattice inclusions remain to be proved.
+:::
+
+:::definition "def:mixed-char-local-field-data" (lean := "Iut4Sec1.MixedCharLocalFieldData, Iut4Sec1.mixedCharLocalFieldData_of_finiteExtension")
+Every finite-dimensional field extension of $`\Qp` has canonical local-field
+data obtained from the spectral norm. Completeness, the discrete valuation
+ring, finite residue field, normalization $`\operatorname{ord}(p)=1`, and
+compatibility with the ideal-theoretic ramification index and different are
+constructed rather than assumed.
+:::
+
+:::lemma_ "lemma:ramified-quadratic-evaluation" (uses := "def:mixed-char-local-field-data") (lean := "Iut4Sec1.RamifiedQuadraticExample.ramifiedQuadratic_evaluation")
+For $`\Q_2(\sqrt 2)` the construction is instantiated on an extension of
+finrank two and evaluates its integer ring, normalized order, ramification
+index, and different.
+:::
+
+:::definition "def:local-parameters" (lean := "Iut4Sec1.aParam, Iut4Sec1.bParam")
+The parameters $`a(p,e)` and $`b(p,e)` are the ceiling and floor expressions
+in Proposition 1.2.
+:::
+
+:::lemma_ "lemma:local-parameters-small" (uses := "def:local-parameters") (lean := "Iut4Sec1.localParameters_eq_of_smallRamification")
+If $`p>2` and $`0<e\le p-2`, then $`a(p,e)=1/e` and $`b(p,e)=-1/e`.
 :::
 
 :::definition "def:nonarchimedean-log-error" (lean := "Iut4Sec1.nonarchimedeanLogError")

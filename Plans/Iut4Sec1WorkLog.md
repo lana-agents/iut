@@ -24,11 +24,9 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
 
 ## Current status / open questions
 
-- P0 through P4 and both user-directed amendments are complete. P5 round 1
-  received CHANGES REQUESTED on valuation normalization and log/exp convergence;
-  the round-2 implementation strengthens both probes and reports implementer GO
-  pending review. P6 has not started and remains forbidden until acceptance.
-- The mathlib-only comparator challenge has ten theorem targets. Five project
+- P0 through P5 and both user-directed amendments are complete. P5 round 2 was
+  accepted. P6 has been implemented and is pending review; P7 has not started.
+- The mathlib-only comparator challenge has ten theorem targets. Six project
   proofs are exported by Solution and listed in comparator config.
 - Proposition 1.8(v)–(vii) requires an explicit conditional reduction
   certificate until missing moduli/Néron-model infrastructure is formalized.
@@ -483,3 +481,38 @@ Mochizuki’s *Inter-universal Teichmüller Theory IV*.
   `git log -1 --format=%h`).
 - Next: submit this correction for P5 round-2 review. Do not start P6 until the
   reviewer accepts the strengthened probes; do not push.
+
+### 2026-07-20 — P6 constructible mixed-characteristic local fields
+
+- Goal/status: implemented P6 only; P7 was not started. The accepted P5
+  spectral-norm and compact-DVR representation is now production code.
+- Local-field construction: added `Iut4Sec1/LocalField/Basic.lean` with
+  `MixedCharLocalFieldData` and the universal
+  `mixedCharLocalFieldData_of_finiteExtension`. Finite dimensionality constructs
+  the spectral norm and completeness; compactness constructs the DVR and finite
+  residue field. The positive valuation exponent, normalized order with
+  `ord(p) = 1`, ideal ramification compatibility, residue degree, and different
+  are derived rather than constructor inputs.
+- Fractional powers/example: defined canonical fractional ideals of exponent
+  `n/e`. Added the irreducible degree-two extension `ℚ_[2](√2)` via
+  `AdjoinRoot (X^2 - 2)` and `ramifiedQuadratic_evaluation`, which constructs
+  the data and evaluates its integer ring, normalized order, positive
+  ramification index, ideal-theoretic ramification index, and different.
+- Comparator/blueprint: added the exact `aParam`/`bParam` formulas and
+  `localParameters_eq_of_smallRamification`; Solution and config now export six
+  theorems. The signature script continues to compare generated auxiliary
+  declarations but excludes them from the target-name list. Blueprint item 1.2
+  now links the constructor, quadratic example, and parameter theorem; the site
+  was regenerated.
+- Checks: `lake build Iut4Sec1.LocalField.Basic`, full `lake build`,
+  `./scripts/check_comparator_signature.sh`, six Solution-import `#print axioms`
+  commands, `./scripts/audit_trust.sh`, `./scripts/audit_axioms.sh` (134 public
+  project declarations and six Solution exports), nested `lake build
+  Iut4Sec1Blueprint`, `blueprint-verso/scripts/ci-pages.sh`, and
+  `git diff --check` passed. Only the pre-existing challenge placeholders and
+  upstream/existing linter warnings appeared.
+- Taxis: no gap beyond taxis issue #4's existing P5--P11 local-field scope
+  emerged.
+- Commit: `P6: constructible mixed-characteristic local fields` (this commit;
+  see `git log -1 --format=%h`).
+- Next: submit P6 for review; do not start P7 or push.

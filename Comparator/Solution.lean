@@ -7,6 +7,7 @@ Authors: Dagur Asgeirsson
 import Iut4Sec1.Combinatorics.RangeAverages
 import Iut4Sec1.Combinatorics.WeightedAverage
 import Iut4Sec1.Global.ArithmeticDivisor
+import Iut4Sec1.LocalField.Basic
 import Iut4Sec1.Real.LogError
 
 /-!
@@ -20,3 +21,4 @@ The solution exports fully proved project theorems without wrappers.
 #check Iut4Sec1.average_range_sum
 #check Iut4Sec1.average_range_sq_sum
 #check Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg
+#check Iut4Sec1.localParameters_eq_of_smallRamification

@@ -20,7 +20,8 @@ private def configuredTheorems : List Name :=
     ``Iut4Sec1.weighted_average_eq,
     ``Iut4Sec1.average_range_sum,
     ``Iut4Sec1.average_range_sq_sum,
-    ``Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg]
+    ``Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg,
+    ``Iut4Sec1.localParameters_eq_of_smallRamification]
 
 run_cmd liftCoreM do
   logInfo "solution-exported declaration\tlogical dependencies"

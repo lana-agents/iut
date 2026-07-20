@@ -86,7 +86,12 @@ while IFS= read -r name; do
     echo "check_comparator_signature: declaration-kind mismatch for $name: Challenge=$challenge_kind Solution=$solution_kind" >&2
     exit 1
   fi
-  if [[ "$challenge_kind" == theorem ]]; then
+  # Auto-generated implementation lemmas are compared below with all other
+  # shared declarations, but they are not standalone comparator targets.
+  if [[ "$challenge_kind" == theorem &&
+        "$name" != *"._proof_"* &&
+        "$name" != *".match_"* &&
+        "$name" != *"._sizeOf_"* ]]; then
     echo "$name"
   fi
 done < "$shared_names" | LC_ALL=C sort -u > "$shared_theorems"
