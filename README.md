@@ -62,6 +62,42 @@ specification. In particular, IUT I–III inputs, the exact prime-counting coeff
 unavailable in the pinned Mathlib release, and missing elliptic or reduction
 infrastructure must appear as ordinary theorem arguments when used.
 
+## Corollary 3.12 variant strand (`Iut`)
+
+The `Iut` library states the project-owner-specified variant of IUT III,
+Corollary 3.12 (taxis [#33](https://taxis.lana.merten.dev/issues/33)):
+`Iut.Corollary312Variant` in [`Iut/Cor312/Statement.lean`](Iut/Cor312/Statement.lean),
+a `Prop`-valued definition `−|log(q)| ≤ −|log(Θ)|` that is deliberately left without
+proof and without axiom. The stack beneath it:
+
+* **Initial Θ-data** (IUT I, Definition 3.1; taxis #38–#42):
+  [`Iut/Cor312/ThetaData/`](Iut/Cor312/ThetaData). Reduction predicates, the field of
+  moduli `ℚ(j)`, torsion rationality, the mod-`ℓ` representation pinned to the genuine
+  Galois action on `E(F̄)[ℓ]`, and the `ℓ`-torsion field `K` (defined as the fixed
+  field of the kernel, with finiteness *proved* from openness) are real Mathlib
+  content; orbicurves, fundamental groups and tempered groups enter through the
+  explicit interfaces `Iut.AnabelianGeometry` / `Iut.TemperedGeometry` (seams for
+  taxis #7, #10, #11, #13). Bad-place Tate `q`-parameters come from
+  [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta)
+  (taxis #37), pinned by the `j`-invariant characterization.
+* **The large volume container** (taxis #43): processions/capsules with the label
+  sets `S_{j+1}`, tensor-packets presented as direct sums of fields indexed by tuples
+  of places (retaining the `v_Q`-decomposition and procession labels), log-shells,
+  the restricted-product global container, and admissible regions
+  ([`Iut/Cor312/Container.lean`](Iut/Cor312/Container.lean) and neighbours).
+* **Log-volume** (taxis #44) and the **holomorphic hull** (taxis #45): normalization
+  and combination laws as explicit interface fields; the hull's fixed-point,
+  extensivity, monotonicity and intersection-characterization properties are proved,
+  and the hull is a Mathlib `ClosureOperator` on admissible regions.
+* **LHS/RHS** (taxis #34/#35): `−|log(q)|` from the bad-place `q`-orders with the
+  `(1/2ℓ)` normalization recorded in IUT IV, and the procession-normalized log-volume
+  of the holomorphic hull of the theta-pilot region (the region itself is input data:
+  no multiradial algorithm is constructed).
+
+Per the honesty boundary, every unproved obligation is an explicit structure field of
+an interface or an input bundle — never an axiom — and the variant is not identified
+with the published Corollary 3.12.
+
 ## Comparator suite
 
 [`Comparator/Challenge.lean`](Comparator/Challenge.lean) states ten selected mathlib-only

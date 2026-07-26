@@ -86,8 +86,8 @@ regions, required to be relatively compact, on which a holomorphic hull operatio
 the defining property of IUT III, Remark 3.9.5(i) is supplied.
 
 This is the interface seam of taxis #45: existence of the least hull region is a
-theorem of local-field theory (taxis #4) recorded here as explicit fields, never as an
-axiom. All four elementary properties of the hull are then *proved* from these fields
+theorem of local-field theory (taxis #4) recorded here as explicit fields, never as
+axioms. All four elementary properties of the hull are then *proved* from these fields
 (`hull_eq_self`, `subset_hull`, `hull_mono`, `hull_eq_sInter`). -/
 structure HullSystem {C : Type u} (P : DirectSumPresentation.{u, v} C) :
     Type (max u v) where

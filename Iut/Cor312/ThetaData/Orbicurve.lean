@@ -21,8 +21,9 @@ of types and operations (orbicurves over a field, finite étale covers, base cha
 once-punctured elliptic curves, `±1`-quotients, étale fundamental groups as profinite
 groups with open immersions for covers, cusps, cores, and the orbicurve-type predicates
 of *The Étale Theta Function*, Definition 2.1). Every intended property is either a
-field of the interface or a field of the data structures consuming it — never an
-axiom. Discharging this interface is the business of the anabelian-geometry projects
+field of the interface or a field of the data structures consuming it — never
+axiomatic. Discharging this interface is the business of the anabelian-geometry
+projects
 (taxis #7 `lana-agents/tempered-fundamental-groups`, taxis #10
 `lana-agents/orbicurve-cores`, and successors); this module supplies the definitions
 that taxis #10 consumes, and does not prove the classification theorem requested there.

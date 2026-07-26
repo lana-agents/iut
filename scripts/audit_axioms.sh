@@ -34,3 +34,27 @@ if [[ -f Comparator/Solution.lean ]]; then
   echo "audit_axioms: auditing Comparator/Solution.lean in its separate environment"
   lake env lean scripts/AuditComparatorSolution.lean
 fi
+
+# Corollary 3.12 variant strand (taxis #33): the same audit for the Iut library.
+lake build Iut
+
+iut_manifest="$tmp_dir/iut-compiled-manifest.txt"
+iut_visited="$tmp_dir/iut-visited-manifest.txt"
+
+IUT_AUDIT_MODE=manifest IUT_AUDIT_OUTPUT="$iut_manifest" \
+  lake env lean scripts/AuditIutAxioms.lean
+IUT_AUDIT_MODE=visited IUT_AUDIT_OUTPUT="$iut_visited" \
+  lake env lean scripts/AuditIutAxioms.lean
+
+if [[ ! -s "$iut_manifest" || ! -s "$iut_visited" ]]; then
+  echo "audit_axioms: Iut declaration coverage is empty" >&2
+  exit 1
+fi
+
+if ! diff -u "$iut_manifest" "$iut_visited"; then
+  echo "audit_axioms: Iut compiled and visited declaration manifests differ" >&2
+  exit 1
+fi
+
+echo "audit_axioms: Iut manifest covers $(wc -l < "$iut_manifest" | tr -d ' ') declaration(s)"
+lake env lean scripts/AuditIutAxioms.lean
