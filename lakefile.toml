@@ -15,6 +15,13 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.32.0"
 
+# Tate q-parameters and the classical theta function (taxis #13/#37); consumed by
+# the initial Θ-data and Corollary 3.12 variant strand (taxis #33).
+[[require]]
+name = "tate-curves-theta"
+git = "https://github.com/lana-agents/tate-curves-theta"
+rev = "90d7fac0e4ef2d6bf2a619326c30adb862d1b3de"
+
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
 name = "Iut"
