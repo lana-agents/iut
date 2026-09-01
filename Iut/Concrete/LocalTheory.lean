@@ -128,6 +128,11 @@ structure LocalTheory extends LocalTensor.{u, v} K where
   ramified_finite : {w : FinitePlace K | ramIdx K w ≠ 1}.Finite
   /-- Local degrees are positive. -/
   localDeg_pos : ∀ w, 0 < localDeg K w
+  /-- Ramification indices are positive. -/
+  ramIdx_pos : ∀ w, 0 < ramIdx K w
+  /-- The different exponent vanishes at unramified places (`𝔭 ∤ 𝔡_{K/ℚ}` iff `𝔭` is
+  unramified). -/
+  ordDifferent_eq_zero : ∀ w, ramIdx K w = 1 → ordDifferent K w = 0
   /-- `∑_{w ∣ p} [K_w : ℚ_p] = [K : ℚ]` (`Ideal.sum_ramification_inertia`). -/
   sum_localDeg : ∀ p : ℕ, p.Prime → ∀ [Fintype {w : FinitePlace K // residueChar w = p}],
     ∑ w : {w : FinitePlace K // residueChar w = p}, localDeg K w.1 = Module.finrank ℚ K

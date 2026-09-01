@@ -50,6 +50,35 @@ universe u v
 open NumberField
 open scoped Pointwise
 
+namespace LocalTheory
+
+variable {K : Type u} [Field K] [NumberField K] (LT : LocalTheory.{u, v} K)
+
+/-- The finite place underlying an element of the fiber over a prime. -/
+noncomputable def fiberPlace {p : Nat.Primes} (v : LT.Fiber (.finite p)) : FinitePlace K :=
+  (LT.fiberFiniteEquiv p v).1
+
+lemma fiberPlace_spec {p : Nat.Primes} (v : LT.Fiber (.finite p)) :
+    v.1 = Place.finite (LT.fiberPlace v) := by
+  rcases v with ⟨v, hv⟩
+  rcases v with w | w
+  · rfl
+  · exact absurd hv (by simp [toRational])
+
+lemma residueChar_fiberPlace {p : Nat.Primes} (v : LT.Fiber (.finite p)) :
+    residueChar (LT.fiberPlace v) = p :=
+  (LT.fiberFiniteEquiv p v).2
+
+/-- The theta-pilot component at the archimedean place: the union of the images of the
+tensor product of the log-shells under the indeterminacy automorphisms. -/
+noncomputable def thetaInfinite (n : ℕ) (i : Fin n)
+    (c : ((Procession.standard n).capsule i).LabelType → LT.Fiber .infinite) :
+    Set (LT.Tensor .infinite (LT.tuple .infinite c)) :=
+  ⋃ φ ∈ LT.indAut .infinite (LT.tuple .infinite c),
+    φ '' LT.logShell .infinite (LT.tuple .infinite c)
+
+end LocalTheory
+
 variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 variable (D : InitialThetaData AG TG)
 
@@ -89,37 +118,24 @@ structure ThetaLocalData (LT : LocalTheory.{u, v} D.Kt) where
   residueChar_mem : ∀ (v : FinitePlace D.Kt) (w : FinitePlace D.F),
     (Place.finite v).LiesOver (Place.finite w) → w ∈ badPlacesOver D.F D.E D.VBad →
     residueChar v ∈ badChars
+  /-- The bad places of `F` have residue characteristic in `badChars`. -/
+  bad_residueChar_mem : ∀ w ∈ badPlacesOver D.F D.E D.VBad, residueChar w ∈ badChars
+  /-- The bad residue characteristics are prime. -/
+  badChars_prime : ∀ p ∈ badChars, p.Prime
+  /-- **Base-change invariance of the `q`-degree** at each prime `p`: the weighted sum
+  over the places `v ∣ p` of `K` of `[K_v : ℚ_p]/[K : ℚ]·ord_p(q_v)` equals
+  `(1/2ℓ)·∑_{w ∣ p, w bad} (f_w/[F : ℚ])·ord_w(q_w)` (from `∑_{v ∣ w} e_v f_v = [K : F]·e_w f_w`
+  and `ord_p(q_v) = ord_w(q_w)/(2ℓ e_w)`). -/
+  sum_weight_ordp_qroot : ∀ (p : Nat.Primes) (bad : Finset (FinitePlace D.F))
+    (hbad : ↑bad = badPlacesOver D.F D.E D.VBad),
+    ∑ v : LT.Fiber (.finite p), LT.weight (.finite p) v * ordp D.Kt (LT.fiberPlace v)
+        (qroot (LT.fiberPlace v)) =
+      (∑ w ∈ bad.attach.filter (fun w => residueChar w.1 = p),
+        (inertDeg D.F w.1 : ℝ) / Module.finrank ℚ D.F *
+          (D.prime.qOrder w.1 (hbad ▸ Finset.mem_coe.mpr w.2) : ℝ)) / (2 * D.ℓ)
 
 variable (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT)
 
-namespace LocalTheory
-
-variable {D}
-
-/-- The finite place underlying an element of the fiber over a prime. -/
-noncomputable def fiberPlace {p : Nat.Primes} (v : LT.Fiber (.finite p)) : FinitePlace D.Kt :=
-  (LT.fiberFiniteEquiv p v).1
-
-lemma fiberPlace_spec {p : Nat.Primes} (v : LT.Fiber (.finite p)) :
-    v.1 = Place.finite (LT.fiberPlace v) := by
-  rcases v with ⟨v, hv⟩
-  rcases v with w | w
-  · rfl
-  · exact absurd hv (by simp [toRational])
-
-lemma residueChar_fiberPlace {p : Nat.Primes} (v : LT.Fiber (.finite p)) :
-    residueChar (LT.fiberPlace v) = p :=
-  (LT.fiberFiniteEquiv p v).2
-
-/-- The theta-pilot component at the archimedean place: the union of the images of the
-tensor product of the log-shells under the indeterminacy automorphisms. -/
-noncomputable def thetaInfinite (n : ℕ) (i : Fin n)
-    (c : ((Procession.standard n).capsule i).LabelType → LT.Fiber .infinite) :
-    Set (LT.Tensor .infinite (LT.tuple .infinite c)) :=
-  ⋃ φ ∈ LT.indAut .infinite (LT.tuple .infinite c),
-    φ '' LT.logShell .infinite (LT.tuple .infinite c)
-
-end LocalTheory
 
 namespace ThetaLocalData
 
