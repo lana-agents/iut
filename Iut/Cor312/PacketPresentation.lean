@@ -52,7 +52,8 @@ universe u v
 
 /-- A **direct-sum-of-fields presentation** with integral structures: for each component
 `c` of a finite index type `C`, a topological field `Summand c` with a designated
-subring `integral c` (the *holomorphic integral structure* `O` of the summand).
+integral structure `integral c` (the *holomorphic integral structure* `O` of the
+summand).
 
 In the intended instantiation `C` is the set of tuples `(v_j)_{j ∈ S}` of places
 `v_j ∣ v_Q` indexed by the labels of a capsule `S`, and `Summand c` is the corresponding
@@ -61,15 +62,19 @@ tensor factor field of the semisimple decomposition of the tensor-packet
 structure DirectSumPresentation (C : Type u) : Type (max u (v + 1)) where
   /-- The summand field at component `c`. -/
   Summand : C → Type v
-  /-- Each summand is a field. -/
-  [field_summand : ∀ c, Field (Summand c)]
+  /-- Each summand is a commutative ring: a field, or — for the tensor products of
+  local fields that present the tensor-packets (IUT III, Proposition 3.1) — a finite
+  product of fields. Nonzero components of hull regions are accordingly *units*. -/
+  [ring_summand : ∀ c, CommRing (Summand c)]
   /-- Each summand carries a topology (used for the relative-compactness hypotheses of
   the holomorphic hull, taxis #45). -/
   [topology_summand : ∀ c, TopologicalSpace (Summand c)]
-  /-- The holomorphic integral structure `O` of each summand. -/
-  integral : ∀ c, Subring (Summand c)
+  /-- The holomorphic integral structure `O` of each summand: the ring of integers of a
+  nonarchimedean summand (a subring), the unit ball of an archimedean one (a subset,
+  IUT IV, Proposition 1.5(iii)). Carried as a set so that both cases are covered. -/
+  integral : ∀ c, Set (Summand c)
 
-attribute [instance] DirectSumPresentation.field_summand
+attribute [instance] DirectSumPresentation.ring_summand
   DirectSumPresentation.topology_summand
 
 namespace DirectSumPresentation
@@ -107,7 +112,7 @@ lemma isProductRegion_productRegion (U : ∀ c, Set (P.Summand c)) :
     P.IsProductRegion (P.productRegion U) := ⟨U, rfl⟩
 
 lemma isProductRegion_integralRegion : P.IsProductRegion P.integralRegion :=
-  ⟨fun c => (P.integral c : Set (P.Summand c)), rfl⟩
+  ⟨fun c => P.integral c, rfl⟩
 
 /-- A region of the total space is a **Borel region** if it is measurable for the Borel
 σ-algebra of the product topology. This is the class "arbitrary measurable subsets"
@@ -118,30 +123,30 @@ def IsBorelRegion (R : Set P.Total) : Prop := @MeasurableSet P.Total (borel P.To
 `a c • O_c` for every component `c`. For `a` with every component nonzero these are the
 candidate holomorphic hulls of IUT III, Remark 3.9.5(i). -/
 def scaledIntegral (a : P.Total) : Set P.Total :=
-  {x | ∀ c, x c ∈ a c • (P.integral c : Set (P.Summand c))}
+  {x | ∀ c, x c ∈ a c • P.integral c}
 
 @[simp]
 lemma mem_scaledIntegral {a x : P.Total} :
-    x ∈ P.scaledIntegral a ↔ ∀ c, x c ∈ a c • (P.integral c : Set (P.Summand c)) :=
+    x ∈ P.scaledIntegral a ↔ ∀ c, x c ∈ a c • P.integral c :=
   Iff.rfl
 
 lemma isProductRegion_scaledIntegral (a : P.Total) :
     P.IsProductRegion (P.scaledIntegral a) :=
-  ⟨fun c => a c • (P.integral c : Set (P.Summand c)), rfl⟩
+  ⟨fun c => a c • P.integral c, rfl⟩
 
 @[simp]
 lemma scaledIntegral_one : P.scaledIntegral (fun _ => 1) = P.integralRegion := by
   ext x
   simp [scaledIntegral, integralRegion]
 
-/-- A **hull region**: a region of the form `a · O` with every component of `a`
-nonzero (IUT III, Remark 3.9.5(i)). The holomorphic hull of a region `U` is the least
-hull region containing `U`; see `Iut.HullSystem`. -/
+/-- A **hull region**: a region of the form `a · O` with every component of `a` a
+unit — nonzero in every field factor (IUT III, Remark 3.9.5(i)). The holomorphic hull
+of a region `U` is the least hull region containing `U`; see `Iut.HullSystem`. -/
 def IsHullRegion (R : Set P.Total) : Prop :=
-  ∃ a : P.Total, (∀ c, a c ≠ 0) ∧ R = P.scaledIntegral a
+  ∃ a : P.Total, (∀ c, IsUnit (a c)) ∧ R = P.scaledIntegral a
 
 lemma isHullRegion_integralRegion : P.IsHullRegion P.integralRegion :=
-  ⟨fun _ => 1, fun _ => one_ne_zero, (P.scaledIntegral_one).symm⟩
+  ⟨fun _ => 1, fun _ => isUnit_one, (P.scaledIntegral_one).symm⟩
 
 end DirectSumPresentation
 
