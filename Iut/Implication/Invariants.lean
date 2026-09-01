@@ -136,8 +136,11 @@ namespace Theorem110Invariants
 
 variable {X : Corollary312VariantData.{u, v} AG TG} (inv : Theorem110Invariants X)
 
-/-- `e*_mod = 2¹²·3³·5·e_mod`. -/
-abbrev eStar : ℕ := 2 ^ 12 * 3 ^ 3 * 5 * inv.emod
+/-- `e*_mod = 2¹²·3³·5·e_mod = 552960·e_mod`. -/
+abbrev eStar : ℕ := 552960 * inv.emod
+
+lemma eStar_cast : (inv.eStar : ℝ) = 552960 * inv.emod := by
+  simp only [eStar]; push_cast; ring
 
 /-- `l*_mod = log(e*_mod · ℓ)`. -/
 noncomputable def lmod : ℝ := Real.log ((inv.eStar : ℝ) * X.ℓ)

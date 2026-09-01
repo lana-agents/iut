@@ -16,6 +16,8 @@ import Iut.Cor312.ThetaData.GlobalField
 import Iut.Cor312.ThetaData.LocalConditions
 import Iut.Cor312.ThetaData.Orbicurve
 import Iut.Cor312.ThetaData.Places
+import Iut.Implication.Corollary22
+import Iut.Implication.Corollary23
 import Iut.Implication.Invariants
 import Iut.Implication.LogVolumeBound
 import Iut.Implication.PrimeSelection

@@ -175,9 +175,9 @@ lemma lmod_mul_logSle_le (pnt : PrimeCountingBound) :
     have h2 := X.data.prime.five_le
     have h3 : 1 * 5 ≤ inv.emod * X.data.ℓ := Nat.mul_le_mul h1 h2
     simp only [hN, eStar, Corollary312VariantData.ℓ]
-    calc 2 ≤ 2 ^ 12 * 3 ^ 3 * 5 * (1 * 5) := by norm_num
-      _ ≤ 2 ^ 12 * 3 ^ 3 * 5 * (inv.emod * X.data.ℓ) := Nat.mul_le_mul_left _ h3
-      _ = 2 ^ 12 * 3 ^ 3 * 5 * inv.emod * X.data.ℓ := by ring
+    calc 2 ≤ 552960 * (1 * 5) := by norm_num
+      _ ≤ 552960 * (inv.emod * X.data.ℓ) := Nat.mul_le_mul_left _ h3
+      _ = 552960 * inv.emod * X.data.ℓ := by ring
   have hNr : (2 : ℝ) ≤ N := by exact_mod_cast hN1
   have hNcast : ((inv.eStar : ℝ) * X.ℓ) = N := by simp [hN]
   -- `log(s^≤) ≤ π(N)`
@@ -298,7 +298,7 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
       have h2 : (5 : ℝ) ≤ X.data.ℓ := by exact_mod_cast X.data.prime.five_le
       have h3 : (1 : ℝ) * 5 ≤ inv.emod * X.data.ℓ :=
         mul_le_mul h1 h2 (by norm_num) (by linarith)
-      simp only [eStar, Corollary312VariantData.ℓ]; push_cast; linarith)) inv.logSle_nonneg
+      rw [eStar_cast]; simp only [Corollary312VariantData.ℓ]; linarith)) inv.logSle_nonneg
   have hDF : 0 ≤ inv.logDtpd + inv.logFtpd := by
     linarith [inv.logDtpd_nonneg, inv.logFtpd_nonneg]
   have hlg0 : 0 ≤ Real.log X.ℓ := Real.log_nonneg (by linarith)
@@ -307,7 +307,7 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
   have he : 552960 * (X.ℓ : ℝ) ≤ (inv.eStar : ℝ) * X.ℓ := by
     have h1 : (1 : ℝ) ≤ inv.emod := by exact_mod_cast inv.one_le_emod
     have h3 : 1 * (X.ℓ : ℝ) ≤ inv.emod * X.ℓ := mul_le_mul_of_nonneg_right h1 hℓpos.le
-    simp only [eStar]; push_cast; linarith
+    rw [eStar_cast]; linarith
   have hE : (inv.eStar : ℝ) * X.ℓ ≤ (inv.eStar : ℝ) * X.ℓ + pnt.η := by
     linarith [pnt.one_lt_η]
   have h4 := inv.lmod_mul_logSle_le pnt
