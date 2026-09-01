@@ -1,3 +1,4 @@
+import Iut.Abc.Target
 import Iut.Basic
 import Iut.Cor312.Container
 import Iut.Cor312.ContainerHull
@@ -15,3 +16,7 @@ import Iut.Cor312.ThetaData.GlobalField
 import Iut.Cor312.ThetaData.LocalConditions
 import Iut.Cor312.ThetaData.Orbicurve
 import Iut.Cor312.ThetaData.Places
+import Iut.Implication.Invariants
+import Iut.Implication.LogVolumeBound
+import Iut.Implication.PrimeSelection
+import Iut.Implication.Theorem110

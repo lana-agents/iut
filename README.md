@@ -14,7 +14,12 @@ It carries two strands:
 * **The Corollary 3.12 variant.** A project-owner-specified variant of IUT III,
   Corollary 3.12: initial Θ-data (IUT I, Definition 3.1), processions and tensor-packets
   of log-shells, the large volume container, its log-volume, and the holomorphic hull.
-  This strand also carries the ABC target statement the programme aims at.
+* **The implication to ABC.** The proof that the Corollary 3.12 variant implies the ABC
+  conjecture, via IUT IV §1 (Theorem 1.10, the `Iut4Sec1` strand) and §2 (Corollaries
+  2.2 and 2.3, using [`LANA-Project/genl`](https://github.com/LANA-Project/genl)).
+  Tracked as taxis [#1449](https://taxis.lana.merten.dev/issues/1449). The ABC target
+  statement itself is [#1451](https://taxis.lana.merten.dev/issues/1451) and is not yet
+  in the repository.
 
 Mochizuki's *Arithmetic Elliptic Curves in General Position* is **not** developed here;
 it lives in [`LANA-Project/genl`](https://github.com/LANA-Project/genl).
@@ -118,7 +123,7 @@ lake exe vbp build --serve
 
 | Library | Contents |
 | --- | --- |
-| `Iut` | Corollary 3.12 variant and the ABC target statement |
+| `Iut` | Corollary 3.12 variant (the ABC target statement is planned, taxis #1451) |
 | `Iut4Sec1` | IUT IV, Section 1 |
 | `Challenge` / `Solution` | Comparator suite roots (separate environments) |
 
@@ -155,4 +160,4 @@ Run it locally with `bash .orchestra/validation.sh`.
 
 ## Tracker
 
-Work is tracked in taxis: [#1](https://taxis.lana.merten.dev/issues/1), [#3](https://taxis.lana.merten.dev/issues/3), [#33](https://taxis.lana.merten.dev/issues/33), [#34](https://taxis.lana.merten.dev/issues/34), [#35](https://taxis.lana.merten.dev/issues/35), [#38](https://taxis.lana.merten.dev/issues/38), [#39](https://taxis.lana.merten.dev/issues/39), [#40](https://taxis.lana.merten.dev/issues/40), [#41](https://taxis.lana.merten.dev/issues/41), [#42](https://taxis.lana.merten.dev/issues/42), [#43](https://taxis.lana.merten.dev/issues/43), [#44](https://taxis.lana.merten.dev/issues/44), [#45](https://taxis.lana.merten.dev/issues/45); interface-discharge issues: [#276](https://taxis.lana.merten.dev/issues/276) (anabelian interface), [#277](https://taxis.lana.merten.dev/issues/277) (mod-ℓ torsion and representation), [#278](https://taxis.lana.merten.dev/issues/278) (container/log-volume/hull instantiation), [#279](https://taxis.lana.merten.dev/issues/279) (étale theta, anabelian side)
+Work is tracked in taxis: [#1](https://taxis.lana.merten.dev/issues/1) (programme umbrella); implication strand [#1449](https://taxis.lana.merten.dev/issues/1449): [#3](https://taxis.lana.merten.dev/issues/3), [#1451](https://taxis.lana.merten.dev/issues/1451), [#1453](https://taxis.lana.merten.dev/issues/1453), [#1454](https://taxis.lana.merten.dev/issues/1454), [#1455](https://taxis.lana.merten.dev/issues/1455); statement strand: [#33](https://taxis.lana.merten.dev/issues/33), [#34](https://taxis.lana.merten.dev/issues/34), [#35](https://taxis.lana.merten.dev/issues/35), [#38](https://taxis.lana.merten.dev/issues/38), [#39](https://taxis.lana.merten.dev/issues/39), [#40](https://taxis.lana.merten.dev/issues/40), [#41](https://taxis.lana.merten.dev/issues/41), [#42](https://taxis.lana.merten.dev/issues/42), [#43](https://taxis.lana.merten.dev/issues/43), [#44](https://taxis.lana.merten.dev/issues/44), [#45](https://taxis.lana.merten.dev/issues/45); interface-discharge issues: [#276](https://taxis.lana.merten.dev/issues/276) (anabelian interface), [#277](https://taxis.lana.merten.dev/issues/277) (mod-ℓ torsion and representation), [#278](https://taxis.lana.merten.dev/issues/278) (container/log-volume/hull instantiation), [#279](https://taxis.lana.merten.dev/issues/279) (étale theta, anabelian side)

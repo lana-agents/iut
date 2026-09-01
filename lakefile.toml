@@ -22,6 +22,14 @@ name = "tate-curves-theta"
 git = "https://github.com/lana-agents/tate-curves-theta"
 rev = "90d7fac0e4ef2d6bf2a619326c30adb862d1b3de"
 
+# Arithmetic elliptic curves in general position (taxis #2): the height formalism and
+# Theorem 2.1, consumed by the ABC target statement and the implication strand
+# (taxis #1449, #1451, #1455).
+[[require]]
+name = "genl"
+git = "https://github.com/LANA-Project/genl"
+rev = "6e9a6543b46a2a02fd7fe7ec8ab203d878f32859"
+
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
 name = "Iut"
