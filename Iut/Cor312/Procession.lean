@@ -66,6 +66,9 @@ def card (S : Capsule ι) : ℕ := S.labels.card
 /-- The label set of a capsule, as a type. -/
 def LabelType (S : Capsule ι) : Type _ := S.labels
 
+instance [DecidableEq ι] (S : Capsule ι) : DecidableEq S.LabelType :=
+  inferInstanceAs (DecidableEq S.labels)
+
 instance (S : Capsule ι) : Fintype S.LabelType :=
   inferInstanceAs (Fintype S.labels)
 

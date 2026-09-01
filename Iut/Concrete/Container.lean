@@ -228,6 +228,11 @@ def scaled {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → LT.Fiber vQ
     (a : LT.Tensor vQ (LT.tuple vQ c)) : Set (LT.Tensor vQ (LT.tuple vQ c)) :=
   a • LT.integral vQ (LT.tuple vQ c)
 
+/-- The element `a·1` of the scaled integral structure `a·O` of a component. -/
+def scaledOne {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → LT.Fiber vQ)
+    (a : LT.Tensor vQ (LT.tuple vQ c)) : LT.Tensor vQ (LT.tuple vQ c) :=
+  a • (1 : LT.Tensor vQ (LT.tuple vQ c))
+
 /-- The projection of a region of the packet to a component. -/
 def proj {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → LT.Fiber vQ)
     (U : Set (LT.packet ι vQ).Total) : Set (LT.Tensor vQ (LT.tuple vQ c)) :=

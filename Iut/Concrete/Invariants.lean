@@ -80,8 +80,14 @@ lemma sum_prod_tuple_mul_sum (hw : ∑ e, w e = 1) (f : E → ℝ) :
   simp_rw [sum_prod_tuple_mul_coord w hw f]
   rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Finset.mul_sum]
 
-/-- The tuple weights sum to `1` when the weights do. -/
-lemma sum_prod_tuple_eq_one (hw : ∑ e, w e = 1) : ∑ c : ι → E, ∏ i, w (c i) = 1 := by
+omit [DecidableEq ι] in
+/-- The tuple weights sum to `1` when the weights do (for any `Fintype` instance on the
+tuples). -/
+lemma sum_prod_tuple_eq_one (hw : ∑ e, w e = 1) [inst : Fintype (ι → E)] :
+    ∑ c : ι → E, ∏ i, w (c i) = 1 := by
+  classical
+  rw [Subsingleton.elim inst Pi.instFintype]
+  clear inst
   rw [sum_prod_tuple, hw, one_pow]
 
 end Average
@@ -194,7 +200,7 @@ structure ArithmeticInputs where
   `log e_v ≤ −3 + 4·log(e*_mod·ℓ)`, with `e*_mod = 552960·e_mod`. -/
   ramIdx_bound : ∀ v : FinitePlace D.Kt, residueChar v - 2 < ramIdx D.Kt v →
     residueChar v ≤ 552960 * emod * D.ℓ ∧
-      Real.log (ramIdx D.Kt v) ≤ -3 + 4 * Real.log ((552960 * emod * D.ℓ : ℕ) : ℝ)
+      Real.log (ramIdx D.Kt v) ≤ -3 + 4 * Real.log (((552960 * emod : ℕ) : ℝ) * D.ℓ)
 
 variable {D LT TL QI}
 

@@ -53,11 +53,11 @@ variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 /-- **Corollary 2.3, statement (ii) of [GenEll], Theorem 2.1**: for every compactly
 bounded subset `K` of the tripod, every `d` and every `ε > 0`, the inequality
 `ht_{ω_ℙ(C)} ≲ (1 + ε)·(log-diff_ℙ + log-cond_C)` holds on `K ∩ U_ℙ(ℚ̄)^{≤d}`. -/
-theorem statementII_of_cor312
+theorem statementII_of_cor312 {P : Corollary312VariantData.{u, v} AG TG → Prop}
     (I : ∀ (K : T.CBS) (d : ℕ), Corollary22Inputs T K d)
-    (ex : ∀ K d, ThetaDataExistence.{u, v} (AG := AG) (TG := TG) (I K d))
+    (ex : ∀ K d, ThetaDataExistence P (I K d))
     (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
-    (h312 : ∀ X : Corollary312VariantData.{u, v} AG TG, Corollary312Variant X) :
+    (h312 : ∀ X : Corollary312VariantData.{u, v} AG TG, P X → Corollary312Variant X) :
     T.StatementII := by
   intro d ε hε K
   rcases Nat.eq_zero_or_pos d with hd0 | hd
@@ -113,14 +113,24 @@ theorem statementII_of_cor312
 
 /-- **The Corollary 3.12 variant implies ABC** (IUT IV, Corollary 2.3 = [GenEll],
 Theorem 2.1(i)), for every height formalism `T` equipped with its proof package and the
-standard inputs of Corollary 2.2, given the existence of suitable initial Θ-data and the
-prime-number-theorem inputs. The only IUT I–III input is `h312`. -/
-theorem cor312Variant_implies_abc (A : T.ProofPackage)
+standard inputs of Corollary 2.2, given the existence of suitable initial Θ-data (with
+data bundles satisfying `P`) and the prime-number-theorem inputs. The only IUT I–III input
+is `h312`, the variant for the data bundles satisfying `P`. -/
+theorem cor312Variant_implies_abc {P : Corollary312VariantData.{u, v} AG TG → Prop}
+    (A : T.ProofPackage) (I : ∀ (K : T.CBS) (d : ℕ), Corollary22Inputs T K d)
+    (ex : ∀ K d, ThetaDataExistence P (I K d))
+    (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
+    (h312 : ∀ X : Corollary312VariantData.{u, v} AG TG, P X → Corollary312Variant X) :
+    ABC T :=
+  T.statementII_implies_statementI A (statementII_of_cor312 I ex cheb pnt h312)
+
+/-- The unrestricted form: the variant for all data bundles implies ABC. -/
+theorem cor312Variant_implies_abc' (A : T.ProofPackage)
     (I : ∀ (K : T.CBS) (d : ℕ), Corollary22Inputs T K d)
-    (ex : ∀ K d, ThetaDataExistence.{u, v} (AG := AG) (TG := TG) (I K d))
+    (ex : ∀ K d, ThetaDataExistence (fun _ : Corollary312VariantData.{u, v} AG TG => True) (I K d))
     (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
     (h312 : ∀ X : Corollary312VariantData.{u, v} AG TG, Corollary312Variant X) :
     ABC T :=
-  T.statementII_implies_statementI A (statementII_of_cor312 I ex cheb pnt h312)
+  cor312Variant_implies_abc A I ex cheb pnt fun X _ => h312 X
 
 end Iut

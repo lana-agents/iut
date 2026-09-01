@@ -342,13 +342,15 @@ a Corollary 3.12 variant data bundle with its Theorem 1.10 invariants, certifica
 local estimates — whose `log(q)` is the part of `log(q_∀)` away from `2` and `ℓ`, with
 `d_mod ≤ d`, and whose different and conductor invariants match `log-diff_X(x)` and
 `log-cond_D(x)` (the equality and the two inequalities recorded at the end of the proof of
-Corollary 2.2).
+Corollary 2.2). The predicate `P` restricts the data bundles produced (e.g. to the concrete
+ones of `Iut.concreteVariantData`); the Corollary 3.12 variant is only assumed on them.
 
 This is the IUT-theoretic input of Corollary 2.2 (IUT I, Definition 3.1(d)–(f); *The
 Étale Theta Function*, Definitions 2.1–2.5): the construction of `C̲_K`, `V`, `ε` from
 the `SL₂` image. It is an open obligation of this repository, blocked on the anabelian
 interfaces (taxis #276, #279). -/
-structure ThetaDataExistence {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d) : Prop where
+structure ThetaDataExistence (P : Corollary312VariantData.{u, v} AG TG → Prop)
+    {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d) : Prop where
   thetaData : ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d), x ∉ I.excCore →
     ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
     (∀ v ∈ (I.localData x hx).bad, ¬ ℓ ∣ (I.localData x hx).hv v) →
@@ -356,7 +358,7 @@ structure ThetaDataExistence {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d)
       ((I.localData x hx).hv v : ℝ) < Real.sqrt (I.h x)) →
     (∃ v ∈ (I.localData x hx).bad, (I.localData x hx).p v ≠ 2 ∧ (I.localData x hx).p v ≠ ℓ) →
     I.SL2Image x ℓ →
-    ∃ (X : Corollary312VariantData.{u, v} AG TG) (inv : Theorem110Invariants X),
+    ∃ (X : Corollary312VariantData.{u, v} AG TG) (inv : Theorem110Invariants X), P X ∧
       Theorem110Certificate inv ∧ Nonempty inv.LocalEstimate ∧ X.ℓ = ℓ ∧ X.dmod ≤ d ∧
       X.qPilot.logQ = (I.localData x hx).heightOther 2 ℓ ∧
       T.logDiff T.tripod x = inv.logDtpd ∧
@@ -376,9 +378,9 @@ noncomputable def threshold (cheb : ChebyshevBound) : ℝ :=
 /-- **Corollary 2.2(ii), the inequality (C2)**: outside the exceptional set and above the
 threshold, `(1/6)·log(q_∀(x)) ≤ (1 + ε_E)·(log-diff_X(x) + log-cond_D(x)) + C_K` with
 `C_K = 40·η_prm + B_K/3`, `ε_E ≤ 1`, and `log-diff_X(x) + log-cond_D(x) ≥ 0`. -/
-theorem c2 (hd : 1 ≤ d) (ex : ThetaDataExistence.{u, v} (AG := AG) (TG := TG) I)
-    (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
-    (h312 : ∀ X : Corollary312VariantData.{u, v} AG TG, Corollary312Variant X)
+theorem c2 {P : Corollary312VariantData.{u, v} AG TG → Prop} (hd : 1 ≤ d)
+    (ex : ThetaDataExistence P I) (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
+    (h312 : ∀ X : Corollary312VariantData.{u, v} AG TG, P X → Corollary312Variant X)
     (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d) (hxe : x ∉ I.excCore)
     (hH : I.threshold cheb ≤ I.h x) :
     1 / 6 * I.h x ≤ (1 + epsilonE (deltaBound d) (I.h x)) *
@@ -513,12 +515,12 @@ theorem c2 (hd : 1 ≤ d) (ex : ThetaDataExistence.{u, v} (AG := AG) (TG := TG) 
   have hP6 : I.SL2Image x ℓ := by
     subst hLdef
     exact I.sl2_of x hx ℓ hℓp (by exact_mod_cast hℓ5) hP2 hP4 hP5'
-  obtain ⟨X, inv, cert, ⟨est⟩, hXℓ, hXd, hXq, hDiff, hCond1, hCond2⟩ :=
+  obtain ⟨X, inv, hPX, cert, ⟨est⟩, hXℓ, hXd, hXq, hDiff, hCond1, hCond2⟩ :=
     ex.thetaData x hx hxe ℓ hℓp hℓ7 (hLdef ▸ hP2) (by rw [← hLdef, ← hhdef, ← hrdef]; exact hP3)
       (hLdef ▸ hP5') hP6
   rw [← hLdef] at hXq
   -- Theorem 1.10
-  have h110 := inv.theorem110 cert est pnt (h312 X)
+  have h110 := inv.theorem110 cert est pnt (h312 X hPX)
   rw [hXℓ, hXq] at h110
   -- the constants of Theorem 1.10 in terms of `δ`
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
