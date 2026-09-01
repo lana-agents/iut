@@ -129,9 +129,7 @@ structure LocalTheory extends LocalTensor.{u, v} K where
   /-- Local degrees are positive. -/
   localDeg_pos : ∀ w, 0 < localDeg K w
   /-- `∑_{w ∣ p} [K_w : ℚ_p] = [K : ℚ]` (`Ideal.sum_ramification_inertia`). -/
-  sum_localDeg : ∀ p : ℕ, p.Prime →
-    haveI := fiber_finite p
-    haveI := Fintype.ofFinite {w : FinitePlace K // residueChar w = p}
+  sum_localDeg : ∀ p : ℕ, p.Prime → ∀ [Fintype {w : FinitePlace K // residueChar w = p}],
     ∑ w : {w : FinitePlace K // residueChar w = p}, localDeg K w.1 = Module.finrank ℚ K
   /-- `∑_{w ∣ ∞} [K_w : ℝ] = [K : ℚ]` (`NumberField.InfinitePlace.sum_mult_eq`). -/
   sum_mult : ∑ w : InfinitePlace K, w.mult = Module.finrank ℚ K
