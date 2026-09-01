@@ -113,9 +113,10 @@ structure LogVolumeData (D : LargeVolumeContainerData.{u₁, u₂, v} ι V) :
   tensor-packet weight `packetWeight` — the product of the place weights over the
   labels — attached to each component. This combines the direct summands over
   `v ∣ v_Q` by the normalized place weights and the tensor factors by the
-  tensor-packet convention. -/
+  tensor-packet convention. Stated for regions with nonempty components (the empty
+  product is outside the finite nonzero volume regime). -/
   packetVol_product : ∀ i vQ (U : ∀ c : D.Components i vQ,
-      Set ((D.packet i vQ).Summand c)),
+      Set ((D.packet i vQ).Summand c)), (∀ c, (U c).Nonempty) →
     packetVol i vQ ((D.packet i vQ).productRegion U) =
       ∑ c, (∏ j, weight vQ (c j)) * componentVol i vQ c (U c)
 
@@ -130,10 +131,11 @@ def packetWeight (i : Fin D.proc.length) (vQ : RationalPlace)
   ∏ j, vol.weight vQ (c j)
 
 lemma packetVol_product' (i : Fin D.proc.length) (vQ : RationalPlace)
-    (U : ∀ c : D.Components i vQ, Set ((D.packet i vQ).Summand c)) :
+    (U : ∀ c : D.Components i vQ, Set ((D.packet i vQ).Summand c))
+    (hU : ∀ c, (U c).Nonempty) :
     vol.packetVol i vQ ((D.packet i vQ).productRegion U) =
       ∑ c, vol.packetWeight i vQ c * vol.componentVol i vQ c (U c) :=
-  vol.packetVol_product i vQ U
+  vol.packetVol_product i vQ U hU
 
 /-- Packet weights are positive. -/
 lemma packetWeight_pos (i : Fin D.proc.length) (vQ : RationalPlace)
