@@ -154,13 +154,13 @@ target statements (see the taxis issues linked from #1449):
 
 | Input | Content | Owner |
 | --- | --- | --- |
-| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | padic-log-volume (#4, #278) |
-| `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | tate-curves-theta (#13) |
-| `Iut.QPilotInputs D` | finiteness of the bad locus, residue degrees positive | elliptic-reduction (#5) |
-| `Iut.ArithmeticInputs D`, Steps (ii), (iii), `ℓ ≥ 7` | different/conductor degrees of `F_tpd`, `e_mod`, (R4) | this repository, with Props 1.3, 1.8 delegated |
-| `Iut.PrimeCountingBound`, `Iut.ChebyshevBound` | Propositions 1.6, 2.1(ii) | prime-counting (#6) |
-| `Iut.Corollary22Inputs T K d`, `Genl.HeightTheory.ProofPackage` | [GenEll] §§1, 3, Theorem 2.1 inputs; [CanLift] Prop 2.7 | genl (#1452), orbicurve-cores (#10) |
-| `Iut.ConcreteThetaDataExistence` | existence of suitable initial Θ-data ((P7); anabelian part) | this repository, blocked on #276, #279 |
+| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | padic-log-volume, [#1462](https://taxis.lana.merten.dev/issues/1462) |
+| `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | tate-curves-theta, [#1464](https://taxis.lana.merten.dev/issues/1464) |
+| `Iut.QPilotInputs D` | finiteness of the bad locus, residue degrees positive | elliptic-reduction, [#1465](https://taxis.lana.merten.dev/issues/1465) |
+| `Iut.ArithmeticInputs D`, Steps (ii), (iii), `ℓ ≥ 7` | different/conductor degrees of `F_tpd`, `e_mod`, (R4) | this repository, [#1468](https://taxis.lana.merten.dev/issues/1468) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
+| `Iut.PrimeCountingBound`, `Iut.ChebyshevBound` | Propositions 1.6, 2.1(ii) | prime-counting, [#1466](https://taxis.lana.merten.dev/issues/1466) |
+| `Iut.Corollary22Inputs T K d`, `Genl.HeightTheory.ProofPackage` | [GenEll] §§1, 3, Theorem 2.1 inputs; [CanLift] Prop 2.7 | genl, [#1467](https://taxis.lana.merten.dev/issues/1467) |
+| `Iut.ConcreteThetaDataExistence` | existence of suitable initial Θ-data ((P7); anabelian part) | this repository, [#1469](https://taxis.lana.merten.dev/issues/1469), blocked on #276, #279 |
 
 ## Comparator suite
 
