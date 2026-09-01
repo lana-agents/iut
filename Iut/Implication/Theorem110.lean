@@ -32,7 +32,7 @@ What is proved here, following the printed proof step by step:
   archimedean place;
 * Step (viii): the sum over `v_ℚ`, the substitution of Corollary 3.12, the estimate
   `l*_mod·log(s^≤) ≤ (4/3)·(e*_mod·ℓ + η_prm)` from Proposition 1.6
-  (`lmod_mul_logSle_le`), the combination with Steps (ii)–(iii), and the final constant
+  (`lmod_mul_logSle_le`), the combination with Steps (ii)–(iii), and the final number
   tracking (`assembly`).
 -/
 
@@ -71,7 +71,7 @@ lemma log_pi_le_two : Real.log Real.pi ≤ 2 := by
 lemma log_pi_nonneg : 0 ≤ Real.log Real.pi :=
   Real.log_nonneg (by linarith [Real.pi_gt_three])
 
-/-- The final constant tracking of Step (viii), as an inequality between real numbers.
+/-- The final numerical bookkeeping of Step (viii), as an inequality between real numbers.
 The hypotheses are: `h1`, the summed local bound after substitution of Corollary 3.12
 (cleared of denominators); `h2`, `h3`, Steps (ii) and (iii); `h4`, the Proposition 1.6
 bound. -/

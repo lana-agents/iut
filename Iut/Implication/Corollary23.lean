@@ -74,7 +74,7 @@ theorem statementII_of_cor312 {P : Corollary312VariantData.{u, v} AG TG → Prop
   set Exc : Set (T.Pt T.tripod) :=
     (Id.excCore ∩ S) ∪ {x | x ∈ S ∧ Id.h x ≤ H} with hExc
   have hExc_fin : Exc.Finite := Id.excCore_finite.union (Id.northcott H)
-  -- on `S ∖ Exc`, Corollary 2.2 gives the inequality with a uniform constant
+  -- on `S ∖ Exc`, Corollary 2.2 gives the inequality with a uniform number
   have hgood : Id.h ≲[S \ Exc]
       (6 * (1 + ε)) • (T.logDiff T.tripod + T.logCond T.tripod) := by
     refine ⟨6 * (40 * pnt.η + Id.B / 3), fun x hx => ?_⟩

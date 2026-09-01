@@ -306,10 +306,10 @@ structure Corollary22Inputs (K : T.CBS) (d : ℕ) where
   /-- The contribution of the places over `2` is bounded on `K_V`. -/
   heightEq_two_le : ∀ (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
     (localData x hx).heightEq 2 ≤ B
-  /-- `E_x` admits an `ℓ`-cyclic subgroup scheme (in the terminology of [GenEll],
+  /-- `E_x` has an `ℓ`-cyclic subgroup scheme (in the terminology of [GenEll],
   Lemma 3.5). -/
   HasCyclicSubgroup : T.Pt T.tripod → ℕ → Prop
-  /-- The constant `T_K` of [GenEll], Lemma 3.5 (with `ε = 1`). -/
+  /-- The number `T_K` of [GenEll], Lemma 3.5 (with `ε = 1`). -/
   TK : ℝ
   /-- **[GenEll], Lemma 3.5 with Proposition 3.4**: an `ℓ`-cyclic subgroup scheme forces
   `((ℓ−2)/24)·log(q_∀) ≤ 2·log ℓ + T_K`. -/
@@ -326,7 +326,7 @@ structure Corollary22Inputs (K : T.CBS) (d : ℕ) where
     ¬ HasCyclicSubgroup x ℓ →
     (∃ v ∈ (localData x hx).bad, (localData x hx).p v ≠ 2 ∧ (localData x hx).p v ≠ ℓ) →
     SL2Image x ℓ
-  /-- The points whose once-punctured elliptic curve fails to admit an `F`-core
+  /-- The points whose once-punctured elliptic curve fails to have an `F`-core
   ([CanLift], Proposition 2.7: four `j`-invariants; taxis #10). -/
   excCore : Set (T.Pt T.tripod)
   /-- Finitely many such points of bounded degree. -/
@@ -522,7 +522,7 @@ theorem c2 {P : Corollary312VariantData.{u, v} AG TG → Prop} (hd : 1 ≤ d)
   -- Theorem 1.10
   have h110 := inv.theorem110 cert est pnt (h312 X hPX)
   rw [hXℓ, hXq] at h110
-  -- the constants of Theorem 1.10 in terms of `δ`
+  -- the numerical factors of Theorem 1.10 in terms of `δ`
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
   have hdmod : 20 * (X.dmod : ℝ) ≤ deltaBound d := by
     have : (X.dmod : ℝ) ≤ d := by exact_mod_cast hXd

@@ -17,9 +17,8 @@ It carries two strands:
 * **The implication to ABC.** The proof that the Corollary 3.12 variant implies the ABC
   conjecture, via IUT IV §1 (Theorem 1.10, the `Iut4Sec1` strand) and §2 (Corollaries
   2.2 and 2.3, using [`LANA-Project/genl`](https://github.com/LANA-Project/genl)).
-  Tracked as taxis [#1449](https://taxis.lana.merten.dev/issues/1449). The ABC target
-  statement itself is [#1451](https://taxis.lana.merten.dev/issues/1451) and is not yet
-  in the repository.
+  Tracked as taxis [#1449](https://taxis.lana.merten.dev/issues/1449); the main theorems
+  are `Iut.cor312Variant_implies_abc` and `Iut.cor312Variant_implies_abc_concrete`.
 
 Mochizuki's *Arithmetic Elliptic Curves in General Position* is **not** developed here;
 it lives in [`LANA-Project/genl`](https://github.com/LANA-Project/genl).
@@ -78,30 +77,90 @@ proof and without axiom. The stack beneath it:
 * **Initial Θ-data** (IUT I, Definition 3.1; taxis #38–#42):
   [`Iut/Cor312/ThetaData/`](Iut/Cor312/ThetaData). Reduction predicates, the field of
   moduli `ℚ(j)`, torsion rationality, the mod-`ℓ` representation pinned to the genuine
-  Galois action on `E(F̄)[ℓ]`, and the `ℓ`-torsion field `K` (defined as the fixed
-  field of the kernel, with finiteness *proved* from openness) are real Mathlib
-  content; orbicurves, fundamental groups and tempered groups enter through the
-  explicit interfaces `Iut.AnabelianGeometry` / `Iut.TemperedGeometry` (seams for
-  taxis #7, #10, #11, #13). Bad-place Tate `q`-parameters come from
-  [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta)
-  (taxis #37), pinned by the `j`-invariant characterization.
-* **The large volume container** (taxis #43): processions/capsules with the label
-  sets `S_{j+1}`, tensor-packets presented as direct sums of fields indexed by tuples
-  of places (retaining the `v_Q`-decomposition and procession labels), log-shells,
-  the restricted-product global container, and admissible regions
-  ([`Iut/Cor312/Container.lean`](Iut/Cor312/Container.lean) and neighbours).
-* **Log-volume** (taxis #44) and the **holomorphic hull** (taxis #45): normalization
-  and combination laws as explicit interface fields; the hull's fixed-point,
-  extensivity, monotonicity and intersection-characterization properties are proved,
-  and the hull is a Mathlib `ClosureOperator` on admissible regions.
+  Galois action on `E(F̄)[ℓ]`, and the `ℓ`-torsion field `K` are real Mathlib content;
+  orbicurves, fundamental groups and tempered groups enter through the explicit
+  interfaces `Iut.AnabelianGeometry` / `Iut.TemperedGeometry` (seams for taxis #7, #10,
+  #11, #13; discharge tracked in #276, #279). Bad-place Tate `q`-parameters come from
+  [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta) (taxis #37).
+* **The large volume container, log-volume, and holomorphic hull** (taxis #43–#45):
+  [`Iut/Cor312/Container.lean`](Iut/Cor312/Container.lean),
+  [`LogVolume.lean`](Iut/Cor312/LogVolume.lean),
+  [`HolomorphicHull.lean`](Iut/Cor312/HolomorphicHull.lean) and neighbours. Interface
+  amendments made for the concrete instantiation: packet summands are commutative rings
+  (the tensor products of local fields are products of fields), integral structures are
+  sets (the archimedean one is the unit ball), and the packet-volume combination law is
+  stated for nonempty components.
 * **LHS/RHS** (taxis #34/#35): `−|log(q)|` from the bad-place `q`-orders with the
-  `(1/2ℓ)` normalization recorded in IUT IV, and the procession-normalized log-volume
-  of the holomorphic hull of the theta-pilot region (the region itself is input data:
-  no multiradial algorithm is constructed).
+  `(1/2ℓ)` normalization recorded in IUT IV, and the procession-normalized log-volume of
+  the holomorphic hull of the theta-pilot region.
 
-Per the honesty boundary, every unproved obligation is an explicit structure field of
-an interface or an input bundle — never an axiom — and the variant is not identified
-with the published Corollary 3.12.
+### Concrete instantiation of the inputs (`Iut/Concrete/`)
+
+Every input of the variant except the anabelian interfaces is now given a concrete
+implementation, with the standard mathematics it needs isolated in explicit structures
+whose fields are the target statements of the sibling projects:
+
+* [`LocalTheory.lean`](Iut/Concrete/LocalTheory.lean) — `Iut.LocalTheory K`: the
+  local-field theory of the tensor packets `⊗_j K_{v_j}` of a number field (integral
+  structures, log-shells, normalized Haar log-volume, least hull regions, the
+  indeterminacy automorphisms of IUT IV Proposition 1.2, and Propositions 1.4(iii),(iv),
+  1.5(iii),(iv)). Ramification indices, residue degrees, weights, `ord_p` and the
+  different exponents are defined from Mathlib. Delegated to
+  [`padic-log-volume`](https://github.com/lana-agents/padic-log-volume) (taxis #4, #278).
+* [`Container.lean`](Iut/Concrete/Container.lean) — the container, log-volume data
+  (weights `[K_v : ℚ_p]/[K : ℚ]` summing to `1`) and hull system, all proved from
+  `LocalTheory`.
+* [`ThetaRegion.lean`](Iut/Concrete/ThetaRegion.lean) — `Iut.ThetaLocalData` (the
+  `2ℓ`-th roots of the Tate parameters at the bad places of `K`; delegated to
+  `tate-curves-theta`), the **concrete theta-pilot region**: the union over the
+  indeterminacy automorphisms of the images of `q_{v_j}^{j²}·(R_I)^∼` (IUT IV, Step (v)),
+  the concrete `q`-pilot data (`Iut.QPilotInputs`: finiteness of the bad locus, delegated
+  to `elliptic-reduction`), and `Iut.concreteVariantData`, the assembled bundle.
+
+## Implication strand (`Iut/Implication`, `Iut/Concrete`)
+
+The proof that the Corollary 3.12 variant implies ABC, along IUT IV
+(taxis [#1449](https://taxis.lana.merten.dev/issues/1449)). Main theorems, all
+sorry-free with standard axioms only:
+
+* `Iut.Theorem110Invariants.theorem110`
+  ([`Iut/Implication/Theorem110.lean`](Iut/Implication/Theorem110.lean)) — IUT IV,
+  Theorem 1.10, `(1/6)·log(q) ≤ (1 + 20·d_mod/ℓ)·(log d_{F_tpd} + log f_{F_tpd}) +
+  20·(e*_mod·ℓ + η_prm)`, from the variant, the local estimates of Steps (iv)–(vii), the
+  arithmetic certificate of Steps (ii)–(iii), and the prime-counting bound of
+  Proposition 1.6. The procession average (E1), (E2) and the constant tracking of
+  Step (viii) are proved.
+* `Iut.LocalHeightData.exists_prime_selection`
+  ([`PrimeSelection.lean`](Iut/Implication/PrimeSelection.lean)) — Proposition 2.1(ii)
+  and the choice of the prime `ℓ` with (P1)–(P3), from Chebyshev bounds.
+* `Iut.Corollary22Inputs.c2` ([`Corollary22.lean`](Iut/Implication/Corollary22.lean)) —
+  Corollary 2.2(ii),(iii): the inequality (C2) with `ε_E ≤ 1` outside a finite set,
+  including the arguments for (P4), (P5) at large height.
+* `Iut.cor312Variant_implies_abc` ([`Corollary23.lean`](Iut/Implication/Corollary23.lean))
+  — Corollary 2.3 and ABC, via genl's Theorem 2.1 (ii) ⇒ (i).
+* `Iut.cor312Variant_implies_abc_concrete` ([`Iut/Concrete/Main.lean`](Iut/Concrete/Main.lean))
+  — the same with the variant assumed only for the concrete data bundles, and the local
+  estimates of Theorem 1.10 *derived* for the concrete theta-pilot region
+  ([`LocalEstimate.lean`](Iut/Concrete/LocalEstimate.lean): Propositions 1.4/1.5, the
+  weighted average of Proposition 1.7, and (R4)).
+
+The ABC target is `Iut.ABC T := T.StatementI` ([`Iut/Abc/Target.lean`](Iut/Abc/Target.lean)),
+[GenEll] Theorem 2.1(i) for a height formalism `T` of
+[`LANA-Project/genl`](https://github.com/LANA-Project/genl); the concrete height theory is
+taxis #1452.
+
+Remaining explicit inputs of the main theorem, each a structure whose fields are precise
+target statements (see the taxis issues linked from #1449):
+
+| Input | Content | Owner |
+| --- | --- | --- |
+| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | padic-log-volume (#4, #278) |
+| `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | tate-curves-theta (#13) |
+| `Iut.QPilotInputs D` | finiteness of the bad locus, residue degrees positive | elliptic-reduction (#5) |
+| `Iut.ArithmeticInputs D`, Steps (ii), (iii), `ℓ ≥ 7` | different/conductor degrees of `F_tpd`, `e_mod`, (R4) | this repository, with Props 1.3, 1.8 delegated |
+| `Iut.PrimeCountingBound`, `Iut.ChebyshevBound` | Propositions 1.6, 2.1(ii) | prime-counting (#6) |
+| `Iut.Corollary22Inputs T K d`, `Genl.HeightTheory.ProofPackage` | [GenEll] §§1, 3, Theorem 2.1 inputs; [CanLift] Prop 2.7 | genl (#1452), orbicurve-cores (#10) |
+| `Iut.ConcreteThetaDataExistence` | existence of suitable initial Θ-data ((P7); anabelian part) | this repository, blocked on #276, #279 |
 
 ## Comparator suite
 
@@ -123,7 +182,7 @@ lake exe vbp build --serve
 
 | Library | Contents |
 | --- | --- |
-| `Iut` | Corollary 3.12 variant (the ABC target statement is planned, taxis #1451) |
+| `Iut` | Corollary 3.12 variant, its concrete instantiation, and the implication to ABC |
 | `Iut4Sec1` | IUT IV, Section 1 |
 | `Challenge` / `Solution` | Comparator suite roots (separate environments) |
 

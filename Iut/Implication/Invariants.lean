@@ -19,7 +19,7 @@ statement involves a handful of arithmetic invariants of the initial Θ-data:
   conductor divisors of the tripodal field `F_tpd = F_mod(E[2])`;
 * the set `V_ℚ^dst` of "distinguished" rational primes (those ramifying in `K`), and the
   local contributions `log(d^K_{v_ℚ})` of the different divisor of `K` at each of them;
-* the constant `η_prm` of IUT IV, Proposition 1.6 (a prime-counting bound).
+* the number `η_prm` of IUT IV, Proposition 1.6 (a prime-counting bound).
 
 ## Honesty boundary
 
