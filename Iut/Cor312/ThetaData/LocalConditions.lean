@@ -116,12 +116,14 @@ structure TemperedGeometry (AG : AnabelianGeometry.{u}) : Type (u + 1) where
   theta function** (*The Étale Theta Function*, Definition 2.5). The precise content
   of this predicate is supplied by the étale-theta continuation of taxis #13; here it
   is an interface predicate consumed by the bad-place conditions. -/
-  IsThetaRootModel : {k : Type u} → [Field k] → (ℓ : ℕ) → AG.Orbicurve k → Prop
+  IsThetaRootModel : {k : Type u} → [Field k] → [Valued k (WithZero (Multiplicative ℤ))] →
+    (ℓ : ℕ) → AG.Orbicurve k → Prop
   /-- The cusp associated to the **canonical generator `±1` of the graph quotient** of
   an orbicurve over a complete nonarchimedean field with stable multiplicative-type
   reduction (*The Étale Theta Function*, Definition 2.5; junk value outside that
-  regime). -/
-  canonicalGraphCusp : {k : Type u} → [Field k] → (X : AG.Orbicurve k) → AG.Cusp X
+  regime). Like `IsTypeOneZModPM`, it sees the valuation of the base field. -/
+  canonicalGraphCusp : {k : Type u} → [Field k] → [Valued k (WithZero (Multiplicative ℤ))] →
+    (X : AG.Orbicurve k) → AG.Cusp X
 
 /-! ## The valuation section and local data -/
 

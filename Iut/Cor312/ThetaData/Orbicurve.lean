@@ -112,9 +112,12 @@ structure AnabelianGeometry : Type (u + 1) where
   IsTypeOneEllTors : {k : Type u} → [Field k] → (ℓ : ℕ) → Orbicurve k → Prop
   /-- An orbicurve is of type `(1, ℓ-tors)^±` (*Étale Theta*, Definition 2.1). -/
   IsTypeOneEllTorsPM : {k : Type u} → [Field k] → (ℓ : ℕ) → Orbicurve k → Prop
-  /-- An orbicurve is of type `(1, ℤ/ℓℤ)^±` (*Étale Theta*, Definition 2.5; used by
-  the local conditions at bad places, taxis #42). -/
-  IsTypeOneZModPM : {k : Type u} → [Field k] → (ℓ : ℕ) → Orbicurve k → Prop
+  /-- An orbicurve over a valued field is of type `(1, ℤ/ℓℤ)^±` (*Étale Theta*,
+  Definition 2.5; used by the local conditions at bad places, taxis #42). The predicate
+  refers to the reduction of the orbicurve, hence sees the valuation of the base field
+  (a `Valued k ℤᵐ⁰` structure: the local fields of the Θ-data are adic completions). -/
+  IsTypeOneZModPM : {k : Type u} → [Field k] → [Valued k (WithZero (Multiplicative ℤ))] →
+    (ℓ : ℕ) → Orbicurve k → Prop
   /-- The rank-one quotient `Q` attached to an orbicurve of type `(1, ℓ-tors)^±`
   (IUT I, Definition 3.1(f): the quotient of the module of cuspidal data that is free
   of rank one over `ℤ/ℓℤ`). For orbicurves not of that type the value is junk. -/

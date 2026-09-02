@@ -1,4 +1,7 @@
 import Iut.Abc.Target
+import Iut.Anabelian.Geometry
+import Iut.Anabelian.Local
+import Iut.Anabelian.Model
 import Iut.Basic
 import Iut.Concrete.Container
 import Iut.Concrete.Existence
