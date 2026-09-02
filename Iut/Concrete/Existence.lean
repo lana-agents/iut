@@ -284,8 +284,10 @@ end EllipticCurveData
 
 /-- **Existence of the anabelian part of initial Θ-data** (IUT I, Definition 3.1(d)–(f);
 *The Étale Theta Function*, Definitions 2.1–2.5; taxis #276, #279): for every admissible
-prime datum over global data, there are orbicurve data `C̲_K`, `X̲_K`, `ε` and local
-theta data `V`. -/
+prime datum over global data whose once-punctured curve `X_F` admits the `F`-core
+`C_F = X_F/{±1}` ([CanLift], Proposition 2.7; taxis #10), there are orbicurve data `C̲_K`,
+`X̲_K`, `ε` and local theta data `V`. Proved for the linear-algebraic model of the
+anabelian interface in `Iut.Anabelian.Existence`. -/
 structure AnabelianExistence (AG : AnabelianGeometry.{u}) (TG : TemperedGeometry AG) :
     Prop where
   /-- The existence statement. -/
@@ -295,6 +297,7 @@ structure AnabelianExistence (AG : AnabelianGeometry.{u}) (TG : TemperedGeometry
     [NumberField ↥P.torsionField] [Algebra ↥(fieldOfModuli F E) ↥P.torsionField]
     [IsScalarTower ↥(fieldOfModuli F E) F ↥P.torsionField],
     IsInitialThetaGlobalData F E Fbar VBad →
+    AG.HasCore (AG.oncePunctured E) (CF AG F E) →
     ∃ O : OrbicurveData AG F E Fbar VBad P,
       Nonempty (LocalThetaData AG TG F E Fbar VBad P O)
 
@@ -307,13 +310,14 @@ variable (C : EllipticCurveData.{u}) (CA : C.CurveArithmetic) (TI : C.TateInputs
   (hP2 : ∀ w (hw : w ∈ C.badAll), ¬ ℓ ∣ TI.qOrder w hw)
   (hP5 : ∃ w ∈ C.badAll, residueChar w ≠ 2 ∧ residueChar w ≠ ℓ)
   (anab : AnabelianExistence AG TG)
+  (hcore : AG.HasCore (AG.oncePunctured C.E) (OrbicurveDataSection.CF AG C.F C.E))
 
 /-- **The initial Θ-data attached to `(E/F, ℓ)`** (IUT I, Definition 3.1; (P7) in the
 proof of IUT IV, Corollary 2.2), with `V_mod^bad = VBadOf ℓ`. -/
 noncomputable def thetaData : InitialThetaData AG TG :=
   letI := (C.primeData CA TI hℓ h7 R hsl hP2).numberField_torsionField
   let h := anab.exists_data C.F C.E C.Fbar (C.VBadOf ℓ) (C.primeData CA TI hℓ h7 R hsl hP2)
-    (C.globalData CA hP5)
+    (C.globalData CA hP5) hcore
   { F := C.F
     Fbar := C.Fbar
     E := C.E
@@ -325,17 +329,17 @@ noncomputable def thetaData : InitialThetaData AG TG :=
 
 /-- The `q`-pilot inputs of the constructed Θ-data: the bad locus is finite and residue
 degrees are positive. -/
-theorem qPilotInputs : QPilotInputs (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab) where
+theorem qPilotInputs : QPilotInputs (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore) where
   bad_finite := CA.badAll_finite.subset fun _ hw => C.mem_badAll_of_mem_badPlacesOver hw
   inertDeg_pos := CA.inertDeg_pos
 
 open scoped Classical in
 /-- **`log(q)` of the constructed Θ-data is the part of `log(q_∀)` away from `2` and
 `ℓ`.** -/
-theorem logQ_eq (LT : LocalTheory.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab).Kt)
-    (TL : ThetaLocalData (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab) LT) :
-    (concreteVariantData.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab) LT TL
-      (C.qPilotInputs CA TI hℓ h7 R hsl hP2 hP5 anab)).qPilot.logQ =
+theorem logQ_eq (LT : LocalTheory.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore).Kt)
+    (TL : ThetaLocalData (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore) LT) :
+    (concreteVariantData.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore) LT TL
+      (C.qPilotInputs CA TI hℓ h7 R hsl hP2 hP5 anab hcore)).qPilot.logQ =
       (C.localHeightData CA TI).heightOther 2 ℓ := by
   have hfin : (badPlacesOver C.F C.E (C.VBadOf ℓ)).Finite :=
     CA.badAll_finite.subset fun _ hw => C.mem_badAll_of_mem_badPlacesOver hw
@@ -366,7 +370,7 @@ end EllipticCurveData
 
 /-! ## The inputs of Corollary 2.2 in terms of curves -/
 
-variable (T : Genl.HeightTheory)
+variable (T : Genl.HeightTheory) (AG : AnabelianGeometry.{u})
 
 /-- **The inputs of IUT IV, Corollary 2.2 in terms of the curves of the points**: to each
 point `x` of `K_V ∩ U_X(ℚ̄)^{≤d}` is attached an elliptic curve `E_x` over the number
@@ -420,10 +424,12 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
       ((curve x hx).localHeightData (arith x hx) (tate x hx)).p w ≠ 2 ∧
       ((curve x hx).localHeightData (arith x hx) (tate x hx)).p w ≠ ℓ) →
     ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (modRep x hx ℓ).rep.range
-  /-- The points whose once-punctured elliptic curve fails to have an `F`-core. -/
-  excCore : Set (T.Pt T.tripod)
-  /-- Finitely many such points of bounded degree. -/
-  excCore_finite : (excCore ∩ (T.cbsSet K ∩ T.ptLE T.tripod d)).Finite
+  /-- **[CanLift], Proposition 2.7** (taxis #10): only finitely many points of bounded
+  degree have a once-punctured elliptic curve `X_x` that fails to admit the `F_x`-core
+  `C_x = X_x/{±1}`. -/
+  excCore_finite : {x | ∃ hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d,
+    ¬ AG.HasCore (AG.oncePunctured (curve x hx).E)
+      (OrbicurveDataSection.CF AG (curve x hx).F (curve x hx).E)}.Finite
   /-- `log-diff_X(x)` is the normalized degree of the different of `F_tpd`. -/
   logDiff_eq : ∀ x hx,
     T.logDiff T.tripod x = logDifferentDeg ↥(tripodalFieldOf (curve x hx).F (curve x hx).E)
@@ -438,11 +444,17 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
       logConductorDegOf (curve x hx).F (curve x hx).E ((curve x hx).VBadOf ℓ) +
         Real.log (2 * ℓ)
 
-variable {T}
+variable {T AG}
 
 namespace CurveInputs
 
-variable {K : T.CBS} {d : ℕ} (CI : CurveInputs.{u} T K d)
+variable {K : T.CBS} {d : ℕ} (CI : CurveInputs.{u} T AG K d)
+
+/-- The points whose once-punctured elliptic curve fails to admit an `F`-core. -/
+def excCore : Set (T.Pt T.tripod) :=
+  {x | ∃ hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d,
+    ¬ AG.HasCore (AG.oncePunctured (CI.curve x hx).E)
+      (OrbicurveDataSection.CF AG (CI.curve x hx).F (CI.curve x hx).E)}
 
 /-- The inputs of Corollary 2.2 derived from the curves. -/
 noncomputable def toCorollary22Inputs : Corollary22Inputs T K d where
@@ -462,9 +474,9 @@ noncomputable def toCorollary22Inputs : Corollary22Inputs T K d where
     A.toGL ∈ (CI.modRep x hx ℓ).rep.range
   sl2_of x hx ℓ hp h5 hP2 hcyc hP5 _ := CI.sl2_of x hx ℓ hp h5 hP2 hcyc hP5
   excCore := CI.excCore
-  excCore_finite := CI.excCore_finite
+  excCore_finite := CI.excCore_finite.subset Set.inter_subset_left
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
+variable {TG : TemperedGeometry AG}
 
 open scoped Classical in
 /-- **Existence of suitable initial Θ-data** ((P7) in the proof of IUT IV, Corollary 2.2)
@@ -476,7 +488,11 @@ theorem concreteThetaDataExistence (anab : AnabelianExistence AG TG)
     (TAp : ∀ (D : InitialThetaData AG TG) (LT : LocalTheory.{u, v} D.Kt)
       (TL : ThetaLocalData D LT), TowerArithmetic D LT TL) :
     ConcreteThetaDataExistence.{u, v} (AG := AG) (TG := TG) CI.toCorollary22Inputs := by
-  intro x hx _ ℓ hℓ h7 hP2 hP3 hP5 hsl
+  intro x hx hxe ℓ hℓ h7 hP2 hP3 hP5 hsl
+  have hcore : AG.HasCore (AG.oncePunctured (CI.curve x hx).E)
+      (OrbicurveDataSection.CF AG (CI.curve x hx).F (CI.curve x hx).E) := by
+    by_contra h
+    exact hxe ⟨hx, h⟩
   have hP2' : ∀ w (hw : w ∈ (CI.curve x hx).badAll), ¬ ℓ ∣ (CI.tate x hx).qOrder w hw := by
     intro w hw
     have := hP2 w ((CI.arith x hx).badAll_finite.mem_toFinset.mpr hw)
@@ -487,14 +503,14 @@ theorem concreteThetaDataExistence (anab : AnabelianExistence AG TG)
     obtain ⟨w, hw, h⟩ := hP5
     exact ⟨w, (CI.arith x hx).badAll_finite.mem_toFinset.mp hw, h⟩
   let D := (CI.curve x hx).thetaData (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-    (hsl hx) hP2' hP5' anab
+    (hsl hx) hP2' hP5' anab hcore
   refine ⟨D, LTp D, TLp D (LTp D),
     (CI.curve x hx).qPilotInputs (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-      (hsl hx) hP2' hP5' anab,
+      (hsl hx) hP2' hP5' anab hcore,
     TAp _ _ _, rfl, CI.dmod_le x hx, ?_, CI.logDiff_eq x hx, CI.logCond_ge x hx ℓ hℓ h7,
     CI.logCond_le x hx ℓ hℓ h7⟩
   exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-    (hsl hx) hP2' hP5' anab _ _
+    (hsl hx) hP2' hP5' anab hcore _ _
 
 end CurveInputs
 
@@ -502,7 +518,7 @@ end CurveInputs
 curve inputs of Corollary 2.2, the anabelian existence, the universal providers, and the
 analytic inputs. -/
 theorem cor312Variant_implies_abc_curves {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
-    (A : T.ProofPackage) (CI : ∀ (K : T.CBS) (d : ℕ), CurveInputs.{u} T K d)
+    (A : T.ProofPackage) (CI : ∀ (K : T.CBS) (d : ℕ), CurveInputs.{u} T AG K d)
     (anab : AnabelianExistence AG TG)
     (LTp : ∀ D : InitialThetaData AG TG, LocalTheory.{u, v} D.Kt)
     (TLp : ∀ (D : InitialThetaData AG TG) (LT : LocalTheory.{u, v} D.Kt), ThetaLocalData D LT)

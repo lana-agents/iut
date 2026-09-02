@@ -40,9 +40,11 @@ records exactly this data: `(E, ℓ, M, ±)`. Then
 ## The residual interface
 
 Étale fundamental groups of the model orbicurves, the open immersions attached to
-covers, and the notion of `k`-core are the content of `Iut.Anabelian.EtalePi1Theory`, an
-explicit residual interface (taxis #276, #7, #10): the model only records the shapes on
-which these are evaluated. Every other field of `Iut.AnabelianGeometry` is constructed.
+covers, and the notion of `k`-core (with its two stability properties: orbicurves related
+by a finite étale cover have the same cores, and cores are compatible with base change)
+are the content of `Iut.Anabelian.EtalePi1Theory`, an explicit residual interface (taxis
+#276, #7, #10): the model only records the shapes on which these are evaluated. Every
+other field of `Iut.AnabelianGeometry` is constructed.
 -/
 
 namespace Iut.Anabelian
@@ -308,9 +310,9 @@ structure EtalePi1Theory : Type (u + 1) where
     (f : Orbicurve.Cover X Y), Topology.IsOpenEmbedding (pi1Cover f)
   /-- `C` is the `k`-core of `X`. -/
   HasCore : {k : Type u} → [Field k] → Orbicurve k → Orbicurve k → Prop
-  /-- A finite étale cover of `X` has the same core as `X`. -/
-  hasCore_of_cover : ∀ {k : Type u} [Field k] {X Y C : Orbicurve k},
-    Orbicurve.Cover Y X → HasCore X C → HasCore Y C
+  /-- Orbicurves related by a finite étale cover have the same cores. -/
+  hasCore_iff_of_cover : ∀ {k : Type u} [Field k] {X Y C : Orbicurve k},
+    Orbicurve.Cover X Y → (HasCore X C ↔ HasCore Y C)
   /-- Cores are compatible with base change. -/
   hasCore_baseChange : ∀ {k K : Type u} [Field k] [Field K] (f : k →+* K)
     {X C : Orbicurve k}, HasCore X C → HasCore (X.baseChange f) (C.baseChange f)
