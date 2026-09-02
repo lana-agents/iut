@@ -132,8 +132,9 @@ structure CurveArithmetic : Prop where
   /-- A place of `F` over a place of `F_mod` has the same residue characteristic. -/
   residueChar_liesOver : ∀ (v : FinitePlace ↥(fieldOfModuli C.F C.E)) (w : FinitePlace C.F),
     w.1.LiesOver v.1 → residueChar w = residueChar v
-  /-- Multiplicative reduction is constant over each place of `F_mod` of odd residue
-  characteristic (`E` descends to `F_tpd` up to twist and has semistable reduction). -/
+  /-- Multiplicative reduction does not depend on the place of `F` over a given place of
+  `F_mod` of odd residue characteristic (`E` descends to `F_tpd` up to twist and has
+  semistable reduction). -/
   mult_invariant : ∀ v : FinitePlace ↥(fieldOfModuli C.F C.E), residueChar v ≠ 2 →
     ∀ w w' : FinitePlace C.F, w.1.LiesOver v.1 → w'.1.LiesOver v.1 →
     HasMultiplicativeReductionAt C.E w → HasMultiplicativeReductionAt C.E w'
