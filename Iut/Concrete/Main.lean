@@ -14,12 +14,14 @@ assumed only for the **concrete** data bundles `Iut.concreteVariantData D LT TL 
 initial Θ-data together with the local-field theory of the `ℓ`-torsion field, the local
 theta data and the finiteness of the bad locus — implies ABC.
 
-The existence of suitable initial Θ-data is now required in concrete form
+The existence of suitable initial Θ-data is required in concrete form
 (`ConcreteThetaDataExistence`): for a point of large height and a prime `ℓ` satisfying
 (P1)–(P6), initial Θ-data `D` with the prime `ℓ`, its local theory and local theta data,
 and the tower arithmetic. Everything else — the Theorem 1.10 invariants, certificate and
 local estimates — is constructed from these (`ThetaLocalData.invariants`,
-`TowerArithmetic.certificate`, `TowerArithmetic.localEstimate`).
+`TowerArithmetic.certificate`, `TowerArithmetic.localEstimate`). The existence statement
+itself is proved from the curves of the points in `Iut.Concrete.Existence`
+(`CurveInputs.concreteThetaDataExistence`).
 -/
 
 namespace Iut
@@ -41,9 +43,9 @@ Corollary 2.2): for a point `x` outside the exceptional set and a prime `ℓ ≥
 (P2), (P3), (P5), (P6), initial Θ-data with prime `ℓ` together with the local-field theory
 and local theta data of its `ℓ`-torsion field, the finiteness of its bad locus, the
 arithmetic inputs of its tower, and Steps (ii), (iii) of the proof of Theorem 1.10, with
-the expected relations to `x`. The anabelian part (IUT I, Definition 3.1(d)–(f)) is the
-open IUT-theoretic obligation of this repository (blocked on taxis #276, #279); the rest
-is standard arithmetic of the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K`. -/
+the expected relations to `x`. Proved in `Iut.Concrete.Existence` from the curves of the
+points, the standard providers, and the anabelian existence `Iut.AnabelianExistence`
+(IUT I, Definition 3.1(d)–(f); taxis #1469). -/
 def ConcreteThetaDataExistence {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d) : Prop :=
   ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d), x ∉ I.excCore →
     ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →

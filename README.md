@@ -18,7 +18,8 @@ It carries two strands:
   conjecture, via IUT IV §1 (Theorem 1.10, the `Iut4Sec1` strand) and §2 (Corollaries
   2.2 and 2.3, using [`LANA-Project/genl`](https://github.com/LANA-Project/genl)).
   Tracked as taxis [#1449](https://taxis.lana.merten.dev/issues/1449); the main theorems
-  are `Iut.cor312Variant_implies_abc` and `Iut.cor312Variant_implies_abc_concrete`.
+  are `Iut.cor312Variant_implies_abc`, `Iut.cor312Variant_implies_abc_concrete` and
+  `Iut.cor312Variant_implies_abc_curves`.
 
 Mochizuki's *Arithmetic Elliptic Curves in General Position* is **not** developed here;
 it lives in [`LANA-Project/genl`](https://github.com/LANA-Project/genl).
@@ -87,7 +88,7 @@ proof and without axiom. The stack beneath it:
   [`LogVolume.lean`](Iut/Cor312/LogVolume.lean),
   [`HolomorphicHull.lean`](Iut/Cor312/HolomorphicHull.lean) and neighbours. Interface
   amendments made for the concrete instantiation: packet summands are commutative rings
-  (the tensor products of local fields are products of fields), integral structures are
+  ([`Iut/Implication/Theorem110.lean`]he tensor products of local fields are products of fields), integral structures are
   sets (the archimedean one is the unit ball), and the packet-volume combination law is
   stated for nonempty components.
 * **LHS/RHS** (taxis #34/#35): `−|log(q)|` from the bad-place `q`-orders with the
@@ -114,8 +115,20 @@ whose fields are the target statements of the sibling projects:
   `2ℓ`-th roots of the Tate parameters at the bad places of `K`; delegated to
   `tate-curves-theta`), the **concrete theta-pilot region**: the union over the
   indeterminacy automorphisms of the images of `q_{v_j}^{j²}·(R_I)^∼` (IUT IV, Step (v)),
-  the concrete `q`-pilot data (`Iut.QPilotInputs`: finiteness of the bad locus, delegated
-  to `elliptic-reduction`), and `Iut.concreteVariantData`, the assembled bundle.
+  the concrete `q`-pilot data (`Iut.QPilotInputs`: finiteness of the bad locus, residue
+  degrees positive), and `Iut.concreteVariantData`, the assembled bundle.
+* [`Invariants.lean`](Iut/Concrete/Invariants.lean) — the Theorem 1.10 invariants of the
+  tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` defined from Mathlib: the tripodal field
+  `F_tpd = ℚ(j, E[2])`, the normalized different degree `log N(𝔡_L)/[L : ℚ]`, the
+  conductor degree, the distinguished primes and `log(d^K_p)`; the tower facts (R4),
+  Steps (ii), (iii) form the `Prop`-structure `Iut.TowerArithmetic` (elliptic-reduction).
+* [`Existence.lean`](Iut/Concrete/Existence.lean) — **initial Θ-data from an elliptic
+  curve**: `Iut.EllipticCurveData.thetaData` builds IUT I, Definition 3.1 data for
+  `(E/F, ℓ)` with `V_mod^bad` the places of `F_mod` not over `2ℓ` with multiplicative
+  reduction, from `CurveArithmetic` (Prop 1.8 and places of `F/F_mod`), `TateInputs`,
+  `ModEllRepData ℓ` and the anabelian existence `Iut.AnabelianExistence`; the local height
+  data of the curve; `Iut.CurveInputs` (the inputs of Corollary 2.2 in terms of the curves
+  of the points), from which `ConcreteThetaDataExistence` is *proved*.
 
 ## Implication strand (`Iut/Implication`, `Iut/Concrete`)
 
@@ -143,24 +156,31 @@ sorry-free with standard axioms only:
   estimates of Theorem 1.10 *derived* for the concrete theta-pilot region
   ([`LocalEstimate.lean`](Iut/Concrete/LocalEstimate.lean): Propositions 1.4/1.5, the
   weighted average of Proposition 1.7, and (R4)).
+* `Iut.cor312Variant_implies_abc_curves` ([`Iut/Concrete/Existence.lean`](Iut/Concrete/Existence.lean))
+  — the same with the existence of initial Θ-data *proved* from the curves of the points
+  and the standard providers; the only IUT-theoretic hypothesis left is
+  `Iut.AnabelianExistence`.
 
 The ABC target is `Iut.ABC T := T.StatementI` ([`Iut/Abc/Target.lean`](Iut/Abc/Target.lean)),
 [GenEll] Theorem 2.1(i) for a height formalism `T` of
 [`LANA-Project/genl`](https://github.com/LANA-Project/genl); the concrete height theory is
 taxis #1452.
 
-Remaining explicit inputs of the main theorem, each a structure whose fields are precise
-target statements (see the taxis issues linked from #1449):
+Remaining explicit inputs of the main theorem `Iut.cor312Variant_implies_abc_curves`,
+each a structure whose fields are precise target statements (see the taxis issues linked
+from #1449):
 
 | Input | Content | Owner |
 | --- | --- | --- |
 | `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | padic-log-volume, [#1462](https://taxis.lana.merten.dev/issues/1462) |
 | `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | tate-curves-theta, [#1464](https://taxis.lana.merten.dev/issues/1464) |
-| `Iut.QPilotInputs D` | finiteness of the bad locus, residue degrees positive | elliptic-reduction, [#1465](https://taxis.lana.merten.dev/issues/1465) |
-| `Iut.ArithmeticInputs D`, Steps (ii), (iii), `ℓ ≥ 7` | different/conductor degrees of `F_tpd`, `e_mod`, (R4) | this repository, [#1468](https://taxis.lana.merten.dev/issues/1468) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
+| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
 | `Iut.PrimeCountingBound`, `Iut.ChebyshevBound` | Propositions 1.6, 2.1(ii) | prime-counting, [#1466](https://taxis.lana.merten.dev/issues/1466) |
-| `Iut.Corollary22Inputs T K d`, `Genl.HeightTheory.ProofPackage` | [GenEll] §§1, 3, Theorem 2.1 inputs; [CanLift] Prop 2.7 | genl, [#1467](https://taxis.lana.merten.dev/issues/1467) |
-| `Iut.ConcreteThetaDataExistence` | existence of suitable initial Θ-data ((P7); anabelian part) | this repository, [#1469](https://taxis.lana.merten.dev/issues/1469), blocked on #276, #279 |
+| `Iut.CurveInputs T K d`, `Genl.HeightTheory.ProofPackage` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3, Theorem 2.1 inputs; [CanLift] Prop 2.7 | genl, [#1467](https://taxis.lana.merten.dev/issues/1467) |
+| `EllipticCurveData.CurveArithmetic` | Prop 1.8: `√−1`, stable reduction, `E[6]` rational, `F/F_mod`, reduction type over `F_mod`, finiteness of the bad locus | elliptic-reduction, [#1495](https://taxis.lana.merten.dev/issues/1495); places of `F/F_mod`: [#1494](https://taxis.lana.merten.dev/issues/1494) |
+| `EllipticCurveData.TateInputs` | Tate parameters at the multiplicative places | tate-curves-theta, [#1496](https://taxis.lana.merten.dev/issues/1496) |
+| `EllipticCurveData.ModEllRepData ℓ` | the mod-`ℓ` representation on `E[ℓ]` | [#277](https://taxis.lana.merten.dev/issues/277) |
+| `Iut.AnabelianExistence AG TG` | IUT I, Definition 3.1(d)–(f): `C̲_K`, `ε`, `V` and the bad-place conditions | this repository, [#1469](https://taxis.lana.merten.dev/issues/1469), blocked on #276, #279 |
 
 ## Comparator suite
 
@@ -212,7 +232,7 @@ a change is complete:
 
 * `before.sh` warms the Mathlib build cache before work starts.
 * `validation.sh` checks the worktree is clean, that every `.lean` file is imported
-  (`mk_all --check`, for both `Iut` and `Iut4Sec1`), and that everything builds with
+  ([`Iut/Implication/Theorem110.lean`]mk_all --check`, for both `Iut` and `Iut4Sec1`), and that everything builds with
   warnings as errors (`lake build --wfail`).
 
 Run it locally with `bash .orchestra/validation.sh`.
