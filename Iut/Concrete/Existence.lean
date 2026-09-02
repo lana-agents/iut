@@ -425,7 +425,7 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
       ((curve x hx).localHeightData (arith x hx) (tate x hx)).p w ≠ ℓ) →
     ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (modRep x hx ℓ).rep.range
   /-- **[CanLift], Proposition 2.7** (taxis #10): only finitely many points of bounded
-  degree have a once-punctured elliptic curve `X_x` that fails to admit the `F_x`-core
+  degree have a once-punctured elliptic curve `X_x` that fails to have the `F_x`-core
   `C_x = X_x/{±1}`. -/
   excCore_finite : {x | ∃ hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d,
     ¬ AG.HasCore (AG.oncePunctured (curve x hx).E)
@@ -450,7 +450,7 @@ namespace CurveInputs
 
 variable {K : T.CBS} {d : ℕ} (CI : CurveInputs.{u} T AG K d)
 
-/-- The points whose once-punctured elliptic curve fails to admit an `F`-core. -/
+/-- The points whose once-punctured elliptic curve fails to have an `F`-core. -/
 def excCore : Set (T.Pt T.tripod) :=
   {x | ∃ hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d,
     ¬ AG.HasCore (AG.oncePunctured (CI.curve x hx).E)
