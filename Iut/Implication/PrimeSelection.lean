@@ -29,6 +29,8 @@ with `[F : ℚ]·h = ∑_v h_v·f_v·log p_v` and `[F : ℚ] ≤ δ` — the dat
 of `E_F` in the notation of IUT IV, Theorem 1.10 and [GenEll], Definition 3.3.
 -/
 
+universe w
+
 namespace Iut
 
 open Finset Real
@@ -131,9 +133,9 @@ sense of IUT IV, Theorem 1.10 / [GenEll], Definition 3.3: a finite family of bad
 with residue characteristics `p_v`, local heights `h_v ≥ 1`, and residue degrees
 `f_v ≥ 1`, such that `[F : ℚ]·h = ∑_v h_v·f_v·log p_v`, where `h = log(q_∀)` is the
 normalized degree of the `q`-divisor. -/
-structure LocalHeightData where
+structure LocalHeightData : Type (w + 1) where
   /-- The index type of the bad places. -/
-  ι : Type
+  ι : Type w
   /-- The bad places. -/
   bad : Finset ι
   /-- The residue characteristic of a bad place. -/

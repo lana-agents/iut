@@ -46,7 +46,7 @@ derivation of (C2), and assertion (iii) — is proved here.
 
 namespace Iut
 
-universe u v
+universe u v w
 
 open Finset Real
 
@@ -285,7 +285,7 @@ structure Corollary22Inputs (K : T.CBS) (d : ℕ) where
   nonarchimedean primes. -/
   h : T.Pt T.tripod → ℝ
   /-- The local height data of the elliptic curve of `x` over its Θ-data field `F`. -/
-  localData : ∀ x : T.Pt T.tripod, x ∈ T.cbsSet K ∩ T.ptLE T.tripod d → LocalHeightData
+  localData : ∀ x : T.Pt T.tripod, x ∈ T.cbsSet K ∩ T.ptLE T.tripod d → LocalHeightData.{w}
   /-- The local height data computes `h`. -/
   localData_height : ∀ (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
     (localData x hx).height = h x

@@ -4,6 +4,7 @@ import Iut.Concrete.Container
 import Iut.Concrete.Invariants
 import Iut.Concrete.LocalEstimate
 import Iut.Concrete.LocalTheory
+import Iut.Concrete.Existence
 import Iut.Concrete.Main
 import Iut.Concrete.ThetaRegion
 import Iut.Cor312.Container

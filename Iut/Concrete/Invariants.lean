@@ -191,6 +191,53 @@ lemma logDifferentDeg_nonneg (L : Type*) [Field L] [NumberField L] :
     exact differentIdeal_ne_bot
   exact_mod_cast Nat.one_le_iff_ne_zero.mpr h
 
+section Tripodal
+
+variable (F : Type*) [Field F] [NumberField F] (E : WeierstrassCurve F) [E.IsElliptic]
+
+open scoped Classical in
+/-- The `x`-coordinates of the `F`-rational `2`-torsion points of `E`. -/
+def twoTorsionXOf : Set F :=
+  {a | ∃ (b : F) (h : E.toAffine.Nonsingular a b),
+    WeierstrassCurve.Affine.Point.some a b h ∈ AddSubgroup.torsionBy E.toAffine.Point 2}
+
+/-- **The tripodal field** `F_tpd = F_mod(E[2])` (IUT IV, Theorem 1.10; Proposition
+1.8(ii),(iii)): the subfield of `F` generated over `ℚ` by `j(E)` and the `x`-coordinates
+of the `2`-torsion points (rational over `F` by IUT I, Definition 3.1(b)). -/
+noncomputable def tripodalFieldOf : IntermediateField ℚ F :=
+  IntermediateField.adjoin ℚ (insert E.j (twoTorsionXOf F E))
+
+instance : FiniteDimensional ℚ ↥(tripodalFieldOf F E) :=
+  Module.Finite.left ℚ ↥(tripodalFieldOf F E) F
+
+instance : NumberField ↥(tripodalFieldOf F E) where
+
+variable (VBad : Set (FinitePlace ↥(fieldOfModuli F E)))
+
+/-- A finite place of `F_tpd` is **bad** if a bad place of `F` lies over it. -/
+def IsBadTpdOf (𝔭 : FinitePlace ↥(tripodalFieldOf F E)) : Prop :=
+  ∃ w ∈ badPlacesOver F E VBad, (Place.finite w).LiesOver (Place.finite 𝔭)
+
+open scoped Classical in
+/-- The normalized degree `log(f_{F_tpd})` of the **conductor divisor** of `F_tpd`: the
+sum of `log N(𝔭)` over the bad places of `F_tpd`, divided by `[F_tpd : ℚ]` (finitely
+supported; `0` if not). -/
+noncomputable def logConductorDegOf : ℝ :=
+  (∑ᶠ 𝔭 : FinitePlace ↥(tripodalFieldOf F E),
+    if IsBadTpdOf F E VBad 𝔭 then Real.log (Ideal.absNorm 𝔭.maximalIdeal.asIdeal) else 0) /
+    Module.finrank ℚ ↥(tripodalFieldOf F E)
+
+lemma logConductorDegOf_nonneg : 0 ≤ logConductorDegOf F E VBad := by
+  apply div_nonneg _ (by positivity)
+  apply finsum_nonneg
+  intro 𝔭
+  split_ifs
+  · exact Real.log_nonneg
+      (by exact_mod_cast (NumberField.HeightOneSpectrum.one_lt_absNorm 𝔭.maximalIdeal).le)
+  · exact le_rfl
+
+end Tripodal
+
 namespace InitialThetaData
 
 variable (D : InitialThetaData AG TG)
@@ -200,44 +247,13 @@ noncomputable abbrev dmod : ℕ := Module.finrank ℚ ↥(fieldOfModuli D.F D.E)
 
 lemma one_le_dmod : 1 ≤ D.dmod := Module.finrank_pos
 
-open scoped Classical in
-/-- The `x`-coordinates of the `F`-rational `2`-torsion points of `E`. -/
-def twoTorsionX : Set D.F :=
-  {a | ∃ (b : D.F) (h : D.E.toAffine.Nonsingular a b),
-    WeierstrassCurve.Affine.Point.some a b h ∈ AddSubgroup.torsionBy D.E.toAffine.Point 2}
+/-- The tripodal field `F_tpd` of the Θ-data (`Iut.tripodalFieldOf`). -/
+noncomputable abbrev tripodalField : IntermediateField ℚ D.F := tripodalFieldOf D.F D.E
 
-/-- **The tripodal field** `F_tpd = F_mod(E[2])` (IUT IV, Theorem 1.10; Proposition
-1.8(ii),(iii)): the subfield of `F` generated over `ℚ` by `j(E)` and the `x`-coordinates
-of the `2`-torsion points (rational over `F` by IUT I, Definition 3.1(b)). -/
-noncomputable def tripodalField : IntermediateField ℚ D.F :=
-  IntermediateField.adjoin ℚ (insert D.E.j D.twoTorsionX)
+/-- The conductor invariant `log(f_{F_tpd})` of the Θ-data (`Iut.logConductorDegOf`). -/
+noncomputable abbrev logConductorDeg : ℝ := logConductorDegOf D.F D.E D.VBad
 
-instance : FiniteDimensional ℚ ↥D.tripodalField :=
-  Module.Finite.left ℚ ↥D.tripodalField D.F
-
-instance : NumberField ↥D.tripodalField where
-
-/-- A finite place of `F_tpd` is **bad** if a bad place of `F` lies over it. -/
-def IsBadTpd (𝔭 : FinitePlace ↥D.tripodalField) : Prop :=
-  ∃ w ∈ badPlacesOver D.F D.E D.VBad, (Place.finite w).LiesOver (Place.finite 𝔭)
-
-open scoped Classical in
-/-- The normalized degree `log(f_{F_tpd})` of the **conductor divisor** of `F_tpd`: the
-sum of `log N(𝔭)` over the bad places of `F_tpd`, divided by `[F_tpd : ℚ]` (finitely
-supported; `0` if not). -/
-noncomputable def logConductorDeg : ℝ :=
-  (∑ᶠ 𝔭 : FinitePlace ↥D.tripodalField,
-    if D.IsBadTpd 𝔭 then Real.log (Ideal.absNorm 𝔭.maximalIdeal.asIdeal) else 0) /
-    Module.finrank ℚ ↥D.tripodalField
-
-lemma logConductorDeg_nonneg : 0 ≤ D.logConductorDeg := by
-  apply div_nonneg _ (by positivity)
-  apply finsum_nonneg
-  intro 𝔭
-  split_ifs
-  · exact Real.log_nonneg
-      (by exact_mod_cast (NumberField.HeightOneSpectrum.one_lt_absNorm 𝔭.maximalIdeal).le)
-  · exact le_rfl
+lemma logConductorDeg_nonneg : 0 ≤ D.logConductorDeg := logConductorDegOf_nonneg _ _ _
 
 end InitialThetaData
 
