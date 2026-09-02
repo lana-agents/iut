@@ -38,7 +38,7 @@ open scoped Pointwise
 
 variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 variable {D : InitialThetaData AG TG} {LT : LocalTheory.{u, v} D.Kt} {TL : ThetaLocalData D LT}
-  {QI : QPilotInputs D} (AI : ArithmeticInputs D)
+  {QI : QPilotInputs D} (TA : TowerArithmetic D LT TL)
 
 /-- `ord_p(1) = 0`. -/
 lemma ordp_one (w : FinitePlace D.Kt) : ordp D.Kt w 1 = 0 := by
@@ -109,7 +109,7 @@ lemma sum_bound_eval {ι E : Type*} [Fintype ι] [Fintype E] (w : E → ℝ)
     sum_prod_tuple_eq_one w hw]
   ring
 
-namespace ArithmeticInputs
+namespace TowerArithmetic
 
 local notation "𝒳" => concreteVariantData D LT TL QI
 
@@ -226,31 +226,32 @@ lemma logQAt_eq (p : Nat.Primes) :
   rw [(Finset.mem_filter.mp hw).2]
   ring
 
+include TA in
 /-- The (R4) bound in the form used per place: each ramification term is at most
 `4·l*_mod·ι_p`. -/
 lemma ramTerm_le (p : Nat.Primes) (v : FinitePlace D.Kt) (hv : residueChar v = p) :
     (if (p : ℕ) - 2 < ramIdx D.Kt v then 3 + Real.log (ramIdx D.Kt v) else 0) ≤
-      4 * (AI.invariants (LT := LT) (TL := TL) (QI := QI)).lmod *
-        (AI.invariants (LT := LT) (TL := TL) (QI := QI)).ι p := by
-  have hlmod : (AI.invariants (LT := LT) (TL := TL) (QI := QI)).lmod =
-      Real.log (((552960 * AI.emod : ℕ) : ℝ) * D.ℓ) := rfl
-  have hlmod0 : 0 ≤ (AI.invariants (LT := LT) (TL := TL) (QI := QI)).lmod := by
+      4 * (TL.invariants QI).lmod *
+        (TL.invariants QI).ι p := by
+  have hlmod : (TL.invariants QI).lmod =
+      Real.log (((552960 * D.dmod : ℕ) : ℝ) * D.ℓ) := rfl
+  have hlmod0 : 0 ≤ (TL.invariants QI).lmod := by
     rw [hlmod]
     apply Real.log_nonneg
-    have h1 : (1 : ℝ) ≤ AI.emod := by exact_mod_cast AI.one_le_emod
+    have h1 : (1 : ℝ) ≤ D.dmod := by exact_mod_cast D.one_le_dmod
     have h2 : (5 : ℝ) ≤ D.ℓ := by exact_mod_cast D.prime.five_le
     push_cast
     nlinarith
   split_ifs with h
-  · obtain ⟨hp, hlog⟩ := AI.ramIdx_bound v (hv ▸ h)
-    have hι : (AI.invariants (LT := LT) (TL := TL) (QI := QI)).ι p = 1 := by
-      change (if (p : ℕ) ≤ 552960 * AI.emod * D.ℓ then (1 : ℝ) else 0) = 1
+  · obtain ⟨hp, hlog⟩ := TA.ramIdx_bound v (hv ▸ h)
+    have hι : (TL.invariants QI).ι p = 1 := by
+      change (if (p : ℕ) ≤ 552960 * D.dmod * D.ℓ then (1 : ℝ) else 0) = 1
       rw [if_pos]
       rw [← hv]; exact hp
     rw [hι, mul_one, hlmod]
     linarith
   · exact mul_nonneg (mul_nonneg (by norm_num) hlmod0)
-      ((AI.invariants (LT := LT) (TL := TL) (QI := QI)).ι_nonneg p)
+      ((TL.invariants QI).ι_nonneg p)
 
 /-! ### The estimates -/
 
@@ -296,9 +297,10 @@ lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     rw [LocalTheory.card_labelType] at this
     exact this
 
+include TA in
 lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈ TL.dst) :
     (LT.vol (nCaps (D := D))).packetVol i (.finite p) (cont (TL := TL) i (.finite p)) ≤
-      (AI.invariants (LT := LT) (TL := TL) (QI := QI)).capsuleBound (i.1 + 2) p := by
+      (TL.invariants QI).capsuleBound (i.1 + 2) p := by
   change (LT.vol (nCaps (D := D))).packetVol i (.finite p)
     (if (p : ℕ) ∈ TL.dst then _ else _) ≤ _
   rw [if_pos hp, packetVol_scaledIntegral']
@@ -313,8 +315,8 @@ lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈
             (fun v => ordp D.Kt (LT.fiberPlace v) (TL.qroot (LT.fiberPlace v)))
               (c (ThetaLocalData.distinguished _ i))
             + ∑ l, (fun v => differentExponent D.Kt (LT.fiberPlace v)) (c l) + 1) * Real.log p +
-          ∑ _l : Lab i, (4 * (AI.invariants (LT := LT) (TL := TL) (QI := QI)).lmod *
-              (AI.invariants (LT := LT) (TL := TL) (QI := QI)).ι p)) := by
+          ∑ _l : Lab i, (4 * (TL.invariants QI).lmod *
+              (TL.invariants QI).ι p)) := by
     intro c
     apply mul_le_mul_of_nonneg_left _ (Finset.prod_nonneg fun l _ => (LT.weight_pos _ _).le)
     refine (contScalar_spec (TL := TL) i p c).2.2.trans ?_
@@ -326,7 +328,7 @@ lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈
     have hram : ramIdxAt D.Kt (LT.tuple _ c l) = ramIdx D.Kt (LT.fiberPlace (c l)) := by
       simp only [LocalTheory.tuple]; rw [LT.fiberPlace_spec (c l)]; rfl
     rw [hram]
-    exact AI.ramTerm_le p _ (LT.residueChar_fiberPlace _)
+    exact TA.ramTerm_le p _ (LT.residueChar_fiberPlace _)
   refine (Finset.sum_le_sum fun c _ => hstep c).trans ?_
   rw [sum_bound_eval (LT.weight (.finite p)) hw1
     (fun v => ordp D.Kt (LT.fiberPlace v) (TL.qroot (LT.fiberPlace v)))
@@ -346,8 +348,8 @@ lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈
     rw [LT.logDK_prime p, Finset.sum_mul]
   change _ ≤ ((i.1 + 2 : ℕ) : ℝ) * LT.logDK p -
     (((i.1 + 2 : ℕ) : ℝ) - 1) ^ 2 / (2 * D.ℓ) * (𝒳).logQAt p + Real.log p +
-    4 * ((i.1 + 2 : ℕ) : ℝ) * (AI.invariants (LT := LT) (TL := TL) (QI := QI)).lmod *
-      (AI.invariants (LT := LT) (TL := TL) (QI := QI)).ι p
+    4 * ((i.1 + 2 : ℕ) : ℝ) * (TL.invariants QI).lmod *
+      (TL.invariants QI).ι p
   have h1 : (((i.1 + 2 : ℕ) : ℝ) - 1) ^ 2 = ((i.1 + 1 : ℕ) : ℝ) ^ 2 := by push_cast; ring
   rw [h1, ← hd]
   have h2 : (((i.1 + 1 : ℕ) : ℝ) ^ 2) / (2 * D.ℓ) * (𝒳).logQAt p =
@@ -395,9 +397,10 @@ lemma packetVol_mono (i : Fin (nCaps (D := D))) (vQ : RationalPlace)
   have := hUV hx c
   rwa [Function.update_self] at this
 
+include TA in
 /-- **The concrete local estimates** (IUT IV, Steps (iv)–(vii)). -/
 noncomputable def localEstimate :
-    (AI.invariants (LT := LT) (TL := TL) (QI := QI)).LocalEstimate where
+    (TL.invariants QI).LocalEstimate where
   cont i vQ := cont (TL := TL) i vQ
   cont_isHullRegion i vQ := cont_isHullRegion (TL := TL) i vQ
   thetaPilot_subset i vQ := thetaPilot_subset (TL := TL) i vQ
@@ -405,8 +408,8 @@ noncomputable def localEstimate :
     change (if (p : ℕ) ∈ TL.dst then _ else _) = _
     exact if_neg hp
   vol_finite i p hp :=
-    (AI.vol_finite (TL := TL) (QI := QI) i p hp).trans_eq
-      (congrArg (fun m => (AI.invariants (LT := LT) (TL := TL) (QI := QI)).capsuleBound m p)
+    (TA.vol_finite (TL := TL) (QI := QI) i p hp).trans_eq
+      (congrArg (fun m => (TL.invariants QI).capsuleBound m p)
         (Procession.standard_capsule_card _ i).symm)
   vol_infinite i :=
     (vol_infinite (TL := TL) i).trans_eq
@@ -414,6 +417,6 @@ noncomputable def localEstimate :
         (Procession.standard_capsule_card _ i).symm)
   packetVol_mono i vQ U V hU hV hUV := packetVol_mono (LT := LT) i vQ U V hU hV hUV
 
-end ArithmeticInputs
+end TowerArithmetic
 
 end Iut

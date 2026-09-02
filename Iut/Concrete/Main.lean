@@ -17,10 +17,9 @@ theta data and the finiteness of the bad locus — implies ABC.
 The existence of suitable initial Θ-data is now required in concrete form
 (`ConcreteThetaDataExistence`): for a point of large height and a prime `ℓ` satisfying
 (P1)–(P6), initial Θ-data `D` with the prime `ℓ`, its local theory and local theta data,
-the arithmetic inputs of the tower, and the two inequalities of Steps (ii), (iii) of the
-proof of Theorem 1.10. Everything else — the Theorem 1.10 invariants, certificate and
-local estimates — is constructed from these (`ArithmeticInputs.invariants`,
-`ArithmeticInputs.certificate`, `ArithmeticInputs.localEstimate`).
+and the tower arithmetic. Everything else — the Theorem 1.10 invariants, certificate and
+local estimates — is constructed from these (`ThetaLocalData.invariants`,
+`TowerArithmetic.certificate`, `TowerArithmetic.localEstimate`).
 -/
 
 namespace Iut
@@ -54,18 +53,13 @@ def ConcreteThetaDataExistence {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K 
     (∃ v ∈ (I.localData x hx).bad, (I.localData x hx).p v ≠ 2 ∧ (I.localData x hx).p v ≠ ℓ) →
     I.SL2Image x ℓ →
     ∃ (D : InitialThetaData.{u} AG TG) (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT)
-      (QI : QPilotInputs D) (AI : ArithmeticInputs D),
-      D.ℓ = ℓ ∧ Module.finrank ℚ ↥(fieldOfModuli D.F D.E) ≤ d ∧
-      (AI.invariants (LT := LT) (TL := TL) (QI := QI)).logDKtot ≤
-        AI.logDtpd + AI.logFtpd + 2 * Real.log D.ℓ + 21 ∧
-      (AI.invariants (LT := LT) (TL := TL) (QI := QI)).logSQ ≤
-        2 * Module.finrank ℚ ↥(fieldOfModuli D.F D.E) * (AI.logDtpd + AI.logFtpd) + 5 +
-          Real.log D.ℓ ∧
+      (QI : QPilotInputs D), TowerArithmetic D LT TL ∧
+      D.ℓ = ℓ ∧ D.dmod ≤ d ∧
       (concreteVariantData.{u, v} D LT TL QI).qPilot.logQ =
         (I.localData x hx).heightOther 2 ℓ ∧
-      T.logDiff T.tripod x = AI.logDtpd ∧
-      AI.logFtpd ≤ T.logCond T.tripod x ∧
-      T.logCond T.tripod x ≤ AI.logFtpd + Real.log (2 * ℓ)
+      T.logDiff T.tripod x = logDifferentDeg ↥D.tripodalField ∧
+      D.logConductorDeg ≤ T.logCond T.tripod x ∧
+      T.logCond T.tripod x ≤ D.logConductorDeg + Real.log (2 * ℓ)
 
 /-- The concrete existence statement provides the general one, with the concrete data
 bundles. -/
@@ -74,10 +68,10 @@ theorem ConcreteThetaDataExistence.toThetaDataExistence {K : T.CBS} {d : ℕ}
     (ex : ConcreteThetaDataExistence.{u, v} (AG := AG) (TG := TG) I) :
     ThetaDataExistence (IsConcrete.{u, v} (AG := AG) (TG := TG)) I where
   thetaData x hx hxe ℓ hℓp hℓ7 hP2 hP3 hP5 hP6 := by
-    obtain ⟨D, LT, TL, QI, AI, hℓ, hd, hii, hiii, hq, hdiff, hc1, hc2⟩ :=
+    obtain ⟨D, LT, TL, QI, TA, hℓ, hd, hq, hdiff, hc1, hc2⟩ :=
       ex x hx hxe ℓ hℓp hℓ7 hP2 hP3 hP5 hP6
-    refine ⟨concreteVariantData.{u, v} D LT TL QI, AI.invariants, ⟨D, LT, TL, QI, rfl⟩,
-      AI.certificate (hℓ ▸ hℓ7) hii hiii, ⟨AI.localEstimate⟩, hℓ, hd, hq, hdiff, hc1, ?_⟩
+    refine ⟨concreteVariantData.{u, v} D LT TL QI, TL.invariants QI, ⟨D, LT, TL, QI, rfl⟩,
+      TA.certificate (hℓ ▸ hℓ7), ⟨TA.localEstimate⟩, hℓ, hd, hq, hdiff, hc1, ?_⟩
     exact hc2
 
 /-- **The Corollary 3.12 variant for the concrete data bundles implies ABC.** -/
