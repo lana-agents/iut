@@ -18,8 +18,16 @@ It carries two strands:
   conjecture, via IUT IV §1 (Theorem 1.10, the `Iut4Sec1` strand) and §2 (Corollaries
   2.2 and 2.3, using [`LANA-Project/genl`](https://github.com/LANA-Project/genl)).
   Tracked as taxis [#1449](https://taxis.lana.merten.dev/issues/1449); the main theorems
-  are `Iut.cor312Variant_implies_abc`, `Iut.cor312Variant_implies_abc_concrete` and
-  `Iut.cor312Variant_implies_abc_curves`.
+  are `Iut.cor312Variant_implies_abc`, `Iut.cor312Variant_implies_abc_concrete`,
+  `Iut.cor312Variant_implies_abc_curves` and `Iut.Anabelian.cor312Variant_implies_abc_model`.
+* **The anabelian model.** A concrete model of the anabelian interface behind the
+  Θ-data (`Iut/Anabelian/`): orbicurves as elliptic curves with level data, cusps as
+  torsion quotients, the bad-place predicates from minimal Weierstrass models, and a
+  proof that the anabelian part of initial Θ-data exists (IUT I, Definition 3.1(d)–(f);
+  taxis [#276](https://taxis.lana.merten.dev/issues/276),
+  [#279](https://taxis.lana.merten.dev/issues/279),
+  [#1469](https://taxis.lana.merten.dev/issues/1469)). Fundamental groups remain
+  explicit residual interfaces.
 
 Mochizuki's *Arithmetic Elliptic Curves in General Position* is **not** developed here;
 it lives in [`LANA-Project/genl`](https://github.com/LANA-Project/genl).
@@ -180,7 +188,48 @@ from #1449):
 | `EllipticCurveData.CurveArithmetic` | Prop 1.8: `√−1`, stable reduction, `E[6]` rational, `F/F_mod`, reduction type over `F_mod`, finiteness of the bad locus | elliptic-reduction, [#1495](https://taxis.lana.merten.dev/issues/1495); places of `F/F_mod`: [#1494](https://taxis.lana.merten.dev/issues/1494) |
 | `EllipticCurveData.TateInputs` | Tate parameters at the multiplicative places | tate-curves-theta, [#1496](https://taxis.lana.merten.dev/issues/1496) |
 | `EllipticCurveData.ModEllRepData ℓ` | the mod-`ℓ` representation on `E[ℓ]` | [#277](https://taxis.lana.merten.dev/issues/277) |
-| `Iut.AnabelianExistence AG TG` | IUT I, Definition 3.1(d)–(f): `C̲_K`, `ε`, `V` and the bad-place conditions | this repository, [#1469](https://taxis.lana.merten.dev/issues/1469), blocked on #276, #279 |
+| `Iut.AnabelianExistence AG TG` | IUT I, Definition 3.1(d)–(f): `C̲_K`, `ε`, `V` and the bad-place conditions | **proved** for the anabelian model (`Iut.Anabelian.anabelianExistence`), see below |
+
+## Anabelian model strand (`Iut/Anabelian`)
+
+The interfaces `Iut.AnabelianGeometry` and `Iut.TemperedGeometry` behind the Θ-data are
+instantiated by a **linear-algebraic model** (taxis
+[#276](https://taxis.lana.merten.dev/issues/276),
+[#279](https://taxis.lana.merten.dev/issues/279)):
+
+* [`Model.lean`](Iut/Anabelian/Model.lean) — model orbicurves `(E, ℓ, M, ±)` standing for
+  `(E/M) ∖ (E[ℓ]/M)` and its `±`-quotient (the only shapes IUT I, Definition 3.1 uses);
+  covers induced by `[n]`, base change, cusps `E(k)[ℓ]/M` (mod `±`), the rank-one
+  quotient, the `±`-quotient cartesian squares, the types `(1, ℓ-tors)`,
+  `(1, ℓ-tors)^±`; and the residual interface `Iut.Anabelian.EtalePi1Theory` (étale
+  fundamental groups, open immersions, cores).
+* [`Local.lean`](Iut/Anabelian/Local.lean) — over a valued field: the kernel of
+  reduction and the **graph line** `E(k)[ℓ] ∩ E₁(k)` (= `μ_ℓ` under Tate
+  uniformization), the **canonical generators** `q^{±1/ℓ}` of the graph quotient
+  (`ℓ·v(x(P)) = -v(j)` in minimal models), split multiplicative reduction, the type
+  `(1, ℤ/ℓℤ)^±`, theta-root models and the canonical graph cusp.
+* [`Geometry.lean`](Iut/Anabelian/Geometry.lean) — the terms `Iut.Anabelian.modelAG` and
+  `Iut.Anabelian.modelTG` (with the residual `TemperedPi1Theory`).
+* [`Torsion.lean`](Iut/Anabelian/Torsion.lean), [`Linear.lean`](Iut/Anabelian/Linear.lean),
+  [`Existence.lean`](Iut/Anabelian/Existence.lean) — the ℓ-torsion is rational over
+  `K = F(E[ℓ])`; `SL₂(𝔽_ℓ)` acts transitively on (line, generator of the quotient) pairs;
+  **`Iut.Anabelian.anabelianExistence`**: `C̲_K = (E_K, ℓ, ⟨e₁⟩, ±)`, `ε = e₂ mod ⟨e₁⟩`,
+  and at each bad place a place of `K` chosen through `SL₂(𝔽_ℓ)` so that the graph line
+  is `⟨e₁⟩` and the canonical generators are `±e₂` — the mechanism of (P7) in the proof
+  of IUT IV, Corollary 2.2. The final theorem is
+  `Iut.Anabelian.cor312Variant_implies_abc_model`.
+
+The interface amendment made for this: `IsTypeOneZModPM`, `IsThetaRootModel` and
+`canonicalGraphCusp` now take a `Valued k ℤᵐ⁰` structure on the local field (they refer
+to reduction).
+
+Residual interfaces of the model, each an explicit structure:
+
+| Input | Content | Owner |
+| --- | --- | --- |
+| `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
+| `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁` | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
+| `Iut.AdmissiblePrimeData.LocalInputs` | places of `K` over `F_mod`, Galois action on places, extensions to `F̄`; at bad places: split multiplicative reduction, rationality of the local ℓ-torsion, the graph line as a subgroup of order `ℓ`, the canonical generators, Galois equivariance | elliptic-reduction / tate-curves-theta, [#1529](https://taxis.lana.merten.dev/issues/1529) |
 
 ## Comparator suite
 
