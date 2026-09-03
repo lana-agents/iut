@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
 import Iut.Cor312.ThetaData.LocalConditions
+import Iut.Cor312.ThetaData.TateFamily
 
 /-!
 # Initial Θ-data (taxis #38; IUT I, Definition 3.1)
@@ -96,6 +97,10 @@ structure InitialThetaData (AG : AnabelianGeometry.{u}) (TG : TemperedGeometry A
   /-- Compatibility of the `F_mod`-algebra structure with the inclusions
   `F_mod ⊆ F ⊆ K`, pinning it uniquely. -/
   [towerModK : IsScalarTower ↥(fieldOfModuli F E) F ↥prime.torsionField]
+  /-- The Tate uniformizations of `E` over the completions of `K` at the places over
+  `V_mod^bad`, Galois-equivariant on the ℓ-torsion (Definition 3.1(f) refers to them;
+  chosen data pinned by the coordinates of the Tate parametrization, `Iut.TateFamily`). -/
+  tate : TateFamily E prime.torsionField prime.ℓ VBad
   /-- The orbicurve data `C̲_K`, `X̲_K`, `ε` of Definition 3.1(d)/(f) (taxis #41). -/
   orb : OrbicurveData AG F E Fbar VBad prime
   /-- The valuation section `V` and local conditions of Definition 3.1(e)–(f)

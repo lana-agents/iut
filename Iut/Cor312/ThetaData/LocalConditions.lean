@@ -74,6 +74,24 @@ theorem AdmissiblePrimeData.finiteDimensional_torsionField
     Subgroup.isOpen_mono hle P.ker_isOpen
   exact (InfiniteGalois.isOpen_iff_finite P.torsionField).mp hopen
 
+/-- The fixed field of an open subgroup of `Gal(F̄/F)` is a number field. -/
+theorem numberField_fixedField_of_isOpen {H : Subgroup (Fbar ≃ₐ[F] Fbar)}
+    (hH : IsOpen (H : Set (Fbar ≃ₐ[F] Fbar))) :
+    NumberField ↥(IntermediateField.fixedField H) := by
+  have hle : H ≤ (IntermediateField.fixedField H).fixingSubgroup :=
+    (IntermediateField.le_iff_le H (IntermediateField.fixedField H)).mp le_rfl
+  have hopen : IsOpen ((IntermediateField.fixedField H).fixingSubgroup :
+      Set (Fbar ≃ₐ[F] Fbar)) := Subgroup.isOpen_mono hle hH
+  have : FiniteDimensional F ↥(IntermediateField.fixedField H) :=
+    (InfiniteGalois.isOpen_iff_finite _).mp hopen
+  have : CharZero ↥(IntermediateField.fixedField H) :=
+    charZero_of_injective_algebraMap (algebraMap F ↥(IntermediateField.fixedField H)).injective
+  have : IsScalarTower ℚ F ↥(IntermediateField.fixedField H) :=
+    IsScalarTower.of_algebraMap_eq' (Subsingleton.elim _ _)
+  have : FiniteDimensional ℚ ↥(IntermediateField.fixedField H) :=
+    Module.Finite.trans F ↥(IntermediateField.fixedField H)
+  exact { }
+
 /-- The `ℓ`-torsion field of a number field is a number field. -/
 theorem AdmissiblePrimeData.numberField_torsionField
     (P : AdmissiblePrimeData F E Fbar VBad) :
@@ -117,13 +135,15 @@ structure TemperedGeometry (AG : AnabelianGeometry.{u}) : Type (u + 1) where
   of this predicate is supplied by the étale-theta continuation of taxis #13; here it
   is an interface predicate consumed by the bad-place conditions. -/
   IsThetaRootModel : {k : Type u} → [Field k] → [Valued k (WithZero (Multiplicative ℤ))] →
-    (ℓ : ℕ) → AG.Orbicurve k → Prop
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] → [CompleteSpace k] →
+    (ℓ : ℕ) → (X : AG.Orbicurve k) → AG.TateStructure X → Prop
   /-- The cusp associated to the **canonical generator `±1` of the graph quotient** of
   an orbicurve over a complete nonarchimedean field with stable multiplicative-type
   reduction (*The Étale Theta Function*, Definition 2.5; junk value outside that
-  regime). Like `IsTypeOneZModPM`, it sees the valuation of the base field. -/
+  regime), relative to a Tate structure on the orbicurve. -/
   canonicalGraphCusp : {k : Type u} → [Field k] → [Valued k (WithZero (Multiplicative ℤ))] →
-    (X : AG.Orbicurve k) → AG.Cusp X
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] → [CompleteSpace k] →
+    (X : AG.Orbicurve k) → AG.TateStructure X → AG.Cusp X
 
 /-! ## The valuation section and local data -/
 
@@ -217,21 +237,28 @@ structure LocalThetaData (O : OrbicurveData AG F E Fbar VBad P) : Type u where
   decomp : ∀ _ : FinitePlace ↥P.torsionField, Subgroup (Fbar ≃ₐ[↥P.torsionField] Fbar)
   /-- Decomposition groups are closed in the Krull topology. -/
   decomp_isClosed : ∀ v, IsClosed ((decomp v) : Set (Fbar ≃ₐ[↥P.torsionField] Fbar))
+  /-- The Tate structure (Tate uniformization of `E` over `K_v`) on the local model `X̲_v`
+  at each place of the section over `V_mod^bad` (IUT I, Definition 3.1(f) refers to the
+  Tate uniformization; chosen data, pinned by the coordinates of the Tate parametrization
+  in `Iut.TateStructure`). -/
+  tateX : ∀ v ∈ VBad, AG.TateStructure (localize (sect.sectFin v) O.XKu)
+  /-- The Tate structure on the local model `C̲_v`. -/
+  tateC : ∀ v ∈ VBad, AG.TateStructure (localize (sect.sectFin v) O.CKu)
   /-- At places over `V_mod^bad`, the local model `X̲_v = X̲_K ×_K K_v` is of type
   `(1, ℤ/ℓℤ)^±` (IUT I, Definition 3.1(f); *Étale Theta*, Definition 2.5). -/
-  bad_type : ∀ v ∈ VBad,
-    AG.IsTypeOneZModPM P.ℓ (localize (sect.sectFin v) O.XKu)
+  bad_type : ∀ v (hv : v ∈ VBad),
+    AG.IsTypeOneZModPM P.ℓ (localize (sect.sectFin v) O.XKu) (tateX v hv)
   /-- At places over `V_mod^bad`, the local model is a natural model obtained by
   extracting an `ℓ`-th root of the theta function (*Étale Theta*, Definition 2.5,
   through the interface predicate of `TemperedGeometry`). -/
-  bad_theta_model : ∀ v ∈ VBad,
-    TG.IsThetaRootModel P.ℓ (localize (sect.sectFin v) O.XKu)
+  bad_theta_model : ∀ v (hv : v ∈ VBad),
+    TG.IsThetaRootModel P.ℓ (localize (sect.sectFin v) O.XKu) (tateX v hv)
   /-- At places over `V_mod^bad`, the base change `ε_v` of the distinguished cusp `ε`
   is the cusp associated to the canonical generator `±1` of the graph quotient
   (IUT I, Definition 3.1(f); *Étale Theta*, Definition 2.5). -/
-  epsilon_graph : ∀ v ∈ VBad,
+  epsilon_graph : ∀ v (hv : v ∈ VBad),
     AG.cuspBaseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal) O.epsilon =
-      TG.canonicalGraphCusp (localize (sect.sectFin v) O.CKu)
+      TG.canonicalGraphCusp (localize (sect.sectFin v) O.CKu) (tateC v hv)
 
 namespace LocalThetaData
 

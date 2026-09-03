@@ -191,6 +191,14 @@ structure ModEllRepData (ℓ : ℕ) : Type u where
   /-- The kernel of `ρ` is open. -/
   ker_isOpen : IsOpen (rep.ker : Set (C.Fbar ≃ₐ[C.F] C.Fbar))
 
+/-- The ℓ-torsion field `K = F(E[ℓ])` cut out by the mod-ℓ representation. -/
+noncomputable def ModEllRepData.torsionField {ℓ : ℕ} (R : C.ModEllRepData ℓ) :
+    IntermediateField C.F C.Fbar :=
+  IntermediateField.fixedField R.rep.ker
+
+instance {ℓ : ℕ} (R : C.ModEllRepData ℓ) : NumberField ↥R.torsionField :=
+  numberField_fixedField_of_isOpen R.ker_isOpen
+
 /-! ### The local height data of the curve -/
 
 open scoped Classical in
@@ -294,9 +302,7 @@ structure AnabelianExistence (AG : AnabelianGeometry.{u}) (TG : TemperedGeometry
   exists_data : ∀ (F : Type u) [Field F] [NumberField F] (E : WeierstrassCurve F)
     [E.IsElliptic] (Fbar : Type u) [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
     (VBad : Set (FinitePlace ↥(fieldOfModuli F E))) (P : AdmissiblePrimeData F E Fbar VBad)
-    [NumberField ↥P.torsionField] [Algebra ↥(fieldOfModuli F E) ↥P.torsionField],
-    (∀ x : ↥(fieldOfModuli F E),
-      algebraMap _ ↥P.torsionField x = algebraMap F ↥P.torsionField (algebraMap _ F x)) →
+    [NumberField ↥P.torsionField] (TF : TateFamily E P.torsionField P.ℓ VBad),
     IsInitialThetaGlobalData F E Fbar VBad →
     AG.HasCore (AG.oncePunctured E) (CF AG F E) →
     ∃ O : OrbicurveData AG F E Fbar VBad P,
@@ -312,35 +318,37 @@ variable (C : EllipticCurveData.{u}) (CA : C.CurveArithmetic) (TI : C.TateInputs
   (hP5 : ∃ w ∈ C.badAll, residueChar w ≠ 2 ∧ residueChar w ≠ ℓ)
   (anab : AnabelianExistence AG TG)
   (hcore : AG.HasCore (AG.oncePunctured C.E) (OrbicurveDataSection.CF AG C.F C.E))
+  (TF : TateFamily C.E R.torsionField ℓ (C.VBadOf ℓ))
 
 /-- **The initial Θ-data attached to `(E/F, ℓ)`** (IUT I, Definition 3.1; (P7) in the
 proof of IUT IV, Corollary 2.2), with `V_mod^bad = VBadOf ℓ`. -/
 noncomputable def thetaData : InitialThetaData AG TG :=
   letI := (C.primeData CA TI hℓ h7 R hsl hP2).numberField_torsionField
   let h := anab.exists_data C.F C.E C.Fbar (C.VBadOf ℓ) (C.primeData CA TI hℓ h7 R hsl hP2)
-    (fun _ => rfl) (C.globalData CA hP5) hcore
+    TF (C.globalData CA hP5) hcore
   { F := C.F
     Fbar := C.Fbar
     E := C.E
     VBad := C.VBadOf ℓ
     global := C.globalData CA hP5
     prime := C.primeData CA TI hℓ h7 R hsl hP2
+    tate := TF
     orb := h.choose
     localData := h.choose_spec.some }
 
 /-- The `q`-pilot inputs of the constructed Θ-data: the bad locus is finite and residue
 degrees are positive. -/
-theorem qPilotInputs : QPilotInputs (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore) where
+theorem qPilotInputs : QPilotInputs (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore TF) where
   bad_finite := CA.badAll_finite.subset fun _ hw => C.mem_badAll_of_mem_badPlacesOver hw
   inertDeg_pos := CA.inertDeg_pos
 
 open scoped Classical in
 /-- **`log(q)` of the constructed Θ-data is the part of `log(q_∀)` away from `2` and
 `ℓ`.** -/
-theorem logQ_eq (LT : LocalTheory.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore).Kt)
-    (TL : ThetaLocalData (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore) LT) :
-    (concreteVariantData.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore) LT TL
-      (C.qPilotInputs CA TI hℓ h7 R hsl hP2 hP5 anab hcore)).qPilot.logQ =
+theorem logQ_eq (LT : LocalTheory.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore TF).Kt)
+    (TL : ThetaLocalData (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore TF) LT) :
+    (concreteVariantData.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 anab hcore TF) LT TL
+      (C.qPilotInputs CA TI hℓ h7 R hsl hP2 hP5 anab hcore TF)).qPilot.logQ =
       (C.localHeightData CA TI).heightOther 2 ℓ := by
   have hfin : (badPlacesOver C.F C.E (C.VBadOf ℓ)).Finite :=
     CA.badAll_finite.subset fun _ hw => C.mem_badAll_of_mem_badPlacesOver hw
@@ -390,6 +398,12 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
   tate : ∀ x hx, (curve x hx).TateInputs
   /-- The mod-`ℓ` representations of `E_x`. -/
   modRep : ∀ x hx (ℓ : ℕ), (curve x hx).ModEllRepData ℓ
+  /-- **Tate uniformizations of `E_x` over the completions of its ℓ-torsion field** at the
+  places over `V_mod^bad`, Galois-equivariant on the ℓ-torsion (`Iut.TateFamily`; Tate's
+  theorem, the reduction being split multiplicative since `E_x[ℓ]` is rational over the
+  torsion field; taxis #13). -/
+  tateFamily : ∀ x hx (ℓ : ℕ), ℓ.Prime → 7 ≤ ℓ →
+    TateFamily (curve x hx).E (modRep x hx ℓ).torsionField ℓ ((curve x hx).VBadOf ℓ)
   /-- The local height data of `E_x` computes `h`. -/
   height_eq : ∀ x hx, ((curve x hx).localHeightData (arith x hx) (tate x hx)).height = h x
   /-- `[F_x : ℚ] ≤ 2¹²·3³·5·d` ((E3)–(E5) in the proof of Theorem 1.10). -/
@@ -504,14 +518,14 @@ theorem concreteThetaDataExistence (anab : AnabelianExistence AG TG)
     obtain ⟨w, hw, h⟩ := hP5
     exact ⟨w, (CI.arith x hx).badAll_finite.mem_toFinset.mp hw, h⟩
   let D := (CI.curve x hx).thetaData (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-    (hsl hx) hP2' hP5' anab hcore
+    (hsl hx) hP2' hP5' anab hcore (CI.tateFamily x hx ℓ hℓ h7)
   refine ⟨D, LTp D, TLp D (LTp D),
     (CI.curve x hx).qPilotInputs (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-      (hsl hx) hP2' hP5' anab hcore,
+      (hsl hx) hP2' hP5' anab hcore (CI.tateFamily x hx ℓ hℓ h7),
     TAp _ _ _, rfl, CI.dmod_le x hx, ?_, CI.logDiff_eq x hx, CI.logCond_ge x hx ℓ hℓ h7,
     CI.logCond_le x hx ℓ hℓ h7⟩
   exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-    (hsl hx) hP2' hP5' anab hcore _ _
+    (hsl hx) hP2' hP5' anab hcore (CI.tateFamily x hx ℓ hℓ h7) _ _
 
 end CurveInputs
 

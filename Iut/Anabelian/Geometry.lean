@@ -27,7 +27,8 @@ Field by field (taxis #276):
 8. `IsCartesianSquare` — the `±`-quotient squares.
 9. `Cusp` — `E(k)[ℓ]/M`, modulo `±`.
 10. `HasCore` — residual (`EtalePi1Theory`; its classification is taxis #10).
-11. `IsTypeOneEllTors`, `IsTypeOneEllTorsPM`, `IsTypeOneZModPM` — the orbicurve types.
+11. `IsTypeOneEllTors`, `IsTypeOneEllTorsPM`, `IsTypeOneZModPM` — the orbicurve types;
+    `TateStructure` — the Tate structures `Iut.TateStructure` on the underlying curve.
 12. `RankOneQuotient`, `cuspOfQuotient` — `E(k)[ℓ]/M` and the class map.
 -/
 
@@ -58,6 +59,7 @@ noncomputable def modelAG (Pi1 : EtalePi1Theory.{u}) : AnabelianGeometry.{u} whe
   HasCore := Pi1.HasCore
   IsTypeOneEllTors := Orbicurve.IsTypeOneEllTors
   IsTypeOneEllTorsPM := Orbicurve.IsTypeOneEllTorsPM
+  TateStructure X := TateStructure X.E
   IsTypeOneZModPM := Orbicurve.IsTypeOneZModPM
   RankOneQuotient X _ := X.Q
   cuspOfQuotient X _ q := X.cuspOf q
@@ -91,6 +93,6 @@ noncomputable def modelTG (Pi1 : EtalePi1Theory.{u}) (T : TemperedPi1Theory Pi1)
   tempToEtale := T.tempToEtale
   tempToEtale_continuous := T.tempToEtale_continuous
   IsThetaRootModel := Orbicurve.IsThetaRootModel
-  canonicalGraphCusp X := X.canonicalGraphCusp
+  canonicalGraphCusp := Orbicurve.canonicalGraphCusp
 
 end Iut.Anabelian

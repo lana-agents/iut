@@ -112,12 +112,19 @@ structure AnabelianGeometry : Type (u + 1) where
   IsTypeOneEllTors : {k : Type u} → [Field k] → (ℓ : ℕ) → Orbicurve k → Prop
   /-- An orbicurve is of type `(1, ℓ-tors)^±` (*Étale Theta*, Definition 2.1). -/
   IsTypeOneEllTorsPM : {k : Type u} → [Field k] → (ℓ : ℕ) → Orbicurve k → Prop
-  /-- An orbicurve over a valued field is of type `(1, ℤ/ℓℤ)^±` (*Étale Theta*,
-  Definition 2.5; used by the local conditions at bad places, taxis #42). The predicate
-  refers to the reduction of the orbicurve, hence sees the valuation of the base field
-  (a `Valued k ℤᵐ⁰` structure: the local fields of the Θ-data are adic completions). -/
+  /-- **Tate structures** on an orbicurve over a complete rank-one valued field (the local
+  fields of the Θ-data are adic completions): a Tate uniformization of the underlying
+  elliptic curve (*The Étale Theta Function*, §1; for the model, `Iut.TateStructure`). The
+  local conditions of the Θ-data at the bad places refer to it. -/
+  TateStructure : {k : Type u} → [Field k] → [Valued k (WithZero (Multiplicative ℤ))] →
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] → [CompleteSpace k] →
+    Orbicurve k → Type u
+  /-- An orbicurve over a complete rank-one valued field, with a Tate structure, is of type
+  `(1, ℤ/ℓℤ)^±` (*Étale Theta*, Definition 2.5; used by the local conditions at bad places,
+  taxis #42): the cover attached to the graph quotient of the Tate uniformization. -/
   IsTypeOneZModPM : {k : Type u} → [Field k] → [Valued k (WithZero (Multiplicative ℤ))] →
-    (ℓ : ℕ) → Orbicurve k → Prop
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] → [CompleteSpace k] →
+    (ℓ : ℕ) → (X : Orbicurve k) → TateStructure X → Prop
   /-- The rank-one quotient `Q` attached to an orbicurve of type `(1, ℓ-tors)^±`
   (IUT I, Definition 3.1(f): the quotient of the module of cuspidal data that is free
   of rank one over `ℤ/ℓℤ`). For orbicurves not of that type the value is junk. -/

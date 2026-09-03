@@ -3,8 +3,9 @@ import Iut.Anabelian.Existence
 import Iut.Anabelian.Geometry
 import Iut.Anabelian.Linear
 import Iut.Anabelian.Local
+import Iut.Anabelian.LocalInputs
 import Iut.Anabelian.Model
-import Iut.Anabelian.Places
+import Iut.Anabelian.TateTorsion
 import Iut.Anabelian.Torsion
 import Iut.Basic
 import Iut.Concrete.Container
@@ -30,6 +31,10 @@ import Iut.Cor312.ThetaData.GlobalField
 import Iut.Cor312.ThetaData.LocalConditions
 import Iut.Cor312.ThetaData.Orbicurve
 import Iut.Cor312.ThetaData.Places
+import Iut.Cor312.ThetaData.PlacesOver
+import Iut.Cor312.ThetaData.PointMap
+import Iut.Cor312.ThetaData.TateFamily
+import Iut.Cor312.ThetaData.TateStructure
 import Iut.Implication.Corollary22
 import Iut.Implication.Corollary23
 import Iut.Implication.Invariants
