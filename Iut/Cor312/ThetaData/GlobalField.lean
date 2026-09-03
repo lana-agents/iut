@@ -138,7 +138,7 @@ variable (VBad : Set (FinitePlace ↥(fieldOfModuli F E)))
 
 /-- The set `V(F)^bad` of finite places of `F` lying over `V_mod^bad`. -/
 def badPlacesOver : Set (FinitePlace F) :=
-  {w | ∃ v ∈ VBad, w.1.LiesOver v.1}
+  {w | ∃ v ∈ VBad, FinitePlace.LiesOver w v}
 
 /-- `V_mod^bad` as a subset of `V_mod` (nonarchimedean places only, by construction). -/
 def badModPlaces : Set (ModPlace F E) := Place.finite '' VBad
@@ -168,7 +168,7 @@ structure IsInitialThetaGlobalData : Prop where
   /-- `E_F` has bad multiplicative reduction at every place of `F` over `V_mod^bad`
   (IUT I, Definition 3.1(b)). -/
   bad_multiplicative : ∀ v ∈ VBad, ∀ w : FinitePlace F,
-    w.1.LiesOver v.1 → HasMultiplicativeReductionAt E w
+    FinitePlace.LiesOver w v → HasMultiplicativeReductionAt E w
 
 end Conditions
 

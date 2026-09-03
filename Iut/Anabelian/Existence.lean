@@ -6,6 +6,7 @@ Authors: The iut contributors
 import Iut.Anabelian.Geometry
 import Iut.Anabelian.Torsion
 import Iut.Anabelian.Linear
+import Iut.Anabelian.Places
 import Iut.Concrete.Existence
 
 /-!
@@ -63,6 +64,8 @@ variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
 variable {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
 variable (P : Iut.AdmissiblePrimeData F E Fbar VBad)
 variable [NumberField ↥P.torsionField] [Algebra ↥(fieldOfModuli F E) ↥P.torsionField]
+variable (halg : ∀ x : ↥(fieldOfModuli F E),
+  algebraMap _ ↥P.torsionField x = algebraMap F ↥P.torsionField (algebraMap _ F x))
 
 attribute [local instance 1100] instDecidableEqK
 
@@ -90,31 +93,19 @@ def IsCanonicalGeneratorAt (w : FinitePlace ↥P.torsionField) (R : P.EK.toAffin
     Prop :=
   IsCanonicalGenerator (P.EKw w) P.ℓ (pointMap P.EK (emb P w) R)
 
-/-- **The reduction-theoretic inputs** of the existence of local theta data (taxis #5,
-#13; places: taxis #1494). -/
+/-- **The reduction-theoretic inputs** of the existence of local theta data (taxis #1529;
+Tate uniformization at the bad places, taxis #13): the structure of the ℓ-torsion of `E`
+over the completions `K_w` at the places `w` over `V_mod^bad`, in terms of the graph line
+and the canonical generators of `Iut.Anabelian.Local`, and its equivariance under the
+Galois action `Iut.galPlace` on places. The places-theoretic inputs (places over places,
+the Galois action, decomposition groups) are proved in `Iut.Anabelian.Places`. -/
 structure LocalInputs : Type u where
-  /-- Every finite place of `F_mod` has a finite place of `K` over it. -/
-  exists_finite_liesOver : ∀ v : FinitePlace ↥(fieldOfModuli F E),
-    ∃ w : FinitePlace ↥P.torsionField, w.1.LiesOver v.1
-  /-- Every infinite place of `F_mod` has an infinite place of `K` over it. -/
-  exists_infinite_liesOver : ∀ v : InfinitePlace ↥(fieldOfModuli F E),
-    ∃ w : InfinitePlace ↥P.torsionField, w.1.LiesOver v.1
-  /-- The action of `Gal(K/F)` on the finite places of `K`. -/
-  smul : (↥P.torsionField ≃ₐ[F] ↥P.torsionField) → FinitePlace ↥P.torsionField →
-    FinitePlace ↥P.torsionField
-  /-- The action preserves the place of `F_mod` below. -/
-  smul_liesOver : ∀ (σ : ↥P.torsionField ≃ₐ[F] ↥P.torsionField) (w : FinitePlace ↥P.torsionField)
-    (v : FinitePlace ↥(fieldOfModuli F E)), w.1.LiesOver v.1 → (smul σ w).1.LiesOver v.1
-  /-- An extension of each finite place of `K` to `F̄`. -/
-  ext : FinitePlace ↥P.torsionField → AbsoluteValue Fbar ℝ
-  /-- The extension lies over the place. -/
-  ext_liesOver : ∀ w, (ext w).LiesOver w.1
   /-- **Split multiplicative reduction** of `E` over `K_w` at the places over `V_mod^bad`
   (multiplicative reduction with rational ℓ-torsion is split). -/
-  split : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, w.1.LiesOver v.1 →
+  split : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, FinitePlace.LiesOver w v →
     HasSplitMultiplicativeReduction (P.EKw w)
   /-- **The local ℓ-torsion is global** at the places over `V_mod^bad`. -/
-  torsion_surj : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, w.1.LiesOver v.1 →
+  torsion_surj : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, FinitePlace.LiesOver w v →
     ∀ Q ∈ AddSubgroup.torsionBy (P.EKw w).toAffine.Point P.ℓ,
       ∃ R : P.EK.toAffine.Point, pointMap P.EK (emb P w) R = Q
   /-- The graph line at each place, as a subgroup of `E(K)` (junk away from
@@ -122,23 +113,23 @@ structure LocalInputs : Type u where
   graphLineSub : FinitePlace ↥P.torsionField → AddSubgroup P.EK.toAffine.Point
   /-- **The graph line is a subgroup of order `ℓ`** of `E(K)[ℓ]` at the places over
   `V_mod^bad` (`ℓ ∤ ord(q_w)`, Definition 3.1(c)). -/
-  graphLineSub_spec : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, w.1.LiesOver v.1 →
+  graphLineSub_spec : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, FinitePlace.LiesOver w v →
     (graphLineSub w : Set P.EK.toAffine.Point) = P.graphLineAt w ∧
       graphLineSub w ≤ P.TK ∧ Nat.card (graphLineSub w) = P.ℓ
   /-- **Galois equivariance of the graph line.** -/
-  graphLineSub_smul : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, w.1.LiesOver v.1 →
+  graphLineSub_smul : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, FinitePlace.LiesOver w v →
     ∀ σ : ↥P.torsionField ≃ₐ[F] ↥P.torsionField,
-      graphLineSub (smul σ w) = (graphLineSub w).map (P.galK σ)
+      graphLineSub (galPlace σ w) = (graphLineSub w).map (P.galK σ)
   /-- **The canonical generators** at a place over `V_mod^bad` are the two cosets
   `±g + L` of a torsion point `g ∉ L` (the ℓ-th roots `q^{±1/ℓ}` of the Tate
   parameter). -/
-  canonical_spec : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, w.1.LiesOver v.1 →
+  canonical_spec : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, FinitePlace.LiesOver w v →
     ∃ g ∈ P.TK, g ∉ graphLineSub w ∧
       ∀ R, P.IsCanonicalGeneratorAt w R ↔ (R - g ∈ graphLineSub w ∨ R + g ∈ graphLineSub w)
   /-- **Galois equivariance of the canonical generators.** -/
-  canonical_smul : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, w.1.LiesOver v.1 →
+  canonical_smul : ∀ v ∈ VBad, ∀ w : FinitePlace ↥P.torsionField, FinitePlace.LiesOver w v →
     ∀ (σ : ↥P.torsionField ≃ₐ[F] ↥P.torsionField) (R : P.EK.toAffine.Point),
-      P.IsCanonicalGeneratorAt (smul σ w) (P.galK σ R) ↔ P.IsCanonicalGeneratorAt w R
+      P.IsCanonicalGeneratorAt (galPlace σ w) (P.galK σ R) ↔ P.IsCanonicalGeneratorAt w R
 
 /-! ## The chosen line and cusp -/
 
@@ -413,66 +404,10 @@ def orbicurveData (hcore : Pi1.HasCore (Orbicurve.oncePunctured E)
   epsilon := P.CKu.cuspOf P.q
   epsilon_spec := rfl
 
-/-! ## Decomposition groups -/
-
-/-- The stabilizer of an absolute value on `F̄` in `Gal(F̄/K)`: the decomposition group of
-the extension. -/
-def decompAt (a : AbsoluteValue Fbar ℝ) : Subgroup (Fbar ≃ₐ[↥P.torsionField] Fbar) where
-  carrier := {σ | ∀ x, a (σ x) = a x}
-  one_mem' := fun _ => rfl
-  mul_mem' := fun {σ τ} hσ hτ x => by
-    simp only [Set.mem_setOf_eq] at hσ hτ ⊢
-    rw [AlgEquiv.mul_apply, hσ, hτ]
-  inv_mem' := fun {σ} hσ x => by
-    simp only [Set.mem_setOf_eq] at hσ ⊢
-    have h := hσ (σ⁻¹ x)
-    rw [← AlgEquiv.mul_apply, mul_inv_cancel, AlgEquiv.one_apply] at h
-    exact h.symm
-
 /-- `F̄` is algebraic over `K`. -/
 instance : Algebra.IsIntegral ↥P.torsionField Fbar :=
   have : Algebra.IsAlgebraic F Fbar := IsAlgClosure.isAlgebraic
   (Algebra.IsAlgebraic.tower_top (K := F) ↥P.torsionField).isIntegral
-
-/-- The set of automorphisms sending `x` to `y` is open (Krull topology). -/
-lemma isOpen_eval_eq (x y : Fbar) : IsOpen {σ : Fbar ≃ₐ[↥P.torsionField] Fbar | σ x = y} := by
-  by_cases h : ∃ σ₀ : Fbar ≃ₐ[↥P.torsionField] Fbar, σ₀ x = y
-  · obtain ⟨σ₀, hσ₀⟩ := h
-    have hset : {σ : Fbar ≃ₐ[↥P.torsionField] Fbar | σ x = y} =
-        (fun σ => σ₀⁻¹ * σ) ⁻¹' (MulAction.stabilizer (Fbar ≃ₐ[↥P.torsionField] Fbar) x) := by
-      ext σ
-      simp only [Set.mem_setOf_eq, Set.mem_preimage, SetLike.mem_coe, MulAction.mem_stabilizer_iff,
-        AlgEquiv.smul_def, AlgEquiv.mul_apply]
-      constructor
-      · intro hσ
-        rw [hσ, ← hσ₀, ← AlgEquiv.mul_apply, inv_mul_cancel, AlgEquiv.one_apply]
-      · intro hσ
-        have := congrArg σ₀ hσ
-        rwa [← AlgEquiv.mul_apply, mul_inv_cancel, AlgEquiv.one_apply, hσ₀] at this
-    rw [hset]
-    exact (stabilizer_isOpen_of_isIntegral (K := ↥P.torsionField) x).preimage
-      (continuous_const.mul continuous_id)
-  · push_neg at h
-    have : {σ : Fbar ≃ₐ[↥P.torsionField] Fbar | σ x = y} = ∅ := by
-      ext σ; simp [h σ]
-    rw [this]
-    exact isOpen_empty
-
-lemma decompAt_isClosed (a : AbsoluteValue Fbar ℝ) :
-    IsClosed ((P.decompAt a : Subgroup _) : Set (Fbar ≃ₐ[↥P.torsionField] Fbar)) := by
-  have : ((P.decompAt a : Subgroup _) : Set (Fbar ≃ₐ[↥P.torsionField] Fbar)) =
-      ⋂ x, {σ | a (σ x) = a x} := by
-    ext σ; simp [decompAt]
-  rw [this]
-  refine isClosed_iInter fun x => ?_
-  rw [← isOpen_compl_iff]
-  have : {σ : Fbar ≃ₐ[↥P.torsionField] Fbar | a (σ x) = a x}ᶜ =
-      ⋃ y ∈ {y | a y ≠ a x}, {σ | σ x = y} := by
-    ext σ
-    simp only [Set.mem_compl_iff, Set.mem_setOf_eq, Set.mem_iUnion, exists_prop]
-    exact ⟨fun h => ⟨σ x, h, rfl⟩, by rintro ⟨y, hy, rfl⟩; exact hy⟩
-  rw [this]
-  exact isOpen_biUnion fun y _ => P.isOpen_eval_eq x y
 
 /-! ## The choice of places -/
 
@@ -494,13 +429,14 @@ lemma galK_galK_symm (σ : ↥P.torsionField ≃ₐ[F] ↥P.torsionField) (R : P
     P.galK σ (P.galK σ.symm R) = R :=
   P.map_map_symm σ R
 
+include halg in
 /-- **The good place over `v ∈ V_mod^bad`**: a place at which the graph line is `M` and the
 canonical generators are `±e₂ (mod M)`. -/
 theorem exists_good_place {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) :
-    ∃ w : FinitePlace ↥P.torsionField, w.1.LiesOver v.1 ∧ LI.graphLineSub w = P.M ∧
+    ∃ w : FinitePlace ↥P.torsionField, FinitePlace.LiesOver w v ∧ LI.graphLineSub w = P.M ∧
       ∀ R, P.IsCanonicalGeneratorAt w R → (R - P.e₂ ∈ P.M ∨ R + P.e₂ ∈ P.M) := by
   haveI := P.fact_prime
-  obtain ⟨w₀, hw₀⟩ := LI.exists_finite_liesOver v
+  obtain ⟨w₀, hw₀⟩ := FinitePlace.exists_liesOver (K := ↥P.torsionField) v
   obtain ⟨hL₀set, hL₀le, hL₀card⟩ := LI.graphLineSub_spec v hv w₀ hw₀
   obtain ⟨g₀, hg₀T, hg₀L, hg₀⟩ := LI.canonical_spec v hv w₀ hw₀
   -- the line and the vector in `𝔽_ℓ²`
@@ -512,7 +448,7 @@ theorem exists_good_place {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ V
     P.single_one_not_mem_M₀
   obtain ⟨τ, hτ⟩ := P.sl_le_range A
   set σ := P.restrictK τ with hσ
-  refine ⟨LI.smul σ w₀, LI.smul_liesOver σ w₀ v hw₀, ?_, ?_⟩
+  refine ⟨galPlace σ w₀, galPlace_liesOver halg σ hw₀, ?_, ?_⟩
   · -- the graph line at `σ·w₀` is `M`
     have hA : (P.rep τ : Matrix (Fin 2) (Fin 2) (ZMod P.ℓ)) = A := by
       rw [hτ]; rfl
@@ -556,36 +492,38 @@ theorem exists_good_place {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ V
       have h4 : R + P.galK σ g₀ - (P.galK σ g₀ - P.e₂) = R + P.e₂ := by abel
       rwa [h4] at h3
 
+include halg
+
 /-- The chosen finite place of `K` over a finite place of `F_mod`. -/
 def sectFin (v : FinitePlace ↥(fieldOfModuli F E)) : FinitePlace ↥P.torsionField :=
-  if hv : v ∈ VBad then (P.exists_good_place LI hv).choose
-  else (LI.exists_finite_liesOver v).choose
+  if hv : v ∈ VBad then (P.exists_good_place halg LI hv).choose
+  else (FinitePlace.exists_liesOver (K := ↥P.torsionField) v).choose
 
 lemma sectFin_liesOver (v : FinitePlace ↥(fieldOfModuli F E)) :
-    (P.sectFin LI v).1.LiesOver v.1 := by
+    FinitePlace.LiesOver (P.sectFin halg LI v) v := by
   unfold sectFin
   split_ifs with hv
-  · exact (P.exists_good_place LI hv).choose_spec.1
-  · exact (LI.exists_finite_liesOver v).choose_spec
+  · exact (P.exists_good_place halg LI hv).choose_spec.1
+  · exact (FinitePlace.exists_liesOver (K := ↥P.torsionField) v).choose_spec
 
 lemma sectFin_graphLine {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) :
-    LI.graphLineSub (P.sectFin LI v) = P.M := by
+    LI.graphLineSub (P.sectFin halg LI v) = P.M := by
   unfold sectFin
   rw [dif_pos hv]
-  exact (P.exists_good_place LI hv).choose_spec.2.1
+  exact (P.exists_good_place halg LI hv).choose_spec.2.1
 
 lemma sectFin_canonical {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) (R)
-    (hR : P.IsCanonicalGeneratorAt (P.sectFin LI v) R) : R - P.e₂ ∈ P.M ∨ R + P.e₂ ∈ P.M := by
+    (hR : P.IsCanonicalGeneratorAt (P.sectFin halg LI v) R) : R - P.e₂ ∈ P.M ∨ R + P.e₂ ∈ P.M := by
   unfold sectFin at hR
   rw [dif_pos hv] at hR
-  exact (P.exists_good_place LI hv).choose_spec.2.2 R hR
+  exact (P.exists_good_place halg LI hv).choose_spec.2.2 R hR
 
 /-- **The valuation section `V ⊆ V(K)`** (IUT I, Definition 3.1(e)). -/
 def sect : ValuationSection F E Fbar VBad P where
-  sectFin := P.sectFin LI
-  sectInf v := (LI.exists_infinite_liesOver v).choose
-  sectFin_liesOver := P.sectFin_liesOver LI
-  sectInf_liesOver v := (LI.exists_infinite_liesOver v).choose_spec
+  sectFin := P.sectFin halg LI
+  sectInf v := (InfinitePlace.exists_liesOver (K := ↥P.torsionField) v).choose
+  sectFin_liesOver := P.sectFin_liesOver halg LI
+  sectInf_liesOver v := (InfinitePlace.exists_liesOver (K := ↥P.torsionField) v).choose_spec
 
 /-! ## The local conditions at the bad places -/
 
@@ -594,11 +532,11 @@ variable {P LI}
 /-- The bad-place conditions hold at the chosen place. -/
 lemma localType {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) (b : Bool) :
     Orbicurve.IsTypeOneZModPM P.ℓ
-      ((⟨P.EK, P.ℓ, P.M, b⟩ : Orbicurve ↥P.torsionField).baseChange (emb P (P.sectFin LI v))) := by
-  set w := P.sectFin LI v with hw
-  have hwv := P.sectFin_liesOver LI v
+      ((⟨P.EK, P.ℓ, P.M, b⟩ : Orbicurve ↥P.torsionField).baseChange (emb P (P.sectFin halg LI v))) := by
+  set w := P.sectFin halg LI v with hw
+  have hwv := P.sectFin_liesOver halg LI v
   obtain ⟨hset, hle, -⟩ := LI.graphLineSub_spec v hv w hwv
-  have hMw := P.sectFin_graphLine LI hv
+  have hMw := P.sectFin_graphLine halg LI hv
   refine ⟨P.ℓ_prime, rfl, LI.split v hv w hwv, ?_, ?_⟩
   · ext Q
     constructor
@@ -622,17 +560,17 @@ for the model. -/
 def localThetaData (hcore : Pi1.HasCore (Orbicurve.oncePunctured E)
     (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))) (T : TemperedPi1Theory Pi1) :
     LocalThetaData (modelAG Pi1) (modelTG Pi1 T) F E Fbar VBad P (P.orbicurveData Pi1 hcore) where
-  sect := P.sect LI
+  sect := P.sect halg LI
   local_diagram_cartesian _ := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
-  decomp w := P.decompAt (LI.ext w)
-  decomp_isClosed w := P.decompAt_isClosed (LI.ext w)
-  bad_type v hv := localType hv false
-  bad_theta_model v hv := localType hv false
+  decomp w := decompGroup ↥P.torsionField Fbar w
+  decomp_isClosed w := decompGroup_isClosed ↥P.torsionField Fbar w
+  bad_type v hv := localType halg hv false
+  bad_theta_model v hv := localType halg hv false
   epsilon_graph v hv := by
-    change P.CKu.cuspBaseChange (emb P (P.sectFin LI v)) (P.CKu.cuspOf P.q) =
-      Orbicurve.canonicalGraphCusp (P.CKu.baseChange (emb P (P.sectFin LI v)))
-    set w := P.sectFin LI v with hw
-    have hwv := P.sectFin_liesOver LI v
+    change P.CKu.cuspBaseChange (emb P (P.sectFin halg LI v)) (P.CKu.cuspOf P.q) =
+      Orbicurve.canonicalGraphCusp (P.CKu.baseChange (emb P (P.sectFin halg LI v)))
+    set w := P.sectFin halg LI v with hw
+    have hwv := P.sectFin_liesOver halg LI v
     rw [Orbicurve.cuspBaseChange_cuspOf]
     unfold Orbicurve.canonicalGraphCusp
     obtain ⟨g, hgT, -, hg⟩ := LI.canonical_spec v hv w hwv
@@ -660,7 +598,7 @@ def localThetaData (hcore : Pi1.HasCore (Orbicurve.oncePunctured E)
       rw [Orbicurve.coe_mapTorsion]
       exact hR.symm
     rw [hchoose, ← Orbicurve.mapQ_toQ]
-    rcases P.sectFin_canonical LI hv R hRc with h | h
+    rcases P.sectFin_canonical halg LI hv R hRc with h | h
     · congr 2
       apply (QuotientAddGroup.eq).mpr
       rw [AddSubgroup.mem_addSubgroupOf]
@@ -698,8 +636,8 @@ theorem anabelianExistence (Pi1 : EtalePi1Theory.{u}) (T : TemperedPi1Theory Pi1
       [NumberField ↥P.torsionField] [Algebra ↥(fieldOfModuli F E) ↥P.torsionField],
       P.LocalInputs) :
     AnabelianExistence (modelAG Pi1) (modelTG Pi1 T) where
-  exists_data F _ _ E _ Fbar _ _ _ _ P _ _ _ _ hcore :=
-    ⟨P.orbicurveData Pi1 hcore, ⟨P.localThetaData Pi1 (LI P) hcore T⟩⟩
+  exists_data F _ _ E _ Fbar _ _ _ _ P _ _ halg _ hcore :=
+    ⟨P.orbicurveData Pi1 hcore, ⟨P.localThetaData halg Pi1 (LI P) hcore T⟩⟩
 
 /-- **The Corollary 3.12 variant for the model implies ABC**: with the anabelian interface
 instantiated by the linear-algebraic model, the existence of initial Θ-data is a theorem,

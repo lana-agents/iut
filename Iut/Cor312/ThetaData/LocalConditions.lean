@@ -149,7 +149,7 @@ structure ValuationSection : Type u where
   /-- The section on archimedean places. -/
   sectInf : InfinitePlace ↥(fieldOfModuli F E) → InfinitePlace ↥P.torsionField
   /-- Nonarchimedean sections lie over their base points. -/
-  sectFin_liesOver : ∀ v, (sectFin v).1.LiesOver v.1
+  sectFin_liesOver : ∀ v, FinitePlace.LiesOver (sectFin v) v
   /-- Archimedean sections lie over their base points. -/
   sectInf_liesOver : ∀ v, (sectInf v).1.LiesOver v.1
 

@@ -4,6 +4,7 @@ import Iut.Anabelian.Geometry
 import Iut.Anabelian.Linear
 import Iut.Anabelian.Local
 import Iut.Anabelian.Model
+import Iut.Anabelian.Places
 import Iut.Anabelian.Torsion
 import Iut.Basic
 import Iut.Concrete.Container

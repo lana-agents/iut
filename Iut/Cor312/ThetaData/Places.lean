@@ -43,11 +43,27 @@ def IsFinite : Place k → Prop
 def absoluteValue : Place k → AbsoluteValue k ℝ :=
   Sum.elim Subtype.val Subtype.val
 
+end Place
+
+/-- The **lies over** relation between finite places of an extension `K/k`: the prime of
+`𝓞_K` attached to `w` lies over the prime of `𝓞_k` attached to `v` (`Ideal.LiesOver`; the
+normalized absolute value of `w` restricts to a *power* of that of `v`, so the relation
+is stated on the primes). -/
+def FinitePlace.LiesOver {K : Type*} [Field K] [NumberField K] [Algebra k K]
+    (w : FinitePlace K) (v : FinitePlace k) : Prop :=
+  w.maximalIdeal.asIdeal.LiesOver v.maximalIdeal.asIdeal
+
+namespace Place
+
 /-- The **lies over** relation between a place of an extension `K/k` and a place of
-`k`, via Mathlib's `AbsoluteValue.LiesOver` on the underlying absolute values. -/
-def LiesOver {K : Type*} [Field K] [NumberField K] [Algebra k K]
-    (w : Place K) (v : Place k) : Prop :=
-  w.absoluteValue.LiesOver v.absoluteValue
+`k`: on finite places the prime-ideal relation `Iut.FinitePlace.LiesOver`, on infinite
+places the restriction of the absolute value (`AbsoluteValue.LiesOver`); a finite and an
+infinite place never lie over each other. -/
+def LiesOver {K : Type*} [Field K] [NumberField K] [Algebra k K] :
+    Place K → Place k → Prop
+  | Sum.inl w, Sum.inl v => FinitePlace.LiesOver w v
+  | Sum.inr w, Sum.inr v => w.1.LiesOver v.1
+  | _, _ => False
 
 end Place
 

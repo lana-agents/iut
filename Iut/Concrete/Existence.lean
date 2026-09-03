@@ -104,8 +104,8 @@ Corollary 2.2): the places of `F_mod` of residue characteristic `≠ 2, ℓ` ove
 has multiplicative reduction (at every place of `F` above, and there is one). -/
 def VBadOf (ℓ : ℕ) : Set (FinitePlace ↥(fieldOfModuli C.F C.E)) :=
   {v | residueChar v ≠ 2 ∧ residueChar v ≠ ℓ ∧
-    (∃ w : FinitePlace C.F, w.1.LiesOver v.1) ∧
-    ∀ w : FinitePlace C.F, w.1.LiesOver v.1 → HasMultiplicativeReductionAt C.E w}
+    (∃ w : FinitePlace C.F, FinitePlace.LiesOver w v) ∧
+    ∀ w : FinitePlace C.F, FinitePlace.LiesOver w v → HasMultiplicativeReductionAt C.E w}
 
 /-- Places over `V_mod^bad(ℓ)` are multiplicative. -/
 lemma mem_badAll_of_mem_badPlacesOver {ℓ : ℕ} {w : FinitePlace C.F}
@@ -128,15 +128,15 @@ structure CurveArithmetic : Prop where
   galois_deg_prime : ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ → IsGaloisOfDegreePrimeTo C.F C.E ℓ
   /-- Every finite place of `F` lies over a finite place of `F_mod`. -/
   exists_liesOver : ∀ w : FinitePlace C.F,
-    ∃ v : FinitePlace ↥(fieldOfModuli C.F C.E), w.1.LiesOver v.1
+    ∃ v : FinitePlace ↥(fieldOfModuli C.F C.E), FinitePlace.LiesOver w v
   /-- A place of `F` over a place of `F_mod` has the same residue characteristic. -/
   residueChar_liesOver : ∀ (v : FinitePlace ↥(fieldOfModuli C.F C.E)) (w : FinitePlace C.F),
-    w.1.LiesOver v.1 → residueChar w = residueChar v
+    FinitePlace.LiesOver w v → residueChar w = residueChar v
   /-- Multiplicative reduction does not depend on the place of `F` over a given place of
   `F_mod` of odd residue characteristic (`E` descends to `F_tpd` up to twist and has
   semistable reduction). -/
   mult_invariant : ∀ v : FinitePlace ↥(fieldOfModuli C.F C.E), residueChar v ≠ 2 →
-    ∀ w w' : FinitePlace C.F, w.1.LiesOver v.1 → w'.1.LiesOver v.1 →
+    ∀ w w' : FinitePlace C.F, FinitePlace.LiesOver w v → FinitePlace.LiesOver w' v →
     HasMultiplicativeReductionAt C.E w → HasMultiplicativeReductionAt C.E w'
   /-- The bad locus is finite. -/
   badAll_finite : C.badAll.Finite
@@ -294,8 +294,9 @@ structure AnabelianExistence (AG : AnabelianGeometry.{u}) (TG : TemperedGeometry
   exists_data : ∀ (F : Type u) [Field F] [NumberField F] (E : WeierstrassCurve F)
     [E.IsElliptic] (Fbar : Type u) [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
     (VBad : Set (FinitePlace ↥(fieldOfModuli F E))) (P : AdmissiblePrimeData F E Fbar VBad)
-    [NumberField ↥P.torsionField] [Algebra ↥(fieldOfModuli F E) ↥P.torsionField]
-    [IsScalarTower ↥(fieldOfModuli F E) F ↥P.torsionField],
+    [NumberField ↥P.torsionField] [Algebra ↥(fieldOfModuli F E) ↥P.torsionField],
+    (∀ x : ↥(fieldOfModuli F E),
+      algebraMap _ ↥P.torsionField x = algebraMap F ↥P.torsionField (algebraMap _ F x)) →
     IsInitialThetaGlobalData F E Fbar VBad →
     AG.HasCore (AG.oncePunctured E) (CF AG F E) →
     ∃ O : OrbicurveData AG F E Fbar VBad P,
@@ -317,7 +318,7 @@ proof of IUT IV, Corollary 2.2), with `V_mod^bad = VBadOf ℓ`. -/
 noncomputable def thetaData : InitialThetaData AG TG :=
   letI := (C.primeData CA TI hℓ h7 R hsl hP2).numberField_torsionField
   let h := anab.exists_data C.F C.E C.Fbar (C.VBadOf ℓ) (C.primeData CA TI hℓ h7 R hsl hP2)
-    (C.globalData CA hP5) hcore
+    (fun _ => rfl) (C.globalData CA hP5) hcore
   { F := C.F
     Fbar := C.Fbar
     E := C.E
