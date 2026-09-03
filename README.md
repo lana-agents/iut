@@ -218,10 +218,26 @@ instantiated by a **linear-algebraic model** (taxis
   is `⟨e₁⟩` and the canonical generators are `±e₂` — the mechanism of (P7) in the proof
   of IUT IV, Corollary 2.2. The final theorem is
   `Iut.Anabelian.cor312Variant_implies_abc_model`.
+* [`PlacesOver.lean`](Iut/Cor312/ThetaData/PlacesOver.lean),
+  [`TateStructure.lean`](Iut/Cor312/ThetaData/TateStructure.lean),
+  [`TateFamily.lean`](Iut/Cor312/ThetaData/TateFamily.lean),
+  [`TateTorsion.lean`](Iut/Anabelian/TateTorsion.lean),
+  [`LocalInputs.lean`](Iut/Anabelian/LocalInputs.lean) — the arithmetic inputs of the
+  existence proof, all proved: places of `K` over `F_mod`, the Galois action on places and
+  decomposition groups; and, from the Tate uniformizations carried by the Θ-data
+  (`InitialThetaData.tate`: Tate parameter, model change, uniformization pinned by the
+  coordinates of the Tate parametrization, Galois-equivariant), the ℓ-torsion of the Tate
+  curve (`|E(K_w)[ℓ]| ≤ ℓ²`, graph line = kernel of the residue homomorphism to `ℤ/ℓℤ`,
+  canonical generators `±q^{1/ℓ}`), hence the rationality of the local ℓ-torsion, the
+  graph line of order `ℓ` and the canonical cosets at the bad places.
 
-The interface amendment made for this: `IsTypeOneZModPM`, `IsThetaRootModel` and
-`canonicalGraphCusp` now take a `Valued k ℤᵐ⁰` structure on the local field (they refer
-to reduction).
+Interface amendments made for this (recorded on taxis #1453): the "lies over" relation on
+finite places is the prime-ideal relation (the absolute-value form of the delivered
+statement was only satisfiable at unramified split primes); `IsTypeOneZModPM`,
+`IsThetaRootModel` and `canonicalGraphCusp` take a Tate structure on the local orbicurve
+over a complete rank-one valued field, and the local theta data carry the chosen Tate
+structures (`tateX`, `tateC`); the Θ-data carry the Tate uniformizations at the places of
+the torsion field (`InitialThetaData.tate`).
 
 Residual interfaces of the model, each an explicit structure:
 
@@ -229,7 +245,7 @@ Residual interfaces of the model, each an explicit structure:
 | --- | --- | --- |
 | `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
 | `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁` | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
-| `Iut.AdmissiblePrimeData.LocalInputs` | places of `K` over `F_mod`, Galois action on places, extensions to `F̄`; at bad places: split multiplicative reduction, rationality of the local ℓ-torsion, the graph line as a subgroup of order `ℓ`, the canonical generators, Galois equivariance | elliptic-reduction / tate-curves-theta, [#1529](https://taxis.lana.merten.dev/issues/1529) |
+| `CurveInputs.tateFamily` (`Iut.TateFamily`) | Galois-equivariant Tate uniformizations of `E_x` over the completions of its ℓ-torsion field at the bad places (Tate's theorem) | tate-curves-theta, [#1582](https://taxis.lana.merten.dev/issues/1582) |
 
 ## Comparator suite
 

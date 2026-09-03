@@ -40,14 +40,15 @@ proof of Corollary 2.2).
 
 ## The reduction-theoretic inputs
 
-`Iut.Anabelian.LocalInputs P` collects the standard facts about places of `K` and about
-the reduction of `E` at the places over `V_mod^bad` that the construction consumes:
-places of `K` over places of `F_mod`, the action of `Gal(K/F)` on the places of `K`,
-extensions of places to `F̄` (decomposition groups), and — at the places over
-`V_mod^bad` — split multiplicative reduction, the rationality of the local ℓ-torsion, the
-graph line as a subgroup of order `ℓ` (from `ℓ ∤ ord(q)`, Definition 3.1(c)), the
-characterization of the canonical generators, and the Galois equivariance of both. These
-are the targets of the elliptic-reduction and Tate-curve projects (taxis #5, #13).
+The Θ-data carry the Tate uniformizations of `E` over the completions `K_w` at the places
+`w` over `V_mod^bad` (`InitialThetaData.tate : Iut.TateFamily`, chosen data pinned by the
+coordinates of the Tate parametrization, with their Galois equivariance). Everything the
+construction needs about the ℓ-torsion at the bad places — the rationality of the local
+ℓ-torsion over `K`, the graph line as a subgroup of order `ℓ`, the canonical generators as
+the cosets `±g + L` — is derived from it in `Iut.Anabelian.LocalInputs` (via the
+computation of the ℓ-torsion of a Tate curve, `Iut.Anabelian.TateTorsion`); the places of
+`K` over `F_mod`, the Galois action on places and the decomposition groups are proved in
+`Iut.Cor312.ThetaData.PlacesOver`.
 -/
 
 namespace Iut.AdmissiblePrimeData
