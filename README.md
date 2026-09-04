@@ -252,9 +252,21 @@ instantiated by a **linear-algebraic model** (taxis
   structures on such curves, their uniqueness up to sign (`Aut(E_q) = ±1`) and transport
   along isometric isomorphisms; the isometry `K_w ≃ K_{σw}` extending `σ ∈ Gal(K/F)`; and
   the Galois equivariance of the graph lines and canonical generators, which holds for any
-  choice of Tate structures by uniqueness. The Tate family of the Θ-data is now
-  constructed (`CurveInputs.tateFamily`) from split multiplicative reduction at the places
-  of the torsion field over `V_mod^bad` (`CurveInputs.split_reduction`). In
+  choice of Tate structures by uniqueness. The Tate family of the Θ-data is
+  **constructed** (`EllipticCurveData.tateFamily`, `Iut.tateFamilyOfTorsion`) from the
+  multiplicative reduction of `E` at the places of `F` over `V_mod^bad` and the rationality
+  of the ℓ-torsion over `K = F(E[ℓ])`, with no further input: the reduction at a place `w`
+  of `K` is split because `−c₄c₆` is a square in `K_w`
+  ([`SqrtAtBadPlace.lean`](Iut/Cor312/ThetaData/SqrtAtBadPlace.lean)) — in
+  `K' = K(√(−c₄c₆))` ([`QuadraticExtension.lean`](Iut/Cor312/ThetaData/QuadraticExtension.lean))
+  the curve is a Tate curve over the completion at a place `w'` over `w`; if the conjugation
+  fixes `w'` it acts on that completion fixing the curve and all its ℓ-torsion, so by the
+  sign theorem ([`TateSign.lean`](Iut/Cor312/ThetaData/TateSign.lean): an isometric
+  automorphism fixing all the ℓ-torsion fixes the Tate structure, hence a square root of
+  `−c₄c₆`) it would fix `√(−c₄c₆)`, which it negates; otherwise `w` splits in `K'`, the
+  residue degree is `1` ([`ValuationTransfer.lean`](Iut/Cor312/ThetaData/ValuationTransfer.lean):
+  valuations along extensions of number fields, `Σ e f = [K' : K]`), `−c₄c₆` is a square
+  modulo `w`, and Hensel's lemma applies. In
   tate-curves-theta (now at `ca6c227`) the hypothesis `‖12‖ = 1` of the Tate uniformization
   was weakened to `‖2‖ = 1 ∧ 12 ≠ 0` (residue characteristic `3` occurs in `V_mod^bad`), and
   the naturality of the Tate coordinates under base change was added.
@@ -267,13 +279,13 @@ over a complete rank-one valued field, and the local theta data carry the chosen
 structures (`tateX`, `tateC`); the Θ-data carry the Tate uniformizations at the places of
 the torsion field (`InitialThetaData.tate`).
 
-Residual interfaces of the model, each an explicit structure:
+Residual interfaces of the model, each an explicit structure (the Tate family of the Θ-data
+is proved, see above):
 
 | Input | Content | Owner |
 | --- | --- | --- |
 | `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
 | `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁` | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
-| `CurveInputs.split_reduction` | split multiplicative reduction of `E_x` at the places of its ℓ-torsion field over `V_mod^bad` (Mathlib's `HasSplitMultiplicativeReduction`; multiplicative reduction is split once the ℓ-torsion is rational, Silverman *Advanced Topics* V.5.2–5.3) | elliptic-reduction, [#1663](https://taxis.lana.merten.dev/issues/1663) |
 
 ## Comparator suite
 
