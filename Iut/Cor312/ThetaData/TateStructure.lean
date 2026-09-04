@@ -132,13 +132,13 @@ def IsCanonical (ℓ : ℕ) (P : E.toAffine.Point) : Prop :=
 /-- **The Tate structure of the Tate curve `E_q` itself**, packaging the uniformization
 `k^×/q^ℤ ≃ E_q(k)` of `lana-agents/tate-curves-theta`
 (`TateParameter.tateUniformization`) under that library's hypotheses: the Weierstrass
-identity `hmem` for the Tate parametrization (its `tatePoint_mem` seam) and `‖12‖ = 1`
-(residue characteristic prime to `6`). The coordinate pins hold by the definition of the
-Tate point map. -/
+identity `hmem` for the Tate parametrization (its `tatePoint_mem` seam) and
+`TameResidueChar k` (`‖2‖ = 1` and `12 ≠ 0`). The coordinate pins hold by the definition
+of the Tate point map. -/
 def ofTateParameter (t : TateParameter k)
     (hmem : ∀ u : kˣ, (∀ n : ℤ, (t.q : k) ^ n * (u : k) ≠ 1) →
       t.tateCurve.toAffine.Equation (t.X u) (t.Y u))
-    (h12 : ‖(12 : k)‖ = 1) : TateStructure t.tateCurve where
+    (h12 : TameResidueChar k) : TateStructure t.tateCurve where
   t := t
   C := 1
   hC := one_smul _ _

@@ -20,7 +20,7 @@ rev = "v4.32.0"
 [[require]]
 name = "tate-curves-theta"
 git = "https://github.com/lana-agents/tate-curves-theta"
-rev = "90d7fac0e4ef2d6bf2a619326c30adb862d1b3de"
+rev = "ca6c2279d3cea0690cdb01328e727118d5485d68"
 
 # Arithmetic elliptic curves in general position (taxis #2): the height formalism and
 # Theorem 2.1, consumed by the ABC target statement and the implication strand
