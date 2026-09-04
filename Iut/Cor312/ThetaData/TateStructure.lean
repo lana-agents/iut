@@ -127,6 +127,43 @@ def IsCanonical (ℓ : ℕ) (P : E.toAffine.Point) : Prop :=
   ∃ u : kˣ, S.ofUnit u = P ∧
     ∃ m : ℤ, u ^ ℓ = S.t.q ^ (1 + ℓ * m) ∨ u ^ ℓ = S.t.q ^ (-1 + ℓ * m)
 
+/-! ### The Tate structure of a Tate curve -/
+
+/-- **The Tate structure of the Tate curve `E_q` itself**, packaging the uniformization
+`k^×/q^ℤ ≃ E_q(k)` of `lana-agents/tate-curves-theta`
+(`TateParameter.tateUniformization`) under that library's hypotheses: the Weierstrass
+identity `hmem` for the Tate parametrization (its `tatePoint_mem` seam) and `‖12‖ = 1`
+(residue characteristic prime to `6`). The coordinate pins hold by the definition of the
+Tate point map. -/
+def ofTateParameter (t : TateParameter k)
+    (hmem : ∀ u : kˣ, (∀ n : ℤ, (t.q : k) ^ n * (u : k) ≠ 1) →
+      t.tateCurve.toAffine.Equation (t.X u) (t.Y u))
+    (h12 : ‖(12 : k)‖ = 1) : TateStructure t.tateCurve where
+  t := t
+  C := 1
+  hC := one_smul _ _
+  iso := by
+    exact (MulEquiv.toAdditive (t.tateUniformization hmem h12)).trans
+      (AddEquiv.refl t.tateCurve.toAffine.Point)
+  iso_x u hu := by
+    have hnot : u ∉ t.qpowers := fun h => by
+      obtain ⟨n, hn⟩ := (t.mem_qpowers_iff u).mp h
+      exact hu n hn
+    change xCoord 1 (Multiplicative.toAdd (t.tateUniformization hmem h12
+      (t.toAnalyticQuotient u))) = t.X u
+    rw [t.tateUniformization_apply_mk hmem h12 u, toAdd_ofAdd, t.tatePoint_of_notMem hmem h12 hnot]
+    change (t.X u - 0) / ((1 : kˣ) : k) ^ 2 = t.X u
+    simp
+  iso_y u hu := by
+    have hnot : u ∉ t.qpowers := fun h => by
+      obtain ⟨n, hn⟩ := (t.mem_qpowers_iff u).mp h
+      exact hu n hn
+    change yCoord 1 (Multiplicative.toAdd (t.tateUniformization hmem h12
+      (t.toAnalyticQuotient u))) = t.Y u
+    rw [t.tateUniformization_apply_mk hmem h12 u, toAdd_ofAdd, t.tatePoint_of_notMem hmem h12 hnot]
+    change (t.Y u - 0 - 0 * (t.X u - 0)) / ((1 : kˣ) : k) ^ 3 = t.Y u
+    simp
+
 end TateStructure
 
 end
