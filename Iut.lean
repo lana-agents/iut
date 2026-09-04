@@ -35,6 +35,7 @@ import Iut.Cor312.ThetaData.PlacesOver
 import Iut.Cor312.ThetaData.PointMap
 import Iut.Cor312.ThetaData.TateFamily
 import Iut.Cor312.ThetaData.TateStructure
+import Iut.Cor312.ThetaData.VariableChangePoint
 import Iut.Implication.Corollary22
 import Iut.Implication.Corollary23
 import Iut.Implication.Invariants
