@@ -273,7 +273,7 @@ Residual interfaces of the model, each an explicit structure:
 | --- | --- | --- |
 | `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
 | `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁` | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
-| `CurveInputs.split_reduction` | split multiplicative reduction of `E_x` at the places of its ℓ-torsion field over `V_mod^bad` (Mathlib's `HasSplitMultiplicativeReduction`; multiplicative reduction is split once the ℓ-torsion is rational, Silverman *Advanced Topics* V.5.2–5.3) | standard, see [#1582](https://taxis.lana.merten.dev/issues/1582) |
+| `CurveInputs.split_reduction` | split multiplicative reduction of `E_x` at the places of its ℓ-torsion field over `V_mod^bad` (Mathlib's `HasSplitMultiplicativeReduction`; multiplicative reduction is split once the ℓ-torsion is rational, Silverman *Advanced Topics* V.5.2–5.3) | elliptic-reduction, [#1663](https://taxis.lana.merten.dev/issues/1663) |
 
 ## Comparator suite
 
