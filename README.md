@@ -231,6 +231,34 @@ instantiated by a **linear-algebraic model** (taxis
   canonical generators `±q^{1/ℓ}`), hence the rationality of the local ℓ-torsion, the
   graph line of order `ℓ` and the canonical cosets at the bad places.
 
+* [`VariableChangePoint.lean`](Iut/Cor312/ThetaData/VariableChangePoint.lean),
+  [`UltrametricSqrt.lean`](Iut/Cor312/ThetaData/UltrametricSqrt.lean),
+  [`ReductionNorm.lean`](Iut/Cor312/ThetaData/ReductionNorm.lean),
+  [`TateIsomorphism.lean`](Iut/Cor312/ThetaData/TateIsomorphism.lean),
+  [`TateStructureOfIso.lean`](Iut/Cor312/ThetaData/TateStructureOfIso.lean),
+  [`TateStructureUnique.lean`](Iut/Cor312/ThetaData/TateStructureUnique.lean),
+  [`TateStructureTransport.lean`](Iut/Cor312/ThetaData/TateStructureTransport.lean),
+  [`GalCompletion.lean`](Iut/Cor312/ThetaData/GalCompletion.lean),
+  [`BadPlaceNorm.lean`](Iut/Cor312/ThetaData/BadPlaceNorm.lean),
+  [`TateFamilyGalois.lean`](Iut/Cor312/ThetaData/TateFamilyGalois.lean),
+  [`TateFamilyOfSplit.lean`](Iut/Cor312/ThetaData/TateFamilyOfSplit.lean) — **Tate's
+  theorem and the Tate family, proved** (taxis #1582): points along changes of variables
+  form a group isomorphism; Hensel's lemma for square roots; Mathlib's reduction classes
+  read as norm conditions on the completion; an elliptic curve over a complete ultrametric
+  field with `‖2‖ = 1` and split multiplicative reduction is a Tate curve `E_q` after a
+  change of variables (short normal forms with equal `j` differ by a scaling whose square
+  is `c₄c₆(E)/c₄c₆(E_q)` up to squares, a unit that is a square modulo the maximal ideal
+  because `−c₄c₆` is the discriminant of the tangent quadratic at the node); Tate
+  structures on such curves, their uniqueness up to sign (`Aut(E_q) = ±1`) and transport
+  along isometric isomorphisms; the isometry `K_w ≃ K_{σw}` extending `σ ∈ Gal(K/F)`; and
+  the Galois equivariance of the graph lines and canonical generators, which holds for any
+  choice of Tate structures by uniqueness. The Tate family of the Θ-data is now
+  constructed (`CurveInputs.tateFamily`) from split multiplicative reduction at the places
+  of the torsion field over `V_mod^bad` (`CurveInputs.split_reduction`). In
+  tate-curves-theta (now at `ca6c227`) the hypothesis `‖12‖ = 1` of the Tate uniformization
+  was weakened to `‖2‖ = 1 ∧ 12 ≠ 0` (residue characteristic `3` occurs in `V_mod^bad`), and
+  the naturality of the Tate coordinates under base change was added.
+
 Interface amendments made for this (recorded on taxis #1453): the "lies over" relation on
 finite places is the prime-ideal relation (the absolute-value form of the delivered
 statement was only satisfiable at unramified split primes); `IsTypeOneZModPM`,
@@ -245,7 +273,7 @@ Residual interfaces of the model, each an explicit structure:
 | --- | --- | --- |
 | `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
 | `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁` | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
-| `CurveInputs.tateFamily` (`Iut.TateFamily`) | Galois-equivariant Tate uniformizations of `E_x` over the completions of its ℓ-torsion field at the bad places (Tate's theorem) | tate-curves-theta, [#1582](https://taxis.lana.merten.dev/issues/1582) |
+| `CurveInputs.split_reduction` | split multiplicative reduction of `E_x` at the places of its ℓ-torsion field over `V_mod^bad` (Mathlib's `HasSplitMultiplicativeReduction`; multiplicative reduction is split once the ℓ-torsion is rational, Silverman *Advanced Topics* V.5.2–5.3) | standard, see [#1582](https://taxis.lana.merten.dev/issues/1582) |
 
 ## Comparator suite
 

@@ -26,6 +26,7 @@ import Iut.Cor312.RationalPlace
 import Iut.Cor312.RightHandSide
 import Iut.Cor312.Statement
 import Iut.Cor312.ThetaData.AdmissiblePrime
+import Iut.Cor312.ThetaData.BadPlaceNorm
 import Iut.Cor312.ThetaData.Basic
 import Iut.Cor312.ThetaData.GalCompletion
 import Iut.Cor312.ThetaData.GlobalField
@@ -36,6 +37,8 @@ import Iut.Cor312.ThetaData.PlacesOver
 import Iut.Cor312.ThetaData.PointMap
 import Iut.Cor312.ThetaData.ReductionNorm
 import Iut.Cor312.ThetaData.TateFamily
+import Iut.Cor312.ThetaData.TateFamilyGalois
+import Iut.Cor312.ThetaData.TateFamilyOfSplit
 import Iut.Cor312.ThetaData.TateIsomorphism
 import Iut.Cor312.ThetaData.TateStructure
 import Iut.Cor312.ThetaData.TateStructureOfIso

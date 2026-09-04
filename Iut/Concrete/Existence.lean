@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
 import Iut.Concrete.Main
+import Iut.Cor312.ThetaData.TateFamilyOfSplit
 
 /-!
 # Existence of initial Θ-data from an elliptic curve (taxis #1469)
@@ -54,18 +55,6 @@ namespace Iut
 universe u v
 
 open NumberField WeierstrassCurve TateCurvesTheta OrbicurveDataSection
-
-/-! ## Residue characteristics -/
-
-/-- The residue characteristic of a finite place of a number field is prime. -/
-lemma residueChar_prime {k : Type*} [Field k] [NumberField k] (w : FinitePlace k) :
-    (residueChar w).Prime := by
-  haveI : w.maximalIdeal.asIdeal.IsMaximal :=
-    w.maximalIdeal.isPrime.isMaximal w.maximalIdeal.ne_bot
-  letI : Field (𝓞 k ⧸ w.maximalIdeal.asIdeal) := Ideal.Quotient.field _
-  haveI : Finite (𝓞 k ⧸ w.maximalIdeal.asIdeal) :=
-    Ideal.finiteQuotientOfFreeOfNeBot _ w.maximalIdeal.ne_bot
-  exact CharP.char_is_prime (𝓞 k ⧸ w.maximalIdeal.asIdeal) (ringChar _)
 
 /-! ## Elliptic curves over number fields -/
 
@@ -398,12 +387,16 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
   tate : ∀ x hx, (curve x hx).TateInputs
   /-- The mod-`ℓ` representations of `E_x`. -/
   modRep : ∀ x hx (ℓ : ℕ), (curve x hx).ModEllRepData ℓ
-  /-- **Tate uniformizations of `E_x` over the completions of its ℓ-torsion field** at the
-  places over `V_mod^bad`, Galois-equivariant on the ℓ-torsion (`Iut.TateFamily`; Tate's
-  theorem, the reduction being split multiplicative since `E_x[ℓ]` is rational over the
-  torsion field; taxis #13). -/
-  tateFamily : ∀ x hx (ℓ : ℕ), ℓ.Prime → 7 ≤ ℓ →
-    TateFamily (curve x hx).E (modRep x hx ℓ).torsionField ℓ ((curve x hx).VBadOf ℓ)
+  /-- **Split multiplicative reduction over the ℓ-torsion field**: at every finite place of
+  `K = F_x(E_x[ℓ])` over `V_mod^bad`, `E_x` has split multiplicative reduction (Mathlib's
+  `WeierstrassCurve.HasSplitMultiplicativeReduction` over the completed integers). The
+  reduction is split multiplicative since it is multiplicative over `F_x` and `E_x[ℓ]` is
+  rational over `K` (Silverman, *Advanced Topics*, V.5.3 and V.5.2; taxis #13). -/
+  split_reduction : ∀ x hx (ℓ : ℕ), ℓ.Prime → 7 ≤ ℓ →
+    ∀ w : FinitePlace ↥(modRep x hx ℓ).torsionField,
+      IsBadPlace (curve x hx).E (modRep x hx ℓ).torsionField ((curve x hx).VBadOf ℓ) w →
+      (curveKw (curve x hx).E (modRep x hx ℓ).torsionField w).HasSplitMultiplicativeReduction
+        (w.maximalIdeal.adicCompletionIntegers ↥(modRep x hx ℓ).torsionField)
   /-- The local height data of `E_x` computes `h`. -/
   height_eq : ∀ x hx, ((curve x hx).localHeightData (arith x hx) (tate x hx)).height = h x
   /-- `[F_x : ℚ] ≤ 2¹²·3³·5·d` ((E3)–(E5) in the proof of Theorem 1.10). -/
@@ -464,6 +457,16 @@ variable {T AG}
 namespace CurveInputs
 
 variable {K : T.CBS} {d : ℕ} (CI : CurveInputs.{u} T AG K d)
+
+/-- **Tate uniformizations of `E_x` over the completions of its ℓ-torsion field** at the
+places over `V_mod^bad`, Galois-equivariant on the ℓ-torsion (`Iut.TateFamily`): Tate's
+theorem (`Iut.tateFamilyOfSplit`) applied to the split multiplicative reduction
+`split_reduction`. -/
+noncomputable def tateFamily (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d)
+    (ℓ : ℕ) (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ) :
+    TateFamily (CI.curve x hx).E (CI.modRep x hx ℓ).torsionField ℓ ((CI.curve x hx).VBadOf ℓ) :=
+  tateFamilyOfSplit (CI.curve x hx).E (CI.modRep x hx ℓ).torsionField ℓ
+    (fun _ hv => hv.1) (CI.split_reduction x hx ℓ hℓ h7)
 
 /-- The points whose once-punctured elliptic curve fails to have an `F`-core. -/
 def excCore : Set (T.Pt T.tripod) :=
