@@ -46,12 +46,12 @@ open Real Filter Asymptotics
 /-- The content of `ChebyshevBound` as a proposition. -/
 def ChebyshevHyp : Prop :=
   ∃ ξ : ℝ, 5 ≤ ξ ∧ (∀ x : ℝ, ξ ≤ x → 2 / 3 * x ≤ Chebyshev.theta x) ∧
-    ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ 4 / 3 * x
+    ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ 2 * x
 
-/-- The upper half of `ChebyshevHyp`: `θ(x) ≤ (4/3)·x` for all large `x`. This is the only
+/-- The upper half of `ChebyshevHyp`: `θ(x) ≤ 2·x` for all large `x`. This is the only
 part of `ChebyshevBound` not provable from Mathlib (`chebyshevBound_of_upper`). -/
 def ChebyshevUpperHyp : Prop :=
-  ∃ ξ : ℝ, ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ 4 / 3 * x
+  ∃ ξ : ℝ, ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ 2 * x
 
 /-- The content of `PrimeCountingBound` as a proposition. -/
 def PrimeCountingHyp : Prop :=
@@ -186,7 +186,7 @@ noncomputable def chebyshevBoundWeak : ChebyshevBoundWeak where
 
 theorem chebyshevBoundWeak_nonempty : Nonempty ChebyshevBoundWeak := ⟨chebyshevBoundWeak⟩
 
-/-- `ChebyshevBound` from `ChebyshevBoundWeak` and the upper bound `θ(x) ≤ (4/3)·x` for
+/-- `ChebyshevBound` from `ChebyshevBoundWeak` and the upper bound `θ(x) ≤ 2·x` for
 large `x`. -/
 theorem chebyshevBound_of_upper (h : ChebyshevUpperHyp) : Nonempty ChebyshevBound := by
   obtain ⟨ξ, hξ⟩ := h
@@ -194,6 +194,16 @@ theorem chebyshevBound_of_upper (h : ChebyshevUpperHyp) : Nonempty ChebyshevBoun
   · exact le_trans (by norm_num) (le_max_right _ _)
   · exact two_thirds_mul_le_theta (le_trans (le_max_right _ _) hx)
   · exact hξ x (le_trans (le_max_left _ _) hx)
+
+/-- **The explicit Chebyshev certificate** (threshold `10^12`, upper constant `2`): the
+`ChebyshevBound` input is unconditional. -/
+noncomputable def chebyshevBoundExplicit : ChebyshevBound where
+  ξ := 10 ^ 12
+  five_le := by norm_num
+  lower _ hx := two_thirds_mul_le_theta hx
+  upper x hx := chebyshevBoundWeak.upper_two x hx
+
+theorem chebyshevBound_nonempty : Nonempty ChebyshevBound := ⟨chebyshevBoundExplicit⟩
 
 /-- The delegated Chebyshev hypothesis is exactly its upper half. -/
 theorem chebyshevHyp_iff_upper : ChebyshevHyp ↔ ChebyshevUpperHyp :=

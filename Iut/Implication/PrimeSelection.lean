@@ -46,7 +46,7 @@ structure ChebyshevBound where
   /-- The lower Chebyshev bound. -/
   lower : ∀ x : ℝ, ξ ≤ x → 2 / 3 * x ≤ Chebyshev.theta x
   /-- The upper Chebyshev bound. -/
-  upper : ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ 4 / 3 * x
+  upper : ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ 2 * x
 
 /-- `θ_A = ∑_{p ∈ A} log p` for a finite set of natural numbers. -/
 noncomputable def thetaSet (A : Finset ℕ) : ℝ := ∑ p ∈ A, Real.log p
@@ -242,7 +242,7 @@ theorem exists_prime_selection (cheb : ChebyshevBound) (δ : ℝ) (hδ : 2 ≤ �
   obtain ⟨A, hA⟩ : ∃ A : Finset ℕ, A = Nat.primesLE ⌊r⌋₊ ∪
       big.biUnion (fun v => (L.hv v).primeFactors ∪ {L.p v}) := ⟨_, rfl⟩
   -- bound `θ_A`
-  have hθ1 : thetaSet (Nat.primesLE ⌊r⌋₊) ≤ 4 / 3 * r := by
+  have hθ1 : thetaSet (Nat.primesLE ⌊r⌋₊) ≤ 2 * r := by
     have := cheb.upper r hξ
     rw [Chebyshev.theta_eq_sum_primesLE] at this
     exact this
