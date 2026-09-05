@@ -12,8 +12,6 @@ import Iut.Concrete.Container
 import Iut.Concrete.CurveArithmeticProved
 import Iut.Concrete.CyclicSubgroup
 import Iut.Concrete.Existence
-import Iut.Concrete.Existence
-import Iut.Concrete.Existence
 import Iut.Concrete.Invariants
 import Iut.Concrete.LocalConstruct.Admissible
 import Iut.Concrete.LocalConstruct.ArchLogShell
