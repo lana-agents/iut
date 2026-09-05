@@ -434,28 +434,22 @@ def LogCondLeHyp : Prop :=
 
 /-- **The facts about the curves of the points that remain unproved**, collected: exactly
 the fields of `Iut.CurveInputs` for `curveOf` that are not proved in this file. -/
-structure CurveFactsProp (B TK : ℝ) : Prop where
+structure CurveFactsProp (TK : ℝ) : Prop where
   /-- Corollary 2.2(i). -/
   height : LegendreHeightHyp P K
-  /-- `B ≥ 0`. -/
-  B_nonneg : 0 ≤ B
-  /-- The `2`-adic bound. -/
-  two_adic : TwoAdicBoundHyp P K B
   /-- [GenEll], Lemma 3.5. -/
   cyclic : CyclicBoundHyp P K d TK
   /-- [GenEll], Lemma 3.1(iii). -/
   sl2 : SL2ImageHyp P
-  /-- The conductor bound from below. -/
-  logCond_ge : LogCondGeHyp P
-  /-- The conductor bound from above. -/
-  logCond_le : LogCondLeHyp P
 
 /-- **The inputs of IUT IV, Corollary 2.2 for the tripod**, from the curves `E_λ/F_λ` of the
 points, the facts proved in this file, the isolated hypotheses `CurveFactsProp`, and the
 Northcott property `NorthcottHyp`. -/
-noncomputable def curveInputs {B TK : ℝ}
-    (CF : CurveFactsProp P K d B TK) (hN : NorthcottHyp)
-    (hdeg3 : ∀ l : Qbar, TorsionDegreeBound l 3) (hdeg5 : ∀ l : Qbar, TorsionDegreeBound l 5) :
+noncomputable def curveInputs {TK : ℝ}
+    (CF : CurveFactsProp P K d TK) (hN : NorthcottHyp)
+    (hdeg3 : ∀ l : Qbar, TorsionDegreeBound l 3) (hdeg5 : ∀ l : Qbar, TorsionDegreeBound l 5)
+    (hB : TwoAdicBoundHyp P K (max (4 * K.c) 0))
+    (hge : LogCondGeHyp P) (hle : LogCondLeHyp P) :
     CurveInputs tripodTheory K d where
   h := P.h
   curve x _ := P.curve x
@@ -469,15 +463,15 @@ noncomputable def curveInputs {B TK : ℝ}
   dmod_le x hx := (dmod_le x _ _).trans hx.2
   htCan_equiv := CF.height
   northcott := northcott_of_equiv hN K d CF.height
-  B := B
-  B_nonneg := CF.B_nonneg
-  heightEq_two_le x hx := CF.two_adic x hx.1
+  B := max (4 * K.c) 0
+  B_nonneg := le_max_right _ _
+  heightEq_two_le x hx := hB x hx.1
   HasCyclicSubgroup x ℓ := (P.curve x).HasCyclicSubgroup ℓ
   TK := TK
   cyclic_bound := CF.cyclic
   sl2_of x _ ℓ hℓ := CF.sl2 x ℓ hℓ
   logDiff_eq x _ := logDiff_eq x _ _
-  logCond_ge x _ := CF.logCond_ge x
-  logCond_le x _ := CF.logCond_le x
+  logCond_ge x _ := hge x
+  logCond_le x _ := hle x
 
 end Iut.Tripod

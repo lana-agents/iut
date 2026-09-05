@@ -272,14 +272,17 @@ repository and every hypothesis is a proposition about the constructed objects.
   finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (`E_λ[n] ≅ (ℤ/n)²`,
   stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the height comparison
-  `(1/6)·log q_∀ ≈ h(λ)` of [GenEll] Prop 3.4, the `2`-adic bound, the cyclic-subgroup bound
-  of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma, the conductor
-  comparisons). These were audited for satisfiability with the repository's exact
+  `(1/6)·log q_∀ ≈ h(λ)` of [GenEll] Prop 3.4, the cyclic-subgroup bound of [GenEll]
+  Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma); the `2`-adic bound
+  (`Iut.Tripod.twoAdicBound`, with `B = 4c` on `CompactlyBounded` sets) and the conductor
+  comparisons `log-cond_{F_tpd} ≤ log-cond(λ) ≤ log-cond_{F_tpd} + log 2ℓ`
+  (`logCondGe`, `logCondLe`, [`TwoAdic.lean`](Iut/Tripod/TwoAdic.lean),
+  [`LogCond.lean`](Iut/Tripod/LogCond.lean)) are **proved**. These were audited for satisfiability with the repository's exact
   normalisations; the audit forced two corrections recorded in the honesty boundary (the
   reduction predicates up to a change of variables, and the restriction of the
   cyclic-subgroup bound to `ℓ ≥ 7`).
 
-Final statement (hypotheses only): `CurveProps`, `∀ K d, ∃ B T_K, CurveFactsProp … K d B T_K`,
+Final statement (hypotheses only): `CurveProps`, `∀ K d, ∃ T_K, CurveFactsProp … K d T_K`,
 `∀ K, LocalTheoryFacts K`, the tower arithmetic for the constructed local theory and theta
 data, `PrimeCountingHyp`, and the variant `h312`; conclusion `tripodTheory.StatementII`.
 `StatementI` (all hyperbolic curves) additionally needs heights on curves and the
