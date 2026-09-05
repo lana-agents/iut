@@ -91,6 +91,7 @@ import Iut.Tripod.LogCond
 import Iut.Tripod.Main
 import Iut.Tripod.Northcott
 import Iut.Tripod.Providers
+import Iut.Tripod.SL2Generation
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.TwoTorsion
