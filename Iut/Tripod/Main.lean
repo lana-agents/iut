@@ -35,9 +35,8 @@ hypothesis is a proposition about the constructed objects:
   the finiteness of the points whose once-punctured curve has no core ([CanLift],
   Proposition 2.7, from the fields `excJ`, `hasCore_oncePunctured` of `Pi1`) are theorems
   (`Iut/Tripod/Height.lean`, `TwoAdic.lean`, `LogCond.lean`, `Core.lean`);
-* `LocalTheoryFacts`: the three remaining facts of the local theory (the inclusion of the
-  maximal order in the log-shell, least hull regions, IUT IV Prop. 1.4(iii)) and the tower
-  arithmetic `TowerArithmetic` (IUT IV, §1), all about the constructed packets;
+* the tower arithmetic `TowerArithmetic` (IUT IV, §1) for the constructed local theory
+  (`concreteLocalTheory`, every field of which is now proved) and theta local data;
 * `h312`, the variant itself.
 
 The Chebyshev bounds, the prime-counting bound of IUT IV, Prop. 1.6 (with the factor `3/2`,
@@ -58,11 +57,10 @@ variable (Pi1 : EtalePi1Theory.{0}) (Tp : TemperedPi1Theory Pi1) (hp : CurveProp
 theta local data. -/
 theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
     (CF : CurveFactsProp (providersOfProps hp) K d TK) (hN : NorthcottHyp)
-    (hlocal : ∀ (K : Type) [Field K] [NumberField K], LocalTheoryFacts K)
     (TAp : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (htwo : TwoTorsionRational D)
       (QI : QPilotInputs D),
-      TowerArithmetic D (concreteLocalTheory D.Kt (hlocal D.Kt))
-        (thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI)) :
+      TowerArithmetic D (concreteLocalTheory D.Kt)
+        (thetaLocalData D (concreteLocalTheory D.Kt) htwo QI)) :
     ConcreteThetaDataExistence.{0, 0} (AG := modelAG Pi1) (TG := modelTG Pi1 Tp)
       (curveInputs (providersOfProps hp) K d CF (coreFiniteness Pi1 _ K d) hN
         (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
@@ -94,8 +92,8 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
       ((providersOfProps hp).torsionFinite5 x.1)
   let QI : QPilotInputs D := (CI.curve x hx).qPilotInputs (CI.arith x hx) (CI.tate x hx) hℓ h7
     (CI.modRep x hx ℓ hℓ) (hsl hx hℓ) hP2' hP5' (anabelianExistence Pi1 Tp) hcore
-  refine ⟨D, concreteLocalTheory D.Kt (hlocal D.Kt),
-    thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI, QI, TAp D htwo QI, rfl,
+  refine ⟨D, concreteLocalTheory D.Kt,
+    thetaLocalData D (concreteLocalTheory D.Kt) htwo QI, QI, TAp D htwo QI, rfl,
     CI.dmod_le x hx, ?_, CI.logDiff_eq x hx, CI.logCond_ge x hx ℓ hℓ h7,
     CI.logCond_le x hx ℓ hℓ h7⟩
   exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
@@ -105,11 +103,10 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
 theorem abc_of_variant
     (hfacts : ∀ (K : CompactlyBounded) (d : ℕ),
       ∃ TK : ℝ, CurveFactsProp (providersOfProps hp) K d TK)
-    (hlocal : ∀ (K : Type) [Field K] [NumberField K], LocalTheoryFacts K)
     (TAp : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (htwo : TwoTorsionRational D)
       (QI : QPilotInputs D),
-      TowerArithmetic D (concreteLocalTheory D.Kt (hlocal D.Kt))
-        (thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI))
+      TowerArithmetic D (concreteLocalTheory D.Kt)
+        (thetaLocalData D (concreteLocalTheory D.Kt) htwo QI))
     (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (LT : LocalTheory.{0, 0} D.Kt)
       (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
       Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
@@ -123,7 +120,7 @@ theorem abc_of_variant
       (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _)
       (logCondLe _)).toCorollary22Inputs)
     (fun K d =>
-      (concreteThetaDataExistence' Pi1 Tp hp (CF K d) northcottHyp hlocal TAp).toThetaDataExistence)
+      (concreteThetaDataExistence' Pi1 Tp hp (CF K d) northcottHyp TAp).toThetaDataExistence)
     chebyshevBoundExplicit primeCountingBoundExplicit
     (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
 

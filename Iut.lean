@@ -18,6 +18,7 @@ import Iut.Concrete.LocalConstruct.ArchLogShell
 import Iut.Concrete.LocalConstruct.Archimedean
 import Iut.Concrete.LocalConstruct.Arithmetic
 import Iut.Concrete.LocalConstruct.Haar
+import Iut.Concrete.LocalConstruct.Hull
 import Iut.Concrete.LocalConstruct.Indeterminacy
 import Iut.Concrete.LocalConstruct.Integral
 import Iut.Concrete.LocalConstruct.LogShell
@@ -25,6 +26,7 @@ import Iut.Concrete.LocalConstruct.MaximalOrder
 import Iut.Concrete.LocalConstruct.Packet
 import Iut.Concrete.LocalConstruct.PadicLog
 import Iut.Concrete.LocalConstruct.Prop14
+import Iut.Concrete.LocalConstruct.ResidueField
 import Iut.Concrete.LocalConstruct.Theory
 import Iut.Concrete.LocalConstruct.ThetaAdmissible
 import Iut.Concrete.LocalConstruct.Volume
