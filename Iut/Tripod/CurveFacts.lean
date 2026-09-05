@@ -6,6 +6,7 @@ Authors: The iut contributors
 import Iut.Tripod.CurveOf
 import Iut.Concrete.TateInputsConstruct
 import Iut.Concrete.CyclicSubgroup
+import Iut.Concrete.SL2Image
 
 /-!
 # The arithmetic facts about the curve of a point of the tripod
@@ -29,19 +30,22 @@ For the Legendre curve `E_λ` over `F_λ = ℚ(λ, √−1, √λ, √(1 − λ)
   `ℚ ⊆ ℚ(λ) ⊆ ℚ(λ, √−1, √λ, √(1 − λ)) ⊆ ℚ(λ, √−1, √λ, √(1 − λ), E[3]) ⊆ F_λ` of relative
   degrees `≤ 8`, `≤ 48`, `≤ 480`, the last two being the **torsion degree bound**
   `Iut.Tripod.TorsionDegreeBound` (`[K(E_λ[n]) : K] ≤ |GL₂(𝔽_n)| = (n² − 1)(n² − n)`,
-  isolated as a `Prop`).
+  isolated as a `Prop`);
+* the `SL₂`-image lemma `SL2ImageHyp P` ([GenEll], Lemma 3.1(iii)) for every choice
+  `P : CurveProviders` of the arithmetic and mod-`ℓ` representations of the curves
+  (`sl2Image`, from the general `Iut.EllipticCurveData.sl_le_range_of`): under (P2), (P4), (P5)
+  the image of the mod-`ℓ` representation contains `SL₂(𝔽_ℓ)`.
 
 ## Isolated as `Prop`s (no axioms)
 
 `TorsionDegreeBound`, and, for a choice `P : CurveProviders` of the arithmetic and mod-`ℓ`
 representations of the curves, `LegendreHeightHyp` (IUT IV, Corollary 2.2(i); [GenEll],
 Proposition 3.4), `TwoAdicBoundHyp` (the `2`-adic contribution to `log(q_∀)`),
-`CyclicBoundHyp` ([GenEll], Lemma 3.5), `SL2ImageHyp` ([GenEll], Lemma 3.1(iii)),
-`LogCondGeHyp`, `LogCondLeHyp` (the comparison of the conductor of `F_tpd = ℚ(λ)` away from
-`2ℓ` with `log-cond_{{0,1,∞}}(λ)`, from the reduction theory of the Legendre curve) and
-`CoreFiniteHyp` ([CanLift], Proposition 2.7). They are collected in `CurveFactsProp`, and
-`Iut.Tripod.curveInputs` assembles `Iut.CurveInputs tripodTheory AG K d` from it and
-`NorthcottHyp`.
+`CyclicBoundHyp` ([GenEll], Lemma 3.5), `LogCondGeHyp`, `LogCondLeHyp` (the comparison of the
+conductor of `F_tpd = ℚ(λ)` away from `2ℓ` with `log-cond_{{0,1,∞}}(λ)`, from the reduction
+theory of the Legendre curve) and `CoreFiniteHyp` ([CanLift], Proposition 2.7). They are
+collected in `CurveFactsProp`, and `Iut.Tripod.curveInputs` assembles
+`Iut.CurveInputs tripodTheory AG K d` from it and `NorthcottHyp`.
 -/
 
 namespace Iut.Tripod
@@ -416,6 +420,22 @@ def SL2ImageHyp : Prop :=
     (∃ w ∈ (P.localData x).bad, (P.localData x).p w ≠ 2 ∧ (P.localData x).p w ≠ ℓ) →
     ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (P.modRep x ℓ hℓ).rep.range
 
+/-- **[GenEll], Lemma 3.1(iii) holds for every choice of providers**: the local height data
+is computed from the curve, so (P2) and (P5) are the conditions on the Tate parameters and
+the multiplicative places of `E_λ/F_λ`, and `Iut.EllipticCurveData.sl_le_range_of` applies. -/
+theorem sl2Image : SL2ImageHyp P := by
+  classical
+  intro x ℓ hℓ h5 hP2 hP4 hP5 A
+  have hP2' : ∀ w (hw : w ∈ (P.curve x).badAll), ¬ ℓ ∣ (P.tate x).qOrder w hw := by
+    intro w hw
+    have := hP2 w ((P.arith x).badAll_finite.mem_toFinset.mpr hw)
+    change ¬ ℓ ∣ (if h : w ∈ (P.curve x).badAll then (P.tate x).qOrder w h else 0) at this
+    rwa [dif_pos hw] at this
+  have hP5' : ∃ w ∈ (P.curve x).badAll, residueChar w ≠ 2 ∧ residueChar w ≠ ℓ := by
+    obtain ⟨w, hw, h⟩ := hP5
+    exact ⟨w, (P.arith x).badAll_finite.mem_toFinset.mp hw, h⟩
+  exact (P.curve x).sl_le_range_of (P.arith x) (P.tate x) hℓ (P.modRep x ℓ hℓ) h5 hP2' hP4 hP5' A
+
 /-- **The conductor bound from below**: the conductor degree of `F_tpd = ℚ(λ)` away from
 `2ℓ` is at most `log-cond_{{0,1,∞}}(λ)` (the odd bad places of `E_λ` are among the places
 where `λ` meets `{0, 1, ∞}`, as `Δ = 16λ²(λ − 1)²`). -/
@@ -447,8 +467,6 @@ structure CurveFactsProp (AG : AnabelianGeometry.{0}) (TK : ℝ) : Prop where
   height : LegendreHeightHyp P K
   /-- [GenEll], Lemma 3.5. -/
   cyclic : CyclicBoundHyp P K d TK
-  /-- [GenEll], Lemma 3.1(iii). -/
-  sl2 : SL2ImageHyp P
   /-- [CanLift], Proposition 2.7. -/
   core : CoreFinitenessHyp P K d AG
 
@@ -479,7 +497,7 @@ noncomputable def curveInputs {AG : AnabelianGeometry.{0}} {TK : ℝ}
   HasCyclicSubgroup x ℓ := (P.curve x).HasCyclicSubgroup ℓ
   TK := TK
   cyclic_bound := CF.cyclic
-  sl2_of x _ ℓ hℓ := CF.sl2 x ℓ hℓ
+  sl2_of x _ ℓ hℓ := sl2Image P x ℓ hℓ
   logDiff_eq x _ := logDiff_eq x _ _
   excCore_finite := CF.core
   logCond_ge x _ := hge x

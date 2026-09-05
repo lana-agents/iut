@@ -274,13 +274,21 @@ repository and every hypothesis is a proposition about the constructed objects.
   stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the height comparison
   `(1/6)·log q_∀ ≈ h(λ)` of [GenEll] Prop 3.4, the cyclic-subgroup bound of [GenEll]
-  Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma, and the finiteness of the
+  Lemma 3.5 for `ℓ ≥ 7` under (P2), and the finiteness of the
   points whose once-punctured curve has no core, [CanLift] Prop 2.7,
   `CoreFinitenessHyp`); the `2`-adic bound
-  (`Iut.Tripod.twoAdicBound`, with `B = 4c` on `CompactlyBounded` sets) and the conductor
+  (`Iut.Tripod.twoAdicBound`, with `B = 4c` on `CompactlyBounded` sets), the conductor
   comparisons `log-cond_{F_tpd} ≤ log-cond(λ) ≤ log-cond_{F_tpd} + log 2ℓ`
   (`logCondGe`, `logCondLe`, [`TwoAdic.lean`](Iut/Tripod/TwoAdic.lean),
-  [`LogCond.lean`](Iut/Tripod/LogCond.lean)) are **proved**. These were audited for satisfiability with the repository's exact
+  [`LogCond.lean`](Iut/Tripod/LogCond.lean)) and the `SL₂`-image lemma of [GenEll]
+  Lemma 3.1(iii) (`Iut.Tripod.sl2Image`, from the general
+  `Iut.EllipticCurveData.sl_le_range_of` of
+  [`Iut/Concrete/SL2Image.lean`](Iut/Concrete/SL2Image.lean): under (P2), (P4), (P5) the
+  Tate parameter at a bad place is an `ℓ`-th power in the completion of `F(E[ℓ])`, so `ℓ`
+  divides a ramification index, hence `|Gal(F(E[ℓ])/F)|`; Cauchy's theorem gives a
+  transvection in the image, which stabilizes no line by (P4), and such a subgroup of
+  `GL₂(𝔽_ℓ)` contains `SL₂(𝔽_ℓ)`, [`Iut/Tripod/SL2Generation.lean`](Iut/Tripod/SL2Generation.lean))
+  are **proved**. These were audited for satisfiability with the repository's exact
   normalisations; the audit forced two corrections recorded in the honesty boundary (the
   reduction predicates up to a change of variables, and the restriction of the
   cyclic-subgroup bound to `ℓ ≥ 7`).

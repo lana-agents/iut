@@ -28,10 +28,11 @@ hypothesis is a proposition about the constructed objects:
   the variant `h312` is assumed on exactly the class of Θ-data of IUT I, Definition 3.1;
 * `CurveProps`: the ℓ-torsion of the Legendre curves is a rank-two `ℤ/ℓ`-module, and
   `E_λ/F_λ` has stable reduction and the Galois-degree property;
-* `CurveFactsProp`: the height comparison of Corollary 2.2(i), the cyclic-subgroup bound,
-  the `SL₂`-image lemma ([GenEll] §3) and the finiteness of the points whose once-punctured
-  curve has no core ([CanLift], Proposition 2.7); the `2`-adic bound and the conductor
-  comparisons are theorems (`Iut/Tripod/TwoAdic.lean`, `LogCond.lean`);
+* `CurveFactsProp`: the height comparison of Corollary 2.2(i), the cyclic-subgroup bound
+  ([GenEll] Lemma 3.5) and the finiteness of the points whose once-punctured curve has no
+  core ([CanLift], Proposition 2.7); the `2`-adic bound, the conductor comparisons and the
+  `SL₂`-image lemma ([GenEll] Lemma 3.1(iii)) are theorems (`Iut/Tripod/TwoAdic.lean`,
+  `LogCond.lean`, `CurveFacts.lean` with `Iut/Concrete/SL2Image.lean`);
 * `LocalTheoryFacts`: the three remaining facts of the local theory (the inclusion of the
   maximal order in the log-shell, least hull regions, IUT IV Prop. 1.4(iii)) and the tower
   arithmetic `TowerArithmetic` (IUT IV, §1), all about the constructed packets;
