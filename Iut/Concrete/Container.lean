@@ -97,6 +97,18 @@ noncomputable instance fiberFintype (vQ : RationalPlace) : Fintype (LT.Fiber vQ)
 def tuple {ι : Type} (vQ : RationalPlace) (c : ι → LT.Fiber vQ) : ι → Place K :=
   fun j => (c j).1
 
+/-- Every place of a tuple of the fiber over `p` lies over `p`. -/
+lemma tuple_isOver {ι : Type} (p : Nat.Primes) (c : ι → LT.Fiber (.finite p)) :
+    ∀ j, ∃ w : FinitePlace K, LT.tuple _ c j = Place.finite w ∧ residueChar w = p := by
+  intro j
+  have hv := (c j).2
+  change LT.toRational (LT.tuple _ c j) = _ at hv
+  rcases hw : LT.tuple _ c j with w | w
+  · rw [hw] at hv
+    exact ⟨w, rfl, congrArg Subtype.val (RationalPlace.finite.inj hv)⟩
+  · rw [hw] at hv
+    exact absurd hv (by simp [toRational])
+
 /-- The packet presentation at capsule labels `ι` and rational place `v_ℚ`. -/
 noncomputable def packet (ι : Type) [Fintype ι] (vQ : RationalPlace) :
     DirectSumPresentation.{u, v} (ι → LT.Fiber vQ) where
@@ -261,7 +273,9 @@ noncomputable def vol : LogVolumeData (LT.container n) where
   weight_sum_one := LT.weight_sum_one
   componentVol i vQ c U := LT.componentVol vQ (LT.tuple vQ c) U
   componentVol_integral_nonarch i p c := LT.componentVol_integral _ _
-  componentVol_prime_preimage i p c U := LT.componentVol_prime_preimage p _ U
+  componentVol_prime_preimage i p c a ha :=
+    LT.componentVol_prime_preimage p _ (LT.tuple_isOver p c) _
+      (LT.smul_integral_admissible _ _ a ha)
   archBall i c := LT.integral .infinite (LT.tuple .infinite c)
   componentVol_archBall i c := LT.componentVol_integral _ _
   packetVol i vQ U := ∑ c : (LT.container n).Components i vQ,

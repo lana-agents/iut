@@ -29,10 +29,11 @@ they use them (as the holomorphic hull interface of taxis #45 does).
 * **Local nonarchimedean normalization**: on each direct-summand field of a packet the
   log-volume of the holomorphic integral structure `O` is `0`
   (`componentVol_integral_nonarch`) and taking the preimage under multiplication by the
-  residue characteristic `p` adds `log p` (`componentVol_prime_preimage`; equivalently,
-  multiplication by `p` itself subtracts `log p`). This is the normalized Haar
-  log-volume of IUT III, Proposition 3.9(i); its construction from `p`-adic measure
-  theory is the infrastructure of taxis #4 and enters here as interface fields.
+  residue characteristic `p` adds `log p` (`componentVol_prime_preimage`, recorded on
+  the hull regions `a·O`; equivalently, multiplication by `p` itself subtracts `log p`).
+  This is the normalized Haar log-volume of IUT III, Proposition 3.9(i); its
+  construction from `p`-adic measure theory is the infrastructure of taxis #4 and enters
+  here as interface fields.
 * **Archimedean radial normalization**: a designated Hermitian unit ball in each
   archimedean summand has log-volume `0` (`archBall`, `componentVol_archBall`;
   IUT III, Proposition 3.9(ii)).
@@ -62,6 +63,8 @@ they use them (as the holomorphic hull interface of taxis #45 does).
 
 namespace Iut
 
+open scoped Pointwise
+
 universe u₁ u₂ v
 
 variable {ι : Type u₁} {V : Type u₂}
@@ -89,11 +92,16 @@ structure LogVolumeData (D : LargeVolumeContainerData.{u₁, u₂, v} ι V) :
   componentVol_integral_nonarch : ∀ i (p : Nat.Primes) (c : D.Components i (.finite p)),
     componentVol i (.finite p) c ((D.packet i (.finite p)).integral c) = 0
   /-- Nonarchimedean normalization: the preimage under multiplication by the residue
-  characteristic `p` (that is, scaling by `p⁻¹`) adds `log p` to the log-volume. -/
+  characteristic `p` (that is, scaling by `p⁻¹`) adds `log p` to the log-volume. Recorded
+  for the hull regions `a·O` (`a` a unit) — nonempty relatively compact regions of finite
+  nonzero volume — which is the finite nonzero volume regime of IUT III,
+  Proposition 3.9(i); for arbitrary sets the identity is false (for `U = ∅` it would read
+  `log p = 0`). -/
   componentVol_prime_preimage : ∀ i (p : Nat.Primes) (c : D.Components i (.finite p))
-    (U : Set ((D.packet i (.finite p)).Summand c)),
-    componentVol i (.finite p) c ((fun x => ((p : ℕ) : _) * x) ⁻¹' U) =
-      componentVol i (.finite p) c U + Real.log p
+    (a : (D.packet i (.finite p)).Summand c), IsUnit a →
+    componentVol i (.finite p) c
+        ((fun x => ((p : ℕ) : _) * x) ⁻¹' (a • (D.packet i (.finite p)).integral c)) =
+      componentVol i (.finite p) c (a • (D.packet i (.finite p)).integral c) + Real.log p
   /-- The designated Hermitian unit ball of each archimedean summand
   (IUT III, Proposition 3.9(ii)). -/
   archBall : ∀ (i : Fin D.proc.length) (c : D.Components i .infinite),

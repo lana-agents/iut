@@ -3,7 +3,7 @@ Copyright (c) 2026 The iut contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
-import Iut.Concrete.LocalConstruct.Integral
+import Iut.Concrete.LocalConstruct.MaximalOrder
 import Iut.Concrete.LocalConstruct.Archimedean
 import Iut.Concrete.LocalConstruct.Haar
 
@@ -17,7 +17,7 @@ nonarchimedean scaling law `componentVol_prime_preimage'` (see the remark below)
 
 The **normalized log-volume** of a region `S` of the packet `T = ⊗_j K_{c j}` is
 `μ^log(S) := log(μ(S)/μ(I)) / [T : ℚ_p]` (resp. `/ [T : ℝ]`), where `μ` is a Haar measure
-on `T` and `I` the integral structure (`R_I` at a prime, `B_I` at `∞`): the normalization
+on `T` and `I` the integral structure (`(R_I)^∼` at a prime, `B_I` at `∞`): the normalization
 `μ^log(I) = 0` is built in, and dividing by the degree makes multiplication by `p` (which
 scales `μ` by `p^{[T : ℚ_p]}`) shift `μ^log` by `log p`, and scaling by `t > 0` at `∞`
 shift it by `log t` (IUT III, Proposition 3.9(i),(ii)).
@@ -90,8 +90,8 @@ instance (c : ι → Place K) : (haar .infinite c).IsAddHaarMeasure :=
 
 /-! ### The integral structure, uniformly in the rational place -/
 
-/-- **The integral structure** of a packet (`LocalTheory.integral`): `R_I` at a prime,
-`B_I` at the archimedean place. -/
+/-- **The integral structure** of a packet (`LocalTheory.integral`): the maximal order
+`(R_I)^∼` at a prime, `B_I` at the archimedean place. -/
 noncomputable def integralAt : ∀ (vQ : RationalPlace) (c : ι → Place K), Set (Tensor K vQ c)
   | .finite p, c => integral p c
   | .infinite, c => archIntegral c

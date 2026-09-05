@@ -184,11 +184,6 @@ structure LocalTheory extends LocalTensor.{u, v} K where
   /-- `μ^log((R_I)^∼) = 0`. -/
   componentVol_integral : ∀ {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K),
     componentVol vQ c (integral vQ c) = 0
-  /-- `μ^log(p⁻¹·U) = μ^log(U) + log p`. -/
-  componentVol_prime_preimage : ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K)
-    (U : Set (Tensor (.finite p) c)),
-    componentVol (.finite p) c ((fun x => ((p : ℕ) : Tensor (.finite p) c) * x) ⁻¹' U) =
-      componentVol (.finite p) c U + Real.log p
   /-- Monotonicity of the log-volume between hull regions `a·O ⊆ b·O` (`a`, `b` units). -/
   componentVol_mono : ∀ {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K)
     (a b : Tensor vQ c), IsUnit a → IsUnit b → a • integral vQ c ⊆ b • integral vQ c →
@@ -214,6 +209,16 @@ structure LocalTheory extends LocalTensor.{u, v} K where
   /-- Scaled integral structures are admissible. -/
   smul_integral_admissible : ∀ {ι : Type} [Fintype ι] (vQ : RationalPlace)
     (c : ι → Place K) (a : Tensor vQ c), IsUnit a → a • integral vQ c ∈ admissible vQ c
+  /-- `μ^log(p⁻¹·U) = μ^log(U) + log p`, for admissible regions `U` (nonempty, relatively
+  compact, of finite nonzero Haar measure) of a packet all of whose places lie over `p`
+  (IUT III, Proposition 3.9(i)). The restriction to admissible regions is essential: the
+  identity is false for `U = ∅` (it would give `log p = 0`) and, with a real-valued
+  log-volume, for regions of zero or infinite measure. -/
+  componentVol_prime_preimage : ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K),
+    (∀ j, ∃ w : FinitePlace K, c j = Place.finite w ∧ residueChar w = p) →
+    ∀ U ∈ admissible (.finite p) c,
+    componentVol (.finite p) c ((fun x => ((p : ℕ) : Tensor (.finite p) c) * x) ⁻¹' U) =
+      componentVol (.finite p) c U + Real.log p
   /-- **Existence of least hull regions** (IUT III, Remark 3.9.5(i)): every admissible
   region is contained in a least region `a·O` with `a` a unit. -/
   exists_leastHull : ∀ {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K)
@@ -257,10 +262,12 @@ structure LocalTheory extends LocalTensor.{u, v} K where
       componentVol (.finite p) c (a • integral (.finite p) c) ≤
         (-ordp K w x + ∑ i, d i + 1) * Real.log p +
           ∑ i, if (p : ℕ) - 2 < ramIdxAt K (c i) then 3 + Real.log (ramIdxAt K (c i)) else 0
-  /-- **IUT IV, Proposition 1.4(iv)**: at an odd prime unramified in every factor, the
-  indeterminacy automorphisms preserve `(R_I)^∼`. -/
+  /-- **IUT IV, Proposition 1.4(iv)**: the indeterminacy automorphisms preserve the
+  integral structure `(R_I)^∼` (stated there at odd primes unramified in every factor; for
+  the maximal order `(R_I)^∼` — the integral closure of `ℤ_p` in the packet — it holds at
+  every prime, since automorphisms of a `ℚ_p`-algebra map integral elements to integral
+  elements). -/
   prop14_iv : ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K),
-    Odd (p : ℕ) → (∀ j w, c j = Place.finite w → ramIdx K w = 1) →
     ∀ φ ∈ indAut (.finite p) c, φ '' integral (.finite p) c ⊆ integral (.finite p) c
   /-- **IUT IV, Proposition 1.5(iii),(iv)**: at the archimedean place the images of the
   log-shell under the indeterminacy automorphisms lie in `π^{|I|}·B_I`. -/

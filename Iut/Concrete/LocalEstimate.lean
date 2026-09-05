@@ -279,14 +279,8 @@ lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
       exact (contScalar_spec (TL := TL) i p c).2.1 φ hφ hxc
     · intro c
       have hxc : x c ∈ TL.thetaComponent _ i (.finite p) c := hx c
-      have hodd : Odd (p : ℕ) :=
-        (p.2.eq_two_or_odd').resolve_left fun h => hp (h ▸ TL.two_mem_dst)
-      have hunr : ∀ w : FinitePlace D.Kt, residueChar w = p → ramIdx D.Kt w = 1 := by
-        intro w hw
-        by_contra hne
-        exact hp (hw ▸ TL.mem_dst_of_ramified w hne)
       have hbad : (p : ℕ) ∉ TL.badChars := fun h => hp (TL.mem_dst_of_badChars _ h)
-      rw [TL.thetaComponent_eq_integral _ i p c hodd hunr hbad] at hxc
+      rw [TL.thetaComponent_eq_integral _ i p c hbad] at hxc
       exact hxc
   · intro x hx c
     have hxc : x c ∈ LT.thetaInfinite _ i c := hx c

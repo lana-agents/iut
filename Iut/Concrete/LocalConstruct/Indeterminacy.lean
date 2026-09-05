@@ -16,7 +16,7 @@ transport principle `mapAlgHom_image_span_subset`: such an automorphism maps the
 `ℤ_p`-span of the elementary tensors of a family of subsets of the factors into itself as
 soon as each `σ_j` preserves the corresponding subset — the tool for `indAut_logShell`
 (applied to the log-shells of the factors) and for the analogous statement about `R_I`
-(`mapAlgHom_image_integral_subset`).
+(`mapAlgHom_image_order_subset`).
 -/
 
 namespace Iut
@@ -117,14 +117,14 @@ theorem mapAlgHom_image_span_subset
 
 /-- `⊗_j σ_j` preserves `R_I` as soon as each `σ_j` preserves the ring of integers of its
 factor. -/
-theorem mapAlgHom_image_integral_subset
+theorem mapAlgHom_image_order_subset
     (σ : ∀ j, Factor K p (c j) ≃ₐ[ℚ_[p]] Factor K p (c j))
     (hσ : ∀ j (a : completionAt K (finPart K (c j))), ‖a‖ ≤ 1 →
       ∃ b : completionAt K (finPart K (c j)),
         ‖b‖ ≤ 1 ∧ σ j (factorMk p (c j) a) = factorMk p (c j) b) :
-    mapAlgHom (.finite p) c σ '' integral p c ⊆ integral p c := by
+    mapAlgHom (.finite p) c σ '' order p c ⊆ order p c := by
   rintro _ ⟨x, hx, rfl⟩
-  rw [mem_integral] at hx ⊢
+  rw [mem_order] at hx ⊢
   induction hx using Submodule.span_induction with
   | mem x hx =>
     obtain ⟨a, rfl⟩ := hx

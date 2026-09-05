@@ -137,6 +137,23 @@ whose fields are the target statements of the sibling projects:
   1.5(iii),(iv)). Ramification indices, residue degrees, weights, `ord_p` and the
   different exponents are defined from Mathlib. Delegated to
   [`padic-log-volume`](https://github.com/lana-agents/padic-log-volume) (taxis #4, #278).
+* [`LocalConstruct/`](Iut/Concrete/LocalConstruct) — the **construction** of
+  `Iut.LocalTheory K` (`Theory.lean`, `concreteLocalTheory`): the packets as
+  `PiTensorProduct`s of the completions over `ℚ_p`/`ℝ` with their norm topology
+  (`Packet.lean`), the order `R_I = ⊗ 𝓞_{v_j}` (`Integral.lean`) and the maximal order
+  `(R_I)^∼` as the integral closure of `ℤ_p` — bounded because the packet is reduced
+  (formally unramified over `ℚ_p`) and embeds in the product of its residue fields
+  (`MaximalOrder.lean`), the projective unit ball `B_I` at `∞` (`Archimedean.lean`), the
+  normalized Haar log-volume with its scaling laws (`Haar.lean`, `Volume.lean`), the
+  admissible class (`Admissible.lean`), the indeterminacy automorphisms `⊗ σ_j` — finitely
+  many, continuous, preserving `(R_I)^∼` (`Indeterminacy.lean`, `ThetaAdmissible.lean`) —
+  the `p`-adic logarithm and log-shells of a local field (`PadicLog.lean`), their tensor
+  products with the automorphism invariance of IUT IV Proposition 1.2 (`LogShell.lean`),
+  the archimedean log-shell `π^{|I|}·B_I` with Proposition 1.5 (`ArchLogShell.lean`), and
+  the arithmetic of the number field — places over `p`, `∑ e_v f_v = [K : ℚ]`, the
+  different (`Arithmetic.lean`). The residual inputs are the three fields of
+  `Iut.LocalConstruct.LocalTheoryFacts K`: `(R_I)^∼ ⊆ 𝓘_I`, existence of least hull
+  regions (`HullExists K`), and Proposition 1.4(iii).
 * [`Container.lean`](Iut/Concrete/Container.lean) — the container, log-volume data
   (weights `[K_v : ℚ_p]/[K : ℚ]` summing to `1`) and hull system, all proved from
   `LocalTheory`.

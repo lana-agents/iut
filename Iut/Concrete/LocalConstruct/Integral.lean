@@ -6,19 +6,15 @@ Authors: The iut contributors
 import Iut.Concrete.LocalConstruct.Packet
 
 /-!
-# The integral structures of the tensor packets (taxis #4, #278)
+# The order `R_I = ⊗_{ℤ_p} 𝓞_{c j}` of a nonarchimedean tensor packet (taxis #4, #278)
 
-This file constructs the field `LocalTheory.integral` of `Iut.LocalTheory K`
-(`Iut/Concrete/LocalTheory.lean`) and proves its elementary properties.
-
-* At a prime `p`, the **integral structure** `R_I` of the packet `⊗_j K_{c j}` is the
-  `ℤ_p`-span of the elementary tensors `⊗_j a_j` with every `a_j` in the ring of integers
-  `𝓞_{c j}` (`‖a_j‖ ≤ 1`), i.e. the image of `⊗_{ℤ_p} 𝓞_{c j}` (`integral`). It is a
-  subring, open, closed, and relatively compact.
-* At the archimedean place the integral structure `B_I` is the closed unit ball of the
-  projective tensor norm (`Mathlib`'s `PiTensorProduct.projectiveSeminorm`): the closed
-  absolutely convex hull of the elementary tensors of unit vectors, i.e. the natural
-  "product of the unit balls" in the tensor product presentation (`archIntegral`).
+At a prime `p`, the **order** `R_I` of the packet `⊗_j K_{c j}` is the `ℤ_p`-span of the
+elementary tensors `⊗_j a_j` with every `a_j` in the ring of integers `𝓞_{c j}`
+(`‖a_j‖ ≤ 1`), i.e. the image of `⊗_{ℤ_p} 𝓞_{c j}` (`order`). It is a subring, open, closed,
+and relatively compact. Its normalization `(R_I)^∼` — the integral structure of the packet
+in the sense of `LocalTheory.integral` — is constructed in `MaximalOrder.lean` as the
+integral closure of `ℤ_p` in the packet; `R_I` is the tool for its openness and for the
+inclusions of the factors.
 
 The key analytic input at a prime is the relative compactness of the ring of integers of
 a completion in its `ℚ_p`-coordinates (`exists_isCompact_closedBall_subset`), proved from
@@ -31,8 +27,8 @@ compact open subgroup of `K_w`, hence contains `p^r·𝓞_w`.
 the rings of integers of the field factors of the packet, which is the ring of integers of
 the packet). The two coincide when at most one factor is ramified, and differ in general
 by a bounded amount controlled by the different (this is the content of IUT IV,
-Proposition 1.4(iii)); the normalization can be recovered later as the integral closure of
-`R_I` (or of `ℤ_p`) in the packet.
+Proposition 1.4(iii)). Least hull regions need not exist for `R_I`, which is why the
+interface is instantiated with `(R_I)^∼` (see `MaximalOrder.lean`).
 -/
 
 namespace Iut
@@ -188,9 +184,16 @@ noncomputable def tprodIntegral (a : IntegralTuple c) : Tensor K (.finite p) c :
 /-- The elementary tensors of integral tuples. -/
 def integralSet : Set (Tensor K (.finite p) c) := Set.range (tprodIntegral p c)
 
-/-- The `ℤ_p`-module structure of a nonarchimedean packet (restriction of scalars). -/
-noncomputable instance : Module ℤ_[p] (Tensor K (.finite p) c) :=
-  Module.compHom _ (algebraMap ℤ_[p] ℚ_[p])
+/-- The `ℤ_p`-algebra structure of a nonarchimedean packet (restriction of scalars along
+`ℤ_p → ℚ_p`; the scalar action is `r • x = (r : ℚ_p) • x` definitionally). -/
+noncomputable instance instAlgebraPadicIntTensor : Algebra ℤ_[p] (Tensor K (.finite p) c) where
+  smul r x := (r : ℚ_[p]) • x
+  algebraMap := (algebraMap ℚ_[p] (Tensor K (.finite p) c)).comp (algebraMap ℤ_[p] ℚ_[p])
+  commutes' r x := Algebra.commutes (r : ℚ_[p]) x
+  smul_def' r x := Algebra.smul_def (r : ℚ_[p]) x
+
+lemma algebraMap_padicInt_apply (r : ℤ_[p]) :
+    algebraMap ℤ_[p] (Tensor K (.finite p) c) r = algebraMap ℚ_[p] _ (r : ℚ_[p]) := rfl
 
 lemma padicInt_smul_def (r : ℤ_[p]) (x : Tensor K (.finite p) c) :
     r • x = (r : ℚ_[p]) • x := rfl
@@ -200,25 +203,24 @@ instance : IsScalarTower ℤ_[p] ℚ_[p] (Tensor K (.finite p) c) :=
     change ((r : ℚ_[p]) * s) • x = (r : ℚ_[p]) • s • x
     exact mul_smul _ _ _⟩
 
-/-- **The integral structure `R_I`** of a nonarchimedean packet: the `ℤ_p`-span of the
-elementary tensors of integral tuples, i.e. the image of `⊗_{ℤ_p} 𝓞_{c j}`
-(`LocalTheory.integral` at a prime). -/
-noncomputable def integralSubmodule : Submodule ℤ_[p] (Tensor K (.finite p) c) :=
+/-- **The order `R_I`** of a nonarchimedean packet: the `ℤ_p`-span of the elementary tensors
+of integral tuples, i.e. the image of `⊗_{ℤ_p} 𝓞_{c j}`. -/
+noncomputable def orderSubmodule : Submodule ℤ_[p] (Tensor K (.finite p) c) :=
   Submodule.span ℤ_[p] (integralSet p c)
 
-/-- The integral structure as a set. -/
-noncomputable def integral : Set (Tensor K (.finite p) c) := integralSubmodule p c
+/-- The order `R_I` as a set. -/
+noncomputable def order : Set (Tensor K (.finite p) c) := orderSubmodule p c
 
-lemma mem_integral {x : Tensor K (.finite p) c} : x ∈ integral p c ↔ x ∈ integralSubmodule p c :=
+lemma mem_order {x : Tensor K (.finite p) c} : x ∈ order p c ↔ x ∈ orderSubmodule p c :=
   Iff.rfl
 
-lemma integralSet_subset_integral : integralSet p c ⊆ integral p c := Submodule.subset_span
+lemma integralSet_subset_order : integralSet p c ⊆ order p c := Submodule.subset_span
 
-lemma tprodIntegral_mem (a : IntegralTuple c) : tprodIntegral p c a ∈ integral p c :=
-  integralSet_subset_integral p c ⟨a, rfl⟩
+lemma tprodIntegral_mem (a : IntegralTuple c) : tprodIntegral p c a ∈ order p c :=
+  integralSet_subset_order p c ⟨a, rfl⟩
 
-/-- `1 ∈ R_I` (`LocalTheory.one_mem_integral` at a prime). -/
-lemma one_mem_integral : (1 : Tensor K (.finite p) c) ∈ integral p c := by
+/-- `1 ∈ R_I`. -/
+lemma one_mem_order : (1 : Tensor K (.finite p) c) ∈ order p c := by
   have : (1 : Tensor K (.finite p) c) = tprodIntegral p c fun _ => ⟨1, by simp⟩ := by
     rw [PiTensorProduct.one_def]
     unfold tprodIntegral
@@ -239,9 +241,9 @@ lemma tprodIntegral_mul (a b : IntegralTuple c) :
   exact (map_mul (factorMk p (c j)) _ _).symm
 
 /-- `R_I` is closed under multiplication. -/
-lemma mul_mem_integral {x y : Tensor K (.finite p) c} (hx : x ∈ integral p c)
-    (hy : y ∈ integral p c) : x * y ∈ integral p c := by
-  rw [mem_integral] at hx hy ⊢
+lemma mul_mem_order {x y : Tensor K (.finite p) c} (hx : x ∈ order p c)
+    (hy : y ∈ order p c) : x * y ∈ order p c := by
+  rw [mem_order] at hx hy ⊢
   induction hx using Submodule.span_induction with
   | mem x hx =>
     obtain ⟨a, rfl⟩ := hx
@@ -264,8 +266,8 @@ lemma mul_mem_integral {x y : Tensor K (.finite p) c} (hx : x ∈ integral p c)
     exact Submodule.smul_mem _ r hx
 
 /-- The inclusion of an integral element of a factor lies in `R_I`. -/
-lemma incl_mem_integral (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
-    (x : completionAt K w) (hx : ‖x‖ ≤ 1) : incl p c j w h x ∈ integral p c := by
+lemma incl_mem_order (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
+    (x : completionAt K w) (hx : ‖x‖ ≤ 1) : incl p c j w h x ∈ order p c := by
   classical
   set x' := completionCongr (eq_finPart h) x with hx'
   have hx'norm : ‖x'‖ ≤ 1 := by
@@ -292,19 +294,17 @@ lemma incl_mem_integral (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
   rw [this]
   exact tprodIntegral_mem p c a
 
-/-- **Scaling by an integral element of a factor preserves `R_I`**
-(`LocalTheory.smul_integral_subset`). -/
-lemma smul_integral_subset (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
-    (x : completionAt K w) (hx : ‖x‖ ≤ 1) : incl p c j w h x • integral p c ⊆ integral p c := by
+/-- **Scaling by an integral element of a factor preserves `R_I`.** -/
+lemma smul_order_subset (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
+    (x : completionAt K w) (hx : ‖x‖ ≤ 1) : incl p c j w h x • order p c ⊆ order p c := by
   rintro _ ⟨y, hy, rfl⟩
-  exact mul_mem_integral p c (incl_mem_integral p c j w h x hx) hy
+  exact mul_mem_order p c (incl_mem_order p c j w h x hx) hy
 
-/-- **`LocalTheory.smul_integral_subset`** in its original form, with the hypothesis
-`0 ≤ ord_p x`. -/
-lemma smul_integral_subset_of_ordp (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
+/-- `smul_order_subset` with the hypothesis `0 ≤ ord_p x`. -/
+lemma smul_order_subset_of_ordp (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
     (x : completionAt K w) (_hx : x ≠ 0) (hord : 0 ≤ ordp K w x) :
-    incl p c j w h x • integral p c ⊆ integral p c :=
-  smul_integral_subset p c j w h x (norm_le_one_of_ordp_nonneg hord)
+    incl p c j w h x • order p c ⊆ order p c :=
+  smul_order_subset p c j w h x (norm_le_one_of_ordp_nonneg hord)
 
 /-! #### Boundedness -/
 
@@ -321,12 +321,12 @@ lemma exists_norm_tprodIntegral_le :
   exact Finset.prod_le_prod (fun j _ => norm_nonneg _) fun j _ => hC j _ (a j).2 _
 
 /-- **`R_I` is bounded.** -/
-lemma exists_integral_subset_closedBall :
-    ∃ M : ℝ, integral p c ⊆ Metric.closedBall 0 M := by
+lemma exists_order_subset_closedBall :
+    ∃ M : ℝ, order p c ⊆ Metric.closedBall 0 M := by
   obtain ⟨M, hM0, hM⟩ := exists_norm_tprodIntegral_le p c
   refine ⟨M, fun x hx => ?_⟩
   rw [Metric.mem_closedBall, dist_zero_right]
-  rw [mem_integral] at hx
+  rw [mem_order] at hx
   induction hx using Submodule.span_induction with
   | mem x hx =>
     obtain ⟨a, rfl⟩ := hx
@@ -338,13 +338,13 @@ lemma exists_integral_subset_closedBall :
     rw [norm_smul]
     exact (mul_le_of_le_one_left (norm_nonneg _) (PadicInt.norm_le_one r)).trans hx
 
-lemma isBounded_integral : Bornology.IsBounded (integral p c) := by
-  obtain ⟨M, hM⟩ := exists_integral_subset_closedBall p c
+lemma isBounded_order : Bornology.IsBounded (order p c) := by
+  obtain ⟨M, hM⟩ := exists_order_subset_closedBall p c
   exact (Metric.isBounded_iff_subset_closedBall 0).mpr ⟨M, hM⟩
 
 /-- **`R_I` is relatively compact.** -/
-lemma isCompact_closure_integral : IsCompact (closure (integral p c)) :=
-  (isBounded_integral p c).isCompact_closure
+lemma isCompact_closure_order : IsCompact (closure (order p c)) :=
+  (isBounded_order p c).isCompact_closure
 
 /-! #### Openness -/
 
@@ -387,7 +387,7 @@ lemma exists_pow_smul_finBasis_mem (v : Place K) : ∃ m : ℕ,
 
 /-- A power of `p` times each vector of the basis of elementary tensors lies in `R_I`. -/
 lemma exists_pow_smul_packetBasis_mem : ∃ M : ℕ, ∀ k : PacketIndex (.finite p) c,
-    ((p : ℕ) : ℚ_[p]) ^ M • packetBasis (.finite p) c k ∈ integral p c := by
+    ((p : ℕ) : ℚ_[p]) ^ M • packetBasis (.finite p) c k ∈ order p c := by
   choose m hm using fun j => exists_pow_smul_finBasis_mem p (c j)
   refine ⟨∑ j, m j, fun k => ?_⟩
   choose y hy hy' using fun j => hm j (k j)
@@ -402,8 +402,8 @@ lemma exists_pow_smul_packetBasis_mem : ∃ M : ℕ, ∀ k : PacketIndex (.finit
   exact tprodIntegral_mem p c _
 
 /-- **`R_I` contains a ball around `0`.** -/
-lemma exists_closedBall_subset_integral :
-    ∃ r : ℝ, 0 < r ∧ Metric.closedBall (0 : Tensor K (.finite p) c) r ⊆ integral p c := by
+lemma exists_closedBall_subset_order :
+    ∃ r : ℝ, 0 < r ∧ Metric.closedBall (0 : Tensor K (.finite p) c) r ⊆ order p c := by
   obtain ⟨M, hM⟩ := exists_pow_smul_packetBasis_mem p c
   have hp : (0 : ℝ) < ‖((p : ℕ) : ℚ_[p]) ^ M‖ := by
     rw [norm_pow, Padic.norm_p]
@@ -414,7 +414,7 @@ lemma exists_closedBall_subset_integral :
   have hpM : ((p : ℕ) : ℚ_[p]) ^ M ≠ 0 := by
     have : ((p : ℕ) : ℚ_[p]) ≠ 0 := by exact_mod_cast (Fact.out : (p : ℕ).Prime).ne_zero
     exact pow_ne_zero _ this
-  rw [← (packetBasis (.finite p) c).sum_equivFun x, mem_integral]
+  rw [← (packetBasis (.finite p) c).sum_equivFun x, mem_order]
   refine Submodule.sum_mem _ fun k _ => ?_
   have hk : ‖(packetBasis (.finite p) c).equivFun x k / ((p : ℕ) : ℚ_[p]) ^ M‖ ≤ 1 := by
     rw [norm_div, div_le_one hp]
@@ -428,30 +428,30 @@ lemma exists_closedBall_subset_integral :
   rw [this]
   exact Submodule.smul_mem _ r (hM k)
 
-/-- The integral structure as an additive subgroup. -/
-noncomputable def integralAddSubgroup : AddSubgroup (Tensor K (.finite p) c) :=
-  (integralSubmodule p c).toAddSubgroup
+/-- The order as an additive subgroup. -/
+noncomputable def orderAddSubgroup : AddSubgroup (Tensor K (.finite p) c) :=
+  (orderSubmodule p c).toAddSubgroup
 
-lemma coe_integralAddSubgroup : (integralAddSubgroup p c : Set (Tensor K (.finite p) c)) =
-    integral p c := rfl
+lemma coe_orderAddSubgroup : (orderAddSubgroup p c : Set (Tensor K (.finite p) c)) =
+    order p c := rfl
 
 /-- **`R_I` is open.** -/
-lemma isOpen_integral : IsOpen (integral p c) := by
-  obtain ⟨r, hr, hsub⟩ := exists_closedBall_subset_integral p c
-  rw [← coe_integralAddSubgroup]
+lemma isOpen_order : IsOpen (order p c) := by
+  obtain ⟨r, hr, hsub⟩ := exists_closedBall_subset_order p c
+  rw [← coe_orderAddSubgroup]
   exact AddSubgroup.isOpen_of_mem_nhds _
     (Filter.mem_of_superset (Metric.closedBall_mem_nhds 0 hr) hsub)
 
 /-- **`R_I` is closed.** -/
-lemma isClosed_integral : IsClosed (integral p c) := by
-  rw [← coe_integralAddSubgroup]
-  exact AddSubgroup.isClosed_of_isOpen _ (isOpen_integral p c)
+lemma isClosed_order : IsClosed (order p c) := by
+  rw [← coe_orderAddSubgroup]
+  exact AddSubgroup.isClosed_of_isOpen _ (isOpen_order p c)
 
 /-- **`R_I` is compact.** -/
-lemma isCompact_integral : IsCompact (integral p c) :=
-  (isClosed_integral p c).closure_eq ▸ isCompact_closure_integral p c
+lemma isCompact_order : IsCompact (order p c) :=
+  (isClosed_order p c).closure_eq ▸ isCompact_closure_order p c
 
-lemma integral_nonempty : (integral p c).Nonempty := ⟨1, one_mem_integral p c⟩
+lemma order_nonempty : (order p c).Nonempty := ⟨1, one_mem_order p c⟩
 
 /-! #### The junk packets -/
 

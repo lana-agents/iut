@@ -211,11 +211,10 @@ lemma thetaComponent_subset_logShell (i : Fin n) (vQ : RationalPlace)
     obtain ⟨φ, hφ, hx⟩ := Set.mem_iUnion₂.mp hx
     exact LT.indAut_logShell _ _ φ hφ hx
 
-/-- Away from `2`, the ramified primes and the bad residue characteristics, the theta-pilot
-component is the integral structure. -/
+/-- Away from the bad residue characteristics, the theta-pilot component is the integral
+structure (the indeterminacy automorphisms preserve the maximal order at every prime). -/
 lemma thetaComponent_eq_integral (i : Fin n) (p : Nat.Primes)
     (c : ((Procession.standard n).capsule i).LabelType → LT.Fiber (.finite p))
-    (hodd : Odd (p : ℕ)) (hunr : ∀ w : FinitePlace D.Kt, residueChar w = p → ramIdx D.Kt w = 1)
     (hbad : (p : ℕ) ∉ TL.badChars) :
     TL.thetaComponent n i (.finite p) c = LT.integral (.finite p) (LT.tuple _ c) := by
   have hscale : TL.scaleElt n i p c = 1 := by
@@ -227,10 +226,7 @@ lemma thetaComponent_eq_integral (i : Fin n) (p : Nat.Primes)
       φ '' (TL.scaleElt n i p c • LT.integral (.finite p) (LT.tuple _ c)) at hx
     obtain ⟨φ, hφ, hx⟩ := Set.mem_iUnion₂.mp hx
     rw [hscale, one_smul] at hx
-    exact LT.prop14_iv p _ hodd (fun j w hw => hunr w (by
-      have := (c j).2
-      rw [show (c j).1 = Place.finite w from hw, LT.toRational_finite] at this
-      exact congrArg Subtype.val (RationalPlace.finite.inj this))) φ hφ hx
+    exact LT.prop14_iv p _ φ hφ hx
   · intro x hx
     change x ∈ ⋃ φ ∈ LT.indAut (.finite p) (LT.tuple _ c),
       φ '' (TL.scaleElt n i p c • LT.integral (.finite p) (LT.tuple _ c))
@@ -252,21 +248,7 @@ noncomputable def thetaPilot (i : Fin (LT.container n).proc.length) :
     by_contra hmem
     apply hvQ
     rcases vQ with p | _
-    · have hp2 : (p : ℕ) ≠ 2 := by
-        intro h
-        apply hmem
-        refine Or.inl (Or.inl (Or.inr ?_))
-        simp only [Set.mem_singleton_iff]
-        congr 1
-        exact Subtype.ext h
-      have hodd : Odd (p : ℕ) := (p.2.eq_two_or_odd').resolve_left hp2
-      have hunr : ∀ w : FinitePlace D.Kt, residueChar w = p → ramIdx D.Kt w = 1 := by
-        intro w hw
-        by_contra hne
-        apply hmem
-        refine Or.inl (Or.inr ⟨w, hne, ?_⟩)
-        all_goals (simp only [LT.toRational_finite]; congr 1; exact Subtype.ext hw)
-      have hbad : (p : ℕ) ∉ TL.badChars := by
+    · have hbad : (p : ℕ) ∉ TL.badChars := by
         intro hb
         apply hmem
         refine Or.inr ⟨p, hb, ?_⟩
@@ -276,7 +258,7 @@ noncomputable def thetaPilot (i : Fin (LT.container n).proc.length) :
       simp only [DirectSumPresentation.mem_productRegion,
         DirectSumPresentation.mem_integralRegion]
       refine forall_congr' fun c => ?_
-      rw [TL.thetaComponent_eq_integral n i p c hodd hunr hbad]
+      rw [TL.thetaComponent_eq_integral n i p c hbad]
       rfl
     · exact absurd (Or.inl (Or.inl (Or.inl rfl))) hmem
 
