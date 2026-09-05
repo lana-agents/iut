@@ -31,6 +31,7 @@ import Iut.Concrete.LocalEstimate
 import Iut.Concrete.LocalTheory
 import Iut.Concrete.Main
 import Iut.Concrete.ModEllRepConstruct
+import Iut.Concrete.ModEllRepGalois
 import Iut.Concrete.TateInputsConstruct
 import Iut.Concrete.ThetaLocalConstruct.Data
 import Iut.Concrete.ThetaLocalConstruct.EmbedCompletion
