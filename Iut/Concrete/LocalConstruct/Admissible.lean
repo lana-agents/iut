@@ -23,16 +23,16 @@ of the product of unit balls, and the least one containing an admissible region 
 positive because a region of positive Haar measure is not contained in `{0}`. The radial
 scalings are monotone in `t` (`smul_integralAt_infinite_mono`).
 
-## Remark on `LocalTheory.exists_leastHull`
+## Least hull regions at a prime
 
 At a prime, the existence of a *least* hull region `a·(R_I)^∼` (`a` a unit) containing an
-admissible region is not proved here: it requires the decomposition of the packet
-`⊗_j K_{c j}` into a product of local fields (for which `(R_I)^∼` is the product of the
-rings of integers and the hull regions are the products of fractional ideals, whose least
-upper bound is computed componentwise). For the integral structure `R_I = ⊗_{ℤ_p} 𝓞_{c j}`
-of this package (as opposed to its normalization) least hull regions need not exist at all,
-since `R_I` is in general only an order in the ring of integers of the packet. See the
-report.
+admissible region is proved in `Hull.lean` (`exists_leastHull_finite`), through the
+decomposition of the packet `⊗_j K_{c j}` into the product of its residue fields
+(`ResidueField.lean`), for which `(R_I)^∼` is the product of the rings of integers and the
+hull regions are the products of closed balls, whose least upper bound is computed
+componentwise. For the order `R_I = ⊗_{ℤ_p} 𝓞_{c j}` (as opposed to its normalization)
+least hull regions need not exist at all, since `R_I` is in general only an order in the
+ring of integers of the packet.
 -/
 
 namespace Iut

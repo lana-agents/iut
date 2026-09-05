@@ -32,9 +32,10 @@ hypothesis is a proposition about the constructed objects:
   the `SL₂`-image lemma ([GenEll] §3) and the finiteness of the points whose once-punctured
   curve has no core ([CanLift], Proposition 2.7); the `2`-adic bound and the conductor
   comparisons are theorems (`Iut/Tripod/TwoAdic.lean`, `LogCond.lean`);
-* `LocalTheoryFacts`: the three remaining facts of the local theory (the inclusion of the
-  maximal order in the log-shell, least hull regions, IUT IV Prop. 1.4(iii)) and the tower
-  arithmetic `TowerArithmetic` (IUT IV, §1), all about the constructed packets;
+* `LocalTheoryFacts`: the one remaining fact of the local theory (IUT IV Prop. 1.4(iii);
+  the inclusion of the maximal order in the log-shell and the least hull regions are
+  theorems of the construction) and the tower arithmetic `TowerArithmetic` (IUT IV, §1),
+  all about the constructed packets;
 * the prime-counting bound (Prop. 1.6);
 * `h312`, the variant itself.
 
