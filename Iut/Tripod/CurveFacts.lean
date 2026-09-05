@@ -31,18 +31,19 @@ For the Legendre curve `E_λ` over `F_λ = ℚ(λ, √−1, √λ, √(1 − λ)
   `Iut.Tripod.TorsionDegreeBound` (`[K(E_λ[n]) : K] ≤ |GL₂(𝔽_n)| = (n² − 1)(n² − n)`,
   isolated as a `Prop`).
 
-## Isolated as `Prop`s (no axioms)
+## Isolated as `Prop`s (nothing postulated)
 
 `TorsionDegreeBound`, and, for a choice `P : CurveProviders` of the arithmetic and mod-`ℓ`
 representations of the curves, `LegendreHeightHyp` (IUT IV, Corollary 2.2(i); [GenEll],
-Proposition 3.4), `TwoAdicBoundHyp` (the `2`-adic contribution to `log(q_∀)`),
+Proposition 3.4; proved in `Iut/Tripod/Height.lean`, `Iut.Tripod.legendreHeight`),
+`TwoAdicBoundHyp` (the `2`-adic contribution to `log(q_∀)`; proved in `TwoAdic.lean`),
 `CyclicBoundHyp` ([GenEll], Lemma 3.5), `SL2ImageHyp` ([GenEll], Lemma 3.1(iii)),
 `LogCondGeHyp`, `LogCondLeHyp` (the comparison of the conductor of `F_tpd = ℚ(λ)` away from
-`2ℓ` with `log-cond_{{0,1,∞}}(λ)`, from the reduction theory of the Legendre curve) and
-`CoreFinitenessHyp` ([CanLift], Proposition 2.7; proved for the model anabelian geometry
-in `Iut.Tripod.coreFiniteness`, `Iut/Tripod/Core.lean`). The first three are collected in
-`CurveFactsProp`, and `Iut.Tripod.curveInputs` assembles `Iut.CurveInputs tripodTheory AG K d`
-from it, `CoreFinitenessHyp` and `NorthcottHyp`.
+`2ℓ` with `log-cond_{{0,1,∞}}(λ)`, from the reduction theory of the Legendre curve; proved in
+`LogCond.lean`) and `CoreFinitenessHyp` ([CanLift], Proposition 2.7; proved for the model
+anabelian geometry in `Iut.Tripod.coreFiniteness`, `Iut/Tripod/Core.lean`). The unproved ones
+are collected in `CurveFactsProp`, and `Iut.Tripod.curveInputs` assembles
+`Iut.CurveInputs tripodTheory AG K d` from it, the proved hypotheses and `NorthcottHyp`.
 -/
 
 namespace Iut.Tripod
@@ -443,10 +444,9 @@ def CoreFinitenessHyp (AG : AnabelianGeometry.{0}) : Prop :=
       (OrbicurveDataSection.CF AG (P.curve x).F (P.curve x).E)}.Finite
 
 /-- **The facts about the curves of the points that remain unproved**, collected: exactly
-the fields of `Iut.CurveInputs` for `curveOf` that are not proved in this file. -/
+the fields of `Iut.CurveInputs` for `curveOf` that are not proved in this file, in
+`TwoAdic.lean`, `LogCond.lean`, `Height.lean` or `Core.lean`. -/
 structure CurveFactsProp (TK : ℝ) : Prop where
-  /-- Corollary 2.2(i). -/
-  height : LegendreHeightHyp P K
   /-- [GenEll], Lemma 3.5. -/
   cyclic : CyclicBoundHyp P K d TK
   /-- [GenEll], Lemma 3.1(iii). -/
@@ -454,12 +454,13 @@ structure CurveFactsProp (TK : ℝ) : Prop where
 
 /-- **The inputs of IUT IV, Corollary 2.2 for the tripod**, from the curves `E_λ/F_λ` of the
 points, the facts proved in this file, the isolated hypotheses `CurveFactsProp`, the core
-finiteness `CoreFinitenessHyp` (a theorem for the model geometry, `Iut.Tripod.coreFiniteness`)
-and the Northcott property `NorthcottHyp`. -/
+finiteness `CoreFinitenessHyp` (a theorem for the model geometry, `Iut.Tripod.coreFiniteness`),
+the height comparison `LegendreHeightHyp` (proved in `Height.lean`), the `2`-adic and conductor
+bounds (proved in `TwoAdic.lean`, `LogCond.lean`), and the Northcott property `NorthcottHyp`. -/
 noncomputable def curveInputs {AG : AnabelianGeometry.{0}} {TK : ℝ}
     (CF : CurveFactsProp P K d TK) (hcore : CoreFinitenessHyp P K d AG) (hN : NorthcottHyp)
     (hdeg3 : ∀ l : Qbar, TorsionDegreeBound l 3) (hdeg5 : ∀ l : Qbar, TorsionDegreeBound l 5)
-    (hB : TwoAdicBoundHyp P K (max (4 * K.c) 0))
+    (hh : LegendreHeightHyp P K) (hB : TwoAdicBoundHyp P K (max (4 * K.c) 0))
     (hge : LogCondGeHyp P) (hle : LogCondLeHyp P) :
     CurveInputs tripodTheory AG K d where
   h := P.h
@@ -472,8 +473,8 @@ noncomputable def curveInputs {AG : AnabelianGeometry.{0}} {TK : ℝ}
     refine (deg_le x _ _ (hdeg3 x.1) (hdeg5 x.1)).trans ?_
     exact Nat.mul_le_mul_left _ hx.2
   dmod_le x hx := (dmod_le x _ _).trans hx.2
-  htCan_equiv := CF.height
-  northcott := northcott_of_equiv hN K d CF.height
+  htCan_equiv := hh
+  northcott := northcott_of_equiv hN K d hh
   B := max (4 * K.c) 0
   B_nonneg := le_max_right _ _
   heightEq_two_le x hx := hB x hx.1
