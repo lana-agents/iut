@@ -97,8 +97,6 @@ import Iut.Tripod.Height
 import Iut.Tripod.Legendre
 import Iut.Tripod.LogCond
 import Iut.Tripod.Main
-import Iut.Tripod.Main
-import Iut.Tripod.Main
 import Iut.Tripod.Northcott
 import Iut.Tripod.Providers
 import Iut.Tripod.SL2Generation
