@@ -77,6 +77,17 @@ Proposition 2.7, whose once-punctured curve has no core) appears in the Corollar
 inputs, and the existence of the anabelian part of the Θ-data
 (`Iut.Anabelian.anabelianExistence`) is a theorem without residual input.
 
+**Reduction predicates and the cyclic-subgroup bound.** `HasGoodReductionAt`,
+`HasMultiplicativeReductionAt`, `HasSplitMultiplicativeReductionAt` and
+`HasStableReductionAt` (`Iut/Cor312/ThetaData/GlobalField.lean`) are stated up to a global
+change of variables: Mathlib's reduction classes refer to the given Weierstrass model (they
+assert its minimality), whereas IUT I, Definition 3.1(a) is a property of the curve. With
+the model-bound form, stable reduction everywhere is false for the Legendre models of the
+tripod points. Likewise the cyclic-subgroup bound of [GenEll] Lemma 3.5 (`cyclic_bound` in
+`Corollary22Inputs`, `CurveInputs`) is stated for primes `ℓ ≥ 7` under (P2), as it is
+used; quantified over all primes it fails for the curves of the points, whose 3- and
+5-torsion is rational.
+
 ## Current scope (IUT4 §1)
 
 The library proves the real-arithmetic error bound used in Proposition 1.4(iii), the
@@ -216,17 +227,63 @@ Remaining explicit inputs of the main theorem `Iut.cor312Variant_implies_abc_cur
 each a structure whose fields are precise target statements (see the taxis issues linked
 from #1449):
 
-| Input | Content | Owner |
+| Input | Content | Status |
 | --- | --- | --- |
-| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | padic-log-volume, [#1462](https://taxis.lana.merten.dev/issues/1462) |
-| `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | tate-curves-theta, [#1464](https://taxis.lana.merten.dev/issues/1464) |
-| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
-| `Iut.PrimeCountingBound`, `Iut.ChebyshevBound` | Propositions 1.6, 2.1(ii) | prime-counting, [#1466](https://taxis.lana.merten.dev/issues/1466) |
-| `Iut.CurveInputs T K d`, `Genl.HeightTheory.ProofPackage` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3, Theorem 2.1 inputs | genl, [#1467](https://taxis.lana.merten.dev/issues/1467) |
-| `EllipticCurveData.CurveArithmetic` | Prop 1.8: `√−1`, stable reduction, `E[6]` rational, `F/F_mod`, reduction type over `F_mod`, finiteness of the bad locus | elliptic-reduction, [#1495](https://taxis.lana.merten.dev/issues/1495); places of `F/F_mod`: [#1494](https://taxis.lana.merten.dev/issues/1494) |
-| `EllipticCurveData.TateInputs` | Tate parameters at the multiplicative places | tate-curves-theta, [#1496](https://taxis.lana.merten.dev/issues/1496) |
-| `EllipticCurveData.ModEllRepData ℓ` | the mod-`ℓ` representation on `E[ℓ]` | [#277](https://taxis.lana.merten.dev/issues/277) |
+| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed** (`Iut.LocalConstruct.concreteLocalTheory`); residual `Prop` `LocalTheoryFacts K` (three fields), padic-log-volume [#1462](https://taxis.lana.merten.dev/issues/1462) |
+| `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | **constructed** (`Iut.thetaLocalData`), from the rationality of the ℓ- and 2-torsion |
+| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | `Prop`; elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
+| `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
+| `Iut.PrimeCountingBound` | Proposition 1.6 | `Prop` `Iut.PrimeCountingHyp`; prime-counting, [#1466](https://taxis.lana.merten.dev/issues/1466) |
+| `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); residual `Prop`s `CurveProps`, `CurveFactsProp`, see below |
+| `Genl.HeightTheory.ProofPackage` | [GenEll] Theorem 2.1 (ii) ⇒ (i) | not needed for the tripod target `StatementII` |
+| `EllipticCurveData.CurveArithmetic` | Prop 1.8 | six of ten fields **proved** (`CurveArithmetic.ofCore`); `√−1`, stable reduction, `E[6]` rational, `F/F_mod` Galois of degree prime to `ℓ` remain `Prop`s |
+| `EllipticCurveData.TateInputs` | Tate parameters at the multiplicative places | **constructed** (`EllipticCurveData.tateInputs`) |
+| `EllipticCurveData.ModEllRepData ℓ` | the mod-`ℓ` representation on `E[ℓ]` | **constructed** (`modEllRepData`) from `E[ℓ] ≅ (ℤ/ℓ)²` ([#277](https://taxis.lana.merten.dev/issues/277)) |
 | `Iut.AnabelianExistence AG TG` | IUT I, Definition 3.1(d)–(f): `C̲_K`, `ε`, `V` and the bad-place conditions | **proved** for the anabelian model (`Iut.Anabelian.anabelianExistence`), with no residual input; see below |
+
+
+### The tripod theorem with propositional inputs (`Iut/Tripod/`)
+
+`Iut.Tripod.abc_of_variant` ([`Iut/Tripod/Main.lean`](Iut/Tripod/Main.lean)) states the
+implication for the concrete tripod `ℙ¹ ∖ {0,1,∞}`: every object is constructed in this
+repository and every hypothesis is a proposition about the constructed objects.
+
+* [`Basic.lean`](Iut/Tripod/Basic.lean), [`Northcott.lean`](Iut/Tripod/Northcott.lean) —
+  the height formalism `Iut.Tripod.tripodTheory`: points `λ ∈ ℚ̄ ∖ {0,1}`, `ptLE d` by the
+  degree of the minimal polynomial, `htCan` the absolute logarithmic Weil height (Mathlib),
+  `logDiff` the normalized log-discriminant of `ℚ(λ)`, `logCond` the normalized conductor
+  of `λ` with respect to `{0,1,∞}`, and the valuation-bounded compactly bounded subsets
+  `CompactlyBounded` (finite places over a finite set of primes containing `2`, and all
+  archimedean places, bounded). Northcott over all number fields of degree `≤ d` is
+  **proved** (`northcottHyp`, by bounding the coefficients of minimal polynomials). The
+  target is `tripodTheory.StatementII`: ABC for points of bounded degree in a compactly
+  bounded subset.
+* [`Legendre.lean`](Iut/Tripod/Legendre.lean), [`CurveOf.lean`](Iut/Tripod/CurveOf.lean),
+  [`TwoTorsion.lean`](Iut/Tripod/TwoTorsion.lean) — the Legendre curve
+  `E_λ : y² = x(x−1)(x−λ)` over `F_λ = ℚ(λ, √−1, √λ, √(1−λ), E_λ[3], E_λ[5])` (the two
+  extra square roots make `F_λ/ℚ(j)` Galois: the conjugates of `λ` give the twists of
+  `E_λ` by `λ` and `1−λ`), its four rational 2-torsion points.
+* [`CurveFacts.lean`](Iut/Tripod/CurveFacts.lean),
+  [`TorsionDegree.lean`](Iut/Tripod/TorsionDegree.lean),
+  [`Providers.lean`](Iut/Tripod/Providers.lean) — proved: `√−1 ∈ F_λ`, `E[6]` rational,
+  `[ℚ(j) : ℚ] ≤ deg λ`, `[F_λ : ℚ] ≤ 552960·deg λ` (the torsion fields have degree
+  `≤ |GL₂(𝔽_ℓ)|`, by the Galois correspondence), `log-diff = ` the different degree of the
+  tripodal field `ℚ(λ)`; the curve-level data (Tate parameters, mod-`ℓ` representations,
+  finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (`E_λ[n] ≅ (ℤ/n)²`,
+  stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
+  facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the height comparison
+  `(1/6)·log q_∀ ≈ h(λ)` of [GenEll] Prop 3.4, the `2`-adic bound, the cyclic-subgroup bound
+  of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma, the conductor
+  comparisons). These were audited for satisfiability with the repository's exact
+  normalisations; the audit forced two corrections recorded in the honesty boundary (the
+  reduction predicates up to a change of variables, and the restriction of the
+  cyclic-subgroup bound to `ℓ ≥ 7`).
+
+Final statement (hypotheses only): `CurveProps`, `∀ K d, ∃ B T_K, CurveFactsProp … K d B T_K`,
+`∀ K, LocalTheoryFacts K`, the tower arithmetic for the constructed local theory and theta
+data, `PrimeCountingHyp`, and the variant `h312`; conclusion `tripodTheory.StatementII`.
+`StatementI` (all hyperbolic curves) additionally needs heights on curves and the
+coverings of [GenEll] Theorem 2.1, which remain in genl's scope.
 
 ## Anabelian model strand (`Iut/Anabelian`)
 
