@@ -237,7 +237,7 @@ from #1449):
 | `Iut.PrimeCountingBound` | Proposition 1.6 | `Prop` `Iut.PrimeCountingHyp`; prime-counting, [#1466](https://taxis.lana.merten.dev/issues/1466) |
 | `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); residual `Prop`s `CurveProps`, `CurveFactsProp`, see below |
 | `Genl.HeightTheory.ProofPackage` | [GenEll] Theorem 2.1 (ii) ⇒ (i) | not needed for the tripod target `StatementII` |
-| `EllipticCurveData.CurveArithmetic` | Prop 1.8 | six of ten fields **proved** (`CurveArithmetic.ofCore`); `√−1`, stable reduction, `E[6]` rational, `F/F_mod` Galois of degree prime to `ℓ` remain `Prop`s |
+| `EllipticCurveData.CurveArithmetic` | Prop 1.8 | six of ten fields **proved** (`CurveArithmetic.ofCore`); for the tripod, `√−1 ∈ F`, `E[6]` rational and `F/F_mod` Galois of degree prime to `ℓ` are **proved** (`Iut/Tripod/Galois.lean`); stable reduction remains a `Prop` |
 | `EllipticCurveData.TateInputs` | Tate parameters at the multiplicative places | **constructed** (`EllipticCurveData.tateInputs`) |
 | `EllipticCurveData.ModEllRepData ℓ` | the mod-`ℓ` representation on `E[ℓ]` | **constructed** (`modEllRepData`) from `E[ℓ] ≅ (ℤ/ℓ)²` ([#277](https://taxis.lana.merten.dev/issues/277)) |
 | `Iut.AnabelianExistence AG TG` | IUT I, Definition 3.1(d)–(f): `C̲_K`, `ε`, `V` and the bad-place conditions | **proved** for the anabelian model (`Iut.Anabelian.anabelianExistence Pi1 Tp`) for every étale/tempered `π₁` theory `Pi1`, `Tp` (universally quantified) and curves whose once-punctured curve has a core; see below |
@@ -264,14 +264,23 @@ repository and every hypothesis is a proposition about the constructed objects.
   `E_λ : y² = x(x−1)(x−λ)` over `F_λ = ℚ(λ, √−1, √λ, √(1−λ), E_λ[3], E_λ[5])` (the two
   extra square roots make `F_λ/ℚ(j)` Galois: the conjugates of `λ` give the twists of
   `E_λ` by `λ` and `1−λ`), its four rational 2-torsion points.
+* [`Galois.lean`](Iut/Tripod/Galois.lean) —
+  **proved**: `F_λ/ℚ(j)` is Galois of degree prime to every prime `ℓ ≥ 7`
+  (`Iut.Tripod.galois_deg_prime_of_torsion_basis`, from `E_λ[n] ≅ (ℤ/n)²` for `n = 3, 5`).
+  `Gal(ℚ̄/ℚ(j))` moves `λ` to one of its six conjugates `λ, 1−λ, 1/λ, 1/(1−λ), 1−1/λ,
+  1−1/(1−λ)` (the roots of `256(T²−T+1)³ − j·T²(T−1)²`), and `F_λ` contains the square roots
+  of all conjugates and the torsion fields of the conjugate curves, which are changes of
+  variables `⟨√−1, 1, 0, 0⟩`, `⟨√λ, 0, 0, 0⟩` of `E_λ` (`Iut.Anabelian.vcEquiv`,
+  `Iut.Anabelian.pointMap`); the degree is the product of the relative degrees
+  `≤ 6, ≤ 2, ≤ 2, ≤ 2, ∣ 48, ∣ 480` of the tower `ℚ(j) ⊆ ℚ(λ) ⊆ … ⊆ F_λ`.
 * [`CurveFacts.lean`](Iut/Tripod/CurveFacts.lean),
   [`TorsionDegree.lean`](Iut/Tripod/TorsionDegree.lean),
   [`Providers.lean`](Iut/Tripod/Providers.lean) — proved: `√−1 ∈ F_λ`, `E[6]` rational,
   `[ℚ(j) : ℚ] ≤ deg λ`, `[F_λ : ℚ] ≤ 552960·deg λ` (the torsion fields have degree
   `≤ |GL₂(𝔽_ℓ)|`, by the Galois correspondence), `log-diff = ` the different degree of the
   tripodal field `ℚ(λ)`; the curve-level data (Tate parameters, mod-`ℓ` representations,
-  finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (`E_λ[n] ≅ (ℤ/n)²`,
-  stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
+  finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (`E_λ[n] ≅ (ℤ/n)²`
+  and stable reduction of `E_λ/F_λ`); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the height comparison
   `(1/6)·log q_∀ ≈ h(λ)` of [GenEll] Prop 3.4, the cyclic-subgroup bound of [GenEll]
   Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma, and the finiteness of the

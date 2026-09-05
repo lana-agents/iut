@@ -86,6 +86,7 @@ import Iut.Implication.Theorem110
 import Iut.Tripod.Basic
 import Iut.Tripod.CurveFacts
 import Iut.Tripod.CurveOf
+import Iut.Tripod.Galois
 import Iut.Tripod.Legendre
 import Iut.Tripod.LogCond
 import Iut.Tripod.Main

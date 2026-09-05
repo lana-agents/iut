@@ -115,12 +115,13 @@ theorem mem_torsionCoords {l : Qbar} {n : ℕ} {P : (legendre l).toAffine.Point}
 /-- **The field of definition** `F_λ = ℚ(λ, √−1, √λ, √(1 − λ), E_λ[3], E_λ[5]) ⊆ ℚ̄` of the
 Legendre curve of `λ`.
 
-The square roots `√λ`, `√(1 − λ)` are adjoined so that `F_λ` is (plausibly) Galois over the
-field of moduli `ℚ(j)`, as required by `Iut.IsGaloisOfDegreePrimeTo`: over `ℚ(j)` the
-conjugates of `λ` are the six values `λ, 1 − λ, 1/λ, 1/(1 − λ), λ/(λ − 1), (λ − 1)/λ`;
-`E_{1−λ} ≅ E_λ` over `ℚ(λ)`, while `E_{1/λ}` and `E_{1/(1−λ)}` are the quadratic twists of
-`E_λ` by `λ` and by `1 − λ`, so `ℚ(λ, √−1, √λ, √(1 − λ), E_λ[15])` contains the `15`-torsion
-fields of all the conjugate curves and is Galois over `ℚ(j)`. -/
+The square roots `√λ`, `√(1 − λ)` are adjoined so that `F_λ` is Galois over the field of
+moduli `ℚ(j)`, as required by `Iut.IsGaloisOfDegreePrimeTo` (proved in
+`Iut/Tripod/Galois.lean`): over `ℚ(j)` the conjugates of `λ` are the six values
+`λ, 1 − λ, 1/λ, 1/(1 − λ), λ/(λ − 1), (λ − 1)/λ`; `E_{1−λ} ≅ E_λ` over `ℚ(λ, √−1)`, while
+`E_{1/λ}` and `E_{1/(1−λ)}` are the quadratic twists of `E_λ` by `λ` and by `1 − λ`, so
+`ℚ(λ, √−1, √λ, √(1 − λ), E_λ[15])` contains the `15`-torsion fields of all the conjugate
+curves and is Galois over `ℚ(j)`. -/
 noncomputable def fieldOf' (l : Qbar) : IntermediateField ℚ Qbar :=
   IntermediateField.adjoin ℚ
     ({l, sqrtNegOne, sqrtLam l, sqrtOneSubLam l} ∪ torsionCoords l 3 ∪ torsionCoords l 5)

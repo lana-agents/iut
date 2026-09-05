@@ -27,7 +27,8 @@ hypothesis is a proposition about the constructed objects:
   theorem holds for every such theory, in particular for the actual fundamental groups, so
   the variant `h312` is assumed on exactly the class of Θ-data of IUT I, Definition 3.1;
 * `CurveProps`: the ℓ-torsion of the Legendre curves is a rank-two `ℤ/ℓ`-module, and
-  `E_λ/F_λ` has stable reduction and the Galois-degree property;
+  `E_λ/F_λ` has stable reduction (that `F_λ/ℚ(j)` is Galois of degree prime to `ℓ ≥ 7` is
+  a theorem, `Iut/Tripod/Galois.lean`);
 * `CurveFactsProp`: the height comparison of Corollary 2.2(i), the cyclic-subgroup bound,
   the `SL₂`-image lemma ([GenEll] §3) and the finiteness of the points whose once-punctured
   curve has no core ([CanLift], Proposition 2.7); the `2`-adic bound and the conductor
