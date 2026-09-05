@@ -53,7 +53,7 @@ lemma natCast_mem_maximalIdeal_iff (v : FinitePlace k) {q : ℕ} (hq : q.Prime) 
 
 /-- A place of `K` over a place of `k` has the same residue characteristic: the residue field of
 `w` is a (finite) extension of the residue field of `v`. -/
-lemma residueChar_eq_of_liesOver {w : FinitePlace K} {v : FinitePlace k}
+lemma residueChar_eq_of_liesOver_place {w : FinitePlace K} {v : FinitePlace k}
     (hwv : FinitePlace.LiesOver w v) : residueChar w = residueChar v := by
   haveI : w.maximalIdeal.asIdeal.LiesOver v.maximalIdeal.asIdeal := hwv
   haveI : v.maximalIdeal.asIdeal.IsMaximal :=
@@ -118,7 +118,7 @@ lemma exists_liesOver (w : FinitePlace C.F) :
 /-- A place of `F` over a place of `F_mod` has the same residue characteristic. -/
 lemma residueChar_liesOver (v : FinitePlace ↥(fieldOfModuli C.F C.E)) (w : FinitePlace C.F)
     (hwv : FinitePlace.LiesOver w v) : residueChar w = residueChar v :=
-  residueChar_eq_of_liesOver hwv
+  residueChar_eq_of_liesOver_place hwv
 
 /-- Residue degrees are positive. -/
 lemma inertDeg_pos (w : FinitePlace C.F) : 0 < inertDeg C.F w :=

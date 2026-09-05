@@ -108,7 +108,8 @@ theorem abc_of_variant
       (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
       (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
       (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs)
-    (fun K d => (concreteThetaDataExistence' hp (CF K d) northcottHyp hlocal TAp).toThetaDataExistence)
+    (fun K d =>
+      (concreteThetaDataExistence' hp (CF K d) northcottHyp hlocal TAp).toThetaDataExistence)
     chebyshevBoundExplicit pnt (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
 
 end Iut.Tripod
