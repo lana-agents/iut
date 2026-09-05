@@ -419,8 +419,11 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
   /-- The number `T_K` of [GenEll], Lemma 3.5. -/
   TK : ℝ
   /-- **[GenEll], Lemma 3.5 with Proposition 3.4.** -/
-  cyclic_bound : ∀ (x : T.Pt T.tripod) (_hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
-    ∀ ℓ : ℕ, ℓ.Prime → HasCyclicSubgroup x ℓ →
+  cyclic_bound : ∀ (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
+    ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
+    (∀ w ∈ ((curve x hx).localHeightData (arith x hx) (tate x hx)).bad,
+      ¬ ℓ ∣ ((curve x hx).localHeightData (arith x hx) (tate x hx)).hv w) →
+    HasCyclicSubgroup x ℓ →
     ((ℓ : ℝ) - 2) / 24 * h x ≤ 2 * Real.log ℓ + TK
   /-- **[GenEll], Lemma 3.1(iii)**: (P2), (P4), (P5) imply that the image of the mod-`ℓ`
   representation contains `SL₂(𝔽_ℓ)`. -/
