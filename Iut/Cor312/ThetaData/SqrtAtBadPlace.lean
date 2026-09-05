@@ -118,25 +118,36 @@ lemma mult_placeUnder
 section NormsAt
 
 variable {K' : Type u} [Field K'] [NumberField K'] [Algebra F K'] {w : FinitePlace K'}
-  {w₀ : FinitePlace F} (hww₀ : FinitePlace.LiesOver w w₀) (hw₀ : HasMultiplicativeReductionAt E w₀)
-include hww₀ hw₀
+  {w₀ : FinitePlace F} (hww₀ : FinitePlace.LiesOver w w₀)
+  (hc₄ : w₀.maximalIdeal.valuation F E.c₄ = 1) (hΔ : w₀.maximalIdeal.valuation F E.Δ < 1)
 
+omit [E.IsElliptic] in
+include hww₀ hc₄ in
+/-- `‖c₄‖ = 1` over `K'_w` for a model `E` with `v_{w₀}(c₄(E)) = 1` at the place `w₀` below `w`. -/
 lemma norm_c₄_curveLoc : ‖(curveLoc E K' w).c₄‖ = 1 := by
   rw [curveLoc, map_c₄, map_c₄, norm_emb_eq_one_iff, valuation_algebraMap_eq_one_iff hww₀]
-  exact valuation_c₄_eq_one_of_mult E w₀ hw₀
+  exact hc₄
 
+omit [E.IsElliptic] in
+include hww₀ hΔ in
+/-- `‖Δ‖ < 1` over `K'_w` for a model `E` with `v_{w₀}(Δ(E)) < 1` at the place `w₀` below `w`. -/
 lemma norm_Δ_curveLoc : ‖(curveLoc E K' w).Δ‖ < 1 := by
   rw [curveLoc, map_Δ, map_Δ, norm_emb_lt_one_iff, valuation_algebraMap_lt_one_iff hww₀]
-  exact valuation_Δ_lt_one_of_mult E w₀ hw₀
+  exact hΔ
 
+omit [E.IsElliptic] in
+include hww₀ hc₄ hΔ in
 lemma norm_c₆_curveLoc : ‖(curveLoc E K' w).c₆‖ = 1 :=
-  norm_c₆_eq_one _ (norm_c₄_curveLoc E hww₀ hw₀) (norm_Δ_curveLoc E hww₀ hw₀)
+  norm_c₆_eq_one _ (norm_c₄_curveLoc E hww₀ hc₄) (norm_Δ_curveLoc E hww₀ hΔ)
 
+omit [E.IsElliptic] in
+include hww₀ hc₄ hΔ in
 lemma norm_d_curveLoc : ‖-((curveLoc E K' w).c₄ * (curveLoc E K' w).c₆)‖ = 1 := by
-  rw [norm_neg, norm_mul, norm_c₄_curveLoc E hww₀ hw₀, norm_c₆_curveLoc E hww₀ hw₀, one_mul]
+  rw [norm_neg, norm_mul, norm_c₄_curveLoc E hww₀ hc₄, norm_c₆_curveLoc E hww₀ hc₄ hΔ, one_mul]
 
 end NormsAt
 
+omit [E.IsElliptic] in
 /-- `-(c₄c₆)` of `E` over `K'_w` is the image of the global `-(c₄c₆)`. -/
 lemma neg_c₄_mul_c₆_curveLoc {K' : Type u} [Field K'] [NumberField K'] [Algebra F K']
     (w : FinitePlace K') :
@@ -154,11 +165,15 @@ variable (hVBad : ∀ v ∈ VBad, residueChar v ≠ 2)
   (hTK : TK ≤ AddSubgroup.torsionBy (E.map (algebraMap F ↥K)).toAffine.Point ℓ)
   (hcard : ℓ * ℓ ≤ Nat.card ↥TK)
 
-include hVBad hmult hℓ hodd hTK hcard in
+include hℓ hodd hTK hcard in
 set_option maxHeartbeats 1000000 in
-/-- **`−c₄c₆` is a square in `K_w`** at every bad place `w` of a field `K` over which `E` has
-`ℓ²` rational ℓ-torsion points. -/
-theorem exists_sq_eq_neg_c₄_mul_c₆ {w : FinitePlace ↥K} (hw : IsBadPlace E K VBad w) :
+-- the Galois-fixed-point and Hensel arguments over `K'_{w'}` and `K_w` are long
+/-- **`−c₄c₆` is a square in `K_w`** for a model `E` with `v(c₄) = 1`, `v(Δ) < 1` at the place
+of `F` below a place `w ∤ 2` of a field `K` over which `E` has `ℓ²` rational ℓ-torsion points. -/
+theorem exists_sq_eq_neg_c₄_mul_c₆_of_valuation {w : FinitePlace ↥K}
+    (h2w : (2 : 𝓞 ↥K) ∉ w.maximalIdeal.asIdeal)
+    (hc₄ : (placeUnder w : FinitePlace F).maximalIdeal.valuation F E.c₄ = 1)
+    (hΔ : (placeUnder w : FinitePlace F).maximalIdeal.valuation F E.Δ < 1) :
     ∃ s : localCompletion w,
       s ^ 2 = FinitePlace.embedding w.maximalIdeal (algebraMap F ↥K (-(E.c₄ * E.c₆))) := by
   set dK : ↥K := algebraMap F ↥K (-(E.c₄ * E.c₆)) with hdK
@@ -168,10 +183,8 @@ theorem exists_sq_eq_neg_c₄_mul_c₆ {w : FinitePlace ↥K} (hw : IsBadPlace E
   -- the quadratic extension `K' = K(√d)`
   set K' := sqrtField K dK with hK'
   obtain ⟨w', hw'⟩ := FinitePlace.exists_liesOver (K := ↥K') w
-  have hw₀ := mult_placeUnder E K hmult hw
   have hww₀ : FinitePlace.LiesOver w (placeUnder w : FinitePlace F) := liesOver_placeUnder w
   -- `2 ∉ w'`
-  have h2w : (2 : 𝓞 ↥K) ∉ w.maximalIdeal.asIdeal := two_notMem_of_isBadPlace E K hVBad hw
   have h2w' : (2 : 𝓞 ↥K') ∉ w'.maximalIdeal.asIdeal := by
     haveI : w'.maximalIdeal.asIdeal.LiesOver w.maximalIdeal.asIdeal := hw'
     intro h
@@ -187,13 +200,12 @@ theorem exists_sq_eq_neg_c₄_mul_c₆ {w : FinitePlace ↥K} (hw : IsBadPlace E
   -- the norm conditions over `L = K'_{w'}` and over `K_w`
   have hw'w₀ : FinitePlace.LiesOver w' (placeUnder w : FinitePlace F) :=
     FinitePlace.liesOver_trans hw' hww₀
-  have hc₄L := norm_c₄_curveLoc E (K' := ↥K') (w := w') hw'w₀ hw₀
-  have hΔL := norm_Δ_curveLoc E (K' := ↥K') (w := w') hw'w₀ hw₀
+  have hc₄L := norm_c₄_curveLoc E (K' := ↥K') (w := w') hw'w₀ hc₄
+  have hΔL := norm_Δ_curveLoc E (K' := ↥K') (w := w') hw'w₀ hΔ
   have hdL : ‖-((curveLoc E ↥K' w').c₄ * (curveLoc E ↥K' w').c₆)‖ = 1 :=
-    norm_d_curveLoc E (w := w') hw'w₀ hw₀
-  have hc₄K := norm_c₄_curveLoc E (K' := ↥K) (w := w) hww₀ hw₀
+    norm_d_curveLoc E (w := w') hw'w₀ hc₄ hΔ
   have hdK1 : ‖FinitePlace.embedding w.maximalIdeal dK‖ = 1 := by
-    have := norm_d_curveLoc E (K' := ↥K) (w := w) hww₀ hw₀
+    have := norm_d_curveLoc E (K' := ↥K) (w := w) hww₀ hc₄ hΔ
     rwa [neg_c₄_mul_c₆_curveLoc] at this
   -- the square root `√d ∈ K'` and its image `s₀ ∈ L`
   set s₀ : localCompletion w' := FinitePlace.embedding w'.maximalIdeal (sqrtD K dK) with hs₀
@@ -321,6 +333,41 @@ theorem exists_sq_eq_neg_c₄_mul_c₆ {w : FinitePlace ↥K} (hw : IsBadPlace E
     obtain ⟨s, hs, -⟩ := exists_sq_eq_of_norm_sq_sub_lt h2K hbn (a := FinitePlace.embedding w.maximalIdeal dK)
       (by rw [← map_pow, ← map_sub, ← neg_sub, map_neg, norm_neg]; exact hdbK)
     exact ⟨s, hs⟩
+
+include hVBad hmult hℓ hodd hTK hcard in
+/-- **`−c₄c₆` is a square in `K_w`** at every bad place `w` of a field `K` over which `E` has
+`ℓ²` rational ℓ-torsion points. The valuation conditions hold for a model `C • E` at the place
+of `F` below `w` (`Iut.exists_variableChange_of_mult`); the ℓ-torsion of `C • E` over `K` is
+transported from that of `E` along `Iut.Anabelian.vcEquiv`, and a square root of
+`−c₄c₆(C • E) = u⁻¹⁰ · (−c₄c₆(E))` gives one of `−c₄c₆(E)`. -/
+theorem exists_sq_eq_neg_c₄_mul_c₆ {w : FinitePlace ↥K} (hw : IsBadPlace E K VBad w) :
+    ∃ s : localCompletion w,
+      s ^ 2 = FinitePlace.embedding w.maximalIdeal (algebraMap F ↥K (-(E.c₄ * E.c₆))) := by
+  obtain ⟨C, -, hc₄, hΔ⟩ := exists_variableChange_of_mult E _ (mult_placeUnder E K hmult hw)
+  -- the ℓ-torsion of `C • E` over `K`
+  set e : (E.map (algebraMap F ↥K)).toAffine.Point ≃+
+      ((C • E).map (algebraMap F ↥K)).toAffine.Point :=
+    (vcEquiv (C.map (algebraMap F ↥K)) (E.map (algebraMap F ↥K))).trans
+      (pointCongr (map_variableChange (W := E) (C := C) (φ := algebraMap F ↥K))) with he
+  set TK' : AddSubgroup ((C • E).map (algebraMap F ↥K)).toAffine.Point :=
+    TK.map e.toAddMonoidHom with hTK'
+  have hTK'le : TK' ≤ AddSubgroup.torsionBy ((C • E).map (algebraMap F ↥K)).toAffine.Point ℓ := by
+    intro P hP
+    obtain ⟨R, hR, rfl⟩ := AddSubgroup.mem_map.1 hP
+    rw [AddSubgroup.torsionBy.nsmul_iff, ← map_nsmul,
+      (AddSubgroup.torsionBy.nsmul_iff).1 (hTK hR), map_zero]
+  have hcard' : ℓ * ℓ ≤ Nat.card ↥TK' :=
+    hcard.trans (Nat.card_congr
+      (AddSubgroup.equivMapOfInjective TK e.toAddMonoidHom e.injective).toEquiv).le
+  obtain ⟨s', hs'⟩ := exists_sq_eq_neg_c₄_mul_c₆_of_valuation (C • E) K hℓ hodd TK' hTK'le hcard'
+    (two_notMem_of_isBadPlace E K hVBad hw) hc₄ hΔ
+  -- transport the square root along `u⁵`
+  have h10 : ((C.u : F) * ((C.u⁻¹ : Fˣ) : F)) ^ 10 = 1 := by rw [C.u.mul_inv, one_pow]
+  have hd : ((C.u : F) ^ 5) ^ 2 * (-((C • E).c₄ * (C • E).c₆)) = -(E.c₄ * E.c₆) := by
+    rw [variableChange_c₄, variableChange_c₆]
+    linear_combination (-(E.c₄ * E.c₆)) * h10
+  refine ⟨FinitePlace.embedding w.maximalIdeal (algebraMap F ↥K ((C.u : F) ^ 5)) * s', ?_⟩
+  rw [mul_pow, hs', ← map_pow, ← map_pow, ← map_mul, ← map_mul, hd]
 
 end
 
