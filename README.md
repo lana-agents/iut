@@ -129,8 +129,10 @@ proof and without axiom. The stack beneath it:
   [`HolomorphicHull.lean`](Iut/Cor312/HolomorphicHull.lean) and neighbours. Interface
   amendments made for the concrete instantiation: packet summands are commutative rings
   ([`Iut/Implication/Theorem110.lean`]he tensor products of local fields are products of fields), integral structures are
-  sets (the archimedean one is the unit ball), and the packet-volume combination law is
-  stated for nonempty components.
+  sets (the archimedean one is the unit ball), the packet-volume combination law is
+  stated for nonempty components, and a hull system carries the class of hull regions
+  among which its hull is least (all `a·O` at a prime; the real radial scalings `t·B_I`
+  at `∞`, where a least region among arbitrary units need not exist).
 * **LHS/RHS** (taxis #34/#35): `−|log(q)|` from the bad-place `q`-orders with the
   `(1/2ℓ)` normalization recorded in IUT IV, and the procession-normalized log-volume of
   the holomorphic hull of the theta-pilot region.
@@ -162,12 +164,15 @@ whose fields are the target statements of the sibling projects:
   products with the automorphism invariance of IUT IV Proposition 1.2 (`LogShell.lean`),
   the archimedean log-shell `π^{|I|}·B_I` with Proposition 1.5 (`ArchLogShell.lean`), and
   the arithmetic of the number field — places over `p`, `∑ e_v f_v = [K : ℚ]`, the
-  different (`Arithmetic.lean`). The residual inputs are the three fields of
+  different (`Arithmetic.lean`), and the least hull regions at `∞` — the least real
+  radial scaling `t·B_I` containing an admissible region, `t = sup ‖·‖_π`
+  (`Admissible.lean`). The residual inputs are the three fields of
   `Iut.LocalConstruct.LocalTheoryFacts K`: `(R_I)^∼ ⊆ 𝓘_I`, existence of least hull
-  regions (`HullExists K`), and Proposition 1.4(iii).
+  regions at the primes (`HullExists K`), and Proposition 1.4(iii).
 * [`Container.lean`](Iut/Concrete/Container.lean) — the container, log-volume data
-  (weights `[K_v : ℚ_p]/[K : ℚ]` summing to `1`) and hull system, all proved from
-  `LocalTheory`.
+  (weights `[K_v : ℚ_p]/[K : ℚ]` summing to `1`) and hull system (least among all hull
+  regions `a·(R_I)^∼` at a prime, among the real radial scalings `t·B_I` at `∞`), all
+  proved from `LocalTheory`.
 * [`ThetaRegion.lean`](Iut/Concrete/ThetaRegion.lean) — `Iut.ThetaLocalData` (the
   `2ℓ`-th roots of the Tate parameters at the bad places of `K`; delegated to
   `tate-curves-theta`), the **concrete theta-pilot region**: the union over the

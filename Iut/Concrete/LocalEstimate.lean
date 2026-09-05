@@ -264,6 +264,14 @@ lemma cont_isHullRegion (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     · exact DirectSumPresentation.isHullRegion_integralRegion _
   · exact ⟨_, fun c => isUnit_archScalar (LT := LT) i c, rfl⟩
 
+/-- Each container belongs to the class of hull regions of the concrete hull system: at a
+prime it is a hull region, at `∞` the real radial scaling `π^{|I|}·B_I`. -/
+lemma cont_mem_hullRegions (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
+    cont (TL := TL) i vQ ∈ LT.hullRegions (Lab i) vQ := by
+  rcases vQ with p | _
+  · exact cont_isHullRegion (TL := TL) i (.finite p)
+  · exact ⟨fun _ => Real.pi ^ (i.1 + 2), fun _ => pow_pos Real.pi_pos _, rfl⟩
+
 lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     (LT.packet (Lab i) vQ).productRegion (fun c => TL.thetaComponent _ i vQ c) ⊆
       cont (TL := TL) i vQ := by
@@ -396,7 +404,7 @@ include TA in
 noncomputable def localEstimate :
     (TL.invariants QI).LocalEstimate where
   cont i vQ := cont (TL := TL) i vQ
-  cont_isHullRegion i vQ := cont_isHullRegion (TL := TL) i vQ
+  cont_mem_hullRegions i vQ := cont_mem_hullRegions (TL := TL) i vQ
   thetaPilot_subset i vQ := thetaPilot_subset (TL := TL) i vQ
   cont_eq_integral i p hp := by
     change (if (p : ℕ) ∈ TL.dst then _ else _) = _

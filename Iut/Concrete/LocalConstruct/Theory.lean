@@ -21,11 +21,12 @@ from the construction except the three collected in the propositional record
   (`𝓘_I = R_I` there, `logShell_eq_order_of_unramified`), which is the content of
   `logShell_eq_integral`; that field is derived from this one.
 * `exists_leastHull`: existence of least hull regions `a·(R_I)^∼` containing an admissible
-  region (IUT III, Remark 3.9.5(i)). This is the statement that bounded open
+  region at a prime (IUT III, Remark 3.9.5(i)). This is the statement that bounded open
   `(R_I)^∼`-submodules of the packet are principal — true because `(R_I)^∼` is a finite
   product of complete discrete valuation rings, a fact about the integral closure of `ℤ_p` in
   finite extensions of `ℚ_p` (uniqueness of the extension of the valuation) not available in
-  Mathlib.
+  Mathlib. The archimedean counterpart `exists_leastHull_infinite` (least real radial
+  scaling `t·B_I` containing an admissible region) is proved (`Admissible.lean`).
 * `prop14_iii`: IUT IV, Proposition 1.4(iii), the log-volume estimate for the hull of the
   images of `x·(R_I)^∼` under the indeterminacies, in terms of the different exponents.
 -/
@@ -58,16 +59,15 @@ lemma logShellAt_infinite {ι : Type} [Fintype ι] (c : ι → Place K) :
 
 variable (K)
 
-/-- **Existence of least hull regions** (IUT III, Remark 3.9.5(i); the field
-`LocalTheory.exists_leastHull` for the concrete packets): every admissible region of a packet
-is contained in a least region `a·I` with `a` a unit and `I` the integral structure
-(`(R_I)^∼` at a prime, `B_I` at `∞`). -/
+/-- **Existence of least hull regions at a prime** (IUT III, Remark 3.9.5(i); the field
+`LocalTheory.exists_leastHull` for the concrete packets): every admissible region of a
+nonarchimedean packet is contained in a least region `a·(R_I)^∼` with `a` a unit. -/
 def HullExists : Prop :=
-  ∀ {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K)
-    (U : Set (Tensor K vQ c)), U ∈ admissible vQ c →
-    ∃ a : Tensor K vQ c, IsUnit a ∧ U ⊆ a • integralAt vQ c ∧
-      ∀ b : Tensor K vQ c, IsUnit b → U ⊆ b • integralAt vQ c →
-        a • integralAt vQ c ⊆ b • integralAt vQ c
+  ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K)
+    (U : Set (Tensor K (.finite p) c)), U ∈ admissible (.finite p) c →
+    ∃ a : Tensor K (.finite p) c, IsUnit a ∧ U ⊆ a • integralAt (.finite p) c ∧
+      ∀ b : Tensor K (.finite p) c, IsUnit b → U ⊆ b • integralAt (.finite p) c →
+        a • integralAt (.finite p) c ⊆ b • integralAt (.finite p) c
 
 /-- **The residual inputs of the concrete local theory**: the three fields of
 `Iut.LocalTheory K` not proved by the construction (see the module docstring). -/
@@ -75,7 +75,7 @@ structure LocalTheoryFacts : Prop where
   /-- `(R_I)^∼ ⊆ 𝓘_I` (IUT III, Proposition 1.2). -/
   integral_subset_logShell : ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K),
     integral p c ⊆ logShell p c
-  /-- Existence of least hull regions (IUT III, Remark 3.9.5(i)). -/
+  /-- Existence of least hull regions at a prime (IUT III, Remark 3.9.5(i)). -/
   exists_leastHull : HullExists K
   /-- IUT IV, Proposition 1.4(iii). -/
   prop14_iii : ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K)
@@ -139,6 +139,8 @@ noncomputable def concreteLocalTheory (hyps : LocalTheoryFacts K) : LocalTheory.
   integral_admissible vQ c := integral_admissible
   smul_integral_admissible vQ c := smul_integral_admissible
   exists_leastHull := hyps.exists_leastHull
+  exists_leastHull_infinite c U hU := exists_leastHull_infinite c hU
+  smul_integral_infinite_mono c := smul_integralAt_infinite_mono c
   indAut := indAut
   id_mem_indAut := id_mem_indAut
   indAut_logShell vQ c := by

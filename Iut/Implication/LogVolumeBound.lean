@@ -71,8 +71,9 @@ structure LocalEstimate : Type (max u v) where
   (`p^{⌊λ − d_I − a_I⌋ − b_I}·(R_I)^∼`, resp. `(R_I)^∼`, resp. `π^{j+1}·B_I`). -/
   cont : ∀ (i : Fin X.rhsData.container.proc.length) (vQ : RationalPlace),
     Set (X.rhsData.container.packet i vQ).Total
-  /-- Each container is a hull region `a·O` with all components of `a` nonzero. -/
-  cont_isHullRegion : ∀ i vQ, (X.rhsData.container.packet i vQ).IsHullRegion (cont i vQ)
+  /-- Each container belongs to the class of hull regions of the hull system (a region
+  `a·O` with all components of `a` units; at `∞` a real radial scaling of `B_I`). -/
+  cont_mem_hullRegions : ∀ i vQ, cont i vQ ∈ (X.rhsData.hull.system i vQ).HullRegions
   /-- The theta-pilot region (the union of the images under (Ind1)–(Ind3)) is contained
   in the container: the inclusions `φ(p^λ·(R_I)^∼) ⊆ …` of Proposition 1.4(iii),(iv)
   and `⊗ m_i ∈ π^{|I|}·B_I` of Proposition 1.5(iv). -/
@@ -165,7 +166,7 @@ lemma hull_subset_cont (i : Fin X.rhsData.container.proc.length) (vQ : RationalP
     (X.rhsData.hull.system i vQ).hull ((X.rhsData.thetaPilot i).region vQ) ⊆
       est.cont i vQ :=
   (X.rhsData.hull.system i vQ).hull_le (X.rhsData.thetaPilot_hullAdmissible i vQ)
-    (est.cont_isHullRegion i vQ) (est.thetaPilot_subset i vQ)
+    (est.cont_mem_hullRegions i vQ) (est.thetaPilot_subset i vQ)
 
 /-- The pointwise bound: the packet log-volume of the hull of the theta-pilot region is
 at most `placeBound` at every rational place. -/
@@ -177,7 +178,8 @@ lemma packetVol_hull_le (i : Fin X.rhsData.container.proc.length) (vQ : Rational
     est.packetVol_mono i vQ _ _
       ((X.rhsData.hull.system i vQ).isHullRegion_hull
         (X.rhsData.thetaPilot_hullAdmissible i vQ))
-      (est.cont_isHullRegion i vQ) (est.hull_subset_cont i vQ)
+      ((X.rhsData.hull.system i vQ).isHullRegion_of_mem _ (est.cont_mem_hullRegions i vQ))
+      (est.hull_subset_cont i vQ)
   refine hmono.trans ?_
   rcases vQ with p | _
   · by_cases hp : (p : ℕ) ∈ inv.dst

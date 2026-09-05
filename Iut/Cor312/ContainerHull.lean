@@ -49,9 +49,8 @@ structure ContainerHullSystem (D : LargeVolumeContainerData.{u₁, u₂, v} ι V
   /-- The hull system of the packet at capsule `i` and rational place `v_Q`. -/
   system : ∀ (i : Fin D.proc.length) (vQ : RationalPlace), HullSystem (D.packet i vQ)
   /-- The holomorphic integral region of each packet is admissible. Together with
-  `Iut.DirectSumPresentation.isHullRegion_integralRegion` this makes the integral
-  region its own hull, so hulls preserve the finite-support condition of the
-  container's admissible regions. -/
+  `Iut.HullSystem.integralRegion_mem` this makes the integral region its own hull, so
+  hulls preserve the finite-support condition of the container's admissible regions. -/
   integral_admissible :
     ∀ i vQ, (D.packet i vQ).integralRegion ∈ (system i vQ).Admissible
 
@@ -69,8 +68,7 @@ def IsAdmissible (R : D.AdmissibleRegion i) : Prop :=
 lemma hull_integralRegion (vQ : RationalPlace) :
     (H.system i vQ).hull (D.packet i vQ).integralRegion =
       (D.packet i vQ).integralRegion :=
-  (H.system i vQ).hull_eq_self (H.integral_admissible i vQ)
-    (D.packet i vQ).isHullRegion_integralRegion
+  (H.system i vQ).hull_eq_self (H.integral_admissible i vQ) (H.system i vQ).integralRegion_mem
 
 /-- The **holomorphic hull of an admissible region of the container**: the packet-wise
 hull. The finite-support condition is preserved because the holomorphic integral

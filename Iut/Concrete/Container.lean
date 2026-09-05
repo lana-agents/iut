@@ -294,6 +294,82 @@ noncomputable def vol : LogVolumeData (LT.container n) where
     have h := LT.proj_productRegion vQ U hU c
     exact congrArg (fun S => LT.tupleWeight vQ c * LT.componentVol vQ (LT.tuple vQ c) S) h
 
+/-- **The class of hull regions of a packet** among which the holomorphic hull is least
+(`HullSystem.HullRegions`): at a prime all regions `a·O` with all components of `a` units
+(IUT III, Remark 3.9.5(i)); at the archimedean place the real radial scalings `t·B_I`
+with `t > 0` componentwise (IUT IV, Proposition 1.5(iii)). -/
+def hullRegions (ι : Type) [Fintype ι] :
+    ∀ vQ : RationalPlace, Set (Set (LT.packet ι vQ).Total)
+  | .finite p => {R | (LT.packet ι (.finite p)).IsHullRegion R}
+  | .infinite => {R | ∃ t : (ι → LT.Fiber .infinite) → ℝ, (∀ c, 0 < t c) ∧
+      R = (LT.packet ι .infinite).scaledIntegral fun c =>
+        algebraMap ℝ (LT.Tensor .infinite (LT.tuple .infinite c)) (t c)}
+
+/-- Members of the class of hull regions are hull regions `a·O` with all components of
+`a` units. -/
+lemma isHullRegion_of_mem_hullRegions (ι : Type) [Fintype ι] (vQ : RationalPlace) :
+    ∀ R ∈ LT.hullRegions ι vQ, (LT.packet ι vQ).IsHullRegion R := by
+  cases vQ with
+  | finite p => exact fun R hR => hR
+  | infinite =>
+    rintro R ⟨t, ht, rfl⟩
+    exact ⟨_, fun c => (isUnit_iff_ne_zero.mpr (ht c).ne').map
+      (algebraMap ℝ (LT.Tensor .infinite (LT.tuple .infinite c))), rfl⟩
+
+/-- The holomorphic integral region belongs to the class of hull regions. -/
+lemma integralRegion_mem_hullRegions (ι : Type) [Fintype ι] (vQ : RationalPlace) :
+    (LT.packet ι vQ).integralRegion ∈ LT.hullRegions ι vQ := by
+  cases vQ with
+  | finite p => exact (LT.packet ι (.finite p)).isHullRegion_integralRegion
+  | infinite =>
+    refine ⟨fun _ => 1, fun _ => one_pos, ?_⟩
+    rw [← DirectSumPresentation.scaledIntegral_one]
+    congr 1
+    funext c
+    exact (map_one _).symm
+
+/-- **Least hull regions of product regions** with admissible components, from the least
+hull regions of the components (`exists_leastHull` at a prime, `exists_leastHull_infinite`
+and the radial monotonicity `smul_integral_infinite_mono` at `∞`). -/
+lemma exists_leastHullRegion (ι : Type) [Fintype ι] (vQ : RationalPlace)
+    (fam : ∀ c : ι → LT.Fiber vQ, Set (LT.Tensor vQ (LT.tuple vQ c)))
+    (hfam : ∀ c, fam c ∈ LT.admissible vQ (LT.tuple vQ c)) :
+    ∃ R, (LT.packet ι vQ).IsLeastHullRegionIn (LT.hullRegions ι vQ)
+      ((LT.packet ι vQ).productRegion fam) R := by
+  cases vQ with
+  | finite p =>
+    choose a ha using fun c => LT.exists_leastHull p (LT.tuple _ c) (fam c) (hfam c)
+    refine ⟨(LT.packet _ _).scaledIntegral a, ⟨a, fun c => (ha c).1, rfl⟩, ?_, ?_⟩
+    · intro x hx c
+      exact (ha c).2.1 (hx c)
+    · rintro R ⟨b, hb, rfl⟩ hUR
+      intro x hx c
+      have hproj : fam c ⊆ LT.scaled _ c (b c) := by
+        have := LT.proj_productRegion _ fam
+          (fun c => LT.admissible_nonempty _ _ _ (hfam c)) c
+        rw [← this]
+        rintro y ⟨z, hz, rfl⟩
+        exact hUR hz c
+      exact (ha c).2.2 (b c) (hb c) hproj (hx c)
+  | infinite =>
+    choose t ht using fun c => LT.exists_leastHull_infinite (LT.tuple _ c) (fam c) (hfam c)
+    refine ⟨(LT.packet _ _).scaledIntegral fun c =>
+      algebraMap ℝ (LT.Tensor .infinite (LT.tuple .infinite c)) (t c),
+      ⟨t, fun c => (ht c).1, rfl⟩, ?_, ?_⟩
+    · intro x hx c
+      exact (ht c).2.1 (hx c)
+    · rintro R ⟨t', ht', rfl⟩ hUR
+      intro x hx c
+      have hproj : fam c ⊆ algebraMap ℝ (LT.Tensor .infinite (LT.tuple .infinite c)) (t' c) •
+          LT.integral .infinite (LT.tuple .infinite c) := by
+        have := LT.proj_productRegion _ fam
+          (fun c => LT.admissible_nonempty _ _ _ (hfam c)) c
+        rw [← this]
+        rintro y ⟨z, hz, rfl⟩
+        exact hUR hz c
+      exact LT.smul_integral_infinite_mono _ _ _ (ht c).1
+        ((ht c).2.2 (t' c) (ht' c) hproj) (hx c)
+
 /-- **The concrete hull system**: least hull regions of product regions with admissible
 components, from the least hull regions of the components. -/
 noncomputable def hull : ContainerHullSystem (LT.container n) where
@@ -306,23 +382,15 @@ noncomputable def hull : ContainerHullSystem (LT.container n) where
         rintro U ⟨fam, hfam, rfl⟩
         exact isCompact_closure_productRegion _ _ fun c =>
           LT.admissible_relCompact vQ _ _ (hfam c))
+      (LT.hullRegions _ vQ)
+      (LT.isHullRegion_of_mem_hullRegions _ vQ)
+      (LT.integralRegion_mem_hullRegions _ vQ)
       (by
         rintro U ⟨fam, hfam, rfl⟩
-        choose a ha using fun c => LT.exists_leastHull vQ (LT.tuple vQ c) (fam c) (hfam c)
-        refine ⟨(LT.packet _ vQ).scaledIntegral a, ⟨a, fun c => (ha c).1, rfl⟩, ?_, ?_⟩
-        · intro x hx c
-          exact (ha c).2.1 (hx c)
-        · rintro R ⟨b, hb, rfl⟩ hUR
-          intro x hx c
-          have hproj : fam c ⊆ LT.scaled vQ c (b c) := by
-            have := LT.proj_productRegion vQ fam
-              (fun c => LT.admissible_nonempty vQ _ _ (hfam c)) c
-            rw [← this]
-            rintro y ⟨z, hz, rfl⟩
-            exact hUR hz c
-          exact (ha c).2.2 (b c) (hb c) hproj (hx c))
+        exact LT.exists_leastHullRegion _ vQ fam hfam)
       (by
-        rintro U ⟨fam, hfam, rfl⟩ R ⟨⟨a, ha, rfl⟩, _, _⟩
+        rintro U ⟨fam, hfam, rfl⟩ R ⟨hR, _, _⟩
+        obtain ⟨a, ha, rfl⟩ := LT.isHullRegion_of_mem_hullRegions _ vQ R hR
         exact ⟨fun c => LT.scaled vQ c (a c),
           fun c => LT.smul_integral_admissible vQ _ (a c) (ha c), rfl⟩)
   integral_admissible i vQ :=

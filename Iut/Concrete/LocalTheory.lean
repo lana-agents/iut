@@ -219,13 +219,30 @@ structure LocalTheory extends LocalTensor.{u, v} K where
     ∀ U ∈ admissible (.finite p) c,
     componentVol (.finite p) c ((fun x => ((p : ℕ) : Tensor (.finite p) c) * x) ⁻¹' U) =
       componentVol (.finite p) c U + Real.log p
-  /-- **Existence of least hull regions** (IUT III, Remark 3.9.5(i)): every admissible
-  region is contained in a least region `a·O` with `a` a unit. -/
-  exists_leastHull : ∀ {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K)
-    (U : Set (Tensor vQ c)), U ∈ admissible vQ c →
-    ∃ a : Tensor vQ c, IsUnit a ∧ U ⊆ a • integral vQ c ∧
-      ∀ b : Tensor vQ c, IsUnit b → U ⊆ b • integral vQ c →
-        a • integral vQ c ⊆ b • integral vQ c
+  /-- **Existence of least hull regions at a prime** (IUT III, Remark 3.9.5(i)): every
+  admissible region of a nonarchimedean packet is contained in a least region `a·(R_I)^∼`
+  with `a` a unit, least among all such regions. -/
+  exists_leastHull : ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K)
+    (U : Set (Tensor (.finite p) c)), U ∈ admissible (.finite p) c →
+    ∃ a : Tensor (.finite p) c, IsUnit a ∧ U ⊆ a • integral (.finite p) c ∧
+      ∀ b : Tensor (.finite p) c, IsUnit b → U ⊆ b • integral (.finite p) c →
+        a • integral (.finite p) c ⊆ b • integral (.finite p) c
+  /-- **Existence of least hull regions at the archimedean place** (IUT III,
+  Remark 3.9.5(i); IUT IV, Proposition 1.5(iii)): every admissible region of an
+  archimedean packet is contained in a least real radial scaling `t·B_I` (`t > 0`) of the
+  product of unit balls. The hull regions at `∞` are the radial scalings only: among
+  arbitrary units `b` of the packet a least `b·B_I` containing a given region need not
+  exist. -/
+  exists_leastHull_infinite : ∀ {ι : Type} [Fintype ι] (c : ι → Place K)
+    (U : Set (Tensor .infinite c)), U ∈ admissible .infinite c →
+    ∃ t : ℝ, 0 < t ∧ U ⊆ algebraMap ℝ (Tensor .infinite c) t • integral .infinite c ∧
+      ∀ t' : ℝ, 0 < t' → U ⊆ algebraMap ℝ (Tensor .infinite c) t' • integral .infinite c →
+        t ≤ t'
+  /-- The radial scalings of `B_I` are monotone: `t·B_I ⊆ t'·B_I` for `0 < t ≤ t'`. -/
+  smul_integral_infinite_mono : ∀ {ι : Type} [Fintype ι] (c : ι → Place K) (t t' : ℝ),
+    0 < t → t ≤ t' →
+    algebraMap ℝ (Tensor .infinite c) t • integral .infinite c ⊆
+      algebraMap ℝ (Tensor .infinite c) t' • integral .infinite c
   /-- The **indeterminacy automorphisms** `φ` of IUT IV, Proposition 1.2: the
   automorphisms of the packet through which the indeterminacies (Ind1), (Ind2) act. -/
   indAut : ∀ {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K),
