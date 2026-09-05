@@ -475,7 +475,7 @@ theorem norm_logTerm_sub_le [CharZero k] (hp : p.Prime) (hpk : ‖(p : k)‖ < 1
         mul_le_mul_of_nonneg_right (norm_two_mul_pow_le hp hpk (by omega)) (norm_nonneg _)
     _ = ‖(p : k)‖ * ‖a - b‖ * ‖((n + 2 : ℕ) : k)‖ := by ring
 
-/-- The remainder `a ↦ log (1 + a) - a` is a contraction with constant `‖p‖` on the ball of
+/-- The remainder `a ↦ log (1 + a) - a` is a contraction with contraction factor `‖p‖` on the ball of
 radius `‖2p‖`. -/
 theorem norm_logRem_sub_le [CharZero k] (hp : p.Prime) (hpk : ‖(p : k)‖ < 1) {a b : k}
     (ha : ‖a‖ ≤ ‖2 * (p : k)‖) (hb : ‖b‖ ≤ ‖2 * (p : k)‖) :

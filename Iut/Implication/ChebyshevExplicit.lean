@@ -20,13 +20,13 @@ prime-counting function `π`.
 * `two_thirds_mul_le_theta`: the **lower** Chebyshev bound `(2/3)·x ≤ θ(x)` for all
   `x ≥ 10^12`, from Mathlib's `Chebyshev.theta_ge'` and `log 2 > 2/3`.
 * `chebyshevBoundWeak_nonempty`: the certificate `ChebyshevBoundWeak`, which is
-  `ChebyshevBound` with the upper constant `4/3` replaced by `log 4 ≈ 1.386` (Mathlib's
+  `ChebyshevBound` with the upper factor `4/3` replaced by `log 4 ≈ 1.386` (Mathlib's
   `Chebyshev.theta_le_log4_mul_x`), is inhabited with threshold `ξ = 10^12`.
 
 ## What is delegated
 
 Mathlib's upper bounds `θ(x) ≤ (log 4)·x` and `π(x) ≤ (log 4 + ε)·x/log x`
-(`Chebyshev.eventually_primeCounting_le`) have the constant `log 4 = 1.386… > 4/3`, so the
+(`Chebyshev.eventually_primeCounting_le`) have the factor `log 4 = 1.386… > 4/3`, so the
 fields `ChebyshevBound.upper` and `PrimeCountingBound.bound` are **not** reachable from
 Mathlib. They are stated here as the existential propositions `ChebyshevUpperHyp`,
 `ChebyshevHyp` and `PrimeCountingHyp`, with the repackaging lemmas
@@ -140,16 +140,16 @@ theorem two_thirds_mul_le_theta {x : ℝ} (hx : (10 : ℝ) ^ 12 ≤ x) :
 
 /-! ### The weak certificate reachable from Mathlib -/
 
-/-- `ChebyshevBound` with Mathlib's upper constant `log 4 ≈ 1.386` in place of `4/3`.
+/-- `ChebyshevBound` with Mathlib's upper factor `log 4 ≈ 1.386` in place of `4/3`.
 Inhabited unconditionally (`chebyshevBoundWeak_nonempty`). -/
 structure ChebyshevBoundWeak where
   /-- The threshold. -/
   ξ : ℝ
   /-- `ξ ≥ 5`. -/
   five_le : 5 ≤ ξ
-  /-- The lower Chebyshev bound, with the constant `2/3` of `ChebyshevBound`. -/
+  /-- The lower Chebyshev bound, with the factor `2/3` of `ChebyshevBound`. -/
   lower : ∀ x : ℝ, ξ ≤ x → 2 / 3 * x ≤ Chebyshev.theta x
-  /-- The upper Chebyshev bound with Mathlib's constant `log 4`. -/
+  /-- The upper Chebyshev bound with Mathlib's factor `log 4`. -/
   upper : ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ Real.log 4 * x
 
 /-- `log 4 < 1.39`. -/
@@ -161,14 +161,14 @@ theorem log_four_lt : Real.log 4 < 1.39 := by
 
 namespace ChebyshevBoundWeak
 
-/-- The upper bound with the round constant `2` (enough for `exists_prime_selection`). -/
+/-- The upper bound with the round factor `2` (enough for `exists_prime_selection`). -/
 theorem upper_two (c : ChebyshevBoundWeak) (x : ℝ) (hx : c.ξ ≤ x) :
     Chebyshev.theta x ≤ 2 * x := by
   have h0 : 0 ≤ x := by linarith [c.five_le]
   have := c.upper x hx
   nlinarith [log_four_lt]
 
-/-- The upper bound with the constant `1.39`. -/
+/-- The upper bound with the factor `1.39`. -/
 theorem upper_d2 (c : ChebyshevBoundWeak) (x : ℝ) (hx : c.ξ ≤ x) :
     Chebyshev.theta x ≤ 1.39 * x := by
   have h0 : 0 ≤ x := by linarith [c.five_le]
@@ -195,7 +195,7 @@ theorem chebyshevBound_of_upper (h : ChebyshevUpperHyp) : Nonempty ChebyshevBoun
   · exact two_thirds_mul_le_theta (le_trans (le_max_right _ _) hx)
   · exact hξ x (le_trans (le_max_left _ _) hx)
 
-/-- **The explicit Chebyshev certificate** (threshold `10^12`, upper constant `2`): the
+/-- **The explicit Chebyshev certificate** (threshold `10^12`, upper factor `2`): the
 `ChebyshevBound` input is unconditional. -/
 noncomputable def chebyshevBoundExplicit : ChebyshevBound where
   ξ := 10 ^ 12
@@ -211,11 +211,11 @@ theorem chebyshevHyp_iff_upper : ChebyshevHyp ↔ ChebyshevUpperHyp :=
 
 /-! ### Reduction of `PrimeCountingHyp` to an upper Chebyshev bound -/
 
-/-- **`PrimeCountingHyp` from a Chebyshev upper bound with constant `< 4/3`**: if
+/-- **`PrimeCountingHyp` from a Chebyshev upper bound with factor `< 4/3`**: if
 `θ(x) ≤ c·x` for all `x ≥ ξ` with `c < 4/3`, then `π(x) ≤ 4x/(3 log x)` for all large `x`.
 This follows Mathlib's proof of `Chebyshev.eventually_primeCounting_le`: the Abel-summation
 identity `π(x) = θ(x)/log x + ∫₂ˣ θ(t)/(t log² t) dt` and the estimate `o(x / log x)` for
-the integral. (Mathlib's own constant `log 4 ≈ 1.386` is above `4/3`, which is why the
+the integral. (Mathlib's own factor `log 4 ≈ 1.386` is above `4/3`, which is why the
 hypothesis is needed.) -/
 theorem primeCountingHyp_of_theta_le {c ξ : ℝ} (hc : c < 4 / 3)
     (h : ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ c * x) : PrimeCountingHyp := by

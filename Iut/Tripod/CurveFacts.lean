@@ -260,7 +260,7 @@ end Curve
 the coordinates of the `n`-torsion of `E_λ` multiplies the degree by at most
 `|GL₂(𝔽_n)| = (n² − 1)(n² − n)` (the `n`-torsion field `K(E_λ[n])` is Galois over `K` with
 group embedded in `GL₂(ℤ/n)` by the action on a basis of `E_λ[n] ≅ (ℤ/n)²`). Recorded as a
-`Prop`, not an axiom. -/
+`Prop`, not postulated. -/
 def TorsionDegreeBound (l : Qbar) (n : ℕ) : Prop :=
   ∀ K : IntermediateField ℚ Qbar, FiniteDimensional ℚ K → l ∈ K →
     Module.finrank ℚ ↥(K ⊔ IntermediateField.adjoin ℚ (torsionCoords l n)) ≤

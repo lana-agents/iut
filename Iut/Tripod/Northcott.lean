@@ -30,7 +30,7 @@ in terms of `d` and `H` (`Polynomial.coeff_bdd_of_roots_le`, via the identificat
 complex roots of the minimal polynomial with the conjugates,
 `NumberField.Embeddings.range_eval_eq_rootSet_minpoly`). Hence `λ = y/n` lies in the finite
 set of quotients by `n ≤ exp(dH)` of the roots in `ℚ̄` of the finitely many integer
-polynomials of degree `≤ d` with coefficients bounded by the resulting constant.
+polynomials of degree `≤ d` with coefficients bounded by the resulting bound.
 -/
 
 namespace Iut.Tripod

@@ -50,7 +50,7 @@ the points of bounded degree *over all number fields* and bounded height) is not
 in Mathlib, which proves the Northcott property for each fixed number field
 (`NumberField.finite_setOf_logHeight₁_le`). We prove the fixed-field form
 (`Iut.Tripod.finite_of_fieldOf_eq`), isolate the missing statement as the `Prop`
-`Iut.Tripod.NorthcottHyp` (no axiom), reduce it to the finiteness of the fields of
+`Iut.Tripod.NorthcottHyp` (nothing postulated), reduce it to the finiteness of the fields of
 definition of the points in question (`Iut.Tripod.northcottHyp_of_finite_fieldOf`), and
 derive the target form `Iut.Tripod.northcott` from it.
 
@@ -361,15 +361,15 @@ noncomputable def tripodTheory : Genl.HeightTheory where
 `Genl.HeightTheory.StatementII` for `tripodTheory` says that for every `d`, every `ε > 0`
 and every compactly bounded subset `K`, the absolute logarithmic Weil height satisfies
 `h(λ) ≤ (1 + ε) (log|disc(ℚ(λ))| + ∑_{v bad} log N(v))/[ℚ(λ) : ℚ] + C` for all `λ ∈ K` of
-degree `≤ d`, for some constant `C = C(d, ε, K)`. -/
+degree `≤ d`, for some `C = C(d, ε, K)`. -/
 theorem statementII_iff :
     tripodTheory.StatementII ↔
       ∀ (d : ℕ) (ε : ℝ), 0 < ε → ∀ K : CompactlyBounded,
         htCan ≲[K.set ∩ ptLE d] (1 + ε) • (logDiff + logCond) :=
   Iff.rfl
 
-/-- `Genl.HeightTheory.StatementII` for the tripod, fully unfolded: the existence of a
-constant `C` with `h(λ) ≤ (1 + ε) (log-diff(λ) + log-cond(λ)) + C` on `K ∩ U_ℙ(ℚ̄)^{≤ d}`. -/
+/-- `Genl.HeightTheory.StatementII` for the tripod, fully unfolded: the existence of
+some `C` with `h(λ) ≤ (1 + ε) (log-diff(λ) + log-cond(λ)) + C` on `K ∩ U_ℙ(ℚ̄)^{≤ d}`. -/
 theorem statementII_iff' :
     tripodTheory.StatementII ↔
       ∀ (d : ℕ) (ε : ℝ), 0 < ε → ∀ K : CompactlyBounded, ∃ C : ℝ,
@@ -420,7 +420,7 @@ Mathlib provides it for each fixed number field (`NumberField.finite_setOf_logHe
 i.e. `Iut.Tripod.finite_of_fieldOf_eq` here) but not, at present, uniformly over all
 number fields of bounded degree, which needs the comparison of the heights of an algebraic
 number and of the coefficients of its minimal polynomial (or the invariance of heights under
-field extensions). It is recorded as a `Prop`, not an axiom; see
+field extensions). It is recorded as a `Prop`, not a postulate; see
 `Iut.Tripod.northcottHyp_of_finite_fieldOf` for a reduction. -/
 def NorthcottHyp : Prop :=
   ∀ (d : ℕ) (H : ℝ), {x : Pt | x ∈ ptLE d ∧ htCan x ≤ H}.Finite

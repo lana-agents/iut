@@ -591,7 +591,7 @@ theorem twoAdicBound' (K : CompactlyBounded) : TwoAdicBoundHyp P K (4 * K.c) := 
         exact_mod_cast sum_localDeg_filter_le _ 2
 
 /-- **The `2`-adic bound** in the form `TwoAdicBoundHyp P K (max (4c) 0)`, with a nonnegative
-constant. -/
+bound. -/
 theorem twoAdicBound (K : CompactlyBounded) : TwoAdicBoundHyp P K (max (4 * K.c) 0) :=
   fun x hx => (twoAdicBound' P K x hx).trans (le_max_left _ _)
 
