@@ -64,15 +64,20 @@ maps and the open immersions attached to the covering diagrams — are fields of
 `Iut.AnabelianGeometry` / `Iut.TemperedGeometry` and of the Θ-data record, exactly as
 printed. The anabelian model instantiates them through the interfaces
 `Iut.Anabelian.EtalePi1Theory` (étale `π₁` of the model orbicurves, open immersions for
-covers, the core relation with its two stability properties) and
-`Iut.Anabelian.TemperedPi1Theory` (tempered `π₁` with its comparison map), which are
-**universally quantified parameters** of the main theorems: nothing is constructed or
-assumed about them beyond the listed fields, and the theorems hold for every such theory,
-in particular for the actual fundamental groups. The core condition on the curve of a point
-enters as the finiteness of the exceptional set of points whose once-punctured curve has no
-core ([CanLift], Proposition 2.7; the four exceptional `j`-invariants), a `Prop` hypothesis
-(`Iut.Tripod.CoreFinitenessHyp`). In this way the variant hypothesis `h312` is quantified
-over exactly the class of data of the printed corollary — it is never strengthened.
+covers, the core relation with its two stability properties, and [CanLift],
+Proposition 2.7: the finite set `excJ` of exceptional `j`-invariants and the field
+`hasCore_oncePunctured`, that the once-punctured elliptic curve has the core `X/{±1}`
+unless `j` is exceptional) and `Iut.Anabelian.TemperedPi1Theory` (tempered `π₁` with its
+comparison map), which are **universally quantified parameters** of the main theorems:
+nothing is constructed or assumed about them beyond the listed fields, and the theorems
+hold for every such theory, in particular for the actual fundamental groups. The core
+condition on the curve of a point enters as the finiteness of the exceptional set of points
+whose once-punctured curve has no core (`Iut.Tripod.CoreFinitenessHyp`), which is
+**proved** for the model geometry (`Iut.Tripod.coreFiniteness`,
+[`Core.lean`](Iut/Tripod/Core.lean)): `j(E_λ) = 256(λ² − λ + 1)³/(λ²(λ − 1)²)`, so the
+exceptional points are roots of finitely many nonzero polynomials. In this way the variant
+hypothesis `h312` is quantified over exactly the class of data of the printed corollary —
+it is never strengthened.
 
 **Reduction predicates and the cyclic-subgroup bound.** `HasGoodReductionAt`,
 `HasMultiplicativeReductionAt`, `HasSplitMultiplicativeReductionAt` and
@@ -274,13 +279,15 @@ repository and every hypothesis is a proposition about the constructed objects.
   stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the height comparison
   `(1/6)·log q_∀ ≈ h(λ)` of [GenEll] Prop 3.4, the cyclic-subgroup bound of [GenEll]
-  Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma, and the finiteness of the
-  points whose once-punctured curve has no core, [CanLift] Prop 2.7,
-  `CoreFinitenessHyp`); the `2`-adic bound
-  (`Iut.Tripod.twoAdicBound`, with `B = 4c` on `CompactlyBounded` sets) and the conductor
+  Lemma 3.5 for `ℓ ≥ 7` under (P2), and the `SL₂`-image lemma); the `2`-adic bound
+  (`Iut.Tripod.twoAdicBound`, with `B = 4c` on `CompactlyBounded` sets), the conductor
   comparisons `log-cond_{F_tpd} ≤ log-cond(λ) ≤ log-cond_{F_tpd} + log 2ℓ`
   (`logCondGe`, `logCondLe`, [`TwoAdic.lean`](Iut/Tripod/TwoAdic.lean),
-  [`LogCond.lean`](Iut/Tripod/LogCond.lean)) are **proved**. These were audited for satisfiability with the repository's exact
+  [`LogCond.lean`](Iut/Tripod/LogCond.lean)) and the finiteness of the points whose
+  once-punctured curve has no core ([CanLift] Prop 2.7, `CoreFinitenessHyp`, from the
+  `excJ`/`hasCore_oncePunctured` fields of `EtalePi1Theory` and the `j`-invariant of the
+  Legendre curve; `Iut.Tripod.coreFiniteness`, [`Core.lean`](Iut/Tripod/Core.lean)) are
+  **proved**. These were audited for satisfiability with the repository's exact
   normalisations; the audit forced two corrections recorded in the honesty boundary (the
   reduction predicates up to a change of variables, and the restriction of the
   cyclic-subgroup bound to `ℓ ≥ 7`).
@@ -288,7 +295,7 @@ repository and every hypothesis is a proposition about the constructed objects.
 Final statement (hypotheses only): universally quantified fundamental-group theories
 `Pi1 : EtalePi1Theory`, `Tp : TemperedPi1Theory Pi1` (so that `h312` ranges over exactly
 the Θ-data of IUT I, Definition 3.1 — the variant is never strengthened), `CurveProps`,
-`∀ K d, ∃ T_K, CurveFactsProp … K d (modelAG Pi1) T_K`, `∀ K, LocalTheoryFacts K`, the
+`∀ K d, ∃ T_K, CurveFactsProp … K d T_K`, `∀ K, LocalTheoryFacts K`, the
 tower arithmetic for the constructed local theory and theta data, `PrimeCountingHyp`, and
 the variant `h312`; conclusion `tripodTheory.StatementII`.
 `StatementI` (all hyperbolic curves) additionally needs heights on curves and the
@@ -306,7 +313,8 @@ instantiated by a **linear-algebraic model** (taxis
   covers induced by `[n]`, base change, cusps `E(k)[ℓ]/M` (mod `±`), the rank-one
   quotient, the `±`-quotient cartesian squares, the types `(1, ℓ-tors)`,
   `(1, ℓ-tors)^±`; and the residual interface `Iut.Anabelian.EtalePi1Theory` (étale
-  fundamental groups, open immersions, cores).
+  fundamental groups, open immersions, cores, and [CanLift] Prop 2.7: the exceptional
+  `j`-invariants `excJ` and `hasCore_oncePunctured`).
 * [`Local.lean`](Iut/Anabelian/Local.lean) — over a valued field: the kernel of
   reduction and the **graph line** `E(k)[ℓ] ∩ E₁(k)` (= `μ_ℓ` under Tate
   uniformization), the **canonical generators** `q^{±1/ℓ}` of the graph quotient
@@ -388,7 +396,7 @@ universally (the Tate family of the Θ-data is proved, see above):
 
 | Input | Content | Owner |
 | --- | --- | --- |
-| `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
+| `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability, and [CanLift] Prop 2.7 (`excJ`, `hasCore_oncePunctured`: the once-punctured elliptic curve has the core `X/{±1}` unless `j` is one of finitely many exceptional values) | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
 | `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁` | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
 
 ## Comparator suite

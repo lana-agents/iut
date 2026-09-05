@@ -44,8 +44,12 @@ records exactly this data: `(E, ℓ, M, ±)`. Then
 covers, and the notion of `k`-core (with its two stability properties: orbicurves related
 by a finite étale cover have the same cores, and cores are compatible with base change)
 are the content of `Iut.Anabelian.EtalePi1Theory`, an explicit residual interface (taxis
-#276, #7, #10): the model only records the shapes on which these are evaluated. Every
-other field of `Iut.AnabelianGeometry` is constructed.
+#276, #7, #10): the model only records the shapes on which these are evaluated. The
+interface also records [CanLift], Proposition 2.7 — the once-punctured elliptic curve
+`E ∖ {0}` has the `k`-core `(E ∖ {0})/{±1}` unless `j(E)` is one of finitely many
+exceptional values (`excJ`, `hasCore_oncePunctured`) — which is what the tripod strand
+(`Iut.Tripod.coreFiniteness`) consumes. Every other field of `Iut.AnabelianGeometry` is
+constructed.
 -/
 
 namespace Iut.Anabelian
@@ -260,9 +264,11 @@ end
 
 /-- **Étale fundamental groups of the model orbicurves** (residual interface of taxis #276,
 #7, #10): the profinite étale fundamental group of each model orbicurve, the open
-immersions induced by covers, and the `k`-core relation with its two stability
+immersions induced by covers, the `k`-core relation with its two stability
 properties (a finite étale cover of `X` has the same core as `X`; cores are compatible
-with base change). -/
+with base change), and the content of [CanLift], Proposition 2.7: the once-punctured
+elliptic curve has the core `X/{±1}` unless its `j`-invariant is one of the finitely many
+exceptional values `excJ`. -/
 structure EtalePi1Theory : Type (u + 1) where
   /-- The arithmetic étale fundamental group (basepoint suppressed). -/
   pi1 : {k : Type u} → [Field k] → Orbicurve k → ProfiniteGrp.{u}
@@ -283,5 +289,15 @@ structure EtalePi1Theory : Type (u + 1) where
   /-- Cores are compatible with base change. -/
   hasCore_baseChange : ∀ {k K : Type u} [Field k] [Field K] (f : k →+* K)
     {X C : Orbicurve k}, HasCore X C → HasCore (X.baseChange f) (C.baseChange f)
+  /-- **The exceptional `j`-invariants** of [CanLift], Proposition 2.7: the finitely many
+  values of `j` (four of them) for which the once-punctured elliptic curve fails to have
+  the core `X/{±1}`. -/
+  excJ : Finset ℚ
+  /-- **[CanLift], Proposition 2.7**: the once-punctured elliptic curve `X = E ∖ {0}` has
+  the `k`-core `C = X/{±1}` unless `j(E)` is one of the finitely many exceptional values
+  `excJ`. Part of what is postulated of the actual fundamental groups. -/
+  hasCore_oncePunctured : ∀ {k : Type u} [Field k] (E : WeierstrassCurve k) [E.IsElliptic],
+    (∀ c ∈ excJ, E.j ≠ (c : k)) →
+      HasCore (Orbicurve.oncePunctured E) (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))
 
 end Iut.Anabelian

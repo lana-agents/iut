@@ -84,6 +84,7 @@ import Iut.Implication.LogVolumeBound
 import Iut.Implication.PrimeSelection
 import Iut.Implication.Theorem110
 import Iut.Tripod.Basic
+import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts
 import Iut.Tripod.CurveOf
 import Iut.Tripod.Legendre
