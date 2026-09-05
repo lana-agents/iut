@@ -24,6 +24,7 @@ import Iut.Concrete.LocalConstruct.LogShell
 import Iut.Concrete.LocalConstruct.MaximalOrder
 import Iut.Concrete.LocalConstruct.Packet
 import Iut.Concrete.LocalConstruct.PadicLog
+import Iut.Concrete.LocalConstruct.Prop14
 import Iut.Concrete.LocalConstruct.Theory
 import Iut.Concrete.LocalConstruct.ThetaAdmissible
 import Iut.Concrete.LocalConstruct.Volume

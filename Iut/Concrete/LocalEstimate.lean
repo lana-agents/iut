@@ -152,7 +152,8 @@ lemma prop14 (i : Fin (nCaps (D := D))) (p : Nat.Primes) (c : Lab i → LT.Fiber
           ∑ j, dTuple LT p c j + 1) * Real.log p +
           ∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LT.tuple _ c j) then
             3 + Real.log (ramIdxAt D.Kt (LT.tuple _ c j)) else 0 :=
-  LT.prop14_iii p (LT.tuple _ c) (dTuple LT p c) (ThetaLocalData.distinguished _ i)
+  LT.prop14_iii p (LT.tuple _ c) (LT.tuple_isOver p c) (dTuple LT p c)
+    (ThetaLocalData.distinguished _ i)
     (LT.fiberPlace (c (ThetaLocalData.distinguished _ i))) (LT.fiberPlace_spec _)
     (TL.qroot _ ^ (i.1 + 1) ^ 2) (pow_ne_zero _ (TL.qroot_ne_zero _))
     (TL.ordp_pow_nonneg _ _) (fun j w' h => dTuple_spec LT p c j w' h)

@@ -268,9 +268,13 @@ structure LocalTheory extends LocalTensor.{u, v} K where
   `(−λ + d_I + 1)·log p + ∑_{i ∈ I*} (3 + log e_i)`, where `d_I = ∑_i d_i` is the sum of
   the different exponents (`d_i = ord_p` of a generator of the different of `K_{c i}`
   over `ℚ_p`), `e_i` the ramification indices, and `I* = {i | p − 2 < e_i}`. The
-  different exponent is passed in as the function `d`. -/
-  prop14_iii : ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K)
-    (d : ι → ℝ) (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
+  different exponent is passed in as the function `d`. Stated, like
+  `componentVol_prime_preimage`, for packets all of whose places lie over `p`: for a
+  packet with a place not over `p` (the zero ring in the concrete construction) the
+  log-volume is identically `0` while the bound is negative for `ord_p(x)` large. -/
+  prop14_iii : ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K),
+    (∀ j, ∃ w : FinitePlace K, c j = Place.finite w ∧ residueChar w = p) →
+    ∀ (d : ι → ℝ) (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
     (x : completionAt K w), x ≠ 0 → 0 ≤ ordp K w x →
     (∀ i w', c i = Place.finite w' → d i = differentExponent K w') →
     ∃ a : Tensor (.finite p) c, IsUnit a ∧

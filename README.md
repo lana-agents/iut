@@ -51,6 +51,18 @@ states its results conditionally:
   library no longer needs it: its `PrimeCountingBound` (factor `3/2`) is proved from
   Mathlib's Chebyshev bound (`Iut.primeCountingBoundExplicit`).
 
+**Interface corrections.** Two fields of the delegated local theory `Iut.LocalTheory K`
+were restricted when the construction showed the unrestricted statements to be false for
+every construction: `componentVol_prime_preimage` (the scaling law `μ^log(p⁻¹U) = μ^log(U)
++ log p`) is stated for admissible regions of packets all of whose places lie over `p`
+(it fails for `U = ∅`; see the remark in `Iut/Concrete/LocalConstruct/Volume.lean`), and
+`prop14_iii` (IUT IV, Proposition 1.4(iii)) carries the same hypothesis that every place
+of the packet lies over `p`: for a packet with a place not over `p` — the zero ring in
+the construction — the log-volume is identically `0` while the bound is negative for
+`ord_p(x)` large (`componentVol_eq_zero_of_not_isOver`). Both fields are only ever
+applied to tuples of the fiber over `p` (`LocalTheory.tuple_isOver`), so the restriction
+does not weaken the conditional results.
+
 The Corollary 3.12 strand is a **specification / formal-statement project only**. Proving
 the resulting proposition is explicitly out of scope. The formalisation must not silently
 identify the variant with Mochizuki's published Corollary 3.12, and must not encode any
@@ -171,9 +183,10 @@ whose fields are the target statements of the sibling projects:
   the arithmetic of the number field — places over `p`, `∑ e_v f_v = [K : ℚ]`, the
   different (`Arithmetic.lean`), and the least hull regions at `∞` — the least real
   radial scaling `t·B_I` containing an admissible region, `t = sup ‖·‖_π`
-  (`Admissible.lean`). The residual inputs are the three fields of
-  `Iut.LocalConstruct.LocalTheoryFacts K`: `(R_I)^∼ ⊆ 𝓘_I`, existence of least hull
-  regions at the primes (`HullExists K`), and Proposition 1.4(iii).
+  (`Admissible.lean`), and IUT IV Proposition 1.4(iii), with the hull region
+  `p^{⌊ord_p x⌋}·(R_I)^∼` (`Prop14.lean`). The residual inputs are the two fields of
+  `Iut.LocalConstruct.LocalTheoryFacts K`: `(R_I)^∼ ⊆ 𝓘_I` and existence of least hull
+  regions at the primes (`HullExists K`).
 * [`Container.lean`](Iut/Concrete/Container.lean) — the container, log-volume data
   (weights `[K_v : ℚ_p]/[K : ℚ]` summing to `1`) and hull system (least among all hull
   regions `a·(R_I)^∼` at a prime, among the real radial scalings `t·B_I` at `∞`), all
@@ -241,7 +254,7 @@ from #1449):
 
 | Input | Content | Status |
 | --- | --- | --- |
-| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed** (`Iut.LocalConstruct.concreteLocalTheory`); residual `Prop` `LocalTheoryFacts K` (three fields), padic-log-volume [#1462](https://taxis.lana.merten.dev/issues/1462) |
+| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed** (`Iut.LocalConstruct.concreteLocalTheory`); residual `Prop` `LocalTheoryFacts K` (two fields: `(R_I)^∼ ⊆ 𝓘_I`, least hull regions at the primes), padic-log-volume [#1462](https://taxis.lana.merten.dev/issues/1462) |
 | `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | **constructed** (`Iut.thetaLocalData`), from the rationality of the ℓ- and 2-torsion |
 | `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | `Prop`; elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
 | `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
