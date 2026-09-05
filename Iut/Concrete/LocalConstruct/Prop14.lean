@@ -26,19 +26,15 @@ needed: the sharper bound of IUT IV, Proposition 1.4(iii) concerns the log-shell
 rather than `(R_I)^∼`, whose hull is controlled by the different; the field as stated is
 about `(R_I)^∼` and is implied by the elementary estimate.
 
-## The junk packets
+## The hypothesis that every place lies over `p`
 
-The field is stated for *every* family `c` of places, including the junk packets with a
-component not over `p`, which are the zero ring (`subsingleton_tensor_of_not_isOver`). There
-every region is `{0}`, the log-volume vanishes identically
-(`componentVol_eq_zero_of_not_isOver`), and the bound fails as soon as `ord_p(x)` is large:
-`not_prop14iii` shows that the statement `Prop14iii K` of the field for the concrete
-packets is **false**, for every number field `K` (take a finite place `w` of residue
-characteristic `≠ p`, the one-component packet at `w`, and `x = ℓ^N` with `ℓ` the residue
-characteristic of `w`). The hypothesis `∀ j, IsOver K p (c j)` of `prop14iii_of_isOver` —
-the same hypothesis as in the scaling law `LocalTheory.componentVol_prime_preimage`, and
-satisfied by every tuple of the fiber over `p` to which the field is applied
-(`LocalTheory.tuple_isOver`) — is exactly what is missing from the interface.
+The field carries, like `LocalTheory.componentVol_prime_preimage`, the hypothesis that
+every component of the packet lies over `p` (in the form `∀ j, IsOver K p (c j)` here),
+satisfied by every tuple of the fiber over `p` to which it is applied
+(`LocalTheory.tuple_isOver`). It cannot be dropped: a packet with a component not over `p`
+is the zero ring (`subsingleton_tensor_of_not_isOver`), where every region is `{0}` and the
+log-volume vanishes identically (`componentVol_eq_zero_of_not_isOver`), while the bound is
+negative as soon as `ord_p(x)` exceeds `∑_i d_i + 1 + (∑_i (3 + log e_i))/log p`.
 -/
 
 namespace Iut
@@ -214,104 +210,6 @@ lemma componentVol_eq_zero_of_not_isOver (i : ι) (hi : ¬ IsOver K p (c i))
   rw [Module.finrank_zero_of_subsingleton, Nat.cast_zero, div_zero]
 
 end Prime
-
-/-- Every prime is the residue characteristic of a finite place of `K`. -/
-lemma exists_finitePlace_residueChar_eq (ℓ : ℕ) (hℓ : ℓ.Prime) :
-    ∃ w : FinitePlace K, residueChar w = ℓ := by
-  haveI := span_prime_isMaximal hℓ
-  obtain ⟨Q, hQ, hover⟩ :=
-    Ideal.exists_maximal_ideal_liesOver_of_isIntegral (S := 𝓞 K) (Ideal.span {(ℓ : ℤ)})
-  have hne : Q ≠ ⊥ := Ideal.ne_bot_of_liesOver_of_ne_bot (span_prime_ne_bot hℓ) Q
-  refine ⟨FinitePlace.mk ⟨Q, hQ.isPrime, hne⟩, ?_⟩
-  haveI : (FinitePlace.mk ⟨Q, hQ.isPrime, hne⟩).maximalIdeal.asIdeal.LiesOver
-      (Ideal.span {(ℓ : ℤ)}) := by
-    rw [FinitePlace.maximalIdeal_mk]
-    exact hover
-  exact residueChar_eq_of_liesOver_span _
-
-/-- `K` has a finite place of residue characteristic different from `p`. -/
-lemma exists_finitePlace_residueChar_ne (p : Nat.Primes) :
-    ∃ w : FinitePlace K, residueChar w ≠ p := by
-  obtain ⟨ℓ, hpℓ, hℓ⟩ := Nat.exists_infinite_primes ((p : ℕ) + 1)
-  obtain ⟨w, hw⟩ := exists_finitePlace_residueChar_eq (K := K) ℓ hℓ
-  exact ⟨w, by rw [hw]; omega⟩
-
-variable (K)
-
-/-- **The statement of the field `LocalTheory.prop14_iii` for the concrete packets**
-(IUT IV, Proposition 1.4(iii), for every family `c` of places). -/
-def Prop14iii : Prop :=
-  ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K)
-    (d : ι → ℝ) (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
-    (x : completionAt K w), x ≠ 0 → 0 ≤ ordp K w x →
-    (∀ i w', c i = Place.finite w' → d i = differentExponent K w') →
-    ∃ a : Tensor K (.finite p) c, IsUnit a ∧
-      (∀ φ ∈ indAut (.finite p) c,
-        φ '' (incl p c j w h x • integral p c) ⊆ a • integral p c) ∧
-      componentVol (.finite p) c (a • integral p c) ≤
-        (-ordp K w x + ∑ i, d i + 1) * Real.log p +
-          ∑ i, if (p : ℕ) - 2 < ramIdxAt K (c i) then 3 + Real.log (ramIdxAt K (c i)) else 0
-
-/-- **The statement of the field `LocalTheory.prop14_iii` for the junk packets** — a
-component not over `p` — of the concrete construction: the part of `Prop14iii K` not
-covered by `prop14iii_of_isOver`. -/
-def Prop14iiiJunk : Prop :=
-  ∀ {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K),
-    (∃ i, ¬ IsOver K p (c i)) →
-    ∀ (d : ι → ℝ) (j : ι) (w : FinitePlace K) (h : c j = Place.finite w)
-    (x : completionAt K w), x ≠ 0 → 0 ≤ ordp K w x →
-    (∀ i w', c i = Place.finite w' → d i = differentExponent K w') →
-    ∃ a : Tensor K (.finite p) c, IsUnit a ∧
-      (∀ φ ∈ indAut (.finite p) c,
-        φ '' (incl p c j w h x • integral p c) ⊆ a • integral p c) ∧
-      componentVol (.finite p) c (a • integral p c) ≤
-        (-ordp K w x + ∑ i, d i + 1) * Real.log p +
-          ∑ i, if (p : ℕ) - 2 < ramIdxAt K (c i) then 3 + Real.log (ramIdxAt K (c i)) else 0
-
-variable {K}
-
-/-- `Prop14iii K` follows from its junk case. -/
-theorem prop14iii_of_junk (hjunk : Prop14iiiJunk K) : Prop14iii K := by
-  intro ι _ p c d j w h x hx hord hd
-  by_cases hc : ∀ i, IsOver K p (c i)
-  · exact prop14iii_of_isOver p c hc d j w h x hx hord hd
-  · push Not at hc
-    exact hjunk p c hc d j w h x hx hord hd
-
-/-- **The junk case of `LocalTheory.prop14_iii` is false for the concrete packets**: on the
-one-component packet at a finite place `w` of residue characteristic `ℓ ≠ p` — the zero
-ring — the log-volume vanishes, while the bound is negative for `x = ℓ^N`, `N` large. -/
-theorem not_prop14iiiJunk : ¬ Prop14iiiJunk K := by
-  intro H
-  let p : Nat.Primes := ⟨2, Nat.prime_two⟩
-  obtain ⟨w, hw⟩ := exists_finitePlace_residueChar_ne (K := K) p
-  have hlogp : 0 < Real.log p := Real.log_pos (by exact_mod_cast p.2.one_lt)
-  set s : ℝ := if (p : ℕ) - 2 < ramIdxAt K (Place.finite w) then
-    3 + Real.log (ramIdxAt K (Place.finite w)) else 0 with hs
-  set C : ℕ := ⌈differentExponent K w + 1 + s / Real.log p⌉₊ with hC
-  have hℓ : (residueChar w : completionAt K w) ≠ 0 := by
-    rw [← map_natCast (algebraMap K (completionAt K w))]
-    exact (map_ne_zero _).mpr (Nat.cast_ne_zero.mpr (residueChar_prime w).ne_zero)
-  set x : completionAt K w := (residueChar w : completionAt K w) ^ (C + 1) with hxdef
-  have hx : x ≠ 0 := pow_ne_zero _ hℓ
-  have hordx : ordp K w x = C + 1 := by
-    rw [hxdef, ordp_pow', ← map_natCast (algebraMap K (completionAt K w)), ordp_p, mul_one]
-    push_cast
-    rfl
-  obtain ⟨a, -, -, hvol⟩ := H (ι := Unit) p (fun _ => Place.finite w)
-    ⟨(), by rw [isOver_finite_iff]; exact hw⟩ (fun _ => differentExponent K w) () w rfl x hx
-    (by rw [hordx]; positivity) (fun i w' h => by cases Sum.inl.inj h; rfl)
-  rw [componentVol_eq_zero_of_not_isOver p _ () (by rw [isOver_finite_iff]; exact hw),
-    Fintype.sum_unique, Fintype.sum_unique, hordx] at hvol
-  have hCle : differentExponent K w + 1 + s / Real.log p ≤ C := Nat.le_ceil _
-  have h1 := mul_le_mul_of_nonneg_right hCle hlogp.le
-  rw [add_mul, div_mul_cancel₀ _ hlogp.ne'] at h1
-  linarith
-
-/-- **`Prop14iii K` is false**: the statement of `LocalTheory.prop14_iii` fails for the
-concrete packets, on the junk packets. -/
-theorem not_prop14iii : ¬ Prop14iii K := fun H =>
-  not_prop14iiiJunk fun p c _ d j w h x hx hord hd => H p c d j w h x hx hord hd
 
 end LocalConstruct
 

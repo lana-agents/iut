@@ -12,8 +12,8 @@ import Iut.Concrete.LocalConstruct.Prop14
 
 This file assembles the constructions of `Iut/Concrete/LocalConstruct/*` into a term
 `concreteLocalTheory K hyps : Iut.LocalTheory K`. Every field of `LocalTheory` is proved
-from the construction except the three collected in the propositional record
-`LocalTheoryFacts K` (the third only on the junk packets):
+from the construction except the two collected in the propositional record
+`LocalTheoryFacts K`:
 
 * `integral_subset_logShell`: `(R_I)^∼ ⊆ 𝓘_I` (IUT III, Proposition 1.2; IUT IV,
   Proposition 1.2). Proved here for the order `R_I` (`order_subset_logShell`); for the
@@ -28,15 +28,9 @@ from the construction except the three collected in the propositional record
   finite extensions of `ℚ_p` (uniqueness of the extension of the valuation) not available in
   Mathlib. The archimedean counterpart `exists_leastHull_infinite` (least real radial
   scaling `t·B_I` containing an admissible region) is proved (`Admissible.lean`).
-* `prop14_iii_junk`: IUT IV, Proposition 1.4(iii), the log-volume estimate for the hull of
-  the images of `x·(R_I)^∼` under the indeterminacies, **on the junk packets** (a component
-  not over `p`). On the packets all of whose components lie over `p` the field is proved
-  (`prop14iii_of_isOver`, `Prop14.lean`: the hull region `p^{⌊ord_p x⌋}·(R_I)^∼`). The junk
-  case is **false** for the construction (`not_prop14iiiJunk`: the junk packets are the zero
-  ring, where the log-volume vanishes while the bound is negative for `ord_p x` large), so
-  `LocalTheoryFacts K` is unsatisfiable (`not_localTheoryFacts`) until the interface field
-  `LocalTheory.prop14_iii` carries the hypothesis of `componentVol_prime_preimage` that every
-  component lies over `p` — which is how the field is applied (`LocalTheory.tuple_isOver`).
+
+IUT IV, Proposition 1.4(iii) is proved for the construction (`prop14iii_of_isOver`,
+`Prop14.lean`): the hull region is `p^{⌊ord_p x⌋}·(R_I)^∼`.
 -/
 
 namespace Iut
@@ -77,7 +71,7 @@ def HullExists : Prop :=
       ∀ b : Tensor K (.finite p) c, IsUnit b → U ⊆ b • integralAt (.finite p) c →
         a • integralAt (.finite p) c ⊆ b • integralAt (.finite p) c
 
-/-- **The residual inputs of the concrete local theory**: the three fields of
+/-- **The residual inputs of the concrete local theory**: the two fields of
 `Iut.LocalTheory K` not proved by the construction (see the module docstring). -/
 structure LocalTheoryFacts : Prop where
   /-- `(R_I)^∼ ⊆ 𝓘_I` (IUT III, Proposition 1.2). -/
@@ -85,10 +79,6 @@ structure LocalTheoryFacts : Prop where
     integral p c ⊆ logShell p c
   /-- Existence of least hull regions at a prime (IUT III, Remark 3.9.5(i)). -/
   exists_leastHull : HullExists K
-  /-- IUT IV, Proposition 1.4(iii) on the junk packets (a component not over `p`); the
-  case of the packets over `p` is proved (`prop14iii_of_isOver`). This case is false for the
-  construction (`not_prop14iiiJunk`), see the module docstring. -/
-  prop14_iii_junk : Prop14iiiJunk K
 
 variable {K}
 
@@ -153,15 +143,9 @@ noncomputable def concreteLocalTheory (hyps : LocalTheoryFacts K) : LocalTheory.
     cases vQ with
     | finite p => exact thetaShell_admissible p c
     | infinite => exact thetaShell_admissible_infinite c
-  prop14_iii := prop14iii_of_junk hyps.prop14_iii_junk
+  prop14_iii p c hc := prop14iii_of_isOver p c hc
   prop14_iv := prop14_iv
   prop15 := prop15
-
-/-- **`LocalTheoryFacts K` is unsatisfiable**: its field `prop14_iii_junk` — the statement
-of `LocalTheory.prop14_iii` on the junk packets — is false for the construction
-(`not_prop14iiiJunk`). -/
-theorem not_localTheoryFacts : ¬ LocalTheoryFacts K := fun hyps =>
-  not_prop14iiiJunk hyps.prop14_iii_junk
 
 end LocalConstruct
 
