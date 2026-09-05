@@ -83,3 +83,4 @@ import Iut.Tripod.CurveOf
 import Iut.Tripod.Legendre
 import Iut.Tripod.Northcott
 import Iut.Tripod.Providers
+import Iut.Tripod.TwoTorsion
