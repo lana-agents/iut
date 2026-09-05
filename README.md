@@ -297,9 +297,9 @@ repository and every hypothesis is a proposition about the constructed objects.
   finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (`E_λ[n] ≅ (ℤ/n)²`,
   stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the cyclic-subgroup
-  bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma, and the
-  finiteness of the points whose once-punctured curve has no core, [CanLift] Prop 2.7,
-  `CoreFinitenessHyp`); the height comparison `(1/6)·log q_∀ ≈ h(λ)` of IUT IV Cor 2.2(i)
+  bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2) and the `SL₂`-image lemma); the
+  finiteness of the points whose once-punctured curve has no core ([CanLift] Prop 2.7,
+  `Iut.Tripod.coreFiniteness` from the fields of `EtalePi1Theory`), the height comparison `(1/6)·log q_∀ ≈ h(λ)` of IUT IV Cor 2.2(i)
   / [GenEll] Prop 3.4 (`Iut.Tripod.legendreHeight`, [`Height.lean`](Iut/Tripod/Height.lean):
   `log q_∀(E_λ)` is the finite part of the Weil height of `j(λ) = 256(λ²−λ+1)³/(λ²(λ−1)²)`
   by stable reduction and the invariance of the finite part of the height under finite
