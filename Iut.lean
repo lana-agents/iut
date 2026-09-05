@@ -92,9 +92,12 @@ import Iut.Tripod.Basic
 import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts
 import Iut.Tripod.CurveOf
+import Iut.Tripod.Galois
 import Iut.Tripod.Height
 import Iut.Tripod.Legendre
 import Iut.Tripod.LogCond
+import Iut.Tripod.Main
+import Iut.Tripod.Main
 import Iut.Tripod.Main
 import Iut.Tripod.Northcott
 import Iut.Tripod.Providers

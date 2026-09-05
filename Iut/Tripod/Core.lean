@@ -29,35 +29,35 @@ open WeierstrassCurve Polynomial Iut.Anabelian
 
 /-- The polynomial `256 (X² − X + 1)³ − c·X² (X − 1)²` over `ℚ̄`, whose roots `λ ≠ 0, 1` are
 the parameters with `j(E_λ) = c`. -/
-noncomputable def jPoly (c : ℚ) : Polynomial Qbar :=
+noncomputable def jPolyRat (c : ℚ) : Polynomial Qbar :=
   C 256 * (X ^ 2 - X + 1) ^ 3 - C (c : Qbar) * (X ^ 2 * (X - 1) ^ 2)
 
-/-- `jPoly c` takes the value `256` at `0`. -/
-theorem jPoly_eval_zero (c : ℚ) : (jPoly c).eval 0 = 256 := by
-  simp [jPoly]
+/-- `jPolyRat c` takes the value `256` at `0`. -/
+theorem jPoly_eval_zero (c : ℚ) : (jPolyRat c).eval 0 = 256 := by
+  simp [jPolyRat]
 
-/-- `jPoly c ≠ 0`. -/
-theorem jPoly_ne_zero (c : ℚ) : jPoly c ≠ 0 := by
+/-- `jPolyRat c ≠ 0`. -/
+theorem jPoly_ne_zero (c : ℚ) : jPolyRat c ≠ 0 := by
   intro h
   have h0 := jPoly_eval_zero c
   rw [h, eval_zero] at h0
   exact absurd h0 (by norm_num)
 
-/-- A parameter `λ ≠ 0, 1` with `j(E_λ) = c` is a root of `jPoly c`. -/
+/-- A parameter `λ ≠ 0, 1` with `j(E_λ) = c` is a root of `jPolyRat c`. -/
 theorem isRoot_jPoly_of_eq (c : ℚ) {l : Qbar} (h0 : l ≠ 0) (h1 : l ≠ 1)
     (h : 256 * (l ^ 2 - l + 1) ^ 3 / (l ^ 2 * (l - 1) ^ 2) = (c : Qbar)) :
-    (jPoly c).IsRoot l := by
+    (jPolyRat c).IsRoot l := by
   have hden : l ^ 2 * (l - 1) ^ 2 ≠ 0 :=
     mul_ne_zero (pow_ne_zero _ h0) (pow_ne_zero _ (sub_ne_zero.mpr h1))
   rw [div_eq_iff hden] at h
-  rw [IsRoot, jPoly]
+  rw [IsRoot, jPolyRat]
   simp only [eval_sub, eval_mul, eval_C, eval_pow, eval_add, eval_X, eval_one]
   rw [h, sub_self]
 
-/-- **The exceptional parameters**: the `λ ∈ ℚ̄` at which `jPoly c` vanishes for some
+/-- **The exceptional parameters**: the `λ ∈ ℚ̄` at which `jPolyRat c` vanishes for some
 exceptional `j`-invariant `c ∈ Pi1.excJ`. -/
 def excLam (Pi1 : EtalePi1Theory.{0}) : Set Qbar :=
-  ⋃ c ∈ Pi1.excJ, {l | (jPoly c).IsRoot l}
+  ⋃ c ∈ Pi1.excJ, {l | (jPolyRat c).IsRoot l}
 
 /-- The exceptional parameters form a finite set. -/
 theorem excLam_finite (Pi1 : EtalePi1Theory.{0}) : (excLam Pi1).Finite :=
@@ -78,9 +78,9 @@ theorem exists_excJ_of_not_hasCore
   push Not at hc
   exact h (Pi1.hasCore_oncePunctured (curveOf x h3 h5).E hc)
 
-/-- If `j(E_λ) = c` then `λ` is a root of `jPoly c`. -/
+/-- If `j(E_λ) = c` then `λ` is a root of `jPolyRat c`. -/
 theorem isRoot_jPoly_of_j_eq {c : ℚ}
-    (hj : (curveOf x h3 h5).E.j = (c : (curveOf x h3 h5).F)) : (jPoly c).IsRoot x.1 := by
+    (hj : (curveOf x h3 h5).E.j = (c : (curveOf x h3 h5).F)) : (jPolyRat c).IsRoot x.1 := by
   haveI : (legendre (gen' x.1)).IsElliptic := (curveOf x h3 h5).isElliptic
   have hj' : (legendre (gen' x.1)).j =
       256 * (gen' x.1 ^ 2 - gen' x.1 + 1) ^ 3 / (gen' x.1 ^ 2 * (gen' x.1 - 1) ^ 2) :=
