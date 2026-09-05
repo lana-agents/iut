@@ -299,23 +299,28 @@ repository and every hypothesis is a proposition about the constructed objects.
   finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (`E_λ[n] ≅ (ℤ/n)²`,
   stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the cyclic-subgroup
-  bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2) and the `SL₂`-image lemma); the
-  finiteness of the points whose once-punctured curve has no core ([CanLift] Prop 2.7,
-  `Iut.Tripod.coreFiniteness` from the fields of `EtalePi1Theory`), the height comparison `(1/6)·log q_∀ ≈ h(λ)` of IUT IV Cor 2.2(i)
-  / [GenEll] Prop 3.4 (`Iut.Tripod.legendreHeight`, [`Height.lean`](Iut/Tripod/Height.lean):
-  `log q_∀(E_λ)` is the finite part of the Weil height of `j(λ) = 256(λ²−λ+1)³/(λ²(λ−1)²)`
-  by stable reduction and the invariance of the finite part of the height under finite
-  extensions, and `h_fin(j) = 6·h(λ) + O(d)` on a compactly bounded subset by the
-  ultrametric inequality place by place, with explicit constants `log 2/3` and
-  `c|V| + c + log 2/3`), the `2`-adic bound
-  (`Iut.Tripod.twoAdicBound`, with `B = 4c` on `CompactlyBounded` sets) and the conductor
+  bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2)); the finiteness of the points whose
+  once-punctured curve has no core ([CanLift] Prop 2.7, `Iut.Tripod.coreFiniteness` from the
+  `excJ`/`hasCore_oncePunctured` fields of `EtalePi1Theory` and the `j`-invariant of the
+  Legendre curve, [`Core.lean`](Iut/Tripod/Core.lean)), the height comparison
+  `(1/6)·log q_∀ ≈ h(λ)` of IUT IV Cor 2.2(i) / [GenEll] Prop 3.4
+  (`Iut.Tripod.legendreHeight`, [`Height.lean`](Iut/Tripod/Height.lean): `log q_∀(E_λ)` is
+  the finite part of the Weil height of `j(λ) = 256(λ²−λ+1)³/(λ²(λ−1)²)` by stable reduction
+  and the invariance of the finite part of the height under finite extensions, and
+  `h_fin(j) = 6·h(λ) + O(d)` on a compactly bounded subset by the ultrametric inequality
+  place by place, with explicit constants `log 2/3` and `c|V| + c + log 2/3`), the `2`-adic
+  bound (`Iut.Tripod.twoAdicBound`, with `B = 4c` on `CompactlyBounded` sets), the conductor
   comparisons `log-cond_{F_tpd} ≤ log-cond(λ) ≤ log-cond_{F_tpd} + log 2ℓ`
   (`logCondGe`, `logCondLe`, [`TwoAdic.lean`](Iut/Tripod/TwoAdic.lean),
-  [`LogCond.lean`](Iut/Tripod/LogCond.lean)) and the finiteness of the points whose
-  once-punctured curve has no core ([CanLift] Prop 2.7, `CoreFinitenessHyp`, from the
-  `excJ`/`hasCore_oncePunctured` fields of `EtalePi1Theory` and the `j`-invariant of the
-  Legendre curve; `Iut.Tripod.coreFiniteness`, [`Core.lean`](Iut/Tripod/Core.lean)) are
-  **proved**. These were audited for satisfiability with the repository's exact
+  [`LogCond.lean`](Iut/Tripod/LogCond.lean)) and the `SL₂`-image lemma of [GenEll]
+  Lemma 3.1(iii) (`Iut.Tripod.sl2Image`, from the general
+  `Iut.EllipticCurveData.sl_le_range_of` of
+  [`Iut/Concrete/SL2Image.lean`](Iut/Concrete/SL2Image.lean): under (P2), (P4), (P5) the
+  Tate parameter at a bad place is an `ℓ`-th power in the completion of `F(E[ℓ])`, so `ℓ`
+  divides a ramification index, hence `|Gal(F(E[ℓ])/F)|`; Cauchy's theorem gives a
+  transvection in the image, which stabilizes no line by (P4), and such a subgroup of
+  `GL₂(𝔽_ℓ)` contains `SL₂(𝔽_ℓ)`, [`Iut/Tripod/SL2Generation.lean`](Iut/Tripod/SL2Generation.lean))
+  are **proved**. These were audited for satisfiability with the repository's exact
   normalisations; the audit forced two corrections recorded in the honesty boundary (the
   reduction predicates up to a change of variables, and the restriction of the
   cyclic-subgroup bound to `ℓ ≥ 7`).

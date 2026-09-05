@@ -30,11 +30,12 @@ hypothesis is a proposition about the constructed objects:
   the variant `h312` is assumed on exactly the class of Θ-data of IUT I, Definition 3.1;
 * `CurveProps`: the ℓ-torsion of the Legendre curves is a rank-two `ℤ/ℓ`-module, and
   `E_λ/F_λ` has stable reduction and the Galois-degree property;
-* `CurveFactsProp`: the cyclic-subgroup bound and the `SL₂`-image lemma ([GenEll] §3); the
-  height comparison of Corollary 2.2(i), the `2`-adic bound, the conductor comparisons and
-  the finiteness of the points whose once-punctured curve has no core ([CanLift],
-  Proposition 2.7, from the fields `excJ`, `hasCore_oncePunctured` of `Pi1`) are theorems
-  (`Iut/Tripod/Height.lean`, `TwoAdic.lean`, `LogCond.lean`, `Core.lean`);
+* `CurveFactsProp`: the cyclic-subgroup bound ([GenEll] Lemma 3.5); the height comparison
+  of Corollary 2.2(i), the `2`-adic bound, the conductor comparisons, the `SL₂`-image lemma
+  ([GenEll] Lemma 3.1(iii)) and the finiteness of the points whose once-punctured curve has
+  no core ([CanLift], Proposition 2.7, from the fields `excJ`, `hasCore_oncePunctured` of
+  `Pi1`) are theorems (`Iut/Tripod/Height.lean`, `TwoAdic.lean`, `LogCond.lean`,
+  `CurveFacts.lean` with `Iut/Concrete/SL2Image.lean`, `Core.lean`);
 * the tower arithmetic `TowerArithmetic` (IUT IV, §1) for the constructed local theory
   (`concreteLocalTheory`, every field of which is now proved) and theta local data;
 * `h312`, the variant itself.

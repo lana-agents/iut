@@ -34,6 +34,8 @@ import Iut.Concrete.LocalEstimate
 import Iut.Concrete.LocalTheory
 import Iut.Concrete.Main
 import Iut.Concrete.ModEllRepConstruct
+import Iut.Concrete.ModEllRepGalois
+import Iut.Concrete.SL2Image
 import Iut.Concrete.TateInputsConstruct
 import Iut.Concrete.ThetaLocalConstruct.Data
 import Iut.Concrete.ThetaLocalConstruct.EmbedCompletion
@@ -96,6 +98,7 @@ import Iut.Tripod.LogCond
 import Iut.Tripod.Main
 import Iut.Tripod.Northcott
 import Iut.Tripod.Providers
+import Iut.Tripod.SL2Generation
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.TwoTorsion
