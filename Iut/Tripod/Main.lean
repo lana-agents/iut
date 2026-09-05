@@ -35,11 +35,12 @@ hypothesis is a proposition about the constructed objects:
 * `LocalTheoryFacts`: the three remaining facts of the local theory (the inclusion of the
   maximal order in the log-shell, least hull regions, IUT IV Prop. 1.4(iii)) and the tower
   arithmetic `TowerArithmetic` (IUT IV, §1), all about the constructed packets;
-* the prime-counting bound (Prop. 1.6);
 * `h312`, the variant itself.
 
-The Chebyshev bounds, Northcott's theorem, the Tate parameters, the mod-`ℓ` representations,
-the theta local data, and the anabelian existence are theorems or constructions.
+The Chebyshev bounds, the prime-counting bound of IUT IV, Prop. 1.6 (with the factor `3/2`,
+`primeCountingBoundExplicit`), Northcott's theorem, the Tate parameters, the mod-`ℓ`
+representations, the theta local data, and the anabelian existence are theorems or
+constructions.
 -/
 
 namespace Iut.Tripod
@@ -105,13 +106,11 @@ theorem abc_of_variant
       (QI : QPilotInputs D),
       TowerArithmetic D (concreteLocalTheory D.Kt (hlocal D.Kt))
         (thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI))
-    (hprime : PrimeCountingHyp)
     (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (LT : LocalTheory.{0, 0} D.Kt)
       (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
       Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
     tripodTheory.StatementII := by
   choose TK CF using hfacts
-  obtain ⟨pnt⟩ := primeCountingBound_of_exists hprime
   exact statementII_of_cor312
     (fun K d => (curveInputs (providersOfProps hp) K d (CF K d) northcottHyp
       (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
@@ -119,6 +118,7 @@ theorem abc_of_variant
       (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs)
     (fun K d =>
       (concreteThetaDataExistence' Pi1 Tp hp (CF K d) northcottHyp hlocal TAp).toThetaDataExistence)
-    chebyshevBoundExplicit pnt (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
+    chebyshevBoundExplicit primeCountingBoundExplicit
+    (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
 
 end Iut.Tripod

@@ -20,21 +20,27 @@ prime-counting function `π`.
 * `two_thirds_mul_le_theta`: the **lower** Chebyshev bound `(2/3)·x ≤ θ(x)` for all
   `x ≥ 10^12`, from Mathlib's `Chebyshev.theta_ge'` and `log 2 > 2/3`.
 * `chebyshevBoundWeak_nonempty`: the certificate `ChebyshevBoundWeak`, which is
-  `ChebyshevBound` with the upper factor `4/3` replaced by `log 4 ≈ 1.386` (Mathlib's
-  `Chebyshev.theta_le_log4_mul_x`), is inhabited with threshold `ξ = 10^12`.
+  `ChebyshevBound` with the upper factor `2` replaced by `log 4 ≈ 1.386` (Mathlib's
+  `Chebyshev.theta_le_log4_mul_x`), is inhabited with threshold `ξ = 10^12`; hence
+  `chebyshevBoundExplicit : ChebyshevBound`.
+* `primeCountingHyp_of_theta_le`: any upper bound `θ(x) ≤ c·x` (large `x`) with `c < 3/2`
+  implies `PrimeCountingHyp`, i.e. `π(x) ≤ 3x/(2 log x)` for all large `x`, by Mathlib's
+  Abel-summation identity for `π` and the `o(x/log x)` estimate of its integral term.
+* `primeCountingBoundExplicit : PrimeCountingBound`: the certificate of IUT IV,
+  Proposition 1.6 with the factor `3/2`, from the previous item with `c = log 4 < 1.39`.
+  Its threshold `η_prm` is the one extracted from Mathlib's `∀ᶠ` statement and is not
+  explicit; only its existence enters the constants of Theorem 1.10 and Corollary 2.2.
 
-## What is delegated
+## Remarks
 
-Mathlib's upper bounds `θ(x) ≤ (log 4)·x` and `π(x) ≤ (log 4 + ε)·x/log x`
-(`Chebyshev.eventually_primeCounting_le`) have the factor `log 4 = 1.386… > 4/3`, so the
-fields `ChebyshevBound.upper` and `PrimeCountingBound.bound` are **not** reachable from
-Mathlib. They are stated here as the existential propositions `ChebyshevUpperHyp`,
-`ChebyshevHyp` and `PrimeCountingHyp`, with the repackaging lemmas
-`chebyshevBound_of_exists`, `chebyshevBound_of_upper` (the lower bound being discharged)
-and `primeCountingBound_of_exists`, and the reduction `primeCountingHyp_of_theta_le`:
-any upper bound `θ(x) ≤ c·x` (large `x`) with `c < 4/3` implies `PrimeCountingHyp`, by
-Mathlib's Abel-summation identity for `π` and the `o(x/log x)` estimate of its integral
-term.
+The printed Propositions 2.1(ii) and 1.6 have the upper factors `4/3` and `4/3`; Mathlib's
+`θ(x) ≤ (log 4)·x` has `log 4 = 1.386… > 4/3`, so the certificates carry the round factors
+`2` (`ChebyshevBound`) and `3/2` (`PrimeCountingBound`) instead, which suffice for
+`exists_prime_selection` and for Theorem 1.10 with the printed constants. The
+existential propositions `ChebyshevUpperHyp`, `ChebyshevHyp` and `PrimeCountingHyp`
+record the contents of the certificates, with the repackaging lemmas
+`chebyshevBound_of_exists`, `chebyshevBound_of_upper` and `primeCountingBound_of_exists`;
+all three propositions are proved (`chebyshevHyp_holds`, `primeCountingHyp_holds`).
 -/
 
 namespace Iut
@@ -53,9 +59,10 @@ part of `ChebyshevBound` not provable from Mathlib (`chebyshevBound_of_upper`). 
 def ChebyshevUpperHyp : Prop :=
   ∃ ξ : ℝ, ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ 2 * x
 
-/-- The content of `PrimeCountingBound` as a proposition. -/
+/-- The content of `PrimeCountingBound` as a proposition: `π(x) ≤ 3x/(2 log x)` for all
+large `x`. Proved from Mathlib in `primeCountingHyp_holds`. -/
 def PrimeCountingHyp : Prop :=
-  ∃ η : ℝ, 1 < η ∧ ∀ x : ℝ, η ≤ x → (Nat.primeCounting ⌊x⌋₊ : ℝ) ≤ 4 * x / (3 * Real.log x)
+  ∃ η : ℝ, 1 < η ∧ ∀ x : ℝ, η ≤ x → (Nat.primeCounting ⌊x⌋₊ : ℝ) ≤ 3 * x / (2 * Real.log x)
 
 theorem chebyshevBound_of_exists (h : ChebyshevHyp) : Nonempty ChebyshevBound :=
   let ⟨ξ, h5, hl, hu⟩ := h
@@ -140,7 +147,7 @@ theorem two_thirds_mul_le_theta {x : ℝ} (hx : (10 : ℝ) ^ 12 ≤ x) :
 
 /-! ### The weak certificate reachable from Mathlib -/
 
-/-- `ChebyshevBound` with Mathlib's upper factor `log 4 ≈ 1.386` in place of `4/3`.
+/-- `ChebyshevBound` with Mathlib's upper factor `log 4 ≈ 1.386` in place of `2`.
 Inhabited unconditionally (`chebyshevBoundWeak_nonempty`). -/
 structure ChebyshevBoundWeak where
   /-- The threshold. -/
@@ -205,21 +212,23 @@ noncomputable def chebyshevBoundExplicit : ChebyshevBound where
 
 theorem chebyshevBound_nonempty : Nonempty ChebyshevBound := ⟨chebyshevBoundExplicit⟩
 
-/-- The delegated Chebyshev hypothesis is exactly its upper half. -/
+/-- The Chebyshev hypothesis is exactly its upper half. -/
 theorem chebyshevHyp_iff_upper : ChebyshevHyp ↔ ChebyshevUpperHyp :=
   ⟨fun ⟨ξ, _, _, hu⟩ => ⟨ξ, hu⟩, fun h => chebyshevHyp_of_nonempty (chebyshevBound_of_upper h)⟩
 
-/-! ### Reduction of `PrimeCountingHyp` to an upper Chebyshev bound -/
+/-- The Chebyshev hypothesis holds. -/
+theorem chebyshevHyp_holds : ChebyshevHyp := chebyshevHyp_of_nonempty chebyshevBound_nonempty
 
-/-- **`PrimeCountingHyp` from a Chebyshev upper bound with factor `< 4/3`**: if
-`θ(x) ≤ c·x` for all `x ≥ ξ` with `c < 4/3`, then `π(x) ≤ 4x/(3 log x)` for all large `x`.
+/-! ### `PrimeCountingHyp` from an upper Chebyshev bound -/
+
+/-- **`PrimeCountingHyp` from a Chebyshev upper bound with factor `< 3/2`**: if
+`θ(x) ≤ c·x` for all `x ≥ ξ` with `c < 3/2`, then `π(x) ≤ 3x/(2 log x)` for all large `x`.
 This follows Mathlib's proof of `Chebyshev.eventually_primeCounting_le`: the Abel-summation
 identity `π(x) = θ(x)/log x + ∫₂ˣ θ(t)/(t log² t) dt` and the estimate `o(x / log x)` for
-the integral. (Mathlib's own factor `log 4 ≈ 1.386` is above `4/3`, which is why the
-hypothesis is needed.) -/
-theorem primeCountingHyp_of_theta_le {c ξ : ℝ} (hc : c < 4 / 3)
+the integral. -/
+theorem primeCountingHyp_of_theta_le {c ξ : ℝ} (hc : c < 3 / 2)
     (h : ∀ x : ℝ, ξ ≤ x → Chebyshev.theta x ≤ c * x) : PrimeCountingHyp := by
-  have hε : 0 < 4 / 3 - c := by linarith
+  have hε : 0 < 3 / 2 - c := by linarith
   have hev := (Chebyshev.integral_theta_div_log_sq_isLittleO.bound hε).and (eventually_ge_atTop 2)
   obtain ⟨η₀, hη₀⟩ := Filter.eventually_atTop.mp hev
   refine ⟨max η₀ (max ξ 2), lt_of_lt_of_le (by norm_num) (le_trans (le_max_right _ _)
@@ -232,13 +241,28 @@ theorem primeCountingHyp_of_theta_le {c ξ : ℝ} (hc : c < 4 / 3)
   have hxlog : 0 ≤ x / Real.log x := div_nonneg (by linarith) hlog.le
   rw [Real.norm_eq_abs, Real.norm_of_nonneg hxlog] at hI
   have hI' : (∫ t in (2 : ℝ)..x, Chebyshev.theta t / (t * Real.log t ^ 2)) ≤
-      (4 / 3 - c) * (x / Real.log x) := (le_abs_self _).trans hI
+      (3 / 2 - c) * (x / Real.log x) := (le_abs_self _).trans hI
   rw [Chebyshev.primeCounting_eq_theta_div_log_add_integral hx2]
   have hθ : Chebyshev.theta x / Real.log x ≤ c * x / Real.log x :=
     div_le_div_of_nonneg_right (h x hxξ) hlog.le
   calc Chebyshev.theta x / Real.log x +
         ∫ t in (2 : ℝ)..x, Chebyshev.theta t / (t * Real.log t ^ 2)
-      ≤ c * x / Real.log x + (4 / 3 - c) * (x / Real.log x) := add_le_add hθ hI'
-    _ = 4 * x / (3 * Real.log x) := by field_simp; ring
+      ≤ c * x / Real.log x + (3 / 2 - c) * (x / Real.log x) := add_le_add hθ hI'
+    _ = 3 * x / (2 * Real.log x) := by field_simp; ring
+
+/-- **The prime-counting hypothesis holds**: `π(x) ≤ 3x/(2 log x)` for all large `x`, from
+Mathlib's `θ(x) ≤ (log 4)·x` and `log 4 < 1.39 < 3/2`. -/
+theorem primeCountingHyp_holds : PrimeCountingHyp :=
+  primeCountingHyp_of_theta_le (ξ := 0) (by linarith [log_four_lt])
+    fun _ hx => Chebyshev.theta_le_log4_mul_x hx
+
+/-- **The explicit prime-counting certificate** (IUT IV, Proposition 1.6 with the factor
+`3/2`): the `PrimeCountingBound` input is unconditional. The threshold is the one
+extracted from Mathlib's asymptotic statement. -/
+noncomputable def primeCountingBoundExplicit : PrimeCountingBound :=
+  Classical.choice (primeCountingBound_of_exists primeCountingHyp_holds)
+
+theorem primeCountingBound_nonempty : Nonempty PrimeCountingBound :=
+  ⟨primeCountingBoundExplicit⟩
 
 end Iut

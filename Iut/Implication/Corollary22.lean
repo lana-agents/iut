@@ -31,7 +31,8 @@ The proof mixes three kinds of input, which are separated here:
    on the height) and Lemma 3.1(iii) (the mod-`ℓ` image contains `SL₂`). These are
    delegated to `LANA-Project/genl` (taxis #1452) and `lana-agents/orbicurve-cores`
    (taxis #10, the four exceptional `j`-invariants of [CanLift], Proposition 2.7).
-2. **The prime number theorem** (`ChebyshevBound`, `PrimeCountingBound`; taxis #6).
+2. **Chebyshev-type prime bounds** (`ChebyshevBound`, `PrimeCountingBound`; taxis #6,
+   #1466), both discharged from Mathlib in `ChebyshevExplicit.lean`.
 3. **The existence of the anabelian part of the Θ-data** (`ThetaDataExistence`, (P7)):
    given a curve and a prime `ℓ` satisfying (P1)–(P6), initial Θ-data in the situation
    of Theorem 1.10 with the expected invariants. This is the one input of IUT-theoretic
