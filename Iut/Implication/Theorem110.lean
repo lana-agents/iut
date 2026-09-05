@@ -31,9 +31,10 @@ What is proved here, following the printed proof step by step:
   (ℓ+5)·l*_mod·log(s^≤_{v_ℚ})` at distinguished primes and `((ℓ+5)/4)·log π` at the
   archimedean place;
 * Step (viii): the sum over `v_ℚ`, the substitution of Corollary 3.12, the estimate
-  `l*_mod·log(s^≤) ≤ (4/3)·(e*_mod·ℓ + η_prm)` from Proposition 1.6
-  (`lmod_mul_logSle_le`), the combination with Steps (ii)–(iii), and the final number
-  tracking (`assembly`).
+  `l*_mod·log(s^≤) ≤ (3/2)·(e*_mod·ℓ + η_prm)` from Proposition 1.6
+  (`lmod_mul_logSle_le`; the printed proof has the factor `4/3`, and the slack of the
+  number tracking absorbs the factor `3/2` of `PrimeCountingBound`), the combination with
+  Steps (ii)–(iii), and the final number tracking (`assembly`).
 -/
 
 namespace Iut
@@ -80,7 +81,7 @@ lemma assembly {ℓ d D Q S T P DF E e lg : ℝ} (hℓ : 7 ≤ ℓ) (hd : 1 ≤ 
     (_hlg0 : 0 ≤ lg) (hlg : lg ≤ ℓ) (he : 552960 * ℓ ≤ e) (hE : e ≤ E)
     (h1 : -12 * Q ≤ 6 * ℓ * (ℓ + 5) * D - ℓ * (ℓ + 1) * Q + 24 * ℓ * S +
       24 * ℓ * (ℓ + 5) * T + 6 * ℓ * (ℓ + 5) * P)
-    (h2 : D ≤ DF + 2 * lg + 21) (h3 : S ≤ 2 * d * DF + 5 + lg) (h4 : 3 * T ≤ 4 * E) :
+    (h2 : D ≤ DF + 2 * lg + 21) (h3 : S ≤ 2 * d * DF + 5 + lg) (h4 : 2 * T ≤ 3 * E) :
     ℓ * Q ≤ 6 * (ℓ + 20 * d) * DF + 120 * ℓ * E := by
   have hE0 : 0 ≤ E := by linarith
   have hℓ5 : 0 ≤ ℓ + 5 := by linarith
@@ -88,25 +89,25 @@ lemma assembly {ℓ d D Q S T P DF E e lg : ℝ} (hℓ : 7 ≤ ℓ) (hd : 1 ≤ 
   set B : ℝ := (ℓ + 5) * D + 4 * S + 4 * (ℓ + 5) * T + (ℓ + 5) * P with hB
   have step1 : (ℓ ^ 2 + ℓ - 12) * Q ≤ 6 * ℓ * B := by rw [hB]; nlinarith
   have hB' : B ≤ (ℓ + 5 + 8 * d) * DF + (2 * ℓ + 14) * lg + 23 * ℓ + 135 +
-      16 / 3 * (ℓ + 5) * E := by
+      6 * (ℓ + 5) * E := by
     rw [hB]
     nlinarith [mul_le_mul_of_nonneg_left h2 hℓ5, mul_le_mul_of_nonneg_left h4 hℓ5,
       mul_le_mul_of_nonneg_left hP hℓ5]
   have hpos : 0 < ℓ ^ 2 + ℓ - 12 := by nlinarith
   -- the polynomial comparison of the two sides
   have hpoly : 6 * ℓ ^ 2 * ((ℓ + 5 + 8 * d) * DF + (2 * ℓ + 14) * lg + 23 * ℓ + 135 +
-      16 / 3 * (ℓ + 5) * E) ≤ (ℓ ^ 2 + ℓ - 12) * (6 * (ℓ + 20 * d) * DF + 120 * ℓ * E) := by
+      6 * (ℓ + 5) * E) ≤ (ℓ ^ 2 + ℓ - 12) * (6 * (ℓ + 20 * d) * DF + 120 * ℓ * E) := by
     have hDFc : 6 * ℓ ^ 2 * (ℓ + 5 + 8 * d) * DF ≤ (ℓ ^ 2 + ℓ - 12) * (6 * (ℓ + 20 * d)) * DF := by
       apply mul_le_mul_of_nonneg_right _ hDF
       nlinarith [mul_nonneg (sub_nonneg.2 hd) (show (0:ℝ) ≤ 12 * ℓ ^ 2 + 20 * ℓ - 240 by nlinarith),
         mul_le_mul hℓ hℓ (by norm_num) (by linarith)]
-    have hrest : 6 * ℓ ^ 2 * ((2 * ℓ + 14) * lg + 23 * ℓ + 135 + 16 / 3 * (ℓ + 5) * E) ≤
+    have hrest : 6 * ℓ ^ 2 * ((2 * ℓ + 14) * lg + 23 * ℓ + 135 + 6 * (ℓ + 5) * E) ≤
         (ℓ ^ 2 + ℓ - 12) * (120 * ℓ * E) := by
       have hlg' : (2 * ℓ + 14) * lg + 23 * ℓ + 135 ≤ 63 * ℓ ^ 2 := by nlinarith
       have he' : 63 * ℓ ^ 2 ≤ ℓ * E / 8000 := by nlinarith
       have hA : 6 * ℓ ^ 2 * ((2 * ℓ + 14) * lg + 23 * ℓ + 135) ≤ 6 * ℓ ^ 2 * (ℓ * E / 8000) :=
         mul_le_mul_of_nonneg_left (hlg'.trans he') (by positivity)
-      have hpoly' : 0 ≤ ℓ * E * (87 * ℓ ^ 2 - 40 * ℓ - 1440) :=
+      have hpoly' : 0 ≤ ℓ * E * (83 * ℓ ^ 2 - 60 * ℓ - 1440) :=
         mul_nonneg (mul_nonneg (by linarith) hE0) (by nlinarith)
       have hcube : 0 ≤ ℓ ^ 3 * E := by positivity
       nlinarith [hA, hpoly', hcube]
@@ -117,7 +118,7 @@ lemma assembly {ℓ d D Q S T P DF E e lg : ℝ} (hℓ : 7 ≤ ℓ) (hd : 1 ≤ 
       _ ≤ ℓ * (6 * ℓ * B) := mul_le_mul_of_nonneg_left step1 (by linarith)
       _ = 6 * ℓ ^ 2 * B := by ring
       _ ≤ 6 * ℓ ^ 2 * ((ℓ + 5 + 8 * d) * DF + (2 * ℓ + 14) * lg + 23 * ℓ + 135 +
-          16 / 3 * (ℓ + 5) * E) := mul_le_mul_of_nonneg_left hB' (by positivity)
+          6 * (ℓ + 5) * E) := mul_le_mul_of_nonneg_left hB' (by positivity)
       _ ≤ _ := hpoly
   exact le_of_mul_le_mul_left step2 hpos
 
@@ -164,11 +165,12 @@ lemma sum_arch (L : ℕ) :
   push_cast
   ring
 
-/-- Step (viii), the Proposition 1.6 input: `l*_mod·log(s^≤) ≤ (4/3)·(e*_mod·ℓ + η_prm)`.
-Proved from the prime-counting certificate: `log(s^≤)` counts distinguished primes
-`≤ e*_mod·ℓ`, hence is at most `π(e*_mod·ℓ)`. -/
+/-- Step (viii), the Proposition 1.6 input: `l*_mod·log(s^≤) ≤ (3/2)·(e*_mod·ℓ + η_prm)`
+(the printed proof has `4/3`, from the printed factor of Proposition 1.6). Proved from the
+prime-counting certificate: `log(s^≤)` counts distinguished primes `≤ e*_mod·ℓ`, hence is
+at most `π(e*_mod·ℓ)`. -/
 lemma lmod_mul_logSle_le (pnt : PrimeCountingBound) :
-    inv.lmod * inv.logSle ≤ 4 / 3 * ((inv.eStar : ℝ) * X.ℓ + pnt.η) := by
+    inv.lmod * inv.logSle ≤ 3 / 2 * ((inv.eStar : ℝ) * X.ℓ + pnt.η) := by
   set N : ℕ := inv.eStar * X.ℓ with hN
   have hN1 : 2 ≤ N := by
     have h1 := inv.one_le_emod
@@ -203,10 +205,10 @@ lemma lmod_mul_logSle_le (pnt : PrimeCountingBound) :
     rw [Nat.floor_natCast] at hb
     calc Real.log N * inv.logSle ≤ Real.log N * (Nat.primeCounting N : ℝ) :=
           mul_le_mul_of_nonneg_left hcount hlogN.le
-      _ ≤ Real.log N * (4 * N / (3 * Real.log N)) :=
+      _ ≤ Real.log N * (3 * N / (2 * Real.log N)) :=
           mul_le_mul_of_nonneg_left hb hlogN.le
-      _ = 4 / 3 * (N : ℝ) := by field_simp
-      _ ≤ 4 / 3 * ((N : ℝ) + pnt.η) := by linarith
+      _ = 3 / 2 * (N : ℝ) := by field_simp
+      _ ≤ 3 / 2 * ((N : ℝ) + pnt.η) := by linarith
   · -- `N < η_prm`: `π(N) ≤ π(⌊η_prm⌋)` and apply the bound at `x = η_prm`
     have hb := pnt.bound pnt.η le_rfl
     have hmono : (Nat.primeCounting N : ℝ) ≤ Nat.primeCounting ⌊pnt.η⌋₊ := by
@@ -217,10 +219,10 @@ lemma lmod_mul_logSle_le (pnt : PrimeCountingBound) :
           mul_le_mul_of_nonneg_left hcount hlogN.le
       _ ≤ Real.log pnt.η * (Nat.primeCounting ⌊pnt.η⌋₊ : ℝ) :=
           mul_le_mul hlogle hmono (by positivity) hlogη.le
-      _ ≤ Real.log pnt.η * (4 * pnt.η / (3 * Real.log pnt.η)) :=
+      _ ≤ Real.log pnt.η * (3 * pnt.η / (2 * Real.log pnt.η)) :=
           mul_le_mul_of_nonneg_left hb hlogη.le
-      _ = 4 / 3 * pnt.η := by field_simp
-      _ ≤ 4 / 3 * ((N : ℝ) + pnt.η) := by linarith
+      _ = 3 / 2 * pnt.η := by field_simp
+      _ ≤ 3 / 2 * ((N : ℝ) + pnt.η) := by linarith
 
 /-- **IUT IV, Theorem 1.10**, derived from the Corollary 3.12 variant:
 

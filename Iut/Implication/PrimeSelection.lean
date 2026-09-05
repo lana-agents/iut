@@ -17,11 +17,11 @@ The proof of IUT IV, Corollary 2.2 chooses, for an elliptic curve `E_F` of heigh
 * (P2) `ℓ` divides no nonzero local height `h_v`;
 * (P3) if `ℓ = p_v` for some bad place `v` then `h_v < √h`.
 
-The tool is IUT IV, Proposition 2.1(ii): from Chebyshev-type bounds `(2/3)x ≤ θ(x) ≤ (4/3)x`
+The tool is IUT IV, Proposition 2.1(ii): from Chebyshev-type bounds `(2/3)x ≤ θ(x) ≤ 2x`
 for `x ≥ ξ_prm`, for every finite set `A` of primes there is a prime `p ∉ A` with
 `p ≤ 2(θ_A + ξ_prm)`, where `θ_A = ∑_{p ∈ A} log p`. The Chebyshev bounds themselves are
-prime-number-theorem strength and are the explicit certificate `ChebyshevBound`
-(taxis #6, `lana-agents/prime-counting`); everything else in this file is proved.
+the explicit certificate `ChebyshevBound` (taxis #6), discharged from Mathlib in
+`ChebyshevExplicit.lean` (`chebyshevBoundExplicit`); everything else in this file is proved.
 
 The local heights enter through `LocalHeightData`: a finite family of bad places with
 residue characteristics `p_v`, local heights `h_v ≥ 1`, and residue degrees `f_v ≥ 1`,
@@ -37,7 +37,8 @@ open Finset Real
 
 /-- **IUT IV, Proposition 2.1(ii)** as an explicit certificate: a threshold `ξ_prm ≥ 5`
 beyond which Chebyshev's function `θ(x) = ∑_{p ≤ x} log p` satisfies
-`(2/3)·x ≤ θ(x) ≤ (4/3)·x`. Prime-number-theorem strength; not proved here (taxis #6). -/
+`(2/3)·x ≤ θ(x) ≤ 2·x` (the printed upper factor is `4/3`; the factor `2` suffices here and is
+what Mathlib's `θ(x) ≤ (log 4)·x` gives, see `chebyshevBoundExplicit`; taxis #6). -/
 structure ChebyshevBound where
   /-- The threshold `ξ_prm`. -/
   ξ : ℝ

@@ -47,7 +47,9 @@ states its results conditionally:
 * [`elliptic-reduction`](https://github.com/lana-agents/elliptic-reduction) — the
   `ReductionCertificate` for Proposition 1.8(v)–(vii).
 * [`prime-counting`](https://github.com/lana-agents/prime-counting) — the
-  `PrimeCountingCertificate` for Proposition 1.6.
+  `PrimeCountingCertificate` for Proposition 1.6 with the printed factor `4/3`. The `Iut`
+  library no longer needs it: its `PrimeCountingBound` (factor `3/2`) is proved from
+  Mathlib's Chebyshev bound (`Iut.primeCountingBoundExplicit`).
 
 The Corollary 3.12 strand is a **specification / formal-statement project only**. Proving
 the resulting proposition is explicitly out of scope. The formalisation must not silently
@@ -104,9 +106,11 @@ pullback, that numerator is invariant while its local-degree denominator scales 
 extension degree. The blueprint labels this boundary explicitly.
 
 Later Section 1 results remain planned, partial, or conditional as recorded in the
-specification. In particular, IUT I–III inputs, the exact prime-counting coefficient
-unavailable in the pinned Mathlib release, and missing elliptic or reduction
-infrastructure must appear as ordinary theorem arguments when used.
+specification. In particular, IUT I–III inputs and missing elliptic or reduction
+infrastructure must appear as ordinary theorem arguments when used. (The exact
+prime-counting coefficient `4/3` of Proposition 1.6 is unavailable in the pinned Mathlib
+release; the `Iut` library uses the factor `3/2`, which Mathlib provides and which suffices,
+see below.)
 
 ## Corollary 3.12 variant strand (`Iut`)
 
@@ -204,8 +208,10 @@ sorry-free with standard axioms only:
   Theorem 1.10, `(1/6)·log(q) ≤ (1 + 20·d_mod/ℓ)·(log d_{F_tpd} + log f_{F_tpd}) +
   20·(e*_mod·ℓ + η_prm)`, from the variant, the local estimates of Steps (iv)–(vii), the
   arithmetic certificate of Steps (ii)–(iii), and the prime-counting bound of
-  Proposition 1.6. The procession average (E1), (E2) and the constant tracking of
-  Step (viii) are proved.
+  Proposition 1.6 (`Iut.PrimeCountingBound`, with the factor `3/2` in place of the printed
+  `4/3`; the constant tracking absorbs the difference, and the printed conclusion is
+  unchanged). The procession average (E1), (E2) and the constant tracking of Step (viii)
+  are proved.
 * `Iut.LocalHeightData.exists_prime_selection`
   ([`PrimeSelection.lean`](Iut/Implication/PrimeSelection.lean)) — Proposition 2.1(ii)
   and the choice of the prime `ℓ` with (P1)–(P3), from Chebyshev bounds.
@@ -239,7 +245,7 @@ from #1449):
 | `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | **constructed** (`Iut.thetaLocalData`), from the rationality of the ℓ- and 2-torsion |
 | `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | `Prop`; elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
 | `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
-| `Iut.PrimeCountingBound` | Proposition 1.6 | `Prop` `Iut.PrimeCountingHyp`; prime-counting, [#1466](https://taxis.lana.merten.dev/issues/1466) |
+| `Iut.PrimeCountingBound` | Proposition 1.6 (factor `3/2`) | **proved** (`Iut.primeCountingBoundExplicit`, from Mathlib's `θ(x) ≤ (log 4)·x` and the Abel-summation identity for `π`; `Iut.PrimeCountingHyp` is the theorem `Iut.primeCountingHyp_holds`), [#1466](https://taxis.lana.merten.dev/issues/1466) |
 | `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); residual `Prop`s `CurveProps`, `CurveFactsProp`, see below |
 | `Genl.HeightTheory.ProofPackage` | [GenEll] Theorem 2.1 (ii) ⇒ (i) | not needed for the tripod target `StatementII` |
 | `EllipticCurveData.CurveArithmetic` | Prop 1.8 | six of ten fields **proved** (`CurveArithmetic.ofCore`); `√−1`, stable reduction, `E[6]` rational, `F/F_mod` Galois of degree prime to `ℓ` remain `Prop`s |
@@ -295,9 +301,10 @@ repository and every hypothesis is a proposition about the constructed objects.
 Final statement (hypotheses only): universally quantified fundamental-group theories
 `Pi1 : EtalePi1Theory`, `Tp : TemperedPi1Theory Pi1` (so that `h312` ranges over exactly
 the Θ-data of IUT I, Definition 3.1 — the variant is never strengthened), `CurveProps`,
-`∀ K d, ∃ T_K, CurveFactsProp … K d T_K`, `∀ K, LocalTheoryFacts K`, the
-tower arithmetic for the constructed local theory and theta data, `PrimeCountingHyp`, and
-the variant `h312`; conclusion `tripodTheory.StatementII`.
+`∀ K d, ∃ T_K, CurveFactsProp … K d T_K`, `∀ K, LocalTheoryFacts K`, the tower arithmetic
+for the constructed local theory and theta data, and the variant `h312`; conclusion
+`tripodTheory.StatementII`. The prime-counting bound of Proposition 1.6 is supplied by
+`Iut.primeCountingBoundExplicit`.
 `StatementI` (all hyperbolic curves) additionally needs heights on curves and the
 coverings of [GenEll] Theorem 2.1, which remain in genl's scope.
 

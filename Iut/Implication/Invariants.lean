@@ -36,8 +36,10 @@ another name. What *is* derived from the Θ-data is `log(q)` itself
 residue characteristic (`logQAt`).
 
 The prime-counting input (IUT IV, Proposition 1.6) is the separate certificate
-`PrimeCountingBound`, exactly as in the specification's route (b): no
-prime-number-theorem strength result is proved here (taxis #6).
+`PrimeCountingBound`, carried with the factor `3/2` in place of the printed `4/3`; it is
+discharged from Mathlib's Chebyshev bound in `Iut.primeCountingBoundExplicit`
+(`ChebyshevExplicit.lean`), and the slack in the number tracking of Theorem 1.10
+absorbs the weaker factor.
 -/
 
 namespace Iut
@@ -46,16 +48,18 @@ universe u v
 
 open NumberField
 
-/-- **IUT IV, Proposition 1.6** as an explicit certificate (taxis #6): a threshold
-`η_prm` beyond which the prime-counting function satisfies `π(x) ≤ 4x/(3 log x)`. This is
-prime-number-theorem strength and is not proved in this repository. -/
+/-- **IUT IV, Proposition 1.6** as an explicit certificate (taxis #6, #1466): a threshold
+`η_prm` beyond which the prime-counting function satisfies `π(x) ≤ 3x/(2 log x)`. The
+printed proposition has the factor `4/3`; the factor `3/2` used here is what Mathlib's
+Chebyshev bound `θ(x) ≤ (log 4)·x` yields (`Iut.primeCountingBoundExplicit`), and it
+suffices for Theorem 1.10 with the printed constants (`Theorem110Invariants.theorem110`). -/
 structure PrimeCountingBound where
   /-- The threshold `η_prm`. -/
   η : ℝ
   /-- `η_prm > 1` (so that `log η_prm > 0`; the paper takes `η_prm ≥ 5`). -/
   one_lt_η : 1 < η
-  /-- The bound `#{p ≤ x} ≤ 4x/(3 log x)` for all real `x ≥ η_prm`. -/
-  bound : ∀ x : ℝ, η ≤ x → (Nat.primeCounting ⌊x⌋₊ : ℝ) ≤ 4 * x / (3 * Real.log x)
+  /-- The bound `#{p ≤ x} ≤ 3x/(2 log x)` for all real `x ≥ η_prm`. -/
+  bound : ∀ x : ℝ, η ≤ x → (Nat.primeCounting ⌊x⌋₊ : ℝ) ≤ 3 * x / (2 * Real.log x)
 
 variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
