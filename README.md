@@ -26,9 +26,8 @@ It carries two strands:
   proof that the anabelian part of initial Θ-data exists (IUT I, Definition 3.1(d)–(f);
   taxis [#276](https://taxis.lana.merten.dev/issues/276),
   [#279](https://taxis.lana.merten.dev/issues/279),
-  [#1469](https://taxis.lana.merten.dev/issues/1469)). The existence theorem has no
-  residual input: fundamental groups and cores are not represented in the interfaces
-  (see "Honesty boundary").
+  [#1469](https://taxis.lana.merten.dev/issues/1469)). Fundamental groups remain
+  explicit residual interfaces.
 
 Mochizuki's *Arithmetic Elliptic Curves in General Position* is **not** developed here;
 it lives in [`LANA-Project/genl`](https://github.com/LANA-Project/genl).
@@ -59,23 +58,21 @@ the formulation printed in the IUT papers; the precise data, hypotheses, definit
 conclusion are supplied per-issue by the project owner.
 
 **Anabelian components of the Θ-data.** The conditions of IUT I, Definition 3.1(d)–(e)
-that involve fundamental groups and cores — that `X_K` (equivalently `C̲_K`) admits a
-`K`-core, and the profinite étale and tempered fundamental groups of the orbicurves with
-their comparison maps and the open immersions attached to the covering diagrams — are
-**not** represented in `Iut.AnabelianGeometry` / `Iut.TemperedGeometry`. The reason is
-that the statement of the variant (`Iut.Corollary312Variant` and the data it reads) never
-consults them: the Θ-data record (`Iut.InitialThetaData`) carries only their combinatorial
-consequences at the level of `ℓ`-torsion — the orbicurve types `(1, ℓ-tors)`,
-`(1, ℓ-tors)^±`, `(1, ℤ/ℓℤ)^±`, the cartesian covering diagrams, the cusps and the
-rank-one quotient, the theta-root models and the canonical graph cusps. Consequently the
-variant hypothesis `h312` of the main theorems is quantified over a **larger class of
-data** than the printed corollary (data that need not satisfy the core and
-fundamental-group conditions); this is a stronger hypothesis, so the implication to ABC
-still holds, and the class of data on which the variant is assumed is visible in the
-types. Accordingly, no exceptional set of points (the four `j`-invariants of [CanLift],
-Proposition 2.7, whose once-punctured curve has no core) appears in the Corollary 2.2
-inputs, and the existence of the anabelian part of the Θ-data
-(`Iut.Anabelian.anabelianExistence`) is a theorem without residual input.
+that involve fundamental groups and cores — that `C̲_K` has `K`-core `C_K`, and the
+profinite étale and tempered fundamental groups of the orbicurves with their comparison
+maps and the open immersions attached to the covering diagrams — are fields of
+`Iut.AnabelianGeometry` / `Iut.TemperedGeometry` and of the Θ-data record, exactly as
+printed. The anabelian model instantiates them through the interfaces
+`Iut.Anabelian.EtalePi1Theory` (étale `π₁` of the model orbicurves, open immersions for
+covers, the core relation with its two stability properties) and
+`Iut.Anabelian.TemperedPi1Theory` (tempered `π₁` with its comparison map), which are
+**universally quantified parameters** of the main theorems: nothing is constructed or
+assumed about them beyond the listed fields, and the theorems hold for every such theory,
+in particular for the actual fundamental groups. The core condition on the curve of a point
+enters as the finiteness of the exceptional set of points whose once-punctured curve has no
+core ([CanLift], Proposition 2.7; the four exceptional `j`-invariants), a `Prop` hypothesis
+(`Iut.Tripod.CoreFinitenessHyp`). In this way the variant hypothesis `h312` is quantified
+over exactly the class of data of the printed corollary — it is never strengthened.
 
 **Reduction predicates and the cyclic-subgroup bound.** `HasGoodReductionAt`,
 `HasMultiplicativeReductionAt`, `HasSplitMultiplicativeReductionAt` and
@@ -118,10 +115,9 @@ proof and without axiom. The stack beneath it:
   [`Iut/Cor312/ThetaData/`](Iut/Cor312/ThetaData). Reduction predicates, the field of
   moduli `ℚ(j)`, torsion rationality, the mod-`ℓ` representation pinned to the genuine
   Galois action on `E(F̄)[ℓ]`, and the `ℓ`-torsion field `K` are real Mathlib content;
-  orbicurves and their local predicates enter through the explicit interfaces
-  `Iut.AnabelianGeometry` / `Iut.TemperedGeometry`, instantiated by the anabelian model
-  (#276, #279); fundamental groups and cores are not represented (see "Honesty
-  boundary"). Bad-place Tate `q`-parameters come from
+  orbicurves, fundamental groups and tempered groups enter through the explicit
+  interfaces `Iut.AnabelianGeometry` / `Iut.TemperedGeometry` (seams for taxis #7, #10,
+  #11, #13; discharge tracked in #276, #279). Bad-place Tate `q`-parameters come from
   [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta) (taxis #37).
 * **The large volume container, log-volume, and holomorphic hull** (taxis #43–#45):
   [`Iut/Cor312/Container.lean`](Iut/Cor312/Container.lean),
@@ -244,7 +240,7 @@ from #1449):
 | `EllipticCurveData.CurveArithmetic` | Prop 1.8 | six of ten fields **proved** (`CurveArithmetic.ofCore`); `√−1`, stable reduction, `E[6]` rational, `F/F_mod` Galois of degree prime to `ℓ` remain `Prop`s |
 | `EllipticCurveData.TateInputs` | Tate parameters at the multiplicative places | **constructed** (`EllipticCurveData.tateInputs`) |
 | `EllipticCurveData.ModEllRepData ℓ` | the mod-`ℓ` representation on `E[ℓ]` | **constructed** (`modEllRepData`) from `E[ℓ] ≅ (ℤ/ℓ)²` ([#277](https://taxis.lana.merten.dev/issues/277)) |
-| `Iut.AnabelianExistence AG TG` | IUT I, Definition 3.1(d)–(f): `C̲_K`, `ε`, `V` and the bad-place conditions | **proved** for the anabelian model (`Iut.Anabelian.anabelianExistence`), with no residual input; see below |
+| `Iut.AnabelianExistence AG TG` | IUT I, Definition 3.1(d)–(f): `C̲_K`, `ε`, `V` and the bad-place conditions | **proved** for the anabelian model (`Iut.Anabelian.anabelianExistence Pi1 Tp`) for every étale/tempered `π₁` theory `Pi1`, `Tp` (universally quantified) and curves whose once-punctured curve has a core; see below |
 
 
 ### The tripod theorem with propositional inputs (`Iut/Tripod/`)
@@ -278,7 +274,9 @@ repository and every hypothesis is a proposition about the constructed objects.
   stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the height comparison
   `(1/6)·log q_∀ ≈ h(λ)` of [GenEll] Prop 3.4, the cyclic-subgroup bound of [GenEll]
-  Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma); the `2`-adic bound
+  Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma, and the finiteness of the
+  points whose once-punctured curve has no core, [CanLift] Prop 2.7,
+  `CoreFinitenessHyp`); the `2`-adic bound
   (`Iut.Tripod.twoAdicBound`, with `B = 4c` on `CompactlyBounded` sets) and the conductor
   comparisons `log-cond_{F_tpd} ≤ log-cond(λ) ≤ log-cond_{F_tpd} + log 2ℓ`
   (`logCondGe`, `logCondLe`, [`TwoAdic.lean`](Iut/Tripod/TwoAdic.lean),
@@ -287,9 +285,12 @@ repository and every hypothesis is a proposition about the constructed objects.
   reduction predicates up to a change of variables, and the restriction of the
   cyclic-subgroup bound to `ℓ ≥ 7`).
 
-Final statement (hypotheses only): `CurveProps`, `∀ K d, ∃ T_K, CurveFactsProp … K d T_K`,
-`∀ K, LocalTheoryFacts K`, the tower arithmetic for the constructed local theory and theta
-data, `PrimeCountingHyp`, and the variant `h312`; conclusion `tripodTheory.StatementII`.
+Final statement (hypotheses only): universally quantified fundamental-group theories
+`Pi1 : EtalePi1Theory`, `Tp : TemperedPi1Theory Pi1` (so that `h312` ranges over exactly
+the Θ-data of IUT I, Definition 3.1 — the variant is never strengthened), `CurveProps`,
+`∀ K d, ∃ T_K, CurveFactsProp … K d (modelAG Pi1) T_K`, `∀ K, LocalTheoryFacts K`, the
+tower arithmetic for the constructed local theory and theta data, `PrimeCountingHyp`, and
+the variant `h312`; conclusion `tripodTheory.StatementII`.
 `StatementI` (all hyperbolic curves) additionally needs heights on curves and the
 coverings of [GenEll] Theorem 2.1, which remain in genl's scope.
 
@@ -304,26 +305,23 @@ instantiated by a **linear-algebraic model** (taxis
   `(E/M) ∖ (E[ℓ]/M)` and its `±`-quotient (the only shapes IUT I, Definition 3.1 uses);
   covers induced by `[n]`, base change, cusps `E(k)[ℓ]/M` (mod `±`), the rank-one
   quotient, the `±`-quotient cartesian squares, the types `(1, ℓ-tors)`,
-  `(1, ℓ-tors)^±`.
+  `(1, ℓ-tors)^±`; and the residual interface `Iut.Anabelian.EtalePi1Theory` (étale
+  fundamental groups, open immersions, cores).
 * [`Local.lean`](Iut/Anabelian/Local.lean) — over a valued field: the kernel of
   reduction and the **graph line** `E(k)[ℓ] ∩ E₁(k)` (= `μ_ℓ` under Tate
   uniformization), the **canonical generators** `q^{±1/ℓ}` of the graph quotient
   (`ℓ·v(x(P)) = -v(j)` in minimal models), split multiplicative reduction, the type
   `(1, ℤ/ℓℤ)^±`, theta-root models and the canonical graph cusp.
-* [`Geometry.lean`](Iut/Anabelian/Geometry.lean) — the closed terms
-  `Iut.Anabelian.modelAG : Iut.AnabelianGeometry` and
-  `Iut.Anabelian.modelTG : Iut.TemperedGeometry modelAG`.
+* [`Geometry.lean`](Iut/Anabelian/Geometry.lean) — the terms `Iut.Anabelian.modelAG` and
+  `Iut.Anabelian.modelTG` (with the residual `TemperedPi1Theory`).
 * [`Torsion.lean`](Iut/Anabelian/Torsion.lean), [`Linear.lean`](Iut/Anabelian/Linear.lean),
   [`Existence.lean`](Iut/Anabelian/Existence.lean) — the ℓ-torsion is rational over
   `K = F(E[ℓ])`; `SL₂(𝔽_ℓ)` acts transitively on (line, generator of the quotient) pairs;
   **`Iut.Anabelian.anabelianExistence`**: `C̲_K = (E_K, ℓ, ⟨e₁⟩, ±)`, `ε = e₂ mod ⟨e₁⟩`,
   and at each bad place a place of `K` chosen through `SL₂(𝔽_ℓ)` so that the graph line
   is `⟨e₁⟩` and the canonical generators are `±e₂` — the mechanism of (P7) in the proof
-  of IUT IV, Corollary 2.2. `anabelianExistence : Iut.AnabelianExistence modelAG modelTG`
-  has no hypotheses. The final theorem is
-  `Iut.Anabelian.cor312Variant_implies_abc_model`, whose remaining inputs are the curve
-  inputs of Corollary 2.2, the universal providers, the analytic inputs and the variant
-  `h312`.
+  of IUT IV, Corollary 2.2. The final theorem is
+  `Iut.Anabelian.cor312Variant_implies_abc_model`.
 * [`PlacesOver.lean`](Iut/Cor312/ThetaData/PlacesOver.lean),
   [`TateStructure.lean`](Iut/Cor312/ThetaData/TateStructure.lean),
   [`TateFamily.lean`](Iut/Cor312/ThetaData/TateFamily.lean),
@@ -385,15 +383,13 @@ over a complete rank-one valued field, and the local theta data carry the chosen
 structures (`tateX`, `tateC`); the Θ-data carry the Tate uniformizations at the places of
 the torsion field (`InitialThetaData.tate`).
 
-The model has **no residual interface**: the Tate family of the Θ-data is proved (see
-above), and the former residual interfaces `Iut.Anabelian.EtalePi1Theory` (étale `π₁` of
-the model orbicurves, open immersions for covers, `k`-cores and their stability;
-[#1527](https://taxis.lana.merten.dev/issues/1527)) and `Iut.Anabelian.TemperedPi1Theory`
-(tempered `π₁` with the comparison to the étale `π₁`;
-[#1528](https://taxis.lana.merten.dev/issues/1528)) were removed together with the
-corresponding fields of `Iut.AnabelianGeometry` / `Iut.TemperedGeometry`, on the ground
-that the statement of the variant never reads them (see "Honesty boundary", *Anabelian
-components of the Θ-data*).
+Interfaces of the model, each an explicit structure that the main theorems quantify over
+universally (the Tate family of the Θ-data is proved, see above):
+
+| Input | Content | Owner |
+| --- | --- | --- |
+| `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
+| `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁` | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
 
 ## Comparator suite
 

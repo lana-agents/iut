@@ -19,25 +19,26 @@ local part of (f), for the Corollary 3.12 variant statement (taxis #33).
 * `Iut.ValuationSection`: a section `V ⊆ V(K)` of the restriction `V(K) → V_mod`,
   given by place-type-preserving maps on finite and infinite places, each lying over
   its base point; with the derived subsets `V^non`, `V^arc`, `V^good`, `V^bad`.
-* `Iut.TemperedGeometry`: the interface extension supplying the theta-root model
-  predicate and the canonical graph-quotient cusp over complete nonarchimedean fields
-  (instantiated by `Iut.Anabelian.modelTG` from `Iut.Anabelian.Local`).
+* `Iut.TemperedGeometry`: the interface extension supplying tempered fundamental
+  groups over complete nonarchimedean fields, their comparison maps to the profinite
+  étale fundamental groups, the theta-root model predicate, and the canonical
+  graph-quotient cusp (seams for taxis #7 `lana-agents/tempered-fundamental-groups`,
+  taxis #11 `lana-agents/continuous-kummer-theory`, and taxis #13
+  `lana-agents/tate-curves-theta`, as directed by taxis #42).
 * `Iut.LocalThetaData`: the packaged local data and conditions: completions and base
-  changes at `v ∈ V`, the cartesian local covering diagrams, decomposition groups up to
-  conjugacy, the type `(1, ℤ/ℓℤ)^±` and theta-root-model conditions at bad places, and
-  the cusp condition for `ε_v`.
+  changes at `v ∈ V`, the cartesian local covering diagrams with their injections of
+  fundamental groups (available from `AnabelianGeometry.pi1Cover` and its open
+  embedding property), decomposition groups up to conjugacy, the type `(1, ℤ/ℓℤ)^±`
+  and theta-root-model conditions at bad places, the cusp condition for `ε_v`, and the
+  `Π_v` convention (tempered at bad places, étale at good places).
 
 ## Honesty boundary
 
-Theta-root models and graph-quotient cusps are interface fields; conditions are
-structure fields, never axioms. The **tempered fundamental groups** of IUT I,
-Definition 3.1(e) (the `Π_v` convention: tempered at bad places, étale at good places,
-with the comparison maps to the profinite étale fundamental groups and the injections of
-local fundamental groups attached to the local covering diagrams) are **not**
-represented: the statement of the Corollary 3.12 variant never reads them, so the
-interface carries only their combinatorial consequences at the level of `ℓ`-torsion (see
-the "Honesty boundary" section of the README). This module states the local conditions
-and interfaces; it does not prove that arbitrary global elliptic curves satisfy them.
+Tempered fundamental groups, theta-root models, and graph-quotient cusps are interface
+fields, discharged by the anabelian projects listed above; conditions are structure
+fields, never axioms. This module states the local conditions and interfaces; it does
+not prove that arbitrary global elliptic curves satisfy them (out of scope for
+taxis #42).
 
 ## Source correspondence
 
@@ -108,10 +109,27 @@ end TorsionFieldFinite
 /-! ## The tempered interface -/
 
 /-- Interface extension for the local anabelian geometry at nonarchimedean places
-(instantiated by `Iut.Anabelian.modelTG`): the theta-root model predicate of *The Étale
-Theta Function*, Definition 2.5, and the canonical graph-quotient cusp. Tempered
-fundamental groups are deliberately absent (module docstring). -/
+(seams for taxis #7, #11, #13): tempered fundamental groups with their comparison to
+the profinite étale fundamental groups, the theta-root model predicate of *The Étale
+Theta Function*, Definition 2.5, and the canonical graph-quotient cusp. -/
 structure TemperedGeometry (AG : AnabelianGeometry.{u}) : Type (u + 1) where
+  /-- The tempered fundamental group of an orbicurve over a (complete nonarchimedean)
+  field. Unlike the étale fundamental group it is not profinite; it is carried as a
+  bare type with group and topology instances supplied by the fields below. -/
+  tempPi1 : {k : Type u} → [Field k] → AG.Orbicurve k → Type u
+  /-- Group structure on the tempered fundamental group. -/
+  tempPi1Group : ∀ {k : Type u} [Field k] (X : AG.Orbicurve k), Group (tempPi1 X)
+  /-- Topology on the tempered fundamental group. -/
+  tempPi1Topology : ∀ {k : Type u} [Field k] (X : AG.Orbicurve k),
+    TopologicalSpace (tempPi1 X)
+  /-- The comparison homomorphism from the tempered fundamental group to the
+  profinite étale fundamental group (its profinite completion). -/
+  tempToEtale : ∀ {k : Type u} [Field k] (X : AG.Orbicurve k),
+    letI := tempPi1Group X; tempPi1 X →* AG.pi1 X
+  /-- The comparison homomorphism is continuous. -/
+  tempToEtale_continuous : ∀ {k : Type u} [Field k] (X : AG.Orbicurve k),
+    letI := tempPi1Group X; letI := tempPi1Topology X
+    Continuous (tempToEtale X)
   /-- The orbicurve is a **natural model obtained by extracting an `ℓ`-th root of the
   theta function** (*The Étale Theta Function*, Definition 2.5). The precise content
   of this predicate is supplied by the étale-theta continuation of taxis #13; here it
@@ -201,8 +219,8 @@ structure LocalThetaData (O : OrbicurveData AG F E Fbar VBad P) : Type u where
   sect : ValuationSection F E Fbar VBad P
   /-- The cartesian local covering diagrams (IUT I, Definition 3.1(e)): at every
   finite place `v` of the section, the base change to `K_v` of the global diagram
-  remains cartesian. (The injections of local fundamental groups are not
-  represented.) -/
+  remains cartesian. The injections (open immersions) of local fundamental groups are
+  `AG.pi1Cover` of the base-changed covers, with `AG.pi1Cover_isOpenEmbedding`. -/
   local_diagram_cartesian : ∀ v : FinitePlace ↥(fieldOfModuli F E),
     AG.IsCartesianSquare
       (AG.coverBaseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal)
@@ -241,6 +259,23 @@ structure LocalThetaData (O : OrbicurveData AG F E Fbar VBad P) : Type u where
   epsilon_graph : ∀ v (hv : v ∈ VBad),
     AG.cuspBaseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal) O.epsilon =
       TG.canonicalGraphCusp (localize (sect.sectFin v) O.CKu) (tateC v hv)
+
+namespace LocalThetaData
+
+variable {AG TG F E Fbar VBad P} {O : OrbicurveData AG F E Fbar VBad P}
+variable (L : LocalThetaData AG TG F E Fbar VBad P O)
+
+/-- The **convention for `Π_v` at bad places** (IUT I, Definition 3.1(e)/(f)): at
+`v ∈ V^bad`, `Π_v` is the **tempered** fundamental group of the local model. -/
+noncomputable def PivBad (v : FinitePlace ↥(fieldOfModuli F E)) : Type u :=
+  TG.tempPi1 (localize (L.sect.sectFin v) O.XKu)
+
+/-- The **convention for `Π_v` at good places**: at `v ∈ V^good ∩ V^non`, `Π_v` is the
+profinite **étale** fundamental group of the local model. -/
+noncomputable def PivGood (v : FinitePlace ↥(fieldOfModuli F E)) : Type u :=
+  AG.pi1 (localize (L.sect.sectFin v) O.XKu)
+
+end LocalThetaData
 
 end LocalData
 

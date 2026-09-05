@@ -432,25 +432,35 @@ def LogCondLeHyp : Prop :=
     logCond x ≤
       logConductorDegOf (P.curve x).F (P.curve x).E ((P.curve x).VBadOf ℓ) + Real.log (2 * ℓ)
 
+/-- **[CanLift], Proposition 2.7**: only finitely many points of bounded degree in `K` have
+a once-punctured elliptic curve `X_λ` that fails to have the `F_λ`-core `C_λ = X_λ/{±1}`
+(the four exceptional `j`-invariants), relative to an anabelian interface `AG`. -/
+def CoreFinitenessHyp (AG : AnabelianGeometry.{0}) : Prop :=
+  {x | ∃ hx : x ∈ tripodTheory.cbsSet K ∩ tripodTheory.ptLE tripodTheory.tripod d,
+    ¬ AG.HasCore (AG.oncePunctured (P.curve x).E)
+      (OrbicurveDataSection.CF AG (P.curve x).F (P.curve x).E)}.Finite
+
 /-- **The facts about the curves of the points that remain unproved**, collected: exactly
 the fields of `Iut.CurveInputs` for `curveOf` that are not proved in this file. -/
-structure CurveFactsProp (TK : ℝ) : Prop where
+structure CurveFactsProp (AG : AnabelianGeometry.{0}) (TK : ℝ) : Prop where
   /-- Corollary 2.2(i). -/
   height : LegendreHeightHyp P K
   /-- [GenEll], Lemma 3.5. -/
   cyclic : CyclicBoundHyp P K d TK
   /-- [GenEll], Lemma 3.1(iii). -/
   sl2 : SL2ImageHyp P
+  /-- [CanLift], Proposition 2.7. -/
+  core : CoreFinitenessHyp P K d AG
 
 /-- **The inputs of IUT IV, Corollary 2.2 for the tripod**, from the curves `E_λ/F_λ` of the
 points, the facts proved in this file, the isolated hypotheses `CurveFactsProp`, and the
 Northcott property `NorthcottHyp`. -/
-noncomputable def curveInputs {TK : ℝ}
-    (CF : CurveFactsProp P K d TK) (hN : NorthcottHyp)
+noncomputable def curveInputs {AG : AnabelianGeometry.{0}} {TK : ℝ}
+    (CF : CurveFactsProp P K d AG TK) (hN : NorthcottHyp)
     (hdeg3 : ∀ l : Qbar, TorsionDegreeBound l 3) (hdeg5 : ∀ l : Qbar, TorsionDegreeBound l 5)
     (hB : TwoAdicBoundHyp P K (max (4 * K.c) 0))
     (hge : LogCondGeHyp P) (hle : LogCondLeHyp P) :
-    CurveInputs tripodTheory K d where
+    CurveInputs tripodTheory AG K d where
   h := P.h
   curve x _ := P.curve x
   arith x _ := P.arith x
@@ -471,6 +481,7 @@ noncomputable def curveInputs {TK : ℝ}
   cyclic_bound := CF.cyclic
   sl2_of x _ ℓ hℓ := CF.sl2 x ℓ hℓ
   logDiff_eq x _ := logDiff_eq x _ _
+  excCore_finite := CF.core
   logCond_ge x _ := hge x
   logCond_le x _ := hle x
 

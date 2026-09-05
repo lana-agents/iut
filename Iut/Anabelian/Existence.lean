@@ -14,11 +14,9 @@ import Iut.Concrete.Existence
 
 `Iut.Anabelian.anabelianExistence` proves `Iut.AnabelianExistence` for the linear-algebraic
 model of the anabelian interface (`Iut.Anabelian.modelAG`, `Iut.Anabelian.modelTG`): for
-admissible prime data `P` over global data, the orbicurve data `C̲_K`, `X̲_K`, `ε` (IUT I,
-Definition 3.1(d), (f)) and the local theta data `V` (Definition 3.1(e), (f)) exist. The
-theorem has no residual input: the conditions of Definition 3.1(d)–(e) involving
-fundamental groups and cores are not represented in the interfaces (README, "Honesty
-boundary").
+admissible prime data `P` over global data whose once-punctured curve admits the core
+`C_F = X_F/{±1}`, the orbicurve data `C̲_K`, `X̲_K`, `ε` (IUT I, Definition 3.1(d), (f))
+and the local theta data `V` (Definition 3.1(e), (f)) exist.
 
 ## The construction (IUT IV, proof of Corollary 2.2, (P7))
 
@@ -26,7 +24,7 @@ Let `K = F(E[ℓ])` and identify `E(K)[ℓ] ≅ 𝔽_ℓ²` through the chosen b
 (`Iut.AdmissiblePrimeData.basisK`). Put `M = ⟨e₁⟩` and `q = e₂ mod M`; then
 `C̲_K = (E_K, ℓ, M, ±)`, `X̲_K = (E_K, ℓ, M, −)`, `ε = cusp of q`. The covering diagram
 `X̲_K → X_K`, `X̲_K → C̲_K`, `X_K → C_K`, `C̲_K → C_K` is the `±`-quotient square of the
-model. (The core condition "`C̲_K` has `K`-core `C_K`" is not represented.)
+model. `C̲_K` has core `C_K` because `X_F` has core `C_F` (residual stability of cores).
 
 For the local data, at a place `v ∈ V_mod^bad` one needs a place `w` of `K` over `v` at
 which the **graph line** (the ℓ-torsion of the kernel of reduction, `μ_ℓ` under the Tate
@@ -276,6 +274,8 @@ def coverCKu_CK : Orbicurve.Cover P.CKu P.CK' where
   M_le R hR := P.nsmul_mem_of_mem_M' R hR _
   pm_le _ := rfl
 
+variable (Pi1 : EtalePi1Theory.{u})
+
 /-- The second coordinate `E(K)[ℓ] → 𝔽_ℓ`, with kernel `M`. -/
 def coord₂ : ↥P.TK →+ ZMod P.ℓ :=
   (Pi.evalAddMonoidHom (fun _ => ZMod P.ℓ) 1).comp P.basisK.toAddMonoidHom
@@ -319,9 +319,15 @@ lemma QIso_q : P.QIso P.q = 1 := by
 
 /-- **The orbicurve data** `C̲_K`, `X̲_K`, `ε` of IUT I, Definition 3.1(d), (f), for the
 model. -/
-def orbicurveData : OrbicurveData modelAG F E Fbar VBad P where
+def orbicurveData (hcore : Pi1.HasCore (Orbicurve.oncePunctured E)
+    (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))) :
+    OrbicurveData (modelAG Pi1) F E Fbar VBad P where
   CKu := P.CKu
   CKu_type := ⟨P.ℓ_prime, rfl, rfl, P.M_le_TK, P.card_M, P.card_TK⟩
+  CKu_core := by
+    have h1 := Pi1.hasCore_baseChange (algebraMap F ↥P.torsionField) hcore
+    have h2 := (Pi1.hasCore_iff_of_cover P.coverXK_CK).mp h1
+    exact (Pi1.hasCore_iff_of_cover P.coverCKu_CK).mpr h2
   XKu := P.XKu
   XKu_type := ⟨P.ℓ_prime, rfl, rfl, P.M_le_TK, P.card_M, P.card_TK⟩
   XKu_to_XK := P.coverXKu_XK
@@ -497,7 +503,9 @@ variable (P TF)
 
 /-- **The local theta data** `V` with the local conditions of IUT I, Definition 3.1(e), (f),
 for the model. -/
-def localThetaData : LocalThetaData modelAG modelTG F E Fbar VBad P P.orbicurveData where
+def localThetaData (hcore : Pi1.HasCore (Orbicurve.oncePunctured E)
+    (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))) (T : TemperedPi1Theory Pi1) :
+    LocalThetaData (modelAG Pi1) (modelTG Pi1 T) F E Fbar VBad P (P.orbicurveData Pi1 hcore) where
   sect := P.sect TF
   local_diagram_cartesian _ := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
   decomp w := decompGroup ↥P.torsionField Fbar w
@@ -561,28 +569,31 @@ open WeierstrassCurve NumberField Iut Iut.AdmissiblePrimeData
 /-! ## The existence theorem -/
 
 /-- **The anabelian part of initial Θ-data exists for the model** (IUT I, Definition
-3.1(d)–(f); (P7) in the proof of IUT IV, Corollary 2.2), with no residual input. -/
-theorem anabelianExistence : AnabelianExistence modelAG.{u} modelTG where
-  exists_data F _ _ E _ Fbar _ _ _ _ P _ TF _ :=
-    ⟨P.orbicurveData, ⟨P.localThetaData TF⟩⟩
+3.1(d)–(f); (P7) in the proof of IUT IV, Corollary 2.2), given the residual fundamental
+group theories. -/
+theorem anabelianExistence (Pi1 : EtalePi1Theory.{u}) (T : TemperedPi1Theory Pi1) :
+    AnabelianExistence (modelAG Pi1) (modelTG Pi1 T) where
+  exists_data F _ _ E _ Fbar _ _ _ _ P _ TF _ hcore :=
+    ⟨P.orbicurveData Pi1 hcore, ⟨P.localThetaData Pi1 TF hcore T⟩⟩
 
 /-- **The Corollary 3.12 variant for the model implies ABC**: with the anabelian interface
 instantiated by the linear-algebraic model, the existence of initial Θ-data is a theorem,
-and the remaining hypotheses are the curve inputs of Corollary 2.2, the universal
-providers of the local theory, the local theta data and the tower arithmetic, the
-analytic inputs, and the Corollary 3.12 variant itself. -/
-theorem cor312Variant_implies_abc_model {T : Genl.HeightTheory}
-    (A : T.ProofPackage) (CI : ∀ (K : T.CBS) (d : ℕ), CurveInputs.{u} T K d)
-    (LTp : ∀ D : InitialThetaData modelAG.{u} modelTG, LocalTheory.{u, v} D.Kt)
-    (TLp : ∀ (D : InitialThetaData modelAG.{u} modelTG)
+and the remaining hypotheses are the residual fundamental-group theories, the curve inputs
+of Corollary 2.2, the universal providers of the local theory, the local theta data and the
+tower arithmetic, the analytic inputs, and the Corollary 3.12 variant itself. -/
+theorem cor312Variant_implies_abc_model {T : Genl.HeightTheory} (Pi1 : EtalePi1Theory.{u})
+    (Tp : TemperedPi1Theory Pi1)
+    (A : T.ProofPackage) (CI : ∀ (K : T.CBS) (d : ℕ), CurveInputs.{u} T (modelAG Pi1) K d)
+    (LTp : ∀ D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp), LocalTheory.{u, v} D.Kt)
+    (TLp : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp))
       (LT : LocalTheory.{u, v} D.Kt), ThetaLocalData D LT)
-    (TAp : ∀ (D : InitialThetaData modelAG.{u} modelTG)
+    (TAp : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp))
       (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT), TowerArithmetic D LT TL)
     (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
-    (h312 : ∀ (D : InitialThetaData modelAG.{u} modelTG)
+    (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp))
       (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
       Corollary312Variant (concreteVariantData.{u, v} D LT TL QI)) :
     ABC T :=
-  cor312Variant_implies_abc_curves A CI anabelianExistence LTp TLp TAp cheb pnt h312
+  cor312Variant_implies_abc_curves A CI (anabelianExistence Pi1 Tp) LTp TLp TAp cheb pnt h312
 
 end Iut.Anabelian
