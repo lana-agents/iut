@@ -162,9 +162,16 @@ whose fields are the target statements of the sibling projects:
   the arithmetic of the number field — places over `p`, `∑ e_v f_v = [K : ℚ]`, the
   different (`Arithmetic.lean`), and the least hull regions at `∞` — the least real
   radial scaling `t·B_I` containing an admissible region, `t = sup ‖·‖_π`
-  (`Admissible.lean`). The residual inputs are the three fields of
-  `Iut.LocalConstruct.LocalTheoryFacts K`: `(R_I)^∼ ⊆ 𝓘_I`, existence of least hull
-  regions at the primes (`HullExists K`), and Proposition 1.4(iii).
+  (`Admissible.lean`), and Proposition 1.4(iii) on the packets all of whose components lie
+  over `p`, with the hull region `p^{⌊ord_p x⌋}·(R_I)^∼` (`Prop14.lean`). The residual
+  inputs are the three fields of `Iut.LocalConstruct.LocalTheoryFacts K`: `(R_I)^∼ ⊆ 𝓘_I`,
+  existence of least hull regions at the primes (`HullExists K`), and Proposition 1.4(iii)
+  on the junk packets (a component not over `p`). The last is **false** for the
+  construction (`not_prop14iiiJunk`, hence `not_localTheoryFacts`): the junk packets are
+  the zero ring, where the log-volume vanishes while the bound of the interface field
+  `LocalTheory.prop14_iii` is negative for `ord_p x` large; the field needs the hypothesis
+  of `componentVol_prime_preimage` that every component lies over `p`, which every
+  application of it satisfies (`LocalTheory.tuple_isOver`).
 * [`Container.lean`](Iut/Concrete/Container.lean) — the container, log-volume data
   (weights `[K_v : ℚ_p]/[K : ℚ]` summing to `1`) and hull system (least among all hull
   regions `a·(R_I)^∼` at a prime, among the real radial scalings `t·B_I` at `∞`), all
@@ -230,7 +237,7 @@ from #1449):
 
 | Input | Content | Status |
 | --- | --- | --- |
-| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed** (`Iut.LocalConstruct.concreteLocalTheory`); residual `Prop` `LocalTheoryFacts K` (three fields), padic-log-volume [#1462](https://taxis.lana.merten.dev/issues/1462) |
+| `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed** (`Iut.LocalConstruct.concreteLocalTheory`); residual `Prop` `LocalTheoryFacts K` (three fields; the third — Prop 1.4(iii) on the junk packets — is false for the construction, `not_localTheoryFacts`: the interface field lacks the hypothesis that every component lies over `p`), padic-log-volume [#1462](https://taxis.lana.merten.dev/issues/1462) |
 | `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | **constructed** (`Iut.thetaLocalData`), from the rationality of the ℓ- and 2-torsion |
 | `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | `Prop`; elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
 | `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
