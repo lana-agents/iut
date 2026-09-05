@@ -99,7 +99,20 @@ it is never strengthened.
 change of variables: Mathlib's reduction classes refer to the given Weierstrass model (they
 assert its minimality), whereas IUT I, Definition 3.1(a) is a property of the curve. With
 the model-bound form, stable reduction everywhere is false for the Legendre models of the
-tripod points. Likewise the cyclic-subgroup bound of [GenEll] Lemma 3.5 (`cyclic_bound` in
+tripod points. In the curve-bound form it is **proved** for the curves `E_λ/F_λ` of the
+tripod points (`Iut.Tripod.stable_reduction`, [`Iut/Tripod/StableOdd.lean`](Iut/Tripod/StableOdd.lean),
+[`StableTwo.lean`](Iut/Tripod/StableTwo.lean)): at the places of odd residue characteristic
+from the Legendre model `y² = x(x−1)(x−λ)` (good if `λ`, `λ−1` are units, multiplicative
+otherwise) and its twist `E_{1/λ}` by `√λ ∈ F_λ` when `λ` is not integral; at the places over
+`2` by an elementary form of Raynaud's criterion for the rational `3`-torsion: on an integral
+model a point of order `3` has integral coordinates and integral tangent slope (its
+`x`-coordinate is a root of `ψ₃ = 3x⁴ + …`, with `3` a unit), the integral change of
+variables moving it to the origin with horizontal tangent gives the normal form
+`y² + Axy + By = x³` (`Δ = B³(A³−27B)`, `c₄ = A(A³−24B)`), which is good or multiplicative
+unless `A`, `B` are both non-units, and then the second independent point of order `3`,
+whose `x`-coordinate is a nonzero integral root of `3x³ + A²x² + 3ABx + 3B²`, forces
+`B ∈ 𝔪³` by a dominant-term argument, so that the model can be rescaled by a uniformizer.
+Likewise the cyclic-subgroup bound of [GenEll] Lemma 3.5 (`cyclic_bound` in
 `Corollary22Inputs`, `CurveInputs`) is stated for primes `ℓ ≥ 7` under (P2), as it is
 used; quantified over all primes it fails for the curves of the points, whose 3- and
 5-torsion is rational.
@@ -263,7 +276,7 @@ from #1449):
 | `Iut.PrimeCountingBound` | Proposition 1.6 (factor `3/2`) | **proved** (`Iut.primeCountingBoundExplicit`, from Mathlib's `θ(x) ≤ (log 4)·x` and the Abel-summation identity for `π`; `Iut.PrimeCountingHyp` is the theorem `Iut.primeCountingHyp_holds`), [#1466](https://taxis.lana.merten.dev/issues/1466) |
 | `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); residual `Prop`s `CurveProps`, `CurveFactsProp`, see below |
 | `Genl.HeightTheory.ProofPackage` | [GenEll] Theorem 2.1 (ii) ⇒ (i) | not needed for the tripod target `StatementII` |
-| `EllipticCurveData.CurveArithmetic` | Prop 1.8 | six of ten fields **proved** (`CurveArithmetic.ofCore`); for the tripod, `√−1 ∈ F`, `E[6]` rational and `F/F_mod` Galois of degree prime to `ℓ` are **proved** (`Iut/Tripod/Galois.lean`); stable reduction remains a `Prop` |
+| `EllipticCurveData.CurveArithmetic` | Prop 1.8 | six of ten fields **proved** (`CurveArithmetic.ofCore`); for the tripod curves `√−1 ∈ F`, stable reduction (`Iut/Tripod/StableOdd.lean`, `StableTwo.lean`), `E[6]` rational and `F/F_mod` Galois of degree prime to `ℓ` (`Iut/Tripod/Galois.lean`) are all **proved** |
 | `EllipticCurveData.TateInputs` | Tate parameters at the multiplicative places | **constructed** (`EllipticCurveData.tateInputs`) |
 | `EllipticCurveData.ModEllRepData ℓ` | the mod-`ℓ` representation on `E[ℓ]` | **constructed** (`modEllRepData`) from `E[ℓ] ≅ (ℤ/ℓ)²` ([#277](https://taxis.lana.merten.dev/issues/277)) |
 | `Iut.AnabelianExistence AG TG` | IUT I, Definition 3.1(d)–(f): `C̲_K`, `ε`, `V` and the bad-place conditions | **proved** for the anabelian model (`Iut.Anabelian.anabelianExistence Pi1 Tp`) for every étale/tempered `π₁` theory `Pi1`, `Tp` (universally quantified) and curves whose once-punctured curve has a core; see below |
@@ -306,8 +319,12 @@ repository and every hypothesis is a proposition about the constructed objects.
   `≤ |GL₂(𝔽_ℓ)|`, by the Galois correspondence), `log-diff = ` the different degree of the
   tripodal field `ℚ(λ)`; the curve-level data (Tate parameters, mod-`ℓ` representations,
   finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (`E_λ[n] ≅ (ℤ/n)²`
-  and stable reduction of `E_λ/F_λ`; that `F_λ/ℚ(j)` is Galois of degree prime to `ℓ ≥ 7`
-  is proved in [`Galois.lean`](Iut/Tripod/Galois.lean)); the remaining
+  only; the stable reduction of `E_λ/F_λ` at every finite place is **proved**
+  ([`StableOdd.lean`](Iut/Tripod/StableOdd.lean), [`StableTwo.lean`](Iut/Tripod/StableTwo.lean):
+  the Legendre model and its twist `E_{1/λ}` at the odd places, Raynaud's criterion for the
+  rational `3`-torsion at the places over `2`, see the honesty boundary), and that
+  `F_λ/ℚ(j)` is Galois of degree prime to `ℓ ≥ 7` is proved in
+  [`Galois.lean`](Iut/Tripod/Galois.lean)); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the cyclic-subgroup
   bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2)); the finiteness of the points whose
   once-punctured curve has no core ([CanLift] Prop 2.7, `Iut.Tripod.coreFiniteness` from the

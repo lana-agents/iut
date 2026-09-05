@@ -28,9 +28,9 @@ hypothesis is a proposition about the constructed objects:
   groups of the model orbicurves with the core relation, **universally quantified** — the
   theorem holds for every such theory, in particular for the actual fundamental groups, so
   the variant `h312` is assumed on exactly the class of Θ-data of IUT I, Definition 3.1;
-* `CurveProps`: the ℓ-torsion of the Legendre curves is a rank-two `ℤ/ℓ`-module, and
-  `E_λ/F_λ` has stable reduction (that `F_λ/ℚ(j)` is Galois of degree prime to `ℓ ≥ 7` is
-  a theorem, `Iut/Tripod/Galois.lean`);
+* `CurveProps`: the `n`-torsion of the Legendre curves is a rank-two `ℤ/n`-module (the
+  stable reduction of `E_λ/F_λ` at every finite place, `Iut.Tripod.stable_reduction`, and
+  the Galois-degree property of `F_λ/ℚ(j)`, `Iut/Tripod/Galois.lean`, are theorems);
 * `CurveFactsProp`: the cyclic-subgroup bound ([GenEll] Lemma 3.5); the height comparison
   of Corollary 2.2(i), the `2`-adic bound, the conductor comparisons, the `SL₂`-image lemma
   ([GenEll] Lemma 3.1(iii)) and the finiteness of the points whose once-punctured curve has
