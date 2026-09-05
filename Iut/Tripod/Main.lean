@@ -13,6 +13,7 @@ import Iut.Anabelian.Existence
 import Iut.Tripod.Northcott
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.LogCond
+import Iut.Tripod.Height
 
 /-!
 # The ABC implication for the tripod, with propositional inputs
@@ -28,10 +29,11 @@ hypothesis is a proposition about the constructed objects:
   the variant `h312` is assumed on exactly the class of Θ-data of IUT I, Definition 3.1;
 * `CurveProps`: the ℓ-torsion of the Legendre curves is a rank-two `ℤ/ℓ`-module, and
   `E_λ/F_λ` has stable reduction and the Galois-degree property;
-* `CurveFactsProp`: the height comparison of Corollary 2.2(i), the cyclic-subgroup bound,
-  the `SL₂`-image lemma ([GenEll] §3) and the finiteness of the points whose once-punctured
-  curve has no core ([CanLift], Proposition 2.7); the `2`-adic bound and the conductor
-  comparisons are theorems (`Iut/Tripod/TwoAdic.lean`, `LogCond.lean`);
+* `CurveFactsProp`: the cyclic-subgroup bound, the `SL₂`-image lemma ([GenEll] §3) and the
+  finiteness of the points whose once-punctured curve has no core ([CanLift],
+  Proposition 2.7); the height comparison of Corollary 2.2(i), the `2`-adic bound and the
+  conductor comparisons are theorems (`Iut/Tripod/Height.lean`, `TwoAdic.lean`,
+  `LogCond.lean`);
 * `LocalTheoryFacts`: the three remaining facts of the local theory (the inclusion of the
   maximal order in the log-shell, least hull regions, IUT IV Prop. 1.4(iii)) and the tower
   arithmetic `TowerArithmetic` (IUT IV, §1), all about the constructed packets;
@@ -63,11 +65,12 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
       (curveInputs (providersOfProps hp) K d CF hN
         (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
         (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
-        (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs := by
+        (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _)
+        (logCondLe _)).toCorollary22Inputs := by
   set CI := curveInputs (providersOfProps hp) K d CF hN
     (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
     (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
-    (twoAdicBound _ K) (logCondGe _) (logCondLe _) with hCI
+    (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _) (logCondLe _) with hCI
   intro x hx hxe ℓ hℓ h7 hP2 hP3 hP5 hsl
   have hcore : (modelAG Pi1).HasCore ((modelAG Pi1).oncePunctured (CI.curve x hx).E)
       (OrbicurveDataSection.CF (modelAG Pi1) (CI.curve x hx).F (CI.curve x hx).E) := by
@@ -116,7 +119,8 @@ theorem abc_of_variant
     (fun K d => (curveInputs (providersOfProps hp) K d (CF K d) northcottHyp
       (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
       (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
-      (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs)
+      (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _)
+      (logCondLe _)).toCorollary22Inputs)
     (fun K d =>
       (concreteThetaDataExistence' Pi1 Tp hp (CF K d) northcottHyp hlocal TAp).toThetaDataExistence)
     chebyshevBoundExplicit pnt (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
