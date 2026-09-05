@@ -38,14 +38,13 @@ records exactly this data: `(E, ℓ, M, ±)`. Then
 * the type `(1, ℤ/ℓℤ)^±` over a valued field, the theta-root models and the canonical
   graph cusp are defined in `Iut.Anabelian.Local` from minimal Weierstrass models.
 
-## The residual interface
+## No residual interface
 
-Étale fundamental groups of the model orbicurves, the open immersions attached to
-covers, and the notion of `k`-core (with its two stability properties: orbicurves related
-by a finite étale cover have the same cores, and cores are compatible with base change)
-are the content of `Iut.Anabelian.EtalePi1Theory`, an explicit residual interface (taxis
-#276, #7, #10): the model only records the shapes on which these are evaluated. Every
-other field of `Iut.AnabelianGeometry` is constructed.
+Every field of `Iut.AnabelianGeometry` is constructed here or in `Iut.Anabelian.Local`.
+Étale fundamental groups of the model orbicurves, the open immersions attached to covers
+and the notion of `k`-core are not part of the interface (the statement of the
+Corollary 3.12 variant never reads them; see the README, "Honesty boundary"): the model
+only records the shapes on which they would be evaluated.
 -/
 
 namespace Iut.Anabelian
@@ -255,33 +254,5 @@ def IsTypeOneEllTorsPM (ℓ : ℕ) (X : Orbicurve k) : Prop :=
 end Orbicurve
 
 end
-
-/-! ## The residual interface: étale fundamental groups -/
-
-/-- **Étale fundamental groups of the model orbicurves** (residual interface of taxis #276,
-#7, #10): the profinite étale fundamental group of each model orbicurve, the open
-immersions induced by covers, and the `k`-core relation with its two stability
-properties (a finite étale cover of `X` has the same core as `X`; cores are compatible
-with base change). -/
-structure EtalePi1Theory : Type (u + 1) where
-  /-- The arithmetic étale fundamental group (basepoint suppressed). -/
-  pi1 : {k : Type u} → [Field k] → Orbicurve k → ProfiniteGrp.{u}
-  /-- The homomorphism induced by a cover. -/
-  pi1Cover : {k : Type u} → [Field k] → {X Y : Orbicurve k} → Orbicurve.Cover X Y →
-    (pi1 X →* pi1 Y)
-  /-- The induced homomorphisms are continuous. -/
-  pi1Cover_continuous : ∀ {k : Type u} [Field k] {X Y : Orbicurve k}
-    (f : Orbicurve.Cover X Y), Continuous (pi1Cover f)
-  /-- The induced homomorphisms are open immersions. -/
-  pi1Cover_isOpenEmbedding : ∀ {k : Type u} [Field k] {X Y : Orbicurve k}
-    (f : Orbicurve.Cover X Y), Topology.IsOpenEmbedding (pi1Cover f)
-  /-- `C` is the `k`-core of `X`. -/
-  HasCore : {k : Type u} → [Field k] → Orbicurve k → Orbicurve k → Prop
-  /-- Orbicurves related by a finite étale cover have the same cores. -/
-  hasCore_iff_of_cover : ∀ {k : Type u} [Field k] {X Y C : Orbicurve k},
-    Orbicurve.Cover X Y → (HasCore X C ↔ HasCore Y C)
-  /-- Cores are compatible with base change. -/
-  hasCore_baseChange : ∀ {k K : Type u} [Field k] [Field K] (f : k →+* K)
-    {X C : Orbicurve k}, HasCore X C → HasCore (X.baseChange f) (C.baseChange f)
 
 end Iut.Anabelian

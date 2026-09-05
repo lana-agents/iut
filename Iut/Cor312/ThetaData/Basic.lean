@@ -19,7 +19,7 @@ of IUT I, Definition 3.1(a)–(f), packaged from the child modules:
   (`Iut.IsInitialThetaGlobalData`);
 * admissible prime and `ℓ`-torsion field, Definition 3.1(b)–(c): taxis #40
   (`Iut.AdmissiblePrimeData`);
-* orbicurves, `K`-core, and distinguished cusp, Definition 3.1(d)/(f): taxis #41
+* orbicurves and distinguished cusp, Definition 3.1(d)/(f): taxis #41
   (`Iut.OrbicurveData`);
 * valuation section and local conditions, Definition 3.1(e)–(f): taxis #42
   (`Iut.LocalThetaData`, containing `V` as `Iut.ValuationSection`).
@@ -34,9 +34,9 @@ choices (decomposition groups). The **derived objects** are `def`s, never fields
 `F_mod = ℚ(j(E))` (`Iut.fieldOfModuli`), `F_sol` (`Iut.solvableClosure`), `K`
 (`AdmissiblePrimeData.torsionField`, the fixed field of the kernel of the mod-`ℓ`
 representation), the good/bad place sets (`Iut.badPlacesOver`, `Iut.goodModPlaces`,
-`ValuationSection.Vbad`, …), the localizations (`Iut.localize`, `Iut.localCompletion`),
-the associated covers' fundamental-group maps (`AnabelianGeometry.pi1Cover`), and the
-`Π_v` conventions (`LocalThetaData.PivBad`/`PivGood`).
+`ValuationSection.Vbad`, …), and the localizations (`Iut.localize`,
+`Iut.localCompletion`). The fundamental groups, cores and `Π_v` conventions of
+Definition 3.1(d)–(e) are not represented (see `Iut.Cor312.ThetaData.Orbicurve`).
 
 Existence of initial Θ-data is **not** asserted anywhere (statement project;
 taxis #38). No hypothesis beyond Definition 3.1 is imposed; in particular, following

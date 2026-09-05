@@ -39,7 +39,7 @@ def IsConcrete (X : Corollary312VariantData.{u, v} AG TG) : Prop :=
     (QI : QPilotInputs D), X = concreteVariantData D LT TL QI
 
 /-- **Existence of suitable initial Θ-data, concrete form** ((P7) in the proof of
-Corollary 2.2): for a point `x` outside the exceptional set and a prime `ℓ ≥ 7` satisfying
+Corollary 2.2): for a point `x` and a prime `ℓ ≥ 7` satisfying
 (P2), (P3), (P5), (P6), initial Θ-data with prime `ℓ` together with the local-field theory
 and local theta data of its `ℓ`-torsion field, the finiteness of its bad locus, the
 arithmetic inputs of its tower, and Steps (ii), (iii) of the proof of Theorem 1.10, with
@@ -47,7 +47,7 @@ the expected relations to `x`. Proved in `Iut.Concrete.Existence` from the curve
 points, the standard providers, and the anabelian existence `Iut.AnabelianExistence`
 (IUT I, Definition 3.1(d)–(f); taxis #1469). -/
 def ConcreteThetaDataExistence {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d) : Prop :=
-  ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d), x ∉ I.excCore →
+  ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
     ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
     (∀ v ∈ (I.localData x hx).bad, ¬ ℓ ∣ (I.localData x hx).hv v) →
     (∀ v ∈ (I.localData x hx).bad, (I.localData x hx).p v = ℓ →
@@ -69,9 +69,9 @@ theorem ConcreteThetaDataExistence.toThetaDataExistence {K : T.CBS} {d : ℕ}
     {I : Corollary22Inputs T K d}
     (ex : ConcreteThetaDataExistence.{u, v} (AG := AG) (TG := TG) I) :
     ThetaDataExistence (IsConcrete.{u, v} (AG := AG) (TG := TG)) I where
-  thetaData x hx hxe ℓ hℓp hℓ7 hP2 hP3 hP5 hP6 := by
+  thetaData x hx ℓ hℓp hℓ7 hP2 hP3 hP5 hP6 := by
     obtain ⟨D, LT, TL, QI, TA, hℓ, hd, hq, hdiff, hc1, hc2⟩ :=
-      ex x hx hxe ℓ hℓp hℓ7 hP2 hP3 hP5 hP6
+      ex x hx ℓ hℓp hℓ7 hP2 hP3 hP5 hP6
     refine ⟨concreteVariantData.{u, v} D LT TL QI, TL.invariants QI, ⟨D, LT, TL, QI, rfl⟩,
       TA.certificate (hℓ ▸ hℓ7), ⟨TA.localEstimate⟩, hℓ, hd, hq, hdiff, hc1, ?_⟩
     exact hc2

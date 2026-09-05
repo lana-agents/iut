@@ -29,8 +29,11 @@ The proof mixes three kinds of input, which are separated here:
    Northcott finiteness, the bound at the prime `2` coming from `(∗j-inv)`, and the two
    [GenEll] inputs of the proof: Lemma 3.5 (an `ℓ`-cyclic subgroup scheme forces a bound
    on the height) and Lemma 3.1(iii) (the mod-`ℓ` image contains `SL₂`). These are
-   delegated to `LANA-Project/genl` (taxis #1452) and `lana-agents/orbicurve-cores`
-   (taxis #10, the four exceptional `j`-invariants of [CanLift], Proposition 2.7).
+   delegated to `LANA-Project/genl` (taxis #1452). The condition of (P7) that `X_F`
+   admits an `F`-core (the four exceptional `j`-invariants of [CanLift],
+   Proposition 2.7) is not represented, since the Θ-data interfaces carry no cores
+   (README, "Honesty boundary"); there is accordingly no exceptional set of points
+   beyond the Northcott set.
 2. **The prime number theorem** (`ChebyshevBound`, `PrimeCountingBound`; taxis #6).
 3. **The existence of the anabelian part of the Θ-data** (`ThetaDataExistence`, (P7)):
    given a curve and a prime `ℓ` satisfying (P1)–(P6), initial Θ-data in the situation
@@ -277,9 +280,8 @@ variable (T : Genl.HeightTheory)
 subset `K` of the tripod and a degree bound `d`: the function `log(q_∀)`, the local height
 data of each curve over its Θ-data field `F` (with `[F : ℚ] ≤ δ`), Corollary 2.2(i),
 Northcott finiteness, the bound of the contribution of the prime `2`, [GenEll] Lemma 3.5
-and Lemma 3.1(iii), and the four exceptional `j`-invariants of [CanLift], Proposition 2.7.
-All are standard arithmetic geometry or absolute anabelian geometry, delegated to the
-sibling projects (taxis #1452, #10). -/
+and Lemma 3.1(iii). All are standard arithmetic geometry, delegated to the sibling
+project (taxis #1452). -/
 structure Corollary22Inputs (K : T.CBS) (d : ℕ) where
   /-- The height `h = log(q_∀(−))`: the normalized degree of the `q`-divisor at all
   nonarchimedean primes. -/
@@ -326,17 +328,12 @@ structure Corollary22Inputs (K : T.CBS) (d : ℕ) where
     ¬ HasCyclicSubgroup x ℓ →
     (∃ v ∈ (localData x hx).bad, (localData x hx).p v ≠ 2 ∧ (localData x hx).p v ≠ ℓ) →
     SL2Image x ℓ
-  /-- The points whose once-punctured elliptic curve fails to have an `F`-core
-  ([CanLift], Proposition 2.7: four `j`-invariants; taxis #10). -/
-  excCore : Set (T.Pt T.tripod)
-  /-- Finitely many such points of bounded degree. -/
-  excCore_finite : (excCore ∩ (T.cbsSet K ∩ T.ptLE T.tripod d)).Finite
 
 variable {T}
 variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 /-- **Existence of suitable initial Θ-data** ((P7) in the proof of Corollary 2.2): for a
-point `x` outside the exceptional set and a prime `ℓ ≥ 7` satisfying (P2), (P3), (P5),
+point `x` and a prime `ℓ ≥ 7` satisfying (P2), (P3), (P5),
 (P6), there are initial Θ-data with prime `ℓ` in the situation of Theorem 1.10 — i.e.
 a Corollary 3.12 variant data bundle with its Theorem 1.10 invariants, certificate and
 local estimates — whose `log(q)` is the part of `log(q_∀)` away from `2` and `ℓ`, with
@@ -351,7 +348,7 @@ the `SL₂` image. It is an open obligation of this repository, blocked on the a
 interfaces (taxis #276, #279). -/
 structure ThetaDataExistence (P : Corollary312VariantData.{u, v} AG TG → Prop)
     {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d) : Prop where
-  thetaData : ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d), x ∉ I.excCore →
+  thetaData : ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
     ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
     (∀ v ∈ (I.localData x hx).bad, ¬ ℓ ∣ (I.localData x hx).hv v) →
     (∀ v ∈ (I.localData x hx).bad, (I.localData x hx).p v = ℓ →
@@ -375,13 +372,13 @@ noncomputable def threshold (cheb : ChebyshevBound) : ℝ :=
     (max ((I.B + 11 + 2 * deltaBound d) ^ 4 + 1)
       (((60 * deltaBound d) ^ 2 * (2 * deltaBound d + 4)) ^ 4 + 1))
 
-/-- **Corollary 2.2(ii), the inequality (C2)**: outside the exceptional set and above the
+/-- **Corollary 2.2(ii), the inequality (C2)**: above the
 threshold, `(1/6)·log(q_∀(x)) ≤ (1 + ε_E)·(log-diff_X(x) + log-cond_D(x)) + C_K` with
 `C_K = 40·η_prm + B_K/3`, `ε_E ≤ 1`, and `log-diff_X(x) + log-cond_D(x) ≥ 0`. -/
 theorem c2 {P : Corollary312VariantData.{u, v} AG TG → Prop} (hd : 1 ≤ d)
     (ex : ThetaDataExistence P I) (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
     (h312 : ∀ X : Corollary312VariantData.{u, v} AG TG, P X → Corollary312Variant X)
-    (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d) (hxe : x ∉ I.excCore)
+    (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d)
     (hH : I.threshold cheb ≤ I.h x) :
     1 / 6 * I.h x ≤ (1 + epsilonE (deltaBound d) (I.h x)) *
         (T.logDiff T.tripod x + T.logCond T.tripod x) + (40 * pnt.η + I.B / 3) ∧
@@ -516,7 +513,7 @@ theorem c2 {P : Corollary312VariantData.{u, v} AG TG → Prop} (hd : 1 ≤ d)
     subst hLdef
     exact I.sl2_of x hx ℓ hℓp (by exact_mod_cast hℓ5) hP2 hP4 hP5'
   obtain ⟨X, inv, hPX, cert, ⟨est⟩, hXℓ, hXd, hXq, hDiff, hCond1, hCond2⟩ :=
-    ex.thetaData x hx hxe ℓ hℓp hℓ7 (hLdef ▸ hP2) (by rw [← hLdef, ← hhdef, ← hrdef]; exact hP3)
+    ex.thetaData x hx ℓ hℓp hℓ7 (hLdef ▸ hP2) (by rw [← hLdef, ← hhdef, ← hrdef]; exact hP3)
       (hLdef ▸ hP5') hP6
   rw [← hLdef] at hXq
   -- Theorem 1.10

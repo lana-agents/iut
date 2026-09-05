@@ -19,7 +19,7 @@ formalism and its proof package, taxis #2) it suffices to prove statement (ii) o
 theorem, the inequality for the tripod on `K_V ∩ U_X(ℚ̄)^{≤d}` for every compactly bounded
 subset `K_V` (with support containing `2`). Statement (ii) follows from Corollary 2.2:
 outside a finite exceptional set (the Northcott set of points of height below the
-threshold together with the four exceptional `j`-invariants) the inequality (C2) holds
+threshold) the inequality (C2) holds
 with `ε_E ≤ ε`, and by Corollary 2.2(i) `ht_{ω_X(D)} ≈ (1/6)·log(q_∀)`; a finite set
 contributes only a bounded discrepancy.
 
@@ -71,20 +71,18 @@ theorem statementII_of_cor312 {P : Corollary312VariantData.{u, v} AG TG → Prop
     unfold deltaBound; linarith
   set H : ℝ := max (Id.threshold cheb)
     (max (((60 * deltaBound d) ^ 2 * (2 * deltaBound d + 4) / ε) ^ 4) 1) with hH
-  set Exc : Set (T.Pt T.tripod) :=
-    (Id.excCore ∩ S) ∪ {x | x ∈ S ∧ Id.h x ≤ H} with hExc
-  have hExc_fin : Exc.Finite := Id.excCore_finite.union (Id.northcott H)
+  set Exc : Set (T.Pt T.tripod) := {x | x ∈ S ∧ Id.h x ≤ H} with hExc
+  have hExc_fin : Exc.Finite := Id.northcott H
   -- on `S ∖ Exc`, Corollary 2.2 gives the inequality with a uniform number
   have hgood : Id.h ≲[S \ Exc]
       (6 * (1 + ε)) • (T.logDiff T.tripod + T.logCond T.tripod) := by
     refine ⟨6 * (40 * pnt.η + Id.B / 3), fun x hx => ?_⟩
     obtain ⟨hxS, hxE⟩ := hx
-    have hxe : x ∉ Id.excCore := fun h => hxE (Or.inl ⟨h, hxS⟩)
     have hxH : H < Id.h x := by
       by_contra hle
-      exact hxE (Or.inr ⟨hxS, not_lt.mp hle⟩)
+      exact hxE ⟨hxS, not_lt.mp hle⟩
     have hth : Id.threshold cheb ≤ Id.h x := (le_max_left _ _).trans hxH.le
-    obtain ⟨hc2, _, hnn⟩ := Id.c2 hd (ex K d) cheb pnt h312 x hxS hxe hth
+    obtain ⟨hc2, _, hnn⟩ := Id.c2 hd (ex K d) cheb pnt h312 x hxS hth
     have hεE : epsilonE (deltaBound d) (Id.h x) ≤ ε := by
       apply epsilonE_le hδ1 hε
       · exact ((le_max_left _ _).trans (le_max_right _ _)).trans hxH.le

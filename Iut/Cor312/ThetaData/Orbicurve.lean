@@ -6,27 +6,36 @@ Authors: The iut contributors
 import Iut.Cor312.ThetaData.AdmissiblePrime
 
 /-!
-# Initial Θ-data: ℓ-torsion orbicurves, K-core, and distinguished cusp (taxis #41)
+# Initial Θ-data: ℓ-torsion orbicurves and distinguished cusp (taxis #41)
 
-The global orbicurve, core, covering, and distinguished-cusp portion of initial Θ-data,
+The global orbicurve, covering, and distinguished-cusp portion of initial Θ-data,
 IUT I, Definition 3.1(d) and the global part of (f), for the Corollary 3.12 variant
 statement (taxis #33).
 
 ## The anabelian interface
 
-Hyperbolic orbicurves, their finite étale coverings, and their arithmetic fundamental
-groups are not available in Mathlib. Following the honesty boundary of this repository,
-they enter through the explicit interface structure `Iut.AnabelianGeometry`: a bundle
-of types and operations (orbicurves over a field, finite étale covers, base change,
-once-punctured elliptic curves, `±1`-quotients, étale fundamental groups as profinite
-groups with open immersions for covers, cusps, cores, and the orbicurve-type predicates
-of *The Étale Theta Function*, Definition 2.1). Every intended property is either a
-field of the interface or a field of the data structures consuming it — never
-axiomatic. Discharging this interface is the business of the anabelian-geometry
-projects
-(taxis #7 `lana-agents/tempered-fundamental-groups`, taxis #10
-`lana-agents/orbicurve-cores`, and successors); this module supplies the definitions
-that taxis #10 consumes, and does not prove the classification theorem requested there.
+Hyperbolic orbicurves and their finite étale coverings are not available in Mathlib.
+Following the honesty boundary of this repository, they enter through the explicit
+interface structure `Iut.AnabelianGeometry`: a bundle of types and operations
+(orbicurves over a field, finite étale covers, base change, once-punctured elliptic
+curves, `±1`-quotients, cartesian squares, cusps, and the orbicurve-type predicates of
+*The Étale Theta Function*, Definition 2.1). Every intended property is either a field
+of the interface or a field of the data structures consuming it — never axiomatic. The
+interface is instantiated by the linear-algebraic model of `Iut.Anabelian.Model`
+(`Iut.Anabelian.modelAG`).
+
+## What is not represented
+
+The conditions of IUT I, Definition 3.1(d) involving **fundamental groups and cores** —
+that `C̲_K` has `K`-core `C_K`, and the open immersions of profinite étale fundamental
+groups induced by the covering diagram — are **not** represented: the statement of the
+Corollary 3.12 variant never reads them, so the interface carries neither fundamental
+groups nor a core relation, and the Θ-data record only the combinatorial consequences of
+these conditions at the level of `ℓ`-torsion (the orbicurve types, the cartesian
+covering diagram, the cusps and the rank-one quotient). The variant hypothesis is
+therefore quantified over a larger class of data than the printed corollary — a stronger
+hypothesis, so the implication to ABC is unaffected. See the "Honesty boundary" section
+of the README.
 
 ## The packaged data
 
@@ -35,11 +44,10 @@ data (taxis #40) and relative to an anabelian interface:
 
 * `C_F = X_F/{±1}` and its base change `C_K = C_F ×_F K` to the `ℓ`-torsion field `K`
   (both *derived*, not chosen: `OrbicurveData.CF`, `OrbicurveData.CK`);
-* a chosen orbicurve `C̲_K` of type `(1, ℓ-tors)^±` with `K`-core `C_K`, and the
-  associated `X̲_K` of type `(1, ℓ-tors)` with its covering diagram over `X_K` and
-  `C_K`, required to be cartesian, with the induced open immersions of fundamental
-  groups available from the interface (IUT I, Definition 3.1(d); *The Étale Theta
-  Function*, Definitions 2.1, 2.3);
+* a chosen orbicurve `C̲_K` of type `(1, ℓ-tors)^±`, and the associated `X̲_K` of type
+  `(1, ℓ-tors)` with its covering diagram over `X_K` and `C_K`, required to be
+  cartesian (IUT I, Definition 3.1(d); *The Étale Theta Function*, Definitions 2.1,
+  2.3); the `K`-core condition on `C̲_K` is not represented (see above);
 * a distinguished cusp `ε` of `C̲_K` arising from a nonzero element of the rank-one
   quotient `Q` (IUT I, Definition 3.1(f), global part). The arrow-decorated covers at
   good places that `ε` determines are packaged with the valuation-indexed local data
@@ -55,13 +63,15 @@ universe u
 
 open WeierstrassCurve
 
-/-- Interface for the anabelian geometry of hyperbolic orbicurves (seam for
-taxis #7/#10 and successors): orbicurve types, finite étale covers, base change,
-once-punctured elliptic curves, `±`-quotients, étale fundamental groups, cusps, cores,
-and the orbicurve-type predicates of *The Étale Theta Function*, Definition 2.1.
+/-- Interface for the anabelian geometry of hyperbolic orbicurves (instantiated by
+`Iut.Anabelian.modelAG`): orbicurve types, finite étale covers, base change,
+once-punctured elliptic curves, `±`-quotients, cartesian squares, cusps, Tate
+structures, and the orbicurve-type predicates of *The Étale Theta Function*,
+Definition 2.1.
 
-Basepoints of fundamental groups are suppressed throughout: each `pi1` is the étale
-fundamental group up to conjugation, as is standard in IUT I, §3. -/
+Fundamental groups and the core relation of IUT I, Definition 3.1(d) are deliberately
+absent: the statement of the Corollary 3.12 variant never reads them (see the module
+docstring). -/
 structure AnabelianGeometry : Type (u + 1) where
   /-- Hyperbolic orbicurves over a field `k`. -/
   Orbicurve : (k : Type u) → [Field k] → Type u
@@ -82,20 +92,6 @@ structure AnabelianGeometry : Type (u + 1) where
   /-- The quotient of a hyperbolic orbicurve by its `±1`-action (where defined; for
   the once-punctured elliptic curve this is the quotient `C = X/{±1}`). -/
   pmQuotient : {k : Type u} → [Field k] → Orbicurve k → Orbicurve k
-  /-- The arithmetic étale fundamental group of an orbicurve, a profinite group
-  (basepoint suppressed; well-defined up to conjugation). -/
-  pi1 : {k : Type u} → [Field k] → Orbicurve k → ProfiniteGrp.{u}
-  /-- The homomorphism of fundamental groups induced by a finite étale cover. -/
-  pi1Cover : {k : Type u} → [Field k] → {X Y : Orbicurve k} → Cover X Y →
-    (pi1 X →* pi1 Y)
-  /-- The induced homomorphisms are continuous. -/
-  pi1Cover_continuous : ∀ {k : Type u} [Field k] {X Y : Orbicurve k} (f : Cover X Y),
-    Continuous (pi1Cover f)
-  /-- The induced homomorphisms are **open immersions** of profinite groups: open
-  topological group embeddings onto open subgroups (IUT I, Definition 3.1(d), the
-  displayed covering diagrams). -/
-  pi1Cover_isOpenEmbedding : ∀ {k : Type u} [Field k] {X Y : Orbicurve k}
-    (f : Cover X Y), Topology.IsOpenEmbedding (pi1Cover f)
   /-- A square of coverings is **cartesian** (a fiber-product square). -/
   IsCartesianSquare : {k : Type u} → [Field k] → {A B C D : Orbicurve k} →
     Cover A B → Cover B D → Cover A C → Cover C D → Prop
@@ -104,10 +100,6 @@ structure AnabelianGeometry : Type (u + 1) where
   /-- Base change of cusps along a field embedding. -/
   cuspBaseChange : {k K : Type u} → [Field k] → [Field K] → (f : k →+* K) →
     {X : Orbicurve k} → Cusp X → Cusp (baseChange f X)
-  /-- `core` relation: `C` is the `k`-core of `X` (the terminal object among the
-  finite étale quotients of `X`; *Absolute Anabelian Geometry of Canonical Curves*,
-  and IUT I, Definition 3.1(d) "with `K`-core `C_K`"). -/
-  HasCore : {k : Type u} → [Field k] → (X C : Orbicurve k) → Prop
   /-- An orbicurve is of type `(1, ℓ-tors)` (*Étale Theta*, Definition 2.1). -/
   IsTypeOneEllTors : {k : Type u} → [Field k] → (ℓ : ℕ) → Orbicurve k → Prop
   /-- An orbicurve is of type `(1, ℓ-tors)^±` (*Étale Theta*, Definition 2.1). -/
@@ -157,16 +149,15 @@ noncomputable def CK : AG.Orbicurve ↥P.torsionField :=
   AG.baseChange (algebraMap F ↥P.torsionField) (CF AG F E)
 
 /-- **IUT I, Definition 3.1(d) and the global part of (f)**: the chosen orbicurve
-`C̲_K` of type `(1, ℓ-tors)^±` with `K`-core `C_K`, the associated `X̲_K` with its
-cartesian covering diagram, and the distinguished cusp `ε` arising from a nonzero
-element of the rank-one quotient `Q`. -/
+`C̲_K` of type `(1, ℓ-tors)^±`, the associated `X̲_K` with its cartesian covering
+diagram, and the distinguished cusp `ε` arising from a nonzero element of the rank-one
+quotient `Q`. The condition "with `K`-core `C_K`" of Definition 3.1(d) is not represented
+(module docstring). -/
 structure OrbicurveData : Type u where
   /-- The chosen orbicurve `C̲_K` over `K` (IUT I, Definition 3.1(d)). -/
   CKu : AG.Orbicurve ↥P.torsionField
   /-- `C̲_K` is of type `(1, ℓ-tors)^±`. -/
   CKu_type : AG.IsTypeOneEllTorsPM P.ℓ CKu
-  /-- `C̲_K` has `K`-core `C_K = C_F ×_F K`. -/
-  CKu_core : AG.HasCore CKu (CK AG F E Fbar VBad P)
   /-- The associated orbicurve `X̲_K` (IUT I, Definition 3.1(d)). -/
   XKu : AG.Orbicurve ↥P.torsionField
   /-- `X̲_K` is of type `(1, ℓ-tors)`. -/
@@ -180,9 +171,8 @@ structure OrbicurveData : Type u where
   /-- The covering `C̲_K → C_K`. -/
   CKu_to_CK : AG.Cover CKu (CK AG F E Fbar VBad P)
   /-- The covering diagram of IUT I, Definition 3.1(d) is **cartesian**: `X̲_K` is the
-  fiber product of `X_K` and `C̲_K` over `C_K`. The corresponding open immersions of
-  fundamental groups are `AnabelianGeometry.pi1Cover` with
-  `pi1Cover_isOpenEmbedding`. -/
+  fiber product of `X_K` and `C̲_K` over `C_K`. (The corresponding open immersions of
+  fundamental groups are not represented.) -/
   diagram_cartesian : AG.IsCartesianSquare XKu_to_XK XK_to_CK XKu_to_CKu CKu_to_CK
   /-- The identification of the rank-one quotient `Q` of `C̲_K` with `ℤ/ℓℤ` (chosen
   identification; only the nonvanishing in `epsilon_spec` depends on it, and that
@@ -197,21 +187,6 @@ structure OrbicurveData : Type u where
   epsilon : AG.Cusp CKu
   /-- `ε` is the cusp of the chosen element. -/
   epsilon_spec : epsilon = AG.cuspOfQuotient CKu P.ℓ q
-
-namespace OrbicurveData
-
-variable {AG F E Fbar VBad P} (O : OrbicurveData AG F E Fbar VBad P)
-
-/-- The open immersion of fundamental groups `π₁(X̲_K) → π₁(C̲_K)` induced by the
-covering `X̲_K → C̲_K` (IUT I, Definition 3.1(d)). -/
-noncomputable def pi1XKu_to_CKu : AG.pi1 O.XKu →* AG.pi1 O.CKu :=
-  AG.pi1Cover O.XKu_to_CKu
-
-lemma pi1XKu_to_CKu_isOpenEmbedding :
-    Topology.IsOpenEmbedding O.pi1XKu_to_CKu :=
-  AG.pi1Cover_isOpenEmbedding O.XKu_to_CKu
-
-end OrbicurveData
 
 end OrbicurveDataSection
 
