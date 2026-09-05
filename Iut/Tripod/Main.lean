@@ -10,6 +10,7 @@ import Iut.Implication.ChebyshevExplicit
 import Iut.Concrete.Main
 import Iut.Anabelian.Existence
 import Iut.Tripod.Northcott
+import Iut.Tripod.TorsionDegree
 
 /-!
 # The ABC implication for the tripod, with propositional inputs
@@ -22,8 +23,7 @@ hypothesis is a proposition about the constructed objects:
 * `CurveProps`: the ℓ-torsion of the Legendre curves is a rank-two `ℤ/ℓ`-module, and
   `E_λ/F_λ` has stable reduction and the Galois-degree property;
 * `CurveFactsProp`: the height comparison of Corollary 2.2(i), the `2`-adic bound, the
-  cyclic-subgroup bound, the `SL₂`-image lemma, the conductor bounds and the torsion degree
-  bounds ([GenEll] §3, IUT IV Prop. 1.8);
+  cyclic-subgroup bound, the `SL₂`-image lemma and the conductor bounds ([GenEll] §3);
 * the local theory and the tower arithmetic (IUT IV, §1);
 * the prime-counting bound (Prop. 1.6);
 * `h312`, the variant itself.
@@ -50,8 +50,12 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {B TK : ℝ
       (htwo : TwoTorsionRational D) (QI : QPilotInputs D),
       TowerArithmetic D LT (thetaLocalData D LT htwo QI)) :
     ConcreteThetaDataExistence.{0, v} (AG := modelAG) (TG := modelTG)
-      (curveInputs (providersOfProps hp) K d CF hN).toCorollary22Inputs := by
-  set CI := curveInputs (providersOfProps hp) K d CF hN with hCI
+      (curveInputs (providersOfProps hp) K d CF hN
+        (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
+        (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))).toCorollary22Inputs := by
+  set CI := curveInputs (providersOfProps hp) K d CF hN
+    (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
+    (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num))) with hCI
   intro x hx ℓ hℓ h7 hP2 hP3 hP5 hsl
   have hP2' : ∀ w (hw : w ∈ (CI.curve x hx).badAll), ¬ ℓ ∣ (CI.tate x hx).qOrder w hw := by
     intro w hw
@@ -91,7 +95,9 @@ theorem abc_of_variant
   choose B TK CF using hfacts
   obtain ⟨pnt⟩ := primeCountingBound_of_exists hprime
   exact statementII_of_cor312
-    (fun K d => (curveInputs (providersOfProps hp) K d (CF K d) northcottHyp).toCorollary22Inputs)
+    (fun K d => (curveInputs (providersOfProps hp) K d (CF K d) northcottHyp
+      (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
+      (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))).toCorollary22Inputs)
     (fun K d => (concreteThetaDataExistence' hp (CF K d) northcottHyp LTp TAp).toThetaDataExistence)
     chebyshevBoundExplicit pnt (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
 

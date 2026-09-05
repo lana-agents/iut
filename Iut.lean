@@ -84,4 +84,5 @@ import Iut.Tripod.Legendre
 import Iut.Tripod.Main
 import Iut.Tripod.Northcott
 import Iut.Tripod.Providers
+import Iut.Tripod.TorsionDegree
 import Iut.Tripod.TwoTorsion

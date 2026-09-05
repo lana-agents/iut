@@ -433,10 +433,6 @@ def LogCondLeHyp : Prop :=
 /-- **The facts about the curves of the points that remain unproved**, collected: exactly
 the fields of `Iut.CurveInputs` for `curveOf` that are not proved in this file. -/
 structure CurveFactsProp (B TK : ℝ) : Prop where
-  /-- The torsion degree bound for `n = 3`. -/
-  torsionDegree3 : ∀ l : Qbar, TorsionDegreeBound l 3
-  /-- The torsion degree bound for `n = 5`. -/
-  torsionDegree5 : ∀ l : Qbar, TorsionDegreeBound l 5
   /-- Corollary 2.2(i). -/
   height : LegendreHeightHyp P K
   /-- `B ≥ 0`. -/
@@ -456,7 +452,8 @@ structure CurveFactsProp (B TK : ℝ) : Prop where
 points, the facts proved in this file, the isolated hypotheses `CurveFactsProp`, and the
 Northcott property `NorthcottHyp`. -/
 noncomputable def curveInputs {B TK : ℝ}
-    (CF : CurveFactsProp P K d B TK) (hN : NorthcottHyp) :
+    (CF : CurveFactsProp P K d B TK) (hN : NorthcottHyp)
+    (hdeg3 : ∀ l : Qbar, TorsionDegreeBound l 3) (hdeg5 : ∀ l : Qbar, TorsionDegreeBound l 5) :
     CurveInputs tripodTheory K d where
   h := P.h
   curve x _ := P.curve x
@@ -465,7 +462,7 @@ noncomputable def curveInputs {B TK : ℝ}
   modRep x _ ℓ hℓ := P.modRep x ℓ hℓ
   height_eq _ _ := rfl
   deg_le x hx := by
-    refine (deg_le x _ _ (CF.torsionDegree3 x.1) (CF.torsionDegree5 x.1)).trans ?_
+    refine (deg_le x _ _ (hdeg3 x.1) (hdeg5 x.1)).trans ?_
     exact Nat.mul_le_mul_left _ hx.2
   dmod_le x hx := (dmod_le x _ _).trans hx.2
   htCan_equiv := CF.height
