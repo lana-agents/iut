@@ -92,6 +92,7 @@ import Iut.Tripod.Main
 import Iut.Tripod.Northcott
 import Iut.Tripod.Providers
 import Iut.Tripod.StableOdd
+import Iut.Tripod.StableTwo
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.TwoTorsion
