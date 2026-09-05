@@ -364,7 +364,8 @@ structure CurveProviders where
   /-- The arithmetic of `E_λ/F_λ`. -/
   arith : ∀ x : Pt, (curveOf x (torsionFinite3 x.1) (torsionFinite5 x.1)).CurveArithmetic
   /-- The mod-`ℓ` representations of `E_λ`. -/
-  modRep : ∀ (x : Pt) (ℓ : ℕ), (curveOf x (torsionFinite3 x.1) (torsionFinite5 x.1)).ModEllRepData ℓ
+  modRep : ∀ (x : Pt) (ℓ : ℕ), ℓ.Prime →
+    (curveOf x (torsionFinite3 x.1) (torsionFinite5 x.1)).ModEllRepData ℓ
 
 namespace CurveProviders
 
@@ -407,11 +408,11 @@ def CyclicBoundHyp (TK : ℝ) : Prop :=
 /-- **[GenEll], Lemma 3.1(iii)**: under (P2), (P4), (P5) the image of the mod-`ℓ`
 representation contains `SL₂(𝔽_ℓ)`. -/
 def SL2ImageHyp : Prop :=
-  ∀ (x : Pt) (ℓ : ℕ), ℓ.Prime → 5 ≤ ℓ →
+  ∀ (x : Pt) (ℓ : ℕ) (hℓ : ℓ.Prime), 5 ≤ ℓ →
     (∀ w ∈ (P.localData x).bad, ¬ ℓ ∣ (P.localData x).hv w) →
     ¬ (P.curve x).HasCyclicSubgroup ℓ →
     (∃ w ∈ (P.localData x).bad, (P.localData x).p w ≠ 2 ∧ (P.localData x).p w ≠ ℓ) →
-    ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (P.modRep x ℓ).rep.range
+    ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (P.modRep x ℓ hℓ).rep.range
 
 /-- **The conductor bound from below**: the conductor degree of `F_tpd = ℚ(λ)` away from
 `2ℓ` is at most `log-cond_{{0,1,∞}}(λ)` (the odd bad places of `E_λ` are among the places
@@ -461,7 +462,7 @@ noncomputable def curveInputs {B TK : ℝ}
   curve x _ := P.curve x
   arith x _ := P.arith x
   tate x _ := P.tate x
-  modRep x _ ℓ := P.modRep x ℓ
+  modRep x _ ℓ hℓ := P.modRep x ℓ hℓ
   height_eq _ _ := rfl
   deg_le x hx := by
     refine (deg_le x _ _ (CF.torsionDegree3 x.1) (CF.torsionDegree5 x.1)).trans ?_
@@ -475,7 +476,7 @@ noncomputable def curveInputs {B TK : ℝ}
   HasCyclicSubgroup x ℓ := (P.curve x).HasCyclicSubgroup ℓ
   TK := TK
   cyclic_bound := CF.cyclic
-  sl2_of x _ ℓ := CF.sl2 x ℓ
+  sl2_of x _ ℓ hℓ := CF.sl2 x ℓ hℓ
   logDiff_eq x _ := logDiff_eq x _ _
   logCond_ge x _ := CF.logCond_ge x
   logCond_le x _ := CF.logCond_le x

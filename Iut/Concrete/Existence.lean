@@ -396,7 +396,7 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
   /-- The Tate parameters of `E_x`. -/
   tate : ∀ x hx, (curve x hx).TateInputs
   /-- The mod-`ℓ` representations of `E_x`. -/
-  modRep : ∀ x hx (ℓ : ℕ), (curve x hx).ModEllRepData ℓ
+  modRep : ∀ x hx (ℓ : ℕ), ℓ.Prime → (curve x hx).ModEllRepData ℓ
   /-- The local height data of `E_x` computes `h`. -/
   height_eq : ∀ x hx, ((curve x hx).localHeightData (arith x hx) (tate x hx)).height = h x
   /-- `[F_x : ℚ] ≤ 2¹²·3³·5·d` ((E3)–(E5) in the proof of Theorem 1.10). -/
@@ -424,14 +424,14 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
     ((ℓ : ℝ) - 2) / 24 * h x ≤ 2 * Real.log ℓ + TK
   /-- **[GenEll], Lemma 3.1(iii)**: (P2), (P4), (P5) imply that the image of the mod-`ℓ`
   representation contains `SL₂(𝔽_ℓ)`. -/
-  sl2_of : ∀ x hx (ℓ : ℕ), ℓ.Prime → 5 ≤ ℓ →
+  sl2_of : ∀ x hx (ℓ : ℕ) (hℓ : ℓ.Prime), 5 ≤ ℓ →
     (∀ w ∈ ((curve x hx).localHeightData (arith x hx) (tate x hx)).bad,
       ¬ ℓ ∣ ((curve x hx).localHeightData (arith x hx) (tate x hx)).hv w) →
     ¬ HasCyclicSubgroup x ℓ →
     (∃ w ∈ ((curve x hx).localHeightData (arith x hx) (tate x hx)).bad,
       ((curve x hx).localHeightData (arith x hx) (tate x hx)).p w ≠ 2 ∧
       ((curve x hx).localHeightData (arith x hx) (tate x hx)).p w ≠ ℓ) →
-    ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (modRep x hx ℓ).rep.range
+    ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (modRep x hx ℓ hℓ).rep.range
   /-- `log-diff_X(x)` is the normalized degree of the different of `F_tpd`. -/
   logDiff_eq : ∀ x hx,
     T.logDiff T.tripod x = logDifferentDeg ↥(tripodalFieldOf (curve x hx).F (curve x hx).E)
@@ -466,9 +466,9 @@ noncomputable def toCorollary22Inputs : Corollary22Inputs T K d where
   HasCyclicSubgroup := CI.HasCyclicSubgroup
   TK := CI.TK
   cyclic_bound := CI.cyclic_bound
-  SL2Image x ℓ := ∀ hx, ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ),
-    A.toGL ∈ (CI.modRep x hx ℓ).rep.range
-  sl2_of x hx ℓ hp h5 hP2 hcyc hP5 _ := CI.sl2_of x hx ℓ hp h5 hP2 hcyc hP5
+  SL2Image x ℓ := ∀ hx (hℓ : ℓ.Prime), ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ),
+    A.toGL ∈ (CI.modRep x hx ℓ hℓ).rep.range
+  sl2_of x hx ℓ hp h5 hP2 hcyc hP5 _ hp' := CI.sl2_of x hx ℓ hp' h5 hP2 hcyc hP5
 
 variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
@@ -492,15 +492,15 @@ theorem concreteThetaDataExistence (anab : AnabelianExistence AG TG)
   have hP5' : ∃ w ∈ (CI.curve x hx).badAll, residueChar w ≠ 2 ∧ residueChar w ≠ ℓ := by
     obtain ⟨w, hw, h⟩ := hP5
     exact ⟨w, (CI.arith x hx).badAll_finite.mem_toFinset.mp hw, h⟩
-  let D := (CI.curve x hx).thetaData (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-    (hsl hx) hP2' hP5' anab
+  let D := (CI.curve x hx).thetaData (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
+    (hsl hx hℓ) hP2' hP5' anab
   refine ⟨D, LTp D, TLp D (LTp D),
-    (CI.curve x hx).qPilotInputs (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-      (hsl hx) hP2' hP5' anab,
+    (CI.curve x hx).qPilotInputs (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
+      (hsl hx hℓ) hP2' hP5' anab,
     TAp _ _ _, rfl, CI.dmod_le x hx, ?_, CI.logDiff_eq x hx, CI.logCond_ge x hx ℓ hℓ h7,
     CI.logCond_le x hx ℓ hℓ h7⟩
-  exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ)
-    (hsl hx) hP2' hP5' anab _ _
+  exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
+    (hsl hx hℓ) hP2' hP5' anab _ _
 
 end CurveInputs
 
