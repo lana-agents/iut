@@ -33,7 +33,11 @@ Definition 3.1(a)–(b), for the Corollary 3.12 variant statement (taxis #33):
   module does not introduce them.
 * **Stable reduction.** `Iut.HasStableReductionAt` is a genuine definition through
   Mathlib's `WeierstrassCurve.HasGoodReduction` / `HasMultiplicativeReduction` over the
-  valuation ring of the completion at each finite place — not an interface field.
+  valuation ring of the completion at each finite place — not an interface field. Mathlib's
+  classes are properties of the *given* Weierstrass model (they extend `IsMinimal`), so the
+  predicates quantify over a global change of variables `C • E`: they are properties of the
+  curve up to isomorphism, as in Mochizuki's condition (a non-integral model such as the
+  Legendre model `y² = x(x−1)(x−λ)` at a denominator of `λ` is not excluded).
   Proving that a given curve satisfies it is out of scope here (taxis #39). The
   elliptic-reduction certificate project (taxis #5) remains the seam for reduction
   *theorems*; the *predicates* need no certificate.
@@ -56,28 +60,35 @@ section Reduction
 
 variable {F : Type*} [Field F] [NumberField F] (E : WeierstrassCurve F)
 
-/-- `E` has **good reduction** at the finite place `w`: the base change of `E` to the
-`w`-adic completion has good reduction over its valuation ring, in the sense of
-Mathlib's minimal Weierstrass equations (`WeierstrassCurve.HasGoodReduction`). -/
+/-- `E` has **good reduction** at the finite place `w`: some global change of variables
+`C • E` of the model, base changed to the `w`-adic completion, has good reduction over its
+valuation ring in the sense of Mathlib's minimal Weierstrass equations
+(`WeierstrassCurve.HasGoodReduction`). Mathlib's classes refer to the given model (they
+extend `IsMinimal`); the predicate is a property of the curve up to isomorphism. -/
 def HasGoodReductionAt (w : FinitePlace F) : Prop :=
-  (E.baseChange (w.maximalIdeal.adicCompletion F)).HasGoodReduction
-    (w.maximalIdeal.adicCompletionIntegers F)
+  ∃ C : VariableChange F,
+    ((C • E).baseChange (w.maximalIdeal.adicCompletion F)).HasGoodReduction
+      (w.maximalIdeal.adicCompletionIntegers F)
 
-/-- `E` has **(bad) multiplicative reduction** at the finite place `w`
-(`WeierstrassCurve.HasMultiplicativeReduction` over the completed local ring). -/
+/-- `E` has **(bad) multiplicative reduction** at the finite place `w`, up to a global change
+of variables (`WeierstrassCurve.HasMultiplicativeReduction` over the completed local ring for
+some model `C • E`; Mathlib's class refers to the given model). -/
 def HasMultiplicativeReductionAt (w : FinitePlace F) : Prop :=
-  (E.baseChange (w.maximalIdeal.adicCompletion F)).HasMultiplicativeReduction
-    (w.maximalIdeal.adicCompletionIntegers F)
+  ∃ C : VariableChange F,
+    ((C • E).baseChange (w.maximalIdeal.adicCompletion F)).HasMultiplicativeReduction
+      (w.maximalIdeal.adicCompletionIntegers F)
 
-/-- `E` has **split multiplicative reduction** at the finite place `w`
-(`WeierstrassCurve.HasSplitMultiplicativeReduction` over the completed local ring). -/
+/-- `E` has **split multiplicative reduction** at the finite place `w`, up to a global change
+of variables (`WeierstrassCurve.HasSplitMultiplicativeReduction` over the completed local ring
+for some model `C • E`; Mathlib's class refers to the given model). -/
 def HasSplitMultiplicativeReductionAt (w : FinitePlace F) : Prop :=
-  (E.baseChange (w.maximalIdeal.adicCompletion F)).HasSplitMultiplicativeReduction
-    (w.maximalIdeal.adicCompletionIntegers F)
+  ∃ C : VariableChange F,
+    ((C • E).baseChange (w.maximalIdeal.adicCompletion F)).HasSplitMultiplicativeReduction
+      (w.maximalIdeal.adicCompletionIntegers F)
 
 /-- `E` has **stable (= semistable) reduction** at the finite place `w`: good or
-multiplicative reduction. Stable reduction of the once-punctured curve `X_F` in IUT I,
-Definition 3.1(a) is semistable reduction of `E_F`. -/
+multiplicative reduction (each up to a global change of variables). Stable reduction of the
+once-punctured curve `X_F` in IUT I, Definition 3.1(a) is semistable reduction of `E_F`. -/
 def HasStableReductionAt (w : FinitePlace F) : Prop :=
   HasGoodReductionAt E w ∨ HasMultiplicativeReductionAt E w
 

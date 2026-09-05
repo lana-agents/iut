@@ -18,8 +18,9 @@ and semistable elliptic curves, proved here for an arbitrary `C : EllipticCurveD
 * `residueChar_liesOver`: the residue characteristic is preserved along `w ∣ v`
   (the residue field of `w` is an extension of that of `v`);
 * `inertDeg_pos`: residue degrees are positive (`Ideal.inertiaDeg_pos`);
-* `badAll_finite`: the multiplicative places have `‖Δ(E)‖_w < 1`, and `Δ(E) ≠ 0` has
-  norm `1` at all but finitely many places (`NumberField.FinitePlace.hasFiniteMulSupport`);
+* `badAll_finite`: the multiplicative places have `‖j(E)‖_w > 1` (for the invariant
+  `j`-invariant, via a minimal model `C • E`), and a nonzero `j(E)` has norm `1` at all but
+  finitely many places (`NumberField.FinitePlace.hasFiniteMulSupport`);
 * `sum_inertDeg_le`: over a rational prime `q`, the residue degrees of the bad places sum to at
   most `∑_{w ∣ q} e_w f_w = [F : ℚ]` (`Ideal.sum_ramification_inertia`);
 * `mult_invariant` (from everywhere-stable reduction): at a place of stable reduction, `E` is
@@ -74,34 +75,20 @@ section Reduction
 variable {F : Type*} [Field F] [NumberField F] (E : WeierstrassCurve F) [E.IsElliptic]
   (w : FinitePlace F)
 
-omit [NumberField F] in
-lemma j_eq_inv_Δ_mul : E.j = E.Δ⁻¹ * E.c₄ ^ 3 := by
-  rw [WeierstrassCurve.j, Units.val_inv_eq_inv_val, coe_Δ']
-
-/-- `v_w(j(E)) > 1` at a place of multiplicative reduction. -/
-lemma one_lt_valuation_j_of_mult (hw : HasMultiplicativeReductionAt E w) :
-    1 < w.maximalIdeal.valuation F E.j := by
-  have hc₄ := valuation_c₄_eq_one_of_mult E w hw
-  have hΔ := valuation_Δ_lt_one_of_mult E w hw
-  have hΔ0 : E.Δ ≠ 0 := by rw [← coe_Δ']; exact E.Δ'.ne_zero
-  have hpos : 0 < w.maximalIdeal.valuation F E.Δ := by
-    rw [pos_iff_ne_zero]
-    exact (Valuation.ne_zero_iff _).2 hΔ0
-  rw [j_eq_inv_Δ_mul, map_mul, map_inv₀, map_pow, hc₄, one_pow, mul_one]
-  exact (one_lt_inv₀ hpos).2 hΔ
-
-/-- `v_w(j(E)) ≤ 1` at a place of good reduction (of the given model). -/
+/-- `v_w(j(E)) ≤ 1` at a place of good reduction: the good model `C • E` is integral with
+`v_w(Δ) = 1`, and `j` is invariant under changes of variables. -/
 lemma valuation_j_le_one_of_good (hw : HasGoodReductionAt E w) :
     w.maximalIdeal.valuation F E.j ≤ 1 := by
-  haveI : (E.baseChange (w.maximalIdeal.adicCompletion F)).HasGoodReduction
-    (w.maximalIdeal.adicCompletionIntegers F) := hw
-  have hΔ : ‖(E.baseChange (w.maximalIdeal.adicCompletion F)).Δ‖ = 1 :=
+  obtain ⟨C, hC⟩ := hw
+  haveI : ((C • E).baseChange (w.maximalIdeal.adicCompletion F)).HasGoodReduction
+    (w.maximalIdeal.adicCompletionIntegers F) := hC
+  have hΔ : ‖((C • E).baseChange (w.maximalIdeal.adicCompletion F)).Δ‖ = 1 :=
     (valuation_eq_one_iff w _).1 HasGoodReduction.goodReduction
-  have hc₄ : ‖(E.baseChange (w.maximalIdeal.adicCompletion F)).c₄‖ ≤ 1 := norm_c₄_le_one _
+  have hc₄ : ‖((C • E).baseChange (w.maximalIdeal.adicCompletion F)).c₄‖ ≤ 1 := norm_c₄_le_one _
   rw [baseChange_adicCompletion_eq, map_Δ] at hΔ
   rw [baseChange_adicCompletion_eq, map_c₄] at hc₄
-  rw [← norm_emb_le_one_iff, j_eq_inv_Δ_mul, map_mul, map_inv₀, map_pow, norm_mul, norm_inv,
-    norm_pow, hΔ, inv_one, one_mul]
+  rw [← variableChange_j E C, ← norm_emb_le_one_iff, j_eq_inv_Δ_mul, map_mul, map_inv₀,
+    map_pow, norm_mul, norm_inv, norm_pow, hΔ, inv_one, one_mul]
   exact pow_le_one₀ (norm_nonneg _) hc₄
 
 /-- At a place of stable reduction, `E` has multiplicative reduction iff `v_w(j(E)) > 1`. -/
@@ -137,14 +124,20 @@ lemma residueChar_liesOver (v : FinitePlace ↥(fieldOfModuli C.F C.E)) (w : Fin
 lemma inertDeg_pos (w : FinitePlace C.F) : 0 < inertDeg C.F w :=
   Ideal.inertiaDeg_pos w.maximalIdeal.asIdeal ℤ
 
-/-- The bad locus is finite: `Δ(E) ≠ 0` has `w`-adic norm `1` at all but finitely many places,
-and `‖Δ(E)‖_w < 1` at a multiplicative place. -/
+/-- The bad locus is finite: `v_w(j(E)) > 1` at a multiplicative place, and a nonzero `j(E)`
+has `w`-adic norm `1` at all but finitely many places (for `j(E) = 0` there is no such place). -/
 lemma badAll_finite : C.badAll.Finite := by
-  have hΔ : C.E.Δ ≠ 0 := by rw [← coe_Δ']; exact C.E.Δ'.ne_zero
-  refine (FinitePlace.hasFiniteMulSupport hΔ).subset ?_
+  by_cases hj : C.E.j = 0
+  · refine Set.Finite.subset (Set.finite_empty) ?_
+    intro w hw
+    have := one_lt_valuation_j_of_mult C.E w hw
+    rw [hj, map_zero] at this
+    exact absurd this (not_lt.2 zero_le_one)
+  refine (FinitePlace.hasFiniteMulSupport hj).subset ?_
   intro w hw
   rw [Function.mem_mulSupport, ← FinitePlace.norm_embedding_eq]
-  exact ne_of_lt ((norm_emb_lt_one_iff _).2 (valuation_Δ_lt_one_of_mult C.E w hw))
+  intro h
+  exact absurd ((norm_emb_le_one_iff _).1 h.le) (not_le.2 (one_lt_valuation_j_of_mult C.E w hw))
 
 /-- Multiplicative reduction does not depend on the place of `F` over a given place of
 `F_mod`, given everywhere-stable reduction: it is the condition `‖j(E)‖ > 1`, and

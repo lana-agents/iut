@@ -15,8 +15,9 @@ inputs `EllipticCurveData.TateInputs` — a Tate parameter of `E` at every place
 multiplicative reduction, and a uniformizer of every such completion — exist
 unconditionally:
 
-* at a place `w` of multiplicative reduction, `‖c₄‖ = 1` and `‖Δ‖ < 1` on `F_w`, hence
-  `‖j(E)‖ > 1` (`Iut.EllipticCurveData.one_lt_norm_j`), and the `j`-parametrization of Tate
+* at a place `w` of multiplicative reduction, `‖c₄‖ = 1` and `‖Δ‖ < 1` on `F_w` for a minimal
+  model `C • E`, hence `‖j(E)‖ > 1` for the invariant `j`-invariant
+  (`Iut.EllipticCurveData.one_lt_norm_j`), and the `j`-parametrization of Tate
   curves (`TateCurvesTheta.TateParameter.exists_tateParameter_tateJ_eq`) yields a Tate
   parameter `q_w` with `j(E_{q_w}) = j(E)`;
 * the image in `F_w` of a uniformizer of the `w`-adic valuation of `F` is a uniformizer of
@@ -78,24 +79,11 @@ namespace EllipticCurveData
 
 variable (C : EllipticCurveData.{u})
 
-/-- At a place of multiplicative reduction, the `j`-invariant has norm `> 1` in `F_w`. -/
+/-- At a place of multiplicative reduction, the `j`-invariant has norm `> 1` in `F_w`
+(`Iut.one_lt_valuation_j_of_mult`, via a minimal model `C • E`). -/
 lemma one_lt_norm_j {w : FinitePlace C.F} (hw : w ∈ C.badAll) :
-    1 < ‖FinitePlace.embedding w.maximalIdeal C.E.j‖ := by
-  haveI : (C.E.map (FinitePlace.embedding w.maximalIdeal)).HasMultiplicativeReduction
-    (w.maximalIdeal.adicCompletionIntegers C.F) := hw
-  have hc₄ := norm_c₄_eq_one (C.E.map (FinitePlace.embedding w.maximalIdeal))
-  have hΔ := norm_Δ_lt_one (C.E.map (FinitePlace.embedding w.maximalIdeal))
-  have hΔ0 : (C.E.map (FinitePlace.embedding w.maximalIdeal)).Δ ≠ 0 := by
-    rw [← coe_Δ']; exact (C.E.map (FinitePlace.embedding w.maximalIdeal)).Δ'.ne_zero
-  have hΔpos : 0 < ‖(C.E.map (FinitePlace.embedding w.maximalIdeal)).Δ‖ := norm_pos_iff.mpr hΔ0
-  have hj : 1 < ‖(C.E.map (FinitePlace.embedding w.maximalIdeal)).j‖ := by
-    have : (C.E.map (FinitePlace.embedding w.maximalIdeal)).j =
-        (C.E.map (FinitePlace.embedding w.maximalIdeal)).Δ⁻¹ *
-          (C.E.map (FinitePlace.embedding w.maximalIdeal)).c₄ ^ 3 := by
-      rw [j, Units.val_inv_eq_inv_val, coe_Δ']
-    rw [this, norm_mul, norm_inv, norm_pow, hc₄, one_pow, mul_one]
-    exact (one_lt_inv₀ hΔpos).mpr hΔ
-  rwa [map_j] at hj
+    1 < ‖FinitePlace.embedding w.maximalIdeal C.E.j‖ :=
+  not_le.1 fun h => not_le.2 (one_lt_valuation_j_of_mult C.E w hw) ((norm_emb_le_one_iff _).1 h)
 
 /-- The Tate parameter of `E` at a place of multiplicative reduction: the unique Tate
 parameter of `F_w` whose Tate curve has `j`-invariant `j(E)`. -/

@@ -402,7 +402,9 @@ def TwoAdicBoundHyp (B : ℝ) : Prop := ∀ x ∈ K.set, (P.localData x).heightE
 /-- **[GenEll], Lemma 3.5 (with Proposition 3.4)**: if `E_λ` has an `ℓ`-cyclic subgroup
 scheme then `(ℓ − 2)/24 · log(q_∀) ≤ 2 log ℓ + T_K`. -/
 def CyclicBoundHyp (TK : ℝ) : Prop :=
-  ∀ x ∈ K.set ∩ ptLE d, ∀ ℓ : ℕ, ℓ.Prime → (P.curve x).HasCyclicSubgroup ℓ →
+  ∀ x ∈ K.set ∩ ptLE d, ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
+    (∀ w ∈ (P.localData x).bad, ¬ ℓ ∣ (P.localData x).hv w) →
+    (P.curve x).HasCyclicSubgroup ℓ →
     ((ℓ : ℝ) - 2) / 24 * P.h x ≤ 2 * Real.log ℓ + TK
 
 /-- **[GenEll], Lemma 3.1(iii)**: under (P2), (P4), (P5) the image of the mod-`ℓ`

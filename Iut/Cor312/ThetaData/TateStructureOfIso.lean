@@ -92,6 +92,20 @@ def ofVariableChange (t : TateParameter k) (C : VariableChange k) (hC : C • E 
     (hC : C • E = t.tateCurve) (h12 : TameResidueChar k) :
     (ofVariableChange t C hC h12).C = C := rfl
 
+/-- **A Tate structure on `E` from one on a model `C • E = E'`**: the change of variables of
+`E'` to its Tate curve is composed with `C`. -/
+def ofCurveVariableChange {E' : WeierstrassCurve k} (C : VariableChange k) (h : C • E = E')
+    (S : TateStructure E') (h12 : TameResidueChar k) : TateStructure E :=
+  ofVariableChange S.t (S.C * C) (by rw [mul_smul, h]; exact S.hC) h12
+
+@[simp] lemma ofCurveVariableChange_t {E' : WeierstrassCurve k} (C : VariableChange k)
+    (h : C • E = E') (S : TateStructure E') (h12 : TameResidueChar k) :
+    (ofCurveVariableChange C h S h12).t = S.t := rfl
+
+@[simp] lemma ofCurveVariableChange_C {E' : WeierstrassCurve k} (C : VariableChange k)
+    (h : C • E = E') (S : TateStructure E') (h12 : TameResidueChar k) :
+    (ofCurveVariableChange C h S h12).C = S.C * C := rfl
+
 end TateStructure
 
 end

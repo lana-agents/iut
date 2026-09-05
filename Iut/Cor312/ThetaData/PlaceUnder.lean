@@ -12,9 +12,11 @@ import Iut.Cor312.ThetaData.PlacesOver
 
 * `Iut.placeUnder w`: the finite place of `k` below a finite place `w` of `K ⊇ k`
   (the contraction of the prime), with `FinitePlace.LiesOver w (placeUnder w)`.
-* At a place `w` of multiplicative reduction of `E/F` (Mathlib's class over the completed
-  integers), the `w`-adic valuations of the global invariants satisfy `v_w(c₄) = 1`,
-  `v_w(Δ) < 1` (`Iut.valuation_c₄_eq_one_of_mult`, `valuation_Δ_lt_one_of_mult`).
+* At a place `w` of multiplicative reduction of `E/F` (`Iut.HasMultiplicativeReductionAt`:
+  Mathlib's class over the completed integers for some global change of variables `C • E`),
+  the `w`-adic valuations of the invariants of the model `C • E` satisfy `v_w(c₄) = 1`,
+  `v_w(Δ) < 1` (`Iut.exists_variableChange_of_mult`), and consequently the invariant
+  `j`-invariant satisfies `v_w(j) > 1` (`Iut.one_lt_valuation_j_of_mult`).
 -/
 
 namespace Iut
@@ -57,25 +59,54 @@ lemma baseChange_adicCompletion_eq :
     E.baseChange (w.maximalIdeal.adicCompletion F) = E.map (FinitePlace.embedding w.maximalIdeal) :=
   rfl
 
-/-- `v_w(c₄(E)) = 1` at a place of multiplicative reduction. -/
-lemma valuation_c₄_eq_one_of_mult (hw : HasMultiplicativeReductionAt E w) :
-    w.maximalIdeal.valuation F E.c₄ = 1 := by
-  haveI : (E.baseChange (w.maximalIdeal.adicCompletion F)).HasMultiplicativeReduction
-    (w.maximalIdeal.adicCompletionIntegers F) := hw
+section Model
+
+variable [(E.baseChange (w.maximalIdeal.adicCompletion F)).HasMultiplicativeReduction
+  (w.maximalIdeal.adicCompletionIntegers F)]
+
+/-- `v_w(c₄(E)) = 1` for a model `E` whose base change has multiplicative reduction. -/
+lemma valuation_c₄_eq_one_of_baseChange : w.maximalIdeal.valuation F E.c₄ = 1 := by
   have h := norm_c₄_eq_one (E.baseChange (w.maximalIdeal.adicCompletion F))
   rw [baseChange_adicCompletion_eq, map_c₄, norm_eq_one_iff_valued, FinitePlace.embedding_apply,
     valuedAdicCompletion_eq_valuation'] at h
   exact h
 
-/-- `v_w(Δ(E)) < 1` at a place of multiplicative reduction. -/
-lemma valuation_Δ_lt_one_of_mult (hw : HasMultiplicativeReductionAt E w) :
-    w.maximalIdeal.valuation F E.Δ < 1 := by
-  haveI : (E.baseChange (w.maximalIdeal.adicCompletion F)).HasMultiplicativeReduction
-    (w.maximalIdeal.adicCompletionIntegers F) := hw
+/-- `v_w(Δ(E)) < 1` for a model `E` whose base change has multiplicative reduction. -/
+lemma valuation_Δ_lt_one_of_baseChange : w.maximalIdeal.valuation F E.Δ < 1 := by
   have h := norm_Δ_lt_one (E.baseChange (w.maximalIdeal.adicCompletion F))
   rw [baseChange_adicCompletion_eq, map_Δ, norm_lt_one_iff_valued, FinitePlace.embedding_apply,
     valuedAdicCompletion_eq_valuation'] at h
   exact h
+
+end Model
+
+/-- At a place of multiplicative reduction there is a global change of variables `C` such that
+the model `C • E` has multiplicative reduction over the completed integers (Mathlib's class),
+with `v_w(c₄(C • E)) = 1` and `v_w(Δ(C • E)) < 1`. -/
+lemma exists_variableChange_of_mult (hw : HasMultiplicativeReductionAt E w) :
+    ∃ C : VariableChange F,
+      ((C • E).baseChange (w.maximalIdeal.adicCompletion F)).HasMultiplicativeReduction
+        (w.maximalIdeal.adicCompletionIntegers F) ∧
+      w.maximalIdeal.valuation F (C • E).c₄ = 1 ∧ w.maximalIdeal.valuation F (C • E).Δ < 1 := by
+  obtain ⟨C, hC⟩ := hw
+  exact ⟨C, hC, valuation_c₄_eq_one_of_baseChange (C • E) w,
+    valuation_Δ_lt_one_of_baseChange (C • E) w⟩
+
+omit [NumberField F] in
+lemma j_eq_inv_Δ_mul [E.IsElliptic] : E.j = E.Δ⁻¹ * E.c₄ ^ 3 := by
+  rw [WeierstrassCurve.j, Units.val_inv_eq_inv_val, coe_Δ']
+
+/-- `v_w(j(E)) > 1` at a place of multiplicative reduction (the `j`-invariant is invariant
+under changes of variables). -/
+lemma one_lt_valuation_j_of_mult [E.IsElliptic] (hw : HasMultiplicativeReductionAt E w) :
+    1 < w.maximalIdeal.valuation F E.j := by
+  obtain ⟨C, -, hc₄, hΔ⟩ := exists_variableChange_of_mult E w hw
+  have hΔ0 : (C • E).Δ ≠ 0 := by rw [← coe_Δ']; exact (C • E).Δ'.ne_zero
+  have hpos : 0 < w.maximalIdeal.valuation F (C • E).Δ := by
+    rw [pos_iff_ne_zero]
+    exact (Valuation.ne_zero_iff _).2 hΔ0
+  rw [← variableChange_j E C, j_eq_inv_Δ_mul, map_mul, map_inv₀, map_pow, hc₄, one_pow, mul_one]
+  exact (one_lt_inv₀ hpos).2 hΔ
 
 end Mult
 

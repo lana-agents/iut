@@ -315,8 +315,10 @@ structure Corollary22Inputs (K : T.CBS) (d : ℕ) where
   TK : ℝ
   /-- **[GenEll], Lemma 3.5 with Proposition 3.4**: an `ℓ`-cyclic subgroup scheme forces
   `((ℓ−2)/24)·log(q_∀) ≤ 2·log ℓ + T_K`. -/
-  cyclic_bound : ∀ (x : T.Pt T.tripod) (_hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
-    ∀ ℓ : ℕ, ℓ.Prime → HasCyclicSubgroup x ℓ →
+  cyclic_bound : ∀ (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
+    ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
+    (∀ w ∈ (localData x hx).bad, ¬ ℓ ∣ (localData x hx).hv w) →
+    HasCyclicSubgroup x ℓ →
     ((ℓ : ℝ) - 2) / 24 * h x ≤ 2 * Real.log ℓ + TK
   /-- The image of `Gal(ℚ̄/F) → GL₂(𝔽_ℓ)` on the `ℓ`-torsion of `E_x` contains
   `SL₂(𝔽_ℓ)`. -/
@@ -439,7 +441,7 @@ theorem c2 {P : Corollary312VariantData.{u, v} AG TG → Prop} (hd : 1 ≤ d)
   -- (P4): no `ℓ`-cyclic subgroup scheme, since `h` is large
   have hP4 : ¬ I.HasCyclicSubgroup x ℓ := by
     intro hcyc
-    have hb := I.cyclic_bound x hx ℓ hℓp hcyc
+    have hb := I.cyclic_bound x hx ℓ hℓp hℓ7 (hLdef ▸ hP2) hcyc
     rw [← hhdef] at hb
     have hlogℓ : Real.log ℓ ≤ ℓ - 2 := by
       have := log_le_half_of_pos (by linarith : (0:ℝ) < ℓ); linarith
