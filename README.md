@@ -270,8 +270,11 @@ repository and every hypothesis is a proposition about the constructed objects.
   `[ℚ(j) : ℚ] ≤ deg λ`, `[F_λ : ℚ] ≤ 552960·deg λ` (the torsion fields have degree
   `≤ |GL₂(𝔽_ℓ)|`, by the Galois correspondence), `log-diff = ` the different degree of the
   tripodal field `ℚ(λ)`; the curve-level data (Tate parameters, mod-`ℓ` representations,
-  finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (`E_λ[n] ≅ (ℤ/n)²`,
-  stable reduction of `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the remaining
+  finiteness of torsion) from the propositions `Iut.Tripod.CurveProps` (stable reduction of
+  `E_λ/F_λ`, `F_λ/ℚ(j)` Galois of degree prime to `ℓ`); the finiteness of the torsion of
+  `E_λ(ℚ̄)` and the bases `E_λ(ℚ̄)[ℓ] ≅ (ℤ/ℓ)²` for primes `ℓ` are **proved**
+  ([`TorsionBasis.lean`](Iut/Tripod/TorsionBasis.lean), from the division-polynomial
+  theory of [`Iut/Torsion/`](Iut/Torsion/), see below); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the height comparison
   `(1/6)·log q_∀ ≈ h(λ)` of [GenEll] Prop 3.4, the cyclic-subgroup bound of [GenEll]
   Lemma 3.5 for `ℓ ≥ 7` under (P2), the `SL₂`-image lemma, and the finiteness of the
@@ -293,6 +296,22 @@ tower arithmetic for the constructed local theory and theta data, `PrimeCounting
 the variant `h312`; conclusion `tripodTheory.StatementII`.
 `StatementI` (all hyperbolic curves) additionally needs heights on curves and the
 coverings of [GenEll] Theorem 2.1, which remain in genl's scope.
+
+### Division polynomials and the torsion of elliptic curves (`Iut/Torsion/`)
+
+Mathlib defines the division polynomials `ψₙ` of a Weierstrass curve and their degrees, but
+not their relation to the multiples of a point. For a curve `y² = x³ + a₂x² + a₄x + a₆`
+(`a₁ = a₃ = 0`) over a field of characteristic `≠ 2`, `Iut.Torsion.good`
+([`EDS.lean`](Iut/Torsion/EDS.lean)) proves by a strong induction along the doubling
+recursions of the normalised elliptic divisibility sequence that, for every nonsingular
+point `P = (x, y)` and every `n`, `ψₙ(P) = 0` iff `nP = 0`, and otherwise
+`x(nP) ψₙ(P)² = x ψₙ(P)² − ψₙ₊₁(P) ψₙ₋₁(P)` (i.e. `x(nP) = Φₙ(x)/ψₙ(P)²`) and
+`ψ₂(nP) ψₙ(P)⁴ = ψ₂ₙ(P)`; the step reduces to fixed identities of the group law
+([`Identities.lean`](Iut/Torsion/Identities.lean), proved by computer-generated
+`linear_combination` certificates). Over an algebraically closed field of characteristic `0`
+the fibres of the multiplication by `n` are counted by the roots of `Φₙ − x₀ ΨSqₙ`
+([`Count.lean`](Iut/Torsion/Count.lean)): `|E[n]| = n²` (`Iut.Torsion.card_torsionBy_eq_sq`)
+and `E[ℓ] ≅ (ℤ/ℓ)²` for primes `ℓ` (`Iut.Torsion.torsionBasis`).
 
 ## Anabelian model strand (`Iut/Anabelian`)
 

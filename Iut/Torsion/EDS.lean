@@ -828,7 +828,8 @@ theorem good_odd (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m) (g₁ : Good h (m - 1))
     exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right
       (mul_ne_zero hem (pow_ne_zero _ hep)))
   have hB : E1 ^ 2 * E2m3 = E2 ^ 6 * (4 * Yp * y + (x - Xp) ^ 2 * (Xp - X)) := by
-    have : (E1 ^ 2 * E2m3 - E2 ^ 6 * (4 * Yp * y + (x - Xp) ^ 2 * (Xp - X))) * (E1 ^ 5 * E2) = 0 := by
+    have : (E1 ^ 2 * E2m3 - E2 ^ 6 * (4 * Yp * y + (x - Xp) ^ 2 * (Xp - X))) *
+        (E1 ^ 5 * E2) = 0 := by
       linear_combination (E1 ^ 7 * E2) * r_3 - (E1 ^ 5 * E2 ^ 4) * r_cp
         - (2 * E1 ^ 5 * E2 ^ 4 * y) * hYp + (E1 ^ 5 * E2 ^ 3 * E3 ^ 2) * hX
         + (-E1 ^ 7 * E2 * E3 ^ 2 - E1 ^ 6 * E2 ^ 3 * E3 * X + E1 ^ 6 * E2 ^ 3 * E3 * Xp

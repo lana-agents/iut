@@ -83,6 +83,9 @@ import Iut.Implication.Invariants
 import Iut.Implication.LogVolumeBound
 import Iut.Implication.PrimeSelection
 import Iut.Implication.Theorem110
+import Iut.Torsion.Count
+import Iut.Torsion.EDS
+import Iut.Torsion.Identities
 import Iut.Tripod.Basic
 import Iut.Tripod.CurveFacts
 import Iut.Tripod.CurveOf
@@ -91,6 +94,7 @@ import Iut.Tripod.LogCond
 import Iut.Tripod.Main
 import Iut.Tripod.Northcott
 import Iut.Tripod.Providers
+import Iut.Tripod.TorsionBasis
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.TwoTorsion

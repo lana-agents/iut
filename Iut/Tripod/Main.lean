@@ -61,13 +61,9 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
         (thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI)) :
     ConcreteThetaDataExistence.{0, 0} (AG := modelAG Pi1) (TG := modelTG Pi1 Tp)
       (curveInputs (providersOfProps hp) K d CF hN
-        (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
-        (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
-        (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs := by
+        torsionDegreeBound_three' torsionDegreeBound_five' (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs := by
   set CI := curveInputs (providersOfProps hp) K d CF hN
-    (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
-    (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
-    (twoAdicBound _ K) (logCondGe _) (logCondLe _) with hCI
+    torsionDegreeBound_three' torsionDegreeBound_five' (twoAdicBound _ K) (logCondGe _) (logCondLe _) with hCI
   intro x hx hxe ℓ hℓ h7 hP2 hP3 hP5 hsl
   have hcore : (modelAG Pi1).HasCore ((modelAG Pi1).oncePunctured (CI.curve x hx).E)
       (OrbicurveDataSection.CF (modelAG Pi1) (CI.curve x hx).F (CI.curve x hx).E) := by
@@ -114,9 +110,7 @@ theorem abc_of_variant
   obtain ⟨pnt⟩ := primeCountingBound_of_exists hprime
   exact statementII_of_cor312
     (fun K d => (curveInputs (providersOfProps hp) K d (CF K d) northcottHyp
-      (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
-      (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
-      (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs)
+      torsionDegreeBound_three' torsionDegreeBound_five' (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs)
     (fun K d =>
       (concreteThetaDataExistence' Pi1 Tp hp (CF K d) northcottHyp hlocal TAp).toThetaDataExistence)
     chebyshevBoundExplicit pnt (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
