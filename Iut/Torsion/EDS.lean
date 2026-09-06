@@ -666,6 +666,293 @@ theorem good_even (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m)
           ((Xm - X) ^ 2 * (2 * Yp) - (X - Xp) ^ 2 * (2 * Ym)) * hX
     exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right hb)
 
+/-- The odd step of the induction: `Good (2m + 1)` from `Good (m − 1)`, …, `Good (m + 2)`, for
+`m ≥ 2`. -/
+theorem good_odd (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m) (g₁ : Good h (m - 1)) (g₂ : Good h m)
+    (g₃ : Good h (m + 1)) (g₄ : Good h (m + 2)) : Good h (2 * m + 1) := by
+  have h2 : (2 : F) ≠ 0 := NeZero.ne 2
+  have hb : (2 : F) * y ≠ 0 := mul_ne_zero h2 hy
+  have hsmul : (2 * m + 1) • Point.some x y h =
+      m • Point.some x y h + (m + 1) • Point.some x y h := by
+    rw [← add_nsmul]; congr 1; omega
+  have hcast : ((2 * m + 1 : ℕ) : ℤ) = 2 * (m : ℤ) + 1 := by push_cast; ring
+  -- the induction hypotheses in canonical index form
+  unfold Good at g₁ g₃ g₄ ⊢
+  push_cast [Nat.cast_sub (show 1 ≤ m by omega)] at g₁ g₃ g₄
+  rw [show (m : ℤ) + 1 + 1 = m + 2 by ring, show (m : ℤ) + 1 - 1 = m by ring] at g₃
+  rw [show (m : ℤ) - 1 + 1 = m by ring, show (m : ℤ) - 1 - 1 = m - 2 by ring] at g₁
+  rw [show (m : ℤ) + 2 + 1 = m + 3 by ring, show (m : ℤ) + 2 - 1 = m + 1 by ring] at g₄
+  rw [hcast, show 2 * (m : ℤ) + 1 + 1 = 2 * m + 2 by ring, show 2 * (m : ℤ) + 1 - 1 = 2 * m by ring]
+  -- the recursions
+  have r_c : eds W x y m * edsC W x y m = eds W x y (2 * m) := eds_mul_edsC W x y m
+  have r_odd1 := eds_odd W x y m
+  have r_odd2 := eds_two_mul_sub_one W x y m
+  have r_C := edsC_two_mul_add_one W x y m
+  have r_3 := eds_two_mul_add_three W x y m
+  have r_p2 := eds_two_mul_add_two W x y m
+  have r_cm := edsC_mul W x y m
+  have r_cp := edsC_mul W x y (m + 1)
+  rw [show (m : ℤ) + 1 + 2 = m + 3 by ring, show (m : ℤ) + 1 - 1 = m by ring,
+    show (m : ℤ) + 1 - 2 = m - 1 by ring, show (m : ℤ) + 1 + 1 = m + 2 by ring] at r_cp
+  -- abbreviations
+  set E1 := eds W x y m with hE1
+  set E2 := eds W x y (m + 1) with hE2
+  set E0 := eds W x y (m - 1) with hE0
+  set E3 := eds W x y (m + 2) with hE3
+  set E4 := eds W x y (m + 3) with hE4
+  set Em1 := eds W x y (m - 2) with hEm1
+  set Em := eds W x y (2 * m) with hEm
+  set Ep := eds W x y (2 * m + 1) with hEp
+  set Emm := eds W x y (2 * m - 1) with hEmm
+  set Ep2 := eds W x y (2 * m + 2) with hEp2
+  set E2m3 := eds W x y (2 * m + 3) with hE2m3
+  set C1 := edsC W x y m with hC1
+  set C2 := edsC W x y (m + 1) with hC2
+  set Cp := edsC W x y (2 * m + 1) with hCp
+  -- case `eₘ = 0`: `Q = 0`, `(2m+1)P = (m+1)P = P`
+  by_cases hem : E1 = 0
+  · have hmP : m • Point.some x y h = 0 := g₂.1 hem
+    have hpP : (m + 1) • Point.some x y h = Point.some x y h := by
+      rw [smul_succ h, hmP, zero_add]
+    have hmm : (m - 1) • Point.some x y h = -Point.some x y h := by
+      rw [smul_pred h (by omega), hmP, zero_sub]
+    have hem1 : E0 ≠ 0 := by
+      intro h0
+      have := g₁.1 h0
+      rw [hmm, neg_eq_zero] at this
+      exact Point.some_ne_zero h this
+    have hep : E2 ≠ 0 := by
+      intro h0
+      have := g₃.1 h0
+      rw [hpP] at this
+      exact Point.some_ne_zero h this
+    obtain ⟨Xp, Yp, hQp, hpP', hXp, hYp⟩ := g₃.2 hep
+    rw [hpP] at hpP'
+    obtain ⟨hXp', hYp'⟩ := Point.some.inj hpP'
+    rw [hem] at r_odd1 r_odd2 r_c
+    rw [← hYp'] at hYp
+    have hEp' : Ep = -E0 * E2 ^ 3 := by rw [r_odd1]; ring
+    have hEp0 : Ep ≠ 0 := by
+      rw [hEp']; exact mul_ne_zero (neg_ne_zero.mpr hem1) (pow_ne_zero _ hep)
+    refine ⟨fun h0 => absurd h0 hEp0, fun _ => ⟨x, y, h, ?_, ?_, ?_⟩⟩
+    · rw [hsmul, hmP, hpP, zero_add]
+    · rw [← r_c]; ring
+    · rw [hEp']
+      have hEp2' : Ep2 = 2 * y * E2 ^ 4 := by linear_combination r_p2 - E2 * hYp
+      have hEm' : Em = 0 := by rw [← r_c, zero_mul]
+      rw [hEp2', hEm', r_odd2] at r_C
+      have : (2 * y * (-E0 * E2 ^ 3) ^ 3 - Cp) * (2 * y) = 0 := by linear_combination -r_C
+      exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right hb)
+  obtain ⟨X, Y, hQ, hmP, hX, hY⟩ := g₂.2 hem
+  -- `e₂ₘ = 2Y eₘ⁴`
+  have h3 : Em = 2 * Y * E1 ^ 4 := by linear_combination -r_c - E1 * hY
+  -- case `eₘ₊₁ = 0`: `Q = −P`, `(2m+1)P = Q = −P`
+  by_cases hep : E2 = 0
+  · have hpP : (m + 1) • Point.some x y h = 0 := g₃.1 hep
+    have hQP0 : Point.some X Y hQ = -Point.some x y h := by
+      rw [← hmP]; exact eq_neg_of_add_eq_zero_left (by rw [← smul_succ h]; exact hpP)
+    have hQP := hQP0
+    rw [Point.neg_some] at hQP
+    obtain ⟨hXx, hYy⟩ := Point.some.inj hQP
+    rw [negY_eq ha₁ ha₃] at hYy
+    have hp2 : (m + 2) • Point.some x y h = Point.some x y h := by
+      rw [show m + 2 = m + 1 + 1 from rfl, smul_succ h, hpP, zero_add]
+    have hep2 : E3 ≠ 0 := by
+      intro h0
+      have := g₄.1 h0
+      rw [hp2] at this
+      exact Point.some_ne_zero h this
+    rw [hep] at r_odd1 r_3 r_p2
+    rw [hYy] at h3
+    have hEp' : Ep = E3 * E1 ^ 3 := by rw [r_odd1]; ring
+    have hEp0 : Ep ≠ 0 := by rw [hEp']; exact mul_ne_zero hep2 (pow_ne_zero _ hem)
+    refine ⟨fun h0 => absurd h0 hEp0, fun _ => ⟨X, Y, hQ, ?_, ?_, ?_⟩⟩
+    · rw [hsmul, hmP, hpP, add_zero]
+    · rw [r_p2, hXx]; ring
+    · rw [hEp', hYy]
+      have hE2m3 : E2m3 = -E1 * E3 ^ 3 := by rw [r_3]; ring
+      have hEp2' : Ep2 = 0 := by rw [r_p2, zero_mul]
+      rw [hE2m3, hEp2', h3] at r_C
+      have : (2 * -y * (E3 * E1 ^ 3) ^ 3 - Cp) * (2 * y) = 0 := by linear_combination -r_C
+      exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right hb)
+  obtain ⟨Xp, Yp, hQp, hpP, hXp, hYp⟩ := g₃.2 hep
+  have h1 : Ep = E1 ^ 2 * E2 ^ 2 * (X - Xp) := by
+    linear_combination r_odd1 + E1 ^ 2 * hXp - E2 ^ 2 * hX
+  have h4 : Ep2 = 2 * Yp * E2 ^ 4 := by linear_combination r_p2 - E2 * hYp
+  have hQQ : Point.some X Y hQ + Point.some Xp Yp hQp = (2 * m + 1) • Point.some x y h := by
+    rw [hsmul, hmP, hpP]
+  -- case `X = Xp`: `Q = −Q⁺`, `(2m+1)P = 0`
+  by_cases hXX : X = Xp
+  · refine ⟨fun _ => ?_, fun hne => absurd (by rw [h1, hXX, sub_self, mul_zero]) hne⟩
+    rw [← hQQ]
+    rcases (Point.X_eq_iff (h₁ := hQ) (h₂ := hQp)).mp hXX with h' | h'
+    · exfalso
+      have : Point.some x y h = 0 := by
+        have := hpP
+        rw [smul_succ h, hmP, h', add_eq_left] at this
+        exact this
+      exact Point.some_ne_zero h this
+    · rw [h', neg_add_cancel]
+  -- the generic case: `(2m+1)P = Q + Q⁺`
+  have hEp0 : Ep ≠ 0 := by
+    rw [h1]
+    exact mul_ne_zero (mul_ne_zero (pow_ne_zero _ hem) (pow_ne_zero _ hep)) (sub_ne_zero.mpr hXX)
+  rw [Point.add_of_X_ne hXX] at hQQ
+  -- `Q − Q⁺ = −P` and `Q⁺ − Q = P`
+  have hsub : Point.some X Y hQ - Point.some Xp Yp hQp = -Point.some x y h := by
+    rw [← hmP, ← hpP, smul_succ h]; abel
+  rw [sub_eq_of_X_ne ha₁ ha₃ hQp hQ hXX, Point.neg_some] at hsub
+  obtain ⟨hsx, -⟩ := Point.some.inj hsub
+  have hsub' : Point.some Xp Yp hQp - Point.some X Y hQ = Point.some x y h := by
+    rw [← hmP, ← hpP, smul_succ h]; abel
+  rw [sub_eq_of_X_ne ha₁ ha₃ hQ hQp (Ne.symm hXX)] at hsub'
+  obtain ⟨hsx', hsy'⟩ := Point.some.inj hsub'
+  rw [addX_eq ha₁ ha₃] at hsx hsx'
+  rw [addY_eq ha₁ ha₃] at hsy'
+  have hl : W.slope X Xp Y Yp * (X - Xp) = Y - Yp := slope_mul_of_X_ne ha₁ ha₃ Y Yp hXX
+  have hn : W.slope Xp X Yp (W.negY X Y) * (Xp - X) = Yp + Y :=
+    slope_neg_mul ha₁ ha₃ (Ne.symm hXX)
+  have hn' : W.slope X Xp Y (W.negY Xp Yp) * (X - Xp) = Y + Yp := slope_neg_mul ha₁ ha₃ hXX
+  have hL4 := Ident.odd_Y (hQ_of ha₁ ha₃ hQ) (hQ_of ha₁ ha₃ hQp) hl hn
+  rw [hsy', hsx'] at hL4
+  have hD := Ident.chord_diff (a₂ := W.a₂) hXX hl hn'
+  rw [hsx] at hD
+  -- the auxiliary identities `E2² e₂ₘ₋₁ = E1⁶ A`, `E1² e₂ₘ₊₃ = E2⁶ B`
+  have hA : E2 ^ 2 * Emm = E1 ^ 6 * (4 * Y * y + (x - X) ^ 2 * (Xp - X)) := by
+    have : (E2 ^ 2 * Emm - E1 ^ 6 * (4 * Y * y + (x - X) ^ 2 * (Xp - X))) * (E1 * E2 ^ 5) = 0 := by
+      linear_combination (E1 * E2 ^ 7) * r_odd2 + (-E1 ^ 4 * E2 ^ 5) * r_cm
+        - (2 * E1 ^ 4 * E2 ^ 5 * y) * hY + (-E0 ^ 2 * E1 ^ 3 * E2 ^ 5) * hXp
+        + (E0 ^ 2 * E1 * E2 ^ 7 - E0 * E1 ^ 3 * E2 ^ 6 * X + E0 * E1 ^ 3 * E2 ^ 6 * Xp
+          + E1 ^ 5 * E2 ^ 5 * X ^ 2 - E1 ^ 5 * E2 ^ 5 * X * Xp - E1 ^ 5 * E2 ^ 5 * X * x
+          + E1 ^ 5 * E2 ^ 5 * Xp * x) * hX
+    exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right
+      (mul_ne_zero hem (pow_ne_zero _ hep)))
+  have hB : E1 ^ 2 * E2m3 = E2 ^ 6 * (4 * Yp * y + (x - Xp) ^ 2 * (Xp - X)) := by
+    have : (E1 ^ 2 * E2m3 - E2 ^ 6 * (4 * Yp * y + (x - Xp) ^ 2 * (Xp - X))) * (E1 ^ 5 * E2) = 0 := by
+      linear_combination (E1 ^ 7 * E2) * r_3 - (E1 ^ 5 * E2 ^ 4) * r_cp
+        - (2 * E1 ^ 5 * E2 ^ 4 * y) * hYp + (E1 ^ 5 * E2 ^ 3 * E3 ^ 2) * hX
+        + (-E1 ^ 7 * E2 * E3 ^ 2 - E1 ^ 6 * E2 ^ 3 * E3 * X + E1 ^ 6 * E2 ^ 3 * E3 * Xp
+          + E1 ^ 5 * E2 ^ 5 * X * Xp - E1 ^ 5 * E2 ^ 5 * X * x - E1 ^ 5 * E2 ^ 5 * Xp ^ 2
+          + E1 ^ 5 * E2 ^ 5 * Xp * x) * hXp
+    exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right
+      (mul_ne_zero (pow_ne_zero _ hem) hep))
+  refine ⟨fun h0 => absurd h0 hEp0, fun _ => ⟨_, _, _, hQQ.symm, ?_, ?_⟩⟩
+  · rw [addX_eq ha₁ ha₃, h1, h4, h3]
+    linear_combination (-E1 ^ 4 * E2 ^ 4) * hD
+  · rw [addY_eq ha₁ ha₃, h1]
+    rw [h3, h4] at r_C
+    have hne : (2 * y * (E1 ^ 2 * E2 ^ 2)) ≠ 0 :=
+      mul_ne_zero hb (mul_ne_zero (pow_ne_zero _ hem) (pow_ne_zero _ hep))
+    have : (2 * (-(W.slope X Xp Y Yp * ((W.slope X Xp Y Yp ^ 2 - W.a₂ - X - Xp) - X) + Y)) *
+        (E1 ^ 2 * E2 ^ 2 * (X - Xp)) ^ 3 - Cp) * (2 * y * (E1 ^ 2 * E2 ^ 2)) = 0 := by
+      linear_combination E1 ^ 8 * E2 ^ 8 * hL4 - E1 ^ 2 * E2 ^ 2 * r_C
+        - 4 * Y ^ 2 * E1 ^ 8 * E2 ^ 2 * hB + 4 * Yp ^ 2 * E1 ^ 2 * E2 ^ 8 * hA
+    exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right hne)
+
+/-! ### The `2`-torsion points and the main theorem -/
+
+omit ha₁ ha₃ in
+/-- The odd terms of the auxiliary sequence with `b = 0` are nonzero when `c ≠ 0`. -/
+theorem preNormEDS'_odd_ne_zero {c d : F} (hc : c ≠ 0) (k : ℕ) :
+    preNormEDS' (0 : F) c d (2 * k + 1) ≠ 0 := by
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+  rcases k with _ | _ | j
+  · simp
+  · simpa using hc
+  · rw [show 2 * (j + 2) + 1 = 2 * (j + 2) + 1 from rfl, preNormEDS'_odd]
+    rcases Nat.even_or_odd' j with ⟨i, rfl | rfl⟩
+    · rw [if_pos (even_two_mul i), if_pos (even_two_mul i)]
+      have h1 := ih i (by omega)
+      have h2 := ih (i + 1) (by omega)
+      rw [show 2 * i + 1 = 2 * i + 1 from rfl] at h1
+      rw [show 2 * (i + 1) + 1 = 2 * i + 3 by ring] at h2
+      rw [show 2 * i + 1 = 2 * i + 1 from rfl, show 2 * i + 3 = 2 * i + 3 from rfl]
+      simp only [mul_zero, mul_one, zero_sub, neg_ne_zero]
+      exact mul_ne_zero h1 (pow_ne_zero _ h2)
+    · have hodd : ¬Even (2 * i + 1) := Nat.not_even_iff_odd.mpr ⟨i, rfl⟩
+      rw [if_neg hodd, if_neg hodd]
+      have h1 := ih (i + 1) (by omega)
+      have h2 := ih (i + 2) (by omega)
+      rw [show 2 * (i + 1) + 1 = 2 * i + 1 + 2 by ring] at h1
+      rw [show 2 * (i + 2) + 1 = 2 * i + 1 + 4 by ring] at h2
+      simp only [mul_one, mul_zero, sub_zero]
+      exact mul_ne_zero h2 (pow_ne_zero _ h1)
+
+omit [NeZero (2 : F)] ha₁ ha₃ in
+/-- The even terms of `eₙ` vanish at a `2`-torsion point. -/
+theorem eds_eq_zero_of_even (hy : y = 0) {n : ℤ} (hn : Even n) : eds W x y n = 0 := by
+  rw [eds, normEDS, if_pos hn, hy]; ring
+
+include h in
+/-- `Ψ₃(x) ≠ 0` at a `2`-torsion point `(x, 0)`: `Ψ₃(x) = −f'(x)²` there. -/
+theorem Ψ₃_ne_zero_of_y_eq_zero (hy : y = 0) : W.Ψ₃.eval x ≠ 0 := by
+  have hf := hQ_of ha₁ ha₃ h
+  rw [hy] at hf
+  have hf' : 3 * x ^ 2 + 2 * W.a₂ * x + W.a₄ ≠ 0 := by
+    rcases h.2 with h' | h'
+    · rw [evalEval_polynomialX, ha₁] at h'
+      intro h0; apply h'; rw [h0]; ring
+    · rw [evalEval_polynomialY, ha₁, ha₃, hy] at h'
+      exact absurd (by ring) h'
+  rw [Ψ₃_eval ha₁ ha₃]
+  have : Ident.Ψ₃v W.a₂ W.a₄ W.a₆ x =
+      (12 * x + 4 * W.a₂) * (x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆) -
+        (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄) ^ 2 := by
+    unfold Ident.Ψ₃v; ring
+  rw [this, ← hf, zero_pow two_ne_zero, mul_zero, zero_sub, neg_ne_zero]
+  exact pow_ne_zero _ hf'
+
+include h in
+/-- The odd terms of `eₙ` do not vanish at a `2`-torsion point. -/
+theorem eds_ne_zero_of_odd (hy : y = 0) (k : ℕ) : eds W x y (2 * k + 1) ≠ 0 := by
+  have hc := Ψ₃_ne_zero_of_y_eq_zero ha₁ ha₃ h hy
+  have hodd : ¬Even (2 * (k : ℤ) + 1) := Int.not_even_iff_odd.mpr ⟨k, rfl⟩
+  rw [eds, normEDS, if_neg hodd, mul_one, hy, mul_zero,
+    show (2 * (k : ℤ) + 1) = ((2 * k + 1 : ℕ) : ℤ) by push_cast; ring, preNormEDS_ofNat]
+  simpa using preNormEDS'_odd_ne_zero hc k
+
+/-- `Good n` for every `n` at a `2`-torsion point `(x, 0)`. -/
+theorem good_of_y_eq_zero (hy : y = 0) (n : ℕ) : Good h n := by
+  have h2P : 2 • Point.some x y h = 0 := by
+    rw [two_nsmul, Point.add_self_of_Y_eq]
+    rw [negY_eq ha₁ ha₃, hy, neg_zero]
+  rcases Nat.even_or_odd' n with ⟨k, rfl | rfl⟩
+  · refine good_of_eq_zero h (eds_eq_zero_of_even hy ⟨k, by push_cast; ring⟩) ?_
+    rw [mul_nsmul, h2P, smul_zero]
+  · have hne := eds_ne_zero_of_odd ha₁ ha₃ h hy k
+    refine ⟨fun h0 => absurd (by push_cast; exact h0) hne, fun _ => ⟨x, y, h, ?_, ?_, ?_⟩⟩
+    · rw [succ_nsmul, mul_nsmul, h2P, smul_zero, zero_add]
+    · have e1 : eds W x y (((2 * k + 1 : ℕ) : ℤ) + 1) = 0 :=
+        eds_eq_zero_of_even hy ⟨k + 1, by push_cast; ring⟩
+      rw [e1, zero_mul, sub_zero]
+    · rw [hy, edsC, complEDS₂, if_neg (Int.not_even_iff_odd.mpr ⟨k, by push_cast; ring⟩)]; ring
+
+/-- **The division polynomials describe the multiples of a point**: for every nonsingular point
+`P = (x, y)` of `y² = x³ + a₂x² + a₄x + a₆` and every `n`, `eₙ = ψₙ(x, y) = 0` iff `nP = 0`, and
+if `eₙ ≠ 0` then `nP = (Xₙ, Yₙ)` with `Xₙ eₙ² = x eₙ² − eₙ₊₁ eₙ₋₁` and `2Yₙ eₙ³ = cₙ`. -/
+theorem good (n : ℕ) : Good h n := by
+  by_cases hy : y = 0
+  · exact good_of_y_eq_zero ha₁ ha₃ h hy n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+  rcases n with _ | _ | _ | _ | n
+  · exact good_zero h
+  · exact good_one h
+  · exact good_two ha₁ ha₃ h hy
+  · exact good_three ha₁ ha₃ h hy
+  · rcases Nat.even_or_odd' (n + 4) with ⟨m, hm | hm⟩
+    · rw [hm]
+      exact good_even ha₁ ha₃ h hy m (by omega) (ih _ (by omega)) (ih _ (by omega))
+        (ih _ (by omega))
+    · rw [hm]
+      exact good_odd ha₁ ha₃ h hy m (by omega) (ih _ (by omega)) (ih _ (by omega))
+        (ih _ (by omega)) (ih _ (by omega))
+
+/-- `n • P = 0 ↔ ψₙ(P) = 0`. -/
+theorem smul_eq_zero_iff_eds (n : ℕ) : n • Point.some x y h = 0 ↔ eds W x y n = 0 :=
+  (good ha₁ ha₃ h n).smul_eq_zero_iff
+
 end main
 
 end Iut.Torsion
