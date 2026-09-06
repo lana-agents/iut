@@ -15,7 +15,7 @@ action in it), the torsion field `K = F̄^{ker ρ}` (`ModEllRepData.torsionField
 
 * `E(K)[ℓ] ≃ E(F̄)[ℓ]` (`ModEllRepData.torsionEquivR`): the ℓ-torsion is rational over `K`, so
   `E(K)[ℓ]` has `ℓ²` elements (`card_TKR`);
-* `K/F` is Galois (`ModEllRepData.isGalois_torsionField`), and the restriction
+* `K/F` is Galois (`ModEllRepData.isGalois_torsionField_cyc`), and the restriction
   `Gal(F̄/F) → Gal(K/F)` (`restrictKR`) is surjective and intertwines the actions on `E(F̄)` and
   `E(K)` (`bcKR_galK`);
 * **the action of `Gal(K/F)` on `E(K)[ℓ]` is faithful** (`eq_one_of_forall_galK_eq`): an
@@ -117,7 +117,7 @@ abbrev TFbarR (_R : C.ModEllRepData ℓ) :
   AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ
 
 /-- Elements of the kernel of the mod-ℓ representation fix the ℓ-torsion. -/
-lemma galPointMap_eq_of_mem_ker {σ : C.Fbar ≃ₐ[C.F] C.Fbar} (hσ : σ ∈ R.rep.ker)
+lemma galPointMap_eq_of_mem_ker_cyc {σ : C.Fbar ≃ₐ[C.F] C.Fbar} (hσ : σ ∈ R.rep.ker)
     (Q : ↥R.TFbarR) : galPointMap C.F C.E C.Fbar σ Q.1 = Q.1 := by
   have h := R.rep_spec σ Q
   rw [MonoidHom.mem_ker.mp hσ] at h
@@ -131,7 +131,7 @@ lemma exists_bcKR_eq (Q : Affine.Point (Affine.baseChange C.E C.Fbar)) (hQ : Q �
   · exact ⟨0, rfl⟩
   · have hfix : ∀ σ ∈ R.rep.ker, σ x = x ∧ σ y = y := by
       intro σ hσ
-      have h' := R.galPointMap_eq_of_mem_ker hσ ⟨_, hQ⟩
+      have h' := R.galPointMap_eq_of_mem_ker_cyc hσ ⟨_, hQ⟩
       simp only [galPointMap, Affine.Point.map_some] at h'
       exact Affine.Point.some.inj h'
     have hx : x ∈ R.torsionField := by
@@ -176,7 +176,7 @@ lemma card_TKR : Nat.card R.TKR = ℓ ^ 2 := by
 /-! ### The Galois action on `E(K)` -/
 
 /-- `K/F` is Galois (the fixed field of the normal subgroup `ker ρ`). -/
-instance isGalois_torsionField : IsGalois C.F ↥R.torsionField :=
+instance isGalois_torsionField_cyc : IsGalois C.F ↥R.torsionField :=
   IsGalois.of_fixedField_normal_subgroup R.rep.ker
 
 /-- The restriction of `σ ∈ Gal(F̄/F)` to `K`. -/
