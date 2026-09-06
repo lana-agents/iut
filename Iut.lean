@@ -88,6 +88,13 @@ import Iut.Implication.Invariants
 import Iut.Implication.LogVolumeBound
 import Iut.Implication.PrimeSelection
 import Iut.Implication.Theorem110
+import Iut.Tower.Basic
+import Iut.Tower.Different
+import Iut.Tower.LogDK
+import Iut.Tower.Main
+import Iut.Tower.RamIdx
+import Iut.Tower.Residual
+import Iut.Tower.StepIII
 import Iut.Tripod.Basic
 import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts
@@ -106,5 +113,7 @@ import Iut.Tripod.SL2Generation
 import Iut.Tripod.StableOdd
 import Iut.Tripod.StableTwo
 import Iut.Tripod.TorsionDegree
+import Iut.Tripod.Tower
+import Iut.Tripod.TpdGalois
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.TwoTorsion
