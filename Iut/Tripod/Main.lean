@@ -13,6 +13,7 @@ import Iut.Anabelian.Existence
 import Iut.Tripod.Northcott
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.LogCond
+import Iut.Tripod.Tower
 
 /-!
 # The ABC implication for the tripod, with propositional inputs
@@ -33,8 +34,12 @@ hypothesis is a proposition about the constructed objects:
   curve has no core ([CanLift], Proposition 2.7); the `2`-adic bound and the conductor
   comparisons are theorems (`Iut/Tripod/TwoAdic.lean`, `LogCond.lean`);
 * `LocalTheoryFacts`: the three remaining facts of the local theory (the inclusion of the
-  maximal order in the log-shell, least hull regions, IUT IV Prop. 1.4(iii)) and the tower
-  arithmetic `TowerArithmetic` (IUT IV, §1), all about the constructed packets;
+  maximal order in the log-shell, least hull regions, IUT IV Prop. 1.4(iii)), all about the
+  constructed packets;
+* `TowerLocalHyp`: the residual local facts of the tower `ℚ(j) ⊆ ℚ(λ) ⊆ F_λ ⊆ F_λ(E_λ[ℓ])`
+  (IUT IV, Propositions 1.3 and 1.8: the different bound, Néron–Ogg–Shafarevich, the
+  ramification bounds), from which the tower arithmetic `TowerArithmetic` (IUT IV, §1) is a
+  theorem (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`);
 * the prime-counting bound (Prop. 1.6);
 * `h312`, the variant itself.
 
@@ -55,10 +60,7 @@ theta local data. -/
 theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
     (CF : CurveFactsProp (providersOfProps hp) K d (modelAG Pi1) TK) (hN : NorthcottHyp)
     (hlocal : ∀ (K : Type) [Field K] [NumberField K], LocalTheoryFacts K)
-    (TAp : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (htwo : TwoTorsionRational D)
-      (QI : QPilotInputs D),
-      TowerArithmetic D (concreteLocalTheory D.Kt (hlocal D.Kt))
-        (thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI)) :
+    (hloc : TowerLocalHyp (providersOfProps hp)) :
     ConcreteThetaDataExistence.{0, 0} (AG := modelAG Pi1) (TG := modelTG Pi1 Tp)
       (curveInputs (providersOfProps hp) K d CF hN
         (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
@@ -90,7 +92,12 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
   let QI : QPilotInputs D := (CI.curve x hx).qPilotInputs (CI.arith x hx) (CI.tate x hx) hℓ h7
     (CI.modRep x hx ℓ hℓ) (hsl hx hℓ) hP2' hP5' (anabelianExistence Pi1 Tp) hcore
   refine ⟨D, concreteLocalTheory D.Kt (hlocal D.Kt),
-    thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI, QI, TAp D htwo QI, rfl,
+    thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI, QI,
+    towerArithmetic_of_towerLocalHyp (providersOfProps hp) x hℓ h7 (hsl hx hℓ) hP2' hP5'
+      (anabelianExistence Pi1 Tp) hcore hloc
+      (fun l => torsionDegreeBound_three l (hp.torsion_basis l 3 (by norm_num)))
+      (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
+      (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo, rfl,
     CI.dmod_le x hx, ?_, CI.logDiff_eq x hx, CI.logCond_ge x hx ℓ hℓ h7,
     CI.logCond_le x hx ℓ hℓ h7⟩
   exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
@@ -101,10 +108,7 @@ theorem abc_of_variant
     (hfacts : ∀ (K : CompactlyBounded) (d : ℕ),
       ∃ TK : ℝ, CurveFactsProp (providersOfProps hp) K d (modelAG Pi1) TK)
     (hlocal : ∀ (K : Type) [Field K] [NumberField K], LocalTheoryFacts K)
-    (TAp : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (htwo : TwoTorsionRational D)
-      (QI : QPilotInputs D),
-      TowerArithmetic D (concreteLocalTheory D.Kt (hlocal D.Kt))
-        (thetaLocalData D (concreteLocalTheory D.Kt (hlocal D.Kt)) htwo QI))
+    (hloc : TowerLocalHyp (providersOfProps hp))
     (hprime : PrimeCountingHyp)
     (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (LT : LocalTheory.{0, 0} D.Kt)
       (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
@@ -118,7 +122,8 @@ theorem abc_of_variant
       (fun l => torsionDegreeBound_five l (hp.torsion_basis l 5 (by norm_num)))
       (twoAdicBound _ K) (logCondGe _) (logCondLe _)).toCorollary22Inputs)
     (fun K d =>
-      (concreteThetaDataExistence' Pi1 Tp hp (CF K d) northcottHyp hlocal TAp).toThetaDataExistence)
+      (concreteThetaDataExistence' Pi1 Tp hp (CF K d) northcottHyp hlocal
+        hloc).toThetaDataExistence)
     chebyshevBoundExplicit pnt (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
 
 end Iut.Tripod

@@ -22,7 +22,7 @@ ramification index and `e_v` the absolute one:
 
 * `ordAt_different_le` — **the different bound** (IUT IV, Proposition 1.3 together with the
   tameness of `K/F` away from `ℓ` and of `F/F_tpd` away from `2·3·5`, Proposition 1.8):
-  `ord_v(𝔇_{K/F_tpd}) ≤ e(v/u) − 1 + e_v·c_p`, where the wild constant `c_p`
+  `ord_v(𝔇_{K/F_tpd}) ≤ e(v/u) − 1 + e_v·c_p`, where the wild factor `c_p`
   (`Iut.wildConst`) is `12, 2, 1` at `p = 2, 3, 5` (the `p`-adic valuations of
   `[F : F_tpd] ∣ 2¹²·3²·5`, `F = F_tpd(√−1, √λ, √(1 − λ), E[3], E[5])`), `1` at `p = ℓ`
   (`ord_ℓ |GL₂(𝔽_ℓ)| = 1`) and `0` otherwise (tame ramification, `ord_v(𝔇) = e − 1`);

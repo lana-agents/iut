@@ -354,7 +354,7 @@ theorem log_absNorm_different_div_le (H : TowerLocalFacts E VBad Pr)
   rw [htame1]
   linarith
 
-/-! ### The numerical constant -/
+/-! ### The numerical bound -/
 
 /-- `∑_{p ∈ {2,3,5,ℓ}} (1 + c_p)·log p ≤ 13·log 2 + 3·log 3 + 2·log 5 + 2·log ℓ` for `ℓ ≥ 5`. -/
 lemma sum_one_add_wildConst_le (ℓ : ℕ) (hℓ : 5 ≤ ℓ) :
