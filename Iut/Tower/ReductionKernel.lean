@@ -35,8 +35,6 @@ namespace Iut.ReductionKernel
 
 open WeierstrassCurve WeierstrassCurve.Affine Polynomial
 
-open scoped Classical
-
 variable {K : Type*} [Field K] {Γ : Type*} [LinearOrderedCommGroupWithZero Γ]
   (v : Valuation K Γ)
 
@@ -70,7 +68,7 @@ theorem valuation_eval_eq_pow {f : K[X]} (hf : ∀ i, v (f.coeff i) ≤ 1)
 
 /-! ### The division polynomials at a point -/
 
-variable (W : Affine K)
+variable (W : Affine K) [DecidableEq K]
 
 /-- **The division-polynomial description of the multiples of a point**: `n • P = 0` iff the
 `n`-th term of the normalized elliptic divisibility sequence with initial values
@@ -81,6 +79,7 @@ def DivPolyHyp : Prop :=
 
 variable {W}
 
+omit [DecidableEq K] in
 /-- `Ψ₂Sq(x) = (2y)²` on the curve, for `a₁ = a₃ = 0`. -/
 lemma Ψ₂Sq_eval_eq (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x y : K} (h : W.Equation x y) :
     W.Ψ₂Sq.eval x = (2 * y) ^ 2 := by
@@ -88,6 +87,7 @@ lemma Ψ₂Sq_eval_eq (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x y : K} (h : W
   simp only [Ψ₂Sq, b₂, b₄, b₆, ha₁, ha₃, eval_add, eval_mul, eval_C, eval_pow, eval_X]
   linear_combination 4 * h.symm
 
+omit [DecidableEq K] in
 /-- The normalized EDS at a point is `Ψₙ'(x)·(2y)^{[n even]}`. -/
 lemma normEDS_eq_eval_preΨ' (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x y : K} (h : W.Equation x y)
     (n : ℕ) :
@@ -98,6 +98,7 @@ lemma normEDS_eq_eval_preΨ' (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x y : K}
   simp only [Int.even_coe_nat]
   ring_nf
 
+omit [DecidableEq K] in
 /-- The coefficients of `Ψₙ'` are integral when the coefficients of `W` are. -/
 lemma valuation_coeff_preΨ'_le_one (ha₁ : v W.a₁ ≤ 1) (ha₂ : v W.a₂ ≤ 1) (ha₃ : v W.a₃ ≤ 1)
     (ha₄ : v W.a₄ ≤ 1) (ha₆ : v W.a₆ ≤ 1) (n i : ℕ) : v ((W.preΨ' n).coeff i) ≤ 1 := by
@@ -126,6 +127,7 @@ theorem nsmul_ne_zero_of_one_lt (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (ha₂
   rw [h0, map_zero] at this
   exact pow_ne_zero _ (zero_lt_one.trans hx).ne' this.symm
 
+omit [DecidableEq K] in
 /-- The coordinates of a point in the kernel of reduction of the coordinates: `v(y) ≤ 1` when
 `v(x) ≤ 1` (on the curve). -/
 lemma valuation_y_le_one (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (ha₂ : v W.a₂ ≤ 1)
@@ -156,6 +158,7 @@ theorem valuation_le_one_of_nsmul_eq_zero (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ =
 
 /-! ### Nonsingular reduction -/
 
+omit [DecidableEq K] in
 /-- The Bézout identity `A·f + B·f' = −disc(f)` for the cubic `f = X³ + aX² + bX + c`. -/
 lemma cubic_bezout (a b c x : K) :
     ((6 * a ^ 2 - 18 * b) * x + (4 * a ^ 3 - 15 * a * b + 27 * c)) *
@@ -165,6 +168,7 @@ lemma cubic_bezout (a b c x : K) :
       -(a ^ 2 * b ^ 2 - 4 * b ^ 3 - 4 * a ^ 3 * c + 18 * a * b * c - 27 * c ^ 2) := by
   ring
 
+omit [DecidableEq K] in
 /-- `Δ = 16·disc(f)` for `a₁ = a₃ = 0`. -/
 lemma Δ_eq_of_a₁_a₃ (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) :
     W.Δ = 16 * (W.a₂ ^ 2 * W.a₄ ^ 2 - 4 * W.a₄ ^ 3 - 4 * W.a₂ ^ 3 * W.a₆ +
@@ -172,6 +176,7 @@ lemma Δ_eq_of_a₁_a₃ (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) :
   simp only [WeierstrassCurve.Δ, b₂, b₄, b₆, b₈, ha₁, ha₃]
   ring
 
+omit [DecidableEq K] in
 /-- **Nonsingular reduction at a good model**: for a point `(x, y)` with integral coordinates
 on a model with `v(Δ) = 1` and `v(2) = 1`, `v(f'(x)) = 1` or `v(2y) = 1`. -/
 theorem nonsingular_reduction_of_Δ (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (ha₂ : v W.a₂ ≤ 1)
@@ -246,10 +251,12 @@ theorem nonsingular_reduction_of_Δ (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (h
 
 /-! ### Congruent points -/
 
+omit [DecidableEq K] in
 /-- `-(x, y) = (x, -y)` for `a₁ = a₃ = 0`. -/
 lemma negY_eq (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (x y : K) : W.negY x y = -y := by
   simp [negY, ha₁, ha₃]
 
+omit [DecidableEq K] in
 /-- The difference of two affine points: the identity `(y₁ − y₂)(y₁ + y₂) = (x₁ − x₂)·g`. -/
 lemma sub_mul_add_eq (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x₁ y₁ x₂ y₂ : K}
     (h₁ : W.Equation x₁ y₁) (h₂ : W.Equation x₂ y₂) :

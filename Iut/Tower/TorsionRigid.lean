@@ -35,8 +35,6 @@ namespace Iut
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WeierstrassCurve
   WeierstrassCurve.Affine
 
-open scoped Classical
-
 /-! ### Rigidity under the inertia condition -/
 
 section Valuation
@@ -82,7 +80,7 @@ theorem algEquiv_eq_one_of_fixed {k K : Type*} [Field k] [Field K] [Algebra k K]
 
 section Torsion
 
-variable {k K : Type*} [Field k] [Field K] [Algebra k K] {Γ : Type*}
+variable {k K : Type*} [Field k] [Field K] [DecidableEq K] [Algebra k K] {Γ : Type*}
   [LinearOrderedCommGroupWithZero Γ] (v : Valuation K Γ) (W : WeierstrassCurve k)
 
 /-- **Inertia fixes the prime-to-`p` torsion at a good place**: for `σ : K →ₐ[k] K` with
@@ -154,7 +152,7 @@ theorem relRamIdx_eq_one_of_sqrt {S : Set K} (hS : IntermediateField.adjoin k S 
 /-- **Néron–Ogg–Shafarevich**: if `Gal(K/k)` acts faithfully on the `n`-torsion `E(K)[n]` of a
 curve `E : y² = x³ + a₂x² + a₄x + a₆` over `k` with `v`-integral coefficients and `v(Δ) = 1`,
 `n` odd with `v(n) = 1` and `p ≠ 2`, then `e(v/u) = 1`. -/
-theorem relRamIdx_eq_one_of_torsion (W : WeierstrassCurve k) (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0)
+theorem relRamIdx_eq_one_of_torsion [DecidableEq K] (W : WeierstrassCurve k) (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0)
     (ha₂ : v.maximalIdeal.valuation K (algebraMap k K W.a₂) ≤ 1)
     (ha₄ : v.maximalIdeal.valuation K (algebraMap k K W.a₄) ≤ 1)
     (ha₆ : v.maximalIdeal.valuation K (algebraMap k K W.a₆) ≤ 1)
@@ -169,5 +167,40 @@ theorem relRamIdx_eq_one_of_torsion (W : WeierstrassCurve k) (ha₁ : W.a₁ = 0
       hn (σ : K →ₐ[k] K) hσ P hP
 
 end NumberField
+
+end Iut
+
+namespace Iut
+
+/-! ### Multiplicativity of `e` in a tower of number fields -/
+
+section Tower
+
+open NumberField
+
+variable {k₀ k K : Type*} [Field k₀] [NumberField k₀] [Field k] [NumberField k] [Field K]
+  [NumberField K] [Algebra k₀ k] [Algebra k K] [Algebra k₀ K] [IsScalarTower k₀ k K]
+  {v : FinitePlace K} {u : FinitePlace k₀} (hvu : FinitePlace.LiesOver v u)
+include hvu
+
+/-- The place of `k` below `v` lies over the place of `k₀ ⊆ k` below `v`. -/
+lemma liesOver_placeUnder_of_liesOver : FinitePlace.LiesOver (placeUnder (k := k) v) u := by
+  haveI : v.maximalIdeal.asIdeal.LiesOver u.maximalIdeal.asIdeal := hvu
+  haveI : v.maximalIdeal.asIdeal.LiesOver (placeUnder (k := k) v).maximalIdeal.asIdeal :=
+    liesOver_placeUnder v
+  exact Ideal.LiesOver.tower_bot v.maximalIdeal.asIdeal _ _
+
+/-- `e(v/u) = e(w/u)·e(v/w)` for `w` the place of `k` below `v`. -/
+lemma relRamIdx_eq_mul_placeUnder :
+    relRamIdx v u = relRamIdx (placeUnder (k := k) v) u * relRamIdx v (placeUnder (k := k) v) := by
+  haveI : v.maximalIdeal.asIdeal.LiesOver u.maximalIdeal.asIdeal := hvu
+  haveI : v.maximalIdeal.asIdeal.LiesOver (placeUnder (k := k) v).maximalIdeal.asIdeal :=
+    liesOver_placeUnder v
+  haveI : (placeUnder (k := k) v).maximalIdeal.asIdeal.LiesOver u.maximalIdeal.asIdeal :=
+    liesOver_placeUnder_of_liesOver hvu
+  exact Ideal.ramificationIdx'_algebra_tower' u.maximalIdeal.asIdeal
+    (placeUnder (k := k) v).maximalIdeal.asIdeal v.maximalIdeal.asIdeal
+
+end Tower
 
 end Iut
