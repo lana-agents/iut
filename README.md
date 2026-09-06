@@ -115,7 +115,15 @@ whose `x`-coordinate is a nonzero integral root of `3x³ + A²x² + 3ABx + 3B²`
 Likewise the cyclic-subgroup bound of [GenEll] Lemma 3.5 (`cyclic_bound` in
 `Corollary22Inputs`, `CurveInputs`) is stated for primes `ℓ ≥ 7` under (P2), as it is
 used; quantified over all primes it fails for the curves of the points, whose 3- and
-5-torsion is rational.
+5-torsion is rational. Its local half, [GenEll] Lemma 3.2(i) — under (P2) an `ℓ`-cyclic
+subgroup is the graph line `μ_ℓ` of the Tate uniformisation — is proved at the multiplicative
+places of odd residue characteristic (`Iut/Tripod/CyclicLocal.lean`), and the bound is
+derived (`Iut.Tripod.cyclicBound_of`, `Iut/Tripod/CyclicBound.lean`) from the residual
+`Prop` `Iut.Tripod.CyclicGraphBoundHyp`: the same bound for subgroups that are the graph
+line at the odd places, whose content is Lemma 3.2(i) at the places over `2` (the Tate
+uniformisation of `tate-curves-theta` assumes `‖2‖ = 1`), Lemma 3.2(ii) for the quotient
+`E/μ_ℓ`, the Faltings-height inequality for the isogeny `E → E/μ_ℓ`, and Proposition 3.4 —
+Faltings heights, isogenies and quotient curves have no counterpart in Mathlib.
 
 ## Current scope (IUT4 §1)
 
@@ -326,7 +334,18 @@ repository and every hypothesis is a proposition about the constructed objects.
   `F_λ/ℚ(j)` is Galois of degree prime to `ℓ ≥ 7` is proved in
   [`Galois.lean`](Iut/Tripod/Galois.lean)); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the cyclic-subgroup
-  bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2)); the finiteness of the points whose
+  bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2), assumed in its residual form
+  `Iut.Tripod.CyclicGraphBoundHyp`: for the cyclic-subgroup bound, [GenEll] Lemma 3.2(i) at
+  the odd multiplicative places (a Galois-stable `ℓ`-cyclic subgroup is the graph line
+  `μ_ℓ ⊆ E_λ[ℓ]` of the Tate uniformisation when `ℓ ∤ ord(q)`, by a counting argument in the
+  decomposition group of the `ℓ`-torsion field:
+  `Iut.EllipticCurveData.ModEllRepData.comap_bcKR_eq_graphLineAt`,
+  [`CyclicTorsion.lean`](Iut/Tripod/CyclicTorsion.lean),
+  [`CyclicLocal.lean`](Iut/Tripod/CyclicLocal.lean)), the decomposition of `log q_∀` by the
+  graph-line places with the non-graph part bounded by the `2`-adic bound, and the derivation
+  of the bound from the residual (`cyclicBound_of`, [`CyclicBound.lean`](Iut/Tripod/CyclicBound.lean))
+  are **proved**; the residual `CyclicGraphBoundHyp` is Lemma 3.2(i) over `2`, Lemma 3.2(ii),
+  the Faltings-height inequality for `E → E/μ_ℓ` and [GenEll] Prop 3.4); the finiteness of the points whose
   once-punctured curve has no core ([CanLift] Prop 2.7, `Iut.Tripod.coreFiniteness` from the
   `excJ`/`hasCore_oncePunctured` fields of `EtalePi1Theory` and the `j`-invariant of the
   Legendre curve, [`Core.lean`](Iut/Tripod/Core.lean)), the height comparison

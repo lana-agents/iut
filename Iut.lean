@@ -92,6 +92,9 @@ import Iut.Tripod.Basic
 import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts
 import Iut.Tripod.CurveOf
+import Iut.Tripod.CyclicBound
+import Iut.Tripod.CyclicLocal
+import Iut.Tripod.CyclicTorsion
 import Iut.Tripod.Galois
 import Iut.Tripod.Height
 import Iut.Tripod.Legendre

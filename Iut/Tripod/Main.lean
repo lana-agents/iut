@@ -15,6 +15,7 @@ import Iut.Tripod.TorsionDegree
 import Iut.Tripod.LogCond
 import Iut.Tripod.Core
 import Iut.Tripod.Height
+import Iut.Tripod.CyclicBound
 
 /-!
 # The ABC implication for the tripod, with propositional inputs
@@ -103,8 +104,8 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
 
 /-- **The Corollary 3.12 variant implies ABC on the tripod**, with propositional inputs. -/
 theorem abc_of_variant
-    (hfacts : ∀ (K : CompactlyBounded) (d : ℕ),
-      ∃ TK : ℝ, CurveFactsProp (providersOfProps hp) K d TK)
+    (hcyc : ∀ (K : CompactlyBounded) (d : ℕ),
+      ∃ TK : ℝ, CyclicGraphBoundHyp (providersOfProps hp) K d TK)
     (TAp : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (htwo : TwoTorsionRational D)
       (QI : QPilotInputs D),
       TowerArithmetic D (concreteLocalTheory D.Kt)
@@ -113,7 +114,9 @@ theorem abc_of_variant
       (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
       Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
     tripodTheory.StatementII := by
-  choose TK CF using hfacts
+  choose TK hc using hcyc
+  let CF : ∀ K d, CurveFactsProp (providersOfProps hp) K d (TK K d) :=
+    fun K d => ⟨cyclicBound_of _ K d (hc K d)⟩
   exact statementII_of_cor312
     (fun K d => (curveInputs (providersOfProps hp) K d (CF K d) (coreFiniteness Pi1 _ K d)
       northcottHyp
