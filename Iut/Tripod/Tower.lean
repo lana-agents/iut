@@ -80,7 +80,7 @@ theorem relRamIdxModLeTwo_curve (ℓ : ℕ) :
 /-- **The tower arithmetic of the Θ-data of a point of the tripod**, from the residual local
 facts, the ramification bound at the bad places and the torsion degree bounds. -/
 theorem towerArithmetic_of_towerLocalHyp (hloc : TowerLocalHyp P)
-    (hdeg3 : ∀ l : Qbar, TorsionDegreeBound l 3) (hdeg5 : ∀ l : Qbar, TorsionDegreeBound l 5)
+    (hdeg3 : ∀ x : Pt, TorsionDegreeBound x.1 3) (hdeg5 : ∀ x : Pt, TorsionDegreeBound x.1 5)
     (LT : LocalTheory.{0, v} (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore).Kt)
     (htwo : TwoTorsionRational (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore)) :
     TowerArithmetic (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore) LT
@@ -96,7 +96,7 @@ theorem towerArithmetic_of_towerLocalHyp (hloc : TowerLocalHyp P)
     (finrank_tpd_le_six x (P.torsionFinite3 x.1) (P.torsionFinite5 x.1)) ?_ ?_ ?_
   · change Module.finrank ℚ (P.curve x).F ≤ 552960 * Module.finrank ℚ (tpd P x)
     rw [finrank_tpd]
-    exact deg_le x _ _ (hdeg3 x.1) (hdeg5 x.1)
+    exact deg_le x _ _ (hdeg3 x) (hdeg5 x)
   · exact (qPilotInputsOf P x hℓ h7 hsl hP2 hP5 anab hcore).bad_finite
   · intro p hp
     obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hp

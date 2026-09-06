@@ -72,8 +72,9 @@ open scoped Classical in
 def torsionSet (l : Qbar) (n : ℕ) : Set (legendre l).toAffine.Point := {P | n • P = 0}
 
 /-- **Finiteness of the `n`-torsion** of `E_λ(ℚ̄)`: the hypothesis of the construction of
-the field of definition. It follows from `E_λ[n](ℚ̄) ≅ (ℤ/n)²` (the hypothesis
-`Nonempty (torsionBy … ≃+ (Fin 2 → ZMod n))` of `Iut.EllipticCurveData.modEllRepData`). -/
+the field of definition. It is a theorem for every `λ` and `n ≠ 0`
+(`Iut.Tripod.legendre_torsionFinite`, from the division polynomials), and follows also from
+`E_λ[n](ℚ̄) ≅ (ℤ/n)²` (`torsionFinite_of_equiv`). -/
 def TorsionFinite (l : Qbar) (n : ℕ) : Prop := (torsionSet l n).Finite
 
 open scoped Classical in
