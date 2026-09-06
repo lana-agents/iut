@@ -236,17 +236,23 @@ whose fields are the target statements of the sibling projects:
   `log(d_K) = log(d_{F_tpd}) + log N(𝔇_{K/F_tpd})/[K : ℚ]` and Step (ii)
   ([`Different.lean`](Iut/Tower/Different.lean)), the uniformity of ramification in Galois
   extensions, `e_u − 1 ≤ ord_u(𝔡)` and Step (iii) ([`StepIII.lean`](Iut/Tower/StepIII.lean))
-  — together with the four **residual local facts** of `Iut.TowerLocalFacts`
+  — together with the three **residual local facts** of `Iut.TowerLocalFacts`
   ([`Residual.lean`](Iut/Tower/Residual.lean); IUT IV, Propositions 1.3 and 1.8): for a
   place `v` of `K` over `u` of `F_tpd`, the different bound
   `ord_v(𝔇_{K/F_tpd}) + 1 ≤ e(v/u) + e_v·c_p` with `c_p = 12, 2, 1` at `p = 2, 3, 5`, `1` at
   `p = ℓ` and `0` otherwise (Prop 1.3 with the tameness of `K/F` away from `ℓ` and of
   `F/F_tpd` away from `2·3·5`); Néron–Ogg–Shafarevich (`e(v/u) = 1` for `p ∉ {2,3,5,ℓ}`,
-  `u` not bad); `e(v/u) ≤ 30ℓ` for `p ∉ {2,3,5,ℓ}`; and `e(u/u₀) ≤ 2` for `F_tpd/F_mod`
-  at `u₀ ∈ V_mod^bad` (Tate uniformization of the `2`-torsion). The general theorem also
-  takes `F_tpd/F_mod` Galois with `[F_tpd : F_mod] ≤ 6`, `[F : ℚ] ≤ 552960·[F_tpd : ℚ]`, the
-  finiteness of the bad places and the description of the bad residue characteristics —
-  all theorems for the curves of the tripod.
+  `u` not bad); and `e(v/u) ≤ 30ℓ` for `p ∉ {2,3,5,ℓ}`. The fourth local input,
+  `e(u/u₀) ≤ 2` for `F_tpd/F_mod` at `u₀ ∈ V_mod^bad` (`Iut.RelRamIdxModLeTwo`; the Tate
+  uniformization of the `2`-torsion), is a **theorem for the curves of the tripod**
+  (`Iut.Tripod.relRamIdx_tpd_le_two`, [`TpdRamIdx.lean`](Iut/Tripod/TpdRamIdx.lean)): at a
+  place where `j` is non-integral one of `λ, 1/λ, 1 − λ` has positive valuation, only two
+  of the six roots of the sextic are congruent to it modulo the place, and the inertia
+  group of `ℚ(λ)/ℚ(j)`, of order `e(u/u₀)` (Mathlib's
+  `Ideal.card_inertia_eq_ramificationIdxIn`), acts freely on the roots. The general theorem
+  also takes `F_tpd/F_mod` Galois with `[F_tpd : F_mod] ≤ 6`,
+  `[F : ℚ] ≤ 552960·[F_tpd : ℚ]`, the finiteness of the bad places and the description of
+  the bad residue characteristics — all theorems for the curves of the tripod.
 * [`Existence.lean`](Iut/Concrete/Existence.lean) — **initial Θ-data from an elliptic
   curve**: `Iut.EllipticCurveData.thetaData` builds IUT I, Definition 3.1 data for
   `(E/F, ℓ)` with `V_mod^bad` the places of `F_mod` not over `2ℓ` with multiplicative
@@ -301,7 +307,7 @@ from #1449):
 | --- | --- | --- |
 | `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed and proved** (`Iut.LocalConstruct.concreteLocalTheory K`, no residual input; [#1462](https://taxis.lana.merten.dev/issues/1462)) |
 | `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | **constructed** (`Iut.thetaLocalData`), from the rationality of the ℓ- and 2-torsion |
-| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the residual `Prop` `Iut.TowerLocalFacts` (four local fields: the different bound of Prop 1.3, Néron–Ogg–Shafarevich, the ramification bounds; `Iut.Tripod.TowerLocalHyp`), elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
+| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the residual `Prop` `Iut.TowerLocalFacts` (three local fields: the different bound of Prop 1.3, Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`; `Iut.Tripod.TowerLocalHyp`; the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
 | `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
 | `Iut.PrimeCountingBound` | Proposition 1.6 (factor `3/2`) | **proved** (`Iut.primeCountingBoundExplicit`, from Mathlib's `θ(x) ≤ (log 4)·x` and the Abel-summation identity for `π`; `Iut.PrimeCountingHyp` is the theorem `Iut.primeCountingHyp_holds`), [#1466](https://taxis.lana.merten.dev/issues/1466) |
 | `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); residual `Prop`s `CurveProps`, `CurveFactsProp`, see below |
@@ -392,12 +398,16 @@ repository and every hypothesis is a proposition about the constructed objects.
   normalisations; the audit forced two corrections recorded in the honesty boundary (the
   reduction predicates up to a change of variables, and the restriction of the
   cyclic-subgroup bound to `ℓ ≥ 7`).
-* [`TpdGalois.lean`](Iut/Tripod/TpdGalois.lean), [`Tower.lean`](Iut/Tripod/Tower.lean) —
+* [`TpdGalois.lean`](Iut/Tripod/TpdGalois.lean), [`TpdRamIdx.lean`](Iut/Tripod/TpdRamIdx.lean),
+  [`Tower.lean`](Iut/Tripod/Tower.lean) —
   `ℚ(λ)/ℚ(j)` is Galois of degree `≤ 6` (`ℚ(λ)` is the splitting field over `ℚ(j)` of the
   sextic `256(X² − X + 1)³ − j·X²(X − 1)²`, whose roots are `λ, 1−λ, 1/λ, 1/(1−λ),
-  λ/(λ−1), (λ−1)/λ`), and the tower arithmetic `Iut.TowerArithmetic` of the Θ-data of a
+  λ/(λ−1), (λ−1)/λ`), `ℚ(λ)/ℚ(j)` has ramification index `≤ 2` at every place where `j` is
+  non-integral, in particular over `V_mod^bad` (`Iut.Tripod.relRamIdx_tpd_le_two`: the
+  inertia group acts freely on the two roots congruent to a root of positive valuation),
+  and the tower arithmetic `Iut.TowerArithmetic` of the Θ-data of a
   point (`towerArithmetic_of_towerLocalHyp`) from the residual local facts
-  `Iut.Tripod.TowerLocalHyp` (the four fields of `Iut.TowerLocalFacts` for the curves of
+  `Iut.Tripod.TowerLocalHyp` (the three fields of `Iut.TowerLocalFacts` for the curves of
   the tripod). The earlier hypothesis quantified the tower arithmetic over *all* Θ-data of
   the model, which is false (Step (ii) fails for `F` replaced by `F(√p)`, `p` large); it
   is now assumed only in the form of the local facts for the constructed data.

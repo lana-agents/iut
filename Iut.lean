@@ -115,5 +115,6 @@ import Iut.Tripod.StableTwo
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.Tower
 import Iut.Tripod.TpdGalois
+import Iut.Tripod.TpdRamIdx
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.TwoTorsion

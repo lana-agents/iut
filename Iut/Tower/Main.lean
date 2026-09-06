@@ -14,7 +14,10 @@ import Iut.Tower.StepIII
 of IUT IV, Theorem 1.10 ((R4), Steps (ii), (iii)) for initial Θ-data `D`, from
 
 * the residual local facts `Iut.TowerLocalFacts` (IUT IV, Propositions 1.3 and 1.8:
-  the different bound, Néron–Ogg–Shafarevich, the ramification bounds);
+  the different bound, Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`)
+  and the ramification bound `e(u/u₀) ≤ 2` of `F_tpd/F_mod` at the bad places
+  (`Iut.RelRamIdxModLeTwo`; a theorem for the curves of the tripod,
+  `Iut.Tripod.relRamIdx_tpd_le_two`);
 * the Galois property of `F_tpd/F_mod` and the degree bounds `[F_tpd : F_mod] ≤ 6`,
   `[F : ℚ] ≤ 552960·[F_tpd : ℚ]` (for the curves of the tripod: `F_tpd = ℚ(λ)`,
   `F_mod = ℚ(j)`, `[ℚ(λ) : ℚ(j)] ≤ 6` by the sextic relation between `λ` and `j`,
@@ -37,6 +40,7 @@ variable (D : InitialThetaData AG TG) (LT : LocalTheory.{u, v} D.Kt) (TL : Theta
 
 /-- **The tower arithmetic from the local facts** (IUT IV, (R4), Steps (ii), (iii)). -/
 theorem towerArithmetic_of_localFacts (H : TowerLocalFacts D.E D.VBad D.prime)
+    (he2 : RelRamIdxModLeTwo D.E D.VBad)
     [IsGalois ↥(fieldOfModuli D.F D.E) ↥(tripodalFieldOf D.F D.E)]
     (h6 : Module.finrank ↥(fieldOfModuli D.F D.E) ↥(tripodalFieldOf D.F D.E) ≤ 6)
     (hF : Module.finrank ℚ D.F ≤ 552960 * Module.finrank ℚ ↥(tripodalFieldOf D.F D.E))
@@ -48,7 +52,7 @@ theorem towerArithmetic_of_localFacts (H : TowerLocalFacts D.E D.VBad D.prime)
     rw [TL.sum_dst_logDK_eq]
     exact logDifferentDeg_torsionField_le D.prime H hfin
   step_iii := by
-    refine sum_log_distinguished_le H hfin TL.dst fun p hp => ?_
+    refine sum_log_distinguished_le H he2 hfin TL.dst fun p hp => ?_
     simp only [ThetaLocalData.dst, Finset.mem_union] at hp
     rcases hp with (h | h) | h
     · exact Or.inl h

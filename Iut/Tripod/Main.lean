@@ -42,7 +42,9 @@ hypothesis is a proposition about the constructed objects:
   `Iut/Concrete/SL2Image.lean`, `Core.lean`);
 * `TowerLocalHyp`: the residual local facts of the tower `ℚ(j) ⊆ ℚ(λ) ⊆ F_λ ⊆ F_λ(E_λ[ℓ])`
   (IUT IV, Propositions 1.3 and 1.8: the different bound, Néron–Ogg–Shafarevich, the
-  ramification bounds), from which the tower arithmetic `TowerArithmetic` (IUT IV, §1) for
+  ramification bound away from `2·3·5·ℓ`; the ramification bound `e(u/u₀) ≤ 2` of
+  `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), from
+  which the tower arithmetic `TowerArithmetic` (IUT IV, §1) for
   the constructed local theory (`concreteLocalTheory`, every field of which is proved) and
   theta local data is a theorem (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`);
 * `h312`, the variant itself.
