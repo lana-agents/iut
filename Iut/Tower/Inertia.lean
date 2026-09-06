@@ -24,9 +24,11 @@ open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
 
 variable {k K : Type*} [Field k] [NumberField k] [Field K] [NumberField K] [Algebra k K]
 
+omit [NumberField k] [NumberField K] in
 /-- The action of `σ ∈ Gal(K/k)` on `𝓞_K`, on coordinates. -/
 lemma coe_galSmul (σ : K ≃ₐ[k] K) (x : 𝓞 K) : ((σ • x : 𝓞 K) : K) = σ (x : K) := rfl
 
+omit [NumberField k] in
 /-- **The inertia condition on `v`-integral elements**: if `σ x − x ∈ 𝔓_v` for all
 `x ∈ 𝓞_K`, then `v(σ x − x) < 1` for every `x ∈ K` with `v(x) ≤ 1`. -/
 lemma valuation_sub_lt_one_of_mem_inertia (v : FinitePlace K) (σ : K ≃ₐ[k] K)
