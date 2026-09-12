@@ -15,7 +15,7 @@ bad places, and the primes ramified in `K` — is bounded by
 
 * the primes `2, 3, 5` contribute `log 30 < 5`;
 * a bad prime `p ∉ {2, 3, 5, ℓ}` has a place `u₀ ∈ V_mod^bad` over it, all places `u` of
-  `F_tpd` over `u₀` are bad, and `e(u/u₀) ≤ 2` (`TowerLocalFacts.relRamIdx_mod_le_two`), so
+  `F_tpd` over `u₀` are bad, and `e(u/u₀) ≤ 2` (`Iut.RelRamIdxModLeTwo`), so
   `∑_{u ∣ u₀} f_u ≥ [F_tpd : F_mod]/2` and `[F_tpd : F_mod]·log p ≤ 2·∑_{u ∣ u₀} log N(u)`
   (`Iut.sum_bad_log_le`);
 * a prime `p ∉ {2, 3, 5, ℓ}` ramified in `K` but not bad is, by Néron–Ogg–Shafarevich,
@@ -121,7 +121,7 @@ variable {Pr : AdmissiblePrimeData F E Fbar VBad} [NumberField ↥Pr.torsionFiel
 /-- **The bad primes** `p ∉ {2,3,5,ℓ}`:
 `[F_tpd : F_mod]·∑_{p ∈ B} log p ≤ 2·[F_tpd : ℚ]·log(f_{F_tpd})` for a finite set `B` of
 residue characteristics of places of `V_mod^bad`. -/
-lemma sum_bad_log_le (H : TowerLocalFacts E VBad Pr) (hfin : (badPlacesOver F E VBad).Finite)
+lemma sum_bad_log_le (he2 : RelRamIdxModLeTwo E VBad) (hfin : (badPlacesOver F E VBad).Finite)
     (B : Finset ℕ) (hB : ∀ p ∈ B, ∃ u₀ ∈ VBad, residueChar u₀ = p) :
     (Module.finrank ↥(fieldOfModuli F E) ↥(tripodalFieldOf F E) : ℝ) * ∑ p ∈ B, Real.log p ≤
       2 * Module.finrank ℚ ↥(tripodalFieldOf F E) * logConductorDegOf F E VBad := by
@@ -149,7 +149,7 @@ lemma sum_bad_log_le (H : TowerLocalFacts E VBad Pr) (hfin : (badPlacesOver F E 
       rw [hn, ← sum_placesOver_relLocalDeg (K := T) u₀, Finset.mul_sum]
       refine Finset.sum_le_sum fun u hu => ?_
       have huu₀ : FinitePlace.LiesOver u u₀ := (mem_placesOver u₀ u).mp hu
-      have he := H.relRamIdx_mod_le_two u u₀ hu₀' huu₀
+      have he := he2 u u₀ hu₀' huu₀
       have hf : relInertDeg u u₀ ≤ inertDeg T u := by
         rw [inertDeg_eq_mul huu₀]
         exact Nat.le_mul_of_pos_left _ (inertDeg_pos' u₀)
@@ -350,7 +350,7 @@ lemma sum_log_small_le (ℓ : ℕ) :
 /-- **Step (iii)** for a finite set `S` of primes each of which divides `2·3·5·ℓ`, is the
 residue characteristic of a bad place of `F`, or is ramified in `K`:
 `∑_{p ∈ S} log p ≤ 2·d_mod·(log(d_{F_tpd}) + log(f_{F_tpd})) + 5 + log ℓ`. -/
-theorem sum_log_distinguished_le (H : TowerLocalFacts E VBad Pr)
+theorem sum_log_distinguished_le (H : TowerLocalFacts E VBad Pr) (he2 : RelRamIdxModLeTwo E VBad)
     [IsGalois ↥(fieldOfModuli F E) ↥(tripodalFieldOf F E)]
     (hfin : (badPlacesOver F E VBad).Finite) (S : Finset ℕ)
     (hS : ∀ p ∈ S, p ∈ ({2, 3, 5, Pr.ℓ} : Finset ℕ) ∨
@@ -400,7 +400,7 @@ theorem sum_log_distinguished_le (H : TowerLocalFacts E VBad Pr)
       have he := H.relRamIdx_eq_one v hp' hbad
       rw [ramIdx_eq_ramIdx_placeTpd_mul (F := F) (E := E) v, he, mul_one] at hv
       exact hv
-  have hBle := sum_bad_log_le H hfin B hB'
+  have hBle := sum_bad_log_le he2 hfin B hB'
   have hRle := sum_ramified_log_le R hR'
   have h2 : ∑ p ∈ S₂, Real.log p ≤
       2 * d * (logDifferentDeg T + logConductorDegOf F E VBad) := by
