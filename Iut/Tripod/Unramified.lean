@@ -303,7 +303,7 @@ theorem tpdGens_fixed (hdiv : DivPolyLegendreHyp) {w : FinitePlace (P.curve x).F
 /-! ### `F/F_tpd` and `K/F` are unramified at the good places -/
 
 /-- `F/F_tpd` is Galois. -/
-theorem isGalois_tpd_curve : IsGalois (tpd P x) (P.curve x).F := by
+theorem isGalois_tpd_curve' : IsGalois (tpd P x) (P.curve x).F := by
   haveI : IsGalois ↥(fieldOfModuli (P.curve x).F (P.curve x).E) (P.curve x).F :=
     ((P.arith x).galois_deg_prime 7 (by norm_num) le_rfl).1
   exact IsGalois.tower_top_of_isGalois ↥(fieldOfModuli (P.curve x).F (P.curve x).E) (tpd P x)
@@ -315,7 +315,7 @@ theorem relRamIdx_placeUnder_eq_one (hdiv : DivPolyLegendreHyp) {w : FinitePlace
     {𝔭 : FinitePlace (tpd P x)} (hw𝔭 : FinitePlace.LiesOver w 𝔭) (h2 : residueChar w ≠ 2)
     (h3 : residueChar w ≠ 3) (h5 : residueChar w ≠ 5) (h𝔭 : 𝔭 ∉ badT P x) :
     relRamIdx w 𝔭 = 1 := by
-  haveI := isGalois_tpd_curve (P := P) (x := x)
+  haveI := isGalois_tpd_curve' (P := P) (x := x)
   have h𝔭' : 𝔭 (genT P x) = 1 ∧ 𝔭 (genT P x - 1) = 1 := by
     rw [mem_badT] at h𝔭
     obtain ⟨hb1, hb2⟩ := not_or.mp h𝔭

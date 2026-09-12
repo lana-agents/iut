@@ -51,6 +51,19 @@ theorem card_le_of_forall_pow_eq_one {G : Type*} [Group G] [Finite G] (H : Subgr
     rw [sq] at this
     exact hpm ((Nat.mul_dvd_mul_iff_left hp.out.pos).mp this)
 
+/-- A subgroup all of whose elements satisfy `σ^p = 1` is a `p`-group: its order is prime
+to every prime `q ≠ p`. -/
+theorem not_dvd_card_of_forall_pow_eq_one {G : Type*} [Group G] [Finite G] (H : Subgroup G)
+    (p : ℕ) [hp : Fact p.Prime] (hH : ∀ σ ∈ H, σ ^ p = 1) {q : ℕ} (hq : q.Prime) (hqp : q ≠ p) :
+    ¬ q ∣ Nat.card H := by
+  have hP : IsPGroup p H := fun σ => ⟨1, by
+    rw [pow_one]
+    exact Subtype.ext (hH σ.1 σ.2)⟩
+  obtain ⟨k, hk⟩ := IsPGroup.iff_card.mp hP
+  rw [hk]
+  intro h
+  exact hqp ((Nat.prime_dvd_prime_iff_eq hq hp.out).mp (hq.dvd_of_dvd_pow h))
+
 /-- `ℓ ∤ (ℓ² − 1)(ℓ − 1)` for a prime `ℓ`. -/
 lemma not_dvd_gl_cofactor {ℓ : ℕ} (hℓ : ℓ.Prime) : ¬ ℓ ∣ (ℓ ^ 2 - 1) * (ℓ - 1) := by
   intro h

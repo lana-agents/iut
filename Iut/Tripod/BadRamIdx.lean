@@ -5,6 +5,7 @@ Authors: The iut contributors
 -/
 import Iut.Tripod.Unramified
 import Iut.Tower.InertiaBound
+import Iut.Tower.WildBound
 
 /-!
 # The ramification of `K = F(E[ℓ])` over `F` at the places away from `2·ℓ`
@@ -39,21 +40,6 @@ variable (P : CurveProviders) (x : Pt) {ℓ : ℕ} (hℓ : ℓ.Prime) (h7 : 7 �
 set_option quotPrecheck false in
 /-- The torsion field `K` of the datum of `x` and `ℓ`. -/
 local notation "KF" => ↥(primeDataOf P x hℓ h7 hsl hP2).torsionField
-
-/-- `[K : F]` divides `|GL₂(𝔽_ℓ)|`. -/
-theorem finrank_torsionField_dvd :
-    Module.finrank (P.curve x).F ↥(primeDataOf P x hℓ h7 hsl hP2).torsionField ∣
-      (ℓ ^ 2 - 1) * (ℓ ^ 2 - ℓ) := by
-  set Pr := primeDataOf P x hℓ h7 hsl hP2
-  let H : ClosedSubgroup ((P.curve x).Fbar ≃ₐ[(P.curve x).F] (P.curve x).Fbar) :=
-    ⟨Pr.rep.ker, Subgroup.isClosed_of_isOpen _ Pr.ker_isOpen⟩
-  have h1 : Module.finrank (P.curve x).F ↥Pr.torsionField = Pr.rep.ker.index := by
-    rw [IntermediateField.finrank_eq_fixingSubgroup_index]
-    change (IntermediateField.fixedField H.1).fixingSubgroup.index = H.1.index
-    rw [InfiniteGalois.fixingSubgroup_fixedField H]
-  haveI : NeZero ℓ := ⟨hℓ.ne_zero⟩
-  rw [h1, Subgroup.index_ker, ← card_GL_two_of_prime ℓ hℓ]
-  exact Subgroup.card_subgroup_dvd_card _
 
 section Bad
 
@@ -216,7 +202,28 @@ theorem relRamIdx_torsionField_le_of_bad (h2 : residueChar v ≠ 2) (hpℓ : res
   refine card_le_of_forall_pow_eq_one _ ℓ ((ℓ ^ 2 - 1) * (ℓ - 1)) ?_ (not_dvd_gl_cofactor hℓ)
     fun σ hσ => inertia_pow_eq_one P x hℓ h7 hsl hP2 v h2 hpℓ hbad σ hσ
   rw [IsGalois.card_aut_eq_finrank, ← card_GL_two_eq_mul]
-  exact finrank_torsionField_dvd P x hℓ h7 hsl hP2
+  exact finrank_torsionField_dvd (primeDataOf P x hℓ h7 hsl hP2)
+
+/-- **`K/F` is tamely ramified at the bad places away from `2·ℓ`**: `p ∤ e(v/w)` for the
+residue characteristic `p ∉ {2, ℓ}` (the inertia group is an `ℓ`-group). -/
+theorem not_dvd_relRamIdx_torsionField_of_bad (h2 : residueChar v ≠ 2) (hpℓ : residueChar v ≠ ℓ)
+    (hbad : (placeUnder (k := (P.curve x).F) v).maximalIdeal.valuation _ (genC' P x) ≠ 1 ∨
+      (placeUnder (k := (P.curve x).F) v).maximalIdeal.valuation _ (genC' P x - 1) ≠ 1) :
+    ¬ residueChar v ∣ relRamIdx v (placeUnder (k := (P.curve x).F) v) := by
+  haveI : Fact ℓ.Prime := ⟨hℓ⟩
+  rw [relRamIdx_eq_card_inertia (liesOver_placeUnder v)]
+  exact not_dvd_card_of_forall_pow_eq_one _ ℓ
+    (fun σ hσ => inertia_pow_eq_one P x hℓ h7 hsl hP2 v h2 hpℓ hbad σ hσ) (residueChar_prime v) hpℓ
+
+/-- **`K/F` is tamely ramified away from `2·ℓ`**: `p ∤ e(v/w)` for the residue characteristic
+`p ∉ {2, ℓ}` of `v`. -/
+theorem not_dvd_relRamIdx_torsionField (h2 : residueChar v ≠ 2) (hpℓ : residueChar v ≠ ℓ) :
+    ¬ residueChar v ∣ relRamIdx v (placeUnder (k := (P.curve x).F) v) := by
+  by_cases hgood : (placeUnder (k := (P.curve x).F) v).maximalIdeal.valuation _ (genC' P x) = 1 ∧
+      (placeUnder (k := (P.curve x).F) v).maximalIdeal.valuation _ (genC' P x - 1) = 1
+  · rw [relRamIdx_torsionField_eq_one hℓ h7 hsl hP2 divPolyLegendreHyp v h2 hpℓ hgood.1 hgood.2]
+    exact (residueChar_prime v).not_dvd_one
+  · exact not_dvd_relRamIdx_torsionField_of_bad P x hℓ h7 hsl hP2 v h2 hpℓ (not_and_or.mp hgood)
 
 /-- **`e(v/w) ≤ ℓ` away from `2·ℓ`**, for `v` a place of `K = F(E[ℓ])` over `w` of `F`. -/
 theorem relRamIdx_torsionField_le (h2 : residueChar v ≠ 2) (hpℓ : residueChar v ≠ ℓ) :
