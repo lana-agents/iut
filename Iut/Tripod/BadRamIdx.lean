@@ -69,6 +69,7 @@ lemma legendreCoeffs_EK :
     simp [legendre]
 
 set_option maxHeartbeats 1000000 in
+-- the three model cases each elaborate a conjugate action on the points of a twisted model
 /-- **The inertia group at a bad place acts unipotently on `E(K)[ℓ]`**: `σ^ℓ = 1` for every
 `σ` in the inertia group of a place `v` of residue characteristic `∉ {2, ℓ}` over a bad place
 of `F`. -/

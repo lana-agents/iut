@@ -63,7 +63,8 @@ lemma valuation_sub_le_max (x : K) : v (x - μ) ≤ max (v x) (v μ) := Valuatio
 /-- The `y`-coordinate of a point of the node: `v(y)² = v(x)·v(x − μ)` for `v(x) < 1`. -/
 lemma valuation_y_sq {x y : K} (h : W.Equation x y) (hx : v x < 1) :
     v y ^ 2 = v x * v (x - μ) := by
-  rw [← map_pow, legendre_eq hW₁ hW₂ hW₃ hW₄ hW₆ h, map_mul, map_mul, valuation_sub_one_eq_one v hx, mul_one]
+  rw [← map_pow, legendre_eq hW₁ hW₂ hW₃ hW₄ hW₆ h, map_mul, map_mul,
+    valuation_sub_one_eq_one v hx, mul_one]
 
 /-- In the regime `v(μ) < v(x) < 1`, `v(y) = v(x)`. -/
 lemma valuation_y_eq {x y : K} (h : W.Equation x y) (hx : v x < 1)
@@ -73,8 +74,8 @@ lemma valuation_y_eq {x y : K} (h : W.Equation x y) (hx : v x < 1)
   exact (pow_left_inj₀ zero_le zero_le two_ne_zero).mp h1
 
 /-- In the regime `v(x) ≤ v(μ)`, `v(y) ≤ v(μ)`. -/
-lemma valuation_y_le {x y : K} (h : W.Equation x y) (hx : v x < 1)
-    (hμ : v μ < 1) (hxμ : v x ≤ v μ) : v y ≤ v μ := by
+lemma valuation_y_le {x y : K} (h : W.Equation x y) (hx : v x < 1) (hxμ : v x ≤ v μ) :
+    v y ≤ v μ := by
   have h1 := valuation_y_sq v hW₁ hW₂ hW₃ hW₄ hW₆ h hx
   have h2 : v y ^ 2 ≤ v μ ^ 2 := by
     rw [h1, sq]
@@ -134,6 +135,7 @@ variable (σ : K →+* K) (hμ : v μ < 1) (h2 : v 2 = 1) (hσμ : σ μ = μ)
   (hσ : ∀ z, v z ≤ 1 → v (σ z - z) < 1) (hvσ : ∀ z, v (σ z) = v z)
 include hμ h2 hσμ hσ hvσ
 
+omit hσμ in
 /-- **Regime `v(μ) < v(x)`**: the slope `L = (σ y + y)/(σ x − x)` of the chord through `σ Q` and
 `−Q` has `v(L) > 1`, or is integral with `v(L² + 1) = 1`. -/
 lemma slope_branch {x y : K} (h : W.Equation x y) (hx : v x < 1)
@@ -241,7 +243,7 @@ lemma slope_middle {x y : K} (h : W.Equation x y) (hx : v x < 1)
   have ht1 : v t ≤ 1 := by
     rw [ht, map_div₀, div_le_one₀ (lt_of_le_of_ne zero_le (Ne.symm ((Valuation.ne_zero_iff _).mpr
       hμ0)))]
-    exact valuation_y_le v hW₁ hW₂ hW₃ hW₄ hW₆ h hx hμ hxμ
+    exact valuation_y_le v hW₁ hW₂ hW₃ hW₄ hW₆ h hx hxμ
   have htsq : t ^ 2 = c * (c - 1) * (μ * c - 1) := by
     have := legendre_eq hW₁ hW₂ hW₃ hW₄ hW₆ h
     rw [hxc, hyt] at this
@@ -387,8 +389,7 @@ theorem sub_eq_zero_or_one_le {x y : K} (h : W.Nonsingular x y)
           rw [h0, map_zero] at hxμ
           have hx0 : x = 0 := (Valuation.zero_iff _).mp (le_antisymm hxμ zero_le)
           have := legendre_eq hW₁ hW₂ hW₃ hW₄ hW₆ h.1
-          rw [hx0] at this
-          simp at this
+          rw [hx0, zero_mul, zero_mul, pow_eq_zero_iff two_ne_zero] at this
           exact hy0 this
         have hyne : ¬ (-y = y) := by
           intro hcon
@@ -406,7 +407,8 @@ theorem sub_eq_zero_or_one_le {x y : K} (h : W.Nonsingular x y)
         have hc1 : v c ≤ 1 := by
           rw [hc, map_div₀, div_le_one₀ hμpos]; exact hxμ
         have ht1 : v t ≤ 1 := by
-          rw [ht, map_div₀, div_le_one₀ hμpos]; exact valuation_y_le v hW₁ hW₂ hW₃ hW₄ hW₆ h.1 hx hμ hxμ
+          rw [ht, map_div₀, div_le_one₀ hμpos]
+          exact valuation_y_le v hW₁ hW₂ hW₃ hW₄ hW₆ h.1 hx hxμ
         have htsq : t ^ 2 = c * (c - 1) * (μ * c - 1) := by
           have := legendre_eq hW₁ hW₂ hW₃ hW₄ hW₆ h.1
           rw [hxc, hyt] at this
@@ -449,8 +451,9 @@ theorem sub_eq_zero_or_one_le {x y : K} (h : W.Nonsingular x y)
     · -- `σ x ≠ x`: the chord
       rw [hL, hneg, slope_of_X_ne hxx, sub_neg_eq_add]
       by_cases hμx : v μ < v x
-      · exact slope_branch v hW₁ hW₂ hW₃ hW₄ hW₆ σ hμ h2 hσμ hσ hvσ h.1 hx hμx hxx
-      · exact Or.inl (slope_middle v hW₁ hW₂ hW₃ hW₄ hW₆ σ hμ h2 hσμ hσ hvσ h.1 hx (not_lt.mp hμx) hxx)
+      · exact slope_branch v hW₁ hW₂ hW₃ hW₄ hW₆ σ hμ h2 hσ hvσ h.1 hx hμx hxx
+      · exact Or.inl (slope_middle v hW₁ hW₂ hW₃ hW₄ hW₆ σ hμ h2 hσμ hσ hvσ h.1 hx
+          (not_lt.mp hμx) hxx)
 
 end Difference
 

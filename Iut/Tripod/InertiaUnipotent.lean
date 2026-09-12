@@ -47,6 +47,7 @@ lemma legendreCoeffs_baseChange (μ₀ : k) :
     simp [legendre]
 
 set_option maxHeartbeats 1000000 in
+-- the three model cases each elaborate a conjugate action on the points of a twisted model
 /-- **Inertia acts unipotently on the prime-to-`p` torsion at a bad place**: for `σ` in the
 inertia group of `v` (odd residue characteristic), fixing `√−1` and `√μ`, and an `n`-torsion
 point `Q` of `E_μ(K)` (`n` odd, `v(n) = 1`), `σ^n Q = Q` when `v(μ) ≠ 1` or `v(μ − 1) ≠ 1`. -/

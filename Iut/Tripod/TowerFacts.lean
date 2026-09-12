@@ -19,7 +19,8 @@ import Iut.Tripod.TpdInertia
   tameness is the theorem `Iut.Tripod.not_dvd_relRamIdx_torsionField`, so
   `Iut.Tripod.TameTorsionHyp P` follows (`Iut.Tripod.tameTorsionHyp_of_two`);
 * `Iut.Tripod.towerLocalHyp_of_tameTwo`: **the residual local facts `Iut.Tripod.TowerLocalHyp P`
-  hold**, given the tameness at `2` (Néron–Ogg–Shafarevich, `Iut.Tripod.relRamIdx_eq_one_of_not_bad`,
+  hold**, given the tameness at `2` (Néron–Ogg–Shafarevich,
+  `Iut.Tripod.relRamIdx_eq_one_of_not_bad`,
   and the ramification bound away from `2·3·5·ℓ` are theorems).
 
 The places of residue characteristic `2` are excluded from the arguments of this package because

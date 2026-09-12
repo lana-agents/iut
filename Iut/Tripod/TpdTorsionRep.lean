@@ -112,6 +112,7 @@ noncomputable def torsionEquivF :
       rw [map_nsmul, hR, map_zero]
       exact AddSubgroup.torsionBy.nsmul_iff.mp Q.2⟩
 
+omit [Fact n.Prime] in
 @[simp] lemma coe_torsionEquivF (R : ↥(AddSubgroup.torsionBy (EF).Point n)) :
     (torsionEquivF P x n hsub R : (legendre x.1).toAffine.Point) = toQbar P x R := rfl
 
@@ -146,6 +147,7 @@ noncomputable def galTorsionF (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F)
     ↥(AddSubgroup.torsionBy (EF).Point n) →+ ↥(AddSubgroup.torsionBy (EF).Point n) :=
   (galF P x σ).restrict _ |>.codRestrict _ fun R => galF_mem_torsionBy P x n σ R.2
 
+omit [Fact n.Prime] hsub in
 @[simp] lemma coe_galTorsionF (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F)
     (R : ↥(AddSubgroup.torsionBy (EF).Point n)) :
     (galTorsionF P x n σ R : (EF).Point) = galF P x σ R := rfl
@@ -203,6 +205,7 @@ theorem mem_repF_ker_iff (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) :
 
 /-! ### The torsion coordinates are fixed by the kernel -/
 
+omit [Fact n.Prime] in
 include hsub in
 /-- An automorphism fixing the `n`-torsion of `E_λ(F_λ)` pointwise fixes its coordinates. -/
 theorem torsionCoord_fixed_of_galF (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F)

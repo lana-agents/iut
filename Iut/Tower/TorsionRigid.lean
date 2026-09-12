@@ -152,7 +152,8 @@ theorem relRamIdx_eq_one_of_sqrt {S : Set K} (hS : IntermediateField.adjoin k S 
 /-- **Néron–Ogg–Shafarevich**: if `Gal(K/k)` acts faithfully on the `n`-torsion `E(K)[n]` of a
 curve `E : y² = x³ + a₂x² + a₄x + a₆` over `k` with `v`-integral coefficients and `v(Δ) = 1`,
 `n` odd with `v(n) = 1` and `p ≠ 2`, then `e(v/u) = 1`. -/
-theorem relRamIdx_eq_one_of_torsion [DecidableEq K] (W : WeierstrassCurve k) (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0)
+theorem relRamIdx_eq_one_of_torsion [DecidableEq K] (W : WeierstrassCurve k) (ha₁ : W.a₁ = 0)
+    (ha₃ : W.a₃ = 0)
     (ha₂ : v.maximalIdeal.valuation K (algebraMap k K W.a₂) ≤ 1)
     (ha₄ : v.maximalIdeal.valuation K (algebraMap k K W.a₄) ≤ 1)
     (ha₆ : v.maximalIdeal.valuation K (algebraMap k K W.a₆) ≤ 1)

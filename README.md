@@ -256,12 +256,36 @@ whose fields are the target statements of the sibling projects:
   a Hensel lift `R' ≅ A/𝔭^{κ+1}[X]/(g)` of the residue extension (by Nakayama and a count),
   so its trace is `e·Tr_{R'/R}` with `Tr_{R'/R}` surjective
   ([`SerreCore.lean`](Iut/Tower/SerreCore.lean), [`QuotientBasis.lean`](Iut/Tower/QuotientBasis.lean)).
-  For the curves of the tripod the wild ramification bound reduces to the **residual
-  tameness of `K/F_λ` away from `ℓ`** (`Iut.Tripod.TameTorsionHyp`, the semistable
-  reduction of `E_λ` over `F_λ`: Tate uniformization at the bad places,
-  Néron–Ogg–Shafarevich at the good ones), since `e(v/w) ∣ [K : F_λ] ∣ |GL₂(𝔽_ℓ)|` and
-  `e(w/u) ∣ [F_λ : ℚ(λ)] ∣ 2¹²·3²·5` are theorems (`Iut.Tripod.padicValNat_relRamIdx_le_of_tame`,
-  [`WildRamIdx.lean`](Iut/Tripod/WildRamIdx.lean)). The fourth local input,
+  For the curves of the tripod the wild ramification bound follows from the tameness
+  of `K/F_λ` away from `ℓ` (`Iut.Tripod.TameTorsionHyp`), since
+  `e(v/w) ∣ [K : F_λ] ∣ |GL₂(𝔽_ℓ)|` and `e(w/u) ∣ [F_λ : ℚ(λ)] ∣ 2¹²·3²·5` are theorems
+  (`Iut.Tripod.padicValNat_relRamIdx_le_of_tame`,
+  [`WildRamIdx.lean`](Iut/Tripod/WildRamIdx.lean)). **The tameness away from `2·ℓ`,
+  Néron–Ogg–Shafarevich and the bound `e(v/u) ≤ 30ℓ` are theorems for the tripod**
+  ([`TowerFacts.lean`](Iut/Tripod/TowerFacts.lean)): for a place of odd residue
+  characteristic `p` the Legendre model `y² = x(x − 1)(x − λ)` (or that of `1 − λ`, `1/λ`) has
+  good or multiplicative reduction, the kernel of reduction has no prime-to-`p` torsion (the
+  `n`-division polynomial has degree `(n² − 1)/2` in `x` with leading coefficient `n`,
+  [`ReductionKernel.lean`](Iut/Tower/ReductionKernel.lean)), and reduction is injective on the
+  prime-to-`p` torsion of the points with nonsingular reduction; hence the inertia group
+  (`e(v/u) = |I_v|`, Mathlib's `Ideal.card_inertia_eq_ramificationIdxIn`,
+  [`Inertia.lean`](Iut/Tower/Inertia.lean)) fixes the prime-to-`p` torsion at a good place
+  ([`TorsionRigid.lean`](Iut/Tower/TorsionRigid.lean), `Iut.relRamIdx_eq_one_of_torsion`;
+  `Iut.Tripod.relRamIdx_eq_one_of_not_bad`, [`Unramified.lean`](Iut/Tripod/Unramified.lean),
+  with the rigidity of the square roots `√−1, √λ, √(1 − λ)` of units) and acts unipotently on
+  it at a multiplicative place (it moves a point of the node by a point with nonsingular
+  reduction, [`MultiplicativeKernel.lean`](Iut/Tower/MultiplicativeKernel.lean);
+  [`InertiaUnipotent.lean`](Iut/Tripod/InertiaUnipotent.lean)), so that `I_v(K/F_λ)` is an
+  `ℓ`-subgroup of a group of order dividing `|GL₂(𝔽_ℓ)|`, of order `≤ ℓ`
+  ([`BadRamIdx.lean`](Iut/Tripod/BadRamIdx.lean), `Iut.Tripod.not_dvd_relRamIdx_torsionField`,
+  `Iut.Tripod.relRamIdx_torsionField_le`), and `I_w(F_λ/ℚ(λ))` has an index-`≤ 2` subgroup
+  (fixing `√λ`, `√(1 − λ)`) acting unipotently on the `3`- and `5`-torsion, of order `≤ 15`
+  ([`TpdInertia.lean`](Iut/Tripod/TpdInertia.lean), with the mod-`3` and mod-`5`
+  representations of `Gal(F_λ/ℚ(λ))`, [`TpdTorsionRep.lean`](Iut/Tripod/TpdTorsionRep.lean)),
+  giving `e(v/u) = e(w/u)·e(v/w) ≤ 30·ℓ` (`Iut.Tripod.relRamIdx_le_thirty_mul`). The only
+  residual local input is the **tameness of `K/F_λ` at the places over `2`**
+  (`Iut.Tripod.TameTwoHyp`: `2 ∤ e(v/w)` for `v ∣ 2`), from which `TowerLocalHyp` follows
+  (`Iut.Tripod.towerLocalHyp_of_tameTwo`); the reduction theory above needs `v(2) = 1`. The fourth local input,
   `e(u/u₀) ≤ 2` for `F_tpd/F_mod` at `u₀ ∈ V_mod^bad` (`Iut.RelRamIdxModLeTwo`; the Tate
   uniformization of the `2`-torsion), is a **theorem for the curves of the tripod**
   (`Iut.Tripod.relRamIdx_tpd_le_two`, [`TpdRamIdx.lean`](Iut/Tripod/TpdRamIdx.lean)): at a
@@ -326,7 +350,7 @@ from #1449):
 | --- | --- | --- |
 | `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed and proved** (`Iut.LocalConstruct.concreteLocalTheory K`, no residual input; [#1462](https://taxis.lana.merten.dev/issues/1462)) |
 | `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | **constructed** (`Iut.thetaLocalData`), from the rationality of the ℓ- and 2-torsion |
-| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the residual `Prop` `Iut.TowerLocalFacts` (three local fields: the wild ramification bound `v_p(e(v/u)) ≤ c_p` — reduced for the tripod to the tameness of `F_λ(E_λ[ℓ])/F_λ` away from `ℓ`, `Iut.Tripod.TameTorsionHyp` — Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`; `Iut.Tripod.TowerLocalHyp`; the different bound of Prop 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le` (Serre's bound, [#1463](https://taxis.lana.merten.dev/issues/1463)) and the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) |
+| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the local facts `Iut.TowerLocalFacts` (three local fields: the wild ramification bound `v_p(e(v/u)) ≤ c_p`, Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`), **theorems for the tripod up to the tameness of `F_λ(E_λ[ℓ])/F_λ` at the places over `2`** (`Iut.Tripod.TameTwoHyp`; `Iut.Tripod.towerLocalHyp_of_tameTwo`, [`TowerFacts.lean`](Iut/Tripod/TowerFacts.lean); the different bound of Prop 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le` (Serre's bound, [#1463](https://taxis.lana.merten.dev/issues/1463)) and the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) |
 | `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
 | `Iut.PrimeCountingBound` | Proposition 1.6 (factor `3/2`) | **proved** (`Iut.primeCountingBoundExplicit`, from Mathlib's `θ(x) ≤ (log 4)·x` and the Abel-summation identity for `π`; `Iut.PrimeCountingHyp` is the theorem `Iut.primeCountingHyp_holds`), [#1466](https://taxis.lana.merten.dev/issues/1466) |
 | `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); residual `Prop` `CurveFactsProp` (one field, the cyclic-subgroup bound in its residual form), see below |
@@ -428,10 +452,11 @@ repository and every hypothesis is a proposition about the constructed objects.
   non-integral, in particular over `V_mod^bad` (`Iut.Tripod.relRamIdx_tpd_le_two`: the
   inertia group acts freely on the two roots congruent to a root of positive valuation),
   and the tower arithmetic `Iut.TowerArithmetic` of the Θ-data of a
-  point (`towerArithmetic_of_towerLocalHyp`) from the residual local facts
+  point (`towerArithmetic_of_towerLocalHyp`) from the local facts
   `Iut.Tripod.TowerLocalHyp` (the three fields of `Iut.TowerLocalFacts` for the curves of
-  the tripod; the first, the wild ramification bound, follows from the residual tameness
-  of `F_λ(E_λ[ℓ])/F_λ` away from `ℓ`, [`WildRamIdx.lean`](Iut/Tripod/WildRamIdx.lean)). The earlier hypothesis quantified the tower arithmetic over *all* Θ-data of
+  the tripod), which are theorems up to the tameness of `F_λ(E_λ[ℓ])/F_λ` at the places
+  over `2` (`Iut.Tripod.TameTwoHyp`, `Iut.Tripod.towerLocalHyp_of_tameTwo`,
+  [`TowerFacts.lean`](Iut/Tripod/TowerFacts.lean)). The earlier hypothesis quantified the tower arithmetic over *all* Θ-data of
   the model, which is false (Step (ii) fails for `F` replaced by `F(√p)`, `p` large); it
   is now assumed only in the form of the local facts for the constructed data.
 
@@ -439,7 +464,8 @@ Final statement (hypotheses only): universally quantified fundamental-group theo
 `Pi1 : EtalePi1Theory`, `Tp : TemperedPi1Theory Pi1` (so that `h312` ranges over exactly
 the Θ-data of IUT I, Definition 3.1 — the variant is never strengthened),
 `∀ K d, ∃ T_K, CyclicGraphBoundHyp … K d T_K` (the residual form of the cyclic-subgroup
-bound), the residual local facts of the tower `TowerLocalHyp tripodProviders`, and the
+bound), the tameness of `F_λ(E_λ[ℓ])/F_λ` at the places over `2`
+(`TameTwoHyp tripodProviders`), and the
 variant `h312`; conclusion `tripodTheory.StatementII`. The prime-counting bound of
 Proposition 1.6 is supplied by `Iut.primeCountingBoundExplicit`.
 `StatementI` (all hyperbolic curves) additionally needs heights on curves and the

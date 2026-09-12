@@ -173,7 +173,8 @@ theorem adjoin_tpdGens : tpdAdjoin P x = ⊤ := by
       · exact IntermediateField.subset_adjoin _ _
           (Or.inl (Or.inl (Set.mem_insert_of_mem _ (Set.mem_insert _ _))))
       · exact IntermediateField.subset_adjoin _ _
-          (Or.inl (Or.inl (Set.mem_insert_of_mem _ (Set.mem_insert_of_mem _ (Set.mem_singleton _)))))
+          (Or.inl (Or.inl (Set.mem_insert_of_mem _
+            (Set.mem_insert_of_mem _ (Set.mem_singleton _)))))
     · exact IntermediateField.subset_adjoin _ _ (Or.inl (Or.inr hy))
     · exact IntermediateField.subset_adjoin _ _ (Or.inr hy)
   · intro r
@@ -242,7 +243,8 @@ theorem torsionCoord_fixed (hdiv : DivPolyLegendreHyp) {n : ℕ} (hodd : Odd n)
     have h2' := valuation_two_eq_one w h2
     obtain ⟨ha₂, ha₄, ha₆, hΔ⟩ := legendre_genT_good P x w h2' (by rw [algebraMap_genT]; exact hl)
       (by rw [map_sub, map_one, algebraMap_genT]; exact hl1)
-    have hψ : ReductionKernel.DivPolyHyp (Affine.baseChange (legendre (genT P x)) (P.curve x).F) := by
+    have hψ : ReductionKernel.DivPolyHyp
+        (Affine.baseChange (legendre (genT P x)) (P.curve x).F) := by
       rw [baseChange_legendre_genT]
       exact hdiv _ _
     have hfix := map_eq_self_of_nsmul_eq_zero (w.maximalIdeal.valuation _) (legendre (genT P x))
