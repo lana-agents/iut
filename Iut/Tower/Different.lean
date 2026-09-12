@@ -3,7 +3,7 @@ Copyright (c) 2026 The iut contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
-import Iut.Tower.Residual
+import Iut.Tower.DifferentBound
 
 /-!
 # Step (ii): the different of the torsion field

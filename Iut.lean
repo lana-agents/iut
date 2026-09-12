@@ -93,11 +93,16 @@ import Iut.Torsion.EDS
 import Iut.Torsion.Identities
 import Iut.Tower.Basic
 import Iut.Tower.Different
+import Iut.Tower.DifferentBound
 import Iut.Tower.LogDK
 import Iut.Tower.Main
+import Iut.Tower.QuotientBasis
 import Iut.Tower.RamIdx
 import Iut.Tower.Residual
+import Iut.Tower.SerreBound
+import Iut.Tower.SerreCore
 import Iut.Tower.StepIII
+import Iut.Tower.WildBound
 import Iut.Tripod.Basic
 import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts
@@ -122,3 +127,4 @@ import Iut.Tripod.TpdGalois
 import Iut.Tripod.TpdRamIdx
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.TwoTorsion
+import Iut.Tripod.WildRamIdx

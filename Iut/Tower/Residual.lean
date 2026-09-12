@@ -18,14 +18,18 @@ domains together with the **local facts** collected here as the `Prop`-structure
   `ℚ ⊆ F_mod = ℚ(j) ⊆ F_tpd = F_mod(E[2]) ⊆ F ⊆ K = F(E[ℓ])`
 
 of the Θ-data. For a place `v` of `K` over `u` of `F_tpd`, with `e(v/u)` the relative
-ramification index and `e_v` the absolute one:
+ramification index, `e_v` the absolute one and `v_p` the `p`-adic valuation:
 
-* `ordAt_different_le` — **the different bound** (IUT IV, Proposition 1.3 together with the
-  tameness of `K/F` away from `ℓ` and of `F/F_tpd` away from `2·3·5`, Proposition 1.8):
-  `ord_v(𝔇_{K/F_tpd}) ≤ e(v/u) − 1 + e_v·c_p`, where the wild factor `c_p`
-  (`Iut.wildConst`) is `12, 2, 1` at `p = 2, 3, 5` (the `p`-adic valuations of
-  `[F : F_tpd] ∣ 2¹²·3²·5`, `F = F_tpd(√−1, √λ, √(1 − λ), E[3], E[5])`), `1` at `p = ℓ`
-  (`ord_ℓ |GL₂(𝔽_ℓ)| = 1`) and `0` otherwise (tame ramification, `ord_v(𝔇) = e − 1`);
+* `padicValNat_relRamIdx_le` — **the wild ramification bound** (IUT IV, Proposition 1.8:
+  the tameness of `K/F` away from `ℓ` and of `F/F_tpd` away from `2·3·5`, with
+  `e(v/w) ∣ [K : F] ∣ |GL₂(𝔽_ℓ)|` and `e(w/u) ∣ [F : F_tpd] ∣ 2¹²·3²·5` for the place `w`
+  of `F` below `v`): `v_p(e(v/u)) ≤ c_p`, where the wild factor `c_p` (`Iut.wildConst`)
+  is `12, 2, 1` at `p = 2, 3, 5` (the `p`-adic valuations of `[F : F_tpd] ∣ 2¹²·3²·5`,
+  `F = F_tpd(√−1, √λ, √(1 − λ), E[3], E[5])`), `1` at `p = ℓ` (`ord_ℓ |GL₂(𝔽_ℓ)| = 1`) and
+  `0` otherwise. **The different bound** of Proposition 1.3,
+  `ord_v(𝔇_{K/F_tpd}) ≤ e(v/u) − 1 + e_v·c_p`, is then the theorem
+  `Iut.TowerLocalFacts.ordAt_different_le` (`Iut/Tower/DifferentBound.lean`), from Serre's
+  bound `ord_v(𝔇) ≤ e(v/u) − 1 + e_v·v_p(e(v/u))` (`Iut.ordAt_differentIdeal_add_one_le`);
 * `relRamIdx_eq_one` — **Néron–Ogg–Shafarevich**: `K/F_tpd` is unramified at the places
   `v` of residue characteristic `∉ {2, 3, 5, ℓ}` whose place `u` of `F_tpd` is not bad;
 * `relRamIdx_le` — at the places of residue characteristic `∉ {2, 3, 5, ℓ}`,
@@ -33,16 +37,17 @@ ramification index and `e_v` the absolute one:
   Néron–Ogg–Shafarevich at the good ones; `F/F_tpd` has `e ∣ 2·3·5`).
 
 These three statements are the residual local input of the tower arithmetic; everything else
-(the fundamental identity, the multiplicativity of ramification indices and of the
-different in towers, the norm of the different, the Galois-theoretic degree bounds) is
-proved. The fourth local input, `Iut.RelRamIdxModLeTwo` — `F_tpd/F_mod` has ramification
-index `≤ 2` at the places over `V_mod^bad` (`F_tpd,u = F_mod,u₀(√q)` by the Tate
-uniformization of the `2`-torsion) — is a separate hypothesis of the tower arithmetic,
-**proved** for the curves of the tripod (`Iut.Tripod.relRamIdx_tpd_le_two`, by the
-inertia-group argument of `Iut/Tripod/TpdRamIdx.lean`). Both are formulated for the global
-and admissible-prime data `(F, E, V_mod^bad, ℓ)` of initial Θ-data
-(`Iut.AdmissiblePrimeData`), so that the hypothesis can be stated for the curves of the
-tripod without reference to the anabelian part of the Θ-data.
+(Serre's bound on the different, the fundamental identity, the multiplicativity of
+ramification indices and of the different in towers, the norm of the different, the
+Galois-theoretic degree bounds) is proved. The fourth local input, `Iut.RelRamIdxModLeTwo`
+— `F_tpd/F_mod` has ramification index `≤ 2` at the places over `V_mod^bad`
+(`F_tpd,u = F_mod,u₀(√q)` by the Tate uniformization of the `2`-torsion) — is a separate
+hypothesis of the tower arithmetic, **proved** for the curves of the tripod
+(`Iut.Tripod.relRamIdx_tpd_le_two`, by the inertia-group argument of
+`Iut/Tripod/TpdRamIdx.lean`). Both are formulated for the global and admissible-prime data
+`(F, E, V_mod^bad, ℓ)` of initial Θ-data (`Iut.AdmissiblePrimeData`), so that the
+hypothesis can be stated for the curves of the tripod without reference to the anabelian
+part of the Θ-data.
 
 The file also provides the `F_mod`-algebra structure of `F_tpd` (the inclusion
 `ℚ(j) ⊆ ℚ(j, E[2])`) and the notation `Iut.placeTpd v` for the place of `F_tpd` below a
@@ -151,16 +156,18 @@ def RelRamIdxModLeTwo : Prop :=
   ∀ (u : FinitePlace ↥(tripodalFieldOf F E)) (u₀ : FinitePlace ↥(fieldOfModuli F E)),
     u₀ ∈ VBad → FinitePlace.LiesOver u u₀ → relRamIdx u u₀ ≤ 2
 
-/-- **The local facts of the tower** `F_mod ⊆ F_tpd ⊆ F ⊆ K` (IUT IV, Propositions 1.3 and
-1.8; see the module docstring): the different bound, Néron–Ogg–Shafarevich, and the
-ramification bound away from `2·3·5·ℓ`. -/
+/-- **The local facts of the tower** `F_mod ⊆ F_tpd ⊆ F ⊆ K` (IUT IV, Proposition 1.8; see
+the module docstring): the wild ramification bound (from which the different bound of
+Proposition 1.3 follows by Serre's bound), Néron–Ogg–Shafarevich, and the ramification
+bound away from `2·3·5·ℓ`. -/
 structure TowerLocalFacts : Prop where
-  /-- **The different bound** (Proposition 1.3 with the tameness of Proposition 1.8):
-  `ord_v(𝔇_{K/F_tpd}) + 1 ≤ e(v/u) + e_v·c_p`. -/
-  ordAt_different_le : ∀ v : FinitePlace ↥Pr.torsionField,
-    ordAt (differentIdeal (𝓞 ↥(tripodalFieldOf F E)) (𝓞 ↥Pr.torsionField)) v + 1 ≤
-      relRamIdx v (placeTpd F E Pr.torsionField v) +
-        ramIdx (↥Pr.torsionField) v * wildConst Pr.ℓ (residueChar v)
+  /-- **The wild ramification bound** (the tameness of Proposition 1.8 with the degree
+  divisibilities `[K : F] ∣ |GL₂(𝔽_ℓ)|`, `[F : F_tpd] ∣ 2¹²·3²·5`): `v_p(e(v/u)) ≤ c_p`.
+  Together with Serre's bound on the different this gives the different bound of
+  Proposition 1.3, `Iut.TowerLocalFacts.ordAt_different_le`. -/
+  padicValNat_relRamIdx_le : ∀ v : FinitePlace ↥Pr.torsionField,
+    padicValNat (residueChar v) (relRamIdx v (placeTpd F E Pr.torsionField v)) ≤
+      wildConst Pr.ℓ (residueChar v)
   /-- **Néron–Ogg–Shafarevich**: `K/F_tpd` is unramified at the places of residue
   characteristic `∉ {2, 3, 5, ℓ}` over a place of `F_tpd` that is not bad. -/
   relRamIdx_eq_one : ∀ v : FinitePlace ↥Pr.torsionField,

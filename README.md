@@ -237,12 +237,31 @@ whose fields are the target statements of the sibling projects:
   ([`Different.lean`](Iut/Tower/Different.lean)), the uniformity of ramification in Galois
   extensions, `e_u − 1 ≤ ord_u(𝔡)` and Step (iii) ([`StepIII.lean`](Iut/Tower/StepIII.lean))
   — together with the three **residual local facts** of `Iut.TowerLocalFacts`
-  ([`Residual.lean`](Iut/Tower/Residual.lean); IUT IV, Propositions 1.3 and 1.8): for a
-  place `v` of `K` over `u` of `F_tpd`, the different bound
-  `ord_v(𝔇_{K/F_tpd}) + 1 ≤ e(v/u) + e_v·c_p` with `c_p = 12, 2, 1` at `p = 2, 3, 5`, `1` at
-  `p = ℓ` and `0` otherwise (Prop 1.3 with the tameness of `K/F` away from `ℓ` and of
-  `F/F_tpd` away from `2·3·5`); Néron–Ogg–Shafarevich (`e(v/u) = 1` for `p ∉ {2,3,5,ℓ}`,
-  `u` not bad); and `e(v/u) ≤ 30ℓ` for `p ∉ {2,3,5,ℓ}`. The fourth local input,
+  ([`Residual.lean`](Iut/Tower/Residual.lean); IUT IV, Proposition 1.8): for a place `v`
+  of `K` over `u` of `F_tpd`, the wild ramification bound `v_p(e(v/u)) ≤ c_p` with
+  `c_p = 12, 2, 1` at `p = 2, 3, 5`, `1` at `p = ℓ` and `0` otherwise (the tameness of `K/F`
+  away from `ℓ` and of `F/F_tpd` away from `2·3·5`, with `e(v/w) ∣ [K : F] ∣ |GL₂(𝔽_ℓ)|`,
+  `e(w/u) ∣ [F : F_tpd] ∣ 2¹²·3²·5`); Néron–Ogg–Shafarevich (`e(v/u) = 1` for
+  `p ∉ {2,3,5,ℓ}`, `u` not bad); and `e(v/u) ≤ 30ℓ` for `p ∉ {2,3,5,ℓ}`. **The different
+  bound of Proposition 1.3**, `ord_v(𝔇_{K/F_tpd}) + 1 ≤ e(v/u) + e_v·c_p`, is a theorem
+  (`Iut.TowerLocalFacts.ordAt_different_le`,
+  [`DifferentBound.lean`](Iut/Tower/DifferentBound.lean)): it is **Serre's bound**
+  `ord_v(𝔇_{K/k}) ≤ e(v/u) − 1 + e_v·v_p(e(v/u))` (*Local Fields* III §6, Remark after
+  Prop. 13; `Iut.ordAt_differentIdeal_add_one_le`), proved for arbitrary extensions of
+  Dedekind domains with finite residue fields (`Iut.Serre.not_pow_dvd_differentIdeal`,
+  [`SerreBound.lean`](Iut/Tower/SerreBound.lean)): by Mathlib's trace criterion it suffices
+  to find `x ∈ J^{κ+1}` (`𝔭B = 𝔓^e J`, `κ = e_u v_p(e)`) with `Tr(x) ∉ 𝔭^{κ+1}`; after
+  localizing at `𝔭` the trace modulo `𝔭^{κ+1}` is the trace of
+  `B/𝔓^{e(κ+1)} × B/J^{κ+1}` over `A/𝔭^{κ+1}`, and `B/𝔓^{e(κ+1)}` is free of rank `e` over
+  a Hensel lift `R' ≅ A/𝔭^{κ+1}[X]/(g)` of the residue extension (by Nakayama and a count),
+  so its trace is `e·Tr_{R'/R}` with `Tr_{R'/R}` surjective
+  ([`SerreCore.lean`](Iut/Tower/SerreCore.lean), [`QuotientBasis.lean`](Iut/Tower/QuotientBasis.lean)).
+  For the curves of the tripod the wild ramification bound reduces to the **residual
+  tameness of `K/F_λ` away from `ℓ`** (`Iut.Tripod.TameTorsionHyp`, the semistable
+  reduction of `E_λ` over `F_λ`: Tate uniformization at the bad places,
+  Néron–Ogg–Shafarevich at the good ones), since `e(v/w) ∣ [K : F_λ] ∣ |GL₂(𝔽_ℓ)|` and
+  `e(w/u) ∣ [F_λ : ℚ(λ)] ∣ 2¹²·3²·5` are theorems (`Iut.Tripod.padicValNat_relRamIdx_le_of_tame`,
+  [`WildRamIdx.lean`](Iut/Tripod/WildRamIdx.lean)). The fourth local input,
   `e(u/u₀) ≤ 2` for `F_tpd/F_mod` at `u₀ ∈ V_mod^bad` (`Iut.RelRamIdxModLeTwo`; the Tate
   uniformization of the `2`-torsion), is a **theorem for the curves of the tripod**
   (`Iut.Tripod.relRamIdx_tpd_le_two`, [`TpdRamIdx.lean`](Iut/Tripod/TpdRamIdx.lean)): at a
@@ -307,7 +326,7 @@ from #1449):
 | --- | --- | --- |
 | `Iut.LocalTheory K` | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed and proved** (`Iut.LocalConstruct.concreteLocalTheory K`, no residual input; [#1462](https://taxis.lana.merten.dev/issues/1462)) |
 | `Iut.ThetaLocalData D LT` | `2ℓ`-th roots of the Tate parameters, `q`-degree base change | **constructed** (`Iut.thetaLocalData`), from the rationality of the ℓ- and 2-torsion |
-| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the residual `Prop` `Iut.TowerLocalFacts` (three local fields: the different bound of Prop 1.3, Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`; `Iut.Tripod.TowerLocalHyp`; the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) (Prop 1.3: [#1463](https://taxis.lana.merten.dev/issues/1463)) |
+| `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the residual `Prop` `Iut.TowerLocalFacts` (three local fields: the wild ramification bound `v_p(e(v/u)) ≤ c_p` — reduced for the tripod to the tameness of `F_λ(E_λ[ℓ])/F_λ` away from `ℓ`, `Iut.Tripod.TameTorsionHyp` — Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`; `Iut.Tripod.TowerLocalHyp`; the different bound of Prop 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le` (Serre's bound, [#1463](https://taxis.lana.merten.dev/issues/1463)) and the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) |
 | `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
 | `Iut.PrimeCountingBound` | Proposition 1.6 (factor `3/2`) | **proved** (`Iut.primeCountingBoundExplicit`, from Mathlib's `θ(x) ≤ (log 4)·x` and the Abel-summation identity for `π`; `Iut.PrimeCountingHyp` is the theorem `Iut.primeCountingHyp_holds`), [#1466](https://taxis.lana.merten.dev/issues/1466) |
 | `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); residual `Prop` `CurveFactsProp` (one field, the cyclic-subgroup bound in its residual form), see below |
@@ -411,7 +430,8 @@ repository and every hypothesis is a proposition about the constructed objects.
   and the tower arithmetic `Iut.TowerArithmetic` of the Θ-data of a
   point (`towerArithmetic_of_towerLocalHyp`) from the residual local facts
   `Iut.Tripod.TowerLocalHyp` (the three fields of `Iut.TowerLocalFacts` for the curves of
-  the tripod). The earlier hypothesis quantified the tower arithmetic over *all* Θ-data of
+  the tripod; the first, the wild ramification bound, follows from the residual tameness
+  of `F_λ(E_λ[ℓ])/F_λ` away from `ℓ`, [`WildRamIdx.lean`](Iut/Tripod/WildRamIdx.lean)). The earlier hypothesis quantified the tower arithmetic over *all* Θ-data of
   the model, which is false (Step (ii) fails for `F` replaced by `F(√p)`, `p` large); it
   is now assumed only in the form of the local facts for the constructed data.
 
