@@ -18,6 +18,7 @@ import Iut.Tripod.Height
 import Iut.Tripod.CyclicBound
 import Iut.Tripod.Tower
 import Iut.Tripod.TowerFacts
+import Iut.Tripod.TameTwo
 
 /-!
 # The ABC implication for the tripod, with propositional inputs
@@ -42,17 +43,18 @@ hypothesis is a proposition about the constructed objects:
   Proposition 2.7, from the fields `excJ`, `hasCore_oncePunctured` of `Pi1`) are theorems
   (`Iut/Tripod/Height.lean`, `TwoAdic.lean`, `LogCond.lean`, `CurveFacts.lean` with
   `Iut/Concrete/SL2Image.lean`, `Core.lean`);
-* `TameTwoHyp`: **the residual tameness of `F_λ(E_λ[ℓ])/F_λ` at the places over `2`**
-  (`2 ∤ e(v/w)` for the places `v` of residue characteristic `2`, IUT IV, Proposition 1.8).
-  From it the local facts of the tower `ℚ(j) ⊆ ℚ(λ) ⊆ F_λ ⊆ F_λ(E_λ[ℓ])`, `TowerLocalHyp`,
-  are a theorem (`Iut.Tripod.towerLocalHyp_of_tameTwo`, `Iut/Tripod/TowerFacts.lean`): the
+* the local facts of the tower `ℚ(j) ⊆ ℚ(λ) ⊆ F_λ ⊆ F_λ(E_λ[ℓ])`, `TowerLocalHyp`, are a
+  theorem (`Iut.Tripod.towerLocalHyp`, `Iut/Tripod/TameTwo.lean`, `TowerFacts.lean`): the
   tameness away from `2·ℓ`, Néron–Ogg–Shafarevich (`Iut.Tripod.relRamIdx_eq_one_of_not_bad`)
   and the ramification bound `e(v/u) ≤ 30ℓ` away from `2·3·5·ℓ`
   (`Iut.Tripod.relRamIdx_le_thirty_mul`) are proved from the reduction theory of the
   Legendre model at the places of odd residue characteristic (`Iut/Tower/ReductionKernel.lean`,
-  `MultiplicativeKernel.lean`, the inertia-group criterion `Iut/Tower/Inertia.lean`); the
-  wild ramification bound `v_p(e(v/u)) ≤ c_p` follows
-  (`Iut.Tripod.padicValNat_relRamIdx_le_of_tame`),
+  `MultiplicativeKernel.lean`, the inertia-group criterion `Iut/Tower/Inertia.lean`), the
+  tameness of `F_λ(E_λ[ℓ])/F_λ` at the places over `2` (`2 ∤ e(v/w)`,
+  `Iut.Tripod.tameTwoHyp`, IUT IV, Proposition 1.8) from the stable reduction of `E_λ` there
+  and the involution argument of `Iut/Tower/InertiaInvolution.lean` (an element of order `2`
+  of the inertia group would fix the `ℓ`-torsion of a stable model); the wild ramification
+  bound `v_p(e(v/u)) ≤ c_p` follows (`Iut.Tripod.padicValNat_relRamIdx_le_of_tame`),
   the different bound of Proposition 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le`
   (Serre's bound) and the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is
   the theorem `Iut.Tripod.relRamIdx_tpd_le_two`; from the local facts the tower arithmetic
@@ -78,8 +80,7 @@ variable (Pi1 : EtalePi1Theory.{0}) (Tp : TemperedPi1Theory Pi1)
 /-- **Existence of suitable initial Θ-data for the Legendre curves**, with the constructed
 theta local data. -/
 theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
-    (CF : CurveFactsProp (tripodProviders) K d TK) (hN : NorthcottHyp)
-    (htame : TameTwoHyp tripodProviders) :
+    (CF : CurveFactsProp (tripodProviders) K d TK) (hN : NorthcottHyp) :
     ConcreteThetaDataExistence.{0, 0} (AG := modelAG Pi1) (TG := modelTG Pi1 Tp)
       (curveInputs tripodProviders K d CF (coreFiniteness Pi1 _ K d) hN
         torsionDegreeBound_three' torsionDegreeBound_five'
@@ -112,7 +113,7 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
   refine ⟨D, concreteLocalTheory D.Kt,
     thetaLocalData D (concreteLocalTheory D.Kt) htwo QI, QI,
     towerArithmetic_of_towerLocalHyp (tripodProviders) x hℓ h7 (hsl hx hℓ) hP2' hP5'
-      (anabelianExistence Pi1 Tp) hcore (towerLocalHyp_of_tameTwo _ htame)
+      (anabelianExistence Pi1 Tp) hcore (towerLocalHyp _)
       torsionDegreeBound_three' torsionDegreeBound_five'
       (concreteLocalTheory D.Kt) htwo, rfl,
     CI.dmod_le x hx, ?_, CI.logDiff_eq x hx, CI.logCond_ge x hx ℓ hℓ h7,
@@ -124,7 +125,6 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
 theorem abc_of_variant
     (hcyc : ∀ (K : CompactlyBounded) (d : ℕ),
       ∃ TK : ℝ, CyclicGraphBoundHyp (tripodProviders) K d TK)
-    (htame : TameTwoHyp tripodProviders)
     (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (LT : LocalTheory.{0, 0} D.Kt)
       (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
       Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
@@ -138,7 +138,7 @@ theorem abc_of_variant
       (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _)
       (logCondLe _)).toCorollary22Inputs)
     (fun K d =>
-      (concreteThetaDataExistence' Pi1 Tp (CF K d) northcottHyp htame).toThetaDataExistence)
+      (concreteThetaDataExistence' Pi1 Tp (CF K d) northcottHyp).toThetaDataExistence)
     chebyshevBoundExplicit primeCountingBoundExplicit
     (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
 

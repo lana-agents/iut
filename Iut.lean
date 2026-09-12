@@ -96,6 +96,8 @@ import Iut.Tower.Different
 import Iut.Tower.DifferentBound
 import Iut.Tower.Inertia
 import Iut.Tower.InertiaBound
+import Iut.Tower.InertiaInvolution
+import Iut.Tower.IntegralTorsion
 import Iut.Tower.LogDK
 import Iut.Tower.Main
 import Iut.Tower.MultiplicativeKernel
@@ -127,6 +129,7 @@ import Iut.Tripod.Providers
 import Iut.Tripod.SL2Generation
 import Iut.Tripod.StableOdd
 import Iut.Tripod.StableTwo
+import Iut.Tripod.TameTwo
 import Iut.Tripod.TorsionBasis
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.Tower

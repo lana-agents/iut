@@ -14,18 +14,20 @@ import Iut.Tripod.TpdInertia
   `e(w/u) ≤ 30` (`Iut.Tripod.relRamIdx_tpd_le_thirty` at the bad places,
   `Iut.Tripod.relRamIdx_placeUnder_eq_one` at the good ones) and `e(v/w) ≤ ℓ`
   (`Iut.Tripod.relRamIdx_torsionField_le`);
-* `Iut.Tripod.TameTwoHyp`, **the residual tameness of `K/F_λ` at the places over `2`**:
+* `Iut.Tripod.TameTwoHyp`, **the tameness of `K/F_λ` at the places over `2`**:
   `2 ∤ e(v/w)` for the places `v` of residue characteristic `2`. Away from `2` (and `ℓ`) the
   tameness is the theorem `Iut.Tripod.not_dvd_relRamIdx_torsionField`, so
   `Iut.Tripod.TameTorsionHyp P` follows (`Iut.Tripod.tameTorsionHyp_of_two`);
-* `Iut.Tripod.towerLocalHyp_of_tameTwo`: **the residual local facts `Iut.Tripod.TowerLocalHyp P`
+* `Iut.Tripod.towerLocalHyp_of_tameTwo`: **the local facts `Iut.Tripod.TowerLocalHyp P`
   hold**, given the tameness at `2` (Néron–Ogg–Shafarevich,
   `Iut.Tripod.relRamIdx_eq_one_of_not_bad`,
   and the ramification bound away from `2·3·5·ℓ` are theorems).
 
-The places of residue characteristic `2` are excluded from the arguments of this package because
+The places of residue characteristic `2` are excluded from the arguments of this file because
 the reduction theory of the Legendre model used here (`Iut/Tower/ReductionKernel.lean`,
-`Iut/Tower/MultiplicativeKernel.lean`) requires `v(2) = 1`.
+`Iut/Tower/MultiplicativeKernel.lean`) requires `v(2) = 1`; the tameness at `2` is proved in
+`Iut/Tripod/TameTwo.lean` (`Iut.Tripod.tameTwoHyp`) from the stable reduction of `E_λ` at the
+places over `2` and the involution argument of `Iut/Tower/InertiaInvolution.lean`.
 -/
 
 namespace Iut.Tripod
@@ -75,11 +77,11 @@ namespace Iut.Tripod
 
 open Iut Iut.EllipticCurveData NumberField
 
-/-- **The residual tameness of `K = F_λ(E_λ[ℓ])` over `F_λ` at the places over `2`**:
+/-- **The tameness of `K = F_λ(E_λ[ℓ])` over `F_λ` at the places over `2`**:
 `2 ∤ e(v/w)` for every place `v` of `K` of residue characteristic `2`, `w` the place of `F_λ`
-below `v` (IUT IV, Proposition 1.8: the semistable reduction of `E_λ` at the places over `2`
-and the Tate uniformization / Néron–Ogg–Shafarevich there). Away from `2` and `ℓ` the tameness
-is the theorem `Iut.Tripod.not_dvd_relRamIdx_torsionField`. -/
+below `v` (IUT IV, Proposition 1.8: the semistable reduction of `E_λ` at the places over `2`).
+It is the theorem `Iut.Tripod.tameTwoHyp` (`Iut/Tripod/TameTwo.lean`). Away from `2` and `ℓ`
+the tameness is the theorem `Iut.Tripod.not_dvd_relRamIdx_torsionField`. -/
 def TameTwoHyp (P : CurveProviders) : Prop :=
   ∀ (x : Pt) (ℓ : ℕ) (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ)
     (hsl : ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (P.modRep x ℓ hℓ).rep.range)
