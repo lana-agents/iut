@@ -35,7 +35,7 @@ with an elementary proof:
    dominant-term (Newton polygon) argument, using `v(3) = 1`; if `B ∈ 𝔪³`, rescale by a
    uniformizer, `(A, B, x) ↦ (A/π, B/π³, x/π²)`, and repeat.
 
-Since `E_λ[3](ℚ̄) ≅ (ℤ/3)²` (the hypothesis `torsion_basis` of `Iut.Tripod.CurveProps`) and the
+Since `E_λ[3](ℚ̄) ≅ (ℤ/3)²` (`Iut.Tripod.legendre_torsionBasis`) and the
 `3`-torsion of `E_λ` is rational over `F_λ`, the curve `E_λ/F_λ` of a point of the tripod has
 stable reduction at every place of residue characteristic `≠ 3`
 (`Iut.Tripod.stable_reduction_of_residueChar_ne_three`), and, with

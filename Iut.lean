@@ -88,6 +88,9 @@ import Iut.Implication.Invariants
 import Iut.Implication.LogVolumeBound
 import Iut.Implication.PrimeSelection
 import Iut.Implication.Theorem110
+import Iut.Torsion.Count
+import Iut.Torsion.EDS
+import Iut.Torsion.Identities
 import Iut.Tower.Basic
 import Iut.Tower.Different
 import Iut.Tower.LogDK
@@ -112,8 +115,10 @@ import Iut.Tripod.Providers
 import Iut.Tripod.SL2Generation
 import Iut.Tripod.StableOdd
 import Iut.Tripod.StableTwo
+import Iut.Tripod.TorsionBasis
 import Iut.Tripod.TorsionDegree
 import Iut.Tripod.Tower
 import Iut.Tripod.TpdGalois
+import Iut.Tripod.TpdRamIdx
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.TwoTorsion

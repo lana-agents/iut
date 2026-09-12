@@ -30,16 +30,19 @@ ramification index and `e_v` the absolute one:
   `v` of residue characteristic `∉ {2, 3, 5, ℓ}` whose place `u` of `F_tpd` is not bad;
 * `relRamIdx_le` — at the places of residue characteristic `∉ {2, 3, 5, ℓ}`,
   `e(v/u) ≤ 30ℓ` (`K/F` has `e ∣ ℓ` there, by the Tate uniformization at the bad places and
-  Néron–Ogg–Shafarevich at the good ones; `F/F_tpd` has `e ∣ 2·3·5`);
-* `relRamIdx_mod_le_two` — `F_tpd/F_mod` has ramification index `≤ 2` at the places over
-  `V_mod^bad` (`F_tpd,u = F_mod,u₀(√q)` by the Tate uniformization of the `2`-torsion).
+  Néron–Ogg–Shafarevich at the good ones; `F/F_tpd` has `e ∣ 2·3·5`).
 
-These four statements are the residual local input of the tower arithmetic; everything else
+These three statements are the residual local input of the tower arithmetic; everything else
 (the fundamental identity, the multiplicativity of ramification indices and of the
 different in towers, the norm of the different, the Galois-theoretic degree bounds) is
-proved. They are formulated for the global and admissible-prime data `(F, E, V_mod^bad, ℓ)`
-of initial Θ-data (`Iut.AdmissiblePrimeData`), so that the hypothesis can be stated for
-the curves of the tripod without reference to the anabelian part of the Θ-data.
+proved. The fourth local input, `Iut.RelRamIdxModLeTwo` — `F_tpd/F_mod` has ramification
+index `≤ 2` at the places over `V_mod^bad` (`F_tpd,u = F_mod,u₀(√q)` by the Tate
+uniformization of the `2`-torsion) — is a separate hypothesis of the tower arithmetic,
+**proved** for the curves of the tripod (`Iut.Tripod.relRamIdx_tpd_le_two`, by the
+inertia-group argument of `Iut/Tripod/TpdRamIdx.lean`). Both are formulated for the global
+and admissible-prime data `(F, E, V_mod^bad, ℓ)` of initial Θ-data
+(`Iut.AdmissiblePrimeData`), so that the hypothesis can be stated for the curves of the
+tripod without reference to the anabelian part of the Θ-data.
 
 The file also provides the `F_mod`-algebra structure of `F_tpd` (the inclusion
 `ℚ(j) ⊆ ℚ(j, E[2])`) and the notation `Iut.placeTpd v` for the place of `F_tpd` below a
@@ -141,10 +144,16 @@ variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar]
 variable (VBad : Set (FinitePlace ↥(fieldOfModuli F E)))
 variable (Pr : AdmissiblePrimeData F E Fbar VBad) [NumberField ↥Pr.torsionField]
 
+/-- **`F_tpd/F_mod` at the bad places**: `e(u/u₀) ≤ 2` for every place `u` of `F_tpd` over a
+place `u₀ ∈ V_mod^bad` of `F_mod` (IUT IV, Proposition 1.8; a theorem for the curves of the
+tripod, `Iut.Tripod.relRamIdx_tpd_le_two`). -/
+def RelRamIdxModLeTwo : Prop :=
+  ∀ (u : FinitePlace ↥(tripodalFieldOf F E)) (u₀ : FinitePlace ↥(fieldOfModuli F E)),
+    u₀ ∈ VBad → FinitePlace.LiesOver u u₀ → relRamIdx u u₀ ≤ 2
+
 /-- **The local facts of the tower** `F_mod ⊆ F_tpd ⊆ F ⊆ K` (IUT IV, Propositions 1.3 and
-1.8; see the module docstring): the different bound, Néron–Ogg–Shafarevich, the
-ramification bound away from `2·3·5·ℓ`, and the ramification of `F_tpd/F_mod` at the
-bad places. -/
+1.8; see the module docstring): the different bound, Néron–Ogg–Shafarevich, and the
+ramification bound away from `2·3·5·ℓ`. -/
 structure TowerLocalFacts : Prop where
   /-- **The different bound** (Proposition 1.3 with the tameness of Proposition 1.8):
   `ord_v(𝔇_{K/F_tpd}) + 1 ≤ e(v/u) + e_v·c_p`. -/
@@ -162,10 +171,6 @@ structure TowerLocalFacts : Prop where
   relRamIdx_le : ∀ v : FinitePlace ↥Pr.torsionField,
     residueChar v ∉ ({2, 3, 5, Pr.ℓ} : Finset ℕ) →
     relRamIdx v (placeTpd F E Pr.torsionField v) ≤ 30 * Pr.ℓ
-  /-- **`F_tpd/F_mod` at the bad places**: `e(u/u₀) ≤ 2` for `u₀ ∈ V_mod^bad`. -/
-  relRamIdx_mod_le_two : ∀ (u : FinitePlace ↥(tripodalFieldOf F E))
-    (u₀ : FinitePlace ↥(fieldOfModuli F E)), u₀ ∈ VBad → FinitePlace.LiesOver u u₀ →
-    relRamIdx u u₀ ≤ 2
 
 end Facts
 

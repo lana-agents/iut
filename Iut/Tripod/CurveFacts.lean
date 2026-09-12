@@ -479,7 +479,7 @@ the height comparison `LegendreHeightHyp` (proved in `Height.lean`), the `2`-adi
 bounds (proved in `TwoAdic.lean`, `LogCond.lean`), and the Northcott property `NorthcottHyp`. -/
 noncomputable def curveInputs {AG : AnabelianGeometry.{0}} {TK : ℝ}
     (CF : CurveFactsProp P K d TK) (hcore : CoreFinitenessHyp P K d AG) (hN : NorthcottHyp)
-    (hdeg3 : ∀ l : Qbar, TorsionDegreeBound l 3) (hdeg5 : ∀ l : Qbar, TorsionDegreeBound l 5)
+    (hdeg3 : ∀ x : Pt, TorsionDegreeBound x.1 3) (hdeg5 : ∀ x : Pt, TorsionDegreeBound x.1 5)
     (hh : LegendreHeightHyp P K) (hB : TwoAdicBoundHyp P K (max (4 * K.c) 0))
     (hge : LogCondGeHyp P) (hle : LogCondLeHyp P) :
     CurveInputs tripodTheory AG K d where
@@ -490,7 +490,7 @@ noncomputable def curveInputs {AG : AnabelianGeometry.{0}} {TK : ℝ}
   modRep x _ ℓ hℓ := P.modRep x ℓ hℓ
   height_eq _ _ := rfl
   deg_le x hx := by
-    refine (deg_le x _ _ (hdeg3 x.1) (hdeg5 x.1)).trans ?_
+    refine (deg_le x _ _ (hdeg3 x) (hdeg5 x)).trans ?_
     exact Nat.mul_le_mul_left _ hx.2
   dmod_le x hx := (dmod_le x _ _).trans hx.2
   htCan_equiv := hh

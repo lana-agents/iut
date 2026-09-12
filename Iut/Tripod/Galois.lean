@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
 import Iut.Tripod.TorsionDegree
+import Iut.Tripod.TorsionBasis
 import Iut.Cor312.ThetaData.VariableChangePoint
 
 /-!
@@ -12,7 +13,7 @@ import Iut.Cor312.ThetaData.VariableChangePoint
 For a point `λ` of the tripod with `E_λ[3](ℚ̄)`, `E_λ[5](ℚ̄)` finite, the field of definition
 `F_λ = ℚ(λ, √−1, √λ, √(1 − λ), E_λ[3], E_λ[5]) ⊆ ℚ̄` of the Legendre curve is Galois over the
 field of moduli `F_mod = ℚ(j(E_λ))`, of degree prime to every prime `ℓ ≥ 7`
-(`Iut.Tripod.galois_deg_prime_of_torsion_basis`, the field `galois_deg_prime` of
+(`Iut.Tripod.galois_deg_prime`, formerly the field `galois_deg_prime` of
 `Iut.EllipticCurveData.CurveArithmetic` for `curveOf x h3 h5`).
 
 ## The Galois property
@@ -602,10 +603,7 @@ theorem coprime_relfinrank_fieldOfJ {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1)
 /-- **`F_λ/F_mod` is Galois of degree prime to `ℓ` for every prime `ℓ ≥ 7`** (the field
 `galois_deg_prime` of `Iut.EllipticCurveData.CurveArithmetic` for the curve of a point of the
 tripod), given that `E_μ[n](ℚ̄) ≅ (ℤ/n)²` for all `μ` and `n ≠ 0` (used for `n = 3, 5`). -/
-theorem galois_deg_prime_of_torsion_basis
-    (hb : ∀ (l : Qbar) (n : ℕ), n ≠ 0 →
-      Nonempty (AddSubgroup.torsionBy (legendre l).toAffine.Point n ≃+ (Fin 2 → ZMod n)))
-    (x : Pt) (h3 : TorsionFinite x.1 3) (h5 : TorsionFinite x.1 5) (ℓ : ℕ) (hℓ : ℓ.Prime)
+theorem galois_deg_prime (x : Pt) (h3 : TorsionFinite x.1 3) (h5 : TorsionFinite x.1 5) (ℓ : ℕ) (hℓ : ℓ.Prime)
     (h7 : 7 ≤ ℓ) : IsGaloisOfDegreePrimeTo (curveOf x h3 h5).F (curveOf x h3 h5).E ℓ := by
   have hlift := lift_fieldOfModuli x h3 h5
   have hle := fieldOfJ_le_fieldOf' x.1
@@ -620,7 +618,9 @@ theorem galois_deg_prime_of_torsion_basis
       (curveOf x h3 h5).F = IntermediateField.relfinrank (fieldOfJ x.1) (fieldOf' x.1) :=
     finrank_eq_relfinrank_of_lift_eq hlift hle
   rw [key] at hpos ⊢
-  exact coprime_relfinrank_fieldOfJ x.2.1 x.2.2 (hb x.1 3 (by norm_num)).some
-    (hb x.1 5 (by norm_num)).some hℓ h7 hpos
+  haveI : Fact (Nat.Prime 3) := ⟨by norm_num⟩
+  haveI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  exact coprime_relfinrank_fieldOfJ x.2.1 x.2.2 (legendre_torsionBasis x 3).some
+    (legendre_torsionBasis x 5).some hℓ h7 hpos
 
 end Iut.Tripod
