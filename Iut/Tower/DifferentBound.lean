@@ -179,4 +179,28 @@ theorem ordAt_differentIdeal_add_one_le {v : FinitePlace K} {u : FinitePlace k}
 
 end Serre
 
+/-! ### The different bound of the tower -/
+
+section Tower
+
+universe u
+
+variable {F : Type u} [Field F] [NumberField F] {E : WeierstrassCurve F} [E.IsElliptic]
+variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar]
+variable {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
+variable {Pr : AdmissiblePrimeData F E Fbar VBad} [NumberField ↥Pr.torsionField]
+
+/-- **The different bound** (IUT IV, Proposition 1.3 with the tameness of Proposition 1.8):
+`ord_v(𝔇_{K/F_tpd}) + 1 ≤ e(v/u) + e_v·c_p`, from Serre's bound and the wild ramification
+bound `v_p(e(v/u)) ≤ c_p` of the local facts. -/
+theorem TowerLocalFacts.ordAt_different_le (H : TowerLocalFacts E VBad Pr)
+    (v : FinitePlace ↥Pr.torsionField) :
+    ordAt (differentIdeal (𝓞 ↥(tripodalFieldOf F E)) (𝓞 ↥Pr.torsionField)) v + 1 ≤
+      relRamIdx v (placeTpd F E Pr.torsionField v) +
+        ramIdx (↥Pr.torsionField) v * wildConst Pr.ℓ (residueChar v) :=
+  (ordAt_differentIdeal_add_one_le (liesOver_placeTpd v)).trans
+    (Nat.add_le_add_left (Nat.mul_le_mul_left _ (H.padicValNat_relRamIdx_le v)) _)
+
+end Tower
+
 end Iut
