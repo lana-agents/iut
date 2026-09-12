@@ -7,6 +7,7 @@ import Iut.Tower.TorsionRigid
 import Iut.Tripod.Tower
 import Iut.Tripod.LogCond
 import Iut.Anabelian.Torsion
+import Iut.Torsion.EDS
 
 /-!
 # Néron–Ogg–Shafarevich for the curves of the tripod
@@ -97,6 +98,14 @@ over any field of characteristic `≠ 2` in `Type` (`Iut.ReductionKernel.DivPoly
 def DivPolyLegendreHyp : Prop :=
   ∀ (L : Type) [Field L] [DecidableEq L] [NeZero (2 : L)] (l : L),
     ReductionKernel.DivPolyHyp (legendre l).toAffine
+
+/-- **The division polynomials describe the multiples of a point on a Legendre curve**
+(`Iut.Torsion.smul_eq_zero_iff_eds`). -/
+theorem divPolyLegendreHyp : DivPolyLegendreHyp := by
+  intro L _ inst _ l x y h n
+  have hi : inst = fun a b => Classical.propDecidable (a = b) := Subsingleton.elim _ _
+  subst hi
+  exact Iut.Torsion.smul_eq_zero_iff_eds (W := (legendre l).toAffine) rfl rfl h n
 
 attribute [local instance 1100] AdmissiblePrimeData.instDecidableEqK
 

@@ -15,7 +15,7 @@ ramification index `e(v/u)` is the order of the inertia group
 the identity (`Iut.relRamIdx_eq_one_of_inertia_trivial`).
 
 The inertia condition is transported from `𝓞_K` to the `v`-integral elements of `K`
-(`Iut.valuation_sub_lt_one_of_mem_inertia`): `x = n/d` with `d ∉ 𝔓_v`.
+(`Iut.valuation_sub_lt_one_of_mem_inertia'`): `x = n/d` with `d ∉ 𝔓_v`.
 -/
 
 namespace Iut
@@ -31,7 +31,7 @@ lemma coe_galSmul (σ : K ≃ₐ[k] K) (x : 𝓞 K) : ((σ • x : 𝓞 K) : K) 
 omit [NumberField k] in
 /-- **The inertia condition on `v`-integral elements**: if `σ x − x ∈ 𝔓_v` for all
 `x ∈ 𝓞_K`, then `v(σ x − x) < 1` for every `x ∈ K` with `v(x) ≤ 1`. -/
-lemma valuation_sub_lt_one_of_mem_inertia (v : FinitePlace K) (σ : K ≃ₐ[k] K)
+lemma valuation_sub_lt_one_of_mem_inertia' (v : FinitePlace K) (σ : K ≃ₐ[k] K)
     (hσ : σ ∈ v.maximalIdeal.asIdeal.inertia (K ≃ₐ[k] K)) (x : K)
     (hx : v.maximalIdeal.valuation K x ≤ 1) :
     v.maximalIdeal.valuation K (σ x - x) < 1 := by
@@ -99,7 +99,7 @@ theorem relRamIdx_eq_one_of_inertia_trivial {v : FinitePlace K} {u : FinitePlace
     rw [eq_bot_iff]
     intro σ hσ
     rw [Subgroup.mem_bot]
-    exact hfix σ (valuation_sub_lt_one_of_mem_inertia v σ hσ)
+    exact hfix σ (valuation_sub_lt_one_of_mem_inertia' v σ hσ)
   change u.maximalIdeal.asIdeal.ramificationIdx' v.maximalIdeal.asIdeal = 1
   rw [h3, ← h2, ← h1, Subgroup.card_eq_one, h4]
 

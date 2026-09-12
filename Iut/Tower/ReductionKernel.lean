@@ -81,7 +81,7 @@ variable {W}
 
 omit [DecidableEq K] in
 /-- `Ψ₂Sq(x) = (2y)²` on the curve, for `a₁ = a₃ = 0`. -/
-lemma Ψ₂Sq_eval_eq (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x y : K} (h : W.Equation x y) :
+lemma Ψ₂Sq_eval_eq_sq (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x y : K} (h : W.Equation x y) :
     W.Ψ₂Sq.eval x = (2 * y) ^ 2 := by
   rw [equation_iff, ha₁, ha₃] at h
   simp only [Ψ₂Sq, b₂, b₄, b₆, ha₁, ha₃, eval_add, eval_mul, eval_C, eval_pow, eval_X]
@@ -94,7 +94,7 @@ lemma normEDS_eq_eval_preΨ' (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x y : K}
     normEDS (2 * y) (W.Ψ₃.eval x) (W.preΨ₄.eval x) n =
       (W.preΨ' n).eval x * if Even n then 2 * y else 1 := by
   rw [normEDS, preNormEDS_ofNat, preΨ', ← coe_evalRingHom, map_preNormEDS', coe_evalRingHom,
-    eval_pow, Ψ₂Sq_eval_eq ha₁ ha₃ h]
+    eval_pow, Ψ₂Sq_eval_eq_sq ha₁ ha₃ h]
   simp only [Int.even_coe_nat]
   ring_nf
 
@@ -253,7 +253,7 @@ theorem nonsingular_reduction_of_Δ (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (h
 
 omit [DecidableEq K] in
 /-- `-(x, y) = (x, -y)` for `a₁ = a₃ = 0`. -/
-lemma negY_eq (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (x y : K) : W.negY x y = -y := by
+lemma negY_eq_neg (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (x y : K) : W.negY x y = -y := by
   simp [negY, ha₁, ha₃]
 
 omit [DecidableEq K] in
@@ -277,8 +277,8 @@ theorem sub_eq_zero_or_one_lt (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (ha₂ :
       ∃ (x y : K) (h : W.Nonsingular x y),
         Point.some x₁ y₁ h₁ - Point.some x₂ y₂ h₂ = Point.some x y h ∧ 1 < v x := by
   have hint : ∀ z : K, v z ≤ 1 ↔ z ∈ v.integer := fun z => (Valuation.mem_integer_iff v z).symm
-  have hneg : W.negY x₂ y₂ = -y₂ := negY_eq ha₁ ha₃ x₂ y₂
-  have hneg' : W.negY x₂ (-y₂) = y₂ := by rw [negY_eq ha₁ ha₃, neg_neg]
+  have hneg : W.negY x₂ y₂ = -y₂ := negY_eq_neg ha₁ ha₃ x₂ y₂
+  have hneg' : W.negY x₂ (-y₂) = y₂ := by rw [negY_eq_neg ha₁ ha₃, neg_neg]
   rw [sub_eq_add_neg, Point.neg_some]
   -- the key claim: the slope of the line through `P` and `-Q` has `v > 1`
   suffices key : ¬ (x₁ = x₂ ∧ y₁ = W.negY x₂ (W.negY x₂ y₂)) →
