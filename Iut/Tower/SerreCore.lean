@@ -216,8 +216,8 @@ lemma span_pow_eq_top (he : e ≠ 0) (h𝔓 : 𝔓 ≠ ⊥) (hpB : 𝔭.map (alg
   set M := Submodule.span (AdjoinRoot g) (Set.range fun i : Fin e =>
     Ideal.Quotient.mk (𝔓 ^ (e * (κ + 1))) (π ^ (i : ℕ))) with hM
   -- the algebra map `A → R' → B/𝔓^{e(κ+1)}` is the algebra map `A → B/𝔓^{e(κ+1)}`
-  have hcomp : (algebraMap (AdjoinRoot g) (B ⧸ 𝔓 ^ (e * (κ + 1)))).comp (algebraMap A (AdjoinRoot g)) =
-      algebraMap A (B ⧸ 𝔓 ^ (e * (κ + 1))) := by
+  have hcomp : (algebraMap (AdjoinRoot g) (B ⧸ 𝔓 ^ (e * (κ + 1)))).comp
+      (algebraMap A (AdjoinRoot g)) = algebraMap A (B ⧸ 𝔓 ^ (e * (κ + 1))) := by
     refine RingHom.ext fun a => ?_
     rw [RingHom.comp_apply, IsScalarTower.algebraMap_apply A (A ⧸ 𝔭 ^ (κ + 1)) (AdjoinRoot g),
       AdjoinRoot.algebraMap_eq, ← AdjoinRoot.mk_C, halg, aeval_C, ← IsScalarTower.algebraMap_apply]

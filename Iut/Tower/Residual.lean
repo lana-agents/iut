@@ -23,7 +23,7 @@ ramification index, `e_v` the absolute one and `v_p` the `p`-adic valuation:
 * `padicValNat_relRamIdx_le` — **the wild ramification bound** (IUT IV, Proposition 1.8:
   the tameness of `K/F` away from `ℓ` and of `F/F_tpd` away from `2·3·5`, with
   `e(v/w) ∣ [K : F] ∣ |GL₂(𝔽_ℓ)|` and `e(w/u) ∣ [F : F_tpd] ∣ 2¹²·3²·5` for the place `w`
-  of `F` below `v`): `v_p(e(v/u)) ≤ c_p`, where the wild constant `c_p` (`Iut.wildConst`)
+  of `F` below `v`): `v_p(e(v/u)) ≤ c_p`, where the wild factor `c_p` (`Iut.wildConst`)
   is `12, 2, 1` at `p = 2, 3, 5` (the `p`-adic valuations of `[F : F_tpd] ∣ 2¹²·3²·5`,
   `F = F_tpd(√−1, √λ, √(1 − λ), E[3], E[5])`), `1` at `p = ℓ` (`ord_ℓ |GL₂(𝔽_ℓ)| = 1`) and
   `0` otherwise. **The different bound** of Proposition 1.3,

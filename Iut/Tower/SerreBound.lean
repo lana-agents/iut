@@ -192,8 +192,8 @@ theorem exists_mem_pow_intTrace_notMem (h𝔭 : 𝔭 ≠ ⊥) (e κ : ℕ) (J : 
   haveI : IsScalarTower Rₚ (Rₚ ⧸ maximalIdeal Rₚ ^ (κ + 1))
       (Sₚ ⧸ (maximalIdeal Rₚ ^ (κ + 1)).map (algebraMap Rₚ Sₚ)) :=
     IsScalarTower.of_algebraMap_eq' rfl
-  let E : (Sₚ ⧸ (maximalIdeal Rₚ ^ (κ + 1)).map (algebraMap Rₚ Sₚ)) ≃ₐ[Rₚ ⧸ maximalIdeal Rₚ ^ (κ + 1)]
-      ((Sₚ ⧸ 𝔓ₚ ^ N) × Sₚ ⧸ Jₚ ^ (κ + 1)) :=
+  let E : (Sₚ ⧸ (maximalIdeal Rₚ ^ (κ + 1)).map (algebraMap Rₚ Sₚ)) ≃ₐ[Rₚ ⧸
+      maximalIdeal Rₚ ^ (κ + 1)] ((Sₚ ⧸ 𝔓ₚ ^ N) × Sₚ ⧸ Jₚ ^ (κ + 1)) :=
     { __ := (Ideal.quotEquivOfEq hprod).trans (Ideal.quotientMulEquivQuotientProd _ _ hcopₚ),
       commutes' := Quotient.ind fun _ ↦ rfl }
   -- finiteness and freeness of the factors

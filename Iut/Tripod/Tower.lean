@@ -23,9 +23,13 @@ property and the degree bound of `F_tpd = ℚ(λ)` over `F_mod = ℚ(j)` are the
 `[F_λ : ℚ] ≤ 552960·[ℚ(λ) : ℚ]` is `Iut.Tripod.deg_le`, and the bad locus and the bad residue
 characteristics are those of the constructed `q`-pilot and theta local data.
 
-`Iut.Tripod.TowerLocalHyp P` is the residual hypothesis: the three local facts (the different
-bound, Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`) for every point,
-prime `ℓ ≥ 7` and admissible-prime datum of the curves of `P : CurveProviders`.
+`Iut.Tripod.TowerLocalHyp P` is the residual hypothesis: the three local facts (the wild
+ramification bound `v_p(e(v/u)) ≤ c_p`, Néron–Ogg–Shafarevich, the ramification bound away
+from `2·3·5·ℓ`) for every point, prime `ℓ ≥ 7` and admissible-prime datum of the curves of
+`P : CurveProviders`. The wild ramification bound follows from the tameness of
+`F_λ(E_λ[ℓ])/F_λ` away from `ℓ` (`Iut.Tripod.padicValNat_relRamIdx_le_of_tame`,
+`Iut/Tripod/WildRamIdx.lean`), and the different bound of IUT IV, Proposition 1.3 is the
+theorem `Iut.TowerLocalFacts.ordAt_different_le` (Serre's bound, `Iut/Tower/DifferentBound.lean`).
 -/
 
 namespace Iut.Tripod
@@ -36,12 +40,14 @@ universe v
 
 variable (P : CurveProviders)
 
-/-- **The residual local facts for the curves of the tripod** (IUT IV, Propositions 1.3
-and 1.8, see `Iut.TowerLocalFacts`): for every point `λ`, prime `ℓ ≥ 7` with the
-`SL₂`-image and coprimality conditions, the different bound, Néron–Ogg–Shafarevich and the
-ramification bound away from `2·3·5·ℓ`, for the tower `ℚ(j) ⊆ ℚ(λ) ⊆ F_λ ⊆ F_λ(E_λ[ℓ])`
-(the ramification bound of `ℚ(λ)/ℚ(j)` at the bad places is the theorem
-`Iut.Tripod.relRamIdx_tpd_le_two`). -/
+/-- **The residual local facts for the curves of the tripod** (IUT IV, Proposition 1.8, see
+`Iut.TowerLocalFacts`): for every point `λ`, prime `ℓ ≥ 7` with the `SL₂`-image and
+coprimality conditions, the wild ramification bound `v_p(e(v/u)) ≤ c_p` (from the tameness
+of `F_λ(E_λ[ℓ])/F_λ` away from `ℓ`, `Iut.Tripod.padicValNat_relRamIdx_le_of_tame`),
+Néron–Ogg–Shafarevich and the ramification bound away from `2·3·5·ℓ`, for the tower
+`ℚ(j) ⊆ ℚ(λ) ⊆ F_λ ⊆ F_λ(E_λ[ℓ])` (the ramification bound of `ℚ(λ)/ℚ(j)` at the bad
+places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`; the different bound of
+Proposition 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le`). -/
 def TowerLocalHyp : Prop :=
   ∀ (x : Pt) (ℓ : ℕ) (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ)
     (hsl : ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (P.modRep x ℓ hℓ).rep.range)
