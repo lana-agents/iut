@@ -486,6 +486,25 @@ Proposition 1.6 is supplied by `Iut.primeCountingBoundExplicit`.
 `StatementI` (all hyperbolic curves) additionally needs heights on curves and the
 coverings of [GenEll] Theorem 2.1, which remain in genl's scope.
 
+### The classical ABC conjecture (`Iut/Abc/Classical.lean`, `Iut/Tripod/ClassicalAbc.lean`)
+
+`Iut.ClassicalABC` is the classical statement: for every `ε > 0` there is `C` with
+`c ≤ C · rad(abc)^{1+ε}` for all coprime positive integers `a + b = c`
+(`rad` = Mathlib's `UniqueFactorizationMonoid.radical`); `Iut.ClassicalABCInt` is the
+symmetric form over `ℤ` (`a + b + c = 0`, bounding `max(|a|, |b|, |c|)`), and
+`Iut.classicalABC_iff_int` proves the two equivalent.
+
+* `Iut.Tripod.classicalABC_of_statementI : tripodTheory.StatementI → ClassicalABC`
+  (**proved**; via `classicalABCInt_of_statementI`): for `λ = −a/c ∈ ℚ` of degree `1`,
+  `htCan λ ≥ log max(|a|, |c|)`, `logDiff λ = 0` (`disc ℚ = 1`) and
+  `logCond λ ≤ log rad(abc)`.
+* `Iut.Tripod.classicalABC_of_variant_of_statementII_imp_I` — the conditional headline:
+  `(tripodTheory.StatementII → tripodTheory.StatementI)` together with the hypotheses of
+  `abc_of_variant` (the same `h312`) gives `ClassicalABC`. `StatementII` alone does not
+  yield the classical form: the points `a/c` with `a ≪ c` leave every compactly bounded
+  subset (the archimedean bound on `|log|λ|_∞|`), so the passage (ii) ⇒ (i) of [GenEll]
+  Theorem 2.1 for the tripod is the one remaining step.
+
 ### Division polynomials and the torsion of elliptic curves (`Iut/Torsion/`)
 
 Mathlib defines the division polynomials `ψₙ` of a Weierstrass curve and their degrees, but

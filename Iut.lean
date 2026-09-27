@@ -1,3 +1,4 @@
+import Iut.Abc.Classical
 import Iut.Abc.Target
 import Iut.Anabelian.Existence
 import Iut.Anabelian.Geometry
@@ -112,6 +113,7 @@ import Iut.Tower.TorsionRigid
 import Iut.Tower.WildBound
 import Iut.Tripod.BadRamIdx
 import Iut.Tripod.Basic
+import Iut.Tripod.ClassicalAbc
 import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts
 import Iut.Tripod.CurveOf
