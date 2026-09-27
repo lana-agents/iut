@@ -30,6 +30,12 @@ name = "genl"
 git = "https://github.com/LANA-Project/genl"
 rev = "6e9a6543b46a2a02fd7fe7ec8ab203d878f32859"
 
+# Heights and elliptic-curve height estimates (taxis #32): the complex uniformization of
+# elliptic curves, consumed by the archimedean torsion bound of the cyclic-subgroup bound.
+[[require]]
+name = "heights"
+path = "../heights-isogeny"
+
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
 name = "Iut"
