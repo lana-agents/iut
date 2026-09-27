@@ -240,6 +240,7 @@ abbrev CK' : Orbicurve ↥P.torsionField :=
 def coverXKu_XK : Orbicurve.Cover P.XKu P.XK' where
   E_eq := rfl
   n := P.ℓ
+  n_pos := P.ℓ_prime.pos
   mul := mul_one _
   M_le R hR := P.nsmul_mem_of_mem_M' R hR _
   pm_le h := absurd h Bool.false_ne_true
@@ -248,6 +249,7 @@ def coverXKu_XK : Orbicurve.Cover P.XKu P.XK' where
 def coverXKu_CKu : Orbicurve.Cover P.XKu P.CKu where
   E_eq := rfl
   n := 1
+  n_pos := Nat.one_pos
   mul := one_mul _
   M_le R hR := by
     change (1 : ℕ) • R ∈ P.M
@@ -259,6 +261,7 @@ def coverXKu_CKu : Orbicurve.Cover P.XKu P.CKu where
 def coverXK_CK : Orbicurve.Cover P.XK' P.CK' where
   E_eq := rfl
   n := 1
+  n_pos := Nat.one_pos
   mul := one_mul _
   M_le R hR := by
     change (1 : ℕ) • R ∈ P.CK'.M
@@ -270,6 +273,7 @@ def coverXK_CK : Orbicurve.Cover P.XK' P.CK' where
 def coverCKu_CK : Orbicurve.Cover P.CKu P.CK' where
   E_eq := rfl
   n := P.ℓ
+  n_pos := P.ℓ_prime.pos
   mul := mul_one _
   M_le R hR := P.nsmul_mem_of_mem_M' R hR _
   pm_le _ := rfl

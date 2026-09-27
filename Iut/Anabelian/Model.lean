@@ -185,6 +185,9 @@ structure Cover (X Y : Orbicurve k) : Type u where
   E_eq : X.E = Y.E
   /-- The degree `n` of the isogeny `[n]`. -/
   n : ℕ
+  /-- The isogeny `[n]` is nonzero. (With `n = 0` a level-`0` orbicurve would cover orbicurves
+  of every level, which no genuine fundamental group admits with open immersions.) -/
+  n_pos : 0 < n
   /-- `ℓ = n·ℓ'`. -/
   mul : n * Y.level = X.level
   /-- `[n](M) ⊆ M'`. -/
@@ -208,6 +211,7 @@ lemma transport_comp {E E' E'' : WeierstrassCurve k} (h : E = E') (h' : E' = E''
 def Cover.comp {X Y Z : Orbicurve k} (f : Cover X Y) (g : Cover Y Z) : Cover X Z where
   E_eq := f.E_eq.trans g.E_eq
   n := f.n * g.n
+  n_pos := Nat.mul_pos f.n_pos g.n_pos
   mul := by rw [mul_assoc, g.mul, f.mul]
   M_le := transport_comp f.E_eq g.E_eq f.n g.n f.M_le g.M_le
   pm_le := fun h => g.pm_le (f.pm_le h)
@@ -229,6 +233,7 @@ def Cover.baseChange (f : k →+* K) {X Y : Orbicurve k} (c : Cover X Y) :
     Cover (X.baseChange f) (Y.baseChange f) where
   E_eq := congrArg (WeierstrassCurve.map · f) c.E_eq
   n := c.n
+  n_pos := c.n_pos
   mul := c.mul
   M_le := transport_baseChange f c.E_eq c.n c.M_le
   pm_le := c.pm_le
@@ -284,10 +289,10 @@ structure EtalePi1Theory : Type (u + 1) where
   /-- `C` is the `k`-core of `X`. -/
   HasCore : {k : Type u} → [Field k] → Orbicurve k → Orbicurve k → Prop
   /-- Orbicurves related by a finite étale cover have the same cores. -/
-  hasCore_iff_of_cover : ∀ {k : Type u} [Field k] {X Y C : Orbicurve k},
+  hasCore_iff_of_cover : ∀ {k : Type u} [Field k] [CharZero k] {X Y C : Orbicurve k},
     Orbicurve.Cover X Y → (HasCore X C ↔ HasCore Y C)
   /-- Cores are compatible with base change. -/
-  hasCore_baseChange : ∀ {k K : Type u} [Field k] [Field K] (f : k →+* K)
+  hasCore_baseChange : ∀ {k K : Type u} [Field k] [Field K] [CharZero k] [CharZero K] (f : k →+* K)
     {X C : Orbicurve k}, HasCore X C → HasCore (X.baseChange f) (C.baseChange f)
   /-- **The exceptional `j`-invariants** of [CanLift], Proposition 2.7: the finitely many
   values of `j` (four of them) for which the once-punctured elliptic curve fails to have
@@ -296,7 +301,7 @@ structure EtalePi1Theory : Type (u + 1) where
   /-- **[CanLift], Proposition 2.7**: the once-punctured elliptic curve `X = E ∖ {0}` has
   the `k`-core `C = X/{±1}` unless `j(E)` is one of the finitely many exceptional values
   `excJ`. Part of what is postulated of the actual fundamental groups. -/
-  hasCore_oncePunctured : ∀ {k : Type u} [Field k] (E : WeierstrassCurve k) [E.IsElliptic],
+  hasCore_oncePunctured : ∀ {k : Type u} [Field k] [CharZero k] (E : WeierstrassCurve k) [E.IsElliptic],
     (∀ c ∈ excJ, E.j ≠ (c : k)) →
       HasCore (Orbicurve.oncePunctured E) (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))
 
