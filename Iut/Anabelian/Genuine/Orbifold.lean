@@ -226,29 +226,6 @@ def pi1Equiv (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
   pi1EquivOfEq (hbase E) _ _ (fun σ => (mem_galoisData_H E σ).symm)
     (fun σ => (mem_galoisData_S E σ).symm)
 
-/-- The coordinate ring `R` of `[Spec R / A]` is a `k`-algebra (through `k[x] ⊆ R`). -/
-instance algebraCoordRing {t : Ω E} (F : IntermediateField (K₀ k t) (Ω E)) :
-    Algebra k (CoordRing k t F) :=
-  ((algebraMap (A₀ k t) (CoordRing k t F)).comp (algebraMap k (A₀ k t))).toAlgebra
-
-instance isScalarTower_coordRing {t : Ω E} (F : IntermediateField (K₀ k t) (Ω E)) :
-    IsScalarTower k (CoordRing k t F) (Ω E) :=
-  IsScalarTower.of_algebraMap_eq fun c => by
-    change _ = algebraMap (CoordRing k t F) (Ω E)
-      (algebraMap (A₀ k t) (CoordRing k t F) (algebraMap k (A₀ k t) c))
-    rw [← IsScalarTower.algebraMap_apply]
-    rfl
-
-/-- The finite group `A = H ⧸ H_L` acts `k`-linearly on `R`. -/
-instance smulCommClass_galoisData {t : Ω E} (D : GaloisData k t) : SMulCommClass D.A k D.R where
-  smul_comm a c r := by
-    obtain ⟨h, rfl⟩ := QuotientGroup.mk_surjective a
-    rw [Algebra.smul_def, Algebra.smul_def, smul_mul']
-    congr 1
-    refine CoordRing.ext ?_
-    rw [GaloisData.algebraMap_smul, ← IsScalarTower.algebraMap_apply]
-    exact (h : Ω E ≃ₐ[K₀ k t] Ω E).commutes ⟨_, (K₀ k t).algebraMap_mem c⟩
-
 /-- **The model orbicurve `(E, ℓ, M, ±)` as the affine orbifold** `[Spec R / A]`
 (`R` the integral closure of `k[x]` in `L_X`, `A = Aut(Ω / F_X) ⧸ Aut(Ω / L_X)`) at the
 geometric point `R ⊆ Ω`. -/
