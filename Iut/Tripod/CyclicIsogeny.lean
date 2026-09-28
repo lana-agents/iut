@@ -465,6 +465,323 @@ lemma tate_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLi
   have := mul_le_mul_of_nonneg_right hmain hj0.le
   rwa [inv_mul_cancel₀ hj0.ne'] at this
 
+/-! ### Transport to the places of `F_λ` -/
+
+variable (P x) in
+/-- The compactly bounded condition at the infinite places of `F_λ`. -/
+lemma abs_log_infinite_le {K : CompactlyBounded} (hx : x ∈ K.set)
+    (v : InfinitePlace (P.curve x).F) :
+    |Real.log (v (genC' P x))| ≤ K.c ∧ |Real.log (v (genC' P x - 1))| ≤ K.c := by
+  let f : tpd P x →+* (P.curve x).F := algebraMap (tpd P x) (P.curve x).F
+  let g : fieldOf x.1 →+* tpd P x := ((tpdEquiv P x).symm : fieldOf x.1 ≃+* tpd P x)
+  let w₁ : InfinitePlace (fieldOf x.1) := (v.comap f).comap g
+  have hg : g (gen x.1) = genT P x := tpdEquiv_symm_gen P x
+  have hf : f (genT P x) = genC' P x := algebraMap_genT P x
+  have h₁ : w₁ (gen x.1) = v (genC' P x) := by
+    rw [InfinitePlace.comap_apply, InfinitePlace.comap_apply, hg, hf]
+  have h₂ : w₁ (gen x.1 - 1) = v (genC' P x - 1) := by
+    rw [InfinitePlace.comap_apply, InfinitePlace.comap_apply, map_sub, map_one, map_sub, map_one,
+      hg, hf]
+  rw [← h₁, ← h₂]
+  exact hx.2 w₁
+
+variable (P x) in
+/-- The compactly bounded condition at the places of `F_λ` over `2`:
+`|log|λ|_v|, |log|λ − 1|_v| ≤ c·[F_v : ℚ_2]`. -/
+lemma abs_log_two_le {K : CompactlyBounded} (hx : x ∈ K.set) (v : FinitePlace (P.curve x).F)
+    (hv : residueChar v = 2) :
+    |Real.log (v (genC' P x))| ≤ K.c * localDeg (P.curve x).F v ∧
+      |Real.log (v (genC' P x - 1))| ≤ K.c * localDeg (P.curve x).F v := by
+  set 𝔭 : FinitePlace (tpd P x) := placeUnder v
+  have hv𝔭 : FinitePlace.LiesOver v 𝔭 := liesOver_placeUnder v
+  have h𝔭2 : residueChar 𝔭 = 2 := by rw [← residueChar_eq_of_liesOver hv𝔭, hv]
+  have hb := hx.1 (tpdPlace P x 𝔭) (by rw [residueChar_tpdPlace, h𝔭2]; exact K.two_mem)
+  rw [tpdPlace_gen, tpdPlace_gen_sub_one] at hb
+  have hc : 0 ≤ K.c := CompactlyBounded.c_nonneg hx
+  have hd : (relLocalDeg v 𝔭 : ℝ) ≤ localDeg (P.curve x).F v := by
+    rw [localDeg_eq_mul hv𝔭]
+    have : 1 ≤ localDeg (tpd P x) 𝔭 := Nat.mul_pos (ramIdx_pos' 𝔭) (inertDeg_pos' 𝔭)
+    exact_mod_cast Nat.le_mul_of_pos_left _ this
+  have hlog : ∀ y : tpd P x, y ≠ 0 → |Real.log (v (algebraMap _ (P.curve x).F y))| =
+      relLocalDeg v 𝔭 * |Real.log (𝔭 y)| := by
+    intro y hy
+    rw [apply_algebraMap_eq_pow hv𝔭, Real.log_pow, abs_mul, Nat.abs_cast]
+  have e₁ := hlog _ (genT_ne_zero P x)
+  have e₂ := hlog _ (genT_sub_one_ne_zero P x)
+  rw [algebraMap_genT] at e₁
+  rw [map_sub, map_one, algebraMap_genT] at e₂
+  rw [e₁, e₂]
+  constructor
+  · calc (relLocalDeg v 𝔭 : ℝ) * |Real.log (𝔭 (genT P x))| ≤ localDeg (P.curve x).F v * K.c :=
+          mul_le_mul hd hb.1 (abs_nonneg _) (by positivity)
+      _ = _ := mul_comm _ _
+  · calc (relLocalDeg v 𝔭 : ℝ) * |Real.log (𝔭 (genT P x - 1))| ≤ localDeg (P.curve x).F v * K.c :=
+          mul_le_mul hd hb.2 (abs_nonneg _) (by positivity)
+      _ = _ := mul_comm _ _
+
+/-- `|y|_v = 1` iff `v(y) = 1` for the valuation. -/
+lemma apply_eq_one_of_valuation_eq_one {T : Type*} [Field T] [NumberField T] (v : FinitePlace T)
+    {y : T} (hy : v.maximalIdeal.valuation T y = 1) : v y = 1 := by
+  have hy0 : y ≠ 0 := by
+    intro h; rw [h, map_zero] at hy; exact zero_ne_one hy
+  have hlog := log_apply_eq v hy0
+  rw [hy, WithZero.log_one, Int.cast_zero, zero_mul] at hlog
+  have hpos : 0 < v y := FinitePlace.pos_iff.mpr hy0
+  rw [← Real.exp_log hpos, hlog, Real.exp_zero]
+
+variable (P x) in
+/-- **At a place of good reduction of odd residue characteristic, `λ` and `λ − 1` are units.** -/
+lemma apply_genC_eq_one {v : FinitePlace (P.curve x).F} (hv : v ∉ (P.curve x).badAll)
+    (h2 : residueChar v ≠ 2) : v (genC' P x) = 1 ∧ v (genC' P x - 1) = 1 := by
+  have hst := (P.arith x).stable_reduction v
+  have hle : v.maximalIdeal.valuation _ (P.curve x).E.j ≤ 1 := by
+    by_contra h
+    exact hv ((hasMultiplicativeReductionAt_iff_of_stable (P.curve x).E v hst).mpr h)
+  have hval : v.maximalIdeal.valuation _ (genC' P x) = 1 ∧
+      v.maximalIdeal.valuation _ (genC' P x - 1) = 1 := by
+    by_contra h
+    rw [not_and_or] at h
+    have := one_lt_valuation_legendre_j (v.maximalIdeal.valuation (P.curve x).F)
+      (l := genC' P x) (valuation_two_eq_one v h2) h
+    exact absurd hle (not_le.mpr this)
+  exact ⟨apply_eq_one_of_valuation_eq_one v hval.1, apply_eq_one_of_valuation_eq_one v hval.2⟩
+
+/-! ### The local bounds for `ρ = r₁r₂ ∈ F_λ` -/
+
+/-- `|n|_v ≤ 1` at a finite place. -/
+lemma apply_natCast_le_one {T : Type*} [Field T] [NumberField T] (v : FinitePlace T) (n : ℕ) :
+    v (n : T) ≤ 1 :=
+  IsNonarchimedean.apply_natCast_le_one (f := v) (fun a b => FinitePlace.add_le v a b)
+
+/-- `max(1, a)^d = max(1, a^d)` for `a ≥ 0`. -/
+lemma max_one_pow {a : ℝ} (ha : 0 ≤ a) (d : ℕ) : max 1 a ^ d = max 1 (a ^ d) := by
+  rcases le_total a 1 with h | h
+  · rw [max_eq_left h, one_pow, max_eq_left (pow_le_one₀ ha h)]
+  · rw [max_eq_right h, max_eq_right (one_le_pow₀ h)]
+
+section Local
+
+variable {ρ : (P.curve x).F}
+  (hρ : algebraMap _ (L P x hℓ) ρ = veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ) *
+    veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ))
+include hρ
+
+/-- **The crude bound at a finite place of `F_λ`**:
+`|ρ|_v |√λ|_v |√(1 − λ)|_v |4ℓ|_v⁴ ≤ max(1, |λ|_v)⁴`. -/
+lemma finite_crude (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (v : FinitePlace (P.curve x).F) :
+    v ρ * (v (sqrtLam P x) * v (sqrtOneSub P x) * v (((4 * ℓ : ℕ) : (P.curve x).F)) ^ 4) ≤
+      max 1 (v (genC' P x)) ^ 4 := by
+  obtain ⟨w, hwv⟩ := FinitePlace.exists_liesOver (K := L P x hℓ) v
+  set d := relLocalDeg w v
+  have hd : d ≠ 0 := relLocalDeg_ne_zero hwv
+  have htr : ∀ y : (P.curve x).F, w (algebraMap _ (L P x hℓ) y) = v y ^ d :=
+    apply_algebraMap_eq_pow hwv
+  have c₁ := crude_bound (H := H) hH hℓ2 w (T₁_ne_zero P x hℓ) (T₁_add_self P x hℓ)
+    (R₁_add_self P x hℓ)
+  have c₂ := crude_bound (H := H) hH hℓ2 w (T₂_ne_zero P x hℓ) (T₂_add_self P x hℓ)
+    (R₂_add_self P x hℓ)
+  rw [xOf_T₁_sub_R₁, map_neg_eq_map, htr] at c₁
+  rw [xOf_T₂_sub_R₂, map_neg_eq_map, htr] at c₂
+  rw [← map_natCast (algebraMap (P.curve x).F (L P x hℓ)), htr, htr,
+    ← max_one_pow (apply_nonneg _ _)] at c₁ c₂
+  have hprod : (v ρ * (v (sqrtLam P x) * v (sqrtOneSub P x) *
+      v (((4 * ℓ : ℕ) : (P.curve x).F)) ^ 4)) ^ d ≤ (max 1 (v (genC' P x)) ^ 4) ^ d := by
+    have hmul := mul_le_mul c₁ c₂ (by positivity) (by positivity)
+    rw [mul_pow, ← htr ρ, hρ, map_mul]
+    calc _ = (w (veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ)) * v (sqrtLam P x) ^ d *
+            (v (((4 * ℓ : ℕ) : (P.curve x).F)) ^ d) ^ 2) *
+          (w (veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ)) * v (sqrtOneSub P x) ^ d *
+            (v (((4 * ℓ : ℕ) : (P.curve x).F)) ^ d) ^ 2) := by ring
+      _ ≤ (max 1 (v (genC' P x)) ^ d) ^ 2 * (max 1 (v (genC' P x)) ^ d) ^ 2 := hmul
+      _ = _ := by ring
+  exact (pow_le_pow_iff_left₀ (by positivity) (by positivity) hd).mp hprod
+
+/-- **The gain at an odd multiplicative place of `F_λ`**: `|ρ|_v⁴ |j|_v^{ℓ − 1} ≤ 1`. -/
+lemma finite_tate (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLineOdd P x hℓ hℓ2 H)
+    {v : FinitePlace (P.curve x).F} (hv : v ∈ (P.curve x).badAll) (h2 : residueChar v ≠ 2) :
+    v ρ ^ 4 * v (P.curve x).E.j ^ (ℓ - 1) ≤ 1 := by
+  obtain ⟨w, hwv⟩ := FinitePlace.exists_liesOver (K := L P x hℓ) v
+  set d := relLocalDeg w v
+  have hd : d ≠ 0 := relLocalDeg_ne_zero hwv
+  have htr : ∀ y : (P.curve x).F, w (algebraMap _ (L P x hℓ) y) = v y ^ d :=
+    apply_algebraMap_eq_pow hwv
+  obtain ⟨v₀, hv₀, hvv₀⟩ := (P.curve x).exists_mem_VBadOdd (P.arith x) hv h2
+  have hw : IsBadPlace (P.curve x).E (L P x hℓ) (P.curve x).VBadOdd w :=
+    ⟨v₀, hv₀, FinitePlace.liesOver_trans hwv hvv₀⟩
+  have hb := tate_bound hH hℓ2 hgraph w hw
+  rw [← map_mul, ← hρ, htr, htr] at hb
+  have : (v ρ ^ 4 * v (P.curve x).E.j ^ (ℓ - 1)) ^ d ≤ 1 ^ d := by
+    rw [one_pow]
+    calc (v ρ ^ 4 * v (P.curve x).E.j ^ (ℓ - 1)) ^ d
+        = (v ρ ^ d) ^ 4 * (v (P.curve x).E.j ^ d) ^ (ℓ - 1) := by ring
+      _ ≤ 1 := hb
+  exact (pow_le_pow_iff_left₀ (by positivity) zero_le_one hd).mp this
+
+/-- **The archimedean bound at an infinite place of `F_λ`**:
+`|ρ|_v |√λ|_v |√(1 − λ)|_v ≤ (2ℓ C₀ (4ℓ)²)²`. -/
+lemma infinite_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {c C₀ : ℝ}
+    (hC₀ : ∀ (l : ℂ), |Real.log ‖l‖| ≤ c → |Real.log ‖l - 1‖| ≤ c →
+      ∀ (W : WeierstrassCurve ℂ) [W.IsElliptic], W = legendre l →
+      ∀ {N : ℕ}, 1 ≤ N → ∀ {a b : ℂ} (h : W.toAffine.Nonsingular a b),
+        N • (Affine.Point.some a b h : W.toAffine.Point) = 0 → ‖a‖ ≤ C₀ * N ^ 2)
+    (v : InfinitePlace (P.curve x).F) (hv₁ : |Real.log (v (genC' P x))| ≤ c)
+    (hv₂ : |Real.log (v (genC' P x - 1))| ≤ c) :
+    v ρ * (v (sqrtLam P x) * v (sqrtOneSub P x)) ≤ (2 * ℓ * (C₀ * (4 * ℓ) ^ 2)) ^ 2 := by
+  obtain ⟨w, hwv⟩ := InfinitePlace.comap_surjective (K := L P x hℓ) v
+  have htr : ∀ y : (P.curve x).F, w (algebraMap _ (L P x hℓ) y) = v y := by
+    intro y; rw [← hwv, InfinitePlace.comap_apply]
+  have hw₁ : |Real.log (w (lamL P x hℓ))| ≤ c := by rw [htr]; exact hv₁
+  have hw₂ : |Real.log (w (lamL P x hℓ - 1))| ≤ c := by
+    rw [← map_one (algebraMap (P.curve x).F (L P x hℓ)), ← map_sub, htr]; exact hv₂
+  have a₁ := arch_bound (H := H) hH hℓ2 hC₀ w hw₁ hw₂ (T₁_ne_zero P x hℓ) (T₁_add_self P x hℓ)
+    (R₁_add_self P x hℓ)
+  have a₂ := arch_bound (H := H) hH hℓ2 hC₀ w hw₁ hw₂ (T₂_ne_zero P x hℓ) (T₂_add_self P x hℓ)
+    (R₂_add_self P x hℓ)
+  have hneg : ∀ y : L P x hℓ, w (-y) = w y := fun y => by
+    rw [← InfinitePlace.norm_embedding_eq, map_neg, norm_neg, InfinitePlace.norm_embedding_eq]
+  rw [xOf_T₁_sub_R₁, hneg, htr] at a₁
+  rw [xOf_T₂_sub_R₂, hneg, htr] at a₂
+  rw [← htr ρ, hρ, map_mul]
+  calc w (veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ)) *
+        w (veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ)) *
+        (v (sqrtLam P x) * v (sqrtOneSub P x))
+      = (w (veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ)) * v (sqrtLam P x)) *
+        (w (veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ)) * v (sqrtOneSub P x)) := by ring
+    _ ≤ (2 * ℓ * (C₀ * (4 * ℓ) ^ 2)) * (2 * ℓ * (C₀ * (4 * ℓ) ^ 2)) :=
+        mul_le_mul a₁ a₂ (by positivity) (le_trans (by positivity) a₁)
+    _ = _ := by ring
+
+/-- **The local bound in logarithmic form** at a finite place `v` of `F_λ`:
+`log|ρ|_v ≤ −[v odd multiplicative]·((ℓ − 1)/4) log|j|_v + [v ∣ 2]·B₂(v) + 4 log|ℓ|_v^{-1}`,
+with `B₂(v) = (9/2)|log|λ|_v| + (1/2)|log|λ − 1|_v| + 4 log|4|_v^{-1}`. -/
+lemma log_apply_le (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLineOdd P x hℓ hℓ2 H)
+    (hρ0 : ρ ≠ 0) (v : FinitePlace (P.curve x).F) :
+    Real.log (v ρ) ≤
+      (if v ∈ (P.curve x).badAll ∧ residueChar v ≠ 2 then
+          -(((ℓ : ℝ) - 1) / 4 * Real.log (v (P.curve x).E.j)) else 0) +
+        (if residueChar v = 2 then
+          9 / 2 * |Real.log (v (genC' P x))| + 1 / 2 * |Real.log (v (genC' P x - 1))| +
+            4 * -Real.log (v (4 : (P.curve x).F)) else 0) +
+        4 * -Real.log (v (ℓ : (P.curve x).F)) := by
+  have hvρ : 0 < v ρ := FinitePlace.pos_iff.mpr hρ0
+  have hℓ0 : (ℓ : (P.curve x).F) ≠ 0 := by exact_mod_cast hℓ.ne_zero
+  have hvℓ : 0 < v (ℓ : (P.curve x).F) := FinitePlace.pos_iff.mpr hℓ0
+  have hlogℓ : 0 ≤ -Real.log (v (ℓ : (P.curve x).F)) :=
+    neg_nonneg.mpr (Real.log_nonpos hvℓ.le (apply_natCast_le_one v ℓ))
+  have hv4 : 0 < v (4 : (P.curve x).F) := FinitePlace.pos_iff.mpr (by norm_num)
+  have hlog4 : 0 ≤ -Real.log (v (4 : (P.curve x).F)) :=
+    neg_nonneg.mpr (Real.log_nonpos hv4.le (by exact_mod_cast apply_natCast_le_one v 4))
+  have hl0 := genC'_ne_zero P x
+  have hl1 : genC' P x - 1 ≠ 0 := sub_ne_zero.mpr (genC'_ne_one P x)
+  have hvl : 0 < v (genC' P x) := FinitePlace.pos_iff.mpr hl0
+  have hvl1 : 0 < v (genC' P x - 1) := FinitePlace.pos_iff.mpr hl1
+  have hs₁ : v (sqrtLam P x) ^ 2 = v (genC' P x) := by rw [← map_pow, sqrtLam_sq]
+  have hs₂ : v (sqrtOneSub P x) ^ 2 = v (genC' P x - 1) := by
+    rw [← map_pow, sqrtOneSub_sq, ← map_neg_eq_map v, neg_sub]
+  have hvs₁ : 0 < v (sqrtLam P x) := by
+    by_contra h
+    have : v (sqrtLam P x) = 0 := le_antisymm (not_lt.mp h) (apply_nonneg _ _)
+    rw [this, zero_pow two_ne_zero] at hs₁; linarith
+  have hvs₂ : 0 < v (sqrtOneSub P x) := by
+    by_contra h
+    have : v (sqrtOneSub P x) = 0 := le_antisymm (not_lt.mp h) (apply_nonneg _ _)
+    rw [this, zero_pow two_ne_zero] at hs₂; linarith
+  have hls₁ : Real.log (v (sqrtLam P x)) = Real.log (v (genC' P x)) / 2 := by
+    rw [← hs₁, Real.log_pow]; push_cast; ring
+  have hls₂ : Real.log (v (sqrtOneSub P x)) = Real.log (v (genC' P x - 1)) / 2 := by
+    rw [← hs₂, Real.log_pow]; push_cast; ring
+  by_cases htate : v ∈ (P.curve x).badAll ∧ residueChar v ≠ 2
+  · rw [if_pos htate, if_neg htate.2]
+    have hb := finite_tate hρ hH hℓ2 hgraph htate.1 htate.2
+    have hj1 : 1 < v (P.curve x).E.j := by
+      have hpos := posLog_j_eq_of_mem_badAll P x htate.1
+      have : 0 < Real.posLog (v (P.curve x).E.j) := by
+        rw [hpos]
+        have h1 : (0 : ℝ) < (P.tate x).qOrder v htate.1 := by
+          exact_mod_cast (P.tate x).qOrder_pos v htate.1
+        have h2 : (0 : ℝ) < inertDeg (P.curve x).F v := by exact_mod_cast inertDeg_pos' v
+        have h3 : 0 < Real.log (residueChar v) :=
+          Real.log_pos (by exact_mod_cast (residueChar_prime v).one_lt)
+        positivity
+      rw [Real.posLog_apply, lt_max_iff] at this
+      rcases this with h | h
+      · exact absurd h (lt_irrefl 0)
+      · exact (Real.log_pos_iff (apply_nonneg _ _)).mp h
+    have hj0 : 0 < v (P.curve x).E.j := lt_trans zero_lt_one hj1
+    have hlog := Real.log_le_log (by positivity) hb
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow,
+      Real.log_one] at hlog
+    have hℓ1 : ((ℓ - 1 : ℕ) : ℝ) = (ℓ : ℝ) - 1 := by
+      rw [Nat.cast_sub hℓ.one_lt.le, Nat.cast_one]
+    rw [hℓ1] at hlog
+    push_cast at hlog
+    have : Real.log (v ρ) ≤ -(((ℓ : ℝ) - 1) / 4 * Real.log (v (P.curve x).E.j)) := by
+      nlinarith
+    linarith
+  · rw [if_neg htate]
+    have hc := finite_crude hρ hH hℓ2 v
+    have h4ℓ : v (((4 * ℓ : ℕ) : (P.curve x).F)) =
+        v (4 : (P.curve x).F) * v (ℓ : (P.curve x).F) := by
+      push_cast; rw [map_mul]
+    rw [h4ℓ] at hc
+    have hlog := Real.log_le_log (by positivity) hc
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_mul (by positivity) (by positivity),
+      Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow,
+      Real.log_mul (by positivity) (by positivity), hls₁, hls₂] at hlog
+    have hmax : Real.log (max 1 (v (genC' P x))) ≤ |Real.log (v (genC' P x))| := by
+      rcases le_total (v (genC' P x)) 1 with h | h
+      · rw [max_eq_left h, Real.log_one]; exact abs_nonneg _
+      · rw [max_eq_right h]; exact le_abs_self _
+    push_cast at hlog
+    by_cases h2 : residueChar v = 2
+    · rw [if_pos h2]
+      have ha := neg_abs_le (Real.log (v (genC' P x)))
+      have hb := neg_abs_le (Real.log (v (genC' P x - 1)))
+      linarith
+    · rw [if_neg h2]
+      have hbad : v ∉ (P.curve x).badAll := fun hv => htate ⟨hv, h2⟩
+      obtain ⟨hl₁, hl₂⟩ := apply_genC_eq_one P x hbad h2
+      have hv2 : v (2 : (P.curve x).F) = 1 :=
+        apply_eq_one_of_valuation_eq_one v (valuation_two_eq_one v h2)
+      have hv4' : v (4 : (P.curve x).F) = 1 := by
+        rw [show (4 : (P.curve x).F) = 2 * 2 by norm_num, map_mul, hv2, one_mul]
+      rw [hl₁, hl₂, hv4', Real.log_one] at hlog
+      rw [hl₁, max_self, Real.log_one] at hmax
+      rw [max_self, Real.log_one] at hlog
+      linarith
+
+end Local
+
+/-! ### Sums over the finite places -/
+
+section Sums
+
+variable {T : Type*} [Field T] [NumberField T]
+
+/-- `∑_{v ∈ S} log|y|_v = −log|N(y)|` for `S` containing the places where `|y|_v ≠ 1`. -/
+lemma sum_log_apply_eq {y : T} (hy : y ≠ 0) {S : Finset (FinitePlace T)}
+    (hS : ∀ v : FinitePlace T, v y ≠ 1 → v ∈ S) :
+    ∑ v ∈ S, Real.log (v y) = -Real.log |(Algebra.norm ℚ y : ℝ)| := by
+  have hprod : ∏ v ∈ S, v y = |(Algebra.norm ℚ y : ℝ)|⁻¹ := by
+    have h := FinitePlace.prod_eq_inv_abs_norm hy
+    rw [finprod_eq_prod_of_mulSupport_subset _ fun v hv => hS v hv] at h
+    rw [h]
+    push_cast
+    rfl
+  rw [← Real.log_prod (fun v _ => (FinitePlace.pos_iff.mpr hy).ne'), hprod, Real.log_inv]
+
+/-- `∑_{v ∈ S} log|n|_v = −[T : ℚ] log n` for a positive integer `n`. -/
+lemma sum_log_apply_natCast {n : ℕ} (hn : n ≠ 0) {S : Finset (FinitePlace T)}
+    (hS : ∀ v : FinitePlace T, v (n : T) ≠ 1 → v ∈ S) :
+    ∑ v ∈ S, Real.log (v (n : T)) = -(Module.finrank ℚ T * Real.log n) := by
+  rw [sum_log_apply_eq (by exact_mod_cast hn) hS]
+  have : (n : T) = algebraMap ℚ T (n : ℚ) := by simp
+  rw [this, Algebra.norm_algebraMap]
+  push_cast
+  rw [abs_pow, Nat.abs_cast, Real.log_pow]
+
+end Sums
+
 end Cyclic
 
 end
