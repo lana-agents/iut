@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
 import Iut.Anabelian.Genuine.Cover
+import Iut.Anabelian.Genuine.Orbifold
 import Pi1.Orbicurve.SubfieldRamified
 import Pi1.Orbicurve.Elliptic
 
@@ -41,53 +42,15 @@ variable {k : Type u} [Field k] [CharZero k] (E : WeierstrassCurve k) [E.IsEllip
 
 /-! ### The base field in characteristic `0` -/
 
-omit [E.IsElliptic] in
-lemma mem_baseField_iff (a : Ω E) : a ∈ baseField E ↔ a ∈ xLine E := by
-  change a ∈ perfectClosure (xLine E) (Ω E) ↔ _
-  haveI : CharZero (xLine E) := charZero_of_injective_algebraMap (algebraMap k (xLine E)).injective
-  haveI : Algebra.IsSeparable (xLine E) (Ω E) := Algebra.IsAlgebraic.isSeparable_of_perfectField
-  rw [perfectClosure.eq_bot_of_isSeparable, IntermediateField.mem_bot]
-  constructor
-  · rintro ⟨b, rfl⟩; exact b.2
-  · intro h; exact ⟨⟨a, h⟩, rfl⟩
-
-instance : IsGalois (xLine E) (Ω E) := by
-  haveI : CharZero (xLine E) := charZero_of_injective_algebraMap (algebraMap k (xLine E)).injective
-  haveI : Module.IsTorsionFree (xLine E) (Ω E) := by
-    rw [Module.isTorsionFree_iff_algebraMap_injective]; exact (algebraMap (xLine E) (Ω E)).injective
-  haveI : IsAlgClosure (xLine E) (Ω E) := ⟨AlgebraicClosure.isAlgClosed _, isAlgebraic_xLine E⟩
-  exact IsAlgClosure.isGalois _ _
-
-/-- In characteristic `0`, `Gal(Ω / k(x)) = Gal(Ω / P)`. -/
-def galEquiv : (Ω E ≃ₐ[xLine E] Ω E) ≃* Gal E where
-  toFun σ := { σ.toRingEquiv with
-    commutes' := fun p => σ.commutes ⟨p, (mem_baseField_iff E p).mp p.2⟩ }
-  invFun σ := { σ.toRingEquiv with
-    commutes' := fun p => σ.commutes ⟨p, (mem_baseField_iff E p).mpr p.2⟩ }
-  left_inv _ := rfl
-  right_inv _ := rfl
-  map_mul' _ _ := rfl
-
-omit [E.IsElliptic] in
-@[simp] lemma galEquiv_apply (σ : Ω E ≃ₐ[xLine E] Ω E) (a : Ω E) : galEquiv E σ a = σ a := rfl
-
-omit [CharZero k] [E.IsElliptic] in
-/-- The `x`-coordinate of the generic point is transcendental over `k`. -/
-lemma transcendental_xG : Transcendental k (xG E) := by
-  have h1 : Transcendental k (X : k[X]) := Polynomial.transcendental_X k
-  have h2 : Transcendental k (algebraMap k[X] E.toAffine.CoordinateRing X) :=
-    (transcendental_algebraMap_iff (FaithfulSMul.algebraMap_injective _ _)).mpr h1
-  have h3 : Transcendental k (xF E) :=
-    (transcendental_algebraMap_iff (IsFractionRing.injective _ E.toAffine.FunctionField)).mpr h2
-  exact (transcendental_algebraMap_iff (algebraMap E.toAffine.FunctionField (Ω E)).injective).mpr h3
-
+@[simp] lemma galHom_apply (σ : Ω E ≃ₐ[xLine E] Ω E) (a : Ω E) : galHom E σ a = σ a :=
+  galEquiv_symm_apply E σ a
 
 /-! ### The function fields of the model orbicurves -/
 
 /-- `Aut(Ω / F_X)` for `X = (E, ℓ, M, ±)`, as a subgroup of `Gal(Ω / k(x))`. -/
 def fullSub (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     Subgroup (Ω E ≃ₐ[xLine E] Ω E) :=
-  (Hgp E ℓ M pm).comap (galEquiv E).toMonoidHom
+  (Hgp E ℓ M pm).comap (galHom E)
 
 /-- **The function field `F_X` of the coarse space of `(E, ℓ, M, ±)`** (for `pm = false`: the
 function field `L_X` of `X_M`). -/
@@ -114,8 +77,12 @@ lemma QFieldX_fixing_le (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Boo
     (IntermediateField.mem_fixingSubgroup_iff _ σ).mp hσ a
       (IntermediateField.subset_adjoin _ _ ha)
   refine ⟨1, Or.inl rfl, ?_⟩
-  change act E (galEquiv E σ) (Qpt E ℓ) - (1 : ℤ) • Qpt E ℓ ∈ _
-  rw [act_eq_self_of_fix E (galEquiv E σ) _ (hfix _ (by simp)) (hfix _ (by simp)), one_smul,
+  change act E (galHom E σ) (Qpt E ℓ) - (1 : ℤ) • Qpt E ℓ ∈ _
+  have h1 : galHom E σ (ptX (Qpt E ℓ)) = ptX (Qpt E ℓ) := by
+    rw [galHom_apply]; exact hfix _ (by simp)
+  have h2 : galHom E σ (ptY (Qpt E ℓ)) = ptY (Qpt E ℓ) := by
+    rw [galHom_apply]; exact hfix _ (by simp)
+  rw [act_eq_self_of_fix E (galHom E σ) _ h1 h2, one_smul,
     sub_self]
   exact zero_mem _
 

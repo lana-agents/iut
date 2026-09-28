@@ -50,14 +50,18 @@ lemma xG_yG_mem_geomField (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
     xG E ∈ geomField E ℓ M ∧ yG E ∈ geomField E ℓ M := by
   have key : ∀ σ ∈ fullSub E ℓ M false, σ (xG E) = xG E ∧ σ (yG E) = yG E := by
     intro σ hσ
-    have h : act E (galEquiv E σ) (genericPoint E) = genericPoint E :=
+    have h : act E (galHom E σ) (genericPoint E) = genericPoint E :=
       act_generic_of_mem_geom E hσ
-    have h' : act E (galEquiv E σ) (genericPoint E) =
-        Affine.Point.some (σ (xG E)) (σ (yG E)) ((Affine.baseChange_nonsingular (W := E)
-          (f := σk E (galEquiv E σ)) (σk E (galEquiv E σ)).toRingHom.injective _ _).mpr
+    have h' : act E (galHom E σ) (genericPoint E) =
+        Affine.Point.some (galHom E σ (xG E)) (galHom E σ (yG E))
+          ((Affine.baseChange_nonsingular (W := E)
+          (f := σk E (galHom E σ)) (σk E (galHom E σ)).toRingHom.injective _ _).mpr
           (nonsingular_generic E)) := rfl
     rw [h'] at h
-    exact ⟨(Affine.Point.some.inj h).1, (Affine.Point.some.inj h).2⟩
+    have h1 := (Affine.Point.some.inj h).1
+    have h2 := (Affine.Point.some.inj h).2
+    rw [galHom_apply] at h1 h2
+    exact ⟨h1, h2⟩
   exact ⟨fun σ => (key σ σ.2).1, fun σ => (key σ σ.2).2⟩
 
 lemma geomField_le_QFieldX (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
@@ -86,7 +90,6 @@ def valSub (u : Ideal (coordRing k (xG E) N)) (hu : u.IsPrime) (hu0 : u ≠ ⊥)
   haveI := isFractionRing_coordRing (xG E) N
   (IsDedekindDomain.HeightOneSpectrum.valuation N ⟨u, hu, hu0⟩).valuationSubring
 
-omit [E.IsElliptic] in
 lemma coordRing_mem_valSub (u : Ideal (coordRing k (xG E) N)) (hu : u.IsPrime) (hu0 : u ≠ ⊥)
     (b : coordRing k (xG E) N) : (b : N) ∈ valSub E u hu hu0 := by
   haveI := isDedekindDomain_ring (xG E) (transcendental_xG E) N
@@ -104,7 +107,6 @@ lemma valuationSubring_valuation_lt_one {K Γ : Type*} [Field K] [LinearOrderedC
   rw [Valuation.mem_valuationSubring_iff, map_inv₀, not_le]
   exact one_lt_inv_iff₀.mpr ⟨(Valuation.pos_iff v).mpr h0, hx⟩
 
-omit [E.IsElliptic] in
 lemma valSub_lt_one (u : Ideal (coordRing k (xG E) N)) (hu : u.IsPrime) (hu0 : u ≠ ⊥)
     (b : coordRing k (xG E) N) (hb : b ∈ u) :
     (valSub E u hu hu0).valuation (b : N) < 1 := by
@@ -377,7 +379,7 @@ lemma geom_normal {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm : Bool}
     rintro ⟨g, hg⟩
     change g (ρ' x) = ρ' x
     have hconj : ρ'⁻¹ * g * ρ' ∈ fullSub E ℓ M false := by
-      change (galEquiv E).toMonoidHom (ρ'⁻¹ * g * ρ') ∈ Hgp E ℓ M false
+      change galHom E (ρ'⁻¹ * g * ρ') ∈ Hgp E ℓ M false
       rw [map_mul, map_mul, map_inv]
       exact Hgp_conj_mem E hρF hg
     have : (ρ'⁻¹ * g * ρ') x = x := hx ⟨_, hconj⟩
