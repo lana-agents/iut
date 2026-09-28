@@ -782,6 +782,205 @@ lemma sum_log_apply_natCast {n : ℕ} (hn : n ≠ 0) {S : Finset (FinitePlace T)
 
 end Sums
 
+/-! ### The global estimate -/
+
+/-- `[F : ℚ] (log q_∀ − log q₂) = ∑_{v bad, p_v ≠ 2} log|j|_v`. -/
+lemma finrank_mul_h_sub (x : Pt) :
+    (Module.finrank ℚ (P.curve x).F : ℝ) * (P.h x - (P.localData x).heightEq 2) =
+      ∑ v ∈ (P.localData x).bad.filter (fun v => ¬ (P.localData x).p v = 2),
+        Real.log ((show FinitePlace (P.curve x).F from v) (P.curve x).E.j) := by
+  have hsplit := (P.localData x).height_eq_heightOn_add (fun v => (P.localData x).p v = 2)
+  rw [← (P.localData x).heightEq_eq_heightOn] at hsplit
+  have hh : P.h x - (P.localData x).heightEq 2 =
+      (P.localData x).heightOn (fun v => ¬ (P.localData x).p v = 2) := by
+    change (P.localData x).height - _ = _
+    rw [hsplit]; ring
+  rw [hh]
+  unfold LocalHeightData.heightOn
+  have hdeg : ((P.localData x).deg : ℝ) = Module.finrank ℚ (P.curve x).F := rfl
+  rw [hdeg, mul_div_cancel₀ _ (by exact_mod_cast Module.finrank_pos.ne')]
+  refine Finset.sum_congr (by ext v; simp) fun (v : FinitePlace (P.curve x).F) hv => ?_
+  rw [Finset.mem_filter] at hv
+  have hvb : v ∈ (P.curve x).badAll := (mem_localData_bad_iff P x v).mp hv.1
+  have hpos := posLog_j_eq_of_mem_badAll P x hvb
+  change ((if h : v ∈ (P.curve x).badAll then (P.tate x).qOrder v h else 0 : ℕ) : ℝ) *
+    inertDeg (P.curve x).F v * Real.log (residueChar v) = _
+  rw [dif_pos hvb, ← hpos, Real.posLog_apply]
+  refine max_eq_right ?_
+  have h1 : (0 : ℝ) < (P.tate x).qOrder v hvb := by exact_mod_cast (P.tate x).qOrder_pos v hvb
+  have h2 : (0 : ℝ) < inertDeg (P.curve x).F v := by exact_mod_cast inertDeg_pos' v
+  have h3 : 0 < Real.log (residueChar v) :=
+    Real.log_pos (by exact_mod_cast (residueChar_prime v).one_lt)
+  have := posLog_j_eq_of_mem_badAll P x hvb
+  rw [Real.posLog_apply] at this
+  have h4 : 0 < max 0 (Real.log (v (P.curve x).E.j)) := by rw [this]; positivity
+  rcases lt_max_iff.mp h4 with h | h
+  · exact absurd h (lt_irrefl 0)
+  · exact h.le
+
+/-- **The isogeny estimate**: `((ℓ − 1)/4)(log q_∀ − log q₂) ≤ 10 log ℓ + 2 log(32 C₀) + 6c + 4 log 4`,
+for a point of a compactly bounded subset with bound `c` and `C₀ ≥ 1` a bound for the torsion
+`x`-coordinates of the Legendre curves over `ℂ` with parameters bounded by `c`. -/
+theorem main_bound {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2)
+    (hgal : ∀ σ : (P.curve x).Fbar ≃ₐ[(P.curve x).F] (P.curve x).Fbar, ∀ Q ∈ H,
+      galPointMap (P.curve x).F (P.curve x).E (P.curve x).Fbar σ Q ∈ H)
+    (hgraph : IsGraphLineOdd P x hℓ hℓ2 H) {C₀ : ℝ} (hC₀1 : 1 ≤ C₀)
+    (hC₀ : ∀ (l : ℂ), |Real.log ‖l‖| ≤ K.c → |Real.log ‖l - 1‖| ≤ K.c →
+      ∀ (W : WeierstrassCurve ℂ) [W.IsElliptic], W = legendre l →
+      ∀ {N : ℕ}, 1 ≤ N → ∀ {a b : ℂ} (h : W.toAffine.Nonsingular a b),
+        N • (Affine.Point.some a b h : W.toAffine.Point) = 0 → ‖a‖ ≤ C₀ * N ^ 2) :
+    ((ℓ : ℝ) - 1) / 4 * (P.h x - (P.localData x).heightEq 2) ≤
+      10 * Real.log ℓ + (2 * Real.log (32 * C₀) + 6 * K.c + 4 * Real.log 4) := by
+  obtain ⟨ρ, hρ⟩ := exists_algebraMap_eq_ratio (hℓ := hℓ) (H := H) hgal
+  have hodd := odd_card_HL hH hℓ2
+  have hρ0 : ρ ≠ 0 := by
+    intro h
+    rw [h, map_zero] at hρ
+    exact mul_ne_zero
+      (veluRatio_ne_zero hodd (T₁_ne_zero P x hℓ) (T₁_add_self P x hℓ) (R₁_add_self P x hℓ))
+      (veluRatio_ne_zero hodd (T₂_ne_zero P x hℓ) (T₂_add_self P x hℓ) (R₂_add_self P x hℓ))
+      hρ.symm
+  have hc := CompactlyBounded.c_nonneg hx
+  set d : ℝ := (Module.finrank ℚ (P.curve x).F : ℝ) with hd
+  have hd0 : 0 < d := by rw [hd]; exact_mod_cast Module.finrank_pos
+  have hℓ1 : (1 : ℝ) ≤ ℓ := by exact_mod_cast hℓ.one_lt.le
+  have hlogℓ : 0 ≤ Real.log ℓ := Real.log_nonneg hℓ1
+  -- the finite set of places
+  have h4 : (4 : (P.curve x).F) ≠ 0 := by norm_num
+  have hℓ0 : (ℓ : (P.curve x).F) ≠ 0 := by exact_mod_cast hℓ.ne_zero
+  set S : Finset (FinitePlace (P.curve x).F) := (FinitePlace.hasFiniteMulSupport hρ0).toFinset ∪
+    (P.arith x).badAll_finite.toFinset ∪ (FinitePlace.hasFiniteMulSupport h4).toFinset ∪
+    (FinitePlace.hasFiniteMulSupport hℓ0).toFinset with hS
+  have hSρ : ∀ v : FinitePlace (P.curve x).F, v ρ ≠ 1 → v ∈ S := fun v hv =>
+    Finset.mem_union_left _ (Finset.mem_union_left _ (Finset.mem_union_left _
+      ((Set.Finite.mem_toFinset _).mpr hv)))
+  have hS4 : ∀ v : FinitePlace (P.curve x).F, v ((4 : ℕ) : (P.curve x).F) ≠ 1 → v ∈ S :=
+    fun v hv => Finset.mem_union_left _ (Finset.mem_union_right _
+      ((Set.Finite.mem_toFinset _).mpr (by push_cast at hv; exact hv)))
+  have hSℓ : ∀ v : FinitePlace (P.curve x).F, v (ℓ : (P.curve x).F) ≠ 1 → v ∈ S := fun v hv =>
+    Finset.mem_union_right _ ((Set.Finite.mem_toFinset _).mpr hv)
+  have hSbad : ∀ v ∈ (P.arith x).badAll_finite.toFinset, v ∈ S := fun v hv =>
+    Finset.mem_union_left _ (Finset.mem_union_left _ (Finset.mem_union_right _ hv))
+  -- the product formula
+  have hpf := NumberField.prod_abs_eq_one hρ0
+  rw [finprod_eq_prod_of_mulSupport_subset _ (s := S) fun v hv => hSρ v hv] at hpf
+  have hlogpf : ∑ w : InfinitePlace (P.curve x).F, (w.mult : ℝ) * Real.log (w ρ) +
+      ∑ v ∈ S, Real.log (v ρ) = 0 := by
+    have hw : ∀ w : InfinitePlace (P.curve x).F, 0 < w ρ := fun w => w.pos_iff.mpr hρ0
+    have hv : ∀ v : FinitePlace (P.curve x).F, 0 < v ρ := fun v => FinitePlace.pos_iff.mpr hρ0
+    have := congrArg Real.log hpf
+    rw [Real.log_one, Real.log_mul (Finset.prod_ne_zero_iff.mpr fun w _ => (pow_pos (hw w) _).ne')
+      (Finset.prod_ne_zero_iff.mpr fun v _ => (hv v).ne'),
+      Real.log_prod (fun w _ => (pow_pos (hw w) _).ne'), Real.log_prod (fun v _ => (hv v).ne')]
+      at this
+    simp only [Real.log_pow] at this
+    exact this
+  -- the archimedean bound
+  have harch : ∀ w : InfinitePlace (P.curve x).F, Real.log (w ρ) ≤
+      2 * Real.log (32 * C₀) + 6 * Real.log ℓ + K.c := by
+    intro w
+    obtain ⟨hw₁, hw₂⟩ := abs_log_infinite_le P x hx w
+    have hb := infinite_bound hρ hH hℓ2 hC₀ w hw₁ hw₂
+    have hwρ : 0 < w ρ := w.pos_iff.mpr hρ0
+    have hwl : 0 < w (genC' P x) := w.pos_iff.mpr (genC'_ne_zero P x)
+    have hwl1 : 0 < w (genC' P x - 1) := w.pos_iff.mpr (sub_ne_zero.mpr (genC'_ne_one P x))
+    have hs₁ : w (sqrtLam P x) ^ 2 = w (genC' P x) := by rw [← map_pow, sqrtLam_sq]
+    have hs₂ : w (sqrtOneSub P x) ^ 2 = w (genC' P x - 1) := by
+      rw [← map_pow, sqrtOneSub_sq, ← neg_sub, ← InfinitePlace.norm_embedding_eq, map_neg,
+        norm_neg, InfinitePlace.norm_embedding_eq]
+    have hws₁ : 0 < w (sqrtLam P x) := by
+      by_contra h
+      have h0 : w (sqrtLam P x) = 0 := le_antisymm (not_lt.mp h) (apply_nonneg _ _)
+      rw [h0, zero_pow two_ne_zero] at hs₁; linarith
+    have hws₂ : 0 < w (sqrtOneSub P x) := by
+      by_contra h
+      have h0 : w (sqrtOneSub P x) = 0 := le_antisymm (not_lt.mp h) (apply_nonneg _ _)
+      rw [h0, zero_pow two_ne_zero] at hs₂; linarith
+    have hB : 0 < 2 * (ℓ : ℝ) * (C₀ * (4 * ℓ) ^ 2) := by positivity
+    have hlog := Real.log_le_log (by positivity) hb
+    rw [Real.log_mul hwρ.ne' (by positivity), Real.log_mul hws₁.ne' hws₂.ne', Real.log_pow] at hlog
+    have e₁ : Real.log (w (sqrtLam P x)) = Real.log (w (genC' P x)) / 2 := by
+      rw [← hs₁, Real.log_pow]; push_cast; ring
+    have e₂ : Real.log (w (sqrtOneSub P x)) = Real.log (w (genC' P x - 1)) / 2 := by
+      rw [← hs₂, Real.log_pow]; push_cast; ring
+    have hBeq : Real.log (2 * (ℓ : ℝ) * (C₀ * (4 * ℓ) ^ 2)) = Real.log (32 * C₀) + 3 * Real.log ℓ := by
+      rw [show 2 * (ℓ : ℝ) * (C₀ * (4 * ℓ) ^ 2) = (32 * C₀) * ℓ ^ 3 by ring,
+        Real.log_mul (by positivity) (by positivity), Real.log_pow]
+      push_cast; ring
+    rw [e₁, e₂, hBeq] at hlog
+    have := neg_abs_le (Real.log (w (genC' P x)))
+    have := neg_abs_le (Real.log (w (genC' P x - 1)))
+    push_cast at hlog
+    linarith
+  have hsum_arch : ∑ w : InfinitePlace (P.curve x).F, (w.mult : ℝ) * Real.log (w ρ) ≤
+      d * (2 * Real.log (32 * C₀) + 6 * Real.log ℓ + K.c) := by
+    calc ∑ w : InfinitePlace (P.curve x).F, (w.mult : ℝ) * Real.log (w ρ)
+        ≤ ∑ w : InfinitePlace (P.curve x).F, (w.mult : ℝ) * (2 * Real.log (32 * C₀) + 6 * Real.log ℓ + K.c) :=
+          Finset.sum_le_sum fun w _ => mul_le_mul_of_nonneg_left (harch w) (Nat.cast_nonneg _)
+      _ = d * (2 * Real.log (32 * C₀) + 6 * Real.log ℓ + K.c) := by
+          rw [← Finset.sum_mul, ← Nat.cast_sum, InfinitePlace.sum_mult_eq]
+  -- the finite bound
+  have hfin := Finset.sum_le_sum fun v (_ : v ∈ S) =>
+    log_apply_le hρ hH hℓ2 hgraph hρ0 v
+  rw [Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum] at hfin
+  -- the gain: the odd multiplicative places
+  have hT : ∑ v ∈ S, (if v ∈ (P.curve x).badAll ∧ residueChar v ≠ 2 then
+      -(((ℓ : ℝ) - 1) / 4 * Real.log (v (P.curve x).E.j)) else 0) =
+      -(((ℓ : ℝ) - 1) / 4 * (d * (P.h x - (P.localData x).heightEq 2))) := by
+    rw [← Finset.sum_filter, Finset.sum_neg_distrib, ← Finset.mul_sum, hd, finrank_mul_h_sub]
+    congr 2
+    refine Finset.sum_congr ?_ fun _ _ => rfl
+    ext v
+    rw [Finset.mem_filter]
+    constructor
+    · rintro ⟨-, hv, h2⟩
+      exact Finset.mem_filter.mpr ⟨(P.arith x).badAll_finite.mem_toFinset.mpr hv, h2⟩
+    · intro h
+      obtain ⟨hv, h2⟩ := Finset.mem_filter.mp h
+      have hv' : v ∈ (P.curve x).badAll := (P.arith x).badAll_finite.mem_toFinset.mp hv
+      exact ⟨hSbad v hv, hv', h2⟩
+  -- the places over `2`
+  have hlog4 : ∑ v ∈ S, -Real.log (v (4 : (P.curve x).F)) = d * Real.log 4 := by
+    have := sum_log_apply_natCast (n := 4) (by norm_num) hS4
+    push_cast at this
+    rw [Finset.sum_neg_distrib, this, neg_neg, hd]
+  have hB2 : ∑ v ∈ S, (if residueChar v = 2 then
+      9 / 2 * |Real.log (v (genC' P x))| + 1 / 2 * |Real.log (v (genC' P x - 1))| +
+        4 * -Real.log (v (4 : (P.curve x).F)) else 0) ≤
+      5 * K.c * d + 4 * (d * Real.log 4) := by
+    rw [← Finset.sum_filter]
+    have hle : ∀ v ∈ S.filter (fun v => residueChar v = 2),
+        9 / 2 * |Real.log (v (genC' P x))| + 1 / 2 * |Real.log (v (genC' P x - 1))| +
+          4 * -Real.log (v (4 : (P.curve x).F)) ≤
+        5 * K.c * localDeg (P.curve x).F v + 4 * -Real.log (v (4 : (P.curve x).F)) := by
+      intro v hv
+      rw [Finset.mem_filter] at hv
+      obtain ⟨h₁, h₂⟩ := abs_log_two_le P x hx v hv.2
+      linarith
+    refine (Finset.sum_le_sum hle).trans ?_
+    rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+    have hdeg : ∑ v ∈ S.filter (fun v => residueChar v = 2), (localDeg (P.curve x).F v : ℝ) ≤ d := by
+      rw [hd]; exact_mod_cast sum_localDeg_filter_le S 2
+    have hnn : ∀ v ∈ S, 0 ≤ -Real.log (v (4 : (P.curve x).F)) := fun v _ =>
+      neg_nonneg.mpr (Real.log_nonpos (apply_nonneg _ _) (by exact_mod_cast apply_natCast_le_one v 4))
+    have h4le : ∑ v ∈ S.filter (fun v => residueChar v = 2), -Real.log (v (4 : (P.curve x).F)) ≤
+        d * Real.log 4 := by
+      rw [← hlog4]
+      exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) fun v hv _ => hnn v hv
+    nlinarith
+  -- the places over `ℓ`
+  have hlogℓ' : ∑ v ∈ S, -Real.log (v (ℓ : (P.curve x).F)) = d * Real.log ℓ := by
+    rw [Finset.sum_neg_distrib, sum_log_apply_natCast hℓ.ne_zero hSℓ, neg_neg, hd]
+  rw [hT, hlogℓ'] at hfin
+  -- combination
+  set X := P.h x - (P.localData x).heightEq 2
+  have hkey : d * (((ℓ : ℝ) - 1) / 4 * X) ≤ d * (10 * Real.log ℓ +
+      (2 * Real.log (32 * C₀) + 6 * K.c + 4 * Real.log 4)) := by
+    have e : ((ℓ : ℝ) - 1) / 4 * (d * X) = d * (((ℓ : ℝ) - 1) / 4 * X) := by ring
+    rw [e] at hfin
+    nlinarith
+  exact le_of_mul_le_mul_left hkey hd0
+
 end Cyclic
 
 end
