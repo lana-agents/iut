@@ -24,10 +24,20 @@ rev = "ca6c2279d3cea0690cdb01328e727118d5485d68"
 
 # Arithmetic elliptic curves in general position (taxis #2): the height formalism and
 # Theorem 2.1, consumed by the ABC target statement and the implication strand
-# (taxis #1449, #1451, #1455).
+# (taxis #1449, #1451, #1455). The lana-agents fork carries the genuine height theory of
+# curves over number fields and its proof package (Genl.Curves, branch wp-height-theory).
 [[require]]
 name = "genl"
-path = "../genl-wpht"
+git = "https://github.com/lana-agents/genl"
+rev = "ea2846c877d1e16d8f0b911a5fed07f5ee69eaaf"
+
+# Heights and elliptic-curve height estimates (taxis #32): the complex uniformization of
+# elliptic curves, consumed by the archimedean torsion bound of the cyclic-subgroup bound;
+# also the height machine on curves used by Genl.Curves (branch wp-integrate).
+[[require]]
+name = "heights"
+git = "https://github.com/lana-agents/heights"
+rev = "721496ca4c158e511d25d8ccf6bfe8503eda73c1"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
