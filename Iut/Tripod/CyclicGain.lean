@@ -348,6 +348,26 @@ variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
   {E : WeierstrassCurve k} (S : TateStructure E)
 
+/-- **The `x`-coordinate of the point of a unit**: if `u` is a Tate coordinate of the affine point
+`(x, y)`, then `x = u_C² X(u) + r_C`. -/
+theorem x_eq_of_ofUnit {u : kˣ} {x y : k} (h : E.toAffine.Nonsingular x y)
+    (hPu : S.ofUnit u = Affine.Point.some x y h) : x = (S.C.u : k) ^ 2 * S.t.X u + S.C.r := by
+  have hoff : ∀ m : ℤ, (S.t.q : k) ^ m * (u : k) ≠ 1 := by
+    intro m hm
+    have hu1 : S.t.q ^ m * u = 1 := Units.ext (by simpa using hm)
+    have : S.ofUnit u = 0 := by
+      rw [← S.ofUnit_one, S.ofUnit_eq_iff]
+      exact ⟨m, by rw [hu1]⟩
+    rw [hPu] at this
+    exact Affine.Point.some_ne_zero h this
+  have hx := S.iso_x u hoff
+  change xCoord S.C (S.ofUnit u) = S.t.X u at hx
+  rw [hPu] at hx
+  change (x - S.C.r) / (S.C.u : k) ^ 2 = S.t.X u at hx
+  rw [← hx]
+  field_simp [Units.ne_zero]
+  ring
+
 /-- **Tate coordinates of a nonzero point**: every nonzero point `P = (x, y)` of `E(k)` is the
 point of a unit `u` in the annulus `‖q‖ < ‖u‖ ≤ 1`, and `x = u_C² X(u) + r_C` for the change of
 variables `C` of the Tate structure. -/

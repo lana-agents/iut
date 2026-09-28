@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
 import Iut.Torsion.Count
+import Iut.Tripod.Legendre
+import Heights.VariableChangePoint
 import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 
 /-!
@@ -121,5 +123,79 @@ theorem apply_x_le {W : Affine K} (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (h�
   have := le_of_mul_le_mul_left (by linarith : w x ^ (D - 1) * (w (n : K) ^ 2 * w x) ≤
     w x ^ (D - 1) * 1) hp
   exact this
+
+end Iut.TorsionNewton
+
+/-! ### Legendre curves with a non-integral parameter -/
+
+namespace Iut.TorsionNewton
+
+open WeierstrassCurve WeierstrassCurve.Affine NumberField Iut.Tripod
+open scoped Classical
+
+variable {K : Type*} [Field K] [NumberField K] (w : FinitePlace K)
+
+/-- **The Newton bound on a Legendre curve**: for `W = E_λ` and an affine point `(x, y)` with
+`n • (x, y) = 0` (`n ≥ 1`), `|n|_w² |x|_w ≤ max(1, |λ|_w)²`. For `|λ|_w > 1` the model is
+rescaled by `u = λ` (`x = λ² X`), which is integral. -/
+theorem apply_x_le_legendre {W : WeierstrassCurve K} [W.IsElliptic] {l : K}
+    (hW : W = legendre l) (hl0 : l ≠ 0) {n : ℕ} (hn : 1 ≤ n) {x y : K}
+    (h : W.toAffine.Nonsingular x y) (hP : n • (Point.some x y h : W.toAffine.Point) = 0) :
+    w (n : K) ^ 2 * w x ≤ max 1 (w l) ^ 2 := by
+  have hW₁ : W.a₁ = 0 := by subst hW; rfl
+  have hW₂ : W.a₂ = -(1 + l) := by subst hW; rfl
+  have hW₃ : W.a₃ = 0 := by subst hW; rfl
+  have hW₄ : W.a₄ = l := by subst hW; rfl
+  have hW₆ : W.a₆ = 0 := by subst hW; rfl
+  have hmax : 1 ≤ max 1 (w l) := le_max_left _ _
+  by_cases hl : w l ≤ 1
+  · have h₂ : w W.a₂ ≤ 1 := by
+      rw [hW₂, map_neg_eq_map]
+      exact (FinitePlace.add_le w _ _).trans (max_le (by simp) hl)
+    have h₄ : w W.a₄ ≤ 1 := by rw [hW₄]; exact hl
+    have h₆ : w W.a₆ ≤ 1 := by rw [hW₆, map_zero]; exact zero_le_one
+    exact (apply_x_le w hW₁ hW₃ h₂ h₄ h₆ hn h hP).trans (one_le_pow₀ hmax)
+  · rw [not_le] at hl
+    have hlpos : 0 < w l := lt_trans zero_lt_one hl
+    set C : VariableChange K := ⟨Units.mk0 l hl0, 0, 0, 0⟩ with hC
+    have hCu : (C.u : K) = l := rfl
+    set P' := (C.pointAddEquiv W).symm (Point.some x y h) with hP'
+    have hP'eq : P' = C.inversePointMap W (Point.some x y h) := rfl
+    rw [VariableChange.inversePointMap_some] at hP'eq
+    have hP'0 : n • P' = 0 := by rw [hP', ← map_nsmul, hP, map_zero]
+    rw [hP'eq] at hP'0
+    have hr : C.r = 0 := rfl
+    have hinv : C.inverseX x = x / l ^ 2 := by
+      rw [VariableChange.inverseX, hCu, hr, sub_zero]
+      field_simp
+    -- the rescaled model is integral
+    have hlinv : w l⁻¹ ≤ 1 := by rw [map_inv₀]; exact inv_le_one_of_one_le₀ hl.le
+    have hC₁ : (C • W).a₁ = 0 := by simp [variableChange_a₁, hW₁, hC]
+    have hC₃ : (C • W).a₃ = 0 := by simp [variableChange_a₃, hW₃, hW₁, hC]
+    have hC₂ : w (C • W).a₂ ≤ 1 := by
+      have : (C • W).a₂ = -(l⁻¹ ^ 2 + l⁻¹) := by
+        simp only [variableChange_a₂, hW₂, hW₁, hC, Units.val_inv_eq_inv_val, Units.val_mk0]
+        field_simp
+        ring
+      rw [this, map_neg_eq_map]
+      refine (FinitePlace.add_le w _ _).trans (max_le ?_ hlinv)
+      rw [map_pow]; exact pow_le_one₀ (apply_nonneg w _) hlinv
+    have hC₄ : w (C • W).a₄ ≤ 1 := by
+      have : (C • W).a₄ = l⁻¹ ^ 3 := by
+        simp only [variableChange_a₄, hW₄, hW₃, hW₂, hW₁, hC, Units.val_inv_eq_inv_val,
+          Units.val_mk0]
+        field_simp
+        ring
+      rw [this, map_pow]; exact pow_le_one₀ (apply_nonneg w _) hlinv
+    have hC₆ : w (C • W).a₆ ≤ 1 := by
+      have : (C • W).a₆ = 0 := by
+        simp [variableChange_a₆, hW₆, hW₄, hW₃, hW₂, hW₁, hC]
+      rw [this, map_zero]; exact zero_le_one
+    have hN := apply_x_le w hC₁ hC₃ hC₂ hC₄ hC₆ hn _ hP'0
+    rw [hinv, map_div₀, map_pow] at hN
+    rw [max_eq_right hl.le]
+    have hl2 : 0 < w l ^ 2 := by positivity
+    rw [← mul_div_assoc, div_le_iff₀ hl2, one_mul] at hN
+    exact hN
 
 end Iut.TorsionNewton
