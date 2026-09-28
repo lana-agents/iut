@@ -32,7 +32,8 @@ namespace Iut.Anabelian.Genuine
 
 universe u
 
-open WeierstrassCurve Polynomial AffOrbicurve IntermediateField IntermediateField.algebraAdjoinAdjoin
+open WeierstrassCurve Polynomial AffOrbicurve IntermediateField
+open IntermediateField.algebraAdjoinAdjoin
 
 open scoped Classical
 

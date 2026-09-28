@@ -44,7 +44,7 @@ rev = "721496ca4c158e511d25d8ccf6bfe8503eda73c1"
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "1314bc8d47c13db19b895144391571f1ac5ecfab"
+rev = "e0266a572e2ef7c144227c2703c450e466984528"
 # The tempered fundamental group of the model orbicurves (taxis #7): the construction through
 # integral models, `TemperedFundamentalGroups.temperedPi1`, consumed by
 # `Iut.Anabelian.TemperedPi1Theory` in `Iut/Anabelian/Tempered.lean`.

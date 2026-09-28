@@ -16,14 +16,16 @@ The key input is that `X_M → X_{M'}` is unramified (`ramificationIdx_geom_eq_o
 Galois extension `N ⊇ L_X` of `k(x)`, the inertia group of a prime of the normalization of the
 `x`-line in `N` fixes the division point `Q_ℓ` (`inertia_fixes_Q`, from
 `Iut.Anabelian.Genuine.inertia_fixes_of_nsmul`, applied to the valuation of the prime), hence
-fixes `L_X`, and `e = |inertia| / |inertia ∩ Gal(N / L_X)|` (`AffOrbicurve.ramificationIdx_eq_one_iff`).
+fixes `L_X`, and `e = |inertia| / |inertia ∩ Gal(N / L_X)|`
+(`AffOrbicurve.ramificationIdx_eq_one_iff`).
 -/
 
 namespace Iut.Anabelian.Genuine
 
 universe u
 
-open WeierstrassCurve Polynomial AffOrbicurve IntermediateField IntermediateField.algebraAdjoinAdjoin
+open WeierstrassCurve Polynomial AffOrbicurve IntermediateField
+open IntermediateField.algebraAdjoinAdjoin
 
 open scoped Classical
 
@@ -94,7 +96,8 @@ lemma coordRing_mem_valSub (u : Ideal (coordRing k (xG E) N)) (hu : u.IsPrime) (
     (b : coordRing k (xG E) N) : (b : N) ∈ valSub E u hu hu0 := by
   haveI := isDedekindDomain_ring (xG E) (transcendental_xG E) N
   haveI := isFractionRing_coordRing (xG E) N
-  exact (⟨u, hu, hu0⟩ : IsDedekindDomain.HeightOneSpectrum (coordRing k (xG E) N)).valuation_le_one (K := N) b
+  exact (⟨u, hu, hu0⟩ :
+    IsDedekindDomain.HeightOneSpectrum (coordRing k (xG E) N)).valuation_le_one (K := N) b
 
 /-- For a valuation `v`, `v x < 1` implies `x` lies in the maximal ideal of `v.valuationSubring`. -/
 lemma valuationSubring_valuation_lt_one {K Γ : Type*} [Field K] [LinearOrderedCommGroupWithZero Γ]
@@ -113,7 +116,8 @@ lemma valSub_lt_one (u : Ideal (coordRing k (xG E) N)) (hu : u.IsPrime) (hu0 : u
   haveI := isDedekindDomain_ring (xG E) (transcendental_xG E) N
   haveI := isFractionRing_coordRing (xG E) N
   exact valuationSubring_valuation_lt_one _
-    (((⟨u, hu, hu0⟩ : IsDedekindDomain.HeightOneSpectrum (coordRing k (xG E) N)).valuation_lt_one_iff_mem
+    (((⟨u, hu, hu0⟩ :
+      IsDedekindDomain.HeightOneSpectrum (coordRing k (xG E) N)).valuation_lt_one_iff_mem
       (K := N) b).mpr hb)
 
 end Prime
@@ -395,7 +399,8 @@ lemma geom_normal {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm : Bool}
 /-! ### The finite étale morphisms attached to covers -/
 
 /-- The ramification index of `w` over `coordRing F` (with `F ⊆ L`). -/
-abbrev eIdx {F L : IntermediateField (xLine E) (Ω E)} (h : F ≤ L) (w : Ideal (coordRing k (xG E) L)) :
+abbrev eIdx {F L : IntermediateField (xLine E) (Ω E)} (h : F ≤ L)
+    (w : Ideal (coordRing k (xG E) L)) :
     ℕ :=
   letI := algRing (xG E) h; w.ramificationIdx (coordRing k (xG E) F)
 
@@ -411,9 +416,11 @@ lemma eIdx_tower {F L L' : IntermediateField (xLine E) (Ω E)} [FiniteDimensiona
   exact h
 
 lemma comap_isMaximal {F L : IntermediateField (xLine E) (Ω E)} (h : F ≤ L)
-    (w : Ideal (coordRing k (xG E) L)) [hw : w.IsMaximal] : (w.comap (ringMap (xG E) h)).IsMaximal := by
+    (w : Ideal (coordRing k (xG E) L)) [hw : w.IsMaximal] :
+    (w.comap (ringMap (xG E) h)).IsMaximal := by
   letI := algRing (xG E) h
-  haveI : Algebra.IsIntegral (coordRing k (xG E) F) (coordRing k (xG E) L) := ⟨ringMap_isIntegral _ h⟩
+  haveI : Algebra.IsIntegral (coordRing k (xG E) F) (coordRing k (xG E) L) :=
+    ⟨ringMap_isIntegral _ h⟩
   exact Ideal.isMaximal_comap_of_isIntegral_of_isMaximal w
 
 set_option maxHeartbeats 1000000 in

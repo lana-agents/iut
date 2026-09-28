@@ -12,8 +12,9 @@ import TemperedFundamentalGroups
 # Tempered fundamental groups of the model orbicurves (taxis #7)
 
 This module builds a term of the residual interface `Iut.Anabelian.TemperedPi1Theory` over the
-genuine étale fundamental groups `Orbicurve.genuinePi1 X = Genuine.pi1Of E ℓ M ±` of the model
-orbicurves (`Iut.Anabelian.Genuine.Pi1`: `Aut(Ω / F_X) ⧸ ⟨⟨inertia over X_M⟩⟩`), from the
+genuine étale fundamental groups `Orbicurve.genuinePi1 X = Genuine.pi1C E ℓ M ±` of the model
+orbicurves (`Iut.Anabelian.Genuine.Theory`: `Aut(Ω / F_X) ⧸ ⟨⟨inertia over X_M⟩⟩` in
+characteristic `0`, the trivial group otherwise), from the
 construction of lana-agents/tempered-fundamental-groups, with **no comparison parameter**: the
 tempered and the étale fundamental group are computed from the same presentation.
 
@@ -22,7 +23,8 @@ tempered and the étale fundamental group are computed from the same presentatio
   of `k[x]` in the function field `L_X = Ω^{Aut(Ω / L_X)}` and `A = Aut(Ω / F_X) ⧸ Aut(Ω / L_X)`,
   at the geometric point `R ⊆ Ω` (`Ω` an algebraic closure of `k(E)`). Its étale fundamental
   group `Pi1.Orbifold.etalePi1 R A Ω` is identified with `Genuine.pi1Of E ℓ M ±` by
-  `Genuine.etaleEquiv` (SGA 1 V.8.2 with a finite group action, from the `pi1` project).
+  `Genuine.etaleEquiv` (SGA 1 V.8.2 with a finite group action, from the `pi1` project), and
+  `Genuine.pi1Of E ℓ M ± = Genuine.pi1C E ℓ M ±` by `Genuine.pi1EquivC`.
 * `tempPi1 X` is `TemperedFundamentalGroups.AffineOrbifold.canonicalTemperedPi1` of this
   presentation: the tempered fundamental group over the canonical valuation of `k` (the
   henselian discrete valuation ring of `k` if there is one — by F. K. Schmidt's theorem it is
@@ -38,9 +40,10 @@ tempered and the étale fundamental group are computed from the same presentatio
   characteristic `0` (the core fields of `EtalePi1Theory` are also stated in characteristic
   `0`).
 
-No term of `EtalePi1Theory` with `pi1 X = genuinePi1 X` exists yet; `GenuineEtaleData` collects
-the remaining fields of such a term (`GenuineEtaleData.toEtalePi1Theory`), and
-`temperedTheory G : TemperedPi1Theory G.toEtalePi1Theory`.
+`GenuineEtaleData` collects the fields of a term of `EtalePi1Theory` with
+`pi1 X = genuinePi1 X` other than `pi1` (`GenuineEtaleData.toEtalePi1Theory`), and
+`temperedTheory G : TemperedPi1Theory G.toEtalePi1Theory`. The genuine term, with the genuine
+`k`-cores of [CanLift], §2, is `Iut.Anabelian.genuineEtaleData` (`Iut.Anabelian.GenuineEtale`).
 -/
 
 namespace Iut.Anabelian

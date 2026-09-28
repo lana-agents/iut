@@ -66,7 +66,8 @@ lemma mem_of_monic_root_alg {k : Type*} [Field k] [Algebra k K] (R : Subalgebra 
   obtain ⟨q, hq, -, hqm⟩ := Polynomial.lifts_and_degree_eq_and_monic hl hp
   exact hR x ⟨q, hqm, by rw [eval₂_eq_eval_map, hq, hx]⟩
 
-lemma isIntegrallyClosed_valuationSubring (x : K) (hx : IsIntegral W.toSubring x) : x ∈ W.toSubring := by
+lemma isIntegrallyClosed_valuationSubring (x : K) (hx : IsIntegral W.toSubring x) :
+    x ∈ W.toSubring := by
   obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.mp (show IsIntegral W x from hx)
   rw [← hy]
   exact y.2
@@ -121,7 +122,8 @@ lemma torsion_x_mem (n : ℕ) (hn : 0 < n) {x y : K} (h : (E₀⁄K).toAffine.No
     rw [h0, leadingCoeff_zero] at this
     exact pow_ne_zero 2 hn' this.symm
   let p : K[X] := (C c⁻¹ * E₀.ΨSq n).map (algebraMap k K)
-  refine mem_of_monic_root_alg R hR (p := p) ?_ (fun i => by rw [coeff_map]; exact R.algebraMap_mem _) ?_
+  refine mem_of_monic_root_alg R hR (p := p) ?_
+    (fun i => by rw [coeff_map]; exact R.algebraMap_mem _) ?_
   · exact (monic_C_mul_of_mul_leadingCoeff_eq_one (inv_mul_cancel₀ hc)).map _
   · simp only [p, Polynomial.map_mul, map_C, eval_mul, eval_C, ← hmap, hΨ, mul_zero]
 
@@ -185,8 +187,9 @@ theorem inertia_fixes_of_nsmul_short' (σ : K →ₐ[k] K)
       rw [hX]; ring
   have hy₁R : y₁ ∈ R := by
     have heq := (Iut.Torsion.equation_iff₀ ha₁' ha₃' x₁ y₁).mp h₁.1
-    refine mem_of_monic_root_alg R hR (p := Polynomial.X ^ 2 - C (x₁ ^ 3 + (E₀⁄K).toAffine.a₂ * x₁ ^ 2 +
-      (E₀⁄K).toAffine.a₄ * x₁ + (E₀⁄K).toAffine.a₆)) ?_ ?_ ?_
+    refine mem_of_monic_root_alg R hR
+      (p := Polynomial.X ^ 2 - C (x₁ ^ 3 + (E₀⁄K).toAffine.a₂ * x₁ ^ 2 +
+        (E₀⁄K).toAffine.a₄ * x₁ + (E₀⁄K).toAffine.a₆)) ?_ ?_ ?_
     · exact monic_X_pow_sub_C _ two_ne_zero
     · intro i
       rw [coeff_sub, coeff_C, coeff_X_pow]
