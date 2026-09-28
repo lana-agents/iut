@@ -30,6 +30,14 @@ name = "genl"
 git = "https://github.com/LANA-Project/genl"
 rev = "6e9a6543b46a2a02fd7fe7ec8ab203d878f32859"
 
+# The tempered fundamental group of the model orbicurves (taxis #7): the construction through
+# integral models, `TemperedFundamentalGroups.temperedPi1`, consumed by
+# `Iut.Anabelian.TemperedPi1Theory` in `Iut/Anabelian/Tempered.lean`.
+[[require]]
+name = "tempered-fundamental-groups"
+git = "https://github.com/lana-agents/tempered-fundamental-groups"
+rev = "9b3657c6e39e27130ef0846dcd0b048db1059ff6"
+
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
 name = "Iut"
