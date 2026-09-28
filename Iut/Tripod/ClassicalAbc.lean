@@ -292,12 +292,12 @@ theorem classicalABC_of_statementI (h : tripodTheory.StatementI) : ClassicalABC 
   classicalABC_of_int (classicalABCInt_of_statementI h)
 
 /-- **The Corollary 3.12 variant implies the classical ABC conjecture, conditionally on
-[GenEll] Theorem 2.1 (ii) ⇒ (i) for the tripod.** The hypotheses `hcyc` and `h312` are
-exactly those of `Iut.Tripod.abc_of_variant` (which yields `tripodTheory.StatementII`, the
+[GenEll] Theorem 2.1 (ii) ⇒ (i) for the tripod.** The hypothesis `h312` is
+exactly that of `Iut.Tripod.abc_of_variant` (which yields `tripodTheory.StatementII`, the
 ABC inequality on compactly bounded subsets); `hII_I` is the passage from compactly bounded
 subsets to all points of bounded degree. Once `hII_I` is a theorem, the classical ABC
 conjecture follows from the variant by `classicalABC_of_variant_of_statementII_imp_I Pi1 Tp
-theorem_2_1 hcyc h312`.
+theorem_2_1 h312`.
 
 `tripodTheory.StatementII` alone does *not* yield the classical ABC conjecture by the
 argument of `classicalABC_of_statementI`: the rational points `λ = a/c` of the triples with
@@ -307,13 +307,11 @@ argument of `classicalABC_of_statementI`: the rational points `λ = a/c` of the 
 theorem classicalABC_of_variant_of_statementII_imp_I
     (Pi1 : EtalePi1Theory.{0}) (Tp : TemperedPi1Theory Pi1)
     (hII_I : tripodTheory.StatementII → tripodTheory.StatementI)
-    (hcyc : ∀ (K : CompactlyBounded) (d : ℕ),
-      ∃ TK : ℝ, CyclicGraphBoundHyp (tripodProviders) K d TK)
     (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (LT : LocalTheory.{0, 0} D.Kt)
       (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
       Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
     ClassicalABC :=
-  classicalABC_of_statementI (hII_I (abc_of_variant Pi1 Tp hcyc h312))
+  classicalABC_of_statementI (hII_I (abc_of_variant Pi1 Tp h312))
 
 end Variant
 
