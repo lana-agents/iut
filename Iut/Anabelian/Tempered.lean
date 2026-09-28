@@ -13,16 +13,17 @@ This module builds a term of the residual interface `Iut.Anabelian.TemperedPi1Th
 construction of lana-agents/tempered-fundamental-groups.
 
 * A model orbicurve `X = (E, ℓ, M, ±)` over `k` is presented as the affine orbifold
-  `[Spec R / A]` with `Spec R = E ∖ S`, `S = E(k)[ℓ] + M` (rational points), and `A` the group of
-  affine maps `P ↦ εP + m`, `m ∈ M`, `ε = 1` (or `ε = ±1` when the `±`-flag is set), acting on
-  functions by pullback; the geometric point is the generic one (`Orbicurve.affineOrbifold`).
-  When `E[ℓ] ⊆ E(k)` — which holds at every place used by the Θ-data — this is exactly the
-  orbicurve `(E/M) ∖ (E[ℓ]/M)` (resp. its `{±1}`-quotient). Otherwise the removed set is only
-  the rational part of `E[ℓ] + M`.
+  `[Spec R / A]` with `Spec R = E ∖ (E[ℓ] + M)` (all geometric points removed:
+  `R = geomOrbicurveRing`, the functions regular away from `E[ℓ] + M`, which is the localization
+  `k[E][Ψ(x)⁻¹]` whenever `E[ℓ] + M` is finite — proved in characteristic `0` and `p ∤ 2ℓ`), and
+  `A` the group of affine maps `P ↦ εP + m`, `m ∈ M`, `ε = 1` (or `ε = ±1` when the `±`-flag is
+  set), acting on functions by pullback; the geometric point is the generic one
+  (`Orbicurve.affineOrbifold`). This is `[(E ∖ (E[ℓ]+M)) / A]`, i.e. `(E/M) ∖ (E[ℓ]/M)` (resp. its
+  `{±1}`-quotient), for every field.
 * `tempPi1 X` is `TemperedFundamentalGroups.AffineOrbifold.canonicalTemperedPi1`: the tempered
   fundamental group over the canonical valuation of `k` (the henselian discrete valuation ring
-  of `k` if there is one — `O_v` for the completions `K_v` — and the trivial valuation
-  otherwise), defined as the automorphism group of the fibre functor on tempered coverings
+  of `k` if there is one — by F. K. Schmidt's theorem, proved there, it is unique, so it is `O_v`
+  for the completions `K_v` — and the trivial valuation otherwise), defined as the automorphism group of the fibre functor on tempered coverings
   presented through projective integral models (see that repository's `Blueprint.md` for the
   identification with André's definition and what is cited there).
 * `tempToEtale X` is the comparison map to the étale fundamental group
