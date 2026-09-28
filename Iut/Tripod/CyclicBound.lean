@@ -32,12 +32,20 @@ places over `2`). The decomposition of `log q_∀` according to the places where
 line is `Iut.Tripod.h_eq_heightOn_graph_add`, and under (P2) the remaining part is supported
 over `2`, hence bounded by the `2`-adic bound `4c` on `K` (`heightOn_not_graph_le`).
 
-Part 2 has no infrastructure in Mathlib or in this repository (isogenies and quotient curves,
-Néron models, Faltings heights, the archimedean comparison), and is isolated as the `Prop`
-`Iut.Tripod.CyclicGraphBoundHyp`: the same bound under the hypotheses that `H` is the graph
-line at the odd multiplicative places and (P2) holds at the places over `2`. The derivation
-`Iut.Tripod.cyclicBound_of : CyclicGraphBoundHyp P K d TK → CyclicBoundHyp P K d TK` is the
-content of Lemma 3.2(i) at the odd places.
+Part 2 is proved in `Iut/Tripod/CyclicIsogeny.lean` **away from `2`**, without Faltings heights:
+the product formula for the Vélu ratios of the points of order `2` and `4` of `E_λ` over the
+ℓ-torsion field replaces the comparison of Faltings heights of `E_λ` and `E_λ/H`
+(`Iut.Tripod.cyclicGraphOddBound`, `Iut.Tripod.cyclicBoundOdd`). It gives
+`(ℓ − 2)/24 · (log q_∀ − log q₂) ≤ 2 log ℓ + T_K`, where `log q₂` is the part of `log q_∀`
+supported over `2`: at the multiplicative places over `2` the Tate uniformisation (and hence
+the graph-line property and the gain `ℓ · ord(q)`) is not available. This weaker form is what the
+proof of IUT IV, Corollary 2.2 consumes (`Iut.Tripod.CyclicBoundOddHyp`,
+`Iut.Corollary22Inputs.cyclic_bound`), the `2`-adic part being bounded on `K`.
+
+The full-strength statement `Iut.Tripod.CyclicGraphBoundHyp` (the same bound for `log q_∀`, under
+(P2) at the places over `2`) is kept as a `Prop` recording [GenEll]'s form; it is not used and
+not proved. `Iut.Tripod.cyclicBound_of : CyclicGraphBoundHyp P K d TK → CyclicBoundHyp P K d TK`
+is the content of Lemma 3.2(i) at the odd places.
 -/
 
 namespace Iut
@@ -203,17 +211,20 @@ heights at the places over `2`, and a Galois-stable subgroup `H ⊆ E_λ(ℚ̄)`
 is the graph line `μ_ℓ` at every multiplicative place of odd residue characteristic,
 `(ℓ − 2)/24 · log q_∀(E_λ) ≤ 2 log ℓ + T_K`.
 
-This is the part of the cyclic-subgroup bound `CyclicBoundHyp` without Lean infrastructure:
-its content is (a) Lemma 3.2(i) at the places over `2` (where the Tate uniformisation of
+This full-strength form is not used: the implication consumes the weaker
+`Iut.Tripod.CyclicBoundOddHyp` (proved, `Iut.Tripod.cyclicBoundOdd`, in
+`Iut/Tripod/CyclicIsogeny.lean`), which bounds `log q_∀ − log q₂`. The content of the full form
+beyond it is (a) Lemma 3.2(i) at the places over `2` (where the Tate uniformisation of
 `tate-curves-theta`, which assumes `‖2‖ = 1`, is not available), so that `H` is the graph line
 at *every* multiplicative place; (b) Lemma 3.2(ii): the quotient `E_H = E_λ/H` has Tate
 parameter `q^ℓ` at every multiplicative place, so `log q_∀(E_H) = ℓ · log q_∀(E_λ)`; (c) the
 Faltings-height inequality `ht_Falt(E_H) ≤ ht_Falt(E_λ) + 2 log ℓ` for the degree-`ℓ` isogeny
 `E_λ → E_H` ([GenEll], proof of Lemma 3.5; [FC], Chapter I, Proposition 2.7); (d) Proposition
 3.4, the comparison `(1/(12(1+ε))) log q_∀ ≲ ht_Falt ≲ ((1+ε)/12) log q_∀` on compactly bounded
-subsets (Silverman, *Heights and elliptic curves*, Proposition 2.1). None of (b)–(d) has a
-counterpart in Mathlib (isogenies, quotient curves, Néron models, Faltings heights). Recorded as
-a `Prop`, not postulated. -/
+subsets (Silverman, *Heights and elliptic curves*, Proposition 2.1). Away from `2`, (b)–(d)
+are replaced by the product formula for the Vélu ratios (`Iut.Tripod.Cyclic.main_bound`); what
+remains is (a) together with the gain at the multiplicative places over `2`, which needs the Tate
+uniformisation in residue characteristic `2`. Recorded as a `Prop`, not postulated. -/
 def CyclicGraphBoundHyp (TK : ℝ) : Prop :=
   ∀ x ∈ K.set ∩ ptLE d, ∀ ℓ : ℕ, ∀ hℓ : ℓ.Prime, ∀ h7 : 7 ≤ ℓ,
     (∀ w ∈ (P.localData x).bad, (P.localData x).p w = 2 → ¬ ℓ ∣ (P.localData x).hv w) →

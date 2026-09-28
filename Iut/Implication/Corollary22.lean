@@ -312,13 +312,15 @@ structure Corollary22Inputs (K : T.CBS) (d : ℕ) where
   HasCyclicSubgroup : T.Pt T.tripod → ℕ → Prop
   /-- The number `T_K` of [GenEll], Lemma 3.5 (with `ε = 1`). -/
   TK : ℝ
-  /-- **[GenEll], Lemma 3.5 with Proposition 3.4**: an `ℓ`-cyclic subgroup scheme forces
-  `((ℓ−2)/24)·log(q_∀) ≤ 2·log ℓ + T_K`. -/
+  /-- **[GenEll], Lemma 3.5 with Proposition 3.4, away from `2`**: an `ℓ`-cyclic subgroup scheme
+  forces `((ℓ−2)/24)·(log(q_∀) − log(q₂)) ≤ 2·log ℓ + T_K`, where `log(q₂)` is the part of
+  `log(q_∀)` supported over `2` (bounded by `B_K`). This is all that the proof of (P4) uses:
+  the contribution of the prime `2` is absorbed into the threshold. -/
   cyclic_bound : ∀ (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d),
     ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
     (∀ w ∈ (localData x hx).bad, ¬ ℓ ∣ (localData x hx).hv w) →
     HasCyclicSubgroup x ℓ →
-    ((ℓ : ℝ) - 2) / 24 * h x ≤ 2 * Real.log ℓ + TK
+    ((ℓ : ℝ) - 2) / 24 * (h x - (localData x hx).heightEq 2) ≤ 2 * Real.log ℓ + TK
   /-- The image of `Gal(ℚ̄/F) → GL₂(𝔽_ℓ)` on the `ℓ`-torsion of `E_x` contains
   `SL₂(𝔽_ℓ)`. -/
   SL2Image : T.Pt T.tripod → ℕ → Prop
@@ -374,7 +376,7 @@ variable {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d)
 
 /-- The threshold above which (P4), (P5), `√h ≥ ξ_prm` and `ε_E ≤ 1` all hold. -/
 noncomputable def threshold (cheb : ChebyshevBound) : ℝ :=
-  max (max (cheb.ξ ^ 2) (49 + 8 * max I.TK 0))
+  max (max (cheb.ξ ^ 2) (49 + 8 * max I.TK 0 + I.B))
     (max ((I.B + 11 + 2 * deltaBound d) ^ 4 + 1)
       (((60 * deltaBound d) ^ 2 * (2 * deltaBound d + 4)) ^ 4 + 1))
 
@@ -401,8 +403,9 @@ theorem c2 {P : Corollary312VariantData.{u, v} AG TG → Prop} (hd : 1 ≤ d)
   have hδ1 : (1 : ℝ) ≤ deltaBound d := by linarith
   have hLh : L.height = h := by rw [hLdef, hhdef]; exact I.localData_height x hx
   have hξ2 : cheb.ξ ^ 2 ≤ h := le_trans (le_max_left _ _) (le_trans (le_max_left _ _) hH)
-  have hT : 49 + 8 * max I.TK 0 ≤ h :=
+  have hT : 49 + 8 * max I.TK 0 + I.B ≤ h :=
     le_trans (le_max_right _ _) (le_trans (le_max_left _ _) hH)
+  have hB0 := I.B_nonneg
   have hP5 : (I.B + 11 + 2 * deltaBound d) ^ 4 + 1 ≤ h :=
     le_trans (le_max_left _ _) (le_trans (le_max_right _ _) hH)
   have hε1 : ((60 * deltaBound d) ^ 2 * (2 * deltaBound d + 4)) ^ 4 + 1 ≤ h :=
@@ -446,15 +449,18 @@ theorem c2 {P : Corollary312VariantData.{u, v} AG TG → Prop} (hd : 1 ≤ d)
   have hP4 : ¬ I.HasCyclicSubgroup x ℓ := by
     intro hcyc
     have hb := I.cyclic_bound x hx ℓ hℓp hℓ7 (hLdef ▸ hP2) hcyc
-    rw [← hhdef] at hb
+    rw [← hhdef, ← hLdef] at hb
+    have h₂ : L.heightEq 2 ≤ I.B := hLdef ▸ I.heightEq_two_le x hx
+    set g := h - L.heightEq 2 with hg
     have hlogℓ : Real.log ℓ ≤ ℓ - 2 := by
       have := log_le_half_of_pos (by linarith : (0:ℝ) < ℓ); linarith
-    -- `(ℓ-2)/24 · h ≤ 2 log ℓ + T_K ≤ 2(ℓ-2) + T_K`, so `h ≤ 48 + 24 T_K/(ℓ-2) ≤ 48 + 8 T_K`
+    -- `(ℓ-2)/24 · g ≤ 2 log ℓ + T_K ≤ 2(ℓ-2) + T_K`, so `g ≤ 48 + 24 T_K/(ℓ-2) ≤ 48 + 8 T_K`,
+    -- where `g = h − log(q₂) ≥ h − B_K`
     have hTK : I.TK ≤ max I.TK 0 := le_max_left _ _
     have hmax0 : 0 ≤ max I.TK 0 := le_max_right _ _
     have hℓ2' : (5 : ℝ) ≤ ℓ - 2 := by linarith
-    have h1 : (ℓ - 2 : ℝ) * h ≤ 24 * (2 * (ℓ - 2) + max I.TK 0) := by
-      have : (ℓ - 2 : ℝ) / 24 * h ≤ 2 * (ℓ - 2) + max I.TK 0 := by linarith
+    have h1 : (ℓ - 2 : ℝ) * g ≤ 24 * (2 * (ℓ - 2) + max I.TK 0) := by
+      have : (ℓ - 2 : ℝ) / 24 * g ≤ 2 * (ℓ - 2) + max I.TK 0 := by linarith
       linarith
     have h2 : 24 * (2 * (ℓ - 2) + max I.TK 0) ≤ (ℓ - 2 : ℝ) * (48 + 8 * max I.TK 0) := by
       nlinarith

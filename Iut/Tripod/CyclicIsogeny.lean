@@ -983,6 +983,85 @@ theorem main_bound {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = 
 
 end Cyclic
 
+/-! ### The cyclic-subgroup bound away from `2` -/
+
+/-- A bound `C₀ ≥ 1` for the `x`-coordinates of the `N`-torsion points (`‖x‖ ≤ C₀ N²`) of the
+Legendre curves over `ℂ` with `|log|λ||, |log|λ − 1|| ≤ c`. -/
+noncomputable def torsionConst (c : ℝ) : ℝ :=
+  max 1 (Classical.choose (Iut.CyclicArch.legendre_torsion_x_le c))
+
+lemma one_le_torsionConst (c : ℝ) : 1 ≤ torsionConst c := le_max_left _ _
+
+lemma torsionConst_spec (c : ℝ) : ∀ (l : ℂ), |Real.log ‖l‖| ≤ c → |Real.log ‖l - 1‖| ≤ c →
+    ∀ (W : WeierstrassCurve ℂ) [W.IsElliptic], W = legendre l →
+    ∀ {N : ℕ}, 1 ≤ N → ∀ {a b : ℂ} (h : W.toAffine.Nonsingular a b),
+      N • (Affine.Point.some a b h : W.toAffine.Point) = 0 → ‖a‖ ≤ torsionConst c * N ^ 2 := by
+  intro l hl hl1 W _ hW N hN a b h hP
+  obtain ⟨-, hC⟩ := Classical.choose_spec (Iut.CyclicArch.legendre_torsion_x_le c)
+  refine (hC l hl hl1 W hW hN h hP).trans ?_
+  gcongr
+  exact le_max_right _ _
+
+/-- The constant `T_K` of the cyclic-subgroup bound: `(2 log(32 C₀) + 6c + 4 log 4)/6`. -/
+noncomputable def cyclicConst (K : CompactlyBounded) : ℝ :=
+  (2 * Real.log (32 * torsionConst K.c) + 6 * K.c + 4 * Real.log 4) / 6
+
+variable (P : CurveProviders) (K : CompactlyBounded) (d : ℕ)
+
+/-- **[GenEll], Lemma 3.5 away from `2`, for a subgroup which is the graph line at the odd
+multiplicative places**: for `x ∈ K ∩ U^{≤ d}`, a prime `ℓ ≥ 7` and a Galois-stable subgroup
+`H ⊆ E_λ(ℚ̄)` of order `ℓ` which is the graph line `μ_ℓ` at every multiplicative place of odd
+residue characteristic, `(ℓ − 2)/24 · (log q_∀(E_λ) − log q₂(E_λ)) ≤ 2 log ℓ + T_K`, where
+`log q₂` is the part of `log q_∀` supported over `2`. -/
+def CyclicGraphOddBoundHyp (TK : ℝ) : Prop :=
+  ∀ x ∈ K.set ∩ ptLE d, ∀ ℓ : ℕ, ∀ hℓ : ℓ.Prime, ∀ h7 : 7 ≤ ℓ,
+    ∀ H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar)),
+      Nat.card H = ℓ →
+      (∀ σ : (P.curve x).Fbar ≃ₐ[(P.curve x).F] (P.curve x).Fbar, ∀ Q ∈ H,
+        galPointMap (P.curve x).F (P.curve x).E (P.curve x).Fbar σ Q ∈ H) →
+      IsGraphLineOdd P x hℓ (by omega) H →
+      ((ℓ : ℝ) - 2) / 24 * (P.h x - (P.localData x).heightEq 2) ≤ 2 * Real.log ℓ + TK
+
+/-- **The cyclic-subgroup bound away from `2`** (the isogeny estimate
+`Iut.Tripod.Cyclic.main_bound`). -/
+theorem cyclicGraphOddBound : CyclicGraphOddBoundHyp P K d (cyclicConst K) := by
+  intro x hx ℓ hℓ h7 H hH hgal hgraph
+  haveI : Finite (Cyclic.HL P x hℓ H) := Cyclic.finite_HL (hℓ := hℓ) hH
+  haveI : Fintype (Cyclic.HL P x hℓ H) := Fintype.ofFinite _
+  have hmain := Cyclic.main_bound hx.1 hH (by omega) hgal hgraph (one_le_torsionConst K.c)
+    (torsionConst_spec K.c)
+  have hX : 0 ≤ P.h x - (P.localData x).heightEq 2 := by
+    have hsplit := (P.localData x).height_eq_heightOn_add (fun v => (P.localData x).p v = 2)
+    rw [← (P.localData x).heightEq_eq_heightOn] at hsplit
+    have := (P.localData x).heightOn_nonneg (fun v => ¬ (P.localData x).p v = 2)
+    change 0 ≤ (P.localData x).height - _
+    linarith
+  have hℓ7 : (7 : ℝ) ≤ ℓ := by exact_mod_cast h7
+  have hlogℓ : 0 ≤ Real.log ℓ := Real.log_nonneg (by linarith)
+  unfold cyclicConst
+  have h1 : ((ℓ : ℝ) - 2) / 24 * (P.h x - (P.localData x).heightEq 2) ≤
+      ((ℓ : ℝ) - 1) / 24 * (P.h x - (P.localData x).heightEq 2) := by
+    gcongr; linarith
+  nlinarith
+
+/-- **The cyclic-subgroup bound away from `2`** in the form consumed by IUT IV, Corollary 2.2
+(`Iut.Tripod.CyclicBoundOddHyp`): `(ℓ − 2)/24 · (log q_∀ − log q₂) ≤ 2 log ℓ + T_K` under (P2)
+and the existence of an `ℓ`-cyclic subgroup. The graph-line property at the odd multiplicative
+places is [GenEll], Lemma 3.2(i) (`Iut.Tripod.isGraphPlace_of_not_dvd`). -/
+theorem cyclicBoundOdd : CyclicBoundOddHyp P K d (cyclicConst K) := by
+  intro x hx ℓ hℓ h7 hP2 hcyc
+  obtain ⟨H, hH, hgal⟩ := hcyc
+  refine cyclicGraphOddBound P K d x hx ℓ hℓ h7 H hH hgal ?_
+  rw [isGraphLineOdd_iff]
+  intro w₀
+  by_cases hw₀ : w₀ ∈ (P.localData x).bad
+  · exact isGraphPlace_of_not_dvd P x hℓ (by omega) hH hgal w₀ (hP2 w₀ hw₀)
+  · intro w hw hww₀
+    exfalso
+    apply hw₀
+    rw [← hww₀, mem_localData_bad_iff P]
+    exact (P.curve x).placeUnder_mem_badAll_of_isBadPlace _ hw
+
 end
 
 end Iut.Tripod
