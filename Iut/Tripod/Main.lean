@@ -15,7 +15,7 @@ import Iut.Tripod.TorsionDegree
 import Iut.Tripod.LogCond
 import Iut.Tripod.Core
 import Iut.Tripod.Height
-import Iut.Tripod.CyclicBound
+import Iut.Tripod.CyclicIsogeny
 import Iut.Tripod.Tower
 import Iut.Tripod.TowerFacts
 import Iut.Tripod.TameTwo
@@ -36,8 +36,12 @@ hypothesis is a proposition about the constructed objects:
   term: the torsion bases `E_λ[ℓ] ≅ (ℤ/ℓ)²` from the division polynomials, `Iut/Torsion/`,
   the stable reduction of `E_λ/F_λ` at every finite place, `Iut.Tripod.stable_reduction`,
   and the Galois-degree property of `F_λ/ℚ(j)`, `Iut/Tripod/Galois.lean`, are theorems);
-* `CurveFactsProp`: the cyclic-subgroup bound ([GenEll] Lemma 3.5), assumed in its residual
-  form `CyclicGraphBoundHyp`; the height comparison of Corollary 2.2(i), the `2`-adic bound,
+* `CurveFactsProp`: the cyclic-subgroup bound ([GenEll] Lemma 3.5) away from `2`
+  (`CyclicBoundOddHyp`: the bound for `log q_∀ − log q₂`, which is what Corollary 2.2 uses) is
+  a theorem (`Iut.Tripod.cyclicBoundOdd`, `Iut/Tripod/CyclicIsogeny.lean`: Lemma 3.2(i) at the
+  odd multiplicative places and the product formula for the Vélu ratios of the points of
+  order `2` and `4`, with the complex uniformization of `lana-agents/heights` at the
+  archimedean places); the height comparison of Corollary 2.2(i), the `2`-adic bound,
   the conductor comparisons, the `SL₂`-image lemma ([GenEll] Lemma 3.1(iii)) and the
   finiteness of the points whose once-punctured curve has no core ([CanLift],
   Proposition 2.7, from the fields `excJ`, `hasCore_oncePunctured` of `Pi1`) are theorems
@@ -123,15 +127,12 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
 
 /-- **The Corollary 3.12 variant implies ABC on the tripod**, with propositional inputs. -/
 theorem abc_of_variant
-    (hcyc : ∀ (K : CompactlyBounded) (d : ℕ),
-      ∃ TK : ℝ, CyclicGraphBoundHyp (tripodProviders) K d TK)
     (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (LT : LocalTheory.{0, 0} D.Kt)
       (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
       Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
     tripodTheory.StatementII := by
-  choose TK hc using hcyc
-  let CF : ∀ K d, CurveFactsProp (tripodProviders) K d (TK K d) :=
-    fun K d => ⟨cyclicBound_of _ K d (hc K d)⟩
+  let CF : ∀ K d, CurveFactsProp (tripodProviders) K d (cyclicConst K) :=
+    fun K d => ⟨cyclicBoundOdd _ K d⟩
   exact statementII_of_cor312
     (fun K d => (curveInputs tripodProviders K d (CF K d) (coreFiniteness Pi1 _ K d)
       northcottHyp torsionDegreeBound_three' torsionDegreeBound_five'
