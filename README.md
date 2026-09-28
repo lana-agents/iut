@@ -115,15 +115,28 @@ whose `x`-coordinate is a nonzero integral root of `3x³ + A²x² + 3ABx + 3B²`
 Likewise the cyclic-subgroup bound of [GenEll] Lemma 3.5 (`cyclic_bound` in
 `Corollary22Inputs`, `CurveInputs`) is stated for primes `ℓ ≥ 7` under (P2), as it is
 used; quantified over all primes it fails for the curves of the points, whose 3- and
-5-torsion is rational. Its local half, [GenEll] Lemma 3.2(i) — under (P2) an `ℓ`-cyclic
-subgroup is the graph line `μ_ℓ` of the Tate uniformisation — is proved at the multiplicative
-places of odd residue characteristic (`Iut/Tripod/CyclicLocal.lean`), and the bound is
-derived (`Iut.Tripod.cyclicBound_of`, `Iut/Tripod/CyclicBound.lean`) from the residual
-`Prop` `Iut.Tripod.CyclicGraphBoundHyp`: the same bound for subgroups that are the graph
-line at the odd places, whose content is Lemma 3.2(i) at the places over `2` (the Tate
-uniformisation of `tate-curves-theta` assumes `‖2‖ = 1`), Lemma 3.2(ii) for the quotient
-`E/μ_ℓ`, the Faltings-height inequality for the isogeny `E → E/μ_ℓ`, and Proposition 3.4 —
-Faltings heights, isogenies and quotient curves have no counterpart in Mathlib.
+5-torsion is rational. It is **proved** for the tripod curves in a form **weakened at the
+prime `2`** (`Iut.Tripod.cyclicBoundOdd`, [`CyclicIsogeny.lean`](Iut/Tripod/CyclicIsogeny.lean)):
+`(ℓ−2)/24 · (log q_∀ − log q₂) ≤ 2 log ℓ + T_K`, where `log q₂` is the part of `log q_∀`
+supported over `2`. The interface `cyclic_bound` of `Corollary22Inputs`/`CurveInputs` was
+changed to this form (and the threshold of Corollary 2.2 raised by the `2`-adic bound `B_K`);
+the proof of (P4) closes unchanged, since `log q₂ ≤ B_K` on `K`. The proof avoids Faltings
+heights: over the ℓ-torsion field, the Vélu ratios
+`r_i = ∏_{Q ∈ H∖0} (x(T_i) − x(R_i+Q))/(x(T_i) − x(Q))` of the points `T₁ = (0,0)`, `T₂ = (1,0)`
+of order `2` and halves `R_i` (`2R_i = T_i`, using `√λ, √(1−λ), √−1 ∈ F_λ`) are nonzero and
+Galois-invariant, and satisfy `r_i (x(T_i) − x(R_i)) = ∑_Q x(T_i+Q) − ∑_Q x(R_i+Q)`
+(Vélu's product formula, `Heights.Velu.prod_mul_sum_sub_sum` in
+[`lana-agents/heights`](https://github.com/lana-agents/heights)). The product formula for
+`ρ = r₁r₂ ∈ F_λ` combines: at the odd multiplicative places, where `H` is the graph line
+([GenEll] Lemma 3.2(i), `Iut/Tripod/CyclicLocal.lean`), the Tate coordinates give
+`|ρ|_v⁴ ≤ |q_v|^{ℓ−1}` (`Iut.CyclicTate.ratio_mul_bound`); at the other finite places the
+`x`-coordinates of `4ℓ`-torsion points are almost integral (Newton bound on `ψ_{4ℓ}`,
+`Iut.TorsionNewton.apply_x_le_legendre`), losing `log|ℓ|⁻¹` and a `K`-bounded amount over `2`;
+at the archimedean places they are `O(ℓ²)` by the complex uniformization of `heights`
+(`Heights.exists_torsion_x_bound`). The full form `Iut.Tripod.CyclicGraphBoundHyp` (with
+`log q_∀`) is kept as an unused, unproved `Prop`: it additionally needs Lemma 3.2 at the
+multiplicative places over `2`, where the Tate uniformisation of `tate-curves-theta`
+(`‖2‖ = 1`) is not available.
 
 ## Current scope (IUT4 §1)
 
@@ -370,7 +383,7 @@ from #1449):
 | `Iut.TowerArithmetic D LT TL` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the local facts `Iut.TowerLocalFacts` (three local fields: the wild ramification bound `v_p(e(v/u)) ≤ c_p`, Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`), **theorems for the tripod** (`Iut.Tripod.towerLocalHyp`, [`TowerFacts.lean`](Iut/Tripod/TowerFacts.lean), including the tameness of `F_λ(E_λ[ℓ])/F_λ` at the places over `2`, `Iut.Tripod.tameTwoHyp`, [`TameTwo.lean`](Iut/Tripod/TameTwo.lean); the different bound of Prop 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le` (Serre's bound, [#1463](https://taxis.lana.merten.dev/issues/1463)) and the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) |
 | `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
 | `Iut.PrimeCountingBound` | Proposition 1.6 (factor `3/2`) | **proved** (`Iut.primeCountingBoundExplicit`, from Mathlib's `θ(x) ≤ (log 4)·x` and the Abel-summation identity for `π`; `Iut.PrimeCountingHyp` is the theorem `Iut.primeCountingHyp_holds`), [#1466](https://taxis.lana.merten.dev/issues/1466) |
-| `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); residual `Prop` `CurveFactsProp` (one field, the cyclic-subgroup bound in its residual form), see below |
+| `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); its remaining `Prop` `CurveFactsProp` (the cyclic-subgroup bound away from `2`) is **proved** (`Iut.Tripod.cyclicBoundOdd`), see below |
 | `Genl.HeightTheory.ProofPackage` | [GenEll] Theorem 2.1 (ii) ⇒ (i) | not needed for the tripod target `StatementII` |
 | `EllipticCurveData.CurveArithmetic` | Prop 1.8 | six of ten fields **proved** (`CurveArithmetic.ofCore`); for the tripod curves `√−1 ∈ F`, stable reduction (`Iut/Tripod/StableOdd.lean`, `StableTwo.lean`), `E[6]` rational and `F/F_mod` Galois of degree prime to `ℓ` (`Iut/Tripod/Galois.lean`) are all **proved** |
 | `EllipticCurveData.TateInputs` | Tate parameters at the multiplicative places | **constructed** (`EllipticCurveData.tateInputs`) |
@@ -425,18 +438,17 @@ repository and every hypothesis is a proposition about the constructed objects.
   `F_λ/ℚ(j)` is Galois of degree prime to `ℓ ≥ 7` is proved in
   [`Galois.lean`](Iut/Tripod/Galois.lean); the remaining
   facts of Corollary 2.2 as the `Prop` structure `CurveFactsProp` (the cyclic-subgroup
-  bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2), assumed in its residual form
-  `Iut.Tripod.CyclicGraphBoundHyp`: for the cyclic-subgroup bound, [GenEll] Lemma 3.2(i) at
-  the odd multiplicative places (a Galois-stable `ℓ`-cyclic subgroup is the graph line
-  `μ_ℓ ⊆ E_λ[ℓ]` of the Tate uniformisation when `ℓ ∤ ord(q)`, by a counting argument in the
-  decomposition group of the `ℓ`-torsion field:
-  `Iut.EllipticCurveData.ModEllRepData.comap_bcKR_eq_graphLineAt`,
+  bound of [GenEll] Lemma 3.5 for `ℓ ≥ 7` under (P2), away from `2`:
+  `Iut.Tripod.CyclicBoundOddHyp`, **proved** as `Iut.Tripod.cyclicBoundOdd` in
+  [`CyclicIsogeny.lean`](Iut/Tripod/CyclicIsogeny.lean) from [GenEll] Lemma 3.2(i) at the odd
+  multiplicative places (`Iut.EllipticCurveData.ModEllRepData.comap_bcKR_eq_graphLineAt`,
   [`CyclicTorsion.lean`](Iut/Tripod/CyclicTorsion.lean),
-  [`CyclicLocal.lean`](Iut/Tripod/CyclicLocal.lean)), the decomposition of `log q_∀` by the
-  graph-line places with the non-graph part bounded by the `2`-adic bound, and the derivation
-  of the bound from the residual (`cyclicBound_of`, [`CyclicBound.lean`](Iut/Tripod/CyclicBound.lean))
-  are **proved**; the residual `CyclicGraphBoundHyp` is Lemma 3.2(i) over `2`, Lemma 3.2(ii),
-  the Faltings-height inequality for `E → E/μ_ℓ` and [GenEll] Prop 3.4); the finiteness of the points whose
+  [`CyclicLocal.lean`](Iut/Tripod/CyclicLocal.lean)) and the isogeny estimate by the product
+  formula for Vélu ratios ([`CyclicPoints.lean`](Iut/Tripod/CyclicPoints.lean),
+  [`CyclicGain.lean`](Iut/Tripod/CyclicGain.lean), [`CyclicTate.lean`](Iut/Tripod/CyclicTate.lean),
+  [`TorsionNewton.lean`](Iut/Tripod/TorsionNewton.lean),
+  [`CyclicArch.lean`](Iut/Tripod/CyclicArch.lean); see the honesty boundary)
+); the finiteness of the points whose
   once-punctured curve has no core ([CanLift] Prop 2.7, `Iut.Tripod.coreFiniteness` from the
   `excJ`/`hasCore_oncePunctured` fields of `EtalePi1Theory` and the `j`-invariant of the
   Legendre curve, [`Core.lean`](Iut/Tripod/Core.lean)), the height comparison
@@ -480,8 +492,7 @@ repository and every hypothesis is a proposition about the constructed objects.
 Final statement (hypotheses only): universally quantified fundamental-group theories
 `Pi1 : EtalePi1Theory`, `Tp : TemperedPi1Theory Pi1` (so that `h312` ranges over exactly
 the Θ-data of IUT I, Definition 3.1 — the variant is never strengthened),
-`∀ K d, ∃ T_K, CyclicGraphBoundHyp … K d T_K` (the residual form of the cyclic-subgroup
-bound), and the variant `h312`; conclusion `tripodTheory.StatementII`. The prime-counting bound of
+and the variant `h312` (the cyclic-subgroup bound is no longer a hypothesis); conclusion `tripodTheory.StatementII`. The prime-counting bound of
 Proposition 1.6 is supplied by `Iut.primeCountingBoundExplicit`.
 `StatementI` (all hyperbolic curves) additionally needs heights on curves and the
 coverings of [GenEll] Theorem 2.1, which remain in genl's scope.

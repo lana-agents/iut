@@ -115,6 +115,8 @@ import Iut.Tower.WildBound
 import Iut.Tripod.BadRamIdx
 import Iut.Tripod.Basic
 import Iut.Tripod.ClassicalAbc
+import Iut.Tripod.ClassicalAbcOfVariant
+import Iut.Tripod.GeneralPosition
 import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts
 import Iut.Tripod.CurveOf

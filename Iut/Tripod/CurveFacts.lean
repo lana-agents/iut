@@ -42,13 +42,14 @@ For the Legendre curve `E_λ` over `F_λ = ℚ(λ, √−1, √λ, √(1 − λ)
 representations of the curves, `LegendreHeightHyp` (IUT IV, Corollary 2.2(i); [GenEll],
 Proposition 3.4; proved in `Iut/Tripod/Height.lean`, `Iut.Tripod.legendreHeight`),
 `TwoAdicBoundHyp` (the `2`-adic contribution to `log(q_∀)`; proved in `TwoAdic.lean`),
-`CyclicBoundHyp` ([GenEll], Lemma 3.5), `SL2ImageHyp` ([GenEll], Lemma 3.1(iii); proved in
+`CyclicBoundHyp` ([GenEll], Lemma 3.5; not used) and its weakening away from `2`,
+`CyclicBoundOddHyp` (proved in `CyclicIsogeny.lean`, `Iut.Tripod.cyclicBoundOdd`), `SL2ImageHyp` ([GenEll], Lemma 3.1(iii); proved in
 this file, `Iut.Tripod.sl2Image`, from `Iut/Concrete/SL2Image.lean`),
 `LogCondGeHyp`, `LogCondLeHyp` (the comparison of the conductor of `F_tpd = ℚ(λ)` away from
 `2ℓ` with `log-cond_{{0,1,∞}}(λ)`, from the reduction theory of the Legendre curve; proved in
 `LogCond.lean`) and `CoreFinitenessHyp` ([CanLift], Proposition 2.7; proved for the model
-anabelian geometry in `Iut.Tripod.coreFiniteness`, `Iut/Tripod/Core.lean`). The unproved ones
-are collected in `CurveFactsProp`, and `Iut.Tripod.curveInputs` assembles
+anabelian geometry in `Iut.Tripod.coreFiniteness`, `Iut/Tripod/Core.lean`). The cyclic-subgroup
+bound is collected in `CurveFactsProp`, and `Iut.Tripod.curveInputs` assembles
 `Iut.CurveInputs tripodTheory AG K d` from it, the proved hypotheses and `NorthcottHyp`.
 -/
 
@@ -415,6 +416,17 @@ def CyclicBoundHyp (TK : ℝ) : Prop :=
     (P.curve x).HasCyclicSubgroup ℓ →
     ((ℓ : ℝ) - 2) / 24 * P.h x ≤ 2 * Real.log ℓ + TK
 
+/-- **[GenEll], Lemma 3.5 away from `2`**: if `E_λ` has an `ℓ`-cyclic subgroup scheme and (P2)
+holds, then `(ℓ − 2)/24 · (log(q_∀) − log(q₂)) ≤ 2 log ℓ + T_K`, where `log(q₂)` is the part of
+`log(q_∀)` supported over `2` (bounded on `K` by `TwoAdicBoundHyp`). This weakening of
+`CyclicBoundHyp` is what IUT IV, Corollary 2.2 consumes (`Iut.Corollary22Inputs.cyclic_bound`);
+it is proved in `Iut/Tripod/CyclicIsogeny.lean` (`Iut.Tripod.cyclicBoundOdd`). -/
+def CyclicBoundOddHyp (TK : ℝ) : Prop :=
+  ∀ x ∈ K.set ∩ ptLE d, ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
+    (∀ w ∈ (P.localData x).bad, ¬ ℓ ∣ (P.localData x).hv w) →
+    (P.curve x).HasCyclicSubgroup ℓ →
+    ((ℓ : ℝ) - 2) / 24 * (P.h x - (P.localData x).heightEq 2) ≤ 2 * Real.log ℓ + TK
+
 /-- **[GenEll], Lemma 3.1(iii)**: under (P2), (P4), (P5) the image of the mod-`ℓ`
 representation contains `SL₂(𝔽_ℓ)`. -/
 def SL2ImageHyp : Prop :=
@@ -465,12 +477,13 @@ def CoreFinitenessHyp (AG : AnabelianGeometry.{0}) : Prop :=
     ¬ AG.HasCore (AG.oncePunctured (P.curve x).E)
       (OrbicurveDataSection.CF AG (P.curve x).F (P.curve x).E)}.Finite
 
-/-- **The facts about the curves of the points that remain unproved**, collected: exactly
-the fields of `Iut.CurveInputs` for `curveOf` that are not proved in this file, in
-`TwoAdic.lean`, `LogCond.lean`, `Height.lean` or `Core.lean`. -/
+/-- **The facts about the curves of the points not proved in this file**, collected: exactly
+the fields of `Iut.CurveInputs` for `curveOf` that are not proved here or in `TwoAdic.lean`,
+`LogCond.lean`, `Height.lean` or `Core.lean` — the cyclic-subgroup bound, proved in
+`CyclicIsogeny.lean` (`Iut.Tripod.cyclicBoundOdd`). -/
 structure CurveFactsProp (TK : ℝ) : Prop where
-  /-- [GenEll], Lemma 3.5. -/
-  cyclic : CyclicBoundHyp P K d TK
+  /-- [GenEll], Lemma 3.5, away from `2` (proved: `Iut.Tripod.cyclicBoundOdd`). -/
+  cyclic : CyclicBoundOddHyp P K d TK
 
 /-- **The inputs of IUT IV, Corollary 2.2 for the tripod**, from the curves `E_λ/F_λ` of the
 points, the facts proved in this file, the isolated hypotheses `CurveFactsProp`, the core
