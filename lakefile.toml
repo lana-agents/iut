@@ -30,6 +30,13 @@ name = "genl"
 git = "https://github.com/LANA-Project/genl"
 rev = "6e9a6543b46a2a02fd7fe7ec8ab203d878f32859"
 
+# Étale fundamental groups (Galois-theoretic π₁, inertia) and cores of orbicurves
+# ([CanLift] §2), consumed by the genuine instance of Iut.Anabelian.EtalePi1Theory.
+[[require]]
+name = "pi1"
+git = "https://github.com/lana-agents/pi1"
+rev = "0802cb30f9cdd8d84d14174198387f6a633c523d"
+
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
 name = "Iut"
