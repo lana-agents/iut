@@ -5,6 +5,7 @@ Authors: The iut contributors
 -/
 import Iut.Anabelian.Geometry
 import Iut.Anabelian.Genuine.Orbifold
+import Iut.Anabelian.Genuine.Theory
 import TemperedFundamentalGroups
 
 /-!
@@ -58,9 +59,11 @@ noncomputable section
 def Orbicurve.affineOrbifold {k : Type u} [Field k] (X : Orbicurve k) : AffineOrbifold k :=
   TemperedFundamentalGroups.Orbicurve.orbicurveOrbifold X.E X.level X.M X.pm
 
-/-- **The genuine étale fundamental group** of a model orbicurve (`Genuine.pi1Of`). -/
+/-- **The étale fundamental group** of a model orbicurve used by the genuine étale theory
+(`Genuine.pi1C`): the genuine étale fundamental group `Genuine.pi1Of` in characteristic `0`
+(`Genuine.pi1EquivC`), the trivial group (a junk value) in positive characteristic. -/
 abbrev Orbicurve.genuinePi1 {k : Type u} [Field k] (X : Orbicurve k) : ProfiniteGrp.{u} :=
-  Genuine.pi1Of X.E X.level X.M X.pm
+  Genuine.pi1C X.E X.level X.M X.pm
 
 /-- **The presentation used for the tempered fundamental group**, with the continuous comparison
 of its étale fundamental group with the genuine one: in characteristic `0`, the Galois
@@ -71,15 +74,19 @@ def Orbicurve.temperedPresentation {k : Type u} [Field k] (X : Orbicurve k) :
   if h : CharZero k then
     haveI := h
     ⟨Genuine.orbifold X.E X.level X.M X.pm,
-      (Genuine.etaleEquiv X.E X.level X.M X.pm).toMulEquiv.toMonoidHom,
-      (Genuine.etaleEquiv X.E X.level X.M X.pm).continuous⟩
+      ((Genuine.etaleEquiv X.E X.level X.M X.pm).trans
+        (Genuine.pi1EquivC X.E X.level X.M X.pm)).toMulEquiv.toMonoidHom,
+      ((Genuine.etaleEquiv X.E X.level X.M X.pm).trans
+        (Genuine.pi1EquivC X.E X.level X.M X.pm)).continuous⟩
   else ⟨X.affineOrbifold, 1, continuous_const⟩
 
 lemma Orbicurve.temperedPresentation_of_charZero {k : Type u} [Field k] [CharZero k]
     (X : Orbicurve k) :
     X.temperedPresentation = ⟨Genuine.orbifold X.E X.level X.M X.pm,
-      (Genuine.etaleEquiv X.E X.level X.M X.pm).toMulEquiv.toMonoidHom,
-      (Genuine.etaleEquiv X.E X.level X.M X.pm).continuous⟩ := by
+      ((Genuine.etaleEquiv X.E X.level X.M X.pm).trans
+        (Genuine.pi1EquivC X.E X.level X.M X.pm)).toMulEquiv.toMonoidHom,
+      ((Genuine.etaleEquiv X.E X.level X.M X.pm).trans
+        (Genuine.pi1EquivC X.E X.level X.M X.pm)).continuous⟩ := by
   rw [Orbicurve.temperedPresentation, dif_pos (inferInstance : CharZero k)]
 
 /-- **The fields of an étale theory over the genuine étale fundamental groups**: the fields of
