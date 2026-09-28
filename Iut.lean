@@ -2,6 +2,7 @@ import Iut.Abc.Classical
 import Iut.Abc.Target
 import Iut.Anabelian.Existence
 import Iut.Anabelian.Geometry
+import Iut.Anabelian.Tempered
 import Iut.Anabelian.Linear
 import Iut.Anabelian.Local
 import Iut.Anabelian.LocalInputs

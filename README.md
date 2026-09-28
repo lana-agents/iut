@@ -617,7 +617,7 @@ universally (the Tate family of the Θ-data is proved, see above):
 | Input | Content | Owner |
 | --- | --- | --- |
 | `Iut.Anabelian.EtalePi1Theory` | étale `π₁` of the model orbicurves, open immersions for covers, `k`-cores and their stability, and [CanLift] Prop 2.7 (`excJ`, `hasCore_oncePunctured`: the once-punctured elliptic curve has the core `X/{±1}` unless `j` is one of finitely many exceptional values) | anabelian geometry, [#1527](https://taxis.lana.merten.dev/issues/1527) (#276, #10) |
-| `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁` | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
+| `Iut.Anabelian.TemperedPi1Theory` | tempered `π₁` with the comparison to the étale `π₁`; constructed over the genuine étale `π₁` (`Iut.Anabelian.temperedTheory G : TemperedPi1Theory G.toEtalePi1Theory`, `G : GenuineEtaleData` the remaining fields of an étale theory with `pi1 X = Genuine.pi1Of …`), with the tempered and étale groups of the same presentation `[Spec R / A]` in characteristic `0` (SGA 1 V.8.2 comparison from `pi1`) | tempered-fundamental-groups, [#1528](https://taxis.lana.merten.dev/issues/1528) (#7) |
 
 ## Comparator suite
 
