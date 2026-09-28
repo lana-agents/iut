@@ -192,7 +192,7 @@ lemma xOf_galK (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) (Q : (WL P x h
 lemma galK_some_of_fixed (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) {a b : L P x hℓ}
     (h : (WL P x hℓ).toAffine.Nonsingular a b) (ha : σ a = a) (hb : σ b = b) :
     galK (P.curve x).E (L P x hℓ) σ (Affine.Point.some a b h) = Affine.Point.some a b h := by
-  show Affine.Point.some (σ a) (σ b) _ = _
+  change Affine.Point.some (σ a) (σ b) _ = _
   congr 1
 
 lemma galK_T₁ (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) :
@@ -239,12 +239,12 @@ lemma veluRatio_galois [Fintype (HL P x hℓ H)]
   have hgg' : ∀ Q, g (g' Q) = Q := by
     rintro (_ | ⟨a, b, h⟩)
     · rfl
-    · show Affine.Point.some (σ (σ.symm a)) (σ (σ.symm b)) _ = _
+    · change Affine.Point.some (σ (σ.symm a)) (σ (σ.symm b)) _ = _
       congr 1 <;> simp
   have hg'g : ∀ Q, g' (g Q) = Q := by
     rintro (_ | ⟨a, b, h⟩)
     · rfl
-    · show Affine.Point.some (σ.symm (σ a)) (σ.symm (σ b)) _ = _
+    · change Affine.Point.some (σ.symm (σ a)) (σ.symm (σ b)) _ = _
       congr 1 <;> simp
   unfold veluRatio
   rw [map_prod]
@@ -294,9 +294,11 @@ lemma exists_algebraMap_eq_ratio [Fintype (HL P x hℓ H)]
 
 variable [Fintype (HL P x hℓ H)]
 
-lemma nsmul_ℓ_eq_zero (hH : Nat.card H = ℓ) (Q : HL P x hℓ H) : ℓ • (Q : (WL P x hℓ).toAffine.Point) = 0 := by
-  have h := card_nsmul_eq_zero (x := Q)
-  rw [Fintype.card_eq_nat_card, card_HL hH] at h
+omit [Fintype (HL P x hℓ H)] in
+lemma nsmul_ℓ_eq_zero (hH : Nat.card H = ℓ) (Q : HL P x hℓ H) :
+    ℓ • (Q : (WL P x hℓ).toAffine.Point) = 0 := by
+  have h := card_nsmul_eq_zero' (x := Q)
+  rw [card_HL hH] at h
   have := congrArg Subtype.val h
   rwa [AddSubgroup.coe_nsmul, ZeroMemClass.coe_zero] at this
 
@@ -304,6 +306,7 @@ lemma odd_card_HL (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) : Odd (Fintype.car
   rw [Fintype.card_eq_nat_card, card_HL hH]
   exact hℓ.odd_of_ne_two hℓ2
 
+omit [Fintype (HL P x hℓ H)] in
 /-- The translates `T + Q`, `R + Q` (`Q ∈ H ∩ E(L)`) of a point `T` of order `2` and a half `R`
 of it are nonzero `4ℓ`-torsion points. -/
 lemma translate_torsion (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {T R : (WL P x hℓ).toAffine.Point}
@@ -312,6 +315,8 @@ lemma translate_torsion (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {T R : (WL P
       (4 * ℓ) • (T + (Q : (WL P x hℓ).toAffine.Point)) = 0) ∧
     (R + (Q : (WL P x hℓ).toAffine.Point) ≠ 0 ∧
       (4 * ℓ) • (R + (Q : (WL P x hℓ).toAffine.Point)) = 0) := by
+  haveI : Finite (HL P x hℓ H) := finite_HL (hℓ := hℓ) hH
+  haveI := Fintype.ofFinite (HL P x hℓ H)
   have hodd := odd_card_HL hH hℓ2
   have hT : T ∉ HL P x hℓ H := notMem_of_add_self _ hodd hT0 hT2
   have hR : R ∉ HL P x hℓ H := fun hR => hT (hRT ▸ (HL P x hℓ H).add_mem hR hR)
@@ -818,7 +823,9 @@ lemma finrank_mul_h_sub (x : Pt) :
   · exact absurd h (lt_irrefl 0)
   · exact h.le
 
-/-- **The isogeny estimate**: `((ℓ − 1)/4)(log q_∀ − log q₂) ≤ 10 log ℓ + 2 log(32 C₀) + 6c + 4 log 4`,
+omit [Fintype (HL P x hℓ H)] in
+/-- **The isogeny estimate**:
+`((ℓ − 1)/4)(log q_∀ − log q₂) ≤ 10 log ℓ + 2 log(32 C₀) + 6c + 4 log 4`,
 for a point of a compactly bounded subset with bound `c` and `C₀ ≥ 1` a bound for the torsion
 `x`-coordinates of the Legendre curves over `ℂ` with parameters bounded by `c`. -/
 theorem main_bound {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2)
@@ -831,6 +838,8 @@ theorem main_bound {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = 
         N • (Affine.Point.some a b h : W.toAffine.Point) = 0 → ‖a‖ ≤ C₀ * N ^ 2) :
     ((ℓ : ℝ) - 1) / 4 * (P.h x - (P.localData x).heightEq 2) ≤
       10 * Real.log ℓ + (2 * Real.log (32 * C₀) + 6 * K.c + 4 * Real.log 4) := by
+  haveI : Finite (HL P x hℓ H) := finite_HL (hℓ := hℓ) hH
+  haveI := Fintype.ofFinite (HL P x hℓ H)
   obtain ⟨ρ, hρ⟩ := exists_algebraMap_eq_ratio (hℓ := hℓ) (H := H) hgal
   have hodd := odd_card_HL hH hℓ2
   have hρ0 : ρ ≠ 0 := by
@@ -903,7 +912,8 @@ theorem main_bound {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = 
       rw [← hs₁, Real.log_pow]; push_cast; ring
     have e₂ : Real.log (w (sqrtOneSub P x)) = Real.log (w (genC' P x - 1)) / 2 := by
       rw [← hs₂, Real.log_pow]; push_cast; ring
-    have hBeq : Real.log (2 * (ℓ : ℝ) * (C₀ * (4 * ℓ) ^ 2)) = Real.log (32 * C₀) + 3 * Real.log ℓ := by
+    have hBeq : Real.log (2 * (ℓ : ℝ) * (C₀ * (4 * ℓ) ^ 2)) =
+        Real.log (32 * C₀) + 3 * Real.log ℓ := by
       rw [show 2 * (ℓ : ℝ) * (C₀ * (4 * ℓ) ^ 2) = (32 * C₀) * ℓ ^ 3 by ring,
         Real.log_mul (by positivity) (by positivity), Real.log_pow]
       push_cast; ring
@@ -915,7 +925,8 @@ theorem main_bound {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = 
   have hsum_arch : ∑ w : InfinitePlace (P.curve x).F, (w.mult : ℝ) * Real.log (w ρ) ≤
       d * (2 * Real.log (32 * C₀) + 6 * Real.log ℓ + K.c) := by
     calc ∑ w : InfinitePlace (P.curve x).F, (w.mult : ℝ) * Real.log (w ρ)
-        ≤ ∑ w : InfinitePlace (P.curve x).F, (w.mult : ℝ) * (2 * Real.log (32 * C₀) + 6 * Real.log ℓ + K.c) :=
+        ≤ ∑ w : InfinitePlace (P.curve x).F,
+            (w.mult : ℝ) * (2 * Real.log (32 * C₀) + 6 * Real.log ℓ + K.c) :=
           Finset.sum_le_sum fun w _ => mul_le_mul_of_nonneg_left (harch w) (Nat.cast_nonneg _)
       _ = d * (2 * Real.log (32 * C₀) + 6 * Real.log ℓ + K.c) := by
           rw [← Finset.sum_mul, ← Nat.cast_sum, InfinitePlace.sum_mult_eq]
@@ -959,10 +970,12 @@ theorem main_bound {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = 
       linarith
     refine (Finset.sum_le_sum hle).trans ?_
     rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
-    have hdeg : ∑ v ∈ S.filter (fun v => residueChar v = 2), (localDeg (P.curve x).F v : ℝ) ≤ d := by
+    have hdeg : ∑ v ∈ S.filter (fun v => residueChar v = 2),
+        (localDeg (P.curve x).F v : ℝ) ≤ d := by
       rw [hd]; exact_mod_cast sum_localDeg_filter_le S 2
     have hnn : ∀ v ∈ S, 0 ≤ -Real.log (v (4 : (P.curve x).F)) := fun v _ =>
-      neg_nonneg.mpr (Real.log_nonpos (apply_nonneg _ _) (by exact_mod_cast apply_natCast_le_one v 4))
+      neg_nonneg.mpr (Real.log_nonpos (apply_nonneg _ _)
+        (by exact_mod_cast apply_natCast_le_one v 4))
     have h4le : ∑ v ∈ S.filter (fun v => residueChar v = 2), -Real.log (v (4 : (P.curve x).F)) ≤
         d * Real.log 4 := by
       rw [← hlog4]
@@ -1002,7 +1015,7 @@ lemma torsionConst_spec (c : ℝ) : ∀ (l : ℂ), |Real.log ‖l‖| ≤ c → 
   gcongr
   exact le_max_right _ _
 
-/-- The constant `T_K` of the cyclic-subgroup bound: `(2 log(32 C₀) + 6c + 4 log 4)/6`. -/
+/-- The number `T_K` of the cyclic-subgroup bound: `(2 log(32 C₀) + 6c + 4 log 4)/6`. -/
 noncomputable def cyclicConst (K : CompactlyBounded) : ℝ :=
   (2 * Real.log (32 * torsionConst K.c) + 6 * K.c + 4 * Real.log 4) / 6
 

@@ -39,6 +39,7 @@ section Norms
 variable {K : Type*} [NormedField K] [IsUltrametricDist K] [CompleteSpace K]
   (t : TateParameter K)
 
+omit [IsUltrametricDist K] [CompleteSpace K] in
 /-- Every unit has a representative modulo `q^ℤ` in the annulus `‖q‖ < ‖u‖ ≤ 1`. -/
 theorem exists_zpow_mul_mem_annulus (u : Kˣ) :
     ∃ n : ℤ, ‖(t.q : K)‖ < ‖((t.q ^ n * u : Kˣ) : K)‖ ∧ ‖((t.q ^ n * u : Kˣ) : K)‖ ≤ 1 := by

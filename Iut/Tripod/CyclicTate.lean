@@ -39,7 +39,8 @@ variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
   {K₀ : Type*} [Field K₀] (φ : K₀ →+* k) {W : WeierstrassCurve K₀}
   (S : TateStructure (W.map φ))
 
-omit [CompleteSpace k] in
+omit [Valued k (WithZero (Multiplicative ℤ))]
+  [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k] in
 /-- `x` commutes with the point map. -/
 lemma xOf_pointMap (P : W.toAffine.Point) : xOf (pointMap W φ P) = φ (xOf P) := by
   rcases P with _ | ⟨x, y, h⟩
@@ -66,6 +67,7 @@ lemma exists_class (P : W.toAffine.Point) :
 
 variable [W.IsElliptic] (H : AddSubgroup W.toAffine.Point) [Fintype H]
 
+omit [W.IsElliptic] in
 /-- **The Vélu ratio at a Tate place.** -/
 theorem ratio_bound {ℓ : ℕ} (hℓ : Odd ℓ) (hcard : Fintype.card H = ℓ) (h2 : ‖(2 : k)‖ = 1)
     (hgraph : ∀ Q ∈ H, pointMap W φ Q ∈ S.graphLine ℓ) {T R : W.toAffine.Point}
@@ -152,6 +154,7 @@ theorem ratio_bound {ℓ : ℕ} (hℓ : Odd ℓ) (hcard : Fintype.card H = ℓ) 
           exact div_le_self (norm_nonneg _) hden
       _ ≤ ‖(S.t.q : k)‖ := hnum
 
+omit [W.IsElliptic] in
 /-- **The gain at a Tate place for two points of order `2`**: for distinct points `T₁ ≠ T₂` of
 order `2` with halves `R₁`, `R₂`, `(‖φ(r₁)‖ ‖φ(r₂)‖)⁴ ≤ ‖q‖^{ℓ − 1}`. -/
 theorem ratio_mul_bound {ℓ : ℕ} (hℓ : Odd ℓ) (hcard : Fintype.card H = ℓ) (h2 : ‖(2 : k)‖ = 1)

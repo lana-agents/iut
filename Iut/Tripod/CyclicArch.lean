@@ -22,6 +22,7 @@ namespace Iut.CyclicArch
 open WeierstrassCurve Iut.Tripod
 
 set_option maxHeartbeats 2000000 in
+-- the real-number bookkeeping (positivity and `nlinarith` on the bounds of `λ`) is heavy
 /-- **Torsion `x`-coordinates on Legendre curves over `ℂ` with a bounded parameter.** -/
 theorem legendre_torsion_x_le (c : ℝ) :
     ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∀ (l : ℂ), |Real.log ‖l‖| ≤ c → |Real.log ‖l - 1‖| ≤ c →

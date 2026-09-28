@@ -34,7 +34,8 @@ rev = "6e9a6543b46a2a02fd7fe7ec8ab203d878f32859"
 # elliptic curves, consumed by the archimedean torsion bound of the cyclic-subgroup bound.
 [[require]]
 name = "heights"
-path = "../heights-isogeny"
+git = "https://github.com/lana-agents/heights"
+rev = "0c048a35800735d7b97cfa085da7092fbc336ed4"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]

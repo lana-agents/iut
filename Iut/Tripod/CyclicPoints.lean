@@ -27,7 +27,7 @@ namespace Iut.CyclicPoints
 
 open WeierstrassCurve WeierstrassCurve.Affine Iut.Tripod Heights.Velu
 
-variable {L : Type*} [Field L] [DecidableEq L] {W : WeierstrassCurve L} [W.IsElliptic] {l : L}
+variable {L : Type*} [Field L] {W : WeierstrassCurve L} [W.IsElliptic] {l : L}
 
 /-! ### The points -/
 
@@ -73,6 +73,8 @@ noncomputable def half₂ {s : L} (hs : s ^ 2 = 1 - l) : W.toAffine.Point :=
 
 lemma pt₁_ne_zero : pt₁ hW ≠ 0 := Point.some_ne_zero _
 lemma pt₂_ne_zero : pt₂ hW ≠ 0 := Point.some_ne_zero _
+
+variable [DecidableEq L]
 
 lemma pt₁_add_self : pt₁ hW + pt₁ hW = 0 :=
   Point.add_self_of_Y_eq (by rw [negY_eq hW, neg_zero])
@@ -158,6 +160,8 @@ end Points
 
 section Ratio
 
+variable [DecidableEq L]
+
 variable (H : AddSubgroup W.toAffine.Point) [Fintype H]
 
 omit [W.IsElliptic] in
@@ -222,7 +226,8 @@ lemma veluRatio_ne_zero (hodd : Odd (Fintype.card H)) {T R : W.toAffine.Point} (
       (mem_nonzero H).mp hQ (Subtype.ext h))
 
 omit [W.IsElliptic] in
-/-- **The Vélu ratio, additively**: `r(T, R)·(x(T) − x(R)) = ∑_{Q ∈ H} x(T + Q) − ∑_{Q ∈ H} x(R + Q)`
+/-- **The Vélu ratio, additively**:
+`r(T, R)·(x(T) − x(R)) = ∑_{Q ∈ H} x(T + Q) − ∑_{Q ∈ H} x(R + Q)`
 for `T` of order `2` and `2R = T`. -/
 lemma veluRatio_mul (h2 : (2 : L) ≠ 0) (hodd : Odd (Fintype.card H)) {T R : W.toAffine.Point}
     (hT0 : T ≠ 0) (hT2 : T + T = 0) (hRT : R + R = T) :
