@@ -79,7 +79,7 @@ def genericPoint [E.IsElliptic] : (E⁄(Ω E)).toAffine.Point :=
   Affine.Point.some (xG E) (yG E) (nonsingular_generic E)
 
 /-- The subfield `k(x) ⊆ Ω`: the function field of the `x`-line. -/
-def xLine : IntermediateField k (Ω E) := IntermediateField.adjoin k {xG E}
+abbrev xLine : IntermediateField k (Ω E) := IntermediateField.adjoin k {xG E}
 
 /-- **The base field** `P`: the perfect closure of `k(x)` in `Ω` (equal to `k(x)` in
 characteristic `0`). -/

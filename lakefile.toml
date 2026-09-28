@@ -35,7 +35,7 @@ rev = "6e9a6543b46a2a02fd7fe7ec8ab203d878f32859"
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "0802cb30f9cdd8d84d14174198387f6a633c523d"
+rev = "51f950a66b104f661c7214a25a798229821c4415"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
