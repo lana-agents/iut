@@ -311,6 +311,206 @@ theorem ramificationIdx_geom_eq_one {n ℓ ℓ' : ℕ} (hn : 0 < n) (hℓ : n * 
     (maximal_ne_bot E u hu) τ (fun b => ⟨τ • b - b, hτI b, rfl⟩) hτy
   exact key x (geomField_le_QFieldX E ℓ M hx) x.2
 
+/-! ### `X_M → X_M / {±1}` is Galois -/
+
+omit [CharZero k] in
+/-- `Aut(Ω / L_X)` is normal in `Aut(Ω / F_X)`. -/
+lemma Hgp_conj_mem {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm : Bool} {h g : Gal E}
+    (hh : h ∈ Hgp E ℓ M pm) (hg : g ∈ Hgp E ℓ M false) : h⁻¹ * g * h ∈ Hgp E ℓ M false := by
+  obtain ⟨ε, hε, hT⟩ := hh
+  obtain ⟨η, hη, hS⟩ := hg
+  have hη1 : η = 1 := by rcases hη with h | ⟨h, -⟩; exacts [h, absurd h (by simp)]
+  subst hη1
+  have hε' : ε = 1 ∨ ε = -1 := by rcases hε with h | ⟨-, h⟩; exacts [Or.inl h, Or.inr h]
+  set Q := Qpt E ℓ
+  set T := act E h Q - ε • Q
+  set S := act E g Q - (1 : ℤ) • Q
+  have hhQ : act E h Q = ε • Q + T := by simp [T]
+  have hgQ : act E g Q = Q + S := by simp [S]
+  have h1 : Q = act E h⁻¹ (act E h Q) := by rw [← act_mul, inv_mul_cancel, act_one]
+  have e : Q = ε • act E h⁻¹ Q + T := by
+    conv_lhs => rw [h1]
+    rw [hhQ, map_add, map_zsmul, act_mem_Mbar E h⁻¹ hT]
+  refine ⟨1, Or.inl rfl, ?_⟩
+  have : act E (h⁻¹ * g * h) Q - (1 : ℤ) • Q = ε • S := by
+    have e2 : act E (h⁻¹ * g * h) Q = ε • act E h⁻¹ Q + ε • S + T := by
+      rw [act_mul, act_mul, hhQ]
+      simp only [map_add, map_zsmul]
+      rw [hgQ, act_mem_Mbar E g hT]
+      simp only [map_add, map_zsmul]
+      rw [act_mem_Mbar E h⁻¹ hS, act_mem_Mbar E h⁻¹ hT]
+      module
+    rw [e2, one_smul]
+    generalize act E h⁻¹ Q = A at e ⊢
+    rw [e]
+    abel
+  rw [this]
+  exact zsmul_mem hS ε
+
+set_option maxHeartbeats 1000000 in
+/-- **`L_X / F_X` is normal** (inside a finite Galois extension `N` of `k(x)` containing `L_X`). -/
+lemma geom_normal {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm : Bool}
+    {N : IntermediateField (xLine E) (Ω E)} [FiniteDimensional (xLine E) N]
+    [IsGalois (xLine E) N] (hLN : geomField E ℓ M ≤ N) :
+    ∀ σ ∈ fixSub (xG E) N (coarseField E ℓ M pm), ∀ τ ∈ fixSub (xG E) N (geomField E ℓ M),
+      σ * τ * σ⁻¹ ∈ fixSub (xG E) N (geomField E ℓ M) := by
+  -- automorphisms of `N` fixing `F_X` map `L_X` into itself
+  have key : ∀ ρ ∈ fixSub (xG E) N (coarseField E ℓ M pm), ∀ x : N,
+      (x : Ω E) ∈ geomField E ℓ M → ((ρ x : N) : Ω E) ∈ geomField E ℓ M := by
+    intro ρ hρ x hx
+    let ρ' : Ω E ≃ₐ[xLine E] Ω E := ρ.liftNormal (Ω E)
+    have hρ' : ∀ y : N, ρ' (y : Ω E) = ((ρ y : N) : Ω E) := fun y => ρ.liftNormal_commutes (Ω E) y
+    -- `ρ'` fixes `F_X`, hence lies in `Aut(Ω / F_X)`
+    have hρF : ρ' ∈ fullSub E ℓ M pm := by
+      have hc : IsClosed (fullSub E ℓ M pm : Set (Ω E ≃ₐ[xLine E] Ω E)) :=
+        Subgroup.isClosed_of_isOpen _ (isOpen_fullSub E ℓ M pm)
+      have h := InfiniteGalois.fixingSubgroup_fixedField ⟨fullSub E ℓ M pm, hc⟩
+      change ρ' ∈ (⟨fullSub E ℓ M pm, hc⟩ : ClosedSubgroup _).toSubgroup
+      rw [← h]
+      rintro ⟨a, ha⟩
+      have haN : a ∈ N := hLN (coarseField_le_geomField E ℓ M pm ha)
+      change ρ' a = a
+      rw [show a = ((⟨a, haN⟩ : N) : Ω E) from rfl, hρ', hρ ⟨a, haN⟩ ha]
+    -- `ρ'` normalizes `Aut(Ω / L_X)`
+    change ((ρ x : N) : Ω E) ∈ fixedField (fullSub E ℓ M false)
+    rw [← hρ']
+    rintro ⟨g, hg⟩
+    change g (ρ' x) = ρ' x
+    have hconj : ρ'⁻¹ * g * ρ' ∈ fullSub E ℓ M false := by
+      change (galEquiv E).toMonoidHom (ρ'⁻¹ * g * ρ') ∈ Hgp E ℓ M false
+      rw [map_mul, map_mul, map_inv]
+      exact Hgp_conj_mem E hρF hg
+    have : (ρ'⁻¹ * g * ρ') x = x := hx ⟨_, hconj⟩
+    have := congrArg ρ' this
+    simpa [AlgEquiv.mul_apply] using this
+  intro σ hσ τ hτ x hx
+  have h1 : ((σ⁻¹ x : N) : Ω E) ∈ geomField E ℓ M :=
+    key σ⁻¹ ((fixSub (xG E) N (coarseField E ℓ M pm)).inv_mem hσ) x hx
+  have h2 : τ (σ⁻¹ x) = σ⁻¹ x := hτ _ h1
+  rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, h2]
+  exact AlgEquiv.apply_symm_apply σ x
+
+/-! ### The finite étale morphisms attached to covers -/
+
+/-- The ramification index of `w` over `coordRing F` (with `F ⊆ L`). -/
+abbrev eIdx {F L : IntermediateField (xLine E) (Ω E)} (h : F ≤ L) (w : Ideal (coordRing k (xG E) L)) :
+    ℕ :=
+  letI := algRing (xG E) h; w.ramificationIdx (coordRing k (xG E) F)
+
+lemma eIdx_tower {F L L' : IntermediateField (xLine E) (Ω E)} [FiniteDimensional (xLine E) L]
+    (hFL : F ≤ L) (hLL' : L ≤ L') (w : Ideal (coordRing k (xG E) L')) :
+    eIdx E (hFL.trans hLL') w = eIdx E hFL (w.comap (ringMap (xG E) hLL')) * eIdx E hLL' w := by
+  haveI := isDedekindDomain_ring (xG E) (transcendental_xG E) L
+  have h := AffOrbicurve.ramificationIdx_comp (ringMap (xG E) hFL).toRingHom
+    (ringMap (xG E) hLL').toRingHom (ringMap_injective _ hLL') w
+  have hcomp : (ringMap (xG E) hLL').toRingHom.comp (ringMap (xG E) hFL).toRingHom =
+      (ringMap (xG E) (hFL.trans hLL')).toRingHom := RingHom.ext fun _ => rfl
+  rw [hcomp] at h
+  exact h
+
+lemma comap_isMaximal {F L : IntermediateField (xLine E) (Ω E)} (h : F ≤ L)
+    (w : Ideal (coordRing k (xG E) L)) [hw : w.IsMaximal] : (w.comap (ringMap (xG E) h)).IsMaximal := by
+  letI := algRing (xG E) h
+  haveI : Algebra.IsIntegral (coordRing k (xG E) F) (coordRing k (xG E) L) := ⟨ringMap_isIntegral _ h⟩
+  exact Ideal.isMaximal_comap_of_isIntegral_of_isMaximal w
+
+set_option maxHeartbeats 1000000 in
+set_option synthInstance.maxHeartbeats 400000 in
+/-- The stabilizer order of `[X_M / {±1}]` at `v` is the ramification index of any prime of
+`X_M` over `v` (`X_M → X_M / {±1}` is Galois). -/
+lemma pmMult_eq (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point)
+    (w : Ideal (coordRing k (xG E) (geomField E ℓ M))) [hw : w.IsMaximal] :
+    eIdx E (coarseField_le_geomField E ℓ M true) w =
+      pmMult E ℓ M (w.comap (ringMap (xG E) (coarseField_le_geomField E ℓ M true))) := by
+  set hFL := coarseField_le_geomField E ℓ M true
+  set v := w.comap (ringMap (xG E) hFL)
+  haveI hv : v.IsMaximal := comap_isMaximal E hFL w
+  letI iR := pmAlg E ℓ M
+  haveI : Algebra.IsIntegral (coordRing k (xG E) (coarseField E ℓ M true))
+    (coordRing k (xG E) (geomField E ℓ M)) := ⟨ringMap_isIntegral _ hFL⟩
+  have hex : ∃ P : Ideal (coordRing k (xG E) (geomField E ℓ M)), P.IsPrime ∧ P.LiesOver v :=
+    ⟨w, hw.isPrime, ⟨rfl⟩⟩
+  unfold pmMult
+  rw [Ideal.ramificationIdxIn, dif_pos hex]
+  obtain ⟨hP, hPl⟩ := hex.choose_spec
+  haveI : hex.choose.IsMaximal := Ideal.IsMaximal.of_liesOver_isMaximal hex.choose v
+  exact ramificationIdx_eq_of_normal (xG E) (transcendental_xG E) hFL
+    (geomField_le_galClosure E ℓ M) (geom_normal E (geomField_le_galClosure E ℓ M)) w hex.choose
+    hPl.over
+
+section RealizeHom
+
+variable {n ℓ ℓ' : ℕ} (hn : 0 < n) (hℓ : n * ℓ' = ℓ) {M M' : AddSubgroup E.toAffine.Point}
+  (hM : ∀ P ∈ M, n • P ∈ M')
+
+include hn hℓ hM in
+lemma geom_le_geom : geomField E ℓ' M' ≤ geomField E ℓ M :=
+  coarseField_le_of_cover E hn hℓ hM (pm := false) (pm' := false) (by simp)
+
+set_option maxHeartbeats 1000000 in
+/-- The morphism `X_M → X_{M'}`. -/
+def realizeHomFF : Hom (realize E ℓ M false) (realize E ℓ' M' false) :=
+  homOfLE (transcendental_xG E) (geom_le_geom E hn hℓ hM) (fun w hw => by
+    haveI := hw
+    have h := ramificationIdx_geom_eq_one E hn hℓ hM w hw
+    change eIdx E _ w * 1 = 1
+    rw [mul_one]; exact h)
+
+set_option maxHeartbeats 1000000 in
+/-- The morphism `X_M → X_{M'} / {±1}`. -/
+def realizeHomFT : Hom (realize E ℓ M false) (realize E ℓ' M' true) :=
+  homOfLE (transcendental_xG E)
+    ((coarseField_le_geomField E ℓ' M' true).trans (geom_le_geom E hn hℓ hM)) (fun w hw => by
+    haveI := hw
+    have hLL := geom_le_geom E hn hℓ hM
+    have hFL := coarseField_le_geomField E ℓ' M' true
+    change eIdx E (hFL.trans hLL) w * 1 = pmMult E ℓ' M' _
+    rw [mul_one, eIdx_tower E hFL hLL w]
+    have h1 : eIdx E hLL w = 1 := ramificationIdx_geom_eq_one E hn hℓ hM w hw
+    rw [h1, mul_one]
+    haveI := comap_isMaximal E hLL w
+    exact pmMult_eq E ℓ' M' (w.comap (ringMap (xG E) hLL)))
+
+set_option maxHeartbeats 1000000 in
+set_option synthInstance.maxHeartbeats 400000 in
+/-- The morphism `X_M / {±1} → X_{M'} / {±1}`. -/
+def realizeHomTT : Hom (realize E ℓ M true) (realize E ℓ' M' true) :=
+  homOfLE (transcendental_xG E)
+    (coarseField_le_of_cover E hn hℓ hM (pm := true) (pm' := true) (by simp)) (fun w hw => by
+    haveI := hw
+    have hLL := geom_le_geom E hn hℓ hM
+    have hFL := coarseField_le_geomField E ℓ' M' true
+    have hFF := coarseField_le_of_cover E hn hℓ hM (pm := true) (pm' := true) (by simp)
+    have hFL' := coarseField_le_geomField E ℓ M true
+    change eIdx E hFF w * pmMult E ℓ M w = pmMult E ℓ' M' _
+    -- a prime `ŵ` of `X_M` over `w`
+    obtain ⟨ŵ, hŵ, hŵl⟩ : ∃ ŵ : Ideal (coordRing k (xG E) (geomField E ℓ M)), ŵ.IsMaximal ∧
+        ŵ.comap (ringMap (xG E) hFL') = w := by
+      letI := algRing (xG E) hFL'
+      haveI : Algebra.IsIntegral (coordRing k (xG E) (coarseField E ℓ M true))
+        (coordRing k (xG E) (geomField E ℓ M)) := ⟨ringMap_isIntegral _ hFL'⟩
+      haveI : FaithfulSMul (coordRing k (xG E) (coarseField E ℓ M true))
+          (coordRing k (xG E) (geomField E ℓ M)) := by
+        rw [faithfulSMul_iff_algebraMap_injective]; exact ringMap_injective _ hFL'
+      obtain ⟨ŵ, hŵ, hŵl⟩ := Ideal.exists_maximal_ideal_liesOver_of_isIntegral
+        (S := coordRing k (xG E) (geomField E ℓ M)) w
+      exact ⟨ŵ, hŵ, hŵl.over.symm⟩
+    subst hŵl
+    rw [← pmMult_eq E ℓ M ŵ]
+    have t1 := eIdx_tower E hFF hFL' ŵ
+    have t2 := eIdx_tower E hFL hLL ŵ
+    have heq : hFF.trans hFL' = hFL.trans hLL := rfl
+    have h1 : eIdx E hLL ŵ = 1 := ramificationIdx_geom_eq_one E hn hℓ hM ŵ hŵ
+    rw [heq, t2, h1, mul_one] at t1
+    rw [← t1]
+    haveI := comap_isMaximal E hLL ŵ
+    have e1 := pmMult_eq E ℓ' M' (ŵ.comap (ringMap (xG E) hLL))
+    have hcomp : (ŵ.comap (ringMap (xG E) hLL)).comap (ringMap (xG E) hFL) =
+        (ŵ.comap (ringMap (xG E) hFL')).comap (ringMap (xG E) hFF) := rfl
+    rw [e1, hcomp])
+
+end RealizeHom
+
 end
 
 end Iut.Anabelian.Genuine
