@@ -40,11 +40,27 @@ git = "https://github.com/lana-agents/heights"
 rev = "721496ca4c158e511d25d8ccf6bfe8503eda73c1"
 
 # Étale fundamental groups (Galois-theoretic π₁, inertia) and cores of orbicurves
-# ([CanLift] §2), consumed by the genuine instance of Iut.Anabelian.EtalePi1Theory.
+# ([CanLift] §2), consumed by the genuine instance of Iut.Anabelian.EtalePi1Theory; also
+# the Lefschetz principle for [CanLift], Prop. 2.7 (`AffOrbicurve.canLift27_of_complex`,
+# branch wp-core-basechange).
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "e0266a572e2ef7c144227c2703c450e466984528"
+rev = "ca7def953193f861a462aa0831eec8f0a31ff69f"
+
+# [CanLift], Prop. 2.7 over ℂ (`OrbicurveCores.U2.canLift27C`, branch wp-u2), which together
+# with `AffOrbicurve.canLift27_of_complex` discharges `AffOrbicurve.CanLift27`.
+[[require]]
+name = "orbicurve-cores"
+git = "https://github.com/lana-agents/orbicurve-cores"
+rev = "61616dcd77fbe45c083a8ebfa7cc80728f86e841"
+
+# Pinned directly so that one `oka` revision serves both `belyi` (which pins the ancestor
+# da228a2) and `orbicurve-cores` (which pins this revision, branch wp-u2).
+[[require]]
+name = "oka"
+git = "https://github.com/lana-agents/oka.git"
+rev = "75dcdc3faadd10b986afb9283e89902bcdddecd4"
 # The tempered fundamental group of the model orbicurves (taxis #7): the construction through
 # integral models, `TemperedFundamentalGroups.temperedPi1`, consumed by
 # `Iut.Anabelian.TemperedPi1Theory` in `Iut/Anabelian/Tempered.lean`.

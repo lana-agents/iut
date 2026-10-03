@@ -128,6 +128,7 @@ import Iut.Tripod.BadRamIdx
 import Iut.Tripod.Basic
 import Iut.Tripod.ClassicalAbc
 import Iut.Tripod.ClassicalAbcGenuine
+import Iut.Tripod.ClassicalAbcGenuineCanLift
 import Iut.Tripod.ClassicalAbcOfVariant
 import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts

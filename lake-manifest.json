@@ -3,6 +3,54 @@
  "packagesDir": ".lake/packages",
  "packages": [
   {
+   "url": "https://github.com/lana-agents/tempered-fundamental-groups",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "2006651f52b70ea2fe3388238c7d9db14d21748f",
+   "name": "«tempered-fundamental-groups»",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "2006651f52b70ea2fe3388238c7d9db14d21748f",
+   "inherited": false,
+   "configFile": "lakefile.toml"
+  },
+  {
+   "url": "https://github.com/lana-agents/oka.git",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "75dcdc3faadd10b986afb9283e89902bcdddecd4",
+   "name": "oka",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "75dcdc3faadd10b986afb9283e89902bcdddecd4",
+   "inherited": false,
+   "configFile": "lakefile.toml"
+  },
+  {
+   "url": "https://github.com/lana-agents/orbicurve-cores",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "61616dcd77fbe45c083a8ebfa7cc80728f86e841",
+   "name": "«orbicurve-cores»",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "61616dcd77fbe45c083a8ebfa7cc80728f86e841",
+   "inherited": false,
+   "configFile": "lakefile.toml"
+  },
+  {
+   "url": "https://github.com/lana-agents/pi1",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "ca7def953193f861a462aa0831eec8f0a31ff69f",
+   "name": "pi1",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "ca7def953193f861a462aa0831eec8f0a31ff69f",
+   "inherited": false,
+   "configFile": "lakefile.toml"
+  },
+  {
    "url": "https://github.com/lana-agents/heights",
    "type": "git",
    "subDir": null,
@@ -49,6 +97,18 @@
    "inputRev": "v4.32.0",
    "inherited": false,
    "configFile": "lakefile.lean"
+  },
+  {
+   "url": "https://github.com/lana-agents/elliptic-curves",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "bebec3fc9f2602e81c83e5236789572a541c85fb",
+   "name": "«elliptic-curves»",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "bebec3fc9f2602e81c83e5236789572a541c85fb",
+   "inherited": true,
+   "configFile": "lakefile.toml"
   },
   {
    "url": "https://github.com/lana-agents/belyi.git",
@@ -159,18 +219,6 @@
    "configFile": "lakefile.toml"
   },
   {
-   "url": "https://github.com/lana-agents/oka.git",
-   "type": "git",
-   "subDir": null,
-   "scope": "",
-   "rev": "da228a2cf9671aaba08ddc96274d75e098b28f67",
-   "name": "oka",
-   "manifestFile": "lake-manifest.json",
-   "inputRev": "da228a2cf9671aaba08ddc96274d75e098b28f67",
-   "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
    "url": "https://github.com/leanprover/lean4-cli",
    "type": "git",
    "subDir": null,
@@ -179,42 +227,6 @@
    "name": "Cli",
    "manifestFile": "lake-manifest.json",
    "inputRev": "v4.32.0",
-   "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/tempered-fundamental-groups",
-   "type": "git",
-   "subDir": null,
-   "scope": "",
-   "rev": "2006651f52b70ea2fe3388238c7d9db14d21748f",
-   "name": "«tempered-fundamental-groups»",
-   "manifestFile": "lake-manifest.json",
-   "inputRev": "2006651f52b70ea2fe3388238c7d9db14d21748f",
-   "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/pi1",
-   "type": "git",
-   "subDir": null,
-   "scope": "",
-   "rev": "e0266a572e2ef7c144227c2703c450e466984528",
-   "name": "pi1",
-   "manifestFile": "lake-manifest.json",
-   "inputRev": "e0266a572e2ef7c144227c2703c450e466984528",
-   "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/elliptic-curves",
-   "type": "git",
-   "subDir": null,
-   "scope": "",
-   "rev": "bebec3fc9f2602e81c83e5236789572a541c85fb",
-   "name": "«elliptic-curves»",
-   "manifestFile": "lake-manifest.json",
-   "inputRev": "bebec3fc9f2602e81c83e5236789572a541c85fb",
    "inherited": true,
    "configFile": "lakefile.toml"
   }
