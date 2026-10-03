@@ -64,8 +64,7 @@ variable (x : Pt) {ℓ : ℕ} (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ)
   (hP2 : ∀ w (hw : w ∈ (P.curve x).badAll), ¬ ℓ ∣ (P.tate x).qOrder w hw)
   (hP5 : ∃ w ∈ (P.curve x).badAll, residueChar w ≠ 2 ∧ residueChar w ≠ ℓ)
   (anab : AnabelianExistence AG TG)
-  (hcore : AG.HasCore (AG.oncePunctured (P.curve x).E)
-    (OrbicurveDataSection.CF AG (P.curve x).F (P.curve x).E))
+  (hcore : OrbicurveDataSection.HasCoreUniversally AG (P.curve x).F (P.curve x).E)
 
 /-- The Θ-data of the curve of a point of the tripod and a prime `ℓ`
 (`Iut.EllipticCurveData.thetaData`). -/

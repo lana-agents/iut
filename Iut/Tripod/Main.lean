@@ -94,8 +94,8 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
     torsionDegreeBound_three' torsionDegreeBound_five'
     (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _) (logCondLe _) with hCI
   intro x hx hxe ℓ hℓ h7 hP2 hP3 hP5 hsl
-  have hcore : (modelAG Pi1).HasCore ((modelAG Pi1).oncePunctured (CI.curve x hx).E)
-      (OrbicurveDataSection.CF (modelAG Pi1) (CI.curve x hx).F (CI.curve x hx).E) := by
+  have hcore : OrbicurveDataSection.HasCoreUniversally (modelAG Pi1) (CI.curve x hx).F
+      (CI.curve x hx).E := by
     by_contra h
     exact hxe ⟨hx, h⟩
   have hP2' : ∀ w (hw : w ∈ (CI.curve x hx).badAll), ¬ ℓ ∣ (CI.tate x hx).qOrder w hw := by

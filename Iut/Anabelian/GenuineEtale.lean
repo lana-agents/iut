@@ -24,9 +24,10 @@ This module assembles a term of `Iut.Anabelian.GenuineEtaleData`, hence of
 * [CanLift], Proposition 2.7 (`AffOrbicurve.CanLift27`, stated in the `pi1` project for the
   once-punctured elliptic curve and its `±1`-quotient; the realizations are isomorphic to these,
   `Genuine.isCoreOf_realize_oncePunctured`), a hypothesis, with `excJ` the four exceptional
-  `j`-invariants `0, 1728, 488095744/125, 1556068/81` (Takeuchi; Sijsling);
-* the compatibility of cores with base change (`GenuineCoreBaseChange`, [CanLift],
-  Proposition 2.3), a hypothesis.
+  `j`-invariants `0, 1728, 488095744/125, 1556068/81` (Takeuchi; Sijsling).
+
+(No compatibility of cores with base change is required: the existence of Θ-data obtains the
+core over the `ℓ`-torsion field from [CanLift], Proposition 2.7 over that field.)
 -/
 
 namespace Iut.Anabelian
@@ -94,39 +95,31 @@ lemma genuineHasCore_oncePunctured (h27 : CanLift27.{u}) [CharZero k] (E : Weier
     genuineHasCore (Orbicurve.oncePunctured E) (Orbicurve.pmQuotient (Orbicurve.oncePunctured E)) :=
   ⟨inferInstance, Genuine.isCoreOf_realize_oncePunctured E h27 hj⟩
 
-/-- **The compatibility of cores with base change** ([CanLift], Proposition 2.3, for the model
-orbicurves): if `C` is the `k`-core of `X`, then `C_K` is the `K`-core of `X_K`. A hypothesis of
-the genuine étale theory. -/
-def GenuineCoreBaseChange : Prop :=
-  ∀ {k K : Type u} [Field k] [Field K] [CharZero k] [CharZero K] (f : k →+* K)
-    {X C : Orbicurve k}, genuineHasCore X C → genuineHasCore (X.baseChange f) (C.baseChange f)
-
 /-- **The genuine étale data**: genuine fundamental groups and genuine cores, given [CanLift],
-Proposition 2.7 and the compatibility of cores with base change. -/
-def genuineEtaleData (h27 : CanLift27.{u}) (hbc : GenuineCoreBaseChange.{u}) :
+Proposition 2.7. -/
+def genuineEtaleData (h27 : CanLift27.{u}) :
     GenuineEtaleData.{u} where
   pi1Cover := genuinePi1Cover
   pi1Cover_continuous := genuinePi1Cover_continuous
   pi1Cover_isOpenEmbedding := genuinePi1Cover_isOpenEmbedding
   HasCore := genuineHasCore
   hasCore_iff_of_cover := genuineHasCore_iff_of_cover
-  hasCore_baseChange := hbc
   excJ := AffOrbicurve.excJ
   hasCore_oncePunctured := fun E _ hj => genuineHasCore_oncePunctured h27 E hj
 
 /-- **The genuine étale theory of the model orbicurves** (`EtalePi1Theory`). -/
-def genuinePi1Theory (h27 : CanLift27.{u}) (hbc : GenuineCoreBaseChange.{u}) :
+def genuinePi1Theory (h27 : CanLift27.{u}) :
     EtalePi1Theory.{u} :=
-  (genuineEtaleData h27 hbc).toEtalePi1Theory
+  (genuineEtaleData h27).toEtalePi1Theory
 
-lemma genuinePi1Theory_pi1 (h27 : CanLift27.{u}) (hbc : GenuineCoreBaseChange.{u})
-    (X : Orbicurve k) : (genuinePi1Theory h27 hbc).pi1 X = X.genuinePi1 := rfl
+lemma genuinePi1Theory_pi1 (h27 : CanLift27.{u})
+    (X : Orbicurve k) : (genuinePi1Theory h27).pi1 X = X.genuinePi1 := rfl
 
-lemma genuinePi1Theory_hasCore (h27 : CanLift27.{u}) (hbc : GenuineCoreBaseChange.{u})
-    (X C : Orbicurve k) : (genuinePi1Theory h27 hbc).HasCore X C ↔ genuineHasCore X C := Iff.rfl
+lemma genuinePi1Theory_hasCore (h27 : CanLift27.{u})
+    (X C : Orbicurve k) : (genuinePi1Theory h27).HasCore X C ↔ genuineHasCore X C := Iff.rfl
 
-lemma genuinePi1Theory_excJ (h27 : CanLift27.{u}) (hbc : GenuineCoreBaseChange.{u}) :
-    (genuinePi1Theory h27 hbc).excJ = {0, 1728, 488095744 / 125, 1556068 / 81} := rfl
+lemma genuinePi1Theory_excJ (h27 : CanLift27.{u}) :
+    (genuinePi1Theory h27).excJ = {0, 1728, 488095744 / 125, 1556068 / 81} := rfl
 
 end
 

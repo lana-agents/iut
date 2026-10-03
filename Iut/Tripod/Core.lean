@@ -71,12 +71,22 @@ variable (Pi1 : EtalePi1Theory.{0}) (x : Pt) (h3 : TorsionFinite x.1 3)
 /-- If `X_λ` fails to have the core `X_λ/{±1}` in the model geometry then `j(E_λ)` is an
 exceptional value ([CanLift], Proposition 2.7, as recorded in `Pi1`). -/
 theorem exists_excJ_of_not_hasCore
-    (h : ¬ (modelAG Pi1).HasCore ((modelAG Pi1).oncePunctured (curveOf x h3 h5).E)
-      (OrbicurveDataSection.CF (modelAG Pi1) (curveOf x h3 h5).F (curveOf x h3 h5).E)) :
+    (h : ¬ OrbicurveDataSection.HasCoreUniversally (modelAG Pi1) (curveOf x h3 h5).F
+      (curveOf x h3 h5).E) :
     ∃ c ∈ Pi1.excJ, (curveOf x h3 h5).E.j = (c : (curveOf x h3 h5).F) := by
   by_contra hc
   push Not at hc
-  exact h (Pi1.hasCore_oncePunctured (curveOf x h3 h5).E hc)
+  apply h
+  intro K _ _ f
+  have hcK : ∀ c ∈ Pi1.excJ, ((curveOf x h3 h5).E.map f).j ≠ (c : K) := by
+    intro c hc' hj
+    rw [WeierstrassCurve.map_j, ← map_ratCast f] at hj
+    exact hc c hc' (f.injective hj)
+  have := Pi1.hasCore_oncePunctured ((curveOf x h3 h5).E.map f) hcK
+  change Pi1.HasCore ((Orbicurve.oncePunctured (curveOf x h3 h5).E).baseChange f)
+    ((Orbicurve.pmQuotient (Orbicurve.oncePunctured (curveOf x h3 h5).E)).baseChange f)
+  rw [Orbicurve.baseChange_pmQuotient, Orbicurve.baseChange_oncePunctured]
+  exact this
 
 /-- If `j(E_λ) = c` then `λ` is a root of `jPolyRat c`. -/
 theorem isRoot_jPoly_of_j_eq {c : ℚ}

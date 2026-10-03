@@ -145,6 +145,15 @@ variable (VBad : Set (NumberField.FinitePlace ↥(fieldOfModuli F E)))
 chosen). -/
 noncomputable def CF : AG.Orbicurve F := AG.pmQuotient (AG.oncePunctured E)
 
+/-- **`X_F/{±1}` is the core of `X_F` after every extension of the base field** (of
+characteristic `0`): for every embedding `F → K`, `C_K` is the `K`-core of `X_K`. This is the form
+in which the core condition of IUT I, Definition 3.1(d) (over the `ℓ`-torsion field) is supplied
+to the existence of Θ-data; for non-exceptional `j(E)` it follows from [CanLift], Proposition 2.7
+over `K` (`j(E_K) = j(E)`), without any base-change property of cores. -/
+def HasCoreUniversally : Prop :=
+  ∀ (K : Type u) [Field K] [CharZero K] (f : F →+* K),
+    AG.HasCore (AG.baseChange f (AG.oncePunctured E)) (AG.baseChange f (CF AG F E))
+
 variable (P : AdmissiblePrimeData F E Fbar VBad)
 
 /-- The base change `X_K = X_F ×_F K` to the `ℓ`-torsion field (derived). -/

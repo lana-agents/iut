@@ -78,7 +78,7 @@ maps and the open immersions attached to the covering diagrams — are fields of
 `Iut.AnabelianGeometry` / `Iut.TemperedGeometry` and of the Θ-data record, exactly as
 printed. The anabelian model instantiates them through the interfaces
 `Iut.Anabelian.EtalePi1Theory` (étale `π₁` of the model orbicurves, open immersions for
-covers, the core relation with its two stability properties, and [CanLift],
+covers, the core relation with its stability property under finite étale covers, and [CanLift],
 Proposition 2.7: the finite set `excJ` of exceptional `j`-invariants and the field
 `hasCore_oncePunctured`, that the once-punctured elliptic curve has the core `X/{±1}`
 unless `j` is exceptional) and `Iut.Anabelian.TemperedPi1Theory` (tempered `π₁` with its
@@ -86,12 +86,17 @@ comparison map), which are **universally quantified parameters** of the main the
 nothing is constructed or assumed about them beyond the listed fields, and the theorems
 hold for every such theory, in particular for the actual fundamental groups. The core
 condition on the curve of a point enters as the finiteness of the exceptional set of points
-whose once-punctured curve has no core (`Iut.Tripod.CoreFinitenessHyp`), which is
+whose once-punctured curve fails to have the core `X/{±1}` after some extension of the base field
+(`Iut.OrbicurveDataSection.HasCoreUniversally`, `Iut.Tripod.CoreFinitenessHyp`), which is
 **proved** for the model geometry (`Iut.Tripod.coreFiniteness`,
 [`Core.lean`](Iut/Tripod/Core.lean)): `j(E_λ) = 256(λ² − λ + 1)³/(λ²(λ − 1)²)`, so the
 exceptional points are roots of finitely many nonzero polynomials. In this way the variant
 hypothesis `h312` is quantified over exactly the class of data of the printed corollary —
-it is never strengthened.
+it is never strengthened. (Interface change, 2026-10: `EtalePi1Theory` formerly also required
+cores to be compatible with base change, `hasCore_baseChange` — [CanLift], Proposition 2.3. The
+field was removed because the existence of Θ-data never needed it: the `K`-core over the
+`ℓ`-torsion field is obtained from [CanLift], Proposition 2.7 over that field via
+`HasCoreUniversally`. The Θ-data conditions, which refer to `HasCore` only, are unchanged.)
 
 **Reduction predicates and the cyclic-subgroup bound.** `HasGoodReductionAt`,
 `HasMultiplicativeReductionAt`, `HasSplitMultiplicativeReductionAt` and

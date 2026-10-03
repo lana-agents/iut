@@ -109,9 +109,6 @@ structure GenuineEtaleData : Type (u + 1) where
   /-- Orbicurves related by a finite étale cover have the same cores. -/
   hasCore_iff_of_cover : ∀ {k : Type u} [Field k] [CharZero k] {X Y C : Orbicurve k},
     Orbicurve.Cover X Y → (HasCore X C ↔ HasCore Y C)
-  /-- Cores are compatible with base change. -/
-  hasCore_baseChange : ∀ {k K : Type u} [Field k] [Field K] [CharZero k] [CharZero K]
-    (f : k →+* K) {X C : Orbicurve k}, HasCore X C → HasCore (X.baseChange f) (C.baseChange f)
   /-- The exceptional `j`-invariants of [CanLift], Proposition 2.7. -/
   excJ : Finset ℚ
   /-- [CanLift], Proposition 2.7. -/
@@ -127,7 +124,6 @@ def GenuineEtaleData.toEtalePi1Theory (G : GenuineEtaleData.{u}) : EtalePi1Theor
   pi1Cover_isOpenEmbedding := G.pi1Cover_isOpenEmbedding
   HasCore := G.HasCore
   hasCore_iff_of_cover := G.hasCore_iff_of_cover
-  hasCore_baseChange := G.hasCore_baseChange
   excJ := G.excJ
   hasCore_oncePunctured := G.hasCore_oncePunctured
 

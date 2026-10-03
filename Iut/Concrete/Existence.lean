@@ -294,7 +294,7 @@ structure AnabelianExistence (AG : AnabelianGeometry.{u}) (TG : TemperedGeometry
     (VBad : Set (FinitePlace ↥(fieldOfModuli F E))) (P : AdmissiblePrimeData F E Fbar VBad)
     [NumberField ↥P.torsionField] (TF : TateFamily E P.torsionField P.ℓ VBad),
     IsInitialThetaGlobalData F E Fbar VBad →
-    AG.HasCore (AG.oncePunctured E) (CF AG F E) →
+    HasCoreUniversally AG F E →
     ∃ O : OrbicurveData AG F E Fbar VBad P,
       Nonempty (LocalThetaData AG TG F E Fbar VBad P O)
 
@@ -307,7 +307,7 @@ variable (C : EllipticCurveData.{u}) (CA : C.CurveArithmetic) (TI : C.TateInputs
   (hP2 : ∀ w (hw : w ∈ C.badAll), ¬ ℓ ∣ TI.qOrder w hw)
   (hP5 : ∃ w ∈ C.badAll, residueChar w ≠ 2 ∧ residueChar w ≠ ℓ)
   (anab : AnabelianExistence AG TG)
-  (hcore : AG.HasCore (AG.oncePunctured C.E) (OrbicurveDataSection.CF AG C.F C.E))
+  (hcore : OrbicurveDataSection.HasCoreUniversally AG C.F C.E)
 
 include CA TI hℓ h7 R hsl hP2 in
 /-- **The Tate family of `E` over its ℓ-torsion field** (IUT I, Definition 3.1(f)): Tate's
@@ -444,8 +444,7 @@ structure CurveInputs (K : T.CBS) (d : ℕ) where
   degree have a once-punctured elliptic curve `X_x` that fails to have the `F_x`-core
   `C_x = X_x/{±1}`. -/
   excCore_finite : {x | ∃ hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d,
-    ¬ AG.HasCore (AG.oncePunctured (curve x hx).E)
-      (OrbicurveDataSection.CF AG (curve x hx).F (curve x hx).E)}.Finite
+    ¬ OrbicurveDataSection.HasCoreUniversally AG (curve x hx).F (curve x hx).E}.Finite
   /-- `log-diff_X(x)` is the normalized degree of the different of `F_tpd`. -/
   logDiff_eq : ∀ x hx,
     T.logDiff T.tripod x = logDifferentDeg ↥(tripodalFieldOf (curve x hx).F (curve x hx).E)
@@ -469,8 +468,7 @@ variable {K : T.CBS} {d : ℕ} (CI : CurveInputs.{u} T AG K d)
 /-- The points whose once-punctured elliptic curve fails to have an `F`-core. -/
 def excCore : Set (T.Pt T.tripod) :=
   {x | ∃ hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d,
-    ¬ AG.HasCore (AG.oncePunctured (CI.curve x hx).E)
-      (OrbicurveDataSection.CF AG (CI.curve x hx).F (CI.curve x hx).E)}
+    ¬ OrbicurveDataSection.HasCoreUniversally AG (CI.curve x hx).F (CI.curve x hx).E}
 
 /-- The inputs of Corollary 2.2 derived from the curves. -/
 noncomputable def toCorollary22Inputs : Corollary22Inputs T K d where
@@ -505,8 +503,7 @@ theorem concreteThetaDataExistence (anab : AnabelianExistence AG TG)
       (TL : ThetaLocalData D LT), TowerArithmetic D LT TL) :
     ConcreteThetaDataExistence.{u, v} (AG := AG) (TG := TG) CI.toCorollary22Inputs := by
   intro x hx hxe ℓ hℓ h7 hP2 hP3 hP5 hsl
-  have hcore : AG.HasCore (AG.oncePunctured (CI.curve x hx).E)
-      (OrbicurveDataSection.CF AG (CI.curve x hx).F (CI.curve x hx).E) := by
+  have hcore : OrbicurveDataSection.HasCoreUniversally AG (CI.curve x hx).F (CI.curve x hx).E := by
     by_contra h
     exact hxe ⟨hx, h⟩
   have hP2' : ∀ w (hw : w ∈ (CI.curve x hx).badAll), ¬ ℓ ∣ (CI.tate x hx).qOrder w hw := by

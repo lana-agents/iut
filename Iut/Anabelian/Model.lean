@@ -41,9 +41,8 @@ records exactly this data: `(E, ℓ, M, ±)`. Then
 ## The residual interface
 
 Étale fundamental groups of the model orbicurves, the open immersions attached to
-covers, and the notion of `k`-core (with its two stability properties: orbicurves related
-by a finite étale cover have the same cores, and cores are compatible with base change)
-are the content of `Iut.Anabelian.EtalePi1Theory`, an explicit residual interface (taxis
+covers, and the notion of `k`-core (with its stability property: orbicurves related
+by a finite étale cover have the same cores) are the content of `Iut.Anabelian.EtalePi1Theory`, an explicit residual interface (taxis
 #276, #7, #10): the model only records the shapes on which these are evaluated. The
 interface also records [CanLift], Proposition 2.7 — the once-punctured elliptic curve
 `E ∖ {0}` has the `k`-core `(E ∖ {0})/{±1}` unless `j(E)` is one of finitely many
@@ -128,6 +127,17 @@ lemma baseChange_level (f : k →+* K) (X : Orbicurve k) :
 lemma baseChange_M (f : k →+* K) (X : Orbicurve k) :
     (X.baseChange f).M = X.M.map (pointMap X.E f) := rfl
 lemma baseChange_pm (f : k →+* K) (X : Orbicurve k) : (X.baseChange f).pm = X.pm := rfl
+
+/-- The base change of `E ∖ {0}` is `E_K ∖ {0}`. -/
+lemma baseChange_oncePunctured (f : k →+* K) (E : WeierstrassCurve k) [E.IsElliptic] :
+    (oncePunctured E).baseChange f = oncePunctured (E.map f) := by
+  simp only [baseChange, oncePunctured]
+  congr 1
+  exact AddSubgroup.map_bot _
+
+/-- Base change commutes with the `±`-quotient. -/
+lemma baseChange_pmQuotient (f : k →+* K) (X : Orbicurve k) :
+    (pmQuotient X).baseChange f = pmQuotient (X.baseChange f) := rfl
 
 /-- Torsion points map to torsion points. -/
 lemma pointMap_mem_torsion (f : k →+* K) (X : Orbicurve k) {P : X.E.toAffine.Point}
@@ -269,11 +279,13 @@ end
 
 /-- **Étale fundamental groups of the model orbicurves** (residual interface of taxis #276,
 #7, #10): the profinite étale fundamental group of each model orbicurve, the open
-immersions induced by covers, the `k`-core relation with its two stability
-properties (a finite étale cover of `X` has the same core as `X`; cores are compatible
-with base change), and the content of [CanLift], Proposition 2.7: the once-punctured
+immersions induced by covers, the `k`-core relation with its stability property (a
+finite étale cover of `X` has the same core as `X`), and the content of [CanLift], Proposition 2.7: the once-punctured
 elliptic curve has the core `X/{±1}` unless its `j`-invariant is one of the finitely many
-exceptional values `excJ`. -/
+exceptional values `excJ`. (An earlier version also required cores to be compatible with
+base change; the existence of Θ-data never needs it: the core over the `ℓ`-torsion field is
+obtained from [CanLift], Proposition 2.7 over that field, see
+`Iut.OrbicurveDataSection.HasCoreUniversally`.) -/
 structure EtalePi1Theory : Type (u + 1) where
   /-- The arithmetic étale fundamental group (basepoint suppressed). -/
   pi1 : {k : Type u} → [Field k] → Orbicurve k → ProfiniteGrp.{u}
@@ -291,9 +303,6 @@ structure EtalePi1Theory : Type (u + 1) where
   /-- Orbicurves related by a finite étale cover have the same cores. -/
   hasCore_iff_of_cover : ∀ {k : Type u} [Field k] [CharZero k] {X Y C : Orbicurve k},
     Orbicurve.Cover X Y → (HasCore X C ↔ HasCore Y C)
-  /-- Cores are compatible with base change. -/
-  hasCore_baseChange : ∀ {k K : Type u} [Field k] [Field K] [CharZero k] [CharZero K] (f : k →+* K)
-    {X C : Orbicurve k}, HasCore X C → HasCore (X.baseChange f) (C.baseChange f)
   /-- **The exceptional `j`-invariants** of [CanLift], Proposition 2.7: the finitely many
   values of `j` (four of them) for which the once-punctured elliptic curve fails to have
   the core `X/{±1}`. -/

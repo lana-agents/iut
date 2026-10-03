@@ -474,8 +474,7 @@ a once-punctured elliptic curve `X_λ` that fails to have the `F_λ`-core `C_λ 
 the model geometry `modelAG Pi1` in `Iut.Tripod.coreFiniteness`. -/
 def CoreFinitenessHyp (AG : AnabelianGeometry.{0}) : Prop :=
   {x | ∃ hx : x ∈ tripodTheory.cbsSet K ∩ tripodTheory.ptLE tripodTheory.tripod d,
-    ¬ AG.HasCore (AG.oncePunctured (P.curve x).E)
-      (OrbicurveDataSection.CF AG (P.curve x).F (P.curve x).E)}.Finite
+    ¬ OrbicurveDataSection.HasCoreUniversally AG (P.curve x).F (P.curve x).E}.Finite
 
 /-- **The facts about the curves of the points not proved in this file**, collected: exactly
 the fields of `Iut.CurveInputs` for `curveOf` that are not proved here or in `TwoAdic.lean`,

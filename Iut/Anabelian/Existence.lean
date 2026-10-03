@@ -323,13 +323,12 @@ lemma QIso_q : P.QIso P.q = 1 := by
 
 /-- **The orbicurve data** `C̲_K`, `X̲_K`, `ε` of IUT I, Definition 3.1(d), (f), for the
 model. -/
-def orbicurveData (hcore : Pi1.HasCore (Orbicurve.oncePunctured E)
-    (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))) :
+def orbicurveData (hcore : OrbicurveDataSection.HasCoreUniversally (modelAG Pi1) F E) :
     OrbicurveData (modelAG Pi1) F E Fbar VBad P where
   CKu := P.CKu
   CKu_type := ⟨P.ℓ_prime, rfl, rfl, P.M_le_TK, P.card_M, P.card_TK⟩
   CKu_core := by
-    have h1 := Pi1.hasCore_baseChange (algebraMap F ↥P.torsionField) hcore
+    have h1 := hcore ↥P.torsionField (algebraMap F ↥P.torsionField)
     have h2 := (Pi1.hasCore_iff_of_cover P.coverXK_CK).mp h1
     exact (Pi1.hasCore_iff_of_cover P.coverCKu_CK).mpr h2
   XKu := P.XKu
@@ -507,8 +506,8 @@ variable (P TF)
 
 /-- **The local theta data** `V` with the local conditions of IUT I, Definition 3.1(e), (f),
 for the model. -/
-def localThetaData (hcore : Pi1.HasCore (Orbicurve.oncePunctured E)
-    (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))) (T : TemperedPi1Theory Pi1) :
+def localThetaData (hcore : OrbicurveDataSection.HasCoreUniversally (modelAG Pi1) F E)
+    (T : TemperedPi1Theory Pi1) :
     LocalThetaData (modelAG Pi1) (modelTG Pi1 T) F E Fbar VBad P (P.orbicurveData Pi1 hcore) where
   sect := P.sect TF
   local_diagram_cartesian _ := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
