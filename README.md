@@ -519,7 +519,29 @@ symmetric form over `ℤ` (`a + b + c = 0`, bounding `max(|a|, |b|, |c|)`), and
   `abc_of_variant` (the same `h312`) gives `ClassicalABC`. `StatementII` alone does not
   yield the classical form: the points `a/c` with `a ≪ c` leave every compactly bounded
   subset (the archimedean bound on `|log|λ|_∞|`), so the passage (ii) ⇒ (i) of [GenEll]
-  Theorem 2.1 for the tripod is the one remaining step.
+  Theorem 2.1 for the tripod is needed; it is the theorem
+  `Iut.Tripod.statementI_of_statementII` (genuine height theory of curves, `Genl.Curves`).
+* `Iut.Tripod.classicalABC_of_variant Pi1 Tp h312 : ClassicalABC` — the variant implies
+  the classical ABC conjecture for **every** étale/tempered fundamental-group theory
+  `Pi1`, `Tp` satisfying the interfaces.
+* `Iut.Tripod.classicalABC_of_variant_genuine' h312 : ClassicalABC`
+  ([`ClassicalAbcGenuineCanLift.lean`](Iut/Tripod/ClassicalAbcGenuineCanLift.lean)) — the
+  same with `Pi1`, `Tp` **instantiated**: `genuinePi1Theory canLift27` (the arithmetic étale
+  fundamental group of the model orbicurves with Mochizuki's `k`-cores, `excJ` the four
+  Takeuchi `j`-values) and `temperedTheory (genuineEtaleData canLift27)` (the model-based
+  tempered group of `lana-agents/tempered-fundamental-groups`, with its canonical map to the
+  étale group). `Iut.Anabelian.canLift27 : AffOrbicurve.CanLift27` ([CanLift] Prop. 2.7 over
+  every field of characteristic `0`) is a **theorem**: the complex case
+  `OrbicurveCores.U2.canLift27C` (`lana-agents/orbicurve-cores`: Takeuchi's classification,
+  Margulis' commensurator theorem for once-punctured torus groups, uniformisation from
+  `lana-agents/oka`, and the comparison of algebraic and analytic cores) descended by
+  `AffOrbicurve.canLift27_of_complex` (`lana-agents/pi1`). The only hypothesis is `h312`.
+  **Boundary:** the tempered group is defined through models; its identification with
+  André's tempered group (`andreEquiv` in the tempered repository, for complete
+  discretely valued base fields) currently assumes the semistable-reduction theorem
+  `SemistableReduction.Statement.Strong`, whose proof is in progress there; in
+  characteristic `p` the étale group of the interface is a documented placeholder (all
+  Θ-data live over fields of characteristic `0`).
 
 ### Division polynomials and the torsion of elliptic curves (`Iut/Torsion/`)
 
