@@ -17,7 +17,8 @@ implication of `Iut/Implication/Corollary23.lean` through `IsConcrete` and
 
 The existence of suitable initial Θ-data is required in concrete form
 (`ConcreteThetaDataExistence`): for a point of large height and a prime `ℓ` satisfying
-(P1)–(P6), initial Θ-data `D` with the prime `ℓ` and the tower arithmetic. Everything else — the Theorem 1.10 invariants, certificate and
+(P1)–(P6), initial Θ-data `D` with the prime `ℓ` and the tower arithmetic. Everything else — the
+Theorem 1.10 invariants, certificate and
 local estimates — is constructed from these (`InitialThetaData.invariants`,
 `TowerArithmetic.certificate`, `TowerArithmetic.localEstimate`). The existence statement
 itself is proved from the curves of the points in `Iut.Concrete.Existence`

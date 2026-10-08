@@ -109,7 +109,8 @@ degree of the different of `K`), and `0` at non-primes. -/
 noncomputable def logDK (p : ℕ) : ℝ :=
   if hp : p.Prime then
     ∑ v : LocalTheory.Fiber D.Kt (.finite ⟨p, hp⟩),
-      LocalTheory.weight D.Kt _ v * differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v) * Real.log p
+      LocalTheory.weight D.Kt _ v * differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v)
+          * Real.log p
   else 0
 
 lemma differentExponent_nonneg (w : FinitePlace D.Kt) : 0 ≤ differentExponent D.Kt w :=

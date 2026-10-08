@@ -16,7 +16,8 @@ points, in fact) have a once-punctured Legendre curve `X_λ = E_λ ∖ {0}` with
 
 The proof: by [CanLift], Proposition 2.7 (`Iut.Anabelian.canLift27`,
 `Iut.Anabelian.hasCore_oncePunctured`), `X_λ` has the core `X_λ/{±1}` unless `j(E_λ)` lies in
-the finite set `AffOrbicurve.excJ` of exceptional `j`-invariants, and `j(E_λ) = 256 (λ² − λ + 1)³ / (λ² (λ − 1)²)`, so an exceptional point
+the finite set `AffOrbicurve.excJ` of exceptional `j`-invariants, and `j(E_λ) = 256 (λ² − λ + 1)³ /
+(λ² (λ − 1)²)`, so an exceptional point
 `λ ∈ ℚ̄` is a root of one of the finitely many nonzero polynomials
 `256 (X² − X + 1)³ − c·X² (X − 1)²`, `c ∈ AffOrbicurve.excJ` (nonzero: its value at `0` is `256`),
 each of which has finitely many roots.

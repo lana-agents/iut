@@ -65,9 +65,11 @@ lemma logDK_eq_sum_filter (p : ℕ) (s : Finset (FinitePlace D.Kt))
     have h1 : ∑ v : LocalTheory.Fiber D.Kt (.finite ⟨p, hp⟩), LocalTheory.weight D.Kt _ v *
         differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v) * Real.log p =
         ∑ w : {w : FinitePlace D.Kt // residueChar w = p}, g w.1 := by
-      refine Fintype.sum_equiv (LocalTheory.fiberFiniteEquiv D.Kt ⟨p, hp⟩) _ (fun w => g w.1) fun v => ?_
+      refine Fintype.sum_equiv (LocalTheory.fiberFiniteEquiv D.Kt ⟨p, hp⟩) _
+          (fun w => g w.1) fun v => ?_
       rw [weight_finite_eq]
-      change placeWeight D.Kt (LocalTheory.fiberPlace D.Kt v) * differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v) *
+      change placeWeight D.Kt (LocalTheory.fiberPlace D.Kt v) * differentExponent D.Kt
+          (LocalTheory.fiberPlace D.Kt v) *
         Real.log (p : ℝ) = g (LocalTheory.fiberPlace D.Kt v)
       rw [show ((p : ℕ) : ℝ) = residueChar (LocalTheory.fiberPlace D.Kt v) by
         rw [LocalTheory.residueChar_fiberPlace D.Kt v], hg]

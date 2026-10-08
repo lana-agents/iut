@@ -25,13 +25,15 @@ tempered and the étale fundamental group are computed from the same presentatio
   group `Pi1.Orbifold.etalePi1 R A Ω` is identified with `Genuine.pi1Of E ℓ M ±` by
   `Genuine.etaleEquiv` (SGA 1 V.8.2 with a finite group action, from the `pi1` project), and
   `Genuine.pi1Of E ℓ M ± = Genuine.pi1C E ℓ M ±` by `Genuine.pi1EquivC`.
-* `Orbicurve.temperedPi1 X` is `TemperedFundamentalGroups.AffineOrbifold.canonicalTemperedPi1` of this
+* `Orbicurve.temperedPi1 X` is `TemperedFundamentalGroups.AffineOrbifold.canonicalTemperedPi1` of
+  this
   presentation: the tempered fundamental group over the canonical valuation of `k` (the
   henselian discrete valuation ring of `k` if there is one — by F. K. Schmidt's theorem it is
   unique, so it is `O_v` for the completions `K_v` — and the trivial valuation otherwise),
   extended to `Ω` by the chosen extension of valuation rings (see that repository's
   `Blueprint.md` for the identification with André's definition and what is cited there).
-* `Orbicurve.tempToEtale X` is the tempered-to-étale comparison `AffineOrbifold.temperedToEtale` of the
+* `Orbicurve.tempToEtale X` is the tempered-to-étale comparison `AffineOrbifold.temperedToEtale` of
+  the
   presentation followed by `Genuine.etaleEquiv`.
 * **Outside characteristic `0`** (where the comparison `Genuine.etaleEquiv` is not available)
   the tempered group is that of the geometric presentation `Orbicurve.affineOrbifold`

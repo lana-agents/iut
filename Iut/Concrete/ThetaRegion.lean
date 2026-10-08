@@ -67,8 +67,10 @@ factor. -/
 noncomputable def scaleElt (i : Fin n) (p : Nat.Primes)
     (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber D.Kt (.finite p)) :
     LocalTheory.Tensor D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c) :=
-  LocalTheory.incl D.Kt p (LocalTheory.tuple D.Kt _ c) (distinguished n i) (LocalTheory.fiberPlace D.Kt (c (distinguished n i)))
-    (LocalTheory.fiberPlace_spec D.Kt _) (D.qroot (LocalTheory.fiberPlace D.Kt (c (distinguished n i))) ^ (i.1 + 1) ^ 2)
+  LocalTheory.incl D.Kt p (LocalTheory.tuple D.Kt _ c) (distinguished n i)
+      (LocalTheory.fiberPlace D.Kt (c (distinguished n i)))
+    (LocalTheory.fiberPlace_spec D.Kt _)
+        (D.qroot (LocalTheory.fiberPlace D.Kt (c (distinguished n i))) ^ (i.1 + 1) ^ 2)
 
 lemma isUnit_scaleElt (i : Fin n) (p : Nat.Primes)
     (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber D.Kt (.finite p)) :
@@ -81,7 +83,8 @@ lemma ordp_pow_nonneg (v : FinitePlace D.Kt) (m : ℕ) :
   induction m with
   | zero => simp [ordp, norm_one]
   | succ k ih =>
-    rw [pow_succ, LocalTheory.ordp_mul D.Kt v _ _ (pow_ne_zero _ (D.qroot_ne_zero v)) (D.qroot_ne_zero v)]
+    rw [pow_succ, LocalTheory.ordp_mul D.Kt v _ _ (pow_ne_zero _ (D.qroot_ne_zero v))
+        (D.qroot_ne_zero v)]
     linarith [D.ordp_qroot_nonneg v]
 
 /-- The theta-pilot component at a finite place: the union of the images of
@@ -115,7 +118,8 @@ lemma thetaComponent_subset_logShell (i : Fin n) (vQ : RationalPlace)
   rcases vQ with p | _
   · intro x hx
     change x ∈ ⋃ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
-      φ '' (D.scaleElt n i p c • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)) at hx
+      φ '' (D.scaleElt n i p c • LocalTheory.integral D.Kt (.finite p)
+          (LocalTheory.tuple D.Kt _ c)) at hx
     obtain ⟨φ, hφ, hx⟩ := Set.mem_iUnion₂.mp hx
     refine LocalTheory.indAut_logShell D.Kt _ _ φ hφ (Set.image_mono ?_ hx)
     exact (LocalTheory.smul_integral_subset D.Kt p _ _ _ _ _ (pow_ne_zero _ (D.qroot_ne_zero _))
@@ -131,14 +135,17 @@ structure (the indeterminacy automorphisms preserve the maximal order at every p
 lemma thetaComponent_eq_integral (i : Fin n) (p : Nat.Primes)
     (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber D.Kt (.finite p))
     (hbad : (p : ℕ) ∉ D.badChars) :
-    D.thetaComponent n i (.finite p) c = LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c) := by
+    D.thetaComponent n i (.finite p) c = LocalTheory.integral D.Kt (.finite p)
+        (LocalTheory.tuple D.Kt _ c) := by
   have hscale : D.scaleElt n i p c = 1 := by
     unfold scaleElt
-    rw [D.qroot_eq_one _ (by rw [LocalTheory.residueChar_fiberPlace D.Kt]; exact hbad), one_pow, map_one]
+    rw [D.qroot_eq_one _ (by rw [LocalTheory.residueChar_fiberPlace D.Kt]; exact hbad),
+        one_pow, map_one]
   apply Set.Subset.antisymm
   · intro x hx
     change x ∈ ⋃ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
-      φ '' (D.scaleElt n i p c • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)) at hx
+      φ '' (D.scaleElt n i p c • LocalTheory.integral D.Kt (.finite p)
+          (LocalTheory.tuple D.Kt _ c)) at hx
     obtain ⟨φ, hφ, hx⟩ := Set.mem_iUnion₂.mp hx
     rw [hscale, one_smul] at hx
     exact LocalTheory.prop14_iv D.Kt p _ φ hφ hx
@@ -168,7 +175,8 @@ noncomputable def thetaPilot (i : Fin (LocalTheory.container D.Kt n).proc.length
         apply hmem
         refine Or.inr ⟨p, hb, ?_⟩
         simp [p.2]
-      change (LocalTheory.packet D.Kt _ _).productRegion _ = (LocalTheory.packet D.Kt _ _).integralRegion
+      change (LocalTheory.packet D.Kt _ _).productRegion _ =
+          (LocalTheory.packet D.Kt _ _).integralRegion
       ext x
       simp only [DirectSumPresentation.mem_productRegion,
         DirectSumPresentation.mem_integralRegion]

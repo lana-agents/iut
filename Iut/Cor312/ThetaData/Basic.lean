@@ -28,7 +28,8 @@ of IUT I, Definition 3.1(a)–(f), packaged from the child modules:
 
 The **chosen data** are exactly the fields of this structure and of its child
 structures: `F`, `F̄`, `E_F` (giving `X_F = E_F ∖ {0}`, the model orbicurve
-`Iut.Anabelian.Orbicurve.oncePunctured`), `V_mod^bad`, `ℓ` with the basis/representation of the `ℓ`-torsion, `C̲_K`
+`Iut.Anabelian.Orbicurve.oncePunctured`), `V_mod^bad`, `ℓ` with the basis/representation of the
+`ℓ`-torsion, `C̲_K`
 with `X̲_K` and the element of `Q` giving `ε`, the valuation section `V`, and the local
 choices (decomposition groups). The **derived objects** are `def`s, never fields:
 `F_mod = ℚ(j(E))` (`Iut.fieldOfModuli`), `F_sol` (`Iut.solvableClosure`), `K`
@@ -57,7 +58,8 @@ open NumberField WeierstrassCurve OrbicurveDataSection
 
 /-- **Initial Θ-data** (IUT I, Definition 3.1; taxis #38): the packaged tuple
 `(F̄/F, X_F, ℓ, C̲_K, V, V_mod^bad, ε)`, stated about the model orbicurves with their genuine
-étale fundamental groups, genuine cores and tempered fundamental groups. See the module docstring for the chosen-data/derived-object
+étale fundamental groups, genuine cores and tempered fundamental groups. See the module docstring
+for the chosen-data/derived-object
 inventory and the honesty boundary. -/
 structure InitialThetaData : Type (u + 1) where
   /-- The number field `F` (IUT I, Definition 3.1(a)). -/
