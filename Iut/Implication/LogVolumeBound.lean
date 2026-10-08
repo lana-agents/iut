@@ -44,14 +44,14 @@ over capsules (taxis #44). This is `LocalEstimate.rhs_le`.
 
 namespace Iut
 
-universe u v
+universe u
 
 open NumberField
 
 
 namespace Theorem110Invariants
 
-variable {X : Corollary312VariantData.{u, v}} (inv : Theorem110Invariants X)
+variable {X : Corollary312VariantData.{u}} (inv : Theorem110Invariants X)
 
 /-- The Step (v) upper bound for the packet log-volume of the container of theta-pilot
 images at a distinguished prime `p`, for a capsule of cardinality `n = j + 1`:
@@ -65,7 +65,7 @@ capsule `i` and rational place `v_ℚ`, a hull region `cont i v_ℚ` containing 
 theta-pilot region, equal to the holomorphic integral structure away from the
 distinguished primes, with the log-volume bounds of Propositions 1.4(iii),(iv) and
 1.5(iii),(iv); and monotonicity of the packet log-volume between hull regions. -/
-structure LocalEstimate : Type (max u v) where
+structure LocalEstimate : Type u where
   /-- The containing hull region at capsule `i` and rational place `v_ℚ`
   (`p^{⌊λ − d_I − a_I⌋ − b_I}·(R_I)^∼`, resp. `(R_I)^∼`, resp. `π^{j+1}·B_I`). -/
   cont : ∀ (i : Fin X.rhsData.container.proc.length) (vQ : RationalPlace),

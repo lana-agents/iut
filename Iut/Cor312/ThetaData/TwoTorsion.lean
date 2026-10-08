@@ -22,7 +22,6 @@ elements.
 namespace Iut
 
 open WeierstrassCurve
-open scoped Classical
 
 /-- Membership in the `n`-torsion subgroup, for an integer `n`. -/
 lemma mem_torsionBy_iff' {A : Type*} [AddCommGroup A] (n : ℤ) (x : A) :
@@ -36,6 +35,7 @@ lemma card_torsionBy_congr {A B : Type*} [AddCommGroup A] [AddCommGroup B] (e : 
   simp only [mem_torsionBy_iff', AddEquiv.toEquiv_eq_coe, EquivLike.coe_coe,
     ← map_zsmul, AddEquiv.map_eq_zero_iff]
 
+open scoped Classical in
 /-- **`|E[n]| = n²` over an algebraically closed field of characteristic `0`**, for every
 Weierstrass model. -/
 theorem card_torsionBy_eq_sq' {K : Type*} [Field K] [CharZero K] [IsAlgClosed K]
@@ -49,6 +49,7 @@ theorem card_torsionBy_eq_sq' {K : Type*} [Field K] [CharZero K] [IsAlgClosed K]
 variable {F : Type*} [Field F] [NumberField F] (E : WeierstrassCurve F) [E.IsElliptic]
 variable {Fbar : Type*} [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
 
+open scoped Classical in
 /-- **Rational `6`-torsion gives four rational `2`-torsion points**: `|E(F)[2]| ≥ 4`. -/
 theorem four_le_card_torsionBy_two (h6 : SixTorsionRational F E Fbar) :
     2 * 2 ≤ Nat.card ↥(AddSubgroup.torsionBy E.toAffine.Point ((2 : ℕ) : ℤ)) := by

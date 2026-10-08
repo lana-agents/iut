@@ -58,18 +58,18 @@ taxis #33–#45 supplied by the project owner.
 
 namespace Iut
 
-universe u v
+universe u
 
 /-- The assembled input bundle of the Corollary 3.12 variant (taxis #33): initial
 Θ-data with its `q`-pilot data (taxis #34) and right-hand-side data (taxis #35). -/
-structure Corollary312VariantData : Type (max (u + 1) (v + 1)) where
+structure Corollary312VariantData : Type (u + 1) where
   /-- The initial Θ-data (IUT I, Definition 3.1; taxis #38). -/
   data : InitialThetaData.{u}
   /-- The `q`-pilot data of the left-hand side (taxis #34). -/
   qPilot : QPilotData data
   /-- The container/log-volume/hull/theta-pilot data of the right-hand side
   (taxis #35, #43–#45). -/
-  rhsData : RHSData.{u, v} data
+  rhsData : RHSData.{u, u} data
 
 
 /-- **The variant of IUT III, Corollary 3.12** (taxis #33):
@@ -83,13 +83,13 @@ This is a `Prop`-valued *definition*, the conjectural specification boundary of 
 project: **no proof of this proposition exists in this repository, and none is
 claimed**. See the module docstring for the exact sense in which this statement is
 and is not related to the published Corollary 3.12. -/
-noncomputable def Corollary312Variant (X : Corollary312VariantData.{u, v}) :
+noncomputable def Corollary312Variant (X : Corollary312VariantData.{u}) :
     Prop :=
   X.qPilot.lhs ≤ X.rhsData.rhs
 
 /-- Unfolding of the variant statement: it is literally the inequality between the
 left-hand side of taxis #34 and the right-hand side of taxis #35. -/
-lemma corollary312Variant_iff (X : Corollary312VariantData.{u, v}) :
+lemma corollary312Variant_iff (X : Corollary312VariantData.{u}) :
     Corollary312Variant X ↔ X.qPilot.lhs ≤ X.rhsData.rhs :=
   Iff.rfl
 

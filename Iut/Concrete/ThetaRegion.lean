@@ -214,7 +214,7 @@ noncomputable def InitialThetaData.qPilot : QPilotData D where
 `q`-pilot data and the concrete right-hand side (the large volume container of the tensor
 packets of the `ℓ`-torsion field, with the theta-pilot region built from the `2ℓ`-th roots
 of the Tate parameters). A function of `D` alone. -/
-noncomputable def concreteVariantData : Corollary312VariantData.{u, u} where
+noncomputable def concreteVariantData : Corollary312VariantData.{u} where
   data := D
   qPilot := D.qPilot
   rhsData := D.rhsData

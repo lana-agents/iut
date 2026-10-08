@@ -34,7 +34,7 @@ open NumberField
 variable {T : Genl.HeightTheory}
 
 /-- The data bundles produced by the concrete construction. -/
-def IsConcrete (X : Corollary312VariantData.{u, u}) : Prop :=
+def IsConcrete (X : Corollary312VariantData.{u}) : Prop :=
   ∃ D : InitialThetaData.{u}, X = concreteVariantData D
 
 /-- **Existence of suitable initial Θ-data, concrete form** ((P7) in the proof of

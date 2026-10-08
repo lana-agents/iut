@@ -41,7 +41,7 @@ For the tripod, the passage (ii) ⇒ (i) and the classical ABC conjecture are in
 
 namespace Iut
 
-universe u v
+universe u
 
 open Finset Real
 
@@ -56,11 +56,11 @@ variable {T : Genl.HeightTheory}
 /-- **Corollary 2.3, statement (ii) of [GenEll], Theorem 2.1**: for every compactly
 bounded subset `K` of the tripod, every `d` and every `ε > 0`, the inequality
 `ht_{ω_ℙ(C)} ≲ (1 + ε)·(log-diff_ℙ + log-cond_C)` holds on `K ∩ U_ℙ(ℚ̄)^{≤d}`. -/
-theorem statementII_of_cor312 {P : Corollary312VariantData.{u, v} → Prop}
+theorem statementII_of_cor312 {P : Corollary312VariantData.{u} → Prop}
     (I : ∀ (K : T.CBS) (d : ℕ), Corollary22Inputs T K d)
     (ex : ∀ K d, ThetaDataExistence P (I K d))
     (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
-    (h312 : ∀ X : Corollary312VariantData.{u, v}, P X → Corollary312Variant X) :
+    (h312 : ∀ X : Corollary312VariantData.{u}, P X → Corollary312Variant X) :
     T.StatementII := by
   intro d ε hε K
   rcases Nat.eq_zero_or_pos d with hd0 | hd
