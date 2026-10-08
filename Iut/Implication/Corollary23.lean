@@ -36,7 +36,7 @@ contributes only a bounded discrepancy.
 * `cheb`, `pnt`: the prime-number-theorem inputs.
 
 For the tripod, the passage (ii) ⇒ (i) and the classical ABC conjecture are in
-`Iut.Tripod` (`Iut.classicalABC_of_variant`, `Iut/Main.lean`).
+`Iut.Tripod` and `Iut.classicalABC_of_variant` (`Iut/MainTheorem.lean`).
 -/
 
 namespace Iut

@@ -46,8 +46,8 @@ of the ABC triples with `|a| ≪ |c|` tend to `0` archimedeanly (and `p`-adicall
 primes of `V` dividing `a`), so they leave every compactly bounded subset: the argument
 above does not apply to `StatementII`, and the passage `StatementII → StatementI`
 ([GenEll], Theorem 2.1 (ii) ⇒ (i), via Belyi maps and the compactly bounded
-subsets of all hyperbolic curves) is the missing step, taken as the hypothesis of
-`classicalABC_of_variant_of_statementII_imp_I`.
+subsets of all hyperbolic curves) is needed; it is the theorem
+`Iut.Tripod.statementI_of_statementII`.
 
 ## References
 
