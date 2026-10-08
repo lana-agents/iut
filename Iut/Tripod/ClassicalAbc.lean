@@ -280,4 +280,10 @@ theorem classicalABCInt_of_statementI (h : tripodTheory.StatementI) : ClassicalA
   have hc' := le_max_right |(a : ℝ)| |(c : ℝ)|
   refine max_le (by nlinarith) (max_le (by nlinarith) (by nlinarith))
 
+/-- **[GenEll] Theorem 2.1(i) for the tripod implies the classical ABC conjecture**:
+`tripodTheory.StatementI → Iut.ClassicalABC` (via the form over `ℤ`,
+`classicalABCInt_of_statementI`). -/
+theorem classicalABC_of_statementI (h : tripodTheory.StatementI) : ClassicalABC :=
+  classicalABC_of_int (classicalABCInt_of_statementI h)
+
 end Iut.Tripod
