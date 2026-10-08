@@ -35,8 +35,7 @@ open NumberField
 
 universe u v
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
-variable (D : InitialThetaData AG TG) (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT)
+variable (D : InitialThetaData.{u}) (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT)
 
 /-- **The tower arithmetic from the local facts** (IUT IV, (R4), Steps (ii), (iii)). -/
 theorem towerArithmetic_of_localFacts (H : TowerLocalFacts D.E D.VBad D.prime)

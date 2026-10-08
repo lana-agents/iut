@@ -7,27 +7,24 @@ import Iut.Anabelian.Tempered
 import Iut.Anabelian.Genuine.Punctured
 
 /-!
-# The genuine étale theory of the model orbicurves
-
-This module assembles a term of `Iut.Anabelian.GenuineEtaleData`, hence of
-`Iut.Anabelian.EtalePi1Theory` (`genuinePi1Theory`) with `temperedTheory` over it, from
+# The genuine étale fundamental groups and cores of the model orbicurves
 
 * the genuine arithmetic étale fundamental groups `Orbicurve.genuinePi1 X = Genuine.pi1C E ℓ M ±`
   (`Aut(Ω / F_X) ⧸ ⟨⟨inertia⟩⟩` in characteristic `0`, a trivial junk value in positive
-  characteristic), with the maps induced by covers (`Genuine.pi1MapC`, open embeddings);
+  characteristic), with the maps induced by covers (`genuinePi1Cover`, `Genuine.pi1MapC`),
+  which are continuous open embeddings (`genuinePi1Cover_isOpenEmbedding`);
 * **the genuine `k`-cores** of [CanLift], §2: `genuineHasCore X C` says that (`k` has
   characteristic `0` and) the realization of `C` as an affine orbicurve is the `k`-core, i.e. the
   terminal object of `\\overline{Loc}_k`, of the realization of `X` (`Genuine.realize`,
   `AffOrbicurve.IsCoreOf`);
-* covers do not change cores (`Genuine.isCoreOf_realize_iff`, by pullbacks of finite étale
+* covers do not change cores (`genuineHasCore_iff_of_cover`, by pullbacks of finite étale
   covers);
-* [CanLift], Proposition 2.7 (`AffOrbicurve.CanLift27`, stated in the `pi1` project for the
-  once-punctured elliptic curve and its `±1`-quotient; the realizations are isomorphic to these,
-  `Genuine.isCoreOf_realize_oncePunctured`), a hypothesis, with `excJ` the four exceptional
-  `j`-invariants `0, 1728, 488095744/125, 1556068/81` (Takeuchi; Sijsling).
-
-(No compatibility of cores with base change is required: the existence of Θ-data obtains the
-core over the `ℓ`-torsion field from [CanLift], Proposition 2.7 over that field.)
+* [CanLift], Proposition 2.7 for the genuine cores (`genuineHasCore_oncePunctured`), from the
+  statement `AffOrbicurve.CanLift27` of the `pi1` project for the once-punctured elliptic curve
+  and its `±1`-quotient (the realizations are isomorphic to these,
+  `Genuine.isCoreOf_realize_oncePunctured`), with exceptional set `AffOrbicurve.excJ` the four
+  `j`-invariants `0, 1728, 488095744/125, 1556068/81` (Takeuchi; Sijsling). The statement is a
+  theorem, `Iut.Anabelian.canLift27` (`Iut.Anabelian.CanLift`).
 -/
 
 namespace Iut.Anabelian
@@ -94,32 +91,6 @@ lemma genuineHasCore_oncePunctured (h27 : CanLift27.{u}) [CharZero k] (E : Weier
     [E.IsElliptic] (hj : ∀ c ∈ AffOrbicurve.excJ, E.j ≠ (c : k)) :
     genuineHasCore (Orbicurve.oncePunctured E) (Orbicurve.pmQuotient (Orbicurve.oncePunctured E)) :=
   ⟨inferInstance, Genuine.isCoreOf_realize_oncePunctured E h27 hj⟩
-
-/-- **The genuine étale data**: genuine fundamental groups and genuine cores, given [CanLift],
-Proposition 2.7. -/
-def genuineEtaleData (h27 : CanLift27.{u}) :
-    GenuineEtaleData.{u} where
-  pi1Cover := genuinePi1Cover
-  pi1Cover_continuous := genuinePi1Cover_continuous
-  pi1Cover_isOpenEmbedding := genuinePi1Cover_isOpenEmbedding
-  HasCore := genuineHasCore
-  hasCore_iff_of_cover := genuineHasCore_iff_of_cover
-  excJ := AffOrbicurve.excJ
-  hasCore_oncePunctured := fun E _ hj => genuineHasCore_oncePunctured h27 E hj
-
-/-- **The genuine étale theory of the model orbicurves** (`EtalePi1Theory`). -/
-def genuinePi1Theory (h27 : CanLift27.{u}) :
-    EtalePi1Theory.{u} :=
-  (genuineEtaleData h27).toEtalePi1Theory
-
-lemma genuinePi1Theory_pi1 (h27 : CanLift27.{u})
-    (X : Orbicurve k) : (genuinePi1Theory h27).pi1 X = X.genuinePi1 := rfl
-
-lemma genuinePi1Theory_hasCore (h27 : CanLift27.{u})
-    (X C : Orbicurve k) : (genuinePi1Theory h27).HasCore X C ↔ genuineHasCore X C := Iff.rfl
-
-lemma genuinePi1Theory_excJ (h27 : CanLift27.{u}) :
-    (genuinePi1Theory h27).excJ = {0, 1728, 488095744 / 125, 1556068 / 81} := rfl
 
 end
 

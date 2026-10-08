@@ -24,9 +24,10 @@ restate the conjecture: `Iut.ABC T` is that statement.
 The concrete height formalism of curves over number fields — heights of line bundles,
 log-different, log-conductor, compactly bounded subsets of the tripod whose support
 contains `2` — is standard arithmetic geometry and is delegated to genl
-(taxis #1452, item 1). The implication theorem (`Iut.cor312Variant_implies_abc`) is
-proved for every height formalism equipped with the standard inputs it needs, so it
-applies to the concrete one as soon as genl provides it.
+(taxis #1452, item 1). Statement (ii) of [GenEll], Theorem 2.1 is derived from the
+Corollary 3.12 variant for every height formalism equipped with the standard inputs it needs
+(`Iut.statementII_of_cor312`); for the tripod the classical ABC conjecture follows
+(`Iut.classicalABC_of_variant`).
 -/
 
 namespace Iut

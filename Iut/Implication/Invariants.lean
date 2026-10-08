@@ -61,12 +61,11 @@ structure PrimeCountingBound where
   /-- The bound `#{p ≤ x} ≤ 3x/(2 log x)` for all real `x ≥ η_prm`. -/
   bound : ∀ x : ℝ, η ≤ x → (Nat.primeCounting ⌊x⌋₊ : ℝ) ≤ 3 * x / (2 * Real.log x)
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 /-- The **arithmetic invariants** entering the statement of IUT IV, Theorem 1.10, for a
 Corollary 3.12 variant data bundle (taxis #1453). Data-only; the relations between these
 numbers that the proof uses are the explicit hypotheses of `Theorem110Certificate`. -/
-structure Theorem110Invariants (X : Corollary312VariantData.{u, v} AG TG) :
+structure Theorem110Invariants (X : Corollary312VariantData.{u, v}) :
     Type where
   /-- The maximal ramification index `e_mod` of `F_mod` over `ℚ`. -/
   emod : ℕ
@@ -99,7 +98,7 @@ structure Theorem110Invariants (X : Corollary312VariantData.{u, v} AG TG) :
 
 namespace Corollary312VariantData
 
-variable (X : Corollary312VariantData.{u, v} AG TG)
+variable (X : Corollary312VariantData.{u, v})
 
 /-- The prime `ℓ` of the Θ-data. -/
 abbrev ℓ : ℕ := X.data.ℓ
@@ -138,7 +137,7 @@ end Corollary312VariantData
 
 namespace Theorem110Invariants
 
-variable {X : Corollary312VariantData.{u, v} AG TG} (inv : Theorem110Invariants X)
+variable {X : Corollary312VariantData.{u, v}} (inv : Theorem110Invariants X)
 
 /-- `e*_mod = 2¹²·3³·5·e_mod = 552960·e_mod`. -/
 abbrev eStar : ℕ := 552960 * inv.emod
@@ -196,7 +195,7 @@ that the proof of IUT IV, Theorem 1.10 consumes about the invariants of
 
 None of these is an IUT I–III input; all are consequences of Propositions 1.3 and 1.8
 (the latter through the reduction certificate of taxis #5). -/
-structure Theorem110Certificate {X : Corollary312VariantData.{u, v} AG TG}
+structure Theorem110Certificate {X : Corollary312VariantData.{u, v}}
     (inv : Theorem110Invariants X) : Prop where
   /-- `ℓ ≥ 7`. -/
   seven_le : 7 ≤ X.ℓ

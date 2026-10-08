@@ -18,8 +18,8 @@ project-owner-specified **variant of IUT III, Corollary 3.12**, assembled from
   (taxis #43–#45), and
 * the theta-pilot right-hand side `−|log(Θ)|` (taxis #35),
 
-relative to the anabelian and tempered interfaces (`Iut.AnabelianGeometry`,
-`Iut.TemperedGeometry`) and the Tate `q`-parameter stack of taxis #37
+stated about the model orbicurves with their genuine étale and tempered fundamental groups
+and genuine cores (`Iut.Anabelian`), and the Tate `q`-parameter stack of taxis #37
 (`lana-agents/tate-curves-theta`).
 
 ## The statement and its specification boundary
@@ -61,19 +61,16 @@ namespace Iut
 universe u v
 
 /-- The assembled input bundle of the Corollary 3.12 variant (taxis #33): initial
-Θ-data with its `q`-pilot data (taxis #34) and right-hand-side data (taxis #35),
-relative to the anabelian and tempered interfaces. -/
-structure Corollary312VariantData (AG : AnabelianGeometry.{u})
-    (TG : TemperedGeometry AG) : Type (max (u + 1) (v + 1)) where
+Θ-data with its `q`-pilot data (taxis #34) and right-hand-side data (taxis #35). -/
+structure Corollary312VariantData : Type (max (u + 1) (v + 1)) where
   /-- The initial Θ-data (IUT I, Definition 3.1; taxis #38). -/
-  data : InitialThetaData AG TG
+  data : InitialThetaData.{u}
   /-- The `q`-pilot data of the left-hand side (taxis #34). -/
   qPilot : QPilotData data
   /-- The container/log-volume/hull/theta-pilot data of the right-hand side
   (taxis #35, #43–#45). -/
   rhsData : RHSData.{u, v} data
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 /-- **The variant of IUT III, Corollary 3.12** (taxis #33):
 
@@ -86,13 +83,13 @@ This is a `Prop`-valued *definition*, the conjectural specification boundary of 
 project: **no proof of this proposition exists in this repository, and none is
 claimed**. See the module docstring for the exact sense in which this statement is
 and is not related to the published Corollary 3.12. -/
-noncomputable def Corollary312Variant (X : Corollary312VariantData.{u, v} AG TG) :
+noncomputable def Corollary312Variant (X : Corollary312VariantData.{u, v}) :
     Prop :=
   X.qPilot.lhs ≤ X.rhsData.rhs
 
 /-- Unfolding of the variant statement: it is literally the inequality between the
 left-hand side of taxis #34 and the right-hand side of taxis #35. -/
-lemma corollary312Variant_iff (X : Corollary312VariantData.{u, v} AG TG) :
+lemma corollary312Variant_iff (X : Corollary312VariantData.{u, v}) :
     Corollary312Variant X ↔ X.qPilot.lhs ≤ X.rhsData.rhs :=
   Iff.rfl
 

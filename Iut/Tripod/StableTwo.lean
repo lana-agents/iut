@@ -239,21 +239,6 @@ section Integrality
 
 variable {K : Type*} [Field K] {Γ : Type*} [LinearOrderedCommGroupWithZero Γ] (v : Valuation K Γ)
 
-/-- A root of a monic quadratic with integral coefficients is integral. -/
-lemma valuation_le_one_of_quadratic {x a b : K} (h : x ^ 2 + a * x + b = 0) (ha : v a ≤ 1)
-    (hb : v b ≤ 1) : v x ≤ 1 := by
-  by_contra hx
-  rw [not_le] at hx
-  have h1 : v (a * x + b) < v (x ^ 2) := by
-    rw [map_pow]
-    refine lt_of_le_of_lt (Valuation.map_add v _ _) (max_lt ?_ ?_)
-    · rw [map_mul]
-      exact (mul_le_of_le_one_left zero_le ha).trans_lt (lt_self_pow₀ hx (by norm_num))
-    · exact hb.trans_lt (one_lt_pow₀ hx (by norm_num))
-  have h2 := Valuation.map_add_eq_of_lt_left v h1
-  rw [← add_assoc, h, map_zero, map_pow] at h2
-  exact pow_ne_zero _ (ne_of_gt (zero_lt_one.trans hx)) h2.symm
-
 /-- A root of `3x⁴ + c₃x³ + c₂x² + c₁x + c₀` with integral coefficients is integral when `3` is
 a unit. -/
 lemma valuation_le_one_of_quartic (h3 : v 3 = 1) {x c₃ c₂ c₁ c₀ : K}

@@ -15,11 +15,10 @@ restriction to compactly bounded subsets), implies the classical ABC conjecture
 `Iut.ClassicalABC` (`Iut/Abc/Classical.lean`):
 
 * `Iut.Tripod.classicalABCInt_of_statementI`: the symmetric form over `ℤ`;
-* `Iut.Tripod.classicalABC_of_statementI`: the form over `ℕ`;
-* `Iut.Tripod.classicalABC_of_variant_of_statementII_imp_I`: the conditional headline — the
-  hypotheses of `Iut.Tripod.abc_of_variant` (in particular the Corollary 3.12 variant `h312`,
-  unchanged) together with `tripodTheory.StatementII → tripodTheory.StatementI` give the
-  classical ABC conjecture.
+* `Iut.Tripod.classicalABC_of_statementI`: the form over `ℕ`.
+
+The main theorem `Iut.classicalABC_of_variant` (`Iut/MainTheorem.lean`) combines this with
+`Iut.Tripod.abc_of_variant` and `Iut.Tripod.statementI_of_statementII`.
 
 For a solution `a + b + c = 0` in coprime nonzero integers we take the rational point
 `λ = −a/c ∈ ℚ ∖ {0, 1}` of the tripod (`Iut.Tripod.ratPt`), written `λ = n/d` in lowest
@@ -280,39 +279,5 @@ theorem classicalABCInt_of_statementI (h : tripodTheory.StatementI) : ClassicalA
   have ha' := le_max_left |(a : ℝ)| |(c : ℝ)|
   have hc' := le_max_right |(a : ℝ)| |(c : ℝ)|
   refine max_le (by nlinarith) (max_le (by nlinarith) (by nlinarith))
-
-section Variant
-
-open Iut.EllipticCurveData Iut.Anabelian Iut.LocalConstruct
-
-/-- **[GenEll] Theorem 2.1(i) for the tripod implies the classical ABC conjecture**:
-`tripodTheory.StatementI → Iut.ClassicalABC` (via the form over `ℤ`,
-`classicalABCInt_of_statementI`). -/
-theorem classicalABC_of_statementI (h : tripodTheory.StatementI) : ClassicalABC :=
-  classicalABC_of_int (classicalABCInt_of_statementI h)
-
-/-- **The Corollary 3.12 variant implies the classical ABC conjecture, conditionally on
-[GenEll] Theorem 2.1 (ii) ⇒ (i) for the tripod.** The hypothesis `h312` is
-exactly that of `Iut.Tripod.abc_of_variant` (which yields `tripodTheory.StatementII`, the
-ABC inequality on compactly bounded subsets); `hII_I` is the passage from compactly bounded
-subsets to all points of bounded degree. Once `hII_I` is a theorem, the classical ABC
-conjecture follows from the variant by `classicalABC_of_variant_of_statementII_imp_I Pi1 Tp
-theorem_2_1 h312`.
-
-`tripodTheory.StatementII` alone does *not* yield the classical ABC conjecture by the
-argument of `classicalABC_of_statementI`: the rational points `λ = a/c` of the triples with
-`a ≪ c` approach `0` at the archimedean place, so they leave every compactly bounded subset
-(`CompactlyBounded.set` bounds `|log|λ|_∞|`); `hII_I` is where Mochizuki's reduction
-([GenEll], Theorem 2.1, via Belyi maps) enters. -/
-theorem classicalABC_of_variant_of_statementII_imp_I
-    (Pi1 : EtalePi1Theory.{0}) (Tp : TemperedPi1Theory Pi1)
-    (hII_I : tripodTheory.StatementII → tripodTheory.StatementI)
-    (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (LT : LocalTheory.{0, 0} D.Kt)
-      (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
-      Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
-    ClassicalABC :=
-  classicalABC_of_statementI (hII_I (abc_of_variant Pi1 Tp h312))
-
-end Variant
 
 end Iut.Tripod

@@ -4,22 +4,21 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
 import Iut.Tripod.CurveFacts
-import Iut.Anabelian.Geometry
+import Iut.Anabelian.CanLift
 
 /-!
 # The core finiteness for the tripod ([CanLift], Proposition 2.7)
 
-`Iut.Tripod.coreFiniteness`: for the model anabelian geometry `modelAG Pi1` of a theory
-`Pi1 : EtalePi1Theory` of étale fundamental groups, only finitely many points `λ` of the
-tripod (of any set of points, in fact) have a once-punctured Legendre curve
-`X_λ = E_λ ∖ {0}` without the `F_λ`-core `X_λ/{±1}`. This is the hypothesis
+`Iut.Tripod.coreFiniteness`: only finitely many points `λ` of the tripod (of any set of
+points, in fact) have a once-punctured Legendre curve `X_λ = E_λ ∖ {0}` without the genuine
+`F_λ`-core `X_λ/{±1}` (after every extension of `F_λ`). This is the hypothesis
 `Iut.Tripod.CoreFinitenessHyp` consumed by `Iut.Tripod.curveInputs`.
 
-The proof: the interface `Pi1` records [CanLift], Proposition 2.7 — `X_λ` has the core
-`X_λ/{±1}` unless `j(E_λ)` lies in the finite set `Pi1.excJ` of exceptional
-`j`-invariants — and `j(E_λ) = 256 (λ² − λ + 1)³ / (λ² (λ − 1)²)`, so an exceptional point
+The proof: by [CanLift], Proposition 2.7 (`Iut.Anabelian.canLift27`,
+`Iut.Anabelian.hasCore_oncePunctured`), `X_λ` has the core `X_λ/{±1}` unless `j(E_λ)` lies in
+the finite set `AffOrbicurve.excJ` of exceptional `j`-invariants, and `j(E_λ) = 256 (λ² − λ + 1)³ / (λ² (λ − 1)²)`, so an exceptional point
 `λ ∈ ℚ̄` is a root of one of the finitely many nonzero polynomials
-`256 (X² − X + 1)³ − c·X² (X − 1)²`, `c ∈ Pi1.excJ` (nonzero: its value at `0` is `256`),
+`256 (X² − X + 1)³ − c·X² (X − 1)²`, `c ∈ AffOrbicurve.excJ` (nonzero: its value at `0` is `256`),
 each of which has finitely many roots.
 -/
 
@@ -55,35 +54,34 @@ theorem isRoot_jPoly_of_eq (c : ℚ) {l : Qbar} (h0 : l ≠ 0) (h1 : l ≠ 1)
   rw [h, sub_self]
 
 /-- **The exceptional parameters**: the `λ ∈ ℚ̄` at which `jPolyRat c` vanishes for some
-exceptional `j`-invariant `c ∈ Pi1.excJ`. -/
-def excLam (Pi1 : EtalePi1Theory.{0}) : Set Qbar :=
-  ⋃ c ∈ Pi1.excJ, {l | (jPolyRat c).IsRoot l}
+exceptional `j`-invariant `c ∈ AffOrbicurve.excJ`. -/
+def excLam : Set Qbar :=
+  ⋃ c ∈ AffOrbicurve.excJ, {l | (jPolyRat c).IsRoot l}
 
 /-- The exceptional parameters form a finite set. -/
-theorem excLam_finite (Pi1 : EtalePi1Theory.{0}) : (excLam Pi1).Finite :=
-  Pi1.excJ.finite_toSet.biUnion fun c _ => finite_setOf_isRoot (jPoly_ne_zero c)
+theorem excLam_finite : excLam.Finite :=
+  AffOrbicurve.excJ.finite_toSet.biUnion fun c _ => finite_setOf_isRoot (jPoly_ne_zero c)
 
 section Curve
 
-variable (Pi1 : EtalePi1Theory.{0}) (x : Pt) (h3 : TorsionFinite x.1 3)
+variable (x : Pt) (h3 : TorsionFinite x.1 3)
   (h5 : TorsionFinite x.1 5)
 
-/-- If `X_λ` fails to have the core `X_λ/{±1}` in the model geometry then `j(E_λ)` is an
-exceptional value ([CanLift], Proposition 2.7, as recorded in `Pi1`). -/
+/-- If `X_λ` fails to have the genuine core `X_λ/{±1}` then `j(E_λ)` is an exceptional value
+([CanLift], Proposition 2.7). -/
 theorem exists_excJ_of_not_hasCore
-    (h : ¬ OrbicurveDataSection.HasCoreUniversally (modelAG Pi1) (curveOf x h3 h5).F
-      (curveOf x h3 h5).E) :
-    ∃ c ∈ Pi1.excJ, (curveOf x h3 h5).E.j = (c : (curveOf x h3 h5).F) := by
+    (h : ¬ OrbicurveDataSection.HasCoreUniversally (curveOf x h3 h5).F (curveOf x h3 h5).E) :
+    ∃ c ∈ AffOrbicurve.excJ, (curveOf x h3 h5).E.j = (c : (curveOf x h3 h5).F) := by
   by_contra hc
   push Not at hc
   apply h
   intro K _ _ f
-  have hcK : ∀ c ∈ Pi1.excJ, ((curveOf x h3 h5).E.map f).j ≠ (c : K) := by
+  have hcK : ∀ c ∈ AffOrbicurve.excJ, ((curveOf x h3 h5).E.map f).j ≠ (c : K) := by
     intro c hc' hj
     rw [WeierstrassCurve.map_j, ← map_ratCast f] at hj
     exact hc c hc' (f.injective hj)
-  have := Pi1.hasCore_oncePunctured ((curveOf x h3 h5).E.map f) hcK
-  change Pi1.HasCore ((Orbicurve.oncePunctured (curveOf x h3 h5).E).baseChange f)
+  have := hasCore_oncePunctured ((curveOf x h3 h5).E.map f) hcK
+  change genuineHasCore ((Orbicurve.oncePunctured (curveOf x h3 h5).E).baseChange f)
     ((Orbicurve.pmQuotient (Orbicurve.oncePunctured (curveOf x h3 h5).E)).baseChange f)
   rw [Orbicurve.baseChange_pmQuotient, Orbicurve.baseChange_oncePunctured]
   exact this
@@ -104,17 +102,16 @@ theorem isRoot_jPoly_of_j_eq {c : ℚ}
 
 end Curve
 
-/-- **The core finiteness for the tripod** ([CanLift], Proposition 2.7): for the model
-anabelian geometry of any theory `Pi1` of étale fundamental groups, only finitely many
-points of bounded degree in a compactly bounded subset have a once-punctured Legendre
-curve without the core `X_λ/{±1}` — they lie among the roots of the finitely many nonzero
-polynomials `256 (X² − X + 1)³ − c·X² (X − 1)²`, `c ∈ Pi1.excJ`. -/
-theorem coreFiniteness (Pi1 : EtalePi1Theory.{0}) (P : CurveProviders) (K : CompactlyBounded)
-    (d : ℕ) : CoreFinitenessHyp P K d (modelAG Pi1) := by
+/-- **The core finiteness for the tripod** ([CanLift], Proposition 2.7): only finitely many
+points of bounded degree in a compactly bounded subset have a once-punctured Legendre curve
+without the genuine core `X_λ/{±1}` — they lie among the roots of the finitely many nonzero
+polynomials `256 (X² − X + 1)³ − c·X² (X − 1)²`, `c ∈ AffOrbicurve.excJ`. -/
+theorem coreFiniteness (P : CurveProviders) (K : CompactlyBounded)
+    (d : ℕ) : CoreFinitenessHyp P K d := by
   have hinj : Function.Injective (fun x : Pt => x.1) := Subtype.val_injective
-  refine ((excLam_finite Pi1).preimage hinj.injOn).subset ?_
+  refine (excLam_finite.preimage hinj.injOn).subset ?_
   rintro x ⟨_, hx⟩
-  obtain ⟨c, hc, hj⟩ := exists_excJ_of_not_hasCore Pi1 x _ _ hx
+  obtain ⟨c, hc, hj⟩ := exists_excJ_of_not_hasCore x _ _ hx
   exact Set.mem_iUnion₂.mpr ⟨c, hc, isRoot_jPoly_of_j_eq x _ _ hj⟩
 
 end Iut.Tripod

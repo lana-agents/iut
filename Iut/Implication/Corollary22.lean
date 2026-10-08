@@ -338,7 +338,6 @@ structure Corollary22Inputs (K : T.CBS) (d : ℕ) where
   excCore_finite : (excCore ∩ (T.cbsSet K ∩ T.ptLE T.tripod d)).Finite
 
 variable {T}
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 /-- **Existence of suitable initial Θ-data** ((P7) in the proof of Corollary 2.2): for a
 point `x` outside the exceptional set and a prime `ℓ ≥ 7` satisfying (P2), (P3), (P5),
@@ -354,7 +353,7 @@ This is the IUT-theoretic input of Corollary 2.2 (IUT I, Definition 3.1(d)–(f)
 Étale Theta Function*, Definitions 2.1–2.5): the construction of `C̲_K`, `V`, `ε` from
 the `SL₂` image. It is an open obligation of this repository, blocked on the anabelian
 interfaces (taxis #276, #279). -/
-structure ThetaDataExistence (P : Corollary312VariantData.{u, v} AG TG → Prop)
+structure ThetaDataExistence (P : Corollary312VariantData.{u, v} → Prop)
     {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d) : Prop where
   thetaData : ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d), x ∉ I.excCore →
     ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →
@@ -363,7 +362,7 @@ structure ThetaDataExistence (P : Corollary312VariantData.{u, v} AG TG → Prop)
       ((I.localData x hx).hv v : ℝ) < Real.sqrt (I.h x)) →
     (∃ v ∈ (I.localData x hx).bad, (I.localData x hx).p v ≠ 2 ∧ (I.localData x hx).p v ≠ ℓ) →
     I.SL2Image x ℓ →
-    ∃ (X : Corollary312VariantData.{u, v} AG TG) (inv : Theorem110Invariants X), P X ∧
+    ∃ (X : Corollary312VariantData.{u, v}) (inv : Theorem110Invariants X), P X ∧
       Theorem110Certificate inv ∧ Nonempty inv.LocalEstimate ∧ X.ℓ = ℓ ∧ X.dmod ≤ d ∧
       X.qPilot.logQ = (I.localData x hx).heightOther 2 ℓ ∧
       T.logDiff T.tripod x = inv.logDtpd ∧
@@ -383,9 +382,9 @@ noncomputable def threshold (cheb : ChebyshevBound) : ℝ :=
 /-- **Corollary 2.2(ii), the inequality (C2)**: outside the exceptional set and above the
 threshold, `(1/6)·log(q_∀(x)) ≤ (1 + ε_E)·(log-diff_X(x) + log-cond_D(x)) + C_K` with
 `C_K = 40·η_prm + B_K/3`, `ε_E ≤ 1`, and `log-diff_X(x) + log-cond_D(x) ≥ 0`. -/
-theorem c2 {P : Corollary312VariantData.{u, v} AG TG → Prop} (hd : 1 ≤ d)
+theorem c2 {P : Corollary312VariantData.{u, v} → Prop} (hd : 1 ≤ d)
     (ex : ThetaDataExistence P I) (cheb : ChebyshevBound) (pnt : PrimeCountingBound)
-    (h312 : ∀ X : Corollary312VariantData.{u, v} AG TG, P X → Corollary312Variant X)
+    (h312 : ∀ X : Corollary312VariantData.{u, v}, P X → Corollary312Variant X)
     (x : T.Pt T.tripod) (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d) (hxe : x ∉ I.excCore)
     (hH : I.threshold cheb ≤ I.h x) :
     1 / 6 * I.h x ≤ (1 + epsilonE (deltaBound d) (I.h x)) *

@@ -24,7 +24,7 @@ open NumberField IsDedekindDomain
 
 universe u v
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG} {D : InitialThetaData AG TG}
+variable {D : InitialThetaData.{u}}
 variable (LT : LocalTheory.{u, v} D.Kt)
 
 namespace LocalTheory

@@ -27,15 +27,15 @@ of IUT I, Definition 3.1(a)–(f), packaged from the child modules:
 ## Chosen data vs derived objects
 
 The **chosen data** are exactly the fields of this structure and of its child
-structures: `F`, `F̄`, `E_F` (giving `X_F = E_F ∖ {0}` through the anabelian
-interface), `V_mod^bad`, `ℓ` with the basis/representation of the `ℓ`-torsion, `C̲_K`
+structures: `F`, `F̄`, `E_F` (giving `X_F = E_F ∖ {0}`, the model orbicurve
+`Iut.Anabelian.Orbicurve.oncePunctured`), `V_mod^bad`, `ℓ` with the basis/representation of the `ℓ`-torsion, `C̲_K`
 with `X̲_K` and the element of `Q` giving `ε`, the valuation section `V`, and the local
 choices (decomposition groups). The **derived objects** are `def`s, never fields:
 `F_mod = ℚ(j(E))` (`Iut.fieldOfModuli`), `F_sol` (`Iut.solvableClosure`), `K`
 (`AdmissiblePrimeData.torsionField`, the fixed field of the kernel of the mod-`ℓ`
 representation), the good/bad place sets (`Iut.badPlacesOver`, `Iut.goodModPlaces`,
 `ValuationSection.Vbad`, …), the localizations (`Iut.localize`, `Iut.localCompletion`),
-the associated covers' fundamental-group maps (`AnabelianGeometry.pi1Cover`), and the
+the associated covers' fundamental-group maps (`Iut.Anabelian.genuinePi1Cover`), and the
 `Π_v` conventions (`LocalThetaData.PivBad`/`PivGood`).
 
 Existence of initial Θ-data is **not** asserted anywhere (statement project;
@@ -56,11 +56,10 @@ universe u
 open NumberField WeierstrassCurve OrbicurveDataSection
 
 /-- **Initial Θ-data** (IUT I, Definition 3.1; taxis #38): the packaged tuple
-`(F̄/F, X_F, ℓ, C̲_K, V, V_mod^bad, ε)` relative to an anabelian interface `AG` and
-tempered interface `TG`. See the module docstring for the chosen-data/derived-object
+`(F̄/F, X_F, ℓ, C̲_K, V, V_mod^bad, ε)`, stated about the model orbicurves with their genuine
+étale fundamental groups, genuine cores and tempered fundamental groups. See the module docstring for the chosen-data/derived-object
 inventory and the honesty boundary. -/
-structure InitialThetaData (AG : AnabelianGeometry.{u}) (TG : TemperedGeometry AG) :
-    Type (u + 1) where
+structure InitialThetaData : Type (u + 1) where
   /-- The number field `F` (IUT I, Definition 3.1(a)). -/
   F : Type u
   /-- `F` is a field. -/
@@ -102,22 +101,20 @@ structure InitialThetaData (AG : AnabelianGeometry.{u}) (TG : TemperedGeometry A
   chosen data pinned by the coordinates of the Tate parametrization, `Iut.TateFamily`). -/
   tate : TateFamily E prime.torsionField prime.ℓ VBad
   /-- The orbicurve data `C̲_K`, `X̲_K`, `ε` of Definition 3.1(d)/(f) (taxis #41). -/
-  orb : OrbicurveData AG F E Fbar VBad prime
+  orb : OrbicurveData F E Fbar VBad prime
   /-- The valuation section `V` and local conditions of Definition 3.1(e)–(f)
   (taxis #42). -/
-  localData : LocalThetaData AG TG F E Fbar VBad prime orb
+  localData : LocalThetaData F E Fbar VBad prime orb
 
 namespace InitialThetaData
-
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 attribute [instance] fieldF numberFieldF fieldFbar algebraFbar isAlgClosure isElliptic
   numberFieldK algebraModK towerModK
 
-variable (D : InitialThetaData AG TG)
+variable (D : InitialThetaData.{u})
 
 /-- The once-punctured elliptic curve `X_F = E_F ∖ {0}` (derived). -/
-noncomputable def X : AG.Orbicurve D.F := AG.oncePunctured D.E
+noncomputable def X : Anabelian.Orbicurve D.F := Anabelian.Orbicurve.oncePunctured D.E
 
 /-- The prime `ℓ` of the Θ-data. -/
 def ℓ : ℕ := D.prime.ℓ
@@ -127,10 +124,10 @@ representation). -/
 noncomputable def K : IntermediateField D.F D.Fbar := D.prime.torsionField
 
 /-- The orbicurve `C̲_K` of the Θ-data tuple. -/
-def CKu : AG.Orbicurve ↥D.prime.torsionField := D.orb.CKu
+def CKu : Anabelian.Orbicurve ↥D.prime.torsionField := D.orb.CKu
 
 /-- The distinguished cusp `ε` of `C̲_K`. -/
-def epsilon : AG.Cusp D.orb.CKu := D.orb.epsilon
+def epsilon : D.orb.CKu.Cusp := D.orb.epsilon
 
 /-- The valuation section `V ⊆ V(K)`. -/
 def V : ValuationSection D.F D.E D.Fbar D.VBad D.prime := D.localData.sect

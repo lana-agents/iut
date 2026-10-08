@@ -57,23 +57,20 @@ def TowerLocalHyp : Prop :=
     TowerLocalFacts (P.curve x).E ((P.curve x).VBadOf ℓ)
       ((P.curve x).primeData (P.arith x) (P.tate x) hℓ h7 (P.modRep x ℓ hℓ) hsl hP2)
 
-variable {AG : AnabelianGeometry.{0}} {TG : TemperedGeometry AG}
-
 variable (x : Pt) {ℓ : ℕ} (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ)
   (hsl : ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (P.modRep x ℓ hℓ).rep.range)
   (hP2 : ∀ w (hw : w ∈ (P.curve x).badAll), ¬ ℓ ∣ (P.tate x).qOrder w hw)
   (hP5 : ∃ w ∈ (P.curve x).badAll, residueChar w ≠ 2 ∧ residueChar w ≠ ℓ)
-  (anab : AnabelianExistence AG TG)
-  (hcore : OrbicurveDataSection.HasCoreUniversally AG (P.curve x).F (P.curve x).E)
+  (hcore : OrbicurveDataSection.HasCoreUniversally (P.curve x).F (P.curve x).E)
 
 /-- The Θ-data of the curve of a point of the tripod and a prime `ℓ`
 (`Iut.EllipticCurveData.thetaData`). -/
-noncomputable abbrev thetaDataOf : InitialThetaData AG TG :=
-  (P.curve x).thetaData (P.arith x) (P.tate x) hℓ h7 (P.modRep x ℓ hℓ) hsl hP2 hP5 anab hcore
+noncomputable abbrev thetaDataOf : InitialThetaData.{0} :=
+  (P.curve x).thetaData (P.arith x) (P.tate x) hℓ h7 (P.modRep x ℓ hℓ) hsl hP2 hP5 hcore
 
 /-- The `q`-pilot inputs of the Θ-data of a point of the tripod. -/
-theorem qPilotInputsOf : QPilotInputs (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore) :=
-  (P.curve x).qPilotInputs (P.arith x) (P.tate x) hℓ h7 (P.modRep x ℓ hℓ) hsl hP2 hP5 anab hcore
+theorem qPilotInputsOf : QPilotInputs (thetaDataOf P x hℓ h7 hsl hP2 hP5 hcore) :=
+  (P.curve x).qPilotInputs (P.arith x) (P.tate x) hℓ h7 (P.modRep x ℓ hℓ) hsl hP2 hP5 hcore
 
 /-- **The ramification of `ℚ(λ)/ℚ(j)` at the bad places of the Θ-data of a point**:
 `e(u/u₀) ≤ 2` for `u₀ ∈ V_mod^bad(ℓ)` (`Iut.Tripod.relRamIdx_tpd_le_two`). -/
@@ -86,15 +83,15 @@ theorem relRamIdxModLeTwo_curve (ℓ : ℕ) :
 facts, the ramification bound at the bad places and the torsion degree bounds. -/
 theorem towerArithmetic_of_towerLocalHyp (hloc : TowerLocalHyp P)
     (hdeg3 : ∀ x : Pt, TorsionDegreeBound x.1 3) (hdeg5 : ∀ x : Pt, TorsionDegreeBound x.1 5)
-    (LT : LocalTheory.{0, v} (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore).Kt)
-    (htwo : TwoTorsionRational (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore)) :
-    TowerArithmetic (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore) LT
-      (thetaLocalData _ LT htwo (qPilotInputsOf P x hℓ h7 hsl hP2 hP5 anab hcore)) := by
+    (LT : LocalTheory.{0, v} (thetaDataOf P x hℓ h7 hsl hP2 hP5 hcore).Kt)
+    (htwo : TwoTorsionRational (thetaDataOf P x hℓ h7 hsl hP2 hP5 hcore)) :
+    TowerArithmetic (thetaDataOf P x hℓ h7 hsl hP2 hP5 hcore) LT
+      (thetaLocalData _ LT htwo (qPilotInputsOf P x hℓ h7 hsl hP2 hP5 hcore)) := by
   haveI : IsGalois
-      ↥(fieldOfModuli (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore).F
-        (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore).E)
-      ↥(tripodalFieldOf (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore).F
-        (thetaDataOf P x hℓ h7 hsl hP2 hP5 anab hcore).E) :=
+      ↥(fieldOfModuli (thetaDataOf P x hℓ h7 hsl hP2 hP5 hcore).F
+        (thetaDataOf P x hℓ h7 hsl hP2 hP5 hcore).E)
+      ↥(tripodalFieldOf (thetaDataOf P x hℓ h7 hsl hP2 hP5 hcore).F
+        (thetaDataOf P x hℓ h7 hsl hP2 hP5 hcore).E) :=
     isGalois_tpd x (P.torsionFinite3 x.1) (P.torsionFinite5 x.1)
   refine towerArithmetic_of_localFacts _ LT _ (hloc x ℓ hℓ h7 hsl hP2)
     (relRamIdxModLeTwo_curve P x ℓ)
@@ -102,7 +99,7 @@ theorem towerArithmetic_of_towerLocalHyp (hloc : TowerLocalHyp P)
   · change Module.finrank ℚ (P.curve x).F ≤ 552960 * Module.finrank ℚ (tpd P x)
     rw [finrank_tpd]
     exact deg_le x _ _ (hdeg3 x) (hdeg5 x)
-  · exact (qPilotInputsOf P x hℓ h7 hsl hP2 hP5 anab hcore).bad_finite
+  · exact (qPilotInputsOf P x hℓ h7 hsl hP2 hP5 hcore).bad_finite
   · intro p hp
     obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hp
     exact ⟨w, (Set.Finite.mem_toFinset _).mp hw, rfl⟩

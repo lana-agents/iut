@@ -36,8 +36,7 @@ universe u v
 open NumberField
 open scoped Pointwise
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
-variable {D : InitialThetaData AG TG} {LT : LocalTheory.{u, v} D.Kt} {TL : ThetaLocalData D LT}
+variable {D : InitialThetaData.{u}} {LT : LocalTheory.{u, v} D.Kt} {TL : ThetaLocalData D LT}
   {QI : QPilotInputs D} (TA : TowerArithmetic D LT TL)
 
 /-- `ord_p(1) = 0`. -/

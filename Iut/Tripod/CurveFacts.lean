@@ -47,10 +47,10 @@ Proposition 3.4; proved in `Iut/Tripod/Height.lean`, `Iut.Tripod.legendreHeight`
 this file, `Iut.Tripod.sl2Image`, from `Iut/Concrete/SL2Image.lean`),
 `LogCondGeHyp`, `LogCondLeHyp` (the comparison of the conductor of `F_tpd = ℚ(λ)` away from
 `2ℓ` with `log-cond_{{0,1,∞}}(λ)`, from the reduction theory of the Legendre curve; proved in
-`LogCond.lean`) and `CoreFinitenessHyp` ([CanLift], Proposition 2.7; proved for the model
-anabelian geometry in `Iut.Tripod.coreFiniteness`, `Iut/Tripod/Core.lean`). The cyclic-subgroup
+`LogCond.lean`) and `CoreFinitenessHyp` ([CanLift], Proposition 2.7; proved for the genuine
+cores in `Iut.Tripod.coreFiniteness`, `Iut/Tripod/Core.lean`). The cyclic-subgroup
 bound is collected in `CurveFactsProp`, and `Iut.Tripod.curveInputs` assembles
-`Iut.CurveInputs tripodTheory AG K d` from it, the proved hypotheses and `NorthcottHyp`.
+`Iut.CurveInputs tripodTheory K d` from it, the proved hypotheses and `NorthcottHyp`.
 -/
 
 namespace Iut.Tripod
@@ -470,11 +470,11 @@ def LogCondLeHyp : Prop :=
 
 /-- **[CanLift], Proposition 2.7**: only finitely many points of bounded degree in `K` have
 a once-punctured elliptic curve `X_λ` that fails to have the `F_λ`-core `C_λ = X_λ/{±1}`
-(the four exceptional `j`-invariants), relative to an anabelian interface `AG`. Proved for
-the model geometry `modelAG Pi1` in `Iut.Tripod.coreFiniteness`. -/
-def CoreFinitenessHyp (AG : AnabelianGeometry.{0}) : Prop :=
+(the four exceptional `j`-invariants), for the genuine cores. Proved in
+`Iut.Tripod.coreFiniteness`. -/
+def CoreFinitenessHyp : Prop :=
   {x | ∃ hx : x ∈ tripodTheory.cbsSet K ∩ tripodTheory.ptLE tripodTheory.tripod d,
-    ¬ OrbicurveDataSection.HasCoreUniversally AG (P.curve x).F (P.curve x).E}.Finite
+    ¬ OrbicurveDataSection.HasCoreUniversally (P.curve x).F (P.curve x).E}.Finite
 
 /-- **The facts about the curves of the points not proved in this file**, collected: exactly
 the fields of `Iut.CurveInputs` for `curveOf` that are not proved here or in `TwoAdic.lean`,
@@ -486,15 +486,15 @@ structure CurveFactsProp (TK : ℝ) : Prop where
 
 /-- **The inputs of IUT IV, Corollary 2.2 for the tripod**, from the curves `E_λ/F_λ` of the
 points, the facts proved in this file, the isolated hypotheses `CurveFactsProp`, the core
-finiteness `CoreFinitenessHyp` (a theorem for the model geometry, `Iut.Tripod.coreFiniteness`),
+finiteness `CoreFinitenessHyp` (a theorem, `Iut.Tripod.coreFiniteness`),
 the height comparison `LegendreHeightHyp` (proved in `Height.lean`), the `2`-adic and conductor
 bounds (proved in `TwoAdic.lean`, `LogCond.lean`), and the Northcott property `NorthcottHyp`. -/
-noncomputable def curveInputs {AG : AnabelianGeometry.{0}} {TK : ℝ}
-    (CF : CurveFactsProp P K d TK) (hcore : CoreFinitenessHyp P K d AG) (hN : NorthcottHyp)
+noncomputable def curveInputs {TK : ℝ}
+    (CF : CurveFactsProp P K d TK) (hcore : CoreFinitenessHyp P K d) (hN : NorthcottHyp)
     (hdeg3 : ∀ x : Pt, TorsionDegreeBound x.1 3) (hdeg5 : ∀ x : Pt, TorsionDegreeBound x.1 5)
     (hh : LegendreHeightHyp P K) (hB : TwoAdicBoundHyp P K (max (4 * K.c) 0))
     (hge : LogCondGeHyp P) (hle : LogCondLeHyp P) :
-    CurveInputs tripodTheory AG K d where
+    CurveInputs tripodTheory K d where
   h := P.h
   curve x _ := P.curve x
   arith x _ := P.arith x

@@ -51,14 +51,13 @@ universe u v
 
 open NumberField
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 /-- The **right-hand-side input data** of the Corollary 3.12 variant (taxis #35): a
 large volume container over the places of the `ℓ`-torsion field with the standard
 procession of length `ℓ* = (ℓ−1)/2`, log-volume data, a holomorphic hull system, and
 the theta-pilot region (with indeterminacies) as explicit data. See the module
 docstring for the composition order and the honesty boundary. -/
-structure RHSData (D : InitialThetaData AG TG) : Type (max u (v + 1)) where
+structure RHSData (D : InitialThetaData.{u}) : Type (max u (v + 1)) where
   /-- The large volume container (taxis #43), indexed by the places of `K`. -/
   container : LargeVolumeContainerData.{0, u, v} ℕ (Place ↥D.prime.torsionField)
   /-- The procession is the standard one with `ℓ* = (ℓ − 1)/2` capsules
@@ -92,7 +91,7 @@ structure RHSData (D : InitialThetaData AG TG) : Type (max u (v + 1)) where
 
 namespace RHSData
 
-variable {D : InitialThetaData AG TG} (R : RHSData.{u, v} D)
+variable {D : InitialThetaData.{u}} (R : RHSData.{u, v} D)
 
 /-- The holomorphic hull of the theta-pilot region, capsule-wise (taxis #45). -/
 noncomputable def thetaHull : ∀ i, R.container.AdmissibleRegion i :=

@@ -79,23 +79,20 @@ open Iut Iut.EllipticCurveData Iut.Anabelian NumberField Iut.LocalConstruct
 open scoped Classical
 
 
-variable (Pi1 : EtalePi1Theory.{0}) (Tp : TemperedPi1Theory Pi1)
-
 /-- **Existence of suitable initial Θ-data for the Legendre curves**, with the constructed
 theta local data. -/
 theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
     (CF : CurveFactsProp (tripodProviders) K d TK) (hN : NorthcottHyp) :
-    ConcreteThetaDataExistence.{0, 0} (AG := modelAG Pi1) (TG := modelTG Pi1 Tp)
-      (curveInputs tripodProviders K d CF (coreFiniteness Pi1 _ K d) hN
+    ConcreteThetaDataExistence.{0, 0}
+      (curveInputs tripodProviders K d CF (coreFiniteness _ K d) hN
         torsionDegreeBound_three' torsionDegreeBound_five'
         (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _)
         (logCondLe _)).toCorollary22Inputs := by
-  set CI := curveInputs tripodProviders K d CF (coreFiniteness Pi1 _ K d) hN
+  set CI := curveInputs tripodProviders K d CF (coreFiniteness _ K d) hN
     torsionDegreeBound_three' torsionDegreeBound_five'
     (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _) (logCondLe _) with hCI
   intro x hx hxe ℓ hℓ h7 hP2 hP3 hP5 hsl
-  have hcore : OrbicurveDataSection.HasCoreUniversally (modelAG Pi1) (CI.curve x hx).F
-      (CI.curve x hx).E := by
+  have hcore : OrbicurveDataSection.HasCoreUniversally (CI.curve x hx).F (CI.curve x hx).E := by
     by_contra h
     exact hxe ⟨hx, h⟩
   have hP2' : ∀ w (hw : w ∈ (CI.curve x hx).badAll), ¬ ℓ ∣ (CI.tate x hx).qOrder w hw := by
@@ -108,38 +105,38 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
     obtain ⟨w, hw, h⟩ := hP5
     exact ⟨w, (CI.arith x hx).badAll_finite.mem_toFinset.mp hw, h⟩
   let D := (CI.curve x hx).thetaData (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
-    (hsl hx hℓ) hP2' hP5' (anabelianExistence Pi1 Tp) hcore
+    (hsl hx hℓ) hP2' hP5' hcore
   have htwo : TwoTorsionRational D :=
     two_torsion_curveOf x ((tripodProviders).torsionFinite3 x.1)
       ((tripodProviders).torsionFinite5 x.1)
   let QI : QPilotInputs D := (CI.curve x hx).qPilotInputs (CI.arith x hx) (CI.tate x hx) hℓ h7
-    (CI.modRep x hx ℓ hℓ) (hsl hx hℓ) hP2' hP5' (anabelianExistence Pi1 Tp) hcore
+    (CI.modRep x hx ℓ hℓ) (hsl hx hℓ) hP2' hP5' hcore
   refine ⟨D, concreteLocalTheory D.Kt,
     thetaLocalData D (concreteLocalTheory D.Kt) htwo QI, QI,
     towerArithmetic_of_towerLocalHyp (tripodProviders) x hℓ h7 (hsl hx hℓ) hP2' hP5'
-      (anabelianExistence Pi1 Tp) hcore (towerLocalHyp _)
+      hcore (towerLocalHyp _)
       torsionDegreeBound_three' torsionDegreeBound_five'
       (concreteLocalTheory D.Kt) htwo, rfl,
     CI.dmod_le x hx, ?_, CI.logDiff_eq x hx, CI.logCond_ge x hx ℓ hℓ h7,
     CI.logCond_le x hx ℓ hℓ h7⟩
   exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
-    (hsl hx hℓ) hP2' hP5' (anabelianExistence Pi1 Tp) hcore _ _
+    (hsl hx hℓ) hP2' hP5' hcore _ _
 
 /-- **The Corollary 3.12 variant implies ABC on the tripod**, with propositional inputs. -/
 theorem abc_of_variant
-    (h312 : ∀ (D : InitialThetaData (modelAG Pi1) (modelTG Pi1 Tp)) (LT : LocalTheory.{0, 0} D.Kt)
+    (h312 : ∀ (D : InitialThetaData.{0}) (LT : LocalTheory.{0, 0} D.Kt)
       (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
       Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
     tripodTheory.StatementII := by
   let CF : ∀ K d, CurveFactsProp (tripodProviders) K d (cyclicConst K) :=
     fun K d => ⟨cyclicBoundOdd _ K d⟩
   exact statementII_of_cor312
-    (fun K d => (curveInputs tripodProviders K d (CF K d) (coreFiniteness Pi1 _ K d)
+    (fun K d => (curveInputs tripodProviders K d (CF K d) (coreFiniteness _ K d)
       northcottHyp torsionDegreeBound_three' torsionDegreeBound_five'
       (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _)
       (logCondLe _)).toCorollary22Inputs)
     (fun K d =>
-      (concreteThetaDataExistence' Pi1 Tp (CF K d) northcottHyp).toThetaDataExistence)
+      (concreteThetaDataExistence' (CF K d) northcottHyp).toThetaDataExistence)
     chebyshevBoundExplicit primeCountingBoundExplicit
     (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
 

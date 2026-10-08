@@ -3,7 +3,7 @@ Copyright (c) 2026 The iut contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
-import Iut.Anabelian.Geometry
+import Iut.Anabelian.Model
 import Iut.Anabelian.Genuine.Orbifold
 import Iut.Anabelian.Genuine.Theory
 import TemperedFundamentalGroups
@@ -11,7 +11,7 @@ import TemperedFundamentalGroups
 /-!
 # Tempered fundamental groups of the model orbicurves (taxis #7)
 
-This module builds a term of the residual interface `Iut.Anabelian.TemperedPi1Theory` over the
+This module builds the tempered fundamental groups of the model orbicurves over the
 genuine étale fundamental groups `Orbicurve.genuinePi1 X = Genuine.pi1C E ℓ M ±` of the model
 orbicurves (`Iut.Anabelian.Genuine.Theory`: `Aut(Ω / F_X) ⧸ ⟨⟨inertia over X_M⟩⟩` in
 characteristic `0`, the trivial group otherwise), from the
@@ -25,25 +25,27 @@ tempered and the étale fundamental group are computed from the same presentatio
   group `Pi1.Orbifold.etalePi1 R A Ω` is identified with `Genuine.pi1Of E ℓ M ±` by
   `Genuine.etaleEquiv` (SGA 1 V.8.2 with a finite group action, from the `pi1` project), and
   `Genuine.pi1Of E ℓ M ± = Genuine.pi1C E ℓ M ±` by `Genuine.pi1EquivC`.
-* `tempPi1 X` is `TemperedFundamentalGroups.AffineOrbifold.canonicalTemperedPi1` of this
+* `Orbicurve.temperedPi1 X` is `TemperedFundamentalGroups.AffineOrbifold.canonicalTemperedPi1` of this
   presentation: the tempered fundamental group over the canonical valuation of `k` (the
   henselian discrete valuation ring of `k` if there is one — by F. K. Schmidt's theorem it is
   unique, so it is `O_v` for the completions `K_v` — and the trivial valuation otherwise),
   extended to `Ω` by the chosen extension of valuation rings (see that repository's
   `Blueprint.md` for the identification with André's definition and what is cited there).
-* `tempToEtale X` is the tempered-to-étale comparison `AffineOrbifold.temperedToEtale` of the
+* `Orbicurve.tempToEtale X` is the tempered-to-étale comparison `AffineOrbifold.temperedToEtale` of the
   presentation followed by `Genuine.etaleEquiv`.
 * **Outside characteristic `0`** (where the comparison `Genuine.etaleEquiv` is not available)
   the tempered group is that of the geometric presentation `Orbicurve.affineOrbifold`
   (`[(E ∖ (E[ℓ] + M)) / A]` at the generic point) and `tempToEtale X` is the trivial
   homomorphism. This is a junk value: IUT only evaluates the theory over fields of
-  characteristic `0` (the core fields of `EtalePi1Theory` are also stated in characteristic
-  `0`).
+  characteristic `0` (the genuine cores are also only defined in characteristic `0`).
 
-`GenuineEtaleData` collects the fields of a term of `EtalePi1Theory` with
-`pi1 X = genuinePi1 X` other than `pi1` (`GenuineEtaleData.toEtalePi1Theory`), and
-`temperedTheory G : TemperedPi1Theory G.toEtalePi1Theory`. The genuine term, with the genuine
-`k`-cores of [CanLift], §2, is `Iut.Anabelian.genuineEtaleData` (`Iut.Anabelian.GenuineEtale`).
+`Orbicurve.temperedPi1 X` is the resulting tempered fundamental group and
+`Orbicurve.tempToEtale X : X.temperedPi1 →* X.genuinePi1` the continuous comparison. The
+genuine covers and `k`-cores are in `Iut.Anabelian.GenuineEtale`.
+
+**Honesty note.** The tempered group is the integral-model construction of
+lana-agents/tempered-fundamental-groups; its identification with André's tempered fundamental
+group is in progress there (W10) and is not used here.
 -/
 
 namespace Iut.Anabelian
@@ -92,52 +94,26 @@ lemma Orbicurve.temperedPresentation_of_charZero {k : Type u} [Field k] [CharZer
         (Genuine.pi1EquivC X.E X.level X.M X.pm)).continuous⟩ := by
   rw [Orbicurve.temperedPresentation, dif_pos (inferInstance : CharZero k)]
 
-/-- **The fields of an étale theory over the genuine étale fundamental groups**: the fields of
-`EtalePi1Theory` other than `pi1`, for `pi1 X = X.genuinePi1`. -/
-structure GenuineEtaleData : Type (u + 1) where
-  /-- The homomorphism induced by a cover. -/
-  pi1Cover : {k : Type u} → [Field k] → {X Y : Orbicurve k} → Orbicurve.Cover X Y →
-    (X.genuinePi1 →* Y.genuinePi1)
-  /-- The induced homomorphisms are continuous. -/
-  pi1Cover_continuous : ∀ {k : Type u} [Field k] {X Y : Orbicurve k}
-    (f : Orbicurve.Cover X Y), Continuous (pi1Cover f)
-  /-- The induced homomorphisms are open immersions. -/
-  pi1Cover_isOpenEmbedding : ∀ {k : Type u} [Field k] {X Y : Orbicurve k}
-    (f : Orbicurve.Cover X Y), Topology.IsOpenEmbedding (pi1Cover f)
-  /-- `C` is the `k`-core of `X`. -/
-  HasCore : {k : Type u} → [Field k] → Orbicurve k → Orbicurve k → Prop
-  /-- Orbicurves related by a finite étale cover have the same cores. -/
-  hasCore_iff_of_cover : ∀ {k : Type u} [Field k] [CharZero k] {X Y C : Orbicurve k},
-    Orbicurve.Cover X Y → (HasCore X C ↔ HasCore Y C)
-  /-- The exceptional `j`-invariants of [CanLift], Proposition 2.7. -/
-  excJ : Finset ℚ
-  /-- [CanLift], Proposition 2.7. -/
-  hasCore_oncePunctured : ∀ {k : Type u} [Field k] [CharZero k] (E : WeierstrassCurve k)
-    [E.IsElliptic], (∀ c ∈ excJ, E.j ≠ (c : k)) →
-      HasCore (Orbicurve.oncePunctured E) (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))
+/-- **The tempered fundamental group** of a model orbicurve: the tempered fundamental group
+`TemperedFundamentalGroups.AffineOrbifold.canonicalTemperedPi1` of the presentation
+`Orbicurve.temperedPresentation` (the construction through integral models of
+lana-agents/tempered-fundamental-groups, over the canonical valuation of the base field). Its
+identification with André's tempered fundamental group is the business of that repository. -/
+abbrev Orbicurve.temperedPi1 {k : Type u} [Field k] (X : Orbicurve k) : Type u :=
+  X.temperedPresentation.1.canonicalTemperedPi1
 
-/-- The étale theory with the genuine étale fundamental groups `pi1 X = X.genuinePi1`. -/
-def GenuineEtaleData.toEtalePi1Theory (G : GenuineEtaleData.{u}) : EtalePi1Theory.{u} where
-  pi1 X := X.genuinePi1
-  pi1Cover := G.pi1Cover
-  pi1Cover_continuous := G.pi1Cover_continuous
-  pi1Cover_isOpenEmbedding := G.pi1Cover_isOpenEmbedding
-  HasCore := G.HasCore
-  hasCore_iff_of_cover := G.hasCore_iff_of_cover
-  excJ := G.excJ
-  hasCore_oncePunctured := G.hasCore_oncePunctured
+/-- **The comparison homomorphism** from the tempered to the genuine étale fundamental group:
+the tempered-to-étale comparison of the presentation, followed by the identification of its
+étale fundamental group with `Orbicurve.genuinePi1` (the trivial homomorphism outside
+characteristic `0`, a junk value). -/
+def Orbicurve.tempToEtale {k : Type u} [Field k] (X : Orbicurve k) :
+    X.temperedPi1 →* X.genuinePi1 :=
+  X.temperedPresentation.2.1.comp (X.temperedPresentation.1.temperedToEtale _)
 
-/-- **The tempered fundamental groups of the model orbicurves** over the genuine étale theory,
-from the construction through integral models (lana-agents/tempered-fundamental-groups) over the
-canonical valuation of the base field, for the same presentation `[Spec R / A]` as the étale
-fundamental group (`Orbicurve.temperedPresentation`). -/
-def temperedTheory (G : GenuineEtaleData.{u}) : TemperedPi1Theory G.toEtalePi1Theory where
-  tempPi1 X := X.temperedPresentation.1.canonicalTemperedPi1
-  tempPi1Group _ := inferInstance
-  tempPi1Topology _ := inferInstance
-  tempToEtale X := X.temperedPresentation.2.1.comp (X.temperedPresentation.1.temperedToEtale _)
-  tempToEtale_continuous X :=
-    X.temperedPresentation.2.2.comp (X.temperedPresentation.1.continuous_temperedToEtale _)
+/-- The comparison homomorphism is continuous. -/
+lemma Orbicurve.continuous_tempToEtale {k : Type u} [Field k] (X : Orbicurve k) :
+    Continuous X.tempToEtale :=
+  X.temperedPresentation.2.2.comp (X.temperedPresentation.1.continuous_temperedToEtale _)
 
 end
 

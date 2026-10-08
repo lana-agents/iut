@@ -96,8 +96,7 @@ end Average
 
 /-! ### The concrete invariants -/
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
-variable {D : InitialThetaData AG TG} {LT : LocalTheory.{u, v} D.Kt}
+variable {D : InitialThetaData.{u}} {LT : LocalTheory.{u, v} D.Kt}
 
 namespace LocalTheory
 
@@ -240,7 +239,7 @@ end Tripodal
 
 namespace InitialThetaData
 
-variable (D : InitialThetaData AG TG)
+variable (D : InitialThetaData.{u})
 
 /-- `d_mod = [F_mod : ℚ]`. -/
 noncomputable abbrev dmod : ℕ := Module.finrank ℚ ↥(fieldOfModuli D.F D.E)
@@ -285,7 +284,7 @@ Proposition 1.3 (differents in towers of local fields, taxis #1463), Proposition
 inclusions `Gal(K/F) ↪ GL₂(𝔽_ℓ)`, `Gal(F/F_tpd) ↪ GL₂(𝔽_3) × GL₂(𝔽_5) × ℤ/2`,
 `Gal(F_tpd/F_mod) ↪ GL₂(𝔽_2)`. With `e_mod` replaced by `d_mod` and `e*_mod = 552960·d_mod`.
 Delegated as a whole (`lana-agents/elliptic-reduction`). -/
-structure TowerArithmetic (D : InitialThetaData AG TG) (LT : LocalTheory.{u, v} D.Kt)
+structure TowerArithmetic (D : InitialThetaData.{u}) (LT : LocalTheory.{u, v} D.Kt)
     (TL : ThetaLocalData D LT) : Prop where
   /-- **(R4)**: if `e_v > p_v − 2` then `p_v ≤ e*_mod·ℓ` and
   `log e_v ≤ −3 + 4·log(e*_mod·ℓ)`. -/

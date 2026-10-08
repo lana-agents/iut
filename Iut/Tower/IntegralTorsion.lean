@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
 import Iut.Tower.ReductionKernel
-import Iut.Tripod.StableTwo
+import Iut.Tower.IntegralModel
 import Iut.Torsion.EDS
 import Iut.Cor312.ThetaData.VariableChangePoint
 

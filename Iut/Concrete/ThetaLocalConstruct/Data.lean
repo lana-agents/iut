@@ -225,8 +225,7 @@ end Sum
 
 section Data
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
-variable (D : InitialThetaData AG TG) (LT : LocalTheory.{u, v} D.Kt)
+variable (D : InitialThetaData.{u}) (LT : LocalTheory.{u, v} D.Kt)
 
 /-- The bad places of `K`: the places over `V_mod^bad`. -/
 abbrev IsBadK (v : FinitePlace D.Kt) : Prop := IsBadPlace D.E D.prime.torsionField D.VBad v

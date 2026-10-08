@@ -3,16 +3,18 @@ Copyright (c) 2026 The iut contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
-import Iut.Cor312.ThetaData.Orbicurve
 import Iut.Cor312.ThetaData.PointMap
+import Mathlib.Algebra.Module.Torsion.Basic
 
 /-!
-# The linear-algebraic model of the anabelian interface (taxis #276)
+# The model orbicurves (taxis #276)
 
-This module constructs the **model orbicurves** behind a term of `Iut.AnabelianGeometry` —
-the interface behind the initial Θ-data of IUT I, Definition 3.1 — together with a
-residual interface for their fundamental groups. The term itself is assembled in
-`Iut.Anabelian.Geometry`.
+This module constructs the **model orbicurves** `Iut.Anabelian.Orbicurve` on which the initial
+Θ-data of IUT I, Definition 3.1 are stated (`Iut.OrbicurveData`, `Iut.LocalThetaData`), with
+their covers, cusps, base change and type predicates. Their genuine étale fundamental groups,
+the open immersions induced by covers and the genuine `k`-cores are in
+`Iut.Anabelian.Tempered` and `Iut.Anabelian.GenuineEtale`; the tempered fundamental groups are
+in `Iut.Anabelian.Tempered`.
 
 ## The model
 
@@ -38,17 +40,12 @@ records exactly this data: `(E, ℓ, M, ±)`. Then
 * the type `(1, ℤ/ℓℤ)^±` over a valued field, the theta-root models and the canonical
   graph cusp are defined in `Iut.Anabelian.Local` from minimal Weierstrass models.
 
-## The residual interface
+## Fundamental groups and cores
 
-Étale fundamental groups of the model orbicurves, the open immersions attached to
-covers, and the notion of `k`-core (with its stability property: orbicurves related
-by a finite étale cover have the same cores) are the content of `Iut.Anabelian.EtalePi1Theory`, an explicit residual interface (taxis
-#276, #7, #10): the model only records the shapes on which these are evaluated. The
-interface also records [CanLift], Proposition 2.7 — the once-punctured elliptic curve
-`E ∖ {0}` has the `k`-core `(E ∖ {0})/{±1}` unless `j(E)` is one of finitely many
-exceptional values (`excJ`, `hasCore_oncePunctured`) — which is what the tripod strand
-(`Iut.Tripod.coreFiniteness`) consumes. Every other field of `Iut.AnabelianGeometry` is
-constructed.
+The model only records the shapes on which the fundamental groups are evaluated: the genuine
+étale fundamental group of `(E, ℓ, M, ±)` is `Orbicurve.genuinePi1`, a cover induces the open
+immersion `genuinePi1Cover`, `k`-cores are `genuineHasCore` ([CanLift], §2), and [CanLift],
+Proposition 2.7 is `genuineHasCore_oncePunctured` with `Iut.Anabelian.canLift27`.
 -/
 
 namespace Iut.Anabelian
@@ -274,44 +271,5 @@ def IsTypeOneEllTorsPM (ℓ : ℕ) (X : Orbicurve k) : Prop :=
 end Orbicurve
 
 end
-
-/-! ## The residual interface: étale fundamental groups -/
-
-/-- **Étale fundamental groups of the model orbicurves** (residual interface of taxis #276,
-#7, #10): the profinite étale fundamental group of each model orbicurve, the open
-immersions induced by covers, the `k`-core relation with its stability property (a
-finite étale cover of `X` has the same core as `X`), and the content of [CanLift], Proposition 2.7: the once-punctured
-elliptic curve has the core `X/{±1}` unless its `j`-invariant is one of the finitely many
-exceptional values `excJ`. (An earlier version also required cores to be compatible with
-base change; the existence of Θ-data never needs it: the core over the `ℓ`-torsion field is
-obtained from [CanLift], Proposition 2.7 over that field, see
-`Iut.OrbicurveDataSection.HasCoreUniversally`.) -/
-structure EtalePi1Theory : Type (u + 1) where
-  /-- The arithmetic étale fundamental group (basepoint suppressed). -/
-  pi1 : {k : Type u} → [Field k] → Orbicurve k → ProfiniteGrp.{u}
-  /-- The homomorphism induced by a cover. -/
-  pi1Cover : {k : Type u} → [Field k] → {X Y : Orbicurve k} → Orbicurve.Cover X Y →
-    (pi1 X →* pi1 Y)
-  /-- The induced homomorphisms are continuous. -/
-  pi1Cover_continuous : ∀ {k : Type u} [Field k] {X Y : Orbicurve k}
-    (f : Orbicurve.Cover X Y), Continuous (pi1Cover f)
-  /-- The induced homomorphisms are open immersions. -/
-  pi1Cover_isOpenEmbedding : ∀ {k : Type u} [Field k] {X Y : Orbicurve k}
-    (f : Orbicurve.Cover X Y), Topology.IsOpenEmbedding (pi1Cover f)
-  /-- `C` is the `k`-core of `X`. -/
-  HasCore : {k : Type u} → [Field k] → Orbicurve k → Orbicurve k → Prop
-  /-- Orbicurves related by a finite étale cover have the same cores. -/
-  hasCore_iff_of_cover : ∀ {k : Type u} [Field k] [CharZero k] {X Y C : Orbicurve k},
-    Orbicurve.Cover X Y → (HasCore X C ↔ HasCore Y C)
-  /-- **The exceptional `j`-invariants** of [CanLift], Proposition 2.7: the finitely many
-  values of `j` (four of them) for which the once-punctured elliptic curve fails to have
-  the core `X/{±1}`. -/
-  excJ : Finset ℚ
-  /-- **[CanLift], Proposition 2.7**: the once-punctured elliptic curve `X = E ∖ {0}` has
-  the `k`-core `C = X/{±1}` unless `j(E)` is one of the finitely many exceptional values
-  `excJ`. Part of what is postulated of the actual fundamental groups. -/
-  hasCore_oncePunctured : ∀ {k : Type u} [Field k] [CharZero k] (E : WeierstrassCurve k) [E.IsElliptic],
-    (∀ c ∈ excJ, E.j ≠ (c : k)) →
-      HasCore (Orbicurve.oncePunctured E) (Orbicurve.pmQuotient (Orbicurve.oncePunctured E))
 
 end Iut.Anabelian

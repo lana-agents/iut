@@ -1,5 +1,6 @@
 import Iut.Abc.Classical
 import Iut.Abc.Target
+import Iut.Anabelian.CanLift
 import Iut.Anabelian.Existence
 import Iut.Anabelian.Genuine.Basic
 import Iut.Anabelian.Genuine.Core
@@ -12,7 +13,6 @@ import Iut.Anabelian.Genuine.Punctured
 import Iut.Anabelian.Genuine.Realize
 import Iut.Anabelian.Genuine.Theory
 import Iut.Anabelian.GenuineEtale
-import Iut.Anabelian.Geometry
 import Iut.Anabelian.Linear
 import Iut.Anabelian.Local
 import Iut.Anabelian.LocalInputs
@@ -101,6 +101,7 @@ import Iut.Implication.Invariants
 import Iut.Implication.LogVolumeBound
 import Iut.Implication.PrimeSelection
 import Iut.Implication.Theorem110
+import Iut.MainTheorem
 import Iut.Torsion.Count
 import Iut.Torsion.Divisible
 import Iut.Torsion.EDS
@@ -111,6 +112,7 @@ import Iut.Tower.DifferentBound
 import Iut.Tower.Inertia
 import Iut.Tower.InertiaBound
 import Iut.Tower.InertiaInvolution
+import Iut.Tower.IntegralModel
 import Iut.Tower.IntegralTorsion
 import Iut.Tower.LogDK
 import Iut.Tower.Main
@@ -127,9 +129,6 @@ import Iut.Tower.WildBound
 import Iut.Tripod.BadRamIdx
 import Iut.Tripod.Basic
 import Iut.Tripod.ClassicalAbc
-import Iut.Tripod.ClassicalAbcGenuine
-import Iut.Tripod.ClassicalAbcGenuineCanLift
-import Iut.Tripod.ClassicalAbcOfVariant
 import Iut.Tripod.Core
 import Iut.Tripod.CurveFacts
 import Iut.Tripod.CurveOf

@@ -48,11 +48,10 @@ universe u v
 
 open NumberField
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 namespace Theorem110Invariants
 
-variable {X : Corollary312VariantData.{u, v} AG TG} (inv : Theorem110Invariants X)
+variable {X : Corollary312VariantData.{u, v}} (inv : Theorem110Invariants X)
 
 /-- The Step (v) upper bound for the packet log-volume of the container of theta-pilot
 images at a distinguished prime `p`, for a capsule of cardinality `n = j + 1`:

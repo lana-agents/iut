@@ -43,7 +43,6 @@ universe u v
 
 open NumberField
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 /-! ### Elementary identities (E1), (E2) and real-arithmetic lemmas -/
 
@@ -124,7 +123,7 @@ lemma assembly {ℓ d D Q S T P DF E e lg : ℝ} (hℓ : 7 ≤ ℓ) (hd : 1 ≤ 
 
 namespace Theorem110Invariants
 
-variable {X : Corollary312VariantData.{u, v} AG TG} (inv : Theorem110Invariants X)
+variable {X : Corollary312VariantData.{u, v}} (inv : Theorem110Invariants X)
 
 /-- `ℓ = 2·ℓ* + 1`: the prime `ℓ ≥ 5` is odd. -/
 lemma two_mul_lstar_add_one : 2 * X.lstar + 1 = X.ℓ := by

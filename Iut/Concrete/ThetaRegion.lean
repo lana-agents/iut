@@ -79,8 +79,7 @@ noncomputable def thetaInfinite (n : ℕ) (i : Fin n)
 
 end LocalTheory
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
-variable (D : InitialThetaData AG TG)
+variable (D : InitialThetaData.{u})
 
 /-- The `ℓ`-torsion field of the Θ-data, as a type. -/
 abbrev InitialThetaData.Kt : Type u := ↥D.prime.torsionField
@@ -297,7 +296,7 @@ noncomputable def QPilotInputs.qPilot (QI : QPilotInputs D) : QPilotData D where
 /-- **The concrete Corollary 3.12 variant data**: initial Θ-data with the concrete
 `q`-pilot data and the concrete right-hand side. -/
 noncomputable def concreteVariantData (QI : QPilotInputs D) :
-    Corollary312VariantData.{u, v} AG TG where
+    Corollary312VariantData.{u, v} where
   data := D
   qPilot := QI.qPilot
   rhsData := TL.rhsData

@@ -49,13 +49,12 @@ universe u
 
 open NumberField
 
-variable {AG : AnabelianGeometry.{u}} {TG : TemperedGeometry AG}
 
 /-- The **`q`-pilot input data** for the left-hand side of the Corollary 3.12 variant
 (taxis #34): a finite enumeration of the bad locus `V(F)^bad` and the normalized
 arithmetic-degree weights of its places. All choices and assumptions are fields; see
 the module docstring for the normalization. -/
-structure QPilotData (D : InitialThetaData AG TG) : Type u where
+structure QPilotData (D : InitialThetaData.{u}) : Type u where
   /-- The bad locus as a finite set of places. -/
   badFinset : Finset (FinitePlace D.F)
   /-- The finite set enumerates exactly `V(F)^bad`. -/
@@ -68,7 +67,7 @@ structure QPilotData (D : InitialThetaData AG TG) : Type u where
 
 namespace QPilotData
 
-variable {D : InitialThetaData AG TG} (Q : QPilotData D)
+variable {D : InitialThetaData.{u}} (Q : QPilotData D)
 
 /-- Membership in the enumerating finite set gives membership in `V(F)^bad`. -/
 lemma mem_bad {w : FinitePlace D.F} (hw : w ∈ Q.badFinset) :
