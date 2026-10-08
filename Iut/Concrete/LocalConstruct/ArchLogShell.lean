@@ -13,7 +13,7 @@ At the archimedean place the log-shell of a factor `ℝ` or `ℂ` is the closed 
 archimedean packet region of IUT IV, Proposition 1.5 is `π^{|I|}·B_I`, the closed ball of
 radius `π^{|I|}` of the projective tensor norm — the closed absolutely convex hull of the
 elementary tensors of the discs of radius `π`. We take this ball as the archimedean log-shell
-(`archLogShell`, the field `LocalTheory.logShell` at `∞`), so that Proposition 1.5(iii),(iv)
+(`archLogShell`, `Iut.LocalTheory.logShell` at `∞`), so that Proposition 1.5(iii),(iv)
 (`prop15`) reduces to the statement that the indeterminacy automorphisms preserve `B_I`
 (`mapAlgHom_image_archIntegral_subset`): the automorphisms `σ_j` of the factors `ℝ`, `ℂ`
 over `ℝ` are isometries (`norm_archAut_apply`: an `ℝ`-algebra automorphism of `ℂ` is the

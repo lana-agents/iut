@@ -15,9 +15,11 @@ import Iut.Cor312.ThetaData.SqrtAtBadPlace
 /-!
 # Construction of the local theta data
 
-The data `Iut.ThetaLocalData D LT` of `Iut.Concrete.ThetaRegion` (the `2ℓ`-th roots
-`q_v = q^{1/2ℓ}` of the Tate parameters at the bad places of the `ℓ`-torsion field `K`, with
-the comparison maps `F_w → K_v`) are constructed here from the initial Θ-data `D`:
+The local theta data of initial Θ-data `D` (IUT I, Example 3.2(iv)) — the `2ℓ`-th roots
+`q_v = q^{1/2ℓ}` of the Tate parameters at the bad places of the `ℓ`-torsion field `K`
+(`InitialThetaData.qroot`), the comparison maps `F_w → K_v` (`InitialThetaData.embedF`) and the
+bad residue characteristics (`InitialThetaData.badChars`) — are constructed here from `D` alone,
+with their properties as theorems:
 
 * the comparison map `F_w → K_v` is `Iut.embedCompletion` (the inclusion `F → K` raises the
   `w`-adic valuation to the power `e(v/w)`, hence is uniformly continuous);
@@ -26,16 +28,18 @@ the comparison maps `F_w → K_v`) are constructed here from the initial Θ-data
   (`Iut.TateStructure.t_q_eq_embedCompletion`, from the uniqueness of the Tate parameter
   with given `j`-invariant), and `q_w` has a `2ℓ`-th root in `K_v` because `E(K_v)[ℓ]` has
   `ℓ²` elements (`E[ℓ] ⊆ E(K)`, `Iut.TateFamily.sq_le_card_torsion`) and `E(K_v)[2]` has `4`
-  elements (`E[2] ⊆ E(F)`, the hypothesis `htwo`; `Iut.TateStructure.exists_pow_eq_q`);
+  elements (`E[2] ⊆ E(F)`, `InitialThetaData.twoTorsionRational`;
+  `Iut.TateStructure.exists_pow_eq_q`);
 * `ord_p(q_v) = ord_w(q_w)/(2ℓ·e_w)` from the invariance of `ord_p` under the comparison map
   (`Iut.ordp_embedCompletion`) and `ord_p(q_w) = ord_w(q_w)/e_w` (`Iut.ordp_tateParameter`);
 * the base-change invariance of the `q`-degree from the fundamental identity
   `∑_{v ∣ w} e_v f_v = [K : F]·e_w f_w` (`Iut.sum_localDeg_liesOver`).
 
-The hypotheses on `D` beyond its fields are the `q`-pilot inputs `QI : QPilotInputs D` (the
-finiteness of the bad locus) and the rationality of the `2`-torsion over `F` in the form
-`htwo : 2 * 2 ≤ Nat.card (E(F)[2])` (a consequence of `SixTorsionRational`, i.e. of IUT I,
-Definition 3.1(b), together with `|E(F̄)[2]| = 4`).
+The two arithmetic facts used beyond the fields of `D` are theorems about every `D`: the
+finiteness of the bad locus (`InitialThetaData.bad_finite`, from the multiplicative reduction
+at the places over `V_mod^bad`, IUT I, Definition 3.1(b)) and the rationality of the
+`2`-torsion over `F` (`InitialThetaData.twoTorsionRational`, from `SixTorsionRational`, IUT I,
+Definition 3.1(b), and `|E(F̄)[2]| = 4`, `Iut.four_le_card_torsionBy_two`).
 -/
 
 namespace Iut

@@ -13,7 +13,7 @@ The archimedean packet `⊗_j K_{c j}` (over `ℝ`, each factor `ℝ` or `ℂ`) 
 largest norm with `‖⊗_j a_j‖ ≤ ∏_j ‖a_j‖`; its closed unit ball is the closed absolutely
 convex hull of the elementary tensors of unit vectors, the natural "product of the unit
 balls" `B_I` in the tensor product presentation (IUT IV, Proposition 1.5). We take this ball
-as the archimedean integral structure (`archIntegral`, the field `LocalTheory.integral` at
+as the archimedean integral structure (`archIntegral`, `Iut.LocalTheory.integral` at
 `∞`).
 
 Since the packet is finite-dimensional, the projective norm is equivalent to the coordinate

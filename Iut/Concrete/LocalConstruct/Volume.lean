@@ -24,11 +24,10 @@ shift it by `log t` (IUT III, Proposition 3.9(i),(ii)).
 
 ## Remark on `LocalTheory.componentVol_prime_preimage`
 
-The field `componentVol_prime_preimage` of `LocalTheory` is stated for *every* set `U`;
-for `U = ∅` it reads `μ^log(∅) = μ^log(∅) + log p`, which is false for any real-valued
-`μ^log`. The correct statement — proved here as `componentVol_prime_preimage'` — is for
-sets of positive finite Haar measure (e.g. admissible regions), in a packet all of whose
-places lie over `p`.
+Stated for *every* set `U`, the scaling law would read `μ^log(∅) = μ^log(∅) + log p` for
+`U = ∅`, which is false for any real-valued `μ^log`. The correct statement — proved here as
+`componentVol_prime_preimage'` — is for sets of positive finite Haar measure (e.g. admissible
+regions), in a packet all of whose places lie over `p`.
 -/
 
 namespace Iut

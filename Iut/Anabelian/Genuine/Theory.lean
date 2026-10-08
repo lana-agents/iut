@@ -12,8 +12,8 @@ import Iut.Anabelian.Genuine.Cover
 model orbicurve `(E, ℓ, M, ±)` over any field; that the maps induced by covers are open
 embeddings is proved in characteristic `0` (`Iut.Anabelian.Genuine.isOpenEmbedding_pi1MapOf`,
 through the étaleness of the covers). IUT evaluates the étale theory only over fields of
-characteristic `0` (number fields, their finite extensions and completions). The étale theory
-used for the instance of `Iut.Anabelian.EtalePi1Theory` is therefore
+characteristic `0` (number fields, their finite extensions and completions). The étale fundamental
+group `Iut.Anabelian.Orbicurve.genuinePi1` of the statement layer is therefore
 
 * `pi1C E ℓ M ± = pi1Of E ℓ M ±` in characteristic `0` (`pi1EquivC`), and
 * **a junk value in positive characteristic**: the trivial group (the inertia generators are

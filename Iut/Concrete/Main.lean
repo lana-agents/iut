@@ -9,15 +9,15 @@ import Iut.Implication.Corollary23
 /-!
 # The implication for the concrete variant (taxis #1449)
 
-The main theorem `Iut.cor312Variant_implies_abc_concrete`: the Corollary 3.12 variant,
-assumed only for the **concrete** data bundles `Iut.concreteVariantData D` —
-initial Θ-data together with the local-field theory of the `ℓ`-torsion field, the local
-theta data and the finiteness of the bad locus — implies ABC.
+The Corollary 3.12 variant, assumed only for the **concrete** data bundles
+`Iut.concreteVariantData D` (a function of the initial Θ-data `D` alone: the tensor packets of
+the `ℓ`-torsion field, the local theta data of `D` and its `q`-pilot data), feeds the
+implication of `Iut/Implication/Corollary23.lean` through `IsConcrete` and
+`ConcreteThetaDataExistence.toThetaDataExistence`.
 
 The existence of suitable initial Θ-data is required in concrete form
 (`ConcreteThetaDataExistence`): for a point of large height and a prime `ℓ` satisfying
-(P1)–(P6), initial Θ-data `D` with the prime `ℓ`, its local theory and local theta data,
-and the tower arithmetic. Everything else — the Theorem 1.10 invariants, certificate and
+(P1)–(P6), initial Θ-data `D` with the prime `ℓ` and the tower arithmetic. Everything else — the Theorem 1.10 invariants, certificate and
 local estimates — is constructed from these (`InitialThetaData.invariants`,
 `TowerArithmetic.certificate`, `TowerArithmetic.localEstimate`). The existence statement
 itself is proved from the curves of the points in `Iut.Concrete.Existence`
@@ -38,12 +38,11 @@ def IsConcrete (X : Corollary312VariantData.{u, u}) : Prop :=
 
 /-- **Existence of suitable initial Θ-data, concrete form** ((P7) in the proof of
 Corollary 2.2): for a point `x` outside the exceptional set and a prime `ℓ ≥ 7` satisfying
-(P2), (P3), (P5), (P6), initial Θ-data with prime `ℓ` together with the local-field theory
-and local theta data of its `ℓ`-torsion field, the finiteness of its bad locus, the
-arithmetic inputs of its tower, and Steps (ii), (iii) of the proof of Theorem 1.10, with
-the expected relations to `x`. Proved in `Iut.Concrete.Existence` from the curves of the
-points, the standard providers, and the anabelian existence `Iut.AnabelianExistence`
-(IUT I, Definition 3.1(d)–(f); taxis #1469). -/
+(P2), (P3), (P5), (P6), initial Θ-data with prime `ℓ` together with the arithmetic of its
+tower ((R4) and Steps (ii), (iii) of the proof of Theorem 1.10), with the expected relations
+to `x`. Proved for the tripod in `Iut.Tripod.concreteThetaDataExistence'` from the curves of
+the points and the anabelian construction of IUT I, Definition 3.1(d)–(f)
+(`Iut.AdmissiblePrimeData.orbicurveData`, `localThetaData`; taxis #1469). -/
 def ConcreteThetaDataExistence {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d) : Prop :=
   ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d), x ∉ I.excCore →
     ∀ ℓ : ℕ, ℓ.Prime → 7 ≤ ℓ →

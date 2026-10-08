@@ -12,7 +12,7 @@ The **integral structure** of the packet `⊗_j K_{c j}` at a prime `p` used by
 `Iut.LocalTheory` is the normalization `(R_I)^∼` of the order `R_I = ⊗_{ℤ_p} 𝓞_{c j}`
 (IUT IV, Proposition 1.2): the ring of integers of the packet, i.e. the product of the
 rings of integers of its field factors. We define it as the **integral closure of `ℤ_p` in
-the packet** (`integral`, the field `LocalTheory.integral` at a prime) and prove:
+the packet** (`integral`, `Iut.LocalTheory.integral` at a prime) and prove:
 
 * `R_I ⊆ (R_I)^∼` (`order_subset_integral`): `R_I` is a subring which is a finitely
   generated `ℤ_p`-module (a bounded `ℤ_p`-submodule of a finite-dimensional `ℚ_p`-space,

@@ -8,7 +8,8 @@ import Iut.Concrete.LocalTheory
 /-!
 # The tensor packets `⊗_j K_{c j}` as finite-dimensional topological algebras (taxis #4, #278)
 
-This file constructs the data of `Iut.LocalTensor K` (`Iut/Concrete/LocalTheory.lean`):
+This file constructs the tensor packets (`Iut.LocalTheory.Tensor`,
+`Iut/Concrete/LocalConstruct/Theory.lean`):
 for a rational place `v_ℚ` and a finite family `c : ι → Place K` of places of `K`, the
 tensor packet `⊗_j K_{c j}` over the base field `ℚ_p` (for `v_ℚ = p`) or `ℝ` (for
 `v_ℚ = ∞`), as a finite-dimensional commutative algebra over that base field with its
@@ -23,7 +24,7 @@ places.
   otherwise (so the factor is the zero ring, and the whole packet is the zero ring: the
   junk convention for packets in which some place does not lie over `p`). This uniform
   presentation avoids type-level case splits and makes the inclusion `K_w →+* Factor`
-  available for *every* finite place `w`, as the interface `LocalTheory.incl` requires.
+  available for *every* finite place `w`, as `LocalTheory.incl` requires.
   The `ℚ_p`-algebra structure of a genuine factor comes from the embedding
   `ℚ_p → K_w` constructed here by extending `ℚ → K → K_w` from the dense subring `ℚ`
   (`padicEmb`), and `K_w` is finite over `ℚ_p`.

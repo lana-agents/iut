@@ -9,8 +9,8 @@ import Iut.Concrete.LocalConstruct.Volume
 # The admissible class of the holomorphic hull (taxis #4, #278)
 
 The **admissible regions** of a packet (IUT III, Remark 3.9.5(i)) are the nonempty,
-relatively compact, measurable regions of positive finite Haar measure (`admissible`, the
-field `LocalTheory.admissible`). This file proves `admissible_nonempty`,
+relatively compact, measurable regions of positive finite Haar measure (`admissible`,
+`Iut.LocalTheory.admissible`). This file proves `admissible_nonempty`,
 `admissible_relCompact`, `integral_admissible`, `smul_integral_admissible`, and restates
 the scaling law of the log-volume for admissible regions.
 
@@ -19,7 +19,7 @@ the scaling law of the log-volume for admissible regions.
 At the archimedean place the hull regions are the real radial scalings `t·B_I` (`t > 0`)
 of the product of unit balls, and the least one containing an admissible region `U` is
 `t·B_I` with `t = sup_{x ∈ U} ‖x‖_π`, the supremum of the projective norm over `U`
-(`exists_leastHull_infinite`, the field `LocalTheory.exists_leastHull_infinite`); it is
+(`exists_leastHull_infinite`, `Iut.LocalTheory.exists_leastHull_infinite`); it is
 positive because a region of positive Haar measure is not contained in `{0}`. The radial
 scalings are monotone in `t` (`smul_integralAt_infinite_mono`).
 

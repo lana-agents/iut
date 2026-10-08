@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
 import Iut.Tripod.Providers
-import Iut.Tripod.TwoTorsion
 import Iut.Concrete.ThetaLocalConstruct.Data
 import Iut.Implication.ChebyshevExplicit
 import Iut.Concrete.Main
@@ -28,10 +27,12 @@ import Iut.Tripod.TameTwo
 `ℙ¹ ∖ {0,1,∞}`), where every object is constructed in this repository and every
 hypothesis is a proposition about the constructed objects:
 
-* `Pi1 : EtalePi1Theory`, `Tp : TemperedPi1Theory Pi1`: the étale and tempered fundamental
-  groups of the model orbicurves with the core relation, **universally quantified** — the
-  theorem holds for every such theory, in particular for the actual fundamental groups, so
-  the variant `h312` is assumed on exactly the class of Θ-data of IUT I, Definition 3.1;
+* the Θ-data `D : InitialThetaData` of IUT I, Definition 3.1, stated about the model
+  orbicurves with their genuine étale fundamental groups (`Orbicurve.genuinePi1`, open
+  immersions `genuinePi1Cover` for covers), their genuine `k`-cores (`genuineHasCore`) and
+  their tempered fundamental groups (`Orbicurve.temperedPi1`, with the comparison
+  `Orbicurve.tempToEtale`); the variant `h312 : Cor312VariantHolds` is assumed for the concrete
+  variant data `concreteVariantData D` of every such `D`;
 * the curve-level data of the Legendre curves (`Iut.Tripod.tripodProviders`, a closed
   term: the torsion bases `E_λ[ℓ] ≅ (ℤ/ℓ)²` from the division polynomials, `Iut/Torsion/`,
   the stable reduction of `E_λ/F_λ` at every finite place, `Iut.Tripod.stable_reduction`,
@@ -44,7 +45,7 @@ hypothesis is a proposition about the constructed objects:
   archimedean places); the height comparison of Corollary 2.2(i), the `2`-adic bound,
   the conductor comparisons, the `SL₂`-image lemma ([GenEll] Lemma 3.1(iii)) and the
   finiteness of the points whose once-punctured curve has no core ([CanLift],
-  Proposition 2.7, from the fields `excJ`, `hasCore_oncePunctured` of `Pi1`) are theorems
+  Proposition 2.7, `Iut.Anabelian.canLift27`, `Iut.Anabelian.hasCore_oncePunctured`) are theorems
   (`Iut/Tripod/Height.lean`, `TwoAdic.lean`, `LogCond.lean`, `CurveFacts.lean` with
   `Iut/Concrete/SL2Image.lean`, `Core.lean`);
 * the local facts of the tower `ℚ(j) ⊆ ℚ(λ) ⊆ F_λ ⊆ F_λ(E_λ[ℓ])`, `TowerLocalHyp`, are a
@@ -62,8 +63,7 @@ hypothesis is a proposition about the constructed objects:
   the different bound of Proposition 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le`
   (Serre's bound) and the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is
   the theorem `Iut.Tripod.relRamIdx_tpd_le_two`; from the local facts the tower arithmetic
-  `TowerArithmetic` (IUT IV, §1) for the constructed local theory (`concreteLocalTheory`,
-  every field of which is proved) and theta local data is a theorem
+  `TowerArithmetic` (IUT IV, §1) of the Θ-data of the points is a theorem
   (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`);
 * `h312`, the variant itself.
 

@@ -8,23 +8,23 @@ import Iut.Concrete.LocalConstruct.Theory
 /-!
 # The concrete large volume container over a number field (taxis #278)
 
-Given the local-field theory `LT : LocalTheory K` of a number field `K`, this file builds
+From the tensor packets of a number field `K` (`Iut.LocalTheory`), this file builds
 the concrete instances of the container interfaces of taxis #43–#45 for the standard
 procession of length `n`:
 
-* `LocalTheory.container LT n : LargeVolumeContainerData ℕ (Place K)` — the places of
+* `LocalTheory.container K n : LargeVolumeContainerData ℕ (Place K)` — the places of
   `K` mapped to their rational places, the tensor packets `⊗_{j ∈ S} K_{v_j}` presented
   with the tuple index of IUT III, Proposition 3.1, and the tensor products of log-shells
   as product regions;
-* `LocalTheory.vol LT n : LogVolumeData (container)` — the normalized Haar log-volume
+* `LocalTheory.vol K n : LogVolumeData (container)` — the normalized Haar log-volume
   with the weights `[K_v : ℚ_{v_ℚ}]/[K : ℚ]`, whose sum over the places above a rational
   place is `1` by `∑_{v ∣ p} e_v f_v = [K : ℚ]`;
-* `LocalTheory.hull LT n : ContainerHullSystem (container)` — the packet-wise holomorphic
+* `LocalTheory.hull K n : ContainerHullSystem (container)` — the packet-wise holomorphic
   hull, from the least hull regions of the components: the hull of a product region is
   the product of the component hulls.
 
-Everything here is proved; the only inputs are the fields of `LocalTheory` (standard
-local-field theory, taxis #4/#278).
+Everything here is proved from the constructions of `Iut/Concrete/LocalConstruct/*`
+(standard local-field theory, taxis #4/#278).
 -/
 
 namespace Iut

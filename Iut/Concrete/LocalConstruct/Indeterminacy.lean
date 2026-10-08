@@ -11,7 +11,7 @@ import Iut.Concrete.LocalConstruct.Integral
 The automorphisms `φ` of IUT IV, Proposition 1.2, through which the indeterminacies (Ind1),
 (Ind2) act on a packet `⊗_j K_{c j}`, are the automorphisms `⊗_j σ_j` induced by
 automorphisms `σ_j` of the factors over the base field (`mapAlgHom`); their class is
-`indAut` (the field `LocalTheory.indAut`). This file proves `id_mem_indAut` and the general
+`indAut` (`Iut.LocalTheory.indAut`). This file proves `id_mem_indAut` and the general
 transport principle `mapAlgHom_image_span_subset`: such an automorphism maps the
 `ℤ_p`-span of the elementary tensors of a family of subsets of the factors into itself as
 soon as each `σ_j` preserves the corresponding subset — the tool for `indAut_logShell`

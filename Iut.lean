@@ -164,6 +164,5 @@ import Iut.Tripod.TpdInertia
 import Iut.Tripod.TpdRamIdx
 import Iut.Tripod.TpdTorsionRep
 import Iut.Tripod.TwoAdic
-import Iut.Tripod.TwoTorsion
 import Iut.Tripod.Unramified
 import Iut.Tripod.WildRamIdx

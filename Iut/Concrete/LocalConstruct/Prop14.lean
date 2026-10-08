@@ -9,7 +9,7 @@ import Iut.Concrete.LocalConstruct.Arithmetic
 /-!
 # IUT IV, Proposition 1.4(iii) for the concrete packets (taxis #4, #278)
 
-The field `LocalTheory.prop14_iii` asks, for a scaling element `x ∈ K_w` of the `j`-th
+The theorem `LocalTheory.prop14_iii` asks, for a scaling element `x ∈ K_w` of the `j`-th
 factor of a packet at `p` with `ord_p(x) = λ ≥ 0`, for a unit `a` of the packet such that
 the images `φ(x·(R_I)^∼)` under all indeterminacy automorphisms lie in `a·(R_I)^∼`, with
 
@@ -23,12 +23,12 @@ automorphisms are `ℚ_p`-algebra automorphisms, so they fix `p^{⌊λ⌋}` and 
 (`componentVol_prime_pow_smul_integral`), which is at most `(−λ + 1)·log p`. The
 different exponents and the ramification terms of the bound are nonnegative and are not
 needed: the sharper bound of IUT IV, Proposition 1.4(iii) concerns the log-shell `𝓘_I`
-rather than `(R_I)^∼`, whose hull is controlled by the different; the field as stated is
+rather than `(R_I)^∼`, whose hull is controlled by the different; the theorem as stated is
 about `(R_I)^∼` and is implied by the elementary estimate.
 
 ## The hypothesis that every place lies over `p`
 
-The field carries, like `LocalTheory.componentVol_prime_preimage`, the hypothesis that
+The theorem carries, like `LocalTheory.componentVol_prime_preimage`, the hypothesis that
 every component of the packet lies over `p` (in the form `∀ j, IsOver K p (c j)` here),
 satisfied by every tuple of the fiber over `p` to which it is applied
 (`LocalTheory.tuple_isOver`). It cannot be dropped: a packet with a component not over `p`
@@ -156,7 +156,7 @@ theorem indAut_image_smul_integral_subset (j : ι) (w : FinitePlace K)
 /-! ### Proposition 1.4(iii) for the packets over `p` -/
 
 /-- **IUT IV, Proposition 1.4(iii)** for the concrete packets all of whose places lie over
-`p` (the field `LocalTheory.prop14_iii` under the hypothesis of
+`p` (`Iut.LocalTheory.prop14_iii` under the hypothesis of
 `LocalTheory.componentVol_prime_preimage`): the hull region is `p^{⌊ord_p x⌋}·(R_I)^∼`. -/
 theorem prop14iii_of_isOver (hc : ∀ j, IsOver K p (c j)) (d : ι → ℝ) (j : ι)
     (w : FinitePlace K) (h : c j = Place.finite w) (x : completionAt K w) (hx : x ≠ 0)
