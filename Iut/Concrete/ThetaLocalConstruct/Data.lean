@@ -3,7 +3,9 @@ Copyright (c) 2026 The iut contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The iut contributors
 -/
-import Iut.Concrete.ThetaRegion
+import Iut.Concrete.Container
+import Iut.Cor312.ThetaData.Basic
+import Iut.Cor312.ThetaData.TwoTorsion
 import Iut.Concrete.ThetaLocalConstruct.Ordp
 import Iut.Concrete.ThetaLocalConstruct.Roots
 import Iut.Concrete.ThetaLocalConstruct.TateCompat
@@ -225,29 +227,53 @@ end Sum
 
 section Data
 
-variable (D : InitialThetaData.{u}) (LT : LocalTheory.{u, v} D.Kt)
+variable (D : InitialThetaData.{u})
 
 /-- The bad places of `K`: the places over `V_mod^bad`. -/
 abbrev IsBadK (v : FinitePlace D.Kt) : Prop := IsBadPlace D.E D.prime.torsionField D.VBad v
 
 /-- The hypothesis **`E[2] ⊆ E(F)`**, in the form used here: `E(F)[2]` has (at least) four
-elements. A consequence of `SixTorsionRational` (IUT I, Definition 3.1(b)). -/
+elements. A consequence of `SixTorsionRational` (IUT I, Definition 3.1(b);
+`InitialThetaData.twoTorsionRational`). -/
 abbrev TwoTorsionRational : Prop :=
   2 * 2 ≤ Nat.card ↥(AddSubgroup.torsionBy D.E.toAffine.Point ((2 : ℕ) : ℤ))
 
-variable (htwo : TwoTorsionRational D)
+/-- **`E[2] ⊆ E(F)`** for initial Θ-data, from the rationality of the `6`-torsion (IUT I,
+Definition 3.1(b)). -/
+theorem InitialThetaData.twoTorsionRational : TwoTorsionRational D :=
+  four_le_card_torsionBy_two D.E D.global.six_torsion_rational
+
+/-- **The bad locus `V(F)^bad` is finite**: `E` has multiplicative reduction at every place of
+`F` over `V_mod^bad` (IUT I, Definition 3.1(b)), where `v_w(j(E)) > 1`, and a nonzero `j(E)` has
+`w`-adic norm `1` at all but finitely many places (for `j(E) = 0` there is no such place). -/
+theorem InitialThetaData.bad_finite : (badPlacesOver D.F D.E D.VBad).Finite := by
+  have hmult : ∀ w ∈ badPlacesOver D.F D.E D.VBad, HasMultiplicativeReductionAt D.E w := by
+    rintro w ⟨v, hv, hwv⟩
+    exact D.global.bad_multiplicative v hv w hwv
+  by_cases hj : D.E.j = 0
+  · refine Set.Finite.subset (Set.finite_empty) fun w hw => ?_
+    have := one_lt_valuation_j_of_mult D.E w (hmult w hw)
+    rw [hj, map_zero] at this
+    exact absurd this (not_lt.2 zero_le_one)
+  refine (FinitePlace.hasFiniteMulSupport hj).subset fun w hw => ?_
+  rw [Function.mem_mulSupport, ← FinitePlace.norm_embedding_eq]
+  intro h
+  exact absurd ((norm_emb_le_one_iff _).1 h.le)
+    (not_le.2 (one_lt_valuation_j_of_mult D.E w (hmult w hw)))
 
 /-- The chosen `2ℓ`-th root of the Tate parameter at a bad place of `K`; `1` elsewhere. -/
 def qrootOf (v : FinitePlace D.Kt) : completionAt D.Kt v :=
-  if hv : IsBadK D v then Classical.choose (exists_qroot D.prime D.tate htwo hv) else 1
+  if hv : IsBadK D v then
+    Classical.choose (exists_qroot D.prime D.tate D.twoTorsionRational hv)
+  else 1
 
 lemma qrootOf_spec {v : FinitePlace D.Kt} (hv : IsBadK D v) :
-    qrootOf D htwo v ^ (2 * D.ℓ) = ((D.tate.S v hv).t.q : localCompletion v) := by
+    qrootOf D v ^ (2 * D.ℓ) = ((D.tate.S v hv).t.q : localCompletion v) := by
   unfold qrootOf
   rw [dif_pos hv]
-  exact Classical.choose_spec (exists_qroot D.prime D.tate htwo hv)
+  exact Classical.choose_spec (exists_qroot D.prime D.tate D.twoTorsionRational hv)
 
-lemma qrootOf_of_not {v : FinitePlace D.Kt} (hv : ¬ IsBadK D v) : qrootOf D htwo v = 1 := by
+lemma qrootOf_of_not {v : FinitePlace D.Kt} (hv : ¬ IsBadK D v) : qrootOf D v = 1 := by
   unfold qrootOf
   rw [dif_neg hv]
 
@@ -259,36 +285,36 @@ def embedFOf (v : FinitePlace D.Kt) (w : FinitePlace D.F)
 /-- `q_v^{2ℓ}` is the image of the Tate parameter of `E` at `w`. -/
 lemma qrootOf_pow (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
-    qrootOf D htwo v ^ (2 * D.ℓ) =
+    qrootOf D v ^ (2 * D.ℓ) =
       embedFOf D v w h ((D.prime.tate w hw).q : localCompletion w) := by
   have hvw : FinitePlace.LiesOver v w := h
   have hv : IsBadK D v := isBadPlace_of_liesOver D.E D.prime.torsionField hvw hw
-  rw [qrootOf_spec D htwo hv]
+  rw [qrootOf_spec D hv]
   exact TateStructure.t_q_eq_embedCompletion hvw (D.tate.S v hv) (D.prime.tate w hw)
     (D.prime.tateJ_eq w hw)
 
-lemma qrootOf_ne_zero (v : FinitePlace D.Kt) : qrootOf D htwo v ≠ 0 := by
+lemma qrootOf_ne_zero (v : FinitePlace D.Kt) : qrootOf D v ≠ 0 := by
   by_cases hv : IsBadK D v
   · intro h0
-    have := qrootOf_spec D htwo hv
+    have := qrootOf_spec D hv
     rw [h0, zero_pow (by have := D.prime.five_le; unfold InitialThetaData.ℓ; omega)] at this
     exact Units.ne_zero _ this.symm
-  · rw [qrootOf_of_not D htwo hv]
+  · rw [qrootOf_of_not D hv]
     exact one_ne_zero
 
 /-- `ord_p(q_v) = ord_w(q_w)/(2ℓ e_w)`. -/
 lemma ordp_qrootOf (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
-    ordp D.Kt v (qrootOf D htwo v) = (D.prime.qOrder w hw : ℝ) / (2 * D.ℓ * ramIdx D.F w) := by
+    ordp D.Kt v (qrootOf D v) = (D.prime.qOrder w hw : ℝ) / (2 * D.ℓ * ramIdx D.F w) := by
   have hvw : FinitePlace.LiesOver v w := h
   have hℓ : (2 * D.ℓ : ℝ) ≠ 0 := by
     have : (5 : ℝ) ≤ D.ℓ := by exact_mod_cast D.prime.five_le
     positivity
-  have h1 := ordp_pow' v (qrootOf D htwo v) (2 * D.ℓ)
-  rw [qrootOf_pow D htwo v w h hw] at h1
+  have h1 := ordp_pow' v (qrootOf D v) (2 * D.ℓ)
+  rw [qrootOf_pow D v w h hw] at h1
   unfold embedFOf at h1
   rw [ordp_embedCompletion hvw, ordp_tateParameter _ (D.prime.unif_isUniformizer w hw)] at h1
-  have h2 : ordp D.Kt v (qrootOf D htwo v) =
+  have h2 : ordp D.Kt v (qrootOf D v) =
       ((D.prime.tate w hw).toOrdered (D.prime.unif_isUniformizer w hw)).orderNat /
         ramIdx D.F w / (2 * D.ℓ) := by
     rw [h1]
@@ -299,82 +325,135 @@ lemma ordp_qrootOf (v : FinitePlace D.Kt) (w : FinitePlace D.F)
   ring
 
 /-- The residue characteristics of the bad places of `F`. -/
-def badCharsOf (QI : QPilotInputs D) : Finset ℕ :=
-  QI.bad_finite.toFinset.image residueChar
+def badCharsOf : Finset ℕ :=
+  D.bad_finite.toFinset.image residueChar
 
-lemma residueChar_mem_badCharsOf (QI : QPilotInputs D) {v : FinitePlace D.Kt}
+lemma residueChar_mem_badCharsOf {v : FinitePlace D.Kt}
     {w : FinitePlace D.F} (hvw : FinitePlace.LiesOver v w)
-    (hw : w ∈ badPlacesOver D.F D.E D.VBad) : residueChar v ∈ badCharsOf D QI :=
-  Finset.mem_image.mpr ⟨w, QI.bad_finite.mem_toFinset.mpr hw, (residueChar_eq_of_liesOver hvw).symm⟩
+    (hw : w ∈ badPlacesOver D.F D.E D.VBad) : residueChar v ∈ badCharsOf D :=
+  Finset.mem_image.mpr
+    ⟨w, D.bad_finite.mem_toFinset.mpr hw, (residueChar_eq_of_liesOver hvw).symm⟩
 
-lemma not_isBadK_of_notMem (QI : QPilotInputs D) {v : FinitePlace D.Kt}
-    (hv : residueChar v ∉ badCharsOf D QI) : ¬ IsBadK D v := by
+lemma not_isBadK_of_notMem {v : FinitePlace D.Kt}
+    (hv : residueChar v ∉ badCharsOf D) : ¬ IsBadK D v := by
   intro h
   obtain ⟨w, hw, hvw⟩ := exists_liesOver_of_isBadPlace D.E D.prime.torsionField h
-  exact hv (residueChar_mem_badCharsOf D QI hvw hw)
+  exact hv (residueChar_mem_badCharsOf D hvw hw)
 
-/-- **The local theta data of the initial Θ-data** (IUT I, Example 3.2(iv)). -/
-def thetaLocalData (QI : QPilotInputs D) : ThetaLocalData D LT where
-  badChars := badCharsOf D QI
-  qroot := qrootOf D htwo
-  qroot_ne_zero := qrootOf_ne_zero D htwo
-  ordp_qroot_nonneg v := by
-    by_cases hv : IsBadK D v
-    · obtain ⟨w, hw, hvw⟩ := exists_liesOver_of_isBadPlace D.E D.prime.torsionField hv
-      rw [ordp_qrootOf D htwo v w hvw hw]
-      positivity
-    · rw [qrootOf_of_not D htwo hv]
-      simp [ordp, norm_one]
-  qroot_eq_one v hv := qrootOf_of_not D htwo (not_isBadK_of_notMem D QI hv)
-  embedF := embedFOf D
-  qroot_pow := qrootOf_pow D htwo
-  ordp_qroot := ordp_qrootOf D htwo
-  residueChar_mem v w h hw := residueChar_mem_badCharsOf D QI h hw
-  bad_residueChar_mem w hw :=
-    Finset.mem_image.mpr ⟨w, QI.bad_finite.mem_toFinset.mpr hw, rfl⟩
-  badChars_prime p hp := by
-    obtain ⟨w, -, rfl⟩ := Finset.mem_image.mp hp
-    exact residueChar_prime w
-  sum_weight_ordp_qroot p bad hbad := by
-    haveI := LT.fiber_finite p
-    haveI : Fintype {w : FinitePlace D.Kt // residueChar w = p} := Fintype.ofFinite _
-    have hℓ : (2 * D.ℓ : ℝ) ≠ 0 := by
-      have : (5 : ℝ) ≤ D.ℓ := by exact_mod_cast D.prime.five_le
-      positivity
-    -- the weight function on the places of `K`
-    have h1 : ∑ v : LT.Fiber (.finite p), LT.weight (.finite p) v *
-        ordp D.Kt (LT.fiberPlace v) (qrootOf D htwo (LT.fiberPlace v)) =
-        ∑ u : {w : FinitePlace D.Kt // residueChar w = p},
-          placeWeight D.Kt u.1 * ordp D.Kt u.1 (qrootOf D htwo u.1) := by
-      refine Fintype.sum_equiv (LT.fiberFiniteEquiv p) _ _ fun v => ?_
-      rcases v with ⟨v, hv⟩
-      rcases v with w | w
-      · rfl
-      · exact absurd hv (by simp [LocalTheory.toRational])
-    rw [h1]
-    -- the order function `c` on the places of `F`
-    let c : FinitePlace D.F → ℝ := fun w =>
-      if h : w ∈ badPlacesOver D.F D.E D.VBad then (D.prime.qOrder w h : ℝ) / (2 * D.ℓ) else 0
-    rw [sum_placeWeight_mul p (badPlacesOver D.F D.E D.VBad) bad hbad c
-      (fun v => ordp D.Kt v (qrootOf D htwo v))
-      (fun v w hvw hw => by
-        simp only [c, dif_pos hw]
-        rw [ordp_qrootOf D htwo v w hvw hw]
-        field_simp)
-      (fun v hv => by
-        have : ¬ IsBadK D v := fun h => by
-          obtain ⟨w, hw, hvw⟩ := exists_liesOver_of_isBadPlace D.E D.prime.torsionField h
-          exact hv w hw hvw
-        rw [qrootOf_of_not D htwo this]
-        simp [ordp, norm_one])]
-    -- match the right-hand side
-    rw [Finset.sum_div, Finset.sum_filter, Finset.sum_filter, ← Finset.sum_attach bad]
-    refine Finset.sum_congr rfl fun w _ => ?_
-    have hw : w.1 ∈ badPlacesOver D.F D.E D.VBad := by rw [← hbad]; exact Finset.mem_coe.mpr w.2
-    simp only [c, dif_pos hw]
-    split_ifs
-    · ring
+/-! ### The local theta data of the initial Θ-data (IUT I, Example 3.2(iv))
+
+The `2ℓ`-th roots `q_v = q^{1/2ℓ}` of the Tate parameters at the places of `K` over the bad
+places of `F`, with the comparison maps of completions `F_w → K_v`, as definitions on `D`
+together with their properties. The places whose residue characteristic is not in the
+finite set `badChars` (the residue characteristics of the bad places) carry `q_v = 1`. -/
+
+namespace InitialThetaData
+
+/-- The residue characteristics of the bad places. -/
+abbrev badChars : Finset ℕ := badCharsOf D
+
+/-- The `2ℓ`-th root `q_v` of the Tate parameter at `v` (`1` away from the bad places). -/
+abbrev qroot (v : FinitePlace D.Kt) : completionAt D.Kt v := qrootOf D v
+
+/-- The comparison map of completions `F_w → K_v` for `v ∣ w`. -/
+abbrev embedF (v : FinitePlace D.Kt) (w : FinitePlace D.F)
+    (h : (Place.finite v).LiesOver (Place.finite w)) : localCompletion w →+* completionAt D.Kt v :=
+  embedFOf D v w h
+
+/-- `q_v ≠ 0`. -/
+theorem qroot_ne_zero (v : FinitePlace D.Kt) : D.qroot v ≠ 0 := qrootOf_ne_zero D v
+
+/-- `ord_p(q_v) ≥ 0`. -/
+theorem ordp_qroot_nonneg (v : FinitePlace D.Kt) : 0 ≤ ordp D.Kt v (D.qroot v) := by
+  by_cases hv : IsBadK D v
+  · obtain ⟨w, hw, hvw⟩ := exists_liesOver_of_isBadPlace D.E D.prime.torsionField hv
+    rw [qroot, ordp_qrootOf D v w hvw hw]
+    positivity
+  · rw [qroot, qrootOf_of_not D hv]
+    simp [ordp, norm_one]
+
+/-- Away from the bad residue characteristics, `q_v = 1`. -/
+theorem qroot_eq_one (v : FinitePlace D.Kt) (hv : residueChar v ∉ D.badChars) :
+    D.qroot v = 1 :=
+  qrootOf_of_not D (not_isBadK_of_notMem D hv)
+
+/-- `q_v^{2ℓ}` is the Tate parameter of `E` at `w` (IUT I, Example 3.2(iv)). -/
+theorem qroot_pow (v : FinitePlace D.Kt) (w : FinitePlace D.F)
+    (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
+    D.qroot v ^ (2 * D.ℓ) = D.embedF v w h ((D.prime.tate w hw).q : localCompletion w) :=
+  qrootOf_pow D v w h hw
+
+/-- `ord_p(q_v) = ord_w(q_w)/(2ℓ·e_w)`. -/
+theorem ordp_qroot (v : FinitePlace D.Kt) (w : FinitePlace D.F)
+    (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
+    ordp D.Kt v (D.qroot v) = (D.prime.qOrder w hw : ℝ) / (2 * D.ℓ * ramIdx D.F w) :=
+  ordp_qrootOf D v w h hw
+
+/-- The bad places of `K` have residue characteristic in `badChars`. -/
+theorem residueChar_mem (v : FinitePlace D.Kt) (w : FinitePlace D.F)
+    (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
+    residueChar v ∈ D.badChars :=
+  residueChar_mem_badCharsOf D h hw
+
+/-- The bad places of `F` have residue characteristic in `badChars`. -/
+theorem bad_residueChar_mem (w : FinitePlace D.F) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
+    residueChar w ∈ D.badChars :=
+  Finset.mem_image.mpr ⟨w, D.bad_finite.mem_toFinset.mpr hw, rfl⟩
+
+/-- The bad residue characteristics are prime. -/
+theorem badChars_prime (p : ℕ) (hp : p ∈ D.badChars) : p.Prime := by
+  obtain ⟨w, -, rfl⟩ := Finset.mem_image.mp hp
+  exact residueChar_prime w
+
+/-- **Base-change invariance of the `q`-degree** at each prime `p`: the weighted sum over the
+places `v ∣ p` of `K` of `[K_v : ℚ_p]/[K : ℚ]·ord_p(q_v)` equals
+`(1/2ℓ)·∑_{w ∣ p, w bad} (f_w/[F : ℚ])·ord_w(q_w)` (from `∑_{v ∣ w} e_v f_v = [K : F]·e_w f_w`
+and `ord_p(q_v) = ord_w(q_w)/(2ℓ e_w)`). -/
+theorem sum_weight_ordp_qroot (p : Nat.Primes) (bad : Finset (FinitePlace D.F))
+    (hbad : ↑bad = badPlacesOver D.F D.E D.VBad) :
+    ∑ v : LocalTheory.Fiber D.Kt (.finite p), LocalTheory.weight D.Kt (.finite p) v *
+        ordp D.Kt (LocalTheory.fiberPlace D.Kt v) (D.qroot (LocalTheory.fiberPlace D.Kt v)) =
+      (∑ w ∈ bad.attach.filter (fun w => residueChar w.1 = p),
+        (inertDeg D.F w.1 : ℝ) / Module.finrank ℚ D.F *
+          (D.prime.qOrder w.1 (hbad ▸ Finset.mem_coe.mpr w.2) : ℝ)) / (2 * D.ℓ) := by
+  haveI := LocalTheory.fiber_finite D.Kt p
+  haveI : Fintype {w : FinitePlace D.Kt // residueChar w = p} := Fintype.ofFinite _
+  -- the weight function on the places of `K`
+  have h1 : ∑ v : LocalTheory.Fiber D.Kt (.finite p), LocalTheory.weight D.Kt (.finite p) v *
+      ordp D.Kt (LocalTheory.fiberPlace D.Kt v) (D.qroot (LocalTheory.fiberPlace D.Kt v)) =
+      ∑ u : {w : FinitePlace D.Kt // residueChar w = p},
+        placeWeight D.Kt u.1 * ordp D.Kt u.1 (qrootOf D u.1) := by
+    refine Fintype.sum_equiv (LocalTheory.fiberFiniteEquiv D.Kt p) _ _ fun v => ?_
+    rcases v with ⟨v, hv⟩
+    rcases v with w | w
     · rfl
+    · exact absurd hv (by simp [LocalTheory.toRational])
+  rw [h1]
+  -- the order function `c` on the places of `F`
+  let c : FinitePlace D.F → ℝ := fun w =>
+    if h : w ∈ badPlacesOver D.F D.E D.VBad then (D.prime.qOrder w h : ℝ) / (2 * D.ℓ) else 0
+  rw [sum_placeWeight_mul p (badPlacesOver D.F D.E D.VBad) bad hbad c
+    (fun v => ordp D.Kt v (qrootOf D v))
+    (fun v w hvw hw => by
+      simp only [c, dif_pos hw]
+      rw [ordp_qrootOf D v w hvw hw]
+      field_simp)
+    (fun v hv => by
+      have : ¬ IsBadK D v := fun h => by
+        obtain ⟨w, hw, hvw⟩ := exists_liesOver_of_isBadPlace D.E D.prime.torsionField h
+        exact hv w hw hvw
+      rw [qrootOf_of_not D this]
+      simp [ordp, norm_one])]
+  -- match the right-hand side
+  rw [Finset.sum_div, Finset.sum_filter, Finset.sum_filter, ← Finset.sum_attach bad]
+  refine Finset.sum_congr rfl fun w _ => ?_
+  have hw : w.1 ∈ badPlacesOver D.F D.E D.VBad := by rw [← hbad]; exact Finset.mem_coe.mpr w.2
+  simp only [c, dif_pos hw]
+  split_ifs
+  · ring
+  · rfl
+
+end InitialThetaData
 
 end Data
 

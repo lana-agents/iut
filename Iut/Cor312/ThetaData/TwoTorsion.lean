@@ -22,12 +22,18 @@ elements.
 namespace Iut
 
 open WeierstrassCurve
+open scoped Classical
+
+/-- Membership in the `n`-torsion subgroup, for an integer `n`. -/
+lemma mem_torsionBy_iff' {A : Type*} [AddCommGroup A] (n : ℤ) (x : A) :
+    x ∈ AddSubgroup.torsionBy A n ↔ n • x = 0 :=
+  Submodule.mem_torsionBy_iff ..
 
 /-- Transport of the `n`-torsion along an isomorphism of point groups. -/
 lemma card_torsionBy_congr {A B : Type*} [AddCommGroup A] [AddCommGroup B] (e : A ≃+ B) (n : ℤ) :
     Nat.card (AddSubgroup.torsionBy A n) = Nat.card (AddSubgroup.torsionBy B n) := by
   refine Nat.card_congr (e.toEquiv.subtypeEquiv fun P => ?_)
-  simp only [AddSubgroup.mem_torsionBy_iff, AddEquiv.toEquiv_eq_coe, EquivLike.coe_coe,
+  simp only [mem_torsionBy_iff', AddEquiv.toEquiv_eq_coe, EquivLike.coe_coe,
     ← map_zsmul, AddEquiv.map_eq_zero_iff]
 
 /-- **`|E[n]| = n²` over an algebraically closed field of characteristic `0`**, for every
@@ -50,6 +56,7 @@ theorem four_le_card_torsionBy_two (h6 : SixTorsionRational F E Fbar) :
   haveI : CharZero Fbar := charZero_of_injective_algebraMap (algebraMap F Fbar).injective
   have hE : E.baseChange F = E := by
     rw [WeierstrassCurve.baseChange, Algebra.algebraMap_self, WeierstrassCurve.map_id]
+  haveI : (E.baseChange Fbar).IsElliptic := inferInstanceAs (E.map (algebraMap F Fbar)).IsElliptic
   set f := Affine.Point.baseChange (W' := E) F Fbar with hf
   have hinj : Function.Injective f := Affine.Point.map_injective _
   have hcard : Nat.card ↥(AddSubgroup.torsionBy (E.baseChange Fbar).toAffine.Point ((2 : ℕ) : ℤ))
@@ -61,17 +68,17 @@ theorem four_le_card_torsionBy_two (h6 : SixTorsionRational F E Fbar) :
     have hP6 : (P : (E.baseChange Fbar).toAffine.Point) ∈
         AddSubgroup.torsionBy (Affine.Point (Affine.baseChange E Fbar)) 6 := by
       have h2 := P.2
-      rw [AddSubgroup.mem_torsionBy_iff] at h2 ⊢
+      rw [mem_torsionBy_iff'] at h2 ⊢
       have : (6 : ℤ) • (P : (E.baseChange Fbar).toAffine.Point) =
           (3 : ℤ) • (((2 : ℕ) : ℤ) • (P : (E.baseChange Fbar).toAffine.Point)) := by
         rw [smul_smul]; norm_num
       rw [this, h2, smul_zero]
     obtain ⟨Q, hQ⟩ := h6 _ hP6
     refine ⟨⟨Q, ?_⟩, hQ⟩
-    rw [AddSubgroup.mem_torsionBy_iff]
+    rw [mem_torsionBy_iff']
     apply hinj
     rw [map_zsmul, map_zero, hQ]
-    exact (AddSubgroup.mem_torsionBy_iff _ _).mp P.2
+    exact (mem_torsionBy_iff' _ _).mp P.2
   choose g hg using hlift
   have hginj : Function.Injective g := fun P P' h => Subtype.ext (by rw [← hg P, ← hg P', h])
   haveI : Finite ↥(AddSubgroup.torsionBy (E.baseChange Fbar).toAffine.Point ((2 : ℕ) : ℤ)) :=
@@ -79,16 +86,16 @@ theorem four_le_card_torsionBy_two (h6 : SixTorsionRational F E Fbar) :
   haveI : Finite ↥(AddSubgroup.torsionBy (E.baseChange F).toAffine.Point ((2 : ℕ) : ℤ)) := by
     refine Finite.of_injective (fun Q => (⟨f Q, ?_⟩ :
       ↥(AddSubgroup.torsionBy (E.baseChange Fbar).toAffine.Point ((2 : ℕ) : ℤ)))) ?_
-    · rw [AddSubgroup.mem_torsionBy_iff, ← map_zsmul, (AddSubgroup.mem_torsionBy_iff _ _).mp Q.2,
+    · rw [mem_torsionBy_iff', ← map_zsmul, (mem_torsionBy_iff' _ _).mp Q.2,
         map_zero]
     · intro Q Q' h
       exact Subtype.ext (hinj (congrArg Subtype.val h))
   have key := Nat.card_le_card_of_injective g hginj
   rw [hcard] at key
-  have := congrArg (fun W : WeierstrassCurve F =>
-    Nat.card ↥(AddSubgroup.torsionBy W.toAffine.Point ((2 : ℕ) : ℤ))) hE
-  simp only at this
-  rw [← this]
+  have h' : Nat.card ↥(AddSubgroup.torsionBy (E.baseChange F).toAffine.Point ((2 : ℕ) : ℤ)) =
+      Nat.card ↥(AddSubgroup.torsionBy E.toAffine.Point ((2 : ℕ) : ℤ)) := by
+    rw [hE]
+  rw [← h']
   omega
 
 end Iut

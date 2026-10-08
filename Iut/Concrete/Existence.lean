@@ -52,7 +52,7 @@ and the image condition (P6) is the image of the mod-`ℓ` representation. It pr
 
 namespace Iut
 
-universe u v
+universe u
 
 open NumberField WeierstrassCurve TateCurvesTheta OrbicurveDataSection
 
@@ -312,19 +312,11 @@ noncomputable def thetaData : InitialThetaData.{u} :=
     localData := (C.primeData CA TI hℓ h7 R hsl hP2).localThetaData
       (C.tateFamily CA TI hℓ h7 R hsl hP2) hcore }
 
-/-- The `q`-pilot inputs of the constructed Θ-data: the bad locus is finite and residue
-degrees are positive. -/
-theorem qPilotInputs : QPilotInputs (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore) where
-  bad_finite := CA.badAll_finite.subset fun _ hw => C.mem_badAll_of_mem_badPlacesOver hw
-  inertDeg_pos := CA.inertDeg_pos
-
 open scoped Classical in
 /-- **`log(q)` of the constructed Θ-data is the part of `log(q_∀)` away from `2` and
 `ℓ`.** -/
-theorem logQ_eq (LT : LocalTheory.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore).Kt)
-    (TL : ThetaLocalData (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore) LT) :
-    (concreteVariantData.{u, v} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore) LT TL
-      (C.qPilotInputs CA TI hℓ h7 R hsl hP2 hP5 hcore)).qPilot.logQ =
+theorem logQ_eq :
+    (concreteVariantData.{u} (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore)).qPilot.logQ =
       (C.localHeightData CA TI).heightOther 2 ℓ := by
   have hfin : (badPlacesOver C.F C.E (C.VBadOf ℓ)).Finite :=
     CA.badAll_finite.subset fun _ hw => C.mem_badAll_of_mem_badPlacesOver hw

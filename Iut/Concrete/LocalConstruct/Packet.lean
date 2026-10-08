@@ -650,13 +650,6 @@ lemma isUnit_incl (x : completionAt K w) (hx : x ≠ 0) : IsUnit (incl p c j w h
 
 end Incl
 
-/-- **The concrete tensor packets** as a `LocalTensor K`. -/
-noncomputable def concreteLocalTensor : LocalTensor.{u, u} K where
-  Tensor := Tensor K
-  ring _ _ := inferInstance
-  top _ _ := inferInstance
-  algR _ := inferInstance
-
 end LocalConstruct
 
 end Iut

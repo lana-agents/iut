@@ -91,6 +91,7 @@ import Iut.Cor312.ThetaData.TateStructure
 import Iut.Cor312.ThetaData.TateStructureOfIso
 import Iut.Cor312.ThetaData.TateStructureTransport
 import Iut.Cor312.ThetaData.TateStructureUnique
+import Iut.Cor312.ThetaData.TwoTorsion
 import Iut.Cor312.ThetaData.UltrametricSqrt
 import Iut.Cor312.ThetaData.ValuationTransfer
 import Iut.Cor312.ThetaData.VariableChangePoint

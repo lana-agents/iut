@@ -10,7 +10,7 @@ import Iut.Tower.StepIII
 /-!
 # The tower arithmetic from the local facts
 
-`Iut.towerArithmetic_of_localFacts`: the tower arithmetic `Iut.TowerArithmetic D LT TL`
+`Iut.towerArithmetic_of_localFacts`: the tower arithmetic `Iut.TowerArithmetic D`
 of IUT IV, Theorem 1.10 ((R4), Steps (ii), (iii)) for initial Θ-data `D`, from
 
 * the residual local facts `Iut.TowerLocalFacts` (IUT IV, Propositions 1.3 and 1.8:
@@ -26,38 +26,37 @@ of IUT IV, Theorem 1.10 ((R4), Steps (ii), (iii)) for initial Θ-data `D`, from
   characteristics of the theta local data.
 
 The three fields are `Iut.ramIdx_bound_of_facts`, `Iut.logDifferentDeg_torsionField_le`
-(with `Iut.ThetaLocalData.sum_dst_logDK_eq`) and `Iut.sum_log_distinguished_le`.
+(with `Iut.InitialThetaData.sum_dst_logDK_eq`) and `Iut.sum_log_distinguished_le`.
 -/
 
 namespace Iut
 
 open NumberField
 
-universe u v
+universe u
 
-variable (D : InitialThetaData.{u}) (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT)
+variable (D : InitialThetaData.{u})
 
 /-- **The tower arithmetic from the local facts** (IUT IV, (R4), Steps (ii), (iii)). -/
 theorem towerArithmetic_of_localFacts (H : TowerLocalFacts D.E D.VBad D.prime)
     (he2 : RelRamIdxModLeTwo D.E D.VBad)
     [IsGalois ↥(fieldOfModuli D.F D.E) ↥(tripodalFieldOf D.F D.E)]
     (h6 : Module.finrank ↥(fieldOfModuli D.F D.E) ↥(tripodalFieldOf D.F D.E) ≤ 6)
-    (hF : Module.finrank ℚ D.F ≤ 552960 * Module.finrank ℚ ↥(tripodalFieldOf D.F D.E))
-    (hfin : (badPlacesOver D.F D.E D.VBad).Finite)
-    (hbad : ∀ p ∈ TL.badChars, ∃ w ∈ badPlacesOver D.F D.E D.VBad, residueChar w = p) :
-    TowerArithmetic D LT TL where
+    (hF : Module.finrank ℚ D.F ≤ 552960 * Module.finrank ℚ ↥(tripodalFieldOf D.F D.E)) :
+    TowerArithmetic D where
   ramIdx_bound v hv := ramIdx_bound_of_facts H h6 hF v hv
   step_ii := by
-    rw [TL.sum_dst_logDK_eq]
-    exact logDifferentDeg_torsionField_le D.prime H hfin
+    rw [D.sum_dst_logDK_eq]
+    exact logDifferentDeg_torsionField_le D.prime H D.bad_finite
   step_iii := by
-    refine sum_log_distinguished_le H he2 hfin TL.dst fun p hp => ?_
-    simp only [ThetaLocalData.dst, Finset.mem_union] at hp
+    refine sum_log_distinguished_le H he2 D.bad_finite D.dst fun p hp => ?_
+    simp only [InitialThetaData.dst, Finset.mem_union] at hp
     rcases hp with (h | h) | h
     · exact Or.inl h
-    · exact Or.inr (Or.inl (hbad p h))
+    · obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp h
+      exact Or.inr (Or.inl ⟨w, (Set.Finite.mem_toFinset _).mp hw, rfl⟩)
     · refine Or.inr (Or.inr ?_)
-      simp only [LocalTheory.ramifiedChars, Finset.mem_image, Set.Finite.mem_toFinset] at h
+      simp only [InitialThetaData.ramifiedChars, Finset.mem_image, Set.Finite.mem_toFinset] at h
       obtain ⟨v, hv, rfl⟩ := h
       exact ⟨v, rfl, hv⟩
 

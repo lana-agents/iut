@@ -123,6 +123,9 @@ def ℓ : ℕ := D.prime.ℓ
 representation). -/
 noncomputable def K : IntermediateField D.F D.Fbar := D.prime.torsionField
 
+/-- The `ℓ`-torsion field of the Θ-data, as a type. -/
+abbrev Kt : Type u := ↥D.prime.torsionField
+
 /-- The orbicurve `C̲_K` of the Θ-data tuple. -/
 def CKu : Anabelian.Orbicurve ↥D.prime.torsionField := D.orb.CKu
 

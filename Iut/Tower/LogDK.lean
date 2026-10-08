@@ -10,7 +10,7 @@ import Iut.Concrete.Invariants
 # `∑_p log(d^K_p) = log(d_K)`
 
 The local different contributions `log(d^K_p) = ∑_{v ∣ p} w_v d_v log p` of
-`Iut.LocalTheory.logDK` sum, over any finite set of primes containing the residue
+`Iut.InitialThetaData.logDK` sum, over any finite set of primes containing the residue
 characteristics of the places dividing the different, to the normalized degree
 `log(d_K) = log N(𝔡_{K/ℚ})/[K : ℚ]` of the different (`Iut.logDifferentDeg`): since
 `w_v d_v = (e_v f_v/[K : ℚ])·(ord_v(𝔡)/e_v) = f_v·ord_v(𝔡)/[K : ℚ]`, the contribution of `p`
@@ -22,20 +22,19 @@ namespace Iut
 
 open NumberField IsDedekindDomain
 
-universe u v
+universe u
 
-variable {D : InitialThetaData.{u}}
-variable (LT : LocalTheory.{u, v} D.Kt)
+namespace InitialThetaData
 
-namespace LocalTheory
+variable (D : InitialThetaData.{u})
 
 /-- The weight of a finite place of the fiber over `p` is `[K_v : ℚ_p]/[K : ℚ]`. -/
-lemma weight_finite_eq {p : Nat.Primes} (w : LT.Fiber (.finite p)) :
-    LT.weight (.finite p) w = placeWeight D.Kt (LT.fiberPlace w) := by
+lemma weight_finite_eq {p : Nat.Primes} (w : LocalTheory.Fiber D.Kt (.finite p)) :
+    LocalTheory.weight D.Kt (.finite p) w = placeWeight D.Kt (LocalTheory.fiberPlace D.Kt w) := by
   rcases w with ⟨w, hw⟩
   rcases w with w | w
   · rfl
-  · exact absurd hw (by simp [toRational])
+  · exact absurd hw (by simp [LocalTheory.toRational])
 
 /-- The summand of `log(d^K_p)` at a place `v ∣ p` is `ord_v(𝔡)·f_v·log p/[K : ℚ]`. -/
 lemma weight_mul_differentExponent (v : FinitePlace D.Kt) :
@@ -53,26 +52,26 @@ lemma weight_mul_differentExponent (v : FinitePlace D.Kt) :
 dividing the different: `log(d^K_p) = ∑_{v ∈ s, p_v = p} ord_v(𝔡)·f_v·log p/[K : ℚ]`. -/
 lemma logDK_eq_sum_filter (p : ℕ) (s : Finset (FinitePlace D.Kt))
     (hs : ∀ w, ordAt (differentIdeal ℤ (𝓞 D.Kt)) w ≠ 0 → w ∈ s) :
-    LT.logDK p = ∑ w ∈ s.filter (fun w => residueChar w = p),
+    D.logDK p = ∑ w ∈ s.filter (fun w => residueChar w = p),
       (ordAt (differentIdeal ℤ (𝓞 D.Kt)) w : ℝ) *
         (inertDeg D.Kt w * Real.log (residueChar w)) / Module.finrank ℚ D.Kt := by
   classical
-  unfold LocalTheory.logDK
+  unfold InitialThetaData.logDK
   split_ifs with hp
-  · haveI := LT.fiber_finite p
+  · haveI := LocalTheory.fiber_finite D.Kt p
     haveI : Fintype {w : FinitePlace D.Kt // residueChar w = p} := Fintype.ofFinite _
     set g : FinitePlace D.Kt → ℝ := fun w => (ordAt (differentIdeal ℤ (𝓞 D.Kt)) w : ℝ) *
       (inertDeg D.Kt w * Real.log (residueChar w)) / Module.finrank ℚ D.Kt with hg
-    have h1 : ∑ v : LT.Fiber (.finite ⟨p, hp⟩), LT.weight _ v *
-        differentExponent D.Kt (LT.fiberPlace v) * Real.log p =
+    have h1 : ∑ v : LocalTheory.Fiber D.Kt (.finite ⟨p, hp⟩), LocalTheory.weight D.Kt _ v *
+        differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v) * Real.log p =
         ∑ w : {w : FinitePlace D.Kt // residueChar w = p}, g w.1 := by
-      refine Fintype.sum_equiv (LT.fiberFiniteEquiv ⟨p, hp⟩) _ (fun w => g w.1) fun v => ?_
+      refine Fintype.sum_equiv (LocalTheory.fiberFiniteEquiv D.Kt ⟨p, hp⟩) _ (fun w => g w.1) fun v => ?_
       rw [weight_finite_eq]
-      change placeWeight D.Kt (LT.fiberPlace v) * differentExponent D.Kt (LT.fiberPlace v) *
-        Real.log (p : ℝ) = g (LT.fiberPlace v)
-      rw [show ((p : ℕ) : ℝ) = residueChar (LT.fiberPlace v) by
-        rw [LT.residueChar_fiberPlace v], hg]
-      exact weight_mul_differentExponent _
+      change placeWeight D.Kt (LocalTheory.fiberPlace D.Kt v) * differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v) *
+        Real.log (p : ℝ) = g (LocalTheory.fiberPlace D.Kt v)
+      rw [show ((p : ℕ) : ℝ) = residueChar (LocalTheory.fiberPlace D.Kt v) by
+        rw [LocalTheory.residueChar_fiberPlace D.Kt v], hg]
+      exact D.weight_mul_differentExponent _
     rw [h1]
     -- the sum over the subtype is the sum over the filtered set
     have h2 : ∑ w : {w : FinitePlace D.Kt // residueChar w = p}, g w.1 =
@@ -105,24 +104,25 @@ lemma logDK_eq_sum_filter (p : ℕ) (s : Finset (FinitePlace D.Kt))
 characteristics of the places dividing the different. -/
 theorem sum_logDK_eq (S : Finset ℕ)
     (hS : ∀ w : FinitePlace D.Kt, ordAt (differentIdeal ℤ (𝓞 D.Kt)) w ≠ 0 → residueChar w ∈ S) :
-    ∑ p ∈ S, LT.logDK p = logDifferentDeg D.Kt := by
+    ∑ p ∈ S, D.logDK p = logDifferentDeg D.Kt := by
   classical
   set s := (ordAt_support_finite (differentIdeal ℤ (𝓞 D.Kt))).toFinset with hs_def
   have hs : ∀ w, ordAt (differentIdeal ℤ (𝓞 D.Kt)) w ≠ 0 → w ∈ s :=
     fun w hw => (Set.Finite.mem_toFinset _).mpr hw
-  simp_rw [LT.logDK_eq_sum_filter _ s hs]
+  simp_rw [D.logDK_eq_sum_filter _ s hs]
   rw [Finset.sum_fiberwise_of_maps_to (s := s) (t := S) (g := residueChar)
     (fun w (hw : w ∈ s) => hS w ((Set.Finite.mem_toFinset _).mp hw))]
   unfold logDifferentDeg
   rw [log_absNorm_eq_sum_ordAt _ differentIdeal_ne_bot s hs, Finset.sum_div]
 
-end LocalTheory
 
 /-- **`∑_{p ∈ V_ℚ^dst} log(d^K_p) = log(d_K)`**: the distinguished primes contain the residue
 characteristics of the ramified places, hence of the places dividing the different. -/
-theorem ThetaLocalData.sum_dst_logDK_eq (TL : ThetaLocalData D LT) :
-    ∑ p ∈ TL.dst, LT.logDK p = logDifferentDeg D.Kt :=
-  LT.sum_logDK_eq TL.dst fun w hw => TL.mem_dst_of_ramified w fun h1 =>
-    hw (by rw [← ordDifferent_eq_ordAt]; exact LT.ordDifferent_eq_zero w h1)
+theorem sum_dst_logDK_eq :
+    ∑ p ∈ D.dst, D.logDK p = logDifferentDeg D.Kt :=
+  D.sum_logDK_eq D.dst fun w hw => D.mem_dst_of_ramified w fun h1 =>
+    hw (by rw [← ordDifferent_eq_ordAt]; exact LocalTheory.ordDifferent_eq_zero D.Kt w h1)
+
+end InitialThetaData
 
 end Iut

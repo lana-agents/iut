@@ -9,7 +9,7 @@ import Iut.Implication.Theorem110
 /-!
 # Concrete arithmetic invariants of Theorem 1.10 (taxis #1453)
 
-For the concrete variant data `concreteVariantData D LT TL QI`, the invariants of
+For the concrete variant data `concreteVariantData D`, the invariants of
 `Theorem110Invariants` that live on the `ℓ`-torsion field `K` are defined here from the
 local theory:
 
@@ -34,7 +34,7 @@ quantity depending on one coordinate is the weighted sum over places.
 
 namespace Iut
 
-universe u v
+universe u
 
 open NumberField
 open scoped Pointwise
@@ -96,83 +96,76 @@ end Average
 
 /-! ### The concrete invariants -/
 
-variable {D : InitialThetaData.{u}} {LT : LocalTheory.{u, v} D.Kt}
+namespace InitialThetaData
 
-namespace LocalTheory
-
-variable (LT)
+variable (D : InitialThetaData.{u})
 
 /-- The residue characteristics of the primes ramified in `K`, as a finite set. -/
 noncomputable def ramifiedChars : Finset ℕ :=
-  (LT.ramified_finite.toFinset).image residueChar
+  ((LocalTheory.ramified_finite D.Kt).toFinset).image residueChar
 
 /-- `log(d^K_p) = ∑_{v ∣ p} w_v·d_v·log p` (the contribution of `p` to the normalized
 degree of the different of `K`), and `0` at non-primes. -/
 noncomputable def logDK (p : ℕ) : ℝ :=
   if hp : p.Prime then
-    ∑ v : LT.Fiber (.finite ⟨p, hp⟩),
-      LT.weight _ v * differentExponent D.Kt (LT.fiberPlace v) * Real.log p
+    ∑ v : LocalTheory.Fiber D.Kt (.finite ⟨p, hp⟩),
+      LocalTheory.weight D.Kt _ v * differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v) * Real.log p
   else 0
 
 lemma differentExponent_nonneg (w : FinitePlace D.Kt) : 0 ≤ differentExponent D.Kt w :=
   div_nonneg (by positivity) (by positivity)
 
-lemma logDK_nonneg (p : ℕ) : 0 ≤ LT.logDK p := by
-  unfold LocalTheory.logDK
+lemma logDK_nonneg (p : ℕ) : 0 ≤ D.logDK p := by
+  unfold InitialThetaData.logDK
   split_ifs with hp
   · exact Finset.sum_nonneg fun v _ => mul_nonneg
-      (mul_nonneg (LT.weight_pos _ v).le (differentExponent_nonneg _))
+      (mul_nonneg (LocalTheory.weight_pos D.Kt _ v).le (D.differentExponent_nonneg _))
       (Real.log_nonneg (by exact_mod_cast hp.one_lt.le))
   · exact le_rfl
 
-end LocalTheory
-
-namespace ThetaLocalData
-
-variable (TL : ThetaLocalData D LT)
 
 /-- **The distinguished primes** `V_ℚ^dst`: `2, 3, 5, ℓ`, the bad residue characteristics,
 and the primes ramified in `K` ((D6)/(D7), as the definition). -/
 noncomputable def dst : Finset ℕ :=
-  {2, 3, 5, D.ℓ} ∪ TL.badChars ∪ LT.ramifiedChars
+  {2, 3, 5, D.ℓ} ∪ D.badChars ∪ D.ramifiedChars
 
-lemma dst_prime (p : ℕ) (hp : p ∈ TL.dst) : p.Prime := by
+lemma dst_prime (p : ℕ) (hp : p ∈ D.dst) : p.Prime := by
   simp only [dst, Finset.mem_union, Finset.mem_insert, Finset.mem_singleton,
-    LocalTheory.ramifiedChars, Finset.mem_image, Set.Finite.mem_toFinset] at hp
+    InitialThetaData.ramifiedChars, Finset.mem_image, Set.Finite.mem_toFinset] at hp
   rcases hp with ((rfl | rfl | rfl | rfl) | hb) | ⟨w, _, rfl⟩
   · exact Nat.prime_two
   · exact Nat.prime_three
   · exact Nat.prime_five
   · exact D.prime.ℓ_prime
-  · exact TL.badChars_prime _ hb
-  · exact LT.residueChar_prime w
+  · exact D.badChars_prime _ hb
+  · exact LocalTheory.residueChar_prime D.Kt w
 
 lemma mem_dst_of_ramified (w : FinitePlace D.Kt) (hw : ramIdx D.Kt w ≠ 1) :
-    residueChar w ∈ TL.dst := by
+    residueChar w ∈ D.dst := by
   refine Finset.mem_union_right _ ?_
-  simp only [LocalTheory.ramifiedChars, Finset.mem_image, Set.Finite.mem_toFinset]
+  simp only [InitialThetaData.ramifiedChars, Finset.mem_image, Set.Finite.mem_toFinset]
   exact ⟨w, hw, rfl⟩
 
-lemma mem_dst_of_badChars (p : ℕ) (hp : p ∈ TL.badChars) : p ∈ TL.dst :=
+lemma mem_dst_of_badChars (p : ℕ) (hp : p ∈ D.badChars) : p ∈ D.dst :=
   Finset.mem_union_left _ (Finset.mem_union_right _ hp)
 
-lemma two_mem_dst : 2 ∈ TL.dst := by
+lemma two_mem_dst : 2 ∈ D.dst := by
   refine Finset.mem_union_left _ (Finset.mem_union_left _ ?_)
   simp
 
-lemma logDK_eq_zero (p : ℕ) (hp : p ∉ TL.dst) : LT.logDK p = 0 := by
-  unfold LocalTheory.logDK
+lemma logDK_eq_zero (p : ℕ) (hp : p ∉ D.dst) : D.logDK p = 0 := by
+  unfold InitialThetaData.logDK
   split_ifs with hpp
   · refine Finset.sum_eq_zero fun v _ => ?_
-    have hunr : ramIdx D.Kt (LT.fiberPlace v) = 1 := by
+    have hunr : ramIdx D.Kt (LocalTheory.fiberPlace D.Kt v) = 1 := by
       by_contra hne
       apply hp
-      have := TL.mem_dst_of_ramified _ hne
-      rwa [LT.residueChar_fiberPlace] at this
-    simp [differentExponent, LT.ordDifferent_eq_zero _ hunr]
+      have := D.mem_dst_of_ramified _ hne
+      rwa [LocalTheory.residueChar_fiberPlace D.Kt] at this
+    simp [differentExponent, LocalTheory.ordDifferent_eq_zero D.Kt _ hunr]
   · rfl
 
-end ThetaLocalData
+end InitialThetaData
 
 /-! ### The tripodal field and its different and conductor degrees -/
 
@@ -256,14 +249,14 @@ lemma logConductorDeg_nonneg : 0 ≤ D.logConductorDeg := logConductorDegOf_nonn
 
 end InitialThetaData
 
-variable (TL : ThetaLocalData D LT) (QI : QPilotInputs D)
+variable (D : InitialThetaData.{u})
 
 /-- **The concrete invariants of Theorem 1.10** for the concrete variant data, with
 `e_mod := d_mod` (Theorem 1.10 holds with `e_mod` replaced by any `e ≥ e_mod`, and
 Corollary 2.2 uses `d*_mod` anyway), `log(d_{F_tpd})`, `log(f_{F_tpd})` the different and
 conductor degrees of the tripodal field, the distinguished primes and `log(d^K_p)`. -/
-noncomputable def ThetaLocalData.invariants :
-    Theorem110Invariants (concreteVariantData D LT TL QI) where
+noncomputable def InitialThetaData.invariants :
+    Theorem110Invariants (concreteVariantData D) where
   emod := D.dmod
   one_le_emod := D.one_le_dmod
   emod_le_dmod := le_rfl
@@ -271,11 +264,11 @@ noncomputable def ThetaLocalData.invariants :
   logDtpd_nonneg := logDifferentDeg_nonneg _
   logFtpd := D.logConductorDeg
   logFtpd_nonneg := D.logConductorDeg_nonneg
-  dst := TL.dst
-  dst_prime := TL.dst_prime
-  logDK := LT.logDK
-  logDK_nonneg := LT.logDK_nonneg
-  logDK_eq_zero := TL.logDK_eq_zero
+  dst := D.dst
+  dst_prime := D.dst_prime
+  logDK := D.logDK
+  logDK_nonneg := D.logDK_nonneg
+  logDK_eq_zero := D.logDK_eq_zero
 
 /-- **The tower arithmetic of Theorem 1.10** (IUT IV, Steps (ii)–(iii) and (R4)): standard
 algebraic number theory of the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K = F(E[ℓ])`, from
@@ -284,34 +277,33 @@ Proposition 1.3 (differents in towers of local fields, taxis #1463), Proposition
 inclusions `Gal(K/F) ↪ GL₂(𝔽_ℓ)`, `Gal(F/F_tpd) ↪ GL₂(𝔽_3) × GL₂(𝔽_5) × ℤ/2`,
 `Gal(F_tpd/F_mod) ↪ GL₂(𝔽_2)`. With `e_mod` replaced by `d_mod` and `e*_mod = 552960·d_mod`.
 Delegated as a whole (`lana-agents/elliptic-reduction`). -/
-structure TowerArithmetic (D : InitialThetaData.{u}) (LT : LocalTheory.{u, v} D.Kt)
-    (TL : ThetaLocalData D LT) : Prop where
+structure TowerArithmetic (D : InitialThetaData.{u}) : Prop where
   /-- **(R4)**: if `e_v > p_v − 2` then `p_v ≤ e*_mod·ℓ` and
   `log e_v ≤ −3 + 4·log(e*_mod·ℓ)`. -/
   ramIdx_bound : ∀ v : FinitePlace D.Kt, residueChar v - 2 < ramIdx D.Kt v →
     residueChar v ≤ 552960 * D.dmod * D.ℓ ∧
       Real.log (ramIdx D.Kt v) ≤ -3 + 4 * Real.log (((552960 * D.dmod : ℕ) : ℝ) * D.ℓ)
   /-- **Step (ii)**: `log(d_K) ≤ log(d_{F_tpd}) + log(f_{F_tpd}) + 2·log ℓ + 21`. -/
-  step_ii : ∑ p ∈ TL.dst, LT.logDK p ≤
+  step_ii : ∑ p ∈ D.dst, D.logDK p ≤
     logDifferentDeg ↥D.tripodalField + D.logConductorDeg + 2 * Real.log D.ℓ + 21
   /-- **Step (iii)**: `log(s^ℚ) ≤ 2·d_mod·(log(d_{F_tpd}) + log(f_{F_tpd})) + 5 + log ℓ`. -/
-  step_iii : ∑ p ∈ TL.dst, Real.log p ≤
+  step_iii : ∑ p ∈ D.dst, Real.log p ≤
     2 * D.dmod * (logDifferentDeg ↥D.tripodalField + D.logConductorDeg) + 5 + Real.log D.ℓ
 
-variable {TL QI}
+variable {D}
 
 /-- The residue characteristics of the bad places of `F` are distinguished ((D2)). -/
-lemma ThetaLocalData.bad_mem_dst (w : FinitePlace D.F)
-    (hw : w ∈ (concreteVariantData D LT TL QI).qPilot.badFinset) : residueChar w ∈ TL.dst :=
-  TL.mem_dst_of_badChars _ (TL.bad_residueChar_mem w
-    ((concreteVariantData D LT TL QI).qPilot.mem_bad hw))
+lemma InitialThetaData.bad_mem_dst (w : FinitePlace D.F)
+    (hw : w ∈ (concreteVariantData D).qPilot.badFinset) : residueChar w ∈ D.dst :=
+  D.mem_dst_of_badChars _ (D.bad_residueChar_mem w
+    ((concreteVariantData D).qPilot.mem_bad hw))
 
 /-- The arithmetic certificate of Theorem 1.10 for the concrete invariants, from `ℓ ≥ 7`
 and the tower arithmetic. -/
-theorem TowerArithmetic.certificate (TA : TowerArithmetic D LT TL) (h7 : 7 ≤ D.ℓ) :
-    Theorem110Certificate (TL.invariants QI) where
+theorem TowerArithmetic.certificate (TA : TowerArithmetic D) (h7 : 7 ≤ D.ℓ) :
+    Theorem110Certificate (D.invariants) where
   seven_le := h7
-  bad_mem_dst := ThetaLocalData.bad_mem_dst (QI := QI)
+  bad_mem_dst := InitialThetaData.bad_mem_dst
   step_ii := by exact TA.step_ii
   step_iii := by exact TA.step_iii
 

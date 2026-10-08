@@ -10,7 +10,7 @@ import Iut.Implication.Corollary23
 # The implication for the concrete variant (taxis #1449)
 
 The main theorem `Iut.cor312Variant_implies_abc_concrete`: the Corollary 3.12 variant,
-assumed only for the **concrete** data bundles `Iut.concreteVariantData D LT TL QI` —
+assumed only for the **concrete** data bundles `Iut.concreteVariantData D` —
 initial Θ-data together with the local-field theory of the `ℓ`-torsion field, the local
 theta data and the finiteness of the bad locus — implies ABC.
 
@@ -18,7 +18,7 @@ The existence of suitable initial Θ-data is required in concrete form
 (`ConcreteThetaDataExistence`): for a point of large height and a prime `ℓ` satisfying
 (P1)–(P6), initial Θ-data `D` with the prime `ℓ`, its local theory and local theta data,
 and the tower arithmetic. Everything else — the Theorem 1.10 invariants, certificate and
-local estimates — is constructed from these (`ThetaLocalData.invariants`,
+local estimates — is constructed from these (`InitialThetaData.invariants`,
 `TowerArithmetic.certificate`, `TowerArithmetic.localEstimate`). The existence statement
 itself is proved from the curves of the points in `Iut.Concrete.Existence`
 (`CurveInputs.concreteThetaDataExistence`).
@@ -26,16 +26,15 @@ itself is proved from the curves of the points in `Iut.Concrete.Existence`
 
 namespace Iut
 
-universe u v
+universe u
 
 open NumberField
 
 variable {T : Genl.HeightTheory}
 
 /-- The data bundles produced by the concrete construction. -/
-def IsConcrete (X : Corollary312VariantData.{u, v}) : Prop :=
-  ∃ (D : InitialThetaData.{u}) (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT)
-    (QI : QPilotInputs D), X = concreteVariantData D LT TL QI
+def IsConcrete (X : Corollary312VariantData.{u, u}) : Prop :=
+  ∃ D : InitialThetaData.{u}, X = concreteVariantData D
 
 /-- **Existence of suitable initial Θ-data, concrete form** ((P7) in the proof of
 Corollary 2.2): for a point `x` outside the exceptional set and a prime `ℓ ≥ 7` satisfying
@@ -53,10 +52,9 @@ def ConcreteThetaDataExistence {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K 
       ((I.localData x hx).hv v : ℝ) < Real.sqrt (I.h x)) →
     (∃ v ∈ (I.localData x hx).bad, (I.localData x hx).p v ≠ 2 ∧ (I.localData x hx).p v ≠ ℓ) →
     I.SL2Image x ℓ →
-    ∃ (D : InitialThetaData.{u}) (LT : LocalTheory.{u, v} D.Kt) (TL : ThetaLocalData D LT)
-      (QI : QPilotInputs D), TowerArithmetic D LT TL ∧
+    ∃ D : InitialThetaData.{u}, TowerArithmetic D ∧
       D.ℓ = ℓ ∧ D.dmod ≤ d ∧
-      (concreteVariantData.{u, v} D LT TL QI).qPilot.logQ =
+      (concreteVariantData.{u} D).qPilot.logQ =
         (I.localData x hx).heightOther 2 ℓ ∧
       T.logDiff T.tripod x = logDifferentDeg ↥D.tripodalField ∧
       D.logConductorDeg ≤ T.logCond T.tripod x ∧
@@ -66,12 +64,12 @@ def ConcreteThetaDataExistence {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K 
 bundles. -/
 theorem ConcreteThetaDataExistence.toThetaDataExistence {K : T.CBS} {d : ℕ}
     {I : Corollary22Inputs T K d}
-    (ex : ConcreteThetaDataExistence.{u, v} I) :
-    ThetaDataExistence (IsConcrete.{u, v}) I where
+    (ex : ConcreteThetaDataExistence.{u} I) :
+    ThetaDataExistence (IsConcrete.{u}) I where
   thetaData x hx hxe ℓ hℓp hℓ7 hP2 hP3 hP5 hP6 := by
-    obtain ⟨D, LT, TL, QI, TA, hℓ, hd, hq, hdiff, hc1, hc2⟩ :=
+    obtain ⟨D, TA, hℓ, hd, hq, hdiff, hc1, hc2⟩ :=
       ex x hx hxe ℓ hℓp hℓ7 hP2 hP3 hP5 hP6
-    refine ⟨concreteVariantData.{u, v} D LT TL QI, TL.invariants QI, ⟨D, LT, TL, QI, rfl⟩,
+    refine ⟨concreteVariantData.{u} D, D.invariants, ⟨D, rfl⟩,
       TA.certificate (hℓ ▸ hℓ7), ⟨TA.localEstimate⟩, hℓ, hd, hq, hdiff, hc1, ?_⟩
     exact hc2
 

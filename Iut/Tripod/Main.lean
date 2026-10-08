@@ -83,7 +83,7 @@ open scoped Classical
 theta local data. -/
 theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
     (CF : CurveFactsProp (tripodProviders) K d TK) (hN : NorthcottHyp) :
-    ConcreteThetaDataExistence.{0, 0}
+    ConcreteThetaDataExistence.{0}
       (curveInputs tripodProviders K d CF (coreFiniteness _ K d) hN
         torsionDegreeBound_three' torsionDegreeBound_five'
         (legendreHeight _ K) (twoAdicBound _ K) (logCondGe _)
@@ -106,27 +106,17 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
     exact ⟨w, (CI.arith x hx).badAll_finite.mem_toFinset.mp hw, h⟩
   let D := (CI.curve x hx).thetaData (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
     (hsl hx hℓ) hP2' hP5' hcore
-  have htwo : TwoTorsionRational D :=
-    two_torsion_curveOf x ((tripodProviders).torsionFinite3 x.1)
-      ((tripodProviders).torsionFinite5 x.1)
-  let QI : QPilotInputs D := (CI.curve x hx).qPilotInputs (CI.arith x hx) (CI.tate x hx) hℓ h7
-    (CI.modRep x hx ℓ hℓ) (hsl hx hℓ) hP2' hP5' hcore
-  refine ⟨D, concreteLocalTheory D.Kt,
-    thetaLocalData D (concreteLocalTheory D.Kt) htwo QI, QI,
+  refine ⟨D,
     towerArithmetic_of_towerLocalHyp (tripodProviders) x hℓ h7 (hsl hx hℓ) hP2' hP5'
       hcore (towerLocalHyp _)
-      torsionDegreeBound_three' torsionDegreeBound_five'
-      (concreteLocalTheory D.Kt) htwo, rfl,
+      torsionDegreeBound_three' torsionDegreeBound_five', rfl,
     CI.dmod_le x hx, ?_, CI.logDiff_eq x hx, CI.logCond_ge x hx ℓ hℓ h7,
     CI.logCond_le x hx ℓ hℓ h7⟩
   exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
-    (hsl hx hℓ) hP2' hP5' hcore _ _
+    (hsl hx hℓ) hP2' hP5' hcore
 
 /-- **The Corollary 3.12 variant implies ABC on the tripod**, with propositional inputs. -/
-theorem abc_of_variant
-    (h312 : ∀ (D : InitialThetaData.{0}) (LT : LocalTheory.{0, 0} D.Kt)
-      (TL : ThetaLocalData D LT) (QI : QPilotInputs D),
-      Corollary312Variant (concreteVariantData.{0, 0} D LT TL QI)) :
+theorem abc_of_variant (h312 : Cor312VariantHolds) :
     tripodTheory.StatementII := by
   let CF : ∀ K d, CurveFactsProp (tripodProviders) K d (cyclicConst K) :=
     fun K d => ⟨cyclicBoundOdd _ K d⟩
@@ -138,6 +128,6 @@ theorem abc_of_variant
     (fun K d =>
       (concreteThetaDataExistence' (CF K d) northcottHyp).toThetaDataExistence)
     chebyshevBoundExplicit primeCountingBoundExplicit
-    (fun _ ⟨D, LT, TL, QI, hX⟩ => hX ▸ h312 D LT TL QI)
+    (fun _ ⟨D, hX⟩ => hX ▸ h312 D)
 
 end Iut.Tripod
