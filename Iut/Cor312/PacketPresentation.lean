@@ -31,10 +31,13 @@ modules operate on:
 
 The identification of an actual tensor-packet `⊗_{j ∈ S} (⊕_{v ∣ v_Q} log(F_v))` with a
 direct sum of fields (semisimple decomposition of tensor products of local fields) is
-**not** proved here; it is part of the local-field infrastructure tracked in taxis #4
-(`lana-agents/padic-log-volume`). This module only fixes the interface through which the
+**not** proved in this module. This module only fixes the interface through which the
 container consumes such a presentation; every instantiation obligation is an explicit
-structure field of the container data (taxis #43).
+structure field of the container data (taxis #43). The concrete tensor packets of a number
+field, their log-shells (via the `p`-adic logarithm) and their normalized Haar log-volume are
+constructed in this repository (`Iut/Concrete/LocalConstruct/`, taxis #4, #278) and
+instantiate the interface in `Iut/Concrete/Container.lean` (`Iut.LocalTheory.container`); no
+external local-field repository (such as `lana-agents/padic-log-volume`) is used.
 
 ## Source correspondence
 

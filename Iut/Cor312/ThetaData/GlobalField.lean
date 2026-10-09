@@ -38,9 +38,10 @@ Definition 3.1(a)–(b), for the Corollary 3.12 variant statement (taxis #33):
   predicates quantify over a global change of variables `C • E`: they are properties of the
   curve up to isomorphism, as in Mochizuki's condition (a non-integral model such as the
   Legendre model `y² = x(x−1)(x−λ)` at a denominator of `λ` is not excluded).
-  Proving that a given curve satisfies it is out of scope here (taxis #39). The
-  elliptic-reduction certificate project (taxis #5) remains the seam for reduction
-  *theorems*; the *predicates* need no certificate.
+  Proving that a given curve satisfies it is out of scope here (taxis #39). The reduction
+  *theorems* used downstream (for the curves of the tripod) are proved in this repository
+  (`Iut/Tower/`, `Iut/Tripod/`); no external certificate project (such as
+  `lana-agents/elliptic-reduction`) is used, and the *predicates* need no certificate.
 * **Field of moduli.** For an elliptic curve, the field of moduli is `ℚ(j)`; this is
   taken as the definition (IUT I, Definition 3.1(b) introduces `F_mod` as the field of
   moduli of `X_F`, which for the once-punctured curve of `E_F` is `ℚ(j(E_F))`).

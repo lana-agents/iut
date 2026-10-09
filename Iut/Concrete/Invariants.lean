@@ -277,7 +277,10 @@ Proposition 1.3 (differents in towers of local fields, taxis #1463), Proposition
 (reduction theory, taxis #5; Néron–Ogg–Shafarevich, taxis #73) and the Galois-group
 inclusions `Gal(K/F) ↪ GL₂(𝔽_ℓ)`, `Gal(F/F_tpd) ↪ GL₂(𝔽_3) × GL₂(𝔽_5) × ℤ/2`,
 `Gal(F_tpd/F_mod) ↪ GL₂(𝔽_2)`. With `e_mod` replaced by `d_mod` and `e*_mod = 552960·d_mod`.
-Delegated as a whole (`lana-agents/elliptic-reduction`). -/
+For the Θ-data of the points of the tripod it is proved in this repository
+(`Iut.Tripod.towerArithmetic_of_towerLocalHyp`, `Iut/Tripod/Tower.lean`, from the local facts
+`Iut.Tripod.TowerLocalHyp`, which are theorems in `Iut/Tripod/`); no external repository (such
+as `lana-agents/elliptic-reduction`) is used. -/
 structure TowerArithmetic (D : InitialThetaData.{u}) : Prop where
   /-- **(R4)**: if `e_v > p_v − 2` then `p_v ≤ e*_mod·ℓ` and
   `log e_v ≤ −3 + 4·log(e*_mod·ℓ)`. -/

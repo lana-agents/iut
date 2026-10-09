@@ -52,10 +52,12 @@ product of local fields presented as a direct sum of fields. Accordingly:
 ## Honesty boundary
 
 The *construction* of the packet presentations from actual completions of a number
-field — direct sums over `v ∣ v_Q`, tensor products over the capsule labels, semisimple
-decomposition, and the log-shells themselves via the `p`-adic logarithm — is local-field
-infrastructure tracked in taxis #4 (`lana-agents/padic-log-volume`). Here each packet
-presentation enters as an explicit structure field; nothing asserts that a theta-pilot
+field — tensor products over the capsule labels and the log-shells themselves via the
+`p`-adic logarithm — is not part of this module; it is carried out in this repository in
+`Iut/Concrete/LocalConstruct/` (taxis #4, #278), and the concrete container is
+`Iut.LocalTheory.container` in `Iut/Concrete/Container.lean` (no external repository such as
+`lana-agents/padic-log-volume` is used). Here each packet presentation enters as an explicit
+structure field; nothing asserts that a theta-pilot
 image lies in the container, and no multiradial algorithm is constructed (out of scope
 for taxis #43).
 
