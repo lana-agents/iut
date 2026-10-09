@@ -6,7 +6,7 @@ This repository holds the IUT-specific material — the parts of the programme t
 particular to Mochizuki's papers rather than independently established mathematics.
 It does **not** verify IUT.
 
-It carries two strands:
+It carries these strands:
 
 * **IUT4 §1 — "Log-volume Estimates."** A Lean 4 formalization of the self-contained
   mathematics in Section 1 of *Inter-universal Teichmüller Theory IV*. Merged here from
@@ -48,17 +48,20 @@ are kept behind explicit interfaces or certificates rather than introduced as ax
 hidden inside helper structures. See the [implementation specification and honesty
 boundary](Plans/Iut4Sec1Spec.md#2-honesty-boundary).
 
-The certificate interfaces are discharged in separate repositories, so that this one
-states its results conditionally:
-
-* [`padic-log-volume`](https://github.com/lana-agents/padic-log-volume) — `p`-adic
-  log/exp and normalized Haar log-volume.
-* [`elliptic-reduction`](https://github.com/lana-agents/elliptic-reduction) — the
-  `ReductionCertificate` for Proposition 1.8(v)–(vii).
-* [`prime-counting`](https://github.com/lana-agents/prime-counting) — the
-  `PrimeCountingCertificate` for Proposition 1.6 with the printed factor `4/3`. The `Iut`
-  library no longer needs it: its `PrimeCountingBound` (factor `3/2`) is proved from
-  Mathlib's Chebyshev bound (`Iut.primeCountingBoundExplicit`).
+No certificate interface of another repository is used. The `p`-adic logarithm, the
+log-shells and the normalized Haar log-volume of the tensor packets are constructed here
+([`Iut/Concrete/LocalConstruct/`](Iut/Concrete/LocalConstruct), e.g.
+`Iut.LocalTheory.componentVol`); the tower arithmetic of Theorem 1.10 is proved for the tripod
+(`Iut.Tripod.towerArithmetic_of_towerLocalHyp`); and the prime-counting bound of
+Proposition 1.6 is used with the factor `3/2`, proved from Mathlib's Chebyshev bound
+(`Iut.primeCountingBoundExplicit`, `Iut.primeCountingHyp_holds`). The repositories
+[`padic-log-volume`](https://github.com/lana-agents/padic-log-volume),
+[`elliptic-reduction`](https://github.com/lana-agents/elliptic-reduction) and
+[`prime-counting`](https://github.com/lana-agents/prime-counting) are not dependencies (some
+module docstrings still mention them as the original seams). The printed factor `4/3` of
+Proposition 1.6 appears only as a Comparator target
+(`eventually_primeCounting_le_four_thirds` in
+[`Comparator/Challenge.lean`](Comparator/Challenge.lean)) and is open.
 
 **Statement corrections.** Two statements of the local theory of the tensor packets
 (`Iut.LocalTheory`) were restricted when the construction showed the unrestricted statements
@@ -108,6 +111,33 @@ of the Θ-data record `Iut.InitialThetaData` (and of `Iut.OrbicurveData`,
   (F. K. Schmidt), a complete discrete valuation ring with finite residue field
   ([`AdicCompletion.lean`](Iut/Anabelian/AdicCompletion.lean)), and the characteristic-`0`
   presentation ring is smooth of Krull dimension `1` (`lana-agents/pi1`).
+
+**Theorem B at the Tate curves of the Θ-data.** Theorem B of
+`tempered-fundamental-groups` (`TemperedFundamentalGroups.TateOrbicurve.nondegenerate_of_normalForm`:
+for a Tate curve in normal form over a complete DVR of mixed characteristic with perfect residue
+field, the tempered group of `[(E ∖ (E[ℓ] + M)) / A]` has an open normal subgroup with infinite
+quotient) is applied to the Tate curves of the Θ-data
+([`TateTheoremB.lean`](Iut/Cor312/ThetaData/TateTheoremB.lean)):
+`Iut.TateParameter.exists_normalForm` puts every Tate curve `E_q` of `tate-curves-theta` in normal
+form (`m = v(q) ≥ 1`, `a₄(q) = ϖ^m u₄`, `a₆(q) = ϖ^m ε` with `ε` a unit), and
+
+```lean
+theorem Iut.InitialThetaData.tate_nondegenerate (D : InitialThetaData.{u}) (w : FinitePlace D.Kt)
+    (hw : IsBadPlace D.E D.prime.torsionField D.VBad w)
+    (M : AddSubgroup (D.tate.S w hw).t.tateCurve.toAffine.Point) (hM : (M : Set _).Finite)
+    (pm : Bool) :
+    ∃ N : Subgroup X.affineOrbifold.canonicalTemperedPi1,
+      IsOpen (N : Set _) ∧ N.Normal ∧ Infinite (X.affineOrbifold.canonicalTemperedPi1 ⧸ N)
+-- X = Orbicurve.mk (D.tate.S w hw).t.tateCurve D.ℓ M pm
+```
+
+(the general form over any completion `F_w` of a number field is `Iut.tateOrbicurve_nondegenerate`).
+**Boundary:** this is about the tempered group of the *geometric* presentation
+`Orbicurve.affineOrbifold` of the model orbicurve `(E_{q_w}, ℓ, M, ±)`, not literally about
+`LocalThetaData.PivBad`, which is the tempered group of the local model `X̲_v` (curve
+`E ×_F K_w`, isomorphic to `E_{q_w}` only after the change of variables `(D.tate.S w hw).C`) in its
+Galois presentation `Genuine.orbifold`. Invariance of the tempered group under a change of
+Weierstrass model and the comparison of the two presentations are not formalized.
 
 [CanLift], Proposition 2.7 is the theorem `Iut.Anabelian.canLift27`
 ([`CanLift.lean`](Iut/Anabelian/CanLift.lean)); its consequence for the genuine cores,
@@ -425,7 +455,7 @@ target statements (see the taxis issues linked from #1449), and how they are dis
 | --- | --- | --- |
 | local theory of the tensor packets (formerly the structure `LocalTheory K`) | tensor packets, log-shells, Haar log-volume, hulls, Props 1.4/1.5 | **constructed and proved**, now plain definitions and theorems (`Iut.LocalTheory.*`; [#1462](https://taxis.lana.merten.dev/issues/1462)) |
 | local theta data (formerly `ThetaLocalData D LT`, `QPilotInputs D`) | `2ℓ`-th roots of the Tate parameters, `q`-degree base change, finiteness of the bad locus | **constructed** as definitions on `D` (`InitialThetaData.qroot`, `badChars`, `qPilot`), from the rationality of the ℓ- and 2-torsion and the multiplicative reduction over `V_mod^bad` |
-| `Iut.TowerArithmetic D` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the local facts `Iut.TowerLocalFacts` (three local fields: the wild ramification bound `v_p(e(v/u)) ≤ c_p`, Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`), **theorems for the tripod** (`Iut.Tripod.towerLocalHyp`, [`TowerFacts.lean`](Iut/Tripod/TowerFacts.lean), including the tameness of `F_λ(E_λ[ℓ])/F_λ` at the places over `2`, `Iut.Tripod.tameTwoHyp`, [`TameTwo.lean`](Iut/Tripod/TameTwo.lean); the different bound of Prop 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le` (Serre's bound, [#1463](https://taxis.lana.merten.dev/issues/1463)) and the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), elliptic-reduction, [#1493](https://taxis.lana.merten.dev/issues/1493) |
+| `Iut.TowerArithmetic D` | (R4), Steps (ii), (iii) of Theorem 1.10 for the tower `F_mod ⊆ F_tpd ⊆ F ⊆ K` | **proved for the tripod** (`Iut.Tripod.towerArithmetic_of_towerLocalHyp`) from the local facts `Iut.TowerLocalFacts` (three local fields: the wild ramification bound `v_p(e(v/u)) ≤ c_p`, Néron–Ogg–Shafarevich, the ramification bound away from `2·3·5·ℓ`), **theorems for the tripod** (`Iut.Tripod.towerLocalHyp`, [`TowerFacts.lean`](Iut/Tripod/TowerFacts.lean), including the tameness of `F_λ(E_λ[ℓ])/F_λ` at the places over `2`, `Iut.Tripod.tameTwoHyp`, [`TameTwo.lean`](Iut/Tripod/TameTwo.lean); the different bound of Prop 1.3 is the theorem `Iut.TowerLocalFacts.ordAt_different_le` (Serre's bound, [#1463](https://taxis.lana.merten.dev/issues/1463)) and the ramification bound `e(u/u₀) ≤ 2` of `ℚ(λ)/ℚ(j)` at the bad places is the theorem `Iut.Tripod.relRamIdx_tpd_le_two`), [#1493](https://taxis.lana.merten.dev/issues/1493) |
 | `Iut.ChebyshevBound` | Proposition 2.1(ii) | **proved** (`Iut.chebyshevBoundExplicit`, threshold `10^12`, from Mathlib's Chebyshev bounds) |
 | `Iut.PrimeCountingBound` | Proposition 1.6 (factor `3/2`) | **proved** (`Iut.primeCountingBoundExplicit`, from Mathlib's `θ(x) ≤ (log 4)·x` and the Abel-summation identity for `π`; `Iut.PrimeCountingHyp` is the theorem `Iut.primeCountingHyp_holds`), [#1466](https://taxis.lana.merten.dev/issues/1466) |
 | `Iut.CurveInputs T K d` | the curves `E_x/F_x` of the points with [GenEll] §§1, 3 inputs | **constructed for the tripod** (`Iut.Tripod.curveInputs`); its remaining `Prop` `CurveFactsProp` (the cyclic-subgroup bound away from `2`) is **proved** (`Iut.Tripod.cyclicBoundOdd`), see below |
@@ -702,6 +732,21 @@ replaced by `Orbicurve.genuinePi1`/`genuinePi1Cover`/`genuineHasCore`/`canLift27
 ([#1527](https://taxis.lana.merten.dev/issues/1527)) and
 `Orbicurve.temperedPi1`/`tempToEtale` ([#1528](https://taxis.lana.merten.dev/issues/1528));
 see the honesty note on the tempered group above.
+
+## Dependency pins
+
+`lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its
+dependencies:
+
+| Package | Revision |
+| --- | --- |
+| [`tempered-fundamental-groups`](https://github.com/lana-agents/tempered-fundamental-groups) | `1936070` (Theorem A `andreEquiv'`, Theorem B `TateOrbicurve.nondegenerate_of_normalForm`) |
+| [`oka`](https://github.com/lana-agents/oka) | `405aadd` (needed by `tempered-fundamental-groups`: Zariski connectedness, `Oka.AlgebraicGeometry.ProjectiveSpace.ZariskiConnected`) |
+| [`pi1`](https://github.com/lana-agents/pi1) | `7647d28` |
+| [`heights`](https://github.com/lana-agents/heights) | `721496c` |
+| [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta) | `ca6c227` |
+| [`genl`](https://github.com/lana-agents/genl) | `ea2846c` |
+| [`orbicurve-cores`](https://github.com/lana-agents/orbicurve-cores) | `61616dc` |
 
 ## Comparator suite
 

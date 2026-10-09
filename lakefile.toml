@@ -60,14 +60,14 @@ rev = "61616dcd77fbe45c083a8ebfa7cc80728f86e841"
 [[require]]
 name = "oka"
 git = "https://github.com/lana-agents/oka.git"
-rev = "75dcdc3faadd10b986afb9283e89902bcdddecd4"
+rev = "405aadd70a16b05bd1a179a489b2c1c1299df695"
 # The tempered fundamental group of the model orbicurves (taxis #7): the construction through
 # integral models, `TemperedFundamentalGroups.temperedPi1`, consumed by
 # `Iut.Anabelian.TemperedPi1Theory` in `Iut/Anabelian/Tempered.lean`.
 [[require]]
 name = "tempered-fundamental-groups"
 git = "https://github.com/lana-agents/tempered-fundamental-groups"
-rev = "c5a6e69c020e012be85bcdad67a6ed120f3a0c33"
+rev = "1936070525eca2a9015c6f8528e879824af436a0"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
