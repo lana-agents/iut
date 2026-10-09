@@ -100,15 +100,14 @@ of the Θ-data record `Iut.InitialThetaData` (and of `Iut.OrbicurveData`,
   integral-model construction of
   [`tempered-fundamental-groups`](https://github.com/lana-agents/tempered-fundamental-groups)
   (for the presentation `[Spec R / A]` of the model orbicurve, over the canonical valuation of
-  the base field). Its identification with André's tempered fundamental group is now
-  unconditional there (`TemperedFundamentalGroups.andreEquiv'`, Theorem A, from
-  `SemistableReduction.Statement.strongA`), for a complete discretely valued base field of
-  mixed characteristic with perfect residue field and a smooth `R` that is a domain of Krull
-  dimension `1`. It is **not yet applied** to the Θ-data here: for the presentation used in
-  characteristic `0` (`R` the integral closure of `k[x]` in the function field `L_X`),
-  smoothness `Algebra.Smooth k R` is not yet proved, and the identification of the canonical
-  valuation of `K_v` with `O_v` (completeness, perfect residue field, mixed characteristic) and
-  `ringKrullDim R = 1` are not yet stated in iut. Nothing here depends on the identification.
+  the base field). It is **identified with André's tempered fundamental group** at the
+  places of the Θ-data: `Iut.LocalThetaData.pivBadEquivAndre : L.PivBad v ≃ₜ* X̲_v.andrePi1`
+  ([`AndreLocal.lean`](Iut/Cor312/ThetaData/AndreLocal.lean)), with no hypotheses beyond the
+  Θ-data, from Theorem A of that repository (`TemperedFundamentalGroups.andreEquiv'`,
+  unconditional). Its hypotheses are proved here: the canonical valuation of `K_v` is `O_v`
+  (F. K. Schmidt), a complete discrete valuation ring with finite residue field
+  ([`AdicCompletion.lean`](Iut/Anabelian/AdicCompletion.lean)), and the characteristic-`0`
+  presentation ring is smooth of Krull dimension `1` (`lana-agents/pi1`).
 
 [CanLift], Proposition 2.7 is the theorem `Iut.Anabelian.canLift27`
 ([`CanLift.lean`](Iut/Anabelian/CanLift.lean)); its consequence for the genuine cores,
@@ -571,11 +570,9 @@ symmetric form over `ℤ` (`a + b + c = 0`, bounding `max(|a|, |b|, |c|)`), and
   `lana-agents/oka`, and the comparison of algebraic and analytic cores) descended by
   `AffOrbicurve.canLift27_of_complex` (`lana-agents/pi1`). `#print axioms` shows `propext`,
   `Classical.choice`, `Quot.sound` only.
-  **Boundary:** the tempered group is defined through integral models; its identification
-  with André's tempered group is unconditional in the tempered repository (`andreEquiv'`,
-  for complete discretely valued base fields of mixed characteristic and smooth `R`), but is
-  not yet applied to the Θ-data here (smoothness of the characteristic-`0` presentation ring
-  is the missing input; see the honesty note on the tempered group above); in
+  **Boundary:** the tempered group is defined through integral models; at the places of the
+  Θ-data it is identified with André's tempered group (`Iut.LocalThetaData.pivBadEquivAndre`,
+  from `andreEquiv'` in the tempered repository, unconditional); in
   characteristic `p` the genuine étale group is a documented junk value (all Θ-data live
   over fields of characteristic `0`).
 
@@ -616,6 +613,15 @@ The anabelian objects of the Θ-data (taxis
   `Orbicurve.temperedPi1` (integral-model construction of
   `lana-agents/tempered-fundamental-groups`) with the continuous comparison
   `Orbicurve.tempToEtale` to `genuinePi1`.
+* [`TemperedAndre.lean`](Iut/Anabelian/TemperedAndre.lean),
+  [`AdicCompletion.lean`](Iut/Anabelian/AdicCompletion.lean) — André's tempered group
+  `Orbicurve.andrePi1` of the same presentation and `Orbicurve.temperedEquivAndre :
+  X.temperedPi1 ≃ₜ* X.andrePi1` (Theorem A, `andreEquiv'`) over a field of characteristic `0`
+  whose canonical valuation is a complete DVR with perfect residue field of mixed
+  characteristic; this holds for every completion `K_v` of a number field at a finite place
+  (`O_v` is `𝔪`-adically complete, henselian, with finite residue field, and is the canonical
+  valuation by F. K. Schmidt). At the places of the Θ-data: `LocalThetaData.pivBadEquivAndre`
+  ([`AndreLocal.lean`](Iut/Cor312/ThetaData/AndreLocal.lean)).
 * [`Local.lean`](Iut/Anabelian/Local.lean) — over a valued field: the kernel of
   reduction and the **graph line** `E(k)[ℓ] ∩ E₁(k)` (= `μ_ℓ` under Tate
   uniformization), the **canonical generators** `q^{±1/ℓ}` of the graph quotient

@@ -46,7 +46,7 @@ rev = "721496ca4c158e511d25d8ccf6bfe8503eda73c1"
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "4996dc3480421e96d6943095e5bceeb6051b3a65"
+rev = "7647d28f361ba3c9705ed0a179b6a377d461c57a"
 
 # [CanLift], Prop. 2.7 over ℂ (`OrbicurveCores.U2.canLift27C`, branch wp-u2), which together
 # with `AffOrbicurve.canLift27_of_complex` discharges `AffOrbicurve.CanLift27`.

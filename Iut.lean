@@ -1,5 +1,6 @@
 import Iut.Abc.Classical
 import Iut.Abc.Target
+import Iut.Anabelian.AdicCompletion
 import Iut.Anabelian.CanLift
 import Iut.Anabelian.Existence
 import Iut.Anabelian.Genuine.Basic
@@ -19,6 +20,7 @@ import Iut.Anabelian.LocalInputs
 import Iut.Anabelian.Model
 import Iut.Anabelian.TateTorsion
 import Iut.Anabelian.Tempered
+import Iut.Anabelian.TemperedAndre
 import Iut.Anabelian.Torsion
 import Iut.Basic
 import Iut.Concrete.Container
@@ -67,6 +69,7 @@ import Iut.Cor312.RationalPlace
 import Iut.Cor312.RightHandSide
 import Iut.Cor312.Statement
 import Iut.Cor312.ThetaData.AdmissiblePrime
+import Iut.Cor312.ThetaData.AndreLocal
 import Iut.Cor312.ThetaData.BadPlaceNorm
 import Iut.Cor312.ThetaData.Basic
 import Iut.Cor312.ThetaData.GalCompletion
