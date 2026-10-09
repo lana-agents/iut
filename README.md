@@ -41,6 +41,20 @@ It carries these strands:
 Mochizuki's *Arithmetic Elliptic Curves in General Position* is **not** developed here;
 it lives in [`LANA-Project/genl`](https://github.com/LANA-Project/genl).
 
+## Status
+
+* **Proved** (axioms `propext`, `Classical.choice`, `Quot.sound` only):
+  `Iut.classicalABC_of_variant : Cor312VariantHolds → ClassicalABC`, whose only hypothesis is
+  `h312`; the identification `Iut.LocalThetaData.pivBadEquivAndre : L.PivBad v ≃ₜ*
+  X̲_v.andrePi1` of `Π_v` at the bad places with André's tempered group, with no hypothesis
+  beyond the Θ-data; and Theorem B for the Tate curves of the Θ-data,
+  `Iut.InitialThetaData.tate_nondegenerate` (for the geometric presentation, see below).
+* **Not proved, and out of scope:** `Iut.Cor312VariantHolds` itself, i.e. the variant of
+  IUT III, Corollary 3.12. The repository does not verify IUT.
+* **Not formalized:** the bridge from Theorem B for the geometric presentation of the Tate
+  orbicurve to `LocalThetaData.PivBad` (invariance under a change of Weierstrass model and the
+  comparison with the Galois presentation `Genuine.orbifold`).
+
 ## Honesty boundary
 
 Claims imported from IUT I–III, and mathematical infrastructure unavailable in Mathlib,
@@ -124,13 +138,15 @@ form (`m = v(q) ≥ 1`, `a₄(q) = ϖ^m u₄`, `a₆(q) = ϖ^m ε` with `ε` a u
 ```lean
 theorem Iut.InitialThetaData.tate_nondegenerate (D : InitialThetaData.{u}) (w : FinitePlace D.Kt)
     (hw : IsBadPlace D.E D.prime.torsionField D.VBad w)
-    (M : AddSubgroup (D.tate.S w hw).t.tateCurve.toAffine.Point) (hM : (M : Set _).Finite)
-    (pm : Bool) :
-    ∃ N : Subgroup X.affineOrbifold.canonicalTemperedPi1,
-      IsOpen (N : Set _) ∧ N.Normal ∧ Infinite (X.affineOrbifold.canonicalTemperedPi1 ⧸ N)
--- X = Orbicurve.mk (D.tate.S w hw).t.tateCurve D.ℓ M pm
+    (M : AddSubgroup (D.tate.S w hw).t.tateCurve.toAffine.Point)
+    (hM : (M : Set (D.tate.S w hw).t.tateCurve.toAffine.Point).Finite) (pm : Bool) :
+    ∃ N : Subgroup (tateOrbicurve w (D.tate.S w hw).t D.ℓ M pm).affineOrbifold.canonicalTemperedPi1,
+      IsOpen (N : Set _) ∧ N.Normal ∧
+        Infinite ((tateOrbicurve w (D.tate.S w hw).t D.ℓ M pm).affineOrbifold.canonicalTemperedPi1 ⧸ N)
 ```
 
+with `tateOrbicurve w t ℓ M pm = (E_q, ℓ, M, ±)` over `K_w`; axioms `propext`,
+`Classical.choice`, `Quot.sound` only
 (the general form over any completion `F_w` of a number field is `Iut.tateOrbicurve_nondegenerate`).
 **Boundary:** this is about the tempered group of the *geometric* presentation
 `Orbicurve.affineOrbifold` of the model orbicurve `(E_{q_w}, ℓ, M, ±)`, not literally about
@@ -652,6 +668,10 @@ The anabelian objects of the Θ-data (taxis
   (`O_v` is `𝔪`-adically complete, henselian, with finite residue field, and is the canonical
   valuation by F. K. Schmidt). At the places of the Θ-data: `LocalThetaData.pivBadEquivAndre`
   ([`AndreLocal.lean`](Iut/Cor312/ThetaData/AndreLocal.lean)).
+* [`TateTheoremB.lean`](Iut/Cor312/ThetaData/TateTheoremB.lean) — the normal form of the Tate
+  curves (`Iut.TateParameter.exists_normalForm`) and Theorem B of the tempered repository for
+  them (`Iut.tateOrbicurve_nondegenerate`, `Iut.InitialThetaData.tate_nondegenerate`), for the
+  geometric presentation of `(E_q, ℓ, M, ±)`; see the honesty boundary.
 * [`Local.lean`](Iut/Anabelian/Local.lean) — over a valued field: the kernel of
   reduction and the **graph line** `E(k)[ℓ] ∩ E₁(k)` (= `μ_ℓ` under Tate
   uniformization), the **canonical generators** `q^{±1/ℓ}` of the graph quotient
