@@ -1,0 +1,306 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml (v0.4): repo-root metadata for this formalization,
+# following https://github.com/mathlib-initiative/formalization.yaml
+
+version: "v0.4"
+
+project:
+  name: "iut"
+  description: >-
+    The IUT-specific part of the LANA ABC programme, in Lean 4 / Mathlib. It does NOT verify
+    inter-universal Teichmüller theory. Its main theorem, Iut.classicalABC_of_variant, is the
+    implication "a project-owner-specified variant of IUT III, Corollary 3.12 implies the
+    classical ABC conjecture": the variant (Iut.Cor312VariantHolds, quantified over exactly the
+    initial Θ-data of IUT I, Definition 3.1) is a hypothesis, and the implication is proved along
+    IUT IV (Theorem 1.10, Corollaries 2.2 and 2.3) and [GenEll] Theorem 2.1 for the tripod
+    ℙ¹ ∖ {0,1,∞}. Along the way the repository constructs the initial Θ-data as statements about
+    genuine objects (model orbicurves, their étale fundamental groups, cores and tempered
+    fundamental groups), the tensor packets of log-shells with their p-adic logarithm,
+    normalized Haar log-volume and holomorphic hulls, the theta-pilot region, and the tower
+    arithmetic of Theorem 1.10 for the curves of the tripod. It identifies the tempered group Π_v
+    of the Θ-data at the bad places with André's tempered fundamental group, and proves Theorem B
+    (nondegeneracy) for the tempered groups of the geometric presentations of the Tate
+    orbicurves of the Θ-data. A separate library, Iut4Sec1, formalizes self-contained
+    mathematics of IUT IV, Section 1 ("Log-volume Estimates"), with a comparator suite.
+  authors:
+    - "Claude (Anthropic)"
+    - "LANA Project"
+    - "Dagur Asgeirsson"
+  responsible_maintainers:
+    - "Christian Merten"
+  license: "Apache-2.0"
+
+sources:
+  - title: "Inter-universal Teichmüller Theory I: Construction of Hodge Theaters"
+    authors: ["Shinichi Mochizuki"]
+    id: "doi:10.4171/PRIMS/57-1-1"
+    type: "article"
+    location: "Publ. RIMS 57 (2021), 3-207; Definition 3.1 (initial Θ-data), Example 3.2(iv)"
+    relationship: "formalizes"
+    note: >-
+      The initial Θ-data of Definition 3.1 are formalized as Iut.InitialThetaData, with the
+      conditions (d)-(f) stated about the genuine model orbicurves, étale and tempered
+      fundamental groups and cores. The hypothesis of the main theorem ranges over exactly these
+      Θ-data.
+    author_endorsement: "not-contacted"
+  - title: "Inter-universal Teichmüller Theory II: Hodge-Arakelov-theoretic Evaluation"
+    authors: ["Shinichi Mochizuki"]
+    id: "doi:10.4171/PRIMS/57-1-2"
+    type: "article"
+    location: "Publ. RIMS 57 (2021), 209-401"
+    relationship: "background"
+    note: "Not formalized; background for the theta-pilot objects used in IUT III and IV."
+    author_endorsement: "not-contacted"
+  - title: "Inter-universal Teichmüller Theory III: Canonical Splittings of the Log-theta-lattice"
+    authors: ["Shinichi Mochizuki"]
+    id: "doi:10.4171/PRIMS/57-1-3"
+    type: "article"
+    location: >-
+      Publ. RIMS 57 (2021), 403-626; Corollary 3.12 (stated as a variant, assumed, not proved),
+      Propositions 3.1, 3.2, 3.9 and Remark 3.9.5 (processions, tensor packets of log-shells,
+      large volume container)
+    relationship: "adapts"
+    note: >-
+      Corollary 3.12 enters only as a project-owner-specified variant
+      (Iut.Corollary312Variant, Iut.Cor312VariantHolds), which is a hypothesis of the main
+      theorem. It is not proved here and is not identified with the published Corollary 3.12.
+    author_endorsement: "not-contacted"
+  - title: "Inter-universal Teichmüller Theory IV: Log-volume Computations and Set-theoretic Foundations"
+    authors: ["Shinichi Mochizuki"]
+    id: "doi:10.4171/PRIMS/57-1-4"
+    type: "article"
+    location: >-
+      Publ. RIMS 57 (2021), 627-723; §1 (Propositions 1.2-1.8, Definition 1.9, Theorem 1.10)
+      and §2 (Proposition 2.1, Corollaries 2.2 and 2.3)
+    relationship: "formalizes"
+    note: >-
+      Theorem 1.10 (Iut.Theorem110Invariants.theorem110) and Corollaries 2.2, 2.3 are proved
+      from the Corollary 3.12 variant. Proposition 1.6 is used with the factor 3/2 in place of
+      the printed 4/3 (proved from Mathlib's Chebyshev bound); the printed 4/3 is only an open
+      comparator target. The Iut4Sec1 library formalizes parts of §1 (Propositions 1.4(iii),
+      1.7, (E1)/(E2), Definition 1.9(i)).
+    author_endorsement: "not-contacted"
+  - title: "Arithmetic Elliptic Curves in General Position"
+    authors: ["Shinichi Mochizuki"]
+    type: "article"
+    location: "Math. J. Okayama Univ. 52 (2010), 1-28; Theorem 2.1, Proposition 3.4, Lemmas 3.2(i), 3.5"
+    relationship: "adapts"
+    note: >-
+      [GenEll]. Theorem 2.1(ii) => (i) and the target statement are proved for the tripod in
+      this repository (Iut.Tripod.statementI_of_statementII); the general height formalism is in
+      lana-agents/genl. The cyclic-subgroup bound of Lemma 3.5 is proved for the tripod curves in
+      a form weakened at the prime 2 (see fidelity).
+    author_endorsement: "not-contacted"
+  - title: "The Absolute Anabelian Geometry of Canonical Curves"
+    authors: ["Shinichi Mochizuki"]
+    type: "article"
+    location: "Documenta Math. Extra Volume Kato (2003), 609-640; §2, Proposition 2.7"
+    relationship: "adapts"
+    note: "[CanLift]: k-cores (§2) and Proposition 2.7 (Iut.Anabelian.canLift27)."
+    author_endorsement: "not-contacted"
+
+related_formalizations:
+  - id: "https://github.com/lana-agents/genl"
+    relationship: "builds-on"
+    note: "Heights and [GenEll] Theorem 2.1 (height formalism, ABC target)."
+  - id: "https://github.com/lana-agents/tempered-fundamental-groups"
+    relationship: "builds-on"
+    note: "Tempered fundamental groups; Theorem A (andreEquiv') and Theorem B (nondegenerate_of_normalForm)."
+  - id: "https://github.com/lana-agents/pi1"
+    relationship: "builds-on"
+    note: "Galois-theoretic étale fundamental groups and inertia."
+  - id: "https://github.com/lana-agents/orbicurve-cores"
+    relationship: "builds-on"
+    note: "[CanLift] Proposition 2.7 over ℂ."
+  - id: "https://github.com/lana-agents/tate-curves-theta"
+    relationship: "builds-on"
+    note: "Tate q-parameters and the classical theta function."
+  - id: "https://github.com/lana-agents/heights"
+    relationship: "builds-on"
+    note: "Complex uniformization of elliptic curves, Vélu's product formula."
+  - id: "https://github.com/lana-agents/oka"
+    relationship: "builds-on"
+    note: "Indirect dependency (via tempered-fundamental-groups and orbicurve-cores)."
+
+classification:
+  arxiv: ["math.NT", "math.AG"]
+  msc2020: ["11D75", "11G05", "11G07", "14H30", "14G32"]
+
+status:
+  scope: >-
+    Conditional. The main theorem Iut.classicalABC_of_variant proves the implication
+    "Corollary 3.12 variant => classical ABC": its only hypothesis h312 : Iut.Cor312VariantHolds
+    (the project-owner-specified variant of IUT III, Corollary 3.12, quantified over exactly the
+    initial Θ-data of IUT I, Definition 3.1) is ASSUMED, NOT PROVED, and proving it is out of
+    scope; the repository does not verify IUT and does not prove the ABC conjecture. Proved
+    unconditionally: the identification Iut.LocalThetaData.pivBadEquivAndre of Π_v at the bad
+    places with André's tempered fundamental group; Theorem B for the Tate curves of the Θ-data
+    (Iut.InitialThetaData.tate_nondegenerate, for the geometric presentation of the model
+    orbicurve); and the Iut4Sec1 results of IUT IV, Section 1 listed below. Not formalized: the
+    bridge from Theorem B for the geometric presentation to LocalThetaData.PivBad.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "Iut.classicalABC_of_variant"
+      file: "Iut/MainTheorem.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies:
+        - statement: >-
+            Hypothesis h312 : Iut.Cor312VariantHolds (Iut/Concrete/ThetaRegion.lean), a variant of
+            Corollary 3.12 for every D : InitialThetaData. Assumed, not proved.
+          source: "Inter-universal Teichmüller Theory III, Corollary 3.12"
+    - declaration: "Iut.Theorem110Invariants.theorem110"
+      file: "Iut/Implication/Theorem110.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies:
+        - statement: "The Corollary 3.12 variant, as an explicit hypothesis."
+          source: "Inter-universal Teichmüller Theory III, Corollary 3.12"
+    - declaration: "Iut.LocalThetaData.pivBadEquivAndre"
+      file: "Iut/Cor312/ThetaData/AndreLocal.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies: []
+    - declaration: "Iut.InitialThetaData.tate_nondegenerate"
+      file: "Iut/Cor312/ThetaData/TateTheoremB.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies: []
+    - declaration: "Iut.primeCountingHyp_holds"
+      file: "Iut/Implication/ChebyshevExplicit.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies: []
+    - declaration: "Iut4Sec1.nonarchimedean_logError_sum_le"
+      file: "Iut4Sec1/Real/LogError.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "Comparator/config.json"
+      literature_dependencies: []
+    - declaration: "Iut4Sec1.weighted_average_eq"
+      file: "Iut4Sec1/Combinatorics/WeightedAverage.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "Comparator/config.json"
+      literature_dependencies: []
+    - declaration: "Iut4Sec1.average_range_sum"
+      file: "Iut4Sec1/Combinatorics/RangeAverages.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "Comparator/config.json"
+      literature_dependencies: []
+    - declaration: "Iut4Sec1.average_range_sq_sum"
+      file: "Iut4Sec1/Combinatorics/RangeAverages.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "Comparator/config.json"
+      literature_dependencies: []
+    - declaration: "Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg"
+      file: "Iut4Sec1/Global/ArithmeticDivisor.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "Comparator/config.json"
+      literature_dependencies: []
+    - declaration: "Iut4Sec1.localParameters_eq_of_smallRamification"
+      file: "Iut4Sec1/LocalField/Basic.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "Comparator/config.json"
+      literature_dependencies: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["claude-fable-5", "claude-fable-5-1", "claude-opus-5-5"]
+      framework: "Claude Code"
+      tool_setup: >-
+        orchestra for running the agents, taxis for project management, and Claude (Claude Code) as the
+        coding agent; Lean/Lake builds with `lake build --wfail`.
+      prompting_notes: >-
+        Human input consisted of high-level task descriptions and scope decisions.
+  notes: >-
+    Agents were run with orchestra; project management (issues, status) was done in taxis;
+    Claude was the coding agent.
+
+fidelity:
+  divergences: >-
+    The main theorem is a conditional implication, not a proof of ABC: Iut.classicalABC_of_variant
+    : Iut.Cor312VariantHolds → Iut.ClassicalABC, with h312 (the Corollary 3.12 variant) as a
+    hypothesis. The variant Iut.Corollary312Variant (−|log(q)| ≤ −|log(Θ)|) is specified by the
+    project owner and differs in some respects from the formulation printed in IUT III; it is
+    deliberately not identified with the published Corollary 3.12. h312 ranges over exactly the
+    initial Θ-data of IUT I, Definition 3.1 (Iut.InitialThetaData) and nothing else; the q-pilot
+    data, tensor packets, log-volumes, hulls and theta-pilot region are constructed from D
+    (Iut.concreteVariantData D). The ABC target is reached through [GenEll] Theorem 2.1 for the
+    tripod ℙ¹ ∖ {0,1,∞}. Proposition 1.6 of IUT IV is used with the factor 3/2 instead of 4/3.
+    Reduction predicates are stated up to a global change of variables (properties of the curve,
+    not of a Weierstrass model). The cyclic-subgroup bound of [GenEll] Lemma 3.5 is proved for the
+    tripod curves in a form weakened at the prime 2. Two local statements (the scaling law
+    componentVol_prime_preimage and IUT IV, Proposition 1.4(iii)) are restricted to packets all of
+    whose places lie over p, where the unrestricted statements are false; they are only applied
+    there. Boundary for Theorem B: Iut.InitialThetaData.tate_nondegenerate is about the tempered
+    group of the geometric presentation Orbicurve.affineOrbifold of the model orbicurve
+    (E_{q_w}, ℓ, M, ±), not literally about LocalThetaData.PivBad (the tempered group of the
+    local model in its Galois presentation Genuine.orbifold, isomorphic to E_{q_w} only after a
+    change of variables); invariance under a change of Weierstrass model and the comparison of
+    the two presentations are not formalized. In Iut4Sec1, Definition 1.9(ii)'s globally
+    normalized quotient is not claimed.
+
+review:
+  status: "agent-reviewed"
+  reviewers: ["Claude (Anthropic)"]
+  notes: >-
+    The formalization has only been reviewed by Claude; it has not been reviewed by a human.
+    All results are machine-checked by the Lean kernel (axioms as listed under status); the main
+    theorem is conditional on the Corollary 3.12 variant h312, which is a hypothesis and is not
+    proved. The comparator challenge Comparator/Challenge.lean contains ten deliberate proof
+    placeholders (not counted in sorry_count).
+
+alignment:
+  namespace: "Iut"
+  statements:
+    - source: "IUT III, Corollary 3.12 (project-owner-specified variant)"
+      lean: "Iut.Corollary312Variant"
+      module: "Iut/Cor312/Statement.lean"
+      status: "stated (not proved)"
+    - source: "IUT III, Corollary 3.12 variant for all initial Θ-data (the hypothesis h312)"
+      lean: "Iut.Cor312VariantHolds"
+      module: "Iut/Concrete/ThetaRegion.lean"
+      status: "stated (hypothesis of the main theorem, not proved)"
+    - source: "IUT I, Definition 3.1 (initial Θ-data)"
+      lean: "Iut.InitialThetaData"
+      module: "Iut/Cor312/ThetaData/Basic.lean"
+      status: "defined"
+    - source: "IUT IV, Theorem 1.10"
+      lean: "Iut.Theorem110Invariants.theorem110"
+      module: "Iut/Implication/Theorem110.lean"
+      status: "proved from the variant"
+    - source: "IUT IV, Corollary 2.2(ii),(iii)"
+      lean: "Iut.Corollary22Inputs.c2"
+      module: "Iut/Implication/Corollary22.lean"
+      status: "proved"
+    - source: "IUT IV, Corollary 2.3"
+      lean: "Iut.statementII_of_cor312"
+      module: "Iut/Implication/Corollary23.lean"
+      status: "proved from the variant"
+    - source: "IUT III, Corollary 3.12 variant => classical ABC"
+      lean: "Iut.classicalABC_of_variant"
+      module: "Iut/MainTheorem.lean"
+      status: "proved (conditional on h312)"
+    - source: "IUT I, Definition 3.1(e)/(f): Π_v is the tempered fundamental group (André)"
+      lean: "Iut.LocalThetaData.pivBadEquivAndre"
+      module: "Iut/Cor312/ThetaData/AndreLocal.lean"
+      status: "proved"
+    - source: "Theorem B (nondegeneracy of the tempered group) for the Tate curves of the Θ-data"
+      lean: "Iut.InitialThetaData.tate_nondegenerate"
+      module: "Iut/Cor312/ThetaData/TateTheoremB.lean"
+      status: "proved"
+      note: "For the geometric presentation Orbicurve.affineOrbifold, not LocalThetaData.PivBad."
+    - source: "IUT IV, Proposition 1.6 (factor 3/2 instead of 4/3)"
+      lean: "Iut.primeCountingHyp_holds"
+      module: "Iut/Implication/ChebyshevExplicit.lean"
+      status: "proved"
+
+acknowledgements: "Built on Mathlib (Apache-2.0)."
