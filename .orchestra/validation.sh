@@ -16,8 +16,38 @@ if ! [ -z "$(git status --porcelain)" ]; then
 fi
 
 # Verify all .lean files are imported.
-lake exe mk_all --lib Iut --git --check || exit 1
-lake exe mk_all --lib Iut4Sec1 --git --check || exit 1
+#
+# The root files `Iut.lean` and `Iut4Sec1.lean` carry the standard copyright header,
+# which `mk_all --check` (a byte-for-byte comparison with the generated import list)
+# does not know about. So check that each root file is exactly the standard header,
+# one blank line, and then precisely what `mk_all` generates: strip the header,
+# run `mk_all --check` on the remainder, and restore the file in every case.
+check_root_imports() {
+  local lib="$1"
+  local root="$lib.lean"
+  local backup
+  backup="$(mktemp "${TMPDIR:-/tmp}/iut-root-imports.XXXXXX")"
+  cp "$root" "$backup"
+  if ! head -n 6 "$root" | python3 -c '
+import re, sys
+header = re.compile(
+    r"/-\nCopyright \(c\) \d{4} [^\n]+\. All rights reserved\.\n"
+    r"Released under Apache 2\.0 license as described in the file LICENSE\.\n"
+    r"Authors: [^\n]+\n-/\n\n\Z")
+sys.exit(0 if header.match(sys.stdin.read()) else 1)'; then
+    echo "$root must start with the standard copyright header followed by one blank line"
+    rm -f "$backup"
+    return 1
+  fi
+  local status=0
+  tail -n +7 "$backup" > "$root"
+  lake exe mk_all --lib "$lib" --git --check || status=$?
+  cp "$backup" "$root"
+  rm -f "$backup"
+  return "$status"
+}
+check_root_imports Iut || exit 1
+check_root_imports Iut4Sec1 || exit 1
 
 # Fetch build cache
 lake exe cache get
