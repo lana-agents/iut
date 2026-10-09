@@ -775,15 +775,6 @@ targets from Section 1. Five currently have project proofs, are re-exported by
 `Comparator/Solution.lean`, and are configured for `leanprover/comparator`. The exact
 target list and inclusion policy are in [`Comparator/README.md`](Comparator/README.md).
 
-## Blueprint
-
-The Verso blueprint can be served locally with:
-
-```bash
-cd blueprint-verso
-lake exe vbp build --serve
-```
-
 ## Libraries
 
 | Library | Contents |
