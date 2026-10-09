@@ -100,9 +100,15 @@ of the Θ-data record `Iut.InitialThetaData` (and of `Iut.OrbicurveData`,
   integral-model construction of
   [`tempered-fundamental-groups`](https://github.com/lana-agents/tempered-fundamental-groups)
   (for the presentation `[Spec R / A]` of the model orbicurve, over the canonical valuation of
-  the base field); its identification with André's tempered fundamental group is in progress
-  there (W10: `andreEquiv` currently assumes the semistable-reduction theorem
-  `SemistableReduction.Statement.Strong`) and is not used here.
+  the base field). Its identification with André's tempered fundamental group is now
+  unconditional there (`TemperedFundamentalGroups.andreEquiv'`, Theorem A, from
+  `SemistableReduction.Statement.strongA`), for a complete discretely valued base field of
+  mixed characteristic with perfect residue field and a smooth `R` that is a domain of Krull
+  dimension `1`. It is **not yet applied** to the Θ-data here: for the presentation used in
+  characteristic `0` (`R` the integral closure of `k[x]` in the function field `L_X`),
+  smoothness `Algebra.Smooth k R` is not yet proved, and the identification of the canonical
+  valuation of `K_v` with `O_v` (completeness, perfect residue field, mixed characteristic) and
+  `ringKrullDim R = 1` are not yet stated in iut. Nothing here depends on the identification.
 
 [CanLift], Proposition 2.7 is the theorem `Iut.Anabelian.canLift27`
 ([`CanLift.lean`](Iut/Anabelian/CanLift.lean)); its consequence for the genuine cores,
@@ -566,9 +572,10 @@ symmetric form over `ℤ` (`a + b + c = 0`, bounding `max(|a|, |b|, |c|)`), and
   `AffOrbicurve.canLift27_of_complex` (`lana-agents/pi1`). `#print axioms` shows `propext`,
   `Classical.choice`, `Quot.sound` only.
   **Boundary:** the tempered group is defined through integral models; its identification
-  with André's tempered group (`andreEquiv` in the tempered repository, for complete
-  discretely valued base fields; W10) currently assumes the semistable-reduction theorem
-  `SemistableReduction.Statement.Strong`, whose proof is in progress there; in
+  with André's tempered group is unconditional in the tempered repository (`andreEquiv'`,
+  for complete discretely valued base fields of mixed characteristic and smooth `R`), but is
+  not yet applied to the Θ-data here (smoothness of the characteristic-`0` presentation ring
+  is the missing input; see the honesty note on the tempered group above); in
   characteristic `p` the genuine étale group is a documented junk value (all Θ-data live
   over fields of characteristic `0`).
 

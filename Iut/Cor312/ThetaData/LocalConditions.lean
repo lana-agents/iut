@@ -37,7 +37,8 @@ local part of (f), for the Corollary 3.12 variant statement (taxis #33).
 
 The tempered fundamental group is the integral-model construction of
 lana-agents/tempered-fundamental-groups (`Orbicurve.temperedPi1`); its identification with
-André's tempered fundamental group is in progress there (W10). The theta-root model
+André's tempered fundamental group is proved there (`andreEquiv'`) but not yet applied to the
+local models here (see `Iut.Anabelian.Tempered`). The theta-root model
 predicate and the canonical graph cusp are the model definitions of `Iut.Anabelian.Local`.
 Conditions are structure fields, never postulates. This module states the local conditions;
 existence of data satisfying them is `Iut.AdmissiblePrimeData.localThetaData`.

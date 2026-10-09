@@ -46,8 +46,12 @@ tempered and the étale fundamental group are computed from the same presentatio
 genuine covers and `k`-cores are in `Iut.Anabelian.GenuineEtale`.
 
 **Honesty note.** The tempered group is the integral-model construction of
-lana-agents/tempered-fundamental-groups; its identification with André's tempered fundamental
-group is in progress there (W10) and is not used here.
+lana-agents/tempered-fundamental-groups. Its identification with André's tempered fundamental
+group is proved there unconditionally (`TemperedFundamentalGroups.andreEquiv'`) for a complete
+discretely valued base field of mixed characteristic with perfect residue field and a smooth
+`R` that is a domain of Krull dimension `1`; it is not yet applied here, since smoothness of
+the characteristic-`0` presentation ring (the integral closure of `k[x]` in `L_X`) is not yet
+proved. Nothing here depends on the identification.
 -/
 
 namespace Iut.Anabelian

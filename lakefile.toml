@@ -46,7 +46,7 @@ rev = "721496ca4c158e511d25d8ccf6bfe8503eda73c1"
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "ca7def953193f861a462aa0831eec8f0a31ff69f"
+rev = "4996dc3480421e96d6943095e5bceeb6051b3a65"
 
 # [CanLift], Prop. 2.7 over ℂ (`OrbicurveCores.U2.canLift27C`, branch wp-u2), which together
 # with `AffOrbicurve.canLift27_of_complex` discharges `AffOrbicurve.CanLift27`.
@@ -67,7 +67,7 @@ rev = "75dcdc3faadd10b986afb9283e89902bcdddecd4"
 [[require]]
 name = "tempered-fundamental-groups"
 git = "https://github.com/lana-agents/tempered-fundamental-groups"
-rev = "2006651f52b70ea2fe3388238c7d9db14d21748f"
+rev = "c5a6e69c020e012be85bcdad67a6ed120f3a0c33"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
