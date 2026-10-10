@@ -55,14 +55,15 @@ lake exe cache get
 # Verify everything builds, with warnings as errors (as in CI).
 lake build --wfail
 
-# Comparator suite: shared public declarations must match between Challenge and
-# Solution, and the config must be complete.
+# Comparator pair (the main theorem): the public declarations of Challenge and Solution
+# must match, and the config must list exactly the shared theorem.
 ./scripts/check_comparator_signature.sh
 
 # Tracked-path, credential, and .pi source checks.
 ./scripts/audit_trust.sh
 
-# Axiom audit of the theorems exported by Solution. This is what catches an
+# Axiom audit of the libraries and of the theorem exported by Solution, and the audit of the
+# challenge's trusted import closure (statement-only, sorry-free). This is what catches an
 # accidental `sorry` now that `warn.sorry = false` is set in the lakefile:
 # a sorried theorem shows up here as `sorryAx`.
 ./scripts/audit_axioms.sh

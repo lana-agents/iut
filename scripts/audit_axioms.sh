@@ -35,6 +35,14 @@ if [[ -f Comparator/Solution.lean ]]; then
   lake env lean scripts/AuditComparatorSolution.lean
 fi
 
+if [[ -f Comparator/Challenge.lean ]]; then
+  # The comparator trusts the challenge's import closure: it must be statement-only and
+  # free of sorryAx and of axioms other than propext, Classical.choice and Quot.sound.
+  echo "audit_axioms: auditing the trusted closure of Comparator/Challenge.lean"
+  lake build Challenge
+  lake env lean scripts/AuditComparatorChallenge.lean
+fi
+
 # Corollary 3.12 variant strand (taxis #33): the same audit for the Iut library.
 lake build Iut
 

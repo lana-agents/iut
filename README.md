@@ -73,9 +73,7 @@ Proposition 1.6 is used with the factor `3/2`, proved from Mathlib's Chebyshev b
 [`elliptic-reduction`](https://github.com/lana-agents/elliptic-reduction) and
 [`prime-counting`](https://github.com/lana-agents/prime-counting) are not dependencies (some
 module docstrings still mention them as the original seams). The printed factor `4/3` of
-Proposition 1.6 appears only as a Comparator target
-(`eventually_primeCounting_le_four_thirds` in
-[`Comparator/Challenge.lean`](Comparator/Challenge.lean)) and is open.
+Proposition 1.6 is not used and is not formalized.
 
 **Statement corrections.** Two statements of the local theory of the tensor packets
 (`Iut.LocalTheory`) were restricted when the construction showed the unrestricted statements
@@ -769,12 +767,25 @@ dependencies:
 | [`orbicurve-cores`](https://github.com/lana-agents/orbicurve-cores) | `21ce4b7` |
 | [`belyi`](https://github.com/lana-agents/belyi) | `1d84db9` (also pinned by `heights` and `genl`) |
 
-## Comparator suite
+## Comparator
 
-[`Comparator/Challenge.lean`](Comparator/Challenge.lean) states ten selected mathlib-only
-targets from Section 1. Five currently have project proofs, are re-exported by
-`Comparator/Solution.lean`, and are configured for `leanprover/comparator`. The exact
-target list and inclusion policy are in [`Comparator/README.md`](Comparator/README.md).
+[`Comparator/Challenge.lean`](Comparator/Challenge.lean) states the main theorem for
+[`leanprover/comparator`](https://github.com/leanprover/comparator):
+
+```lean
+theorem Iut.classicalABC_of_cor312Variant :
+    Cor312VariantHolds →
+      ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, ∀ a b c : ℕ, 0 < a → 0 < b → Nat.Coprime a b → a + b = c →
+        (c : ℝ) ≤ C * ((UniqueFactorizationMonoid.radical (a * b * c) : ℕ) : ℝ) ^ (1 + ε)
+```
+
+The conclusion is the classical ABC conjecture written out in Mathlib terms (the body of
+`Iut.ClassicalABC`). The hypothesis `Iut.Cor312VariantHolds` comes from its defining module
+`Iut.Concrete.ThetaRegion`, the challenge's only project import. The challenge therefore
+trusts the definitions of the statement vocabulary, but no module of the proof. The audit
+`scripts/AuditComparatorChallenge.lean` checks this. `Comparator/Solution.lean` proves the
+statement with `Iut.classicalABC_of_variant`. The trusted closure, the config and how to run
+the comparator are described in [`Comparator/README.md`](Comparator/README.md).
 
 ## Libraries
 
@@ -782,7 +793,7 @@ target list and inclusion policy are in [`Comparator/README.md`](Comparator/READ
 | --- | --- |
 | `Iut` | Corollary 3.12 variant, its concrete instantiation, and the implication to ABC |
 | `Iut4Sec1` | IUT IV, Section 1 |
-| `Challenge` / `Solution` | Comparator suite roots (separate environments) |
+| `Challenge` / `Solution` | Comparator roots for the main theorem (separate environments) |
 
 Lean 4 project pinned to `leanprover/lean4:v4.32.0` with Mathlib at `v4.32.0`.
 
@@ -800,8 +811,10 @@ lake build
 git diff --check
 ```
 
-The challenge contains the suite's reviewed proof placeholders. Public project modules and
-the Solution re-exports are checked separately by the trust and axiom audits.
+The challenge contains one reviewed proof placeholder, for its only theorem. The trust and
+axiom audits check the public project modules, the Solution theorem and the challenge's
+trusted import closure separately. `./scripts/run_comparator.sh` runs the comparator itself
+(see [`Comparator/README.md`](Comparator/README.md)).
 
 ## Validation
 

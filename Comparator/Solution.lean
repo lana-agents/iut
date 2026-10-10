@@ -1,24 +1,29 @@
 /-
-Copyright (c) 2026 Dagur Asgeirsson. All rights reserved.
+Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Dagur Asgeirsson
+Authors: LANA Project
 -/
 
-import Iut4Sec1.Combinatorics.RangeAverages
-import Iut4Sec1.Combinatorics.WeightedAverage
-import Iut4Sec1.Global.ArithmeticDivisor
-import Iut4Sec1.LocalField.Basic
-import Iut4Sec1.Real.LogError
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.RingTheory.Radical.NatInt
+import Iut.Concrete.ThetaRegion
+import Iut.MainTheorem
 
 /-!
-# Comparator solution: proved Section 1 targets
+# Comparator solution: the Corollary 3.12 variant implies the classical ABC conjecture
 
-The solution exports fully proved project theorems without wrappers.
+The challenge statement, proved by the main theorem `Iut.classicalABC_of_variant`. The
+challenge spells `Iut.ClassicalABC` out; the two statements agree by unfolding that
+definition, so the main theorem is the proof term as it stands.
 -/
 
-#check Iut4Sec1.nonarchimedean_logError_sum_le
-#check Iut4Sec1.weighted_average_eq
-#check Iut4Sec1.average_range_sum
-#check Iut4Sec1.average_range_sq_sum
-#check Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg
-#check Iut4Sec1.localParameters_eq_of_smallRamification
+namespace Iut
+
+/-- **The Corollary 3.12 variant implies the classical ABC conjecture.** -/
+theorem classicalABC_of_cor312Variant :
+    Cor312VariantHolds →
+      ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, ∀ a b c : ℕ, 0 < a → 0 < b → Nat.Coprime a b → a + b = c →
+        (c : ℝ) ≤ C * ((UniqueFactorizationMonoid.radical (a * b * c) : ℕ) : ℝ) ^ (1 + ε) :=
+  classicalABC_of_variant
+
+end Iut

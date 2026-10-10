@@ -157,17 +157,10 @@ scan_file() {
 }
 
 readonly challenge_file='Comparator/Challenge.lean'
+# The comparator challenge has exactly one target (the main theorem); its only `sorry` is
+# the proof placeholder of that target.
 readonly challenge_targets=(
-  'localParameters_eq_of_smallRamification'
-  'nonarchimedean_logError_sum_le'
-  'nonarchimedean_secondError_sum_le'
-  'complexTensorToProd_bijective'
-  'complexTensorToProd_normSq'
-  'eventually_primeCounting_le_four_thirds'
-  'weighted_average_eq'
-  'average_range_sum'
-  'average_range_sq_sum'
-  'normalizedArithmeticDivisorDegree_nonneg'
+  'classicalABC_of_cor312Variant'
 )
 
 audit_challenge() {
@@ -184,21 +177,21 @@ audit_challenge() {
     fi
   done < <(perl -ne 'while (/(?<![[:alnum:]_])(axiom|constant|sorry|admit|native_decide|Lean\.ofReduceBool|ofReduceBool|implemented_by|unsafe)(?![[:alnum:]_])/g) { print "$.|$1\n" }' "$challenge_file")
 
-  if [[ "$token_count" != 10 ]]; then
-    echo "audit_trust: $challenge_file must contain exactly ten reviewed proof placeholders (found $token_count)" >&2
+  if [[ "$token_count" != "${#challenge_targets[@]}" ]]; then
+    echo "audit_trust: $challenge_file must contain exactly ${#challenge_targets[@]} reviewed proof placeholder(s) (found $token_count)" >&2
     audit_failed=1
   fi
 
   theorem_count="$(grep -Ec '^theorem[[:space:]]+' "$challenge_file" || true)"
-  if [[ "$theorem_count" != 10 ]]; then
-    echo "audit_trust: $challenge_file must declare exactly ten theorems (found $theorem_count)" >&2
+  if [[ "$theorem_count" != "${#challenge_targets[@]}" ]]; then
+    echo "audit_trust: $challenge_file must declare exactly ${#challenge_targets[@]} theorem(s) (found $theorem_count)" >&2
     audit_failed=1
   fi
 
   for target in "${challenge_targets[@]}"; do
     declaration_count="$(grep -Ec "^theorem[[:space:]]+${target}([[:space:]]|$)" "$challenge_file" || true)"
     if [[ "$declaration_count" != 1 ]]; then
-      echo "audit_trust: expected exactly one challenge theorem declaration for Iut4Sec1.$target (found $declaration_count)" >&2
+      echo "audit_trust: expected exactly one challenge theorem declaration for Iut.$target (found $declaration_count)" >&2
       audit_failed=1
       continue
     fi
@@ -215,7 +208,7 @@ audit_challenge() {
       END { print count + 0 }
     ' "$challenge_file")"
     if [[ "$block_count" != 1 ]]; then
-      echo "audit_trust: Iut4Sec1.$target must have exactly one proof placeholder (found $block_count)" >&2
+      echo "audit_trust: Iut.$target must have exactly one proof placeholder (found $block_count)" >&2
       audit_failed=1
     fi
   done

@@ -21,7 +21,8 @@ project:
     of the Θ-data at the bad places with André's tempered fundamental group, and proves Theorem B
     (nondegeneracy) for the tempered groups of the geometric presentations of the Tate
     orbicurves of the Θ-data. A separate library, Iut4Sec1, formalizes self-contained
-    mathematics of IUT IV, Section 1 ("Log-volume Estimates"), with a comparator suite.
+    mathematics of IUT IV, Section 1 ("Log-volume Estimates"). A comparator challenge states the
+    main theorem (Comparator/Challenge.lean).
   authors:
     - "Claude (Anthropic)"
     - "LANA Project"
@@ -76,8 +77,8 @@ sources:
     note: >-
       Theorem 1.10 (Iut.Theorem110Invariants.theorem110) and Corollaries 2.2, 2.3 are proved
       from the Corollary 3.12 variant. Proposition 1.6 is used with the factor 3/2 in place of
-      the printed 4/3 (proved from Mathlib's Chebyshev bound); the printed 4/3 is only an open
-      comparator target. The Iut4Sec1 library formalizes parts of §1 (Propositions 1.4(iii),
+      the printed 4/3 (proved from Mathlib's Chebyshev bound); the printed 4/3 is not
+      formalized. The Iut4Sec1 library formalizes parts of §1 (Propositions 1.4(iii),
       1.7, (E1)/(E2), Definition 1.9(i)).
     author_endorsement: "not-contacted"
   - title: "Arithmetic Elliptic Curves in General Position"
@@ -146,6 +147,7 @@ status:
       file: "Iut/MainTheorem.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "Comparator/config.json"
       literature_dependencies:
         - statement: >-
             Hypothesis h312 : Iut.Cor312VariantHolds (Iut/Concrete/ThetaRegion.lean), a variant of
@@ -177,37 +179,31 @@ status:
       file: "Iut4Sec1/Real/LogError.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Comparator/config.json"
       literature_dependencies: []
     - declaration: "Iut4Sec1.weighted_average_eq"
       file: "Iut4Sec1/Combinatorics/WeightedAverage.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Comparator/config.json"
       literature_dependencies: []
     - declaration: "Iut4Sec1.average_range_sum"
       file: "Iut4Sec1/Combinatorics/RangeAverages.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Comparator/config.json"
       literature_dependencies: []
     - declaration: "Iut4Sec1.average_range_sq_sum"
       file: "Iut4Sec1/Combinatorics/RangeAverages.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Comparator/config.json"
       literature_dependencies: []
     - declaration: "Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg"
       file: "Iut4Sec1/Global/ArithmeticDivisor.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Comparator/config.json"
       literature_dependencies: []
     - declaration: "Iut4Sec1.localParameters_eq_of_smallRamification"
       file: "Iut4Sec1/LocalField/Basic.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
-      comparator_config: "Comparator/config.json"
       literature_dependencies: []
 
 automation:
@@ -255,8 +251,10 @@ review:
     The formalization has only been reviewed by Claude; it has not been reviewed by a human.
     All results are machine-checked by the Lean kernel (axioms as listed under status); the main
     theorem is conditional on the Corollary 3.12 variant h312, which is a hypothesis and is not
-    proved. The comparator challenge Comparator/Challenge.lean contains ten deliberate proof
-    placeholders (not counted in sorry_count).
+    proved. The comparator challenge Comparator/Challenge.lean states the main theorem
+    (as Iut.classicalABC_of_cor312Variant, with Iut.ClassicalABC spelled out) with one deliberate
+    proof placeholder (not counted in sorry_count); Comparator/Solution.lean proves it by
+    Iut.classicalABC_of_variant.
 
 alignment:
   namespace: "Iut"

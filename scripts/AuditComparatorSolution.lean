@@ -10,7 +10,8 @@ import Lean.Util.CollectAxioms
 /-!
 # Comparator-solution logical-dependency audit
 
-This file audits the configured theorems exported by `Solution` in its separate environment.
+This file audits the configured theorem of `Solution`, `Iut.classicalABC_of_cor312Variant`,
+in its separate environment.
 -/
 
 open Lean Elab Command
@@ -22,12 +23,7 @@ private def sortNames (names : Array Name) : Array Name :=
   names.qsort fun left right => left.toString < right.toString
 
 private def configuredTheorems : List Name :=
-  [``Iut4Sec1.nonarchimedean_logError_sum_le,
-    ``Iut4Sec1.weighted_average_eq,
-    ``Iut4Sec1.average_range_sum,
-    ``Iut4Sec1.average_range_sq_sum,
-    ``Iut4Sec1.normalizedArithmeticDivisorDegree_nonneg,
-    ``Iut4Sec1.localParameters_eq_of_smallRamification]
+  [``Iut.classicalABC_of_cor312Variant]
 
 run_cmd liftCoreM do
   logInfo "solution-exported declaration\tlogical dependencies"

@@ -35,10 +35,12 @@ import Mathlib.Tactic.Linter.PrivateModule
 
 open Lean Elab Command
 
-private def comparatorNamespace : Name := \`Iut4Sec1
+private def comparatorModule : Name := \`$module
 
+-- Only the declarations of the comparator root itself: the vocabulary it imports is shared
+-- by construction (Solution imports the modules Challenge imports).
 private def isComparatorPublicName (env : Environment) (declName : Name) : Bool :=
-  comparatorNamespace.isPrefixOf declName &&
+  env.getModuleIdxFor? declName == env.getModuleIdx? comparatorModule &&
     !isPrivateName declName && !isReservedName env declName
 
 private def declarationKind : ConstantInfo → String
