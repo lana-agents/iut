@@ -35,7 +35,7 @@ theorem localParameters_eq_of_smallRamification
 noncomputable def nonarchimedeanLogError (p e : ℕ) : ℝ :=
   ((⌈(e : ℝ) / (p - 2 : ℕ)⌉ : ℤ) : ℝ) / e - 1 / e
 
-theorem nonarchimedean_logError_sum_le {ι : Type*} [DecidableEq ι]
+theorem nonarchimedean_logError_sum_le {ι : Type*}
     (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
     (hp : p.Prime) (hp2 : 2 < p) (hIstar : Istar ⊆ I)
     (he : ∀ i ∈ I, 0 < e i)
@@ -44,7 +44,7 @@ theorem nonarchimedean_logError_sum_le {ι : Type*} [DecidableEq ι]
       4 * (Istar.card : ℝ) / p := by
   sorry
 
-theorem nonarchimedean_secondError_sum_le {ι : Type*} [DecidableEq ι]
+theorem nonarchimedean_secondError_sum_le {ι : Type*}
     (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
     (hp : p.Prime) (hIstar : Istar ⊆ I)
     (he : ∀ i ∈ I, 0 < e i)

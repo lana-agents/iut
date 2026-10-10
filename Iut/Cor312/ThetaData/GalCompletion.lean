@@ -192,8 +192,8 @@ theorem intValuation_of_comap {v : HeightOneSpectrum S} {w : HeightOneSpectrum R
   have key : ∀ n : ℕ, w.intValuation a ≤ exp (-(n : ℤ)) ↔
       v.intValuation (f a) ≤ exp (-(n : ℤ)) := by
     intro n
-    rw [HeightOneSpectrum.intValuation_le_pow_iff_mem, HeightOneSpectrum.intValuation_le_pow_iff_mem,
-      hw]
+    rw [HeightOneSpectrum.intValuation_le_pow_iff_mem,
+      HeightOneSpectrum.intValuation_le_pow_iff_mem, hw]
     exact mem_comap_pow_iff f hf v.asIdeal a n
   by_cases ha : a = 0
   · subst ha; simp
@@ -264,7 +264,8 @@ theorem absNorm_galPlace (σ : K ≃ₐ[k] K) (w : FinitePlace K) :
     Ideal.absNorm (galPlace σ w).maximalIdeal.asIdeal = Ideal.absNorm w.maximalIdeal.asIdeal := by
   rw [Ideal.absNorm_apply, Ideal.absNorm_apply, Submodule.cardQuot_apply, Submodule.cardQuot_apply]
   let e : 𝓞 K ≃+* 𝓞 K := (galRestrictInt σ⁻¹).toRingEquiv
-  have hIJ : w.maximalIdeal.asIdeal = (galPlace σ w).maximalIdeal.asIdeal.map (e : 𝓞 K →+* 𝓞 K) := by
+  have hIJ :
+      w.maximalIdeal.asIdeal = (galPlace σ w).maximalIdeal.asIdeal.map (e : 𝓞 K →+* 𝓞 K) := by
     rw [galPlace_maximalIdeal]
     have : (e : 𝓞 K →+* 𝓞 K) = (galRestrictInt σ⁻¹ : 𝓞 K →+* 𝓞 K) := RingHom.ext fun _ => rfl
     rw [this, Ideal.map_comap_of_surjective (galRestrictInt σ⁻¹ : 𝓞 K →+* 𝓞 K)

@@ -431,7 +431,8 @@ field of definition of a point of degree `≤ d` and height `≤ H`, then `North
 (by `finite_of_fieldOf_eq` applied to each of them). -/
 theorem northcottHyp_of_finite_fieldOf
     (hfin : ∀ (d : ℕ) (H : ℝ),
-      {F : IntermediateField ℚ Qbar | ∃ x : Pt, x ∈ ptLE d ∧ htCan x ≤ H ∧ fieldOf x.1 = F}.Finite) :
+      {F : IntermediateField ℚ Qbar |
+        ∃ x : Pt, x ∈ ptLE d ∧ htCan x ≤ H ∧ fieldOf x.1 = F}.Finite) :
     NorthcottHyp := by
   intro d H
   have hsub : {x : Pt | x ∈ ptLE d ∧ htCan x ≤ H} ⊆

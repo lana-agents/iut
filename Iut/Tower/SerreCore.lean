@@ -33,6 +33,8 @@ variable {A B : Type*} [CommRing A] [CommRing B] [IsDedekindDomain A] [IsDedekin
 variable (𝔭 : Ideal A) [𝔭.IsMaximal] (𝔓 : Ideal B) [𝔓.IsMaximal] [𝔓.LiesOver 𝔭]
 variable (e κ : ℕ) (J : Ideal B)
 
+omit [IsDedekindDomain A] [IsDedekindDomain B] [Module.Finite A B] [𝔭.IsMaximal] [𝔓.IsMaximal]
+    [𝔓.LiesOver 𝔭] in
 /-- `𝔭^{κ+1}B ⊆ 𝔓^{e(κ+1)}`. -/
 lemma pow_le_comap (hpB : 𝔭.map (algebraMap A B) = 𝔓 ^ e * J) :
     𝔭 ^ (κ + 1) ≤ (𝔓 ^ (e * (κ + 1))).comap (algebraMap A B) := by
@@ -40,16 +42,19 @@ lemma pow_le_comap (hpB : 𝔭.map (algebraMap A B) = 𝔓 ^ e * J) :
   exact Ideal.mul_le_right
 
 /-- The `A/𝔭^{κ+1}`-algebra structure of `B/𝔓^{e(κ+1)}`. -/
-noncomputable def quotAlgebra (hpB : 𝔭.map (algebraMap A B) = 𝔓 ^ e * J) :
+@[reducible] noncomputable def quotAlgebra (hpB : 𝔭.map (algebraMap A B) = 𝔓 ^ e * J) :
     Algebra (A ⧸ 𝔭 ^ (κ + 1)) (B ⧸ 𝔓 ^ (e * (κ + 1))) :=
   Ideal.Quotient.algebraQuotientOfLEComap (pow_le_comap 𝔭 𝔓 e κ J hpB)
 
+omit [IsDedekindDomain A] [IsDedekindDomain B] [Module.Finite A B] [𝔭.IsMaximal] [𝔓.IsMaximal]
+    [𝔓.LiesOver 𝔭] in
 lemma quotAlgebra_isScalarTower (hpB : 𝔭.map (algebraMap A B) = 𝔓 ^ e * J) :
     letI := quotAlgebra 𝔭 𝔓 e κ J hpB
     IsScalarTower A (A ⧸ 𝔭 ^ (κ + 1)) (B ⧸ 𝔓 ^ (e * (κ + 1))) :=
   letI := quotAlgebra 𝔭 𝔓 e κ J hpB
   IsScalarTower.of_algebraMap_eq' rfl
 
+omit [IsDedekindDomain A] [IsDedekindDomain B] [𝔭.IsMaximal] [𝔓.IsMaximal] in
 /-- The residue field `B/𝔓` is finite over `A/𝔭`. -/
 lemma finite_quotient_of_liesOver [Finite (A ⧸ 𝔭)] : Finite (B ⧸ 𝔓) := by
   haveI : Module.Finite A (B ⧸ 𝔓) :=
@@ -59,6 +64,8 @@ lemma finite_quotient_of_liesOver [Finite (A ⧸ 𝔭)] : Finite (B ⧸ 𝔓) :=
     Module.Finite.of_restrictScalars_finite A (A ⧸ 𝔭) (B ⧸ 𝔓)
   exact Module.finite_of_finite (A ⧸ 𝔭)
 
+omit [IsDedekindDomain A] [IsDedekindDomain B] [Module.Finite A B] [𝔭.IsMaximal] [𝔓.IsMaximal]
+    [𝔓.LiesOver 𝔭] in
 /-- `𝔓^e ⊆ 𝔭B + 𝔓^{e(κ+1)}`, so `𝔓^e/𝔓^{e(κ+1)} ⊆ 𝔭·(B/𝔓^{e(κ+1)})`. -/
 lemma mk_mem_map_of_mem_pow (hpB : 𝔭.map (algebraMap A B) = 𝔓 ^ e * J) (hJ : 𝔓 ⊔ J = ⊤)
     {b : B} (hb : b ∈ 𝔓 ^ e) :
@@ -90,6 +97,8 @@ noncomputable abbrev redB (𝔓 : Ideal B) (e κ : ℕ) (he : e ≠ 0) :
     B ⧸ 𝔓 ^ (e * (κ + 1)) →+* B ⧸ 𝔓 :=
   Ideal.Quotient.factor (Ideal.pow_le_self (Nat.mul_ne_zero he (Nat.succ_ne_zero κ)))
 
+omit [IsDedekindDomain A] [IsDedekindDomain B] [Module.Finite A B] [𝔭.IsMaximal] [𝔓.IsMaximal]
+    [Finite (A ⧸ 𝔭)] in
 lemma redB_comp_algebraMap (he : e ≠ 0) :
     (redB 𝔓 e κ he).comp (algebraMap (A ⧸ 𝔭 ^ (κ + 1)) (B ⧸ 𝔓 ^ (e * (κ + 1)))) =
       (algebraMap (A ⧸ 𝔭) (B ⧸ 𝔓)).comp (redA 𝔭 κ) := by
@@ -100,14 +109,17 @@ lemma redB_comp_algebraMap (he : e ≠ 0) :
   rw [h, ← IsScalarTower.algebraMap_apply, IsScalarTower.algebraMap_apply A B,
     Ideal.Quotient.algebraMap_eq, Ideal.Quotient.factor_mk]
 
+omit [IsDedekindDomain A] [IsDedekindDomain B] [Module.Finite A B] [𝔭.IsMaximal] [𝔓.IsMaximal]
+    [Finite (A ⧸ 𝔭)] in
 lemma redB_aeval (he : e ≠ 0) (x : B ⧸ 𝔓 ^ (e * (κ + 1))) (q : (A ⧸ 𝔭 ^ (κ + 1))[X]) :
     redB 𝔓 e κ he (aeval x q) = aeval (redB 𝔓 e κ he x) (q.map (redA 𝔭 κ)) := by
   rw [aeval_def, aeval_def, hom_eval₂, eval₂_map, redB_comp_algebraMap]
 
+omit [IsDedekindDomain A] [IsDedekindDomain B] in
 /-- **Hensel's lemma for the residue extension**: a monic polynomial `g` over `A/𝔭^{κ+1}`
 lifting the minimal polynomial of a primitive element of `(B/𝔓)/(A/𝔭)`, with a root `α`
 in `B/𝔓^{e(κ+1)}` such that `A/𝔭^{κ+1}[α] → B/𝔓` is surjective. -/
-lemma exists_monic_root (he : e ≠ 0) (h𝔓 : 𝔓 ≠ ⊥) :
+lemma exists_monic_root (he : e ≠ 0) :
     ∃ (g : (A ⧸ 𝔭 ^ (κ + 1))[X]) (α : B ⧸ 𝔓 ^ (e * (κ + 1))), g.Monic ∧
       g.natDegree = Module.finrank (A ⧸ 𝔭) (B ⧸ 𝔓) ∧ aeval α g = 0 ∧
       ∀ y : B ⧸ 𝔓, ∃ q : (A ⧸ 𝔭 ^ (κ + 1))[X], redB 𝔓 e κ he (aeval α q) = y := by
@@ -170,7 +182,7 @@ lemma exists_monic_root (he : e ≠ 0) (h𝔓 : 𝔓 ≠ ⊥) :
     exact (hmemI _).mp hαa₀
   refine ⟨g, α, hgm, hgdeg.trans hg₀deg, hαg, fun y => ?_⟩
   have hy : y ∈ Algebra.adjoin (A ⧸ 𝔭) ({a₁} : Set (B ⧸ 𝔓)) := by
-    rw [← IntermediateField.adjoin_simple_toSubalgebra_of_integral hint, ha₁]
+    rw [← IntermediateField.adjoin_simple_toSubalgebra_of_isAlgebraic hint.isAlgebraic, ha₁]
     exact trivial
   rw [Algebra.adjoin_singleton_eq_range_aeval] at hy
   obtain ⟨q', hq'⟩ := hy
@@ -200,6 +212,7 @@ lemma pow_notMem_pow_succ (h𝔓 : 𝔓 ≠ ⊥) {π : B} (hπ : π ∈ 𝔓) (h
 variable [Algebra (A ⧸ 𝔭 ^ (κ + 1)) (B ⧸ 𝔓 ^ (e * (κ + 1)))]
   [IsScalarTower A (A ⧸ 𝔭 ^ (κ + 1)) (B ⧸ 𝔓 ^ (e * (κ + 1)))]
 
+omit [IsDedekindDomain A] [Module.Finite A B] [𝔭.IsMaximal] [𝔓.LiesOver 𝔭] in
 /-- **`B/𝔓^{e(κ+1)}` is spanned over `R' = R[X]/(g)` by `1, π, …, π^{e−1}`**, for `π` a
 uniformizer at `𝔓` and `R'[α] → B/𝔓` surjective: the images of `R'` and the powers of
 `π` span `B/𝔓^e`, and `𝔓^e/𝔓^{e(κ+1)} ⊆ 𝔭·(B/𝔓^{e(κ+1)})` is killed by Nakayama. -/
@@ -309,7 +322,7 @@ theorem free_and_exists_trace_ne_zero (he : e ≠ 0) (h𝔭 : 𝔭 ≠ ⊥) (h�
       ∃ y : B ⧸ 𝔓 ^ (e * (κ + 1)),
         Algebra.trace (A ⧸ 𝔭 ^ (κ + 1)) (B ⧸ 𝔓 ^ (e * (κ + 1))) y ≠ 0 := by
   classical
-  obtain ⟨g, α, hgm, hgdeg, hαg, hsurj⟩ := exists_monic_root 𝔭 𝔓 e κ he h𝔓
+  obtain ⟨g, α, hgm, hgdeg, hαg, hsurj⟩ := exists_monic_root 𝔭 𝔓 e κ he
   haveI : Finite (B ⧸ 𝔓) := finite_quotient_of_liesOver 𝔭 𝔓
   haveI : Module.Finite (A ⧸ 𝔭) (B ⧸ 𝔓) := Module.Finite.of_finite
   -- the algebra `R' = R[X]/(g) → B/𝔓^{e(κ+1)}`, `X ↦ α`

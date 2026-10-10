@@ -130,6 +130,7 @@ def isoPunctured : AffOrbicurve.Iso (realize E 1 ⊥ false) (punctured E) :=
 
 /-! ### `(E ∖ {0}) / {±1}` -/
 
+omit [CharZero k] in
 /-- Every automorphism maps the generic point to `±` itself. -/
 lemma act_generic_eq_or_neg (σ : Gal E) :
     act E σ (genericPoint E) = genericPoint E ∨ act E σ (genericPoint E) = -genericPoint E := by
@@ -161,6 +162,7 @@ lemma coarseField_one_bot : coarseField E 1 ⊥ true = ⊥ := by
     InfiniteGalois.fixedField_fixingSubgroup]
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 /-- The coordinate ring of `(E ∖ {0}) / {±1}` is `k[xG]`. -/
 lemma bijective_algebraMap_coarse :
     Function.Bijective
@@ -193,7 +195,9 @@ lemma coe_coarseRingEquiv (p : k[X]) :
   coe_polyEquiv E p
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 set_option synthInstance.maxHeartbeats 400000 in
+-- the default limit is not sufficient for this declaration
 /-- The stabilizer orders of `(E ∖ {0}) / {±1}` on both sides agree. -/
 lemma ramificationIdxIn_punctured_eq (w : Ideal k[X]) [hw : w.IsMaximal] :
     w.ramificationIdxIn (puncturedRing E) =
@@ -241,7 +245,9 @@ lemma ramificationIdxIn_punctured_eq (w : Ideal k[X]) [hw : w.IsMaximal] :
   rfl
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 set_option synthInstance.maxHeartbeats 400000 in
+-- the default limit is not sufficient for this declaration
 /-- **`(E ∖ {0}) / {±1}`**: the realization of the model orbicurve `(E, 1, 0, ±)` is
 `hemi E`. -/
 def isoHemi : AffOrbicurve.Iso (realize E 1 ⊥ true) (hemi E) :=

@@ -38,6 +38,7 @@ variable {k : Type u} [Field k] [CharZero k] (E : WeierstrassCurve k) [E.IsEllip
 instance normal_K₀ : Normal (K₀ k (xG E)) (Ω E) := IsGalois.to_normal
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 /-- **A cover `(E, ℓ, M, ±) → (E, ℓ', M', ±')` does not change the cores.** -/
 theorem isCoreOf_realize_iff {n ℓ ℓ' : ℕ} (hn : 0 < n) (hℓ : n * ℓ' = ℓ)
     {M M' : AddSubgroup E.toAffine.Point} (hM : ∀ P ∈ M, n • P ∈ M') {pm pm' : Bool}

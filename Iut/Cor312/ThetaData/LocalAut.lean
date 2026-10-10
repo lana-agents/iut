@@ -19,7 +19,7 @@ map to fixed points of `E(K'_w)`.
 namespace Iut
 
 open NumberField WeierstrassCurve Iut.Anabelian
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -29,17 +29,20 @@ section Cast
 
 variable {k : Type*} [Field k] [NumberField k]
 
+open scoped Classical in
 /-- Transport along an equality of places. -/
 def placeCast {w₁ w₂ : FinitePlace k} (h : w₁ = w₂) :
     localCompletion w₁ ≃+* localCompletion w₂ := by
   subst h
   exact RingEquiv.refl _
 
+open scoped Classical in
 @[simp] lemma norm_placeCast {w₁ w₂ : FinitePlace k} (h : w₁ = w₂) (x : localCompletion w₁) :
     ‖placeCast h x‖ = ‖x‖ := by
   subst h
   rfl
 
+open scoped Classical in
 lemma placeCast_embedding {w₁ w₂ : FinitePlace k} (h : w₁ = w₂) (x : k) :
     placeCast h (FinitePlace.embedding w₁.maximalIdeal x) =
       FinitePlace.embedding w₂.maximalIdeal x := by
@@ -53,6 +56,7 @@ section LocalCurve
 variable {F : Type u} [Field F] [NumberField F] (E : WeierstrassCurve F)
 variable (K' : Type u) [Field K'] [NumberField K'] [Algebra F K'] (w : FinitePlace K')
 
+open scoped Classical in
 /-- `E` over the completion `K'_w` of a number field `K' ⊇ F`. -/
 abbrev curveLoc : WeierstrassCurve (localCompletion w) :=
   (E.map (algebraMap F K')).map (FinitePlace.embedding w.maximalIdeal)
@@ -64,13 +68,16 @@ section Aut
 variable {k : Type u} [Field k] [NumberField k] {K' : Type u} [Field K'] [NumberField K']
   [Algebra k K'] (σ : K' ≃ₐ[k] K') (w : FinitePlace K') (hfix : galPlace σ w = w)
 
+open scoped Classical in
 /-- The automorphism of `K'_w` extending `σ`, at a place fixed by `σ`. -/
 def localAut : localCompletion w ≃+* localCompletion w :=
   (galCompletion σ w).trans (placeCast hfix)
 
+open scoped Classical in
 lemma norm_localAut (x : localCompletion w) : ‖localAut σ w hfix x‖ = ‖x‖ := by
   rw [localAut, RingEquiv.trans_apply, norm_placeCast, norm_galCompletion]
 
+open scoped Classical in
 lemma localAut_embedding (x : K') :
     localAut σ w hfix (FinitePlace.embedding w.maximalIdeal x) =
       FinitePlace.embedding w.maximalIdeal (σ x) := by
@@ -79,10 +86,13 @@ lemma localAut_embedding (x : K') :
 variable {F : Type u} [Field F] [NumberField F] (E : WeierstrassCurve F) [Algebra F k]
   [Algebra F K'] [IsScalarTower F k K']
 
+open scoped Classical in
 omit [NumberField k] [NumberField K'] [NumberField F] in
 lemma σ_algebraMap (a : F) : σ (algebraMap F K' a) = algebraMap F K' a := by
   rw [IsScalarTower.algebraMap_apply F k K', AlgEquiv.commutes]
 
+open scoped Classical in
+omit [NumberField F] in
 /-- The curve `E ×_F K'_w` is fixed by the local automorphism. -/
 lemma map_curveLoc_localAut :
     (curveLoc E K' w).map (localAut σ w hfix : localCompletion w →+* localCompletion w) =
@@ -90,33 +100,45 @@ lemma map_curveLoc_localAut :
   rw [curveLoc, map_map, map_map]
   ext <;> simp [map, localAut_embedding, σ_algebraMap]
 
+open scoped Classical in
 omit [NumberField k] [NumberField K'] [NumberField F] in
 /-- The curve identity `E ×_F k ×_k K' = E ×_F K'`. -/
 lemma map_algebraMap_eq :
     (E.map (algebraMap F k)).map (algebraMap k K') = E.map (algebraMap F K') := by
   rw [map_map, ← IsScalarTower.algebraMap_eq]
 
+open scoped Classical in
 /-- The points of `E(k)` in `E(K'_w)`. -/
 def toLoc (R : (E.map (algebraMap F k)).toAffine.Point) : (curveLoc E K' w).toAffine.Point :=
   pointMap (E.map (algebraMap F K')) (FinitePlace.embedding w.maximalIdeal)
     (pointCongr (map_algebraMap_eq E (k := k) (K' := K'))
       (pointMap (E.map (algebraMap F k)) (algebraMap k K') R))
 
+open scoped Classical in
+omit [NumberField k] [NumberField F] in
 lemma toLoc_zero : toLoc w E (k := k) 0 = 0 := by
   simp only [toLoc, map_zero]
 
+open scoped Classical in
+omit [NumberField k] [NumberField F] in
 lemma toLoc_add (R R' : (E.map (algebraMap F k)).toAffine.Point) :
     toLoc w E (R + R') = toLoc w E R + toLoc w E R' := by
   simp only [toLoc, map_add]
 
+open scoped Classical in
+omit [NumberField k] [NumberField F] in
 lemma toLoc_nsmul (n : ℕ) (R : (E.map (algebraMap F k)).toAffine.Point) :
     toLoc w E (n • R) = n • toLoc w E R := by
   simp only [toLoc, map_nsmul]
 
+open scoped Classical in
+omit [NumberField k] [NumberField F] in
 lemma toLoc_injective : Function.Injective (toLoc w E (k := k)) := by
   unfold toLoc
   exact (pointMap_injective _ _).comp ((pointCongr _).injective.comp (pointMap_injective _ _))
 
+open scoped Classical in
+omit [NumberField F] in
 /-- The points of `E(k)` are fixed by the local automorphism. -/
 lemma pointMap_localAut_toLoc (R : (E.map (algebraMap F k)).toAffine.Point) :
     pointMap (curveLoc E K' w) (localAut σ w hfix : localCompletion w →+* localCompletion w)

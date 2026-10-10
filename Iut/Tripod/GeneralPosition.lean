@@ -188,9 +188,9 @@ theorem mem_set_of_bounds {F : IntermediateField ℚ Qbar} [FiniteDimensional �
     have hmem : (((q : ℕ) : ℕ) : 𝓞 ℚ⟮z.1⟯) ∈ v.maximalIdeal.asIdeal := by
       rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast, hqv]
       exact ringChar.Nat.cast_ringChar
-    have h1 := Heights.Local.abs_log_finitePlace_le hc0 (y := gen z.1)
+    have h1 := Heights.Local.abs_log_finitePlace_le (c := max K.c 0) (y := gen z.1)
       (fun τ => ((hp q hq τ).1).trans (le_max_left _ _)) v hmem
-    have h2 := Heights.Local.abs_log_finitePlace_le hc0 (y := gen z.1 - 1)
+    have h2 := Heights.Local.abs_log_finitePlace_le (c := max K.c 0) (y := gen z.1 - 1)
       (fun τ => by
         rw [map_sub, map_one]
         exact ((hp q hq τ).2).trans (le_max_left _ _)) v hmem

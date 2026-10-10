@@ -39,7 +39,6 @@ namespace Iut
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WeierstrassCurve
   WeierstrassCurve.Affine
 
-open scoped Classical
 
 /-! ### The Galois group of the torsion field acts faithfully on the torsion -/
 
@@ -54,6 +53,7 @@ variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
 variable {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
 variable (Pr : Iut.AdmissiblePrimeData F E Fbar VBad)
 
+open scoped Classical in
 /-- **`Gal(K/F)` acts faithfully on `E(K)[ℓ]`**: an automorphism of `K = F(E[ℓ])` over `F`
 fixing every `ℓ`-torsion point of `E(K)` is the identity. -/
 theorem eq_one_of_forall_torsion (σ : ↥Pr.torsionField ≃ₐ[F] ↥Pr.torsionField)
@@ -90,8 +90,8 @@ namespace Iut.Tripod
 open Iut Iut.EllipticCurveData NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
   WeierstrassCurve WeierstrassCurve.Affine
 
-open scoped Classical
 
+open scoped Classical in
 /-- **The division-polynomial description of the multiples of a point on a Legendre curve**,
 over any field of characteristic `≠ 2` in `Type` (`Iut.ReductionKernel.DivPolyHyp`; proved by
 `Iut.Torsion.smul_eq_zero_iff_eds`). -/
@@ -99,6 +99,7 @@ def DivPolyLegendreHyp : Prop :=
   ∀ (L : Type) [Field L] [DecidableEq L] [NeZero (2 : L)] (l : L),
     ReductionKernel.DivPolyHyp (legendre l).toAffine
 
+open scoped Classical in
 /-- **The division polynomials describe the multiples of a point on a Legendre curve**
 (`Iut.Torsion.smul_eq_zero_iff_eds`). -/
 theorem divPolyLegendreHyp : DivPolyLegendreHyp := by
@@ -118,6 +119,7 @@ section GoodModel
 variable {L : Type} [Field L] [NumberField L] [Algebra (tpd P x) L]
   (w : FinitePlace L)
 
+open scoped Classical in
 /-- The valuation hypotheses of `Iut.map_eq_self_of_nsmul_eq_zero` for the Legendre model of
 `λ ∈ F_tpd` at a place `w` of an extension `L` of `F_tpd` with `w(λ) = w(λ − 1) = w(2) = 1`. -/
 lemma legendre_genT_good (h2 : w.maximalIdeal.valuation L 2 = 1)
@@ -144,16 +146,19 @@ end GoodModel
 
 /-! ### The generators of `F/F_tpd` -/
 
+open scoped Classical in
 /-- The generators `√−1, √λ, √(1 − λ)` and the coordinates of the `3`- and `5`-torsion of
 `F = F_λ` over `F_tpd = ℚ(λ)`. -/
 def tpdGens : Set (P.curve x).F :=
   {sqrtNegOne' x.1, sqrtLam' x.1, sqrtOneSubLam' x.1} ∪
     {c | Subtype.val c ∈ torsionCoords x.1 3} ∪ {c | Subtype.val c ∈ torsionCoords x.1 5}
 
+open scoped Classical in
 /-- The subfield `F_tpd(√−1, √λ, √(1 − λ), E[3], E[5])` of `F`. -/
 noncomputable abbrev tpdAdjoin : IntermediateField (tpd P x) (P.curve x).F :=
   IntermediateField.adjoin (tpd P x) (tpdGens P x)
 
+open scoped Classical in
 /-- **`F = F_tpd(√−1, √λ, √(1 − λ), E[3], E[5])`.** -/
 theorem adjoin_tpdGens : tpdAdjoin P x = ⊤ := by
   rw [eq_top_iff]
@@ -189,6 +194,7 @@ theorem adjoin_tpdGens : tpdAdjoin P x = ⊤ := by
   · intro y z _ _ hy hz
     exact mul_mem hy hz
 
+open scoped Classical in
 /-- **The Legendre curve of `λ ∈ F_tpd` base changed to `ℚ̄` is `E_λ`.** -/
 theorem baseChange_legendre_genT_Fbar :
     Affine.baseChange (legendre (genT P x)) (P.curve x).Fbar = legendre x.1 := by
@@ -196,6 +202,7 @@ theorem baseChange_legendre_genT_Fbar :
   rw [legendre_baseChange, IsScalarTower.algebraMap_apply (tpd P x) (P.curve x).F, algebraMap_genT]
   rfl
 
+open scoped Classical in
 /-- **The Legendre curve of `λ ∈ F_tpd` base changed to `F` is `E_λ/F`.** -/
 theorem baseChange_legendre_genT :
     Affine.baseChange (legendre (genT P x)) (P.curve x).F = (legendre (genC' P x)).toAffine := by
@@ -206,6 +213,7 @@ theorem baseChange_legendre_genT :
 
 variable {P x}
 
+open scoped Classical in
 /-- **The `n`-torsion coordinates are fixed by the inertia group at a good place** (`n` odd,
 `p ∤ 2n`, `λ` and `λ − 1` units). -/
 theorem torsionCoord_fixed (hdiv : DivPolyLegendreHyp) {n : ℕ} (hodd : Odd n)
@@ -258,6 +266,7 @@ theorem torsionCoord_fixed (hdiv : DivPolyLegendreHyp) {n : ℕ} (hodd : Odd n)
     · have hc : (⟨_, hcF⟩ : (P.curve x).F) = yF := Subtype.ext rfl
       rw [hc]; exact hfy
 
+open scoped Classical in
 /-- **The generators of `F/F_tpd` are fixed by the inertia group at a good place** of residue
 characteristic `∉ {2, 3, 5}`. -/
 theorem tpdGens_fixed (hdiv : DivPolyLegendreHyp) {w : FinitePlace (P.curve x).F}
@@ -304,6 +313,7 @@ theorem tpdGens_fixed (hdiv : DivPolyLegendreHyp) {w : FinitePlace (P.curve x).F
 
 /-! ### `F/F_tpd` and `K/F` are unramified at the good places -/
 
+open scoped Classical in
 /-- `F/F_tpd` is Galois. -/
 theorem isGalois_tpd_curve' : IsGalois (tpd P x) (P.curve x).F := by
   haveI : IsGalois ↥(fieldOfModuli (P.curve x).F (P.curve x).E) (P.curve x).F :=
@@ -311,6 +321,7 @@ theorem isGalois_tpd_curve' : IsGalois (tpd P x) (P.curve x).F := by
   exact IsGalois.tower_top_of_isGalois ↥(fieldOfModuli (P.curve x).F (P.curve x).E) (tpd P x)
     (P.curve x).F
 
+open scoped Classical in
 /-- **`F/F_tpd` is unramified at the places of residue characteristic `∉ {2, 3, 5}` over a place
 of `F_tpd` at which `λ` and `λ − 1` are units.** -/
 theorem relRamIdx_placeUnder_eq_one (hdiv : DivPolyLegendreHyp) {w : FinitePlace (P.curve x).F}
@@ -334,11 +345,13 @@ variable {ℓ : ℕ} (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ)
   (hP2 : ∀ w (hw : w ∈ (P.curve x).badAll), ¬ ℓ ∣ (P.tate x).qOrder w hw)
 
 variable (P x) in
+open scoped Classical in
 /-- The admissible-prime datum of the curve of `x` and the prime `ℓ`. -/
 noncomputable abbrev primeDataOf : AdmissiblePrimeData (P.curve x).F (P.curve x).E (P.curve x).Fbar
     ((P.curve x).VBadOf ℓ) :=
   (P.curve x).primeData (P.arith x) (P.tate x) hℓ h7 (P.modRep x ℓ hℓ) hsl hP2
 
+open scoped Classical in
 /-- **`K/F` is unramified at the places of residue characteristic `∉ {2, ℓ}` over a place of `F`
 at which `λ` and `λ − 1` are units** (Néron–Ogg–Shafarevich). -/
 theorem relRamIdx_torsionField_eq_one (hdiv : DivPolyLegendreHyp)
@@ -370,6 +383,7 @@ theorem relRamIdx_torsionField_eq_one (hdiv : DivPolyLegendreHyp)
   · intro σ hσ
     exact Pr.eq_one_of_forall_torsion σ fun Q hQ => hσ Q hQ
 
+open scoped Classical in
 /-- **Néron–Ogg–Shafarevich for the tower of the tripod** (the field `relRamIdx_eq_one` of
 `Iut.TowerLocalFacts`): `K/F_tpd` is unramified at the places of residue characteristic
 `∉ {2, 3, 5, ℓ}` whose place of `F_tpd` is not bad. -/

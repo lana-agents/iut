@@ -29,7 +29,7 @@ namespace Iut.Tripod
 
 open WeierstrassCurve
 
-open scoped Classical IntermediateField
+open scoped IntermediateField
 
 /-! ### The Galois action on the points of the Legendre curve -/
 
@@ -37,33 +37,41 @@ section GaloisAction
 
 variable (K : IntermediateField ℚ Qbar) {l : Qbar} (hl : l ∈ K)
 
+open scoped Classical in
 /-- The Legendre curve `E_λ` as a curve over a subfield `K ∋ λ` of `ℚ̄`. -/
 noncomputable def legendreOver : WeierstrassCurve K := legendre (⟨l, hl⟩ : K)
 
+open scoped Classical in
 /-- The base change of `E_λ/K` to `ℚ̄` is `E_λ/ℚ̄` (definitionally). -/
 theorem legendreOver_baseChange : Affine.baseChange (legendreOver K hl) Qbar = legendre l := rfl
 
+open scoped Classical in
 /-- The action of `σ ∈ Gal(ℚ̄/K)` on `E_λ(ℚ̄)`: the functorial map of nonsingular points along
 `σ : ℚ̄ →ₐ[K] ℚ̄`, for the model `E_λ/K`. -/
 noncomputable def galAct (σ : Qbar ≃ₐ[K] Qbar) :
     (legendre l).toAffine.Point →+ (legendre l).toAffine.Point :=
   Affine.Point.map (W' := legendreOver K hl) (S := K) σ.toAlgHom
 
+open scoped Classical in
 theorem galAct_zero (σ : Qbar ≃ₐ[K] Qbar) : galAct K hl σ 0 = 0 := rfl
 
+open scoped Classical in
 theorem galAct_some (σ : Qbar ≃ₐ[K] Qbar) {x y : Qbar} (h : (legendre l).toAffine.Nonsingular x y) :
     galAct K hl σ (Affine.Point.some x y h) =
       Affine.Point.some (σ x) (σ y)
         ((Affine.baseChange_nonsingular (legendreOver K hl) σ.toAlgHom.injective ..).mpr h) :=
   rfl
 
+open scoped Classical in
 theorem galAct_one (P : (legendre l).toAffine.Point) : galAct K hl 1 P = P := by
   cases P <;> rfl
 
+open scoped Classical in
 theorem galAct_mul (σ τ : Qbar ≃ₐ[K] Qbar) (P : (legendre l).toAffine.Point) :
     galAct K hl (σ * τ) P = galAct K hl σ (galAct K hl τ P) := by
   cases P <;> rfl
 
+open scoped Classical in
 /-- The Galois action preserves the `n`-torsion. -/
 theorem galAct_torsionBy (σ : Qbar ≃ₐ[K] Qbar) {n : ℕ} {P : (legendre l).toAffine.Point}
     (hP : P ∈ AddSubgroup.torsionBy (legendre l).toAffine.Point n) :
@@ -71,6 +79,7 @@ theorem galAct_torsionBy (σ : Qbar ≃ₐ[K] Qbar) {n : ℕ} {P : (legendre l).
   rw [AddSubgroup.torsionBy.nsmul_iff] at hP ⊢
   rw [← map_nsmul, hP, map_zero]
 
+open scoped Classical in
 /-- The action of `σ ∈ Gal(ℚ̄/K)` on the `n`-torsion `E_λ(ℚ̄)[n]`. -/
 noncomputable def galTorsion (n : ℕ) (σ : Qbar ≃ₐ[K] Qbar) :
     AddSubgroup.torsionBy (legendre l).toAffine.Point n →+
@@ -79,11 +88,13 @@ noncomputable def galTorsion (n : ℕ) (σ : Qbar ≃ₐ[K] Qbar) :
     (AddSubgroup.torsionBy (legendre l).toAffine.Point n)
     (fun P => galAct_torsionBy K hl σ P.2)
 
+open scoped Classical in
 @[simp] theorem coe_galTorsion (n : ℕ) (σ : Qbar ≃ₐ[K] Qbar)
     (P : AddSubgroup.torsionBy (legendre l).toAffine.Point n) :
     (galTorsion K hl n σ P : (legendre l).toAffine.Point) = galAct K hl σ P :=
   rfl
 
+open scoped Classical in
 /-- **`σ` fixes the `n`-torsion points iff it fixes their coordinates.** -/
 theorem galAct_torsion_fixed_iff (σ : Qbar ≃ₐ[K] Qbar) (n : ℕ) :
     (∀ P : AddSubgroup.torsionBy (legendre l).toAffine.Point n, galAct K hl σ P = P) ↔
@@ -107,7 +118,7 @@ theorem galAct_torsion_fixed_iff (σ : Qbar ≃ₐ[K] Qbar) (n : ℕ) :
     | zero => rfl
     | some x y hxy =>
       have hP' : n • Affine.Point.some x y hxy = 0 := AddSubgroup.torsionBy.nsmul_iff.mp hP
-      show Affine.Point.some (σ x) (σ y) _ = Affine.Point.some x y hxy
+      change Affine.Point.some (σ x) (σ y) _ = Affine.Point.some x y hxy
       rw [Affine.Point.some.injEq]
       exact ⟨h x (mem_torsionCoords hP' (by simp)), h y (mem_torsionCoords hP' (by simp))⟩
 
@@ -120,14 +131,17 @@ section Representation
 variable (K : IntermediateField ℚ Qbar) {l : Qbar} (hl : l ∈ K) (n : ℕ)
 variable (b : AddSubgroup.torsionBy (legendre l).toAffine.Point n ≃+ (Fin 2 → ZMod n))
 
+open scoped Classical in
 /-- The `ℤ/n`-linear endomorphism `b ∘ σ ∘ b⁻¹` of `(ℤ/n)²` induced by `σ ∈ Gal(ℚ̄/K)`. -/
 noncomputable def repLin (σ : Qbar ≃ₐ[K] Qbar) : Module.End (ZMod n) (Fin 2 → ZMod n) :=
   (b.toAddMonoidHom.comp ((galTorsion K hl n σ).comp b.symm.toAddMonoidHom)).toZModLinearMap n
 
+open scoped Classical in
 theorem repLin_apply (σ : Qbar ≃ₐ[K] Qbar) (v : Fin 2 → ZMod n) :
     repLin K hl n b σ v = b (galTorsion K hl n σ (b.symm v)) :=
   rfl
 
+open scoped Classical in
 /-- `σ ↦ b ∘ σ ∘ b⁻¹` as a monoid homomorphism to the endomorphisms of `(ℤ/n)²`. -/
 noncomputable def repEnd : (Qbar ≃ₐ[K] Qbar) →* Module.End (ZMod n) (Fin 2 → ZMod n) where
   toFun := repLin K hl n b
@@ -142,6 +156,7 @@ noncomputable def repEnd : (Qbar ≃ₐ[K] Qbar) →* Module.End (ZMod n) (Fin 2
     congr 1
     exact Subtype.ext (galAct_mul K hl σ τ _)
 
+open scoped Classical in
 /-- **The mod-`n` representation** `ρ : Gal(ℚ̄/K) →* GL₂(ℤ/n)` of the Legendre curve in the
 basis `b` of `E_λ(ℚ̄)[n]`. -/
 noncomputable def torsionRep : (Qbar ≃ₐ[K] Qbar) →* Matrix.GeneralLinearGroup (Fin 2) (ZMod n) :=
@@ -149,6 +164,7 @@ noncomputable def torsionRep : (Qbar ≃ₐ[K] Qbar) →* Matrix.GeneralLinearGr
     Module.End (ZMod n) (Fin 2 → ZMod n) ≃ₐ[ZMod n] Matrix (Fin 2) (Fin 2) (ZMod n)).toMulEquiv
     ).toMonoidHom.comp (repEnd K hl n b).toHomUnits
 
+open scoped Classical in
 /-- `σ ∈ ker ρ` iff `σ` fixes every `n`-torsion point. -/
 theorem mem_torsionRep_ker_iff (σ : Qbar ≃ₐ[K] Qbar) :
     σ ∈ (torsionRep K hl n b).ker ↔
@@ -166,6 +182,7 @@ theorem mem_torsionRep_ker_iff (σ : Qbar ≃ₐ[K] Qbar) :
     have hv : galTorsion K hl n σ (b.symm v) = b.symm v := Subtype.ext (h (b.symm v))
     rw [repLin_apply, Module.End.one_apply, hv, b.apply_symm_apply]
 
+open scoped Classical in
 /-- **The kernel of `ρ` is the fixing subgroup of the torsion field** `K(E_λ[n])`. -/
 theorem torsionRep_ker :
     (torsionRep K hl n b).ker =
@@ -189,6 +206,7 @@ end Representation
 
 section Bound
 
+open scoped Classical in
 /-- `|GL₂(𝔽_n)| = (n² − 1)(n² − n)` for `n` prime. -/
 theorem card_GL_two (n : ℕ) [Fact n.Prime] :
     Nat.card (Matrix.GeneralLinearGroup (Fin 2) (ZMod n)) = (n ^ 2 - 1) * (n ^ 2 - n) := by
@@ -198,15 +216,18 @@ theorem card_GL_two (n : ℕ) [Fact n.Prime] :
 variable (K : IntermediateField ℚ Qbar) {l : Qbar} (hl : l ∈ K) (n : ℕ) [Fact n.Prime]
 variable (b : AddSubgroup.torsionBy (legendre l).toAffine.Point n ≃+ (Fin 2 → ZMod n))
 
+open scoped Classical in
 /-- The index of `ker ρ` is at most `|GL₂(𝔽_n)|`. -/
 theorem torsionRep_ker_index_le :
     (torsionRep K hl n b).ker.index ≤ (n ^ 2 - 1) * (n ^ 2 - n) := by
   rw [Subgroup.index_ker, ← card_GL_two n]
   exact Nat.card_le_card_of_injective _ Subtype.val_injective
 
+open scoped Classical in
 /-- `ℚ̄/K` is Galois for every subfield `K ⊆ ℚ̄`. -/
 instance isGalois_qbar : IsGalois K Qbar := ⟨⟩
 
+open scoped Classical in
 include hl b in
 /-- **The relative torsion degree bound**: `[K(E_λ[n]) : K] ≤ (n² − 1)(n² − n)`. -/
 theorem finrank_adjoin_torsionCoords_le :
@@ -217,6 +238,7 @@ theorem finrank_adjoin_torsionCoords_le :
 
 end Bound
 
+open scoped Classical in
 /-- **The torsion degree bound** (`Iut.Tripod.TorsionDegreeBound`) for prime `n`, given a basis
 `E_λ(ℚ̄)[n] ≅ (ℤ/n)²`. -/
 theorem torsionDegreeBound (l : Qbar) (n : ℕ) [Fact n.Prime]
@@ -233,12 +255,14 @@ theorem torsionDegreeBound (l : Qbar) (n : ℕ) [Fact n.Prime]
         Nat.mul_le_mul_left _ (finrank_adjoin_torsionCoords_le K hl n b)
     _ = (n ^ 2 - 1) * (n ^ 2 - n) * Module.finrank ℚ K := mul_comm _ _
 
+open scoped Classical in
 /-- The torsion degree bound for `n = 3`. -/
 theorem torsionDegreeBound_three (l : Qbar)
     (hbasis : Nonempty (AddSubgroup.torsionBy (legendre l).toAffine.Point 3 ≃+ (Fin 2 → ZMod 3))) :
     TorsionDegreeBound l 3 :=
   torsionDegreeBound l 3 hbasis
 
+open scoped Classical in
 /-- The torsion degree bound for `n = 5`. -/
 theorem torsionDegreeBound_five (l : Qbar)
     (hbasis : Nonempty (AddSubgroup.torsionBy (legendre l).toAffine.Point 5 ≃+ (Fin 2 → ZMod 5))) :

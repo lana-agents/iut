@@ -53,12 +53,12 @@ namespace Iut.Anabelian
 universe u
 
 open WeierstrassCurve
-open scoped Classical
 
 noncomputable section
 
 /-! ## Model orbicurves -/
 
+open scoped Classical in
 /-- **A model orbicurve** over `k`: the data `(E, ℓ, M, ±)` of an elliptic curve `E/k`, a
 level `ℓ`, a subgroup `M ⊆ E(k)[ℓ]` and a `±`-flag, standing for the orbicurve
 `(E/M) ∖ (E[ℓ]/M)` (with `ℓ = 1`, `M = 0`: `X = E ∖ {0}` itself), or its quotient by
@@ -81,50 +81,65 @@ attribute [instance] isElliptic
 
 variable {k K L : Type u} [Field k] [Field K] [Field L]
 
+open scoped Classical in
 /-- The `ℓ`-torsion of `E(k)`. -/
 abbrev torsion (X : Orbicurve k) : AddSubgroup X.E.toAffine.Point :=
   AddSubgroup.torsionBy X.E.toAffine.Point X.level
 
+open scoped Classical in
 /-- **The rank-one quotient** `Q = E(k)[ℓ]/M` (IUT I, Definition 3.1(f)); the set of
 rational cusps of `(E/M) ∖ (E[ℓ]/M)`. -/
 abbrev Q (X : Orbicurve k) : Type u := ↥X.torsion ⧸ X.M.addSubgroupOf X.torsion
 
+open scoped Classical in
 /-- The class of a torsion point in the rank-one quotient. -/
 abbrev toQ (X : Orbicurve k) : ↥X.torsion →+ X.Q :=
   QuotientAddGroup.mk' (X.M.addSubgroupOf X.torsion)
 
+open scoped Classical in
 /-- The relation identifying `q` with `-q` when the `±`-flag is set. -/
 def cuspRel (X : Orbicurve k) (a b : X.Q) : Prop := a = b ∨ (X.pm = true ∧ a = -b)
 
+open scoped Classical in
 /-- **The cusps** of a model orbicurve: the rank-one quotient, modulo `±` when the flag is
 set. -/
 def Cusp (X : Orbicurve k) : Type u := Quot X.cuspRel
 
+open scoped Classical in
 /-- The cusp of an element of the rank-one quotient (IUT I, Definition 3.1(f)). -/
 def cuspOf (X : Orbicurve k) (q : X.Q) : X.Cusp := Quot.mk _ q
 
+open scoped Classical in
 lemma cuspOf_neg (X : Orbicurve k) (hpm : X.pm = true) (q : X.Q) :
     X.cuspOf (-q) = X.cuspOf q :=
   Quot.sound (Or.inr ⟨hpm, rfl⟩)
 
+open scoped Classical in
 /-- The once-punctured elliptic curve `X = E ∖ {0}`: level `1`, `M = 0`. -/
 def oncePunctured (E : WeierstrassCurve k) [E.IsElliptic] : Orbicurve k :=
   ⟨E, 1, ⊥, false⟩
 
+open scoped Classical in
 /-- The quotient by `{±1}`. -/
 def pmQuotient (X : Orbicurve k) : Orbicurve k := { X with pm := true }
 
+open scoped Classical in
 /-- **Base change** along a field embedding: `E`, `M` and the level are transported. -/
 noncomputable def baseChange (f : k →+* K) (X : Orbicurve k) : Orbicurve K :=
   ⟨X.E.map f, X.level, X.M.map (pointMap X.E f), X.pm⟩
 
+open scoped Classical in
 lemma baseChange_E (f : k →+* K) (X : Orbicurve k) : (X.baseChange f).E = X.E.map f := rfl
+open scoped Classical in
 lemma baseChange_level (f : k →+* K) (X : Orbicurve k) :
     (X.baseChange f).level = X.level := rfl
+open scoped Classical in
 lemma baseChange_M (f : k →+* K) (X : Orbicurve k) :
     (X.baseChange f).M = X.M.map (pointMap X.E f) := rfl
+open scoped Classical in
 lemma baseChange_pm (f : k →+* K) (X : Orbicurve k) : (X.baseChange f).pm = X.pm := rfl
 
+open scoped Classical in
 /-- The base change of `E ∖ {0}` is `E_K ∖ {0}`. -/
 lemma baseChange_oncePunctured (f : k →+* K) (E : WeierstrassCurve k) [E.IsElliptic] :
     (oncePunctured E).baseChange f = oncePunctured (E.map f) := by
@@ -132,10 +147,12 @@ lemma baseChange_oncePunctured (f : k →+* K) (E : WeierstrassCurve k) [E.IsEll
   congr 1
   exact AddSubgroup.map_bot _
 
+open scoped Classical in
 /-- Base change commutes with the `±`-quotient. -/
 lemma baseChange_pmQuotient (f : k →+* K) (X : Orbicurve k) :
     (pmQuotient X).baseChange f = pmQuotient (X.baseChange f) := rfl
 
+open scoped Classical in
 /-- Torsion points map to torsion points. -/
 lemma pointMap_mem_torsion (f : k →+* K) (X : Orbicurve k) {P : X.E.toAffine.Point}
     (hP : P ∈ X.torsion) :
@@ -143,16 +160,19 @@ lemma pointMap_mem_torsion (f : k →+* K) (X : Orbicurve k) {P : X.E.toAffine.P
   rw [AddSubgroup.torsionBy.nsmul_iff] at hP ⊢
   rw [← map_nsmul, hP, map_zero]
 
+open scoped Classical in
 /-- The map on torsion induced by base change. -/
 def mapTorsion (f : k →+* K) (X : Orbicurve k) :
     ↥X.torsion →+ ↥(X.baseChange f).torsion :=
   ((pointMap X.E f).restrict X.torsion).codRestrict _ fun P => by
     exact X.pointMap_mem_torsion f P.2
 
+open scoped Classical in
 @[simp] lemma coe_mapTorsion (f : k →+* K) (X : Orbicurve k) (P : ↥X.torsion) :
     ((X.mapTorsion f P : ↥(X.baseChange f).torsion) : (X.baseChange f).E.toAffine.Point) =
       pointMap X.E f P := rfl
 
+open scoped Classical in
 /-- The map on rank-one quotients induced by base change. -/
 def mapQ (f : k →+* K) (X : Orbicurve k) : X.Q →+ (X.baseChange f).Q :=
   QuotientAddGroup.map _ _ (X.mapTorsion f) (by
@@ -161,9 +181,11 @@ def mapQ (f : k →+* K) (X : Orbicurve k) : X.Q →+ (X.baseChange f).Q :=
     rw [AddSubgroup.mem_addSubgroupOf] at hP
     exact AddSubgroup.mem_map_of_mem _ hP)
 
+open scoped Classical in
 lemma mapQ_toQ (f : k →+* K) (X : Orbicurve k) (P : ↥X.torsion) :
     X.mapQ f (X.toQ P) = (X.baseChange f).toQ (X.mapTorsion f P) := rfl
 
+open scoped Classical in
 /-- The map on cusps induced by base change. -/
 def cuspBaseChange (f : k →+* K) (X : Orbicurve k) :
     X.Cusp → (X.baseChange f).Cusp :=
@@ -172,18 +194,22 @@ def cuspBaseChange (f : k →+* K) (X : Orbicurve k) :
     · exact Or.inl (congrArg _ h)
     · exact Or.inr ⟨hpm, by rw [h, map_neg]⟩)
 
+open scoped Classical in
 lemma cuspBaseChange_cuspOf (f : k →+* K) (X : Orbicurve k) (q : X.Q) :
     X.cuspBaseChange f (X.cuspOf q) = (X.baseChange f).cuspOf (X.mapQ f q) := rfl
 
 /-! ### Covers -/
 
+open scoped Classical in
 /-- Transport of a subgroup of points along an equality of curves. -/
 def transportM {E E' : WeierstrassCurve k} (h : E = E')
     (M : AddSubgroup E.toAffine.Point) : AddSubgroup E'.toAffine.Point := h ▸ M
 
+open scoped Classical in
 @[simp] lemma transportM_rfl {E : WeierstrassCurve k} (M : AddSubgroup E.toAffine.Point) :
     transportM rfl M = M := rfl
 
+open scoped Classical in
 /-- **A cover** `(E, ℓ, M, ε) → (E, ℓ', M', ε')` of model orbicurves: the map
 `(E/M) ∖ (E[ℓ]/M) → (E/M') ∖ (E[ℓ']/M')` induced by `[n]`, where `ℓ = n·ℓ'`, which
 exists when `[n](M) ⊆ M'` and the `±`-flags are compatible. -/
@@ -202,6 +228,7 @@ structure Cover (X Y : Orbicurve k) : Type u where
   /-- The `±`-flags are compatible. -/
   pm_le : X.pm = true → Y.pm = true
 
+open scoped Classical in
 /-- Transport along equalities of curves: the composite of two level maps. -/
 lemma transport_comp {E E' E'' : WeierstrassCurve k} (h : E = E') (h' : E' = E'')
     (n n' : ℕ) {M : AddSubgroup E.toAffine.Point} {M' : AddSubgroup E'.toAffine.Point}
@@ -214,6 +241,7 @@ lemma transport_comp {E E' E'' : WeierstrassCurve k} (h : E = E') (h' : E' = E''
   rw [mul_comm, mul_smul]
   exact hM' _ (hM P hP)
 
+open scoped Classical in
 /-- Composition of covers. -/
 def Cover.comp {X Y Z : Orbicurve k} (f : Cover X Y) (g : Cover Y Z) : Cover X Z where
   E_eq := f.E_eq.trans g.E_eq
@@ -223,6 +251,7 @@ def Cover.comp {X Y Z : Orbicurve k} (f : Cover X Y) (g : Cover Y Z) : Cover X Z
   M_le := transport_comp f.E_eq g.E_eq f.n g.n f.M_le g.M_le
   pm_le := fun h => g.pm_le (f.pm_le h)
 
+open scoped Classical in
 /-- Transport along equalities of curves: base change of the level map. -/
 lemma transport_baseChange (f : k →+* K) {E E' : WeierstrassCurve k} (h : E = E') (n : ℕ)
     {M : AddSubgroup E.toAffine.Point} {M' : AddSubgroup E'.toAffine.Point}
@@ -231,10 +260,11 @@ lemma transport_baseChange (f : k →+* K) {E E' : WeierstrassCurve k} (h : E = 
       n • P ∈ transportM (congrArg (WeierstrassCurve.map · f) h).symm (M'.map (pointMap E' f)) := by
   subst h
   rintro _ ⟨P, hP, rfl⟩
-  show n • pointMap E f P ∈ M'.map (pointMap E f)
+  change n • pointMap E f P ∈ M'.map (pointMap E f)
   rw [← map_nsmul]
   exact AddSubgroup.mem_map_of_mem _ (hM P hP)
 
+open scoped Classical in
 /-- Base change of a cover. -/
 def Cover.baseChange (f : k →+* K) {X Y : Orbicurve k} (c : Cover X Y) :
     Cover (X.baseChange f) (Y.baseChange f) where
@@ -245,6 +275,7 @@ def Cover.baseChange (f : k →+* K) {X Y : Orbicurve k} (c : Cover X Y) :
   M_le := transport_baseChange f c.E_eq c.n c.M_le
   pm_le := c.pm_le
 
+open scoped Classical in
 /-- **The cartesian squares recognized by the model**: the `±`-quotient squares
 `A = X_M → B = X_{M'}`, `C = X_M/± → D = X_{M'}/±` (IUT I, Definition 3.1(d), (e): the
 diagram `X̲ → X`, `X̲ → C̲`, `X → C`, `C̲ → C` and its base changes). -/
@@ -256,12 +287,14 @@ def IsCartesianSquare {A B C D : Orbicurve k} (_f : Cover A B) (g : Cover B D)
 
 /-! ### Orbicurve types -/
 
+open scoped Classical in
 /-- **Type `(1, ℓ-tors)`** (*Étale Theta*, Definition 2.1): level a prime `ℓ`, no `±`,
 `E(k)[ℓ]` of order `ℓ²` and `M ⊆ E(k)[ℓ]` of order `ℓ`. -/
 def IsTypeOneEllTors (ℓ : ℕ) (X : Orbicurve k) : Prop :=
   ℓ.Prime ∧ X.level = ℓ ∧ X.pm = false ∧ X.M ≤ X.torsion ∧ Nat.card X.M = ℓ ∧
     Nat.card X.torsion = ℓ ^ 2
 
+open scoped Classical in
 /-- **Type `(1, ℓ-tors)^±`** (*Étale Theta*, Definition 2.1): as `IsTypeOneEllTors`, with
 the `±`. -/
 def IsTypeOneEllTorsPM (ℓ : ℕ) (X : Orbicurve k) : Prop :=

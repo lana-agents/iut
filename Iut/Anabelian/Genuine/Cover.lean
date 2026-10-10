@@ -24,7 +24,6 @@ universe u
 
 open WeierstrassCurve Polynomial
 
-open scoped Classical
 
 noncomputable section
 
@@ -32,6 +31,7 @@ section Valuation
 
 variable {K : Type u} [Field K] (W : ValuationSubring K)
 
+open scoped Classical in
 lemma valuation_lt_one_iff_mem (z : K) :
     W.valuation z < 1 ↔ z ∈ W ∧ (z = 0 ∨ z⁻¹ ∉ W) := by
   by_cases hz : z = 0
@@ -41,6 +41,7 @@ lemma valuation_lt_one_iff_mem (z : K) :
   simp only [hz, false_or, not_le]
   exact ⟨fun h => ⟨h.le, h⟩, fun h => h.2⟩
 
+open scoped Classical in
 /-- The inertia group of the conjugate valuation subring. -/
 lemma conj_mem_inertia {P : Type u} [Field P] [Algebra P K] (h s : K ≃ₐ[P] K)
     (hs : s ∈ GaloisPi1.inertia W) :
@@ -68,24 +69,28 @@ end Valuation
 
 variable {k : Type u} [Field k] (E : WeierstrassCurve k) [E.IsElliptic]
 
+open scoped Classical in
 /-- **The inertia generators over `E ∖ {0}`**: the automorphisms of `Ω` fixing the generic point
 and lying in the inertia group of a valuation subring `W ⊇ k` with `x ∈ W`. -/
 def S0 : Set (Gal E) :=
   {σ | act E σ (genericPoint E) = genericPoint E ∧ ∃ W : ValuationSubring (Ω E),
     (∀ c : k, algebraMap k (Ω E) c ∈ W) ∧ xG E ∈ W ∧ σ ∈ GaloisPi1.inertia W}
 
+open scoped Classical in
 lemma effLevel_smul_Qpt (hc : Compatible E (divSys E)) (ℓ : ℕ) :
     effLevel ℓ • Qpt E ℓ = genericPoint E := by
   have := hc.2 (effLevel ℓ) 1 (effLevel_pos ℓ) one_pos
   rw [mul_one, hc.1] at this
   exact this
 
+open scoped Classical in
 omit [E.IsElliptic] in
 lemma effLevel_smul_Mbar {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {T : Pt E}
     (hT : T ∈ Mbar E ℓ M) : effLevel ℓ • T = 0 := by
   obtain ⟨T₀, ⟨-, hT₀⟩, rfl⟩ := hT
   rw [← map_nsmul, (AddSubgroup.torsionBy.nsmul_iff (A := E.toAffine.Point)).mp hT₀, map_zero]
 
+open scoped Classical in
 lemma act_generic_of_mem_Hgp (hc : Compatible E (divSys E)) {ℓ : ℕ}
     {M : AddSubgroup E.toAffine.Point} {pm : Bool} {σ : Gal E} (hσ : σ ∈ Hgp E ℓ M pm) :
     ∃ ε : ℤ, ε * ε = 1 ∧ act E σ (genericPoint E) = ε • genericPoint E := by
@@ -98,6 +103,7 @@ lemma act_generic_of_mem_Hgp (hc : Compatible E (divSys E)) {ℓ : ℕ}
       ε • (effLevel ℓ • Qpt E ℓ) + effLevel ℓ • (act E σ (Qpt E ℓ) - ε • Qpt E ℓ) := by module
   rw [e, effLevel_smul_Mbar E hT, add_zero]
 
+open scoped Classical in
 lemma Sgen_subset_S0 (hc : Compatible E (divSys E)) (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
     Sgen E ℓ M ⊆ S0 E := by
   rintro σ ⟨hT, hW⟩
@@ -106,6 +112,7 @@ lemma Sgen_subset_S0 (hc : Compatible E (divSys E)) (ℓ : ℕ) (M : AddSubgroup
   have : act E σ (Qpt E ℓ) = Qpt E ℓ + (act E σ (Qpt E ℓ) - Qpt E ℓ) := by abel
   rw [this, nsmul_add, effLevel_smul_Mbar E hT, add_zero]
 
+open scoped Classical in
 lemma S0_subset_Sgen [CharZero k] (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
     S0 E ⊆ Sgen E ℓ M := by
   rintro σ ⟨hG, W, hk, hx, hσ⟩
@@ -114,11 +121,13 @@ lemma S0_subset_Sgen [CharZero k] (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point)
     (effLevel_smul_Qpt E (compatible_divSys_of_charZero E) ℓ), sub_self]
   exact zero_mem _
 
+open scoped Classical in
 lemma Sgen_eq_S0 [CharZero k] (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
     Sgen E ℓ M = S0 E :=
   subset_antisymm (Sgen_subset_S0 E (compatible_divSys_of_charZero E) ℓ M)
     (S0_subset_Sgen E ℓ M)
 
+open scoped Classical in
 /-- `S0 E` is stable under conjugation by the automorphisms in `Aut(Ω / F_Y)`. -/
 lemma conj_mem_S0 (hc : Compatible E (divSys E)) {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point}
     {pm : Bool} {h : Gal E} (hh : h ∈ Hgp E ℓ M pm) {s : Gal E} (hs : s ∈ S0 E) :
@@ -139,6 +148,7 @@ lemma conj_mem_S0 (hc : Compatible E (divSys E)) {ℓ : ℕ} {M : AddSubgroup E.
     change (h⁻¹ : Gal E) _ ∈ W
     rw [this]; exact hx
 
+open scoped Classical in
 /-- **The map of fundamental groups induced by a cover is an open embedding** (characteristic
 `0`). -/
 theorem isOpenEmbedding_pi1MapOf [CharZero k] {n ℓ ℓ' : ℕ} (hn : 0 < n) (hℓ : n * ℓ' = ℓ)

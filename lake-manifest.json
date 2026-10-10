@@ -1,81 +1,77 @@
-{
- "version": "1.2.0",
+{"version": "1.2.0",
  "packagesDir": ".lake/packages",
- "packages": [
-  {
-   "url": "https://github.com/lana-agents/tempered-fundamental-groups",
+ "packages":
+ [{"url": "https://github.com/lana-agents/tempered-fundamental-groups",
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "1936070525eca2a9015c6f8528e879824af436a0",
+   "rev": "33b1c273171d8e9f0843175cf3e2305efc84d538",
    "name": "«tempered-fundamental-groups»",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "1936070525eca2a9015c6f8528e879824af436a0",
+   "inputRev": "33b1c273171d8e9f0843175cf3e2305efc84d538",
    "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/oka.git",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/lana-agents/oka.git",
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "405aadd70a16b05bd1a179a489b2c1c1299df695",
+   "rev": "31c057652d601cf5373004673c4e9d49fe8c0721",
    "name": "oka",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "405aadd70a16b05bd1a179a489b2c1c1299df695",
+   "inputRev": "31c057652d601cf5373004673c4e9d49fe8c0721",
    "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/orbicurve-cores",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/lana-agents/belyi",
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "61616dcd77fbe45c083a8ebfa7cc80728f86e841",
+   "rev": "1d84db91ffaaa64a869993507194b1b51263af07",
+   "name": "belyi",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "1d84db91ffaaa64a869993507194b1b51263af07",
+   "inherited": false,
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/lana-agents/orbicurve-cores",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "21ce4b72b553f2b1a1dd14b25c5ffb111791975e",
    "name": "«orbicurve-cores»",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "61616dcd77fbe45c083a8ebfa7cc80728f86e841",
+   "inputRev": "21ce4b72b553f2b1a1dd14b25c5ffb111791975e",
    "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/pi1",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/lana-agents/pi1",
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "7647d28f361ba3c9705ed0a179b6a377d461c57a",
+   "rev": "2c1e2f06be1e7d383e3318a9846884136866a96c",
    "name": "pi1",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "7647d28f361ba3c9705ed0a179b6a377d461c57a",
+   "inputRev": "2c1e2f06be1e7d383e3318a9846884136866a96c",
    "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/heights",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/lana-agents/heights",
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "721496ca4c158e511d25d8ccf6bfe8503eda73c1",
+   "rev": "f4379dbccc8cdc4faa894a236d5581a6a635c5b5",
    "name": "heights",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "721496ca4c158e511d25d8ccf6bfe8503eda73c1",
+   "inputRev": "f4379dbccc8cdc4faa894a236d5581a6a635c5b5",
    "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/genl",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/lana-agents/genl",
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "ea2846c877d1e16d8f0b911a5fed07f5ee69eaaf",
+   "rev": "179e26f6f7becc379b32ea526aaf7fb8ae81441a",
    "name": "genl",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "ea2846c877d1e16d8f0b911a5fed07f5ee69eaaf",
+   "inputRev": "179e26f6f7becc379b32ea526aaf7fb8ae81441a",
    "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/tate-curves-theta",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/lana-agents/tate-curves-theta",
    "type": "git",
    "subDir": null,
    "scope": "",
@@ -84,10 +80,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "ca6c2279d3cea0690cdb01328e727118d5485d68",
    "inherited": false,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/mathlib4",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/mathlib4",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -96,10 +90,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "v4.32.0",
    "inherited": false,
-   "configFile": "lakefile.lean"
-  },
-  {
-   "url": "https://github.com/lana-agents/elliptic-curves",
+   "configFile": "lakefile.lean"},
+  {"url": "https://github.com/lana-agents/elliptic-curves",
    "type": "git",
    "subDir": null,
    "scope": "",
@@ -108,22 +100,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "bebec3fc9f2602e81c83e5236789572a541c85fb",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/belyi.git",
-   "type": "git",
-   "subDir": null,
-   "scope": "",
-   "rev": "9ce4d3f793d3bc831f2fc7214b7dbad90ea012d8",
-   "name": "belyi",
-   "manifestFile": "lake-manifest.json",
-   "inputRev": "9ce4d3f793d3bc831f2fc7214b7dbad90ea012d8",
-   "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/lana-agents/formal-schemes",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/lana-agents/formal-schemes",
    "type": "git",
    "subDir": null,
    "scope": "",
@@ -132,10 +110,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "51aa935079537bf4dc580751a6e70727fb23ca93",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/plausible",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/plausible",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -144,10 +120,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/LeanSearchClient",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/LeanSearchClient",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -156,10 +130,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/import-graph",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/import-graph",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -168,10 +140,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/ProofWidgets4",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/ProofWidgets4",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -180,10 +150,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.lean"
-  },
-  {
-   "url": "https://github.com/leanprover-community/aesop",
+   "configFile": "lakefile.lean"},
+  {"url": "https://github.com/leanprover-community/aesop",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -192,10 +160,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "master",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/quote4",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/quote4",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -204,10 +170,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "master",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover-community/batteries",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover-community/batteries",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
@@ -216,10 +180,8 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  },
-  {
-   "url": "https://github.com/leanprover/lean4-cli",
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover/lean4-cli",
    "type": "git",
    "subDir": null,
    "scope": "leanprover",
@@ -228,10 +190,7 @@
    "manifestFile": "lake-manifest.json",
    "inputRev": "v4.32.0",
    "inherited": true,
-   "configFile": "lakefile.toml"
-  }
- ],
+   "configFile": "lakefile.toml"}],
  "name": "iut",
  "lakeDir": ".lake",
- "fixedToolchain": false
-}
+ "fixedToolchain": false}

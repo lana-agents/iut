@@ -26,37 +26,43 @@ namespace Iut.EllipticCurveData.ModEllRepData
 universe u
 
 open WeierstrassCurve NumberField Iut Matrix
-open scoped Classical
 
 noncomputable section
 
 variable {C : EllipticCurveData.{u}} {ℓ : ℕ} (R : C.ModEllRepData ℓ)
 
+open scoped Classical in
 /-- The classical decidable equality on `K`, as used by the model orbicurves. -/
 local instance (priority := 1100) instDecidableEqTorsionField : DecidableEq ↥R.torsionField :=
   fun a b => Classical.propDecidable (a = b)
 
 /-! ### The `ℓ`-torsion is rational over the torsion field -/
 
+open scoped Classical in
 /-- The curve `E` over the torsion field `K`. -/
 abbrev EK : WeierstrassCurve ↥R.torsionField := C.E.map (algebraMap C.F ↥R.torsionField)
 
+open scoped Classical in
 /-- The base change of points `E(K) → E(F̄)`. -/
 def bcK : R.EK.toAffine.Point →+ Affine.Point (Affine.baseChange C.E C.Fbar) :=
   Affine.Point.map (W' := C.E) (S := C.F) (IsScalarTower.toAlgHom C.F ↥R.torsionField C.Fbar)
 
+open scoped Classical in
 lemma bcK_injective : Function.Injective R.bcK :=
   Affine.Point.map_injective (W' := C.E) (S := C.F)
     (IsScalarTower.toAlgHom C.F ↥R.torsionField C.Fbar)
 
+open scoped Classical in
 /-- The `ℓ`-torsion of `E(K)`. -/
 abbrev TK : AddSubgroup R.EK.toAffine.Point := AddSubgroup.torsionBy R.EK.toAffine.Point ℓ
 
+open scoped Classical in
 /-- The `ℓ`-torsion of `E(F̄)`. -/
 abbrev TFbar (C : EllipticCurveData.{u}) (ℓ : ℕ) :
     AddSubgroup (Affine.Point (Affine.baseChange C.E C.Fbar)) :=
   AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ
 
+open scoped Classical in
 /-- Elements of the kernel of the mod-`ℓ` representation fix the `ℓ`-torsion. -/
 lemma galPointMap_eq_of_mem_ker {σ : C.Fbar ≃ₐ[C.F] C.Fbar} (hσ : σ ∈ R.rep.ker)
     (Q : ↥(TFbar C ℓ)) : galPointMap C.F C.E C.Fbar σ Q.1 = Q.1 := by
@@ -65,6 +71,7 @@ lemma galPointMap_eq_of_mem_ker {σ : C.Fbar ≃ₐ[C.F] C.Fbar} (hσ : σ ∈ R
   simp only [Units.val_one, Matrix.one_mulVec] at h
   exact congrArg Subtype.val (R.torsionBasis.injective h)
 
+open scoped Classical in
 /-- Every `ℓ`-torsion point of `E(F̄)` comes from `E(K)`. -/
 lemma exists_bcK_eq (Q : Affine.Point (Affine.baseChange C.E C.Fbar)) (hQ : Q ∈ TFbar C ℓ) :
     ∃ P : R.EK.toAffine.Point, R.bcK P = Q := by
@@ -87,15 +94,18 @@ lemma exists_bcK_eq (Q : Affine.Point (Affine.baseChange C.E C.Fbar)) (hQ : Q �
         (IsScalarTower.toAlgHom C.F ↥R.torsionField C.Fbar).injective _ _).mp h
     exact ⟨.some _ _ hns, rfl⟩
 
+open scoped Classical in
 lemma bcK_mem_TFbar {P : R.EK.toAffine.Point} (hP : P ∈ R.TK) : R.bcK P ∈ TFbar C ℓ := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hP ⊢
   rw [← map_nsmul, hP, map_zero]
 
+open scoped Classical in
 lemma mem_TK_of_bcK {P : R.EK.toAffine.Point} (hP : R.bcK P ∈ TFbar C ℓ) : P ∈ R.TK := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hP ⊢
   rw [← map_nsmul] at hP
   exact R.bcK_injective (hP.trans (map_zero _).symm)
 
+open scoped Classical in
 /-- **The `ℓ`-torsion is rational over `K`**: `E(K)[ℓ] ≃ E(F̄)[ℓ]`. -/
 def torsionEquiv : ↥R.TK ≃+ ↥(TFbar C ℓ) :=
   AddEquiv.ofBijective (R.bcK.restrict R.TK |>.codRestrict _ fun P => R.bcK_mem_TFbar P.2)
@@ -104,6 +114,7 @@ def torsionEquiv : ↥R.TK ≃+ ↥(TFbar C ℓ) :=
       obtain ⟨P, hP⟩ := R.exists_bcK_eq Q.1 Q.2
       exact ⟨⟨P, R.mem_TK_of_bcK (hP ▸ Q.2)⟩, Subtype.ext hP⟩⟩
 
+open scoped Classical in
 /-- `E(K)[ℓ]` has order `ℓ²`. -/
 lemma card_torsionBy_EK : Nat.card R.TK = ℓ ^ 2 := by
   rw [Nat.card_congr (R.torsionEquiv.trans R.torsionBasis).toEquiv, Nat.card_pi, Nat.card_zmod]
@@ -111,22 +122,26 @@ lemma card_torsionBy_EK : Nat.card R.TK = ℓ ^ 2 := by
 
 /-! ### The Galois group of the torsion field -/
 
+open scoped Classical in
 /-- `K/F` is Galois (the fixed field of the normal subgroup `ker ρ`). -/
 instance isGalois_torsionField : IsGalois C.F ↥R.torsionField :=
   IsGalois.of_fixedField_normal_subgroup R.rep.ker
 
+open scoped Classical in
 /-- The fixing subgroup of the torsion field is the kernel of `ρ` (which is open, hence
 closed). -/
 lemma fixingSubgroup_torsionField : R.torsionField.fixingSubgroup = R.rep.ker :=
   InfiniteGalois.fixingSubgroup_fixedField (k := C.F) (K := C.Fbar)
     ⟨R.rep.ker, Subgroup.isClosed_of_isOpen _ R.ker_isOpen⟩
 
+open scoped Classical in
 /-- The kernel of the restriction `Gal(F̄/F) → Gal(K/F)` is the kernel of `ρ`. -/
 lemma restrictNormalHom_ker_eq :
     (AlgEquiv.restrictNormalHom R.torsionField :
       (C.Fbar ≃ₐ[C.F] C.Fbar) →* (↥R.torsionField ≃ₐ[C.F] ↥R.torsionField)).ker = R.rep.ker := by
   rw [IntermediateField.restrictNormalHom_ker, fixingSubgroup_torsionField]
 
+open scoped Classical in
 /-- **`Gal(K/F) ≅ ρ(Gal(F̄/F))`**: both are the quotient of `Gal(F̄/F)` by `ker ρ`. -/
 def rangeEquivGal : R.rep.range ≃* (↥R.torsionField ≃ₐ[C.F] ↥R.torsionField) :=
   (QuotientGroup.quotientKerEquivRange R.rep).symm.trans
@@ -135,12 +150,14 @@ def rangeEquivGal : R.rep.range ≃* (↥R.torsionField ≃ₐ[C.F] ↥R.torsion
         (AlgEquiv.restrictNormalHom_surjective (F := C.F) (K₁ := ↥R.torsionField)
           (E := C.Fbar))))
 
+open scoped Classical in
 /-- `|ρ(Gal(F̄/F))| = |Gal(K/F)|`. -/
 lemma card_range : Nat.card R.rep.range = Nat.card (↥R.torsionField ≃ₐ[C.F] ↥R.torsionField) :=
   Nat.card_congr R.rangeEquivGal.toEquiv
 
 /-! ### Stable lines and cyclic subgroups -/
 
+open scoped Classical in
 /-- **A line of `𝔽_ℓ²` stable under the image of `ρ` gives an `ℓ`-cyclic subgroup scheme**:
 the preimage under the basis of the line `𝔽_ℓ·v` is a `Gal(F̄/F)`-stable subgroup of `E(F̄)`
 of order `ℓ`. -/
@@ -178,6 +195,7 @@ lemma hasCyclicSubgroup_of_stable_line [Fact ℓ.Prime] (v : Fin 2 → ZMod ℓ)
       rw [Nat.cast_smul_eq_nsmul, natCast_zsmul]
     rw [hfσ, Matrix.mulVec_smul, hc, hcv, smul_smul]
 
+open scoped Classical in
 /-- If `E/F` has no `ℓ`-cyclic subgroup scheme, no line of `𝔽_ℓ²` is stable under the image
 of `ρ`. -/
 lemma exists_mulVec_ne_smul_of_not_hasCyclicSubgroup [Fact ℓ.Prime]

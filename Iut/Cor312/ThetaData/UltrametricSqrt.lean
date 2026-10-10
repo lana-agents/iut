@@ -181,8 +181,8 @@ theorem exists_sq_eq_of_norm_sq_sub_lt (h2 : ‖(2 : k)‖ = 1) {a x₀ : k} (hx
   -- the sequence is Cauchy
   have hdist : ∀ n, dist (u n) (u (n + 1)) ≤ ε * ε ^ n := by
     intro n
-    rw [dist_eq_norm, norm_sub_rev, hu, babylonianSqrt_succ, norm_babylonian_step_sub h2 a (hunit n),
-      ← pow_succ']
+    rw [dist_eq_norm, norm_sub_rev, hu, babylonianSqrt_succ,
+      norm_babylonian_step_sub h2 a (hunit n), ← pow_succ']
     exact hbound n
   have hcauchy : CauchySeq u := cauchySeq_of_le_geometric ε ε h hdist
   obtain ⟨x, hx⟩ := cauchySeq_tendsto_of_complete hcauchy

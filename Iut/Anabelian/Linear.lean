@@ -47,7 +47,7 @@ lemma eq_zmultiples_of_card {L : AddSubgroup (Fin 2 → ZMod ℓ)} (hL : Nat.car
 lemma exists_ne_zero_of_card {L : AddSubgroup (Fin 2 → ZMod ℓ)} (hL : Nat.card L = ℓ) :
     ∃ v ∈ L, v ≠ 0 := by
   by_contra h
-  push_neg at h
+  push Not at h
   have hbot : L = ⊥ := (AddSubgroup.eq_bot_iff_forall L).mpr h
   rw [hbot, AddSubgroup.card_bot] at hL
   exact hℓ.out.one_lt.ne hL

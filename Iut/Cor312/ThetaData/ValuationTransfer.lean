@@ -213,9 +213,11 @@ lemma ramificationIdx'_mul_inertiaDeg'_eq_one_of_ne (hK : Module.finrank k K ≤
     v.maximalIdeal.isPrime.isMaximal v.maximalIdeal.ne_bot
   have hp0 : v.maximalIdeal.asIdeal ≠ ⊥ := v.maximalIdeal.ne_bot
   have hsum := Ideal.sum_ramification_inertia (𝓞 K) k K hp0 (p := v.maximalIdeal.asIdeal)
-  have hmem₁ : w₁.maximalIdeal.asIdeal ∈ IsDedekindDomain.primesOverFinset v.maximalIdeal.asIdeal (𝓞 K) :=
+  have hmem₁ :
+      w₁.maximalIdeal.asIdeal ∈ IsDedekindDomain.primesOverFinset v.maximalIdeal.asIdeal (𝓞 K) :=
     (IsDedekindDomain.mem_primesOverFinset_iff hp0 (𝓞 K)).mpr ⟨inferInstance, h₁⟩
-  have hmem₂ : w₂.maximalIdeal.asIdeal ∈ IsDedekindDomain.primesOverFinset v.maximalIdeal.asIdeal (𝓞 K) :=
+  have hmem₂ :
+      w₂.maximalIdeal.asIdeal ∈ IsDedekindDomain.primesOverFinset v.maximalIdeal.asIdeal (𝓞 K) :=
     (IsDedekindDomain.mem_primesOverFinset_iff hp0 (𝓞 K)).mpr ⟨inferInstance, h₂⟩
   have hne' : w₁.maximalIdeal.asIdeal ≠ w₂.maximalIdeal.asIdeal := fun h =>
     hne ((FinitePlace.maximalIdeal_inj _ _).mp (HeightOneSpectrum.ext h))

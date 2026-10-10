@@ -26,9 +26,10 @@ No proposition remains: `Iut.Tripod.tripodProviders` is a closed term.
 namespace Iut.Tripod
 
 open Iut Iut.EllipticCurveData WeierstrassCurve
-open scoped Classical
 
+open scoped Classical in
 /-- **The data providers of the Legendre curves**, a closed term: every curve-level fact is a
+open scoped Classical in
 theorem (torsion bases, stable reduction, the Galois-degree property of `F_λ/F_mod`). -/
 noncomputable def tripodProviders : CurveProviders where
   torsionFinite3 l := legendre_torsionFinite l 3 (by norm_num)

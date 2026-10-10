@@ -27,7 +27,6 @@ universe u
 open WeierstrassCurve Polynomial AffOrbicurve IntermediateField
 open IntermediateField.algebraAdjoinAdjoin
 
-open scoped Classical
 
 attribute [local instance 2000] Classical.propDecidable
 
@@ -128,6 +127,7 @@ section InertiaQ
 
 variable {N : IntermediateField (xLine E) (Ω E)} [FiniteDimensional (xLine E) N]
 
+omit [CharZero k] [E.IsElliptic] [FiniteDimensional ↥(xLine E) ↥N] in
 lemma xG_mem_coordRing : (⟨xG E, (N.algebraMap_mem ⟨xG E, xG_mem_xLine E⟩ :)⟩ : N) ∈
     coordRing k (xG E) N := by
   rw [mem_integralClosure_iff]
@@ -140,8 +140,9 @@ lemma xG_mem_coordRing : (⟨xG E, (N.algebraMap_mem ⟨xG E, xG_mem_xLine E⟩ 
 abbrev coordRingK (N : IntermediateField (xLine E) (Ω E)) : Subalgebra k N :=
   (coordRing k (xG E) N).restrictScalars k
 
-omit [CharZero k] [E.IsElliptic] [FiniteDimensional (xLine E) N] in
 set_option synthInstance.maxHeartbeats 400000 in
+-- the default limit is not sufficient for this declaration
+omit [CharZero k] [E.IsElliptic] [FiniteDimensional (xLine E) N] in
 lemma coordRingK_isIntegrallyClosed (x : N) (hx : _root_.IsIntegral (coordRingK E N) x) :
     x ∈ coordRingK E N := by
   change x ∈ coordRing k (xG E) N
@@ -157,7 +158,9 @@ lemma coordRingK_isIntegrallyClosed (x : N) (hx : _root_.IsIntegral (coordRingK 
   exact isIntegral_trans (R := A₀ k (xG E)) (A := coordRing k (xG E) N) (B := N) x hx'
 
 set_option maxHeartbeats 2000000 in
+-- the default limit is not sufficient for this declaration
 set_option synthInstance.maxHeartbeats 400000 in
+-- the default limit is not sufficient for this declaration
 /-- **Inertia fixes the division point `Q_ℓ`** (characteristic `0`): an automorphism of `N` over
 `k(x)` fixing `y` and lying in the inertia group of a nonzero prime `u` of the normalization of
 the `x`-line in `N` fixes the coordinates of `Q_ℓ`, when these lie in `N`. -/
@@ -261,6 +264,7 @@ instance (ℓ : ℕ) : FiniteDimensional (xLine E) (galClosure E ℓ) := by
 instance (ℓ : ℕ) : IsGalois (xLine E) (galClosure E ℓ) := by
   unfold galClosure; infer_instance
 
+omit [CharZero k] in
 lemma QFieldX_le_galClosure (ℓ : ℕ) : QFieldX E ℓ ≤ galClosure E ℓ :=
   IntermediateField.le_normalClosure (QFieldX E ℓ)
 
@@ -286,7 +290,9 @@ lemma maximal_ne_bot {L : IntermediateField (xLine E) (Ω E)} [FiniteDimensional
     (Ring.isField_iff_maximal_bot.mpr hu)
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 set_option synthInstance.maxHeartbeats 400000 in
+-- the default limit is not sufficient for this declaration
 /-- **`X_M → X_{M'}` is unramified**: `e(w | v) = 1` for the covers of model orbicurves without
 `±`. -/
 theorem ramificationIdx_geom_eq_one {n ℓ ℓ' : ℕ} (hn : 0 < n) (hℓ : n * ℓ' = ℓ)
@@ -343,7 +349,7 @@ lemma Hgp_conj_mem {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm : Bool} {h
       rw [act_mul, act_mul, hhQ]
       simp only [map_add, map_zsmul]
       rw [hgQ, act_mem_Mbar E g hT]
-      simp only [map_add, map_zsmul]
+      simp only [map_add]
       rw [act_mem_Mbar E h⁻¹ hS, act_mem_Mbar E h⁻¹ hT]
       module
     rw [e2, one_smul]
@@ -354,6 +360,7 @@ lemma Hgp_conj_mem {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm : Bool} {h
   exact zsmul_mem hS ε
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 /-- **`L_X / F_X` is normal** (inside a finite Galois extension `N` of `k(x)` containing `L_X`). -/
 lemma geom_normal {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm : Bool}
     {N : IntermediateField (xLine E) (Ω E)} [FiniteDimensional (xLine E) N]
@@ -415,6 +422,7 @@ lemma eIdx_tower {F L L' : IntermediateField (xLine E) (Ω E)} [FiniteDimensiona
   rw [hcomp] at h
   exact h
 
+omit [CharZero k] [E.IsElliptic] in
 lemma comap_isMaximal {F L : IntermediateField (xLine E) (Ω E)} (h : F ≤ L)
     (w : Ideal (coordRing k (xG E) L)) [hw : w.IsMaximal] :
     (w.comap (ringMap (xG E) h)).IsMaximal := by
@@ -424,7 +432,9 @@ lemma comap_isMaximal {F L : IntermediateField (xLine E) (Ω E)} (h : F ≤ L)
   exact Ideal.isMaximal_comap_of_isIntegral_of_isMaximal w
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 set_option synthInstance.maxHeartbeats 400000 in
+-- the default limit is not sufficient for this declaration
 /-- The stabilizer order of `[X_M / {±1}]` at `v` is the ramification index of any prime of
 `X_M` over `v` (`X_M → X_M / {±1}` is Galois). -/
 lemma pmMult_eq (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point)
@@ -457,6 +467,7 @@ lemma geom_le_geom : geomField E ℓ' M' ≤ geomField E ℓ M :=
   coarseField_le_of_cover E hn hℓ hM (pm := false) (pm' := false) (by simp)
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 /-- The morphism `X_M → X_{M'}`. -/
 def realizeHomFF : Hom (realize E ℓ M false) (realize E ℓ' M' false) :=
   homOfLE (transcendental_xG E) (geom_le_geom E hn hℓ hM) (fun w hw => by
@@ -466,6 +477,7 @@ def realizeHomFF : Hom (realize E ℓ M false) (realize E ℓ' M' false) :=
     rw [mul_one]; exact h)
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 /-- The morphism `X_M → X_{M'} / {±1}`. -/
 def realizeHomFT : Hom (realize E ℓ M false) (realize E ℓ' M' true) :=
   homOfLE (transcendental_xG E)
@@ -481,7 +493,9 @@ def realizeHomFT : Hom (realize E ℓ M false) (realize E ℓ' M' true) :=
     exact pmMult_eq E ℓ' M' (w.comap (ringMap (xG E) hLL)))
 
 set_option maxHeartbeats 1000000 in
+-- the default limit is not sufficient for this declaration
 set_option synthInstance.maxHeartbeats 400000 in
+-- the default limit is not sufficient for this declaration
 /-- The morphism `X_M / {±1} → X_{M'} / {±1}`. -/
 def realizeHomTT : Hom (realize E ℓ M true) (realize E ℓ' M' true) :=
   homOfLE (transcendental_xG E)

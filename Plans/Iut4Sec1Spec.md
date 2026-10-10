@@ -432,7 +432,7 @@ types and fully qualified names are fixed here.
 2. **First Proposition 1.4(iii) error sum.** Keep the existing
    `nonarchimedeanLogError` definition and declaration:
    ```lean
-   theorem nonarchimedean_logError_sum_le {ι : Type*} [DecidableEq ι]
+   theorem nonarchimedean_logError_sum_le {ι : Type*}
        (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
        (hp : p.Prime) (hp2 : 2 < p) (hIstar : Istar ⊆ I)
        (he : ∀ i ∈ I, 0 < e i)
@@ -445,7 +445,7 @@ types and fully qualified names are fixed here.
 
 3. **Second Proposition 1.4(iii) error sum.** State
    ```lean
-   theorem nonarchimedean_secondError_sum_le {ι : Type*} [DecidableEq ι]
+   theorem nonarchimedean_secondError_sum_le {ι : Type*}
        (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
        (hp : p.Prime) (hIstar : Istar ⊆ I)
        (he : ∀ i ∈ I, 0 < e i)

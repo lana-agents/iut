@@ -52,7 +52,6 @@ namespace Iut.Tripod
 
 open Iut Iut.EllipticCurveData Iut.EllipticCurveData.ModEllRepData WeierstrassCurve NumberField
   Iut.Anabelian Iut.CyclicPoints Heights.Velu
-open scoped Classical
 
 attribute [local instance 1100] Iut.EllipticCurveData.ModEllRepData.instDecidableEqTorsionFieldR
 
@@ -62,34 +61,43 @@ namespace Cyclic
 
 variable (P : CurveProviders) (x : Pt) {ℓ : ℕ} (hℓ : ℓ.Prime)
 
+open scoped Classical in
 /-- The ℓ-torsion field `L = F_λ(E_λ[ℓ])`. -/
 abbrev L : IntermediateField (P.curve x).F (P.curve x).Fbar := (repOf P x hℓ).torsionField
 
+open scoped Classical in
 /-- The curve `E_λ` over `L`. -/
 abbrev WL : WeierstrassCurve (L P x hℓ) := curveK (P.curve x).E (L P x hℓ)
 
+open scoped Classical in
 /-- `E_λ` over `L` is the Legendre curve of `λ`. -/
 lemma WL_eq : WL P x hℓ = legendre (algebraMap (P.curve x).F (L P x hℓ) (genC' P x)) :=
   legendre_map _ _
 
+open scoped Classical in
 /-- The subgroup `H ∩ E(L)`. -/
 abbrev HL (H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))) :
     AddSubgroup (WL P x hℓ).toAffine.Point :=
   H.comap (repOf P x hℓ).bcKR
 
 variable {P x hℓ}
-variable {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
 
+open scoped Classical in
 /-- A subgroup of order `ℓ` of `E(F̄)` consists of `ℓ`-torsion points. -/
-lemma mem_torsion_of_card (hH : Nat.card H = ℓ) {Q : Affine.Point (Affine.baseChange
+lemma mem_torsion_of_card
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    (hH : Nat.card H = ℓ) {Q : Affine.Point (Affine.baseChange
     (P.curve x).E (P.curve x).Fbar)} (hQ : Q ∈ H) : Q ∈ (repOf P x hℓ).TFbarR := by
   rw [AddSubgroup.torsionBy.nsmul_iff, ← hH]
   have := card_nsmul_eq_zero' (G := H) (x := ⟨Q, hQ⟩)
   have h := congrArg Subtype.val this
   rwa [AddSubgroup.coe_nsmul, ZeroMemClass.coe_zero] at h
 
+open scoped Classical in
 /-- `H ∩ E(L)` has `ℓ` elements. -/
-lemma card_HL (hH : Nat.card H = ℓ) : Nat.card (HL P x hℓ H) = ℓ := by
+lemma card_HL
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    (hH : Nat.card H = ℓ) : Nat.card (HL P x hℓ H) = ℓ := by
   refine Eq.trans ?_ hH
   refine Nat.card_congr (Equiv.ofBijective (fun Q => ⟨(repOf P x hℓ).bcKR Q.1, Q.2⟩) ⟨?_, ?_⟩)
   · intro Q Q' h
@@ -98,89 +106,118 @@ lemma card_HL (hH : Nat.card H = ℓ) : Nat.card (HL P x hℓ H) = ℓ := by
     obtain ⟨P', hP'⟩ := (repOf P x hℓ).exists_bcKR_eq Q.1 (mem_torsion_of_card hH Q.2)
     exact ⟨⟨P', by rw [AddSubgroup.mem_comap, hP']; exact Q.2⟩, Subtype.ext hP'⟩
 
-lemma finite_HL (hH : Nat.card H = ℓ) : Finite (HL P x hℓ H) :=
+open scoped Classical in
+lemma finite_HL
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    (hH : Nat.card H = ℓ) : Finite (HL P x hℓ H) :=
   Nat.finite_of_card_ne_zero (by rw [card_HL hH]; exact hℓ.ne_zero)
 
 /-! ### Square roots in `F_λ` and the points of order `2` and `4` -/
 
 variable (P x hℓ)
 
+open scoped Classical in
 /-- `√λ ∈ F_λ`. -/
 def sqrtLam : (P.curve x).F :=
   Classical.choose (exists_sq_eq_genC x (P.torsionFinite3 x.1) (P.torsionFinite5 x.1))
 
+open scoped Classical in
 lemma sqrtLam_sq : sqrtLam P x ^ 2 = genC' P x :=
   Classical.choose_spec (exists_sq_eq_genC x (P.torsionFinite3 x.1) (P.torsionFinite5 x.1))
 
+open scoped Classical in
 /-- `√(1 − λ) ∈ F_λ`. -/
 def sqrtOneSub : (P.curve x).F :=
   Classical.choose (exists_sq_eq_one_sub_genC x (P.torsionFinite3 x.1) (P.torsionFinite5 x.1))
 
+open scoped Classical in
 lemma sqrtOneSub_sq : sqrtOneSub P x ^ 2 = 1 - genC' P x :=
   Classical.choose_spec
     (exists_sq_eq_one_sub_genC x (P.torsionFinite3 x.1) (P.torsionFinite5 x.1))
 
+open scoped Classical in
 /-- `√−1 ∈ F_λ`. -/
 def sqrtNegOne : (P.curve x).F :=
   Classical.choose (sqrt_neg_one x (P.torsionFinite3 x.1) (P.torsionFinite5 x.1))
 
+open scoped Classical in
 lemma sqrtNegOne_sq : sqrtNegOne P x ^ 2 = -1 := by
   rw [sq]
   exact (Classical.choose_spec (sqrt_neg_one x (P.torsionFinite3 x.1) (P.torsionFinite5 x.1))).symm
 
+open scoped Classical in
 lemma genC'_ne_zero : genC' P x ≠ 0 := gen'_ne_zero x.2.1
+open scoped Classical in
 lemma genC'_ne_one : genC' P x ≠ 1 := gen'_ne_one x.2.2
 
+open scoped Classical in
 /-- `λ` in `L`. -/
 abbrev lamL : L P x hℓ := algebraMap (P.curve x).F (L P x hℓ) (genC' P x)
 
+open scoped Classical in
 lemma lamL_ne_zero : lamL P x hℓ ≠ 0 := (map_ne_zero _).mpr (genC'_ne_zero P x)
+open scoped Classical in
 lemma lamL_ne_one : lamL P x hℓ ≠ 1 := by
   rw [ne_eq, ← map_one (algebraMap (P.curve x).F (L P x hℓ)),
     (algebraMap (P.curve x).F (L P x hℓ)).injective.eq_iff]
   exact genC'_ne_one P x
 
+open scoped Classical in
 /-- `T₁ = (0, 0)`. -/
 def T₁ : (WL P x hℓ).toAffine.Point := pt₁ (WL_eq P x hℓ)
+open scoped Classical in
 /-- `T₂ = (1, 0)`. -/
 def T₂ : (WL P x hℓ).toAffine.Point := pt₂ (WL_eq P x hℓ)
+open scoped Classical in
 /-- `R₁ = (√λ, √−1 √λ (√λ − 1))`, with `2R₁ = T₁`. -/
 def R₁ : (WL P x hℓ).toAffine.Point :=
   half₁ (WL_eq P x hℓ) (s := algebraMap _ (L P x hℓ) (sqrtLam P x))
     (i := algebraMap _ (L P x hℓ) (sqrtNegOne P x)) (by rw [← map_pow, sqrtLam_sq])
     (by rw [← map_pow, sqrtNegOne_sq, map_neg, map_one])
+open scoped Classical in
 /-- `R₂ = (1 + √(1 − λ), √(1 − λ)(1 + √(1 − λ)))`, with `2R₂ = T₂`. -/
 def R₂ : (WL P x hℓ).toAffine.Point :=
   half₂ (WL_eq P x hℓ) (s := algebraMap _ (L P x hℓ) (sqrtOneSub P x))
     (by rw [← map_pow, sqrtOneSub_sq, map_sub, map_one])
 
+open scoped Classical in
 lemma T₁_ne_zero : T₁ P x hℓ ≠ 0 := pt₁_ne_zero _
+open scoped Classical in
 lemma T₂_ne_zero : T₂ P x hℓ ≠ 0 := pt₂_ne_zero _
+open scoped Classical in
 lemma T₁_add_self : T₁ P x hℓ + T₁ P x hℓ = 0 := pt₁_add_self _
+open scoped Classical in
 lemma T₂_add_self : T₂ P x hℓ + T₂ P x hℓ = 0 := pt₂_add_self _
+open scoped Classical in
 lemma R₁_add_self : R₁ P x hℓ + R₁ P x hℓ = T₁ P x hℓ :=
   half₁_add_self _ (lamL_ne_zero P x hℓ) (lamL_ne_one P x hℓ) _ _
+open scoped Classical in
 lemma R₂_add_self : R₂ P x hℓ + R₂ P x hℓ = T₂ P x hℓ :=
   half₂_add_self _ (lamL_ne_zero P x hℓ) (lamL_ne_one P x hℓ) _
+open scoped Classical in
 lemma T₁_ne_T₂ : T₁ P x hℓ ≠ T₂ P x hℓ := by
   intro h
   have := congrArg xOf h
   simp only [T₁, T₂, xOf_pt₁, xOf_pt₂] at this
   exact zero_ne_one this
 
+open scoped Classical in
 lemma xOf_T₁_sub_R₁ : xOf (T₁ P x hℓ) - xOf (R₁ P x hℓ) =
     -algebraMap _ (L P x hℓ) (sqrtLam P x) := by
   simp [T₁, R₁]
 
+open scoped Classical in
 lemma xOf_T₂_sub_R₂ : xOf (T₂ P x hℓ) - xOf (R₂ P x hℓ) =
     -algebraMap _ (L P x hℓ) (sqrtOneSub P x) := by
   simp [T₂, R₂]
 
 /-! ### Galois invariance of the Vélu ratios -/
 
+open scoped Classical in
 instance : FiniteDimensional (P.curve x).F (L P x hℓ) :=
   Module.Finite.of_restrictScalars_finite ℚ _ _
 
+open scoped Classical in
 lemma xOf_galK (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) (Q : (WL P x hℓ).toAffine.Point) :
     xOf (galK (P.curve x).E (L P x hℓ) σ Q) = σ (xOf Q) := by
   rcases Q with _ | ⟨a, b, h⟩
@@ -188,6 +225,7 @@ lemma xOf_galK (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) (Q : (WL P x h
     rw [map_zero, xOf_zero, map_zero]
   · rfl
 
+open scoped Classical in
 /-- A point with Galois-fixed coordinates is fixed. -/
 lemma galK_some_of_fixed (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) {a b : L P x hℓ}
     (h : (WL P x hℓ).toAffine.Nonsingular a b) (ha : σ a = a) (hb : σ b = b) :
@@ -195,21 +233,25 @@ lemma galK_some_of_fixed (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) {a b
   change Affine.Point.some (σ a) (σ b) _ = _
   congr 1
 
+open scoped Classical in
 lemma galK_T₁ (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) :
     galK (P.curve x).E (L P x hℓ) σ (T₁ P x hℓ) = T₁ P x hℓ := by
   unfold T₁ pt₁ Affine.Point.mk
   exact galK_some_of_fixed P x hℓ σ _ (by simp) (by simp)
 
+open scoped Classical in
 lemma galK_T₂ (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) :
     galK (P.curve x).E (L P x hℓ) σ (T₂ P x hℓ) = T₂ P x hℓ := by
   unfold T₂ pt₂ Affine.Point.mk
   exact galK_some_of_fixed P x hℓ σ _ (by simp) (by simp)
 
+open scoped Classical in
 lemma galK_R₁ (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) :
     galK (P.curve x).E (L P x hℓ) σ (R₁ P x hℓ) = R₁ P x hℓ := by
   unfold R₁ half₁ Affine.Point.mk
   exact galK_some_of_fixed P x hℓ σ _ (by simp) (by simp)
 
+open scoped Classical in
 lemma galK_R₂ (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) :
     galK (P.curve x).E (L P x hℓ) σ (R₂ P x hℓ) = R₂ P x hℓ := by
   unfold R₂ half₂ Affine.Point.mk
@@ -217,8 +259,10 @@ lemma galK_R₂ (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) :
 
 variable {P x hℓ}
 
+open scoped Classical in
 /-- A Galois-stable `H` gives a `Gal(L/F)`-stable `H ∩ E(L)`. -/
 lemma galK_mem_HL
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
     (hgal : ∀ σ : (P.curve x).Fbar ≃ₐ[(P.curve x).F] (P.curve x).Fbar, ∀ Q ∈ H,
       galPointMap (P.curve x).F (P.curve x).E (P.curve x).Fbar σ Q ∈ H)
     (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) {Q : (WL P x hℓ).toAffine.Point}
@@ -227,8 +271,11 @@ lemma galK_mem_HL
   rw [AddSubgroup.mem_comap, (repOf P x hℓ).bcKR_galK]
   exact hgal τ _ hQ
 
+open scoped Classical in
 /-- **The Vélu ratio is Galois-invariant** for points `T`, `R` fixed by the Galois group. -/
-lemma veluRatio_galois [Fintype (HL P x hℓ H)]
+lemma veluRatio_galois
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
     (hgal : ∀ σ : (P.curve x).Fbar ≃ₐ[(P.curve x).F] (P.curve x).Fbar, ∀ Q ∈ H,
       galPointMap (P.curve x).F (P.curve x).E (P.curve x).Fbar σ Q ∈ H)
     (σ : L P x hℓ ≃ₐ[(P.curve x).F] L P x hℓ) {T R : (WL P x hℓ).toAffine.Point}
@@ -271,8 +318,11 @@ lemma veluRatio_galois [Fintype (HL P x hℓ H)]
   · intro Q _
     rw [map_div₀, map_sub, map_sub, ← xOf_galK, ← xOf_galK, ← xOf_galK, map_add, hT, hR]
 
+open scoped Classical in
 /-- **The product of the two Vélu ratios lies in `F`.** -/
-lemma exists_algebraMap_eq_ratio [Fintype (HL P x hℓ H)]
+lemma exists_algebraMap_eq_ratio
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
     (hgal : ∀ σ : (P.curve x).Fbar ≃ₐ[(P.curve x).F] (P.curve x).Fbar, ∀ Q ∈ H,
       galPointMap (P.curve x).F (P.curve x).E (P.curve x).Fbar σ Q ∈ H) :
     ∃ ρ : (P.curve x).F, algebraMap _ (L P x hℓ) ρ =
@@ -292,24 +342,31 @@ lemma exists_algebraMap_eq_ratio [Fintype (HL P x hℓ H)]
 
 /-! ### Torsion points in `H ∩ E(L)` translates -/
 
-variable [Fintype (HL P x hℓ H)]
 
-omit [Fintype (HL P x hℓ H)] in
-lemma nsmul_ℓ_eq_zero (hH : Nat.card H = ℓ) (Q : HL P x hℓ H) :
+open scoped Classical in
+lemma nsmul_ℓ_eq_zero
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    (hH : Nat.card H = ℓ) (Q : HL P x hℓ H) :
     ℓ • (Q : (WL P x hℓ).toAffine.Point) = 0 := by
   have h := card_nsmul_eq_zero' (x := Q)
   rw [card_HL hH] at h
   have := congrArg Subtype.val h
   rwa [AddSubgroup.coe_nsmul, ZeroMemClass.coe_zero] at this
 
-lemma odd_card_HL (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) : Odd (Fintype.card (HL P x hℓ H)) := by
+open scoped Classical in
+lemma odd_card_HL
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) : Odd (Fintype.card (HL P x hℓ H)) := by
   rw [Fintype.card_eq_nat_card, card_HL hH]
   exact hℓ.odd_of_ne_two hℓ2
 
-omit [Fintype (HL P x hℓ H)] in
+open scoped Classical in
 /-- The translates `T + Q`, `R + Q` (`Q ∈ H ∩ E(L)`) of a point `T` of order `2` and a half `R`
 of it are nonzero `4ℓ`-torsion points. -/
-lemma translate_torsion (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {T R : (WL P x hℓ).toAffine.Point}
+lemma translate_torsion
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {T R : (WL P x hℓ).toAffine.Point}
     (hT0 : T ≠ 0) (hT2 : T + T = 0) (hRT : R + R = T) (Q : HL P x hℓ H) :
     (T + (Q : (WL P x hℓ).toAffine.Point) ≠ 0 ∧
       (4 * ℓ) • (T + (Q : (WL P x hℓ).toAffine.Point)) = 0) ∧
@@ -333,6 +390,7 @@ lemma translate_torsion (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {T R : (WL P
   · rw [eq_neg_of_add_eq_zero_left h]; exact (HL P x hℓ H).neg_mem Q.2
   · rw [nsmul_add, h4ℓQ, add_zero, mul_nsmul, h4R, nsmul_zero]
 
+open scoped Classical in
 /-- The Newton bound for a nonzero `4ℓ`-torsion point of `E(L)`. -/
 lemma apply_xOf_le (w : FinitePlace (L P x hℓ)) {S : (WL P x hℓ).toAffine.Point} (hS0 : S ≠ 0)
     (hS : (4 * ℓ) • S = 0) :
@@ -342,9 +400,13 @@ lemma apply_xOf_le (w : FinitePlace (L P x hℓ)) {S : (WL P x hℓ).toAffine.Po
   · exact TorsionNewton.apply_x_le_legendre w (WL_eq P x hℓ) (lamL_ne_zero P x hℓ)
       (by have := hℓ.one_lt; omega) h hS
 
+open scoped Classical in
 /-- **The crude bound at a finite place of `L`**: `|r|_w |x(T) − x(R)|_w |4ℓ|_w² ≤ max(1, |λ|_w)²`
 for the Vélu ratio `r` of a point `T` of order `2` and a half `R`. -/
-lemma crude_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (w : FinitePlace (L P x hℓ))
+lemma crude_bound
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (w : FinitePlace (L P x hℓ))
     {T R : (WL P x hℓ).toAffine.Point} (hT0 : T ≠ 0) (hT2 : T + T = 0) (hRT : R + R = T) :
     w (veluRatio (HL P x hℓ H) T R) * w (xOf T - xOf R) * w (((4 * ℓ : ℕ) : L P x hℓ)) ^ 2 ≤
       max 1 (w (lamL P x hℓ)) ^ 2 := by
@@ -372,11 +434,15 @@ lemma crude_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (w : FinitePlace (
   rw [hB, le_div_iff₀ (by positivity)] at hsum
   exact hsum
 
+open scoped Classical in
 /-- **The archimedean bound**: at an infinite place `v` of `L` with `|log|λ|_v|,
 |log|λ − 1|_v| ≤ c`, `|r|_v |x(T) − x(R)|_v ≤ 2ℓ · C₀ (4ℓ)²`, where `C₀` bounds the torsion
 `x`-coordinates of the Legendre curves with parameters bounded by `c`
 (`Iut.CyclicArch.legendre_torsion_x_le`). -/
-lemma arch_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {c C₀ : ℝ}
+lemma arch_bound
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {c C₀ : ℝ}
     (hC₀ : ∀ (l : ℂ), |Real.log ‖l‖| ≤ c → |Real.log ‖l - 1‖| ≤ c →
       ∀ (W : WeierstrassCurve ℂ) [W.IsElliptic], W = legendre l →
       ∀ {N : ℕ}, 1 ≤ N → ∀ {a b : ℂ} (h : W.toAffine.Nonsingular a b),
@@ -420,9 +486,13 @@ lemma arch_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {c C₀ : ℝ}
     _ = 2 * ℓ * (C₀ * (4 * ℓ) ^ 2) := by
         rw [Finset.sum_const, hcard, nsmul_eq_mul]; ring
 
+open scoped Classical in
 /-- **The gain at a place of `L` over an odd multiplicative place**:
 `(|r₁|_w |r₂|_w)⁴ |j|_w^{ℓ − 1} ≤ 1`. -/
-lemma tate_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLineOdd P x hℓ hℓ2 H)
+lemma tate_bound
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLineOdd P x hℓ hℓ2 H)
     (w : FinitePlace (L P x hℓ))
     (hw : IsBadPlace (P.curve x).E (L P x hℓ) (P.curve x).VBadOdd w) :
     (w (veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ)) *
@@ -473,6 +543,7 @@ lemma tate_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLi
 /-! ### Transport to the places of `F_λ` -/
 
 variable (P x) in
+open scoped Classical in
 /-- The compactly bounded condition at the infinite places of `F_λ`. -/
 lemma abs_log_infinite_le {K : CompactlyBounded} (hx : x ∈ K.set)
     (v : InfinitePlace (P.curve x).F) :
@@ -491,6 +562,7 @@ lemma abs_log_infinite_le {K : CompactlyBounded} (hx : x ∈ K.set)
   exact hx.2 w₁
 
 variable (P x) in
+open scoped Classical in
 /-- The compactly bounded condition at the places of `F_λ` over `2`:
 `|log|λ|_v|, |log|λ − 1|_v| ≤ c·[F_v : ℚ_2]`. -/
 lemma abs_log_two_le {K : CompactlyBounded} (hx : x ∈ K.set) (v : FinitePlace (P.curve x).F)
@@ -524,6 +596,7 @@ lemma abs_log_two_le {K : CompactlyBounded} (hx : x ∈ K.set) (v : FinitePlace 
           mul_le_mul hd hb.2 (abs_nonneg _) (by positivity)
       _ = _ := mul_comm _ _
 
+open scoped Classical in
 /-- `|y|_v = 1` iff `v(y) = 1` for the valuation. -/
 lemma apply_eq_one_of_valuation_eq_one {T : Type*} [Field T] [NumberField T] (v : FinitePlace T)
     {y : T} (hy : v.maximalIdeal.valuation T y = 1) : v y = 1 := by
@@ -535,6 +608,7 @@ lemma apply_eq_one_of_valuation_eq_one {T : Type*} [Field T] [NumberField T] (v 
   rw [← Real.exp_log hpos, hlog, Real.exp_zero]
 
 variable (P x) in
+open scoped Classical in
 /-- **At a place of good reduction of odd residue characteristic, `λ` and `λ − 1` are units.** -/
 lemma apply_genC_eq_one {v : FinitePlace (P.curve x).F} (hv : v ∉ (P.curve x).badAll)
     (h2 : residueChar v ≠ 2) : v (genC' P x) = 1 ∧ v (genC' P x - 1) = 1 := by
@@ -553,11 +627,13 @@ lemma apply_genC_eq_one {v : FinitePlace (P.curve x).F} (hv : v ∉ (P.curve x).
 
 /-! ### The local bounds for `ρ = r₁r₂ ∈ F_λ` -/
 
+open scoped Classical in
 /-- `|n|_v ≤ 1` at a finite place. -/
 lemma apply_natCast_le_one {T : Type*} [Field T] [NumberField T] (v : FinitePlace T) (n : ℕ) :
     v (n : T) ≤ 1 :=
   IsNonarchimedean.apply_natCast_le_one (f := v) (fun a b => FinitePlace.add_le v a b)
 
+open scoped Classical in
 /-- `max(1, a)^d = max(1, a^d)` for `a ≥ 0`. -/
 lemma max_one_pow {a : ℝ} (ha : 0 ≤ a) (d : ℕ) : max 1 a ^ d = max 1 (a ^ d) := by
   rcases le_total a 1 with h | h
@@ -566,14 +642,16 @@ lemma max_one_pow {a : ℝ} (ha : 0 ≤ a) (d : ℕ) : max 1 a ^ d = max 1 (a ^ 
 
 section Local
 
-variable {ρ : (P.curve x).F}
-  (hρ : algebraMap _ (L P x hℓ) ρ = veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ) *
-    veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ))
-include hρ
-
+open scoped Classical in
 /-- **The crude bound at a finite place of `F_λ`**:
 `|ρ|_v |√λ|_v |√(1 − λ)|_v |4ℓ|_v⁴ ≤ max(1, |λ|_v)⁴`. -/
-lemma finite_crude (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (v : FinitePlace (P.curve x).F) :
+lemma finite_crude
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
+    {ρ : (P.curve x).F}
+    (hρ : algebraMap _ (L P x hℓ) ρ = veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ) *
+      veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ))
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (v : FinitePlace (P.curve x).F) :
     v ρ * (v (sqrtLam P x) * v (sqrtOneSub P x) * v (((4 * ℓ : ℕ) : (P.curve x).F)) ^ 4) ≤
       max 1 (v (genC' P x)) ^ 4 := by
   obtain ⟨w, hwv⟩ := FinitePlace.exists_liesOver (K := L P x hℓ) v
@@ -601,8 +679,15 @@ lemma finite_crude (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (v : FinitePlace 
       _ = _ := by ring
   exact (pow_le_pow_iff_left₀ (by positivity) (by positivity) hd).mp hprod
 
+open scoped Classical in
 /-- **The gain at an odd multiplicative place of `F_λ`**: `|ρ|_v⁴ |j|_v^{ℓ − 1} ≤ 1`. -/
-lemma finite_tate (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLineOdd P x hℓ hℓ2 H)
+lemma finite_tate
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
+    {ρ : (P.curve x).F}
+    (hρ : algebraMap _ (L P x hℓ) ρ = veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ) *
+      veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ))
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLineOdd P x hℓ hℓ2 H)
     {v : FinitePlace (P.curve x).F} (hv : v ∈ (P.curve x).badAll) (h2 : residueChar v ≠ 2) :
     v ρ ^ 4 * v (P.curve x).E.j ^ (ℓ - 1) ≤ 1 := by
   obtain ⟨w, hwv⟩ := FinitePlace.exists_liesOver (K := L P x hℓ) v
@@ -622,9 +707,16 @@ lemma finite_tate (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphL
       _ ≤ 1 := hb
   exact (pow_le_pow_iff_left₀ (by positivity) zero_le_one hd).mp this
 
+open scoped Classical in
 /-- **The archimedean bound at an infinite place of `F_λ`**:
 `|ρ|_v |√λ|_v |√(1 − λ)|_v ≤ (2ℓ C₀ (4ℓ)²)²`. -/
-lemma infinite_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {c C₀ : ℝ}
+lemma infinite_bound
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
+    {ρ : (P.curve x).F}
+    (hρ : algebraMap _ (L P x hℓ) ρ = veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ) *
+      veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ))
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {c C₀ : ℝ}
     (hC₀ : ∀ (l : ℂ), |Real.log ‖l‖| ≤ c → |Real.log ‖l - 1‖| ≤ c →
       ∀ (W : WeierstrassCurve ℂ) [W.IsElliptic], W = legendre l →
       ∀ {N : ℕ}, 1 ≤ N → ∀ {a b : ℂ} (h : W.toAffine.Nonsingular a b),
@@ -656,10 +748,17 @@ lemma infinite_bound (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) {c C₀ : ℝ}
         mul_le_mul a₁ a₂ (by positivity) (le_trans (by positivity) a₁)
     _ = _ := by ring
 
+open scoped Classical in
 /-- **The local bound in logarithmic form** at a finite place `v` of `F_λ`:
 `log|ρ|_v ≤ −[v odd multiplicative]·((ℓ − 1)/4) log|j|_v + [v ∣ 2]·B₂(v) + 4 log|ℓ|_v^{-1}`,
 with `B₂(v) = (9/2)|log|λ|_v| + (1/2)|log|λ − 1|_v| + 4 log|4|_v^{-1}`. -/
-lemma log_apply_le (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLineOdd P x hℓ hℓ2 H)
+lemma log_apply_le
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    [Fintype (HL P x hℓ H)]
+    {ρ : (P.curve x).F}
+    (hρ : algebraMap _ (L P x hℓ) ρ = veluRatio (HL P x hℓ H) (T₁ P x hℓ) (R₁ P x hℓ) *
+      veluRatio (HL P x hℓ H) (T₂ P x hℓ) (R₂ P x hℓ))
+    (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2) (hgraph : IsGraphLineOdd P x hℓ hℓ2 H)
     (hρ0 : ρ ≠ 0) (v : FinitePlace (P.curve x).F) :
     Real.log (v ρ) ≤
       (if v ∈ (P.curve x).badAll ∧ residueChar v ≠ 2 then
@@ -763,6 +862,7 @@ section Sums
 
 variable {T : Type*} [Field T] [NumberField T]
 
+open scoped Classical in
 /-- `∑_{v ∈ S} log|y|_v = −log|N(y)|` for `S` containing the places where `|y|_v ≠ 1`. -/
 lemma sum_log_apply_eq {y : T} (hy : y ≠ 0) {S : Finset (FinitePlace T)}
     (hS : ∀ v : FinitePlace T, v y ≠ 1 → v ∈ S) :
@@ -775,6 +875,7 @@ lemma sum_log_apply_eq {y : T} (hy : y ≠ 0) {S : Finset (FinitePlace T)}
     rfl
   rw [← Real.log_prod (fun v _ => (FinitePlace.pos_iff.mpr hy).ne'), hprod, Real.log_inv]
 
+open scoped Classical in
 /-- `∑_{v ∈ S} log|n|_v = −[T : ℚ] log n` for a positive integer `n`. -/
 lemma sum_log_apply_natCast {n : ℕ} (hn : n ≠ 0) {S : Finset (FinitePlace T)}
     (hS : ∀ v : FinitePlace T, v (n : T) ≠ 1 → v ∈ S) :
@@ -789,6 +890,7 @@ end Sums
 
 /-! ### The global estimate -/
 
+open scoped Classical in
 /-- `[F : ℚ] (log q_∀ − log q₂) = ∑_{v bad, p_v ≠ 2} log|j|_v`. -/
 lemma finrank_mul_h_sub (x : Pt) :
     (Module.finrank ℚ (P.curve x).F : ℝ) * (P.h x - (P.localData x).heightEq 2) =
@@ -823,12 +925,14 @@ lemma finrank_mul_h_sub (x : Pt) :
   · exact absurd h (lt_irrefl 0)
   · exact h.le
 
-omit [Fintype (HL P x hℓ H)] in
+open scoped Classical in
 /-- **The isogeny estimate**:
 `((ℓ − 1)/4)(log q_∀ − log q₂) ≤ 10 log ℓ + 2 log(32 C₀) + 6c + 4 log 4`,
 for a point of a compactly bounded subset with bound `c` and `C₀ ≥ 1` a bound for the torsion
 `x`-coordinates of the Legendre curves over `ℂ` with parameters bounded by `c`. -/
-theorem main_bound {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2)
+theorem main_bound
+    {H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))}
+    {K : CompactlyBounded} (hx : x ∈ K.set) (hH : Nat.card H = ℓ) (hℓ2 : ℓ ≠ 2)
     (hgal : ∀ σ : (P.curve x).Fbar ≃ₐ[(P.curve x).F] (P.curve x).Fbar, ∀ Q ∈ H,
       galPointMap (P.curve x).F (P.curve x).E (P.curve x).Fbar σ Q ∈ H)
     (hgraph : IsGraphLineOdd P x hℓ hℓ2 H) {C₀ : ℝ} (hC₀1 : 1 ≤ C₀)
@@ -998,13 +1102,16 @@ end Cyclic
 
 /-! ### The cyclic-subgroup bound away from `2` -/
 
+open scoped Classical in
 /-- A bound `C₀ ≥ 1` for the `x`-coordinates of the `N`-torsion points (`‖x‖ ≤ C₀ N²`) of the
 Legendre curves over `ℂ` with `|log|λ||, |log|λ − 1|| ≤ c`. -/
 noncomputable def torsionConst (c : ℝ) : ℝ :=
   max 1 (Classical.choose (Iut.CyclicArch.legendre_torsion_x_le c))
 
+open scoped Classical in
 lemma one_le_torsionConst (c : ℝ) : 1 ≤ torsionConst c := le_max_left _ _
 
+open scoped Classical in
 lemma torsionConst_spec (c : ℝ) : ∀ (l : ℂ), |Real.log ‖l‖| ≤ c → |Real.log ‖l - 1‖| ≤ c →
     ∀ (W : WeierstrassCurve ℂ) [W.IsElliptic], W = legendre l →
     ∀ {N : ℕ}, 1 ≤ N → ∀ {a b : ℂ} (h : W.toAffine.Nonsingular a b),
@@ -1015,12 +1122,14 @@ lemma torsionConst_spec (c : ℝ) : ∀ (l : ℂ), |Real.log ‖l‖| ≤ c → 
   gcongr
   exact le_max_right _ _
 
+open scoped Classical in
 /-- The number `T_K` of the cyclic-subgroup bound: `(2 log(32 C₀) + 6c + 4 log 4)/6`. -/
 noncomputable def cyclicConst (K : CompactlyBounded) : ℝ :=
   (2 * Real.log (32 * torsionConst K.c) + 6 * K.c + 4 * Real.log 4) / 6
 
 variable (P : CurveProviders) (K : CompactlyBounded) (d : ℕ)
 
+open scoped Classical in
 /-- **[GenEll], Lemma 3.5 away from `2`, for a subgroup which is the graph line at the odd
 multiplicative places**: for `x ∈ K ∩ U^{≤ d}`, a prime `ℓ ≥ 7` and a Galois-stable subgroup
 `H ⊆ E_λ(ℚ̄)` of order `ℓ` which is the graph line `μ_ℓ` at every multiplicative place of odd
@@ -1035,6 +1144,7 @@ def CyclicGraphOddBoundHyp (TK : ℝ) : Prop :=
       IsGraphLineOdd P x hℓ (by omega) H →
       ((ℓ : ℝ) - 2) / 24 * (P.h x - (P.localData x).heightEq 2) ≤ 2 * Real.log ℓ + TK
 
+open scoped Classical in
 /-- **The cyclic-subgroup bound away from `2`** (the isogeny estimate
 `Iut.Tripod.Cyclic.main_bound`). -/
 theorem cyclicGraphOddBound : CyclicGraphOddBoundHyp P K d (cyclicConst K) := by
@@ -1057,6 +1167,7 @@ theorem cyclicGraphOddBound : CyclicGraphOddBoundHyp P K d (cyclicConst K) := by
     gcongr; linarith
   nlinarith
 
+open scoped Classical in
 /-- **The cyclic-subgroup bound away from `2`** in the form consumed by IUT IV, Corollary 2.2
 (`Iut.Tripod.CyclicBoundOddHyp`): `(ℓ − 2)/24 · (log q_∀ − log q₂) ≤ 2 log ℓ + T_K` under (P2)
 and the existence of an `ℓ`-cyclic subgroup. The graph-line property at the odd multiplicative

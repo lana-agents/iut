@@ -38,7 +38,6 @@ namespace Iut.Torsion
 
 open WeierstrassCurve WeierstrassCurve.Affine Polynomial
 
-open scoped Classical
 
 variable {K : Type*} [Field K] [CharZero K] {W : Affine K} (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0)
 
@@ -48,6 +47,8 @@ section univariate
 
 include ha₁ ha₃
 
+open scoped Classical in
+omit [CharZero K] in
 /-- `Ψ₂Sq(x) = 4 f(x)` for `a₁ = a₃ = 0`. -/
 theorem Ψ₂Sq_eval (x : K) :
     W.Ψ₂Sq.eval x = 4 * (x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆) := by
@@ -57,21 +58,29 @@ theorem Ψ₂Sq_eval (x : K) :
 variable {x y : K} (h : W.Nonsingular x y)
 include h
 
+open scoped Classical in
+omit [CharZero K] in
 /-- `Ψ₂Sq(x) = (2y)²` at a point of the curve. -/
 theorem Ψ₂Sq_eval_eq : W.Ψ₂Sq.eval x = (2 * y) ^ 2 := by
   rw [Ψ₂Sq_eval ha₁ ha₃, ← hQ_of ha₁ ha₃ h]; ring
 
+open scoped Classical in
+omit [CharZero K] in
 /-- `preΨₙ(x)` is the auxiliary sequence of `eₙ`. -/
 theorem preΨ_eval (n : ℤ) :
     (W.preΨ n).eval x = preNormEDS ((2 * y) ^ 4) (W.Ψ₃.eval x) (W.preΨ₄.eval x) n := by
   rw [preΨ, ← coe_evalRingHom, map_preNormEDS, coe_evalRingHom, eval_pow, Ψ₂Sq_eval_eq ha₁ ha₃ h,
     ← pow_mul]
 
+open scoped Classical in
+omit [CharZero K] in
 /-- `eₙ² = ΨSqₙ(x)`. -/
 theorem eds_sq_eq (n : ℤ) : eds W x y n ^ 2 = (W.ΨSq n).eval x := by
   rw [eds, normEDS, ΨSq, eval_mul, eval_pow, preΨ_eval ha₁ ha₃ h, mul_pow, ite_pow, one_pow,
     apply_ite (eval x), eval_one, Ψ₂Sq_eval_eq ha₁ ha₃ h]
 
+open scoped Classical in
+omit [CharZero K] in
 /-- `eₙ₊₁ eₙ₋₁ = preΨₙ₊₁(x) preΨₙ₋₁(x) · (Ψ₂Sq(x) if `n` is odd)`. -/
 theorem eds_succ_mul_pred (n : ℤ) : eds W x y (n + 1) * eds W x y (n - 1) =
     (W.preΨ (n + 1) * W.preΨ (n - 1) * if Even n then 1 else W.Ψ₂Sq).eval x := by
@@ -79,16 +88,20 @@ theorem eds_succ_mul_pred (n : ℤ) : eds W x y (n + 1) * eds W x y (n - 1) =
     Ψ₂Sq_eval_eq ha₁ ha₃ h, Int.even_add_one, Int.even_sub_one]
   split_ifs <;> ring
 
+open scoped Classical in
+omit [CharZero K] in
 /-- `Φₙ(x) = x ΨSqₙ(x) − eₙ₊₁ eₙ₋₁`. -/
 theorem Φ_eval (n : ℤ) :
     (W.Φ n).eval x = x * (W.ΨSq n).eval x - eds W x y (n + 1) * eds W x y (n - 1) := by
   rw [WeierstrassCurve.Φ, eval_sub, eval_mul, eval_X, eds_succ_mul_pred ha₁ ha₃ h]
 
+open scoped Classical in
 /-- `n • P = 0 ↔ ΨSqₙ(x) = 0` for an affine point `P = (x, y)`. -/
 theorem smul_eq_zero_iff_ΨSq (n : ℕ) :
     n • Point.some x y h = 0 ↔ (W.ΨSq n).eval x = 0 := by
   rw [smul_eq_zero_iff_eds ha₁ ha₃ h, ← eds_sq_eq ha₁ ha₃ h, pow_eq_zero_iff two_ne_zero]
 
+open scoped Classical in
 /-- If `ΨSqₙ(x) ≠ 0`, then `n • P = (X, Y)` is affine with `X ΨSqₙ(x) = Φₙ(x)`. -/
 theorem smul_eq_of_ΨSq_ne_zero (n : ℕ) (hne : (W.ΨSq n).eval x ≠ 0) :
     ∃ (X Y : K) (hXY : W.Nonsingular X Y), n • Point.some x y h = Point.some X Y hXY ∧
@@ -107,6 +120,7 @@ section finite
 
 include ha₁ ha₃
 
+open scoped Classical in
 /-- The `n`-torsion of `W(K)` is finite for `n ≠ 0`. -/
 theorem torsion_finite (n : ℕ) (hn : n ≠ 0) : {P : W.Point | n • P = 0}.Finite := by
   have hΨ : W.ΨSq n ≠ 0 := ΨSq_ne_zero W (by exact_mod_cast hn)
@@ -146,18 +160,22 @@ section count
 variable [IsAlgClosed K] [W.IsElliptic]
 include ha₁ ha₃
 
+open scoped Classical in
+omit [CharZero K] in
 /-- Every `x₁` is the `x`-coordinate of a point of `W`. -/
 theorem exists_point (x₁ : K) : ∃ y₁, W.Nonsingular x₁ y₁ := by
   obtain ⟨y₁, hy₁⟩ := IsAlgClosed.exists_pow_nat_eq (x₁ ^ 3 + W.a₂ * x₁ ^ 2 + W.a₄ * x₁ + W.a₆)
     two_pos
   exact ⟨y₁, equation_iff_nonsingular.mp ((equation_iff₀ ha₁ ha₃ x₁ y₁).mpr hy₁)⟩
 
+open scoped Classical in
 /-- The polynomial `hₓ₀ = Φₙ − x₀ ΨSqₙ` whose roots are the `x`-coordinates of the points `P`
 with `x(nP) = x₀`. -/
 noncomputable def fibrePoly (W : Affine K) (n : ℕ) (x₀ : K) : K[X] :=
   W.Φ n - C x₀ * W.ΨSq n
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [IsAlgClosed K] [WeierstrassCurve.IsElliptic W] in
 theorem natDegree_fibrePoly (n : ℕ) (hn : n ≠ 0) (x₀ : K) :
     (fibrePoly W n x₀).natDegree = n ^ 2 := by
   have hn' : ((n : ℤ) : K) ≠ 0 := by exact_mod_cast hn
@@ -168,18 +186,21 @@ theorem natDegree_fibrePoly (n : ℕ) (hn : n ≠ 0) (x₀ : K) :
   have : 1 ≤ n ^ 2 := Nat.one_le_pow _ _ (Nat.pos_of_ne_zero hn)
   omega
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [IsAlgClosed K] [WeierstrassCurve.IsElliptic W] in
 theorem fibrePoly_ne_zero (n : ℕ) (hn : n ≠ 0) (x₀ : K) : fibrePoly W n x₀ ≠ 0 := by
   intro h0
   have := natDegree_fibrePoly (W := W) n hn x₀
   rw [h0, natDegree_zero] at this
   exact hn (pow_eq_zero_iff two_ne_zero |>.mp this.symm)
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [CharZero K] [IsAlgClosed K] [WeierstrassCurve.IsElliptic W] in
 theorem eval_fibrePoly (n : ℕ) (x₀ x₁ : K) :
     (fibrePoly W n x₀).eval x₁ = (W.Φ n).eval x₁ - x₀ * (W.ΨSq n).eval x₁ := by
   rw [fibrePoly, eval_sub, eval_mul, eval_C]
 
+open scoped Classical in
 /-- `Φₙ` and `ΨSqₙ` have no common root: a common root `x₁` would give a point `P` with
 `nP = 0` and `(n+1)P = 0` or `(n−1)P = 0`. -/
 theorem ΨSq_ne_zero_of_Φ_eq_zero (n : ℕ) (hn : n ≠ 0) {x₁ : K} (hΦ : (W.Φ n).eval x₁ = 0) :
@@ -199,6 +220,7 @@ theorem ΨSq_ne_zero_of_Φ_eq_zero (n : ℕ) (hn : n ≠ 0) {x₁ : K} (hΦ : (W
     rw [smul_pred h₁ (Nat.one_le_iff_ne_zero.mpr hn), hnP, zero_sub, neg_eq_zero] at this
     exact Point.some_ne_zero h₁ this
 
+open scoped Classical in
 /-- A root of `hₓ₀` is not a root of `ΨSqₙ`. -/
 theorem ΨSq_ne_zero_of_root (n : ℕ) (hn : n ≠ 0) {x₀ x₁ : K}
     (hr : (fibrePoly W n x₀).IsRoot x₁) : (W.ΨSq n).eval x₁ ≠ 0 := by
@@ -207,10 +229,11 @@ theorem ΨSq_ne_zero_of_root (n : ℕ) (hn : n ≠ 0) {x₀ x₁ : K}
   rw [IsRoot, eval_fibrePoly, hΨ] at hr
   linear_combination hr
 
+open scoped Classical in
 /-- The points `P` with `nP = ±Q`, for `Q = (x₀, y₀)` with `y₀ ≠ 0`, are the affine points whose
 `x`-coordinate is a root of `hₓ₀`. -/
 theorem smul_eq_or_neg_iff (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.Nonsingular x₀ y₀)
-    (hy₀ : y₀ ≠ 0) (P : W.Point) :
+    (P : W.Point) :
     (n • P = Point.some x₀ y₀ hQ ∨ n • P = -Point.some x₀ y₀ hQ) ↔
       ∃ (x₁ y₁ : K) (h₁ : W.Nonsingular x₁ y₁), P = Point.some x₁ y₁ h₁ ∧
         (fibrePoly W n x₀).IsRoot x₁ := by
@@ -250,6 +273,8 @@ theorem smul_eq_or_neg_iff (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.Nons
     rw [hnP]
     exact (Point.X_eq_iff (h₁ := hXY) (h₂ := hQ)).mp hXx
 
+open scoped Classical in
+omit [CharZero K] [IsAlgClosed K] [WeierstrassCurve.IsElliptic W] in
 /-- The `y`-coordinate of a point `P` with `nP = ±Q` is nonzero. -/
 theorem y_ne_zero_of_smul_eq (n : ℕ) {x₀ y₀ : K} (hQ : W.Nonsingular x₀ y₀)
     (hy₀ : y₀ ≠ 0) {x₁ y₁ : K} (h₁ : W.Nonsingular x₁ y₁)
@@ -273,6 +298,7 @@ theorem y_ne_zero_of_smul_eq (n : ℕ) {x₀ y₀ : K} (hQ : W.Nonsingular x₀ 
       rw [negY_eq ha₁ ha₃, hy₁] at this
       exact hy₀ (neg_eq_zero.mp this.symm)
 
+open scoped Classical in
 omit ha₁ ha₃ in
 /-- A nonzero element of an algebraically closed field of characteristic `≠ 2` has exactly two
 square roots. -/
@@ -290,9 +316,11 @@ theorem card_sq_eq (c : K) (hc : c ≠ 0) : Nat.card {s : K // s ^ 2 = c} = 2 :=
   have : (2 : K) * t = 0 := by linear_combination h
   exact (mul_eq_zero.mp this).resolve_left two_ne_zero
 
+open scoped Classical in
 /-- The cubic `f(x) = x³ + a₂x² + a₄x + a₆`. -/
 noncomputable abbrev cubic (W : Affine K) (t : K) : K := t ^ 3 + W.a₂ * t ^ 2 + W.a₄ * t + W.a₆
 
+open scoped Classical in
 /-- The points with `nP = ±Q` are in bijection with the pairs `(x₁, y₁)` with `x₁` a root of
 `hₓ₀` and `y₁² = f(x₁)`. -/
 theorem card_fibre (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.Nonsingular x₀ y₀)
@@ -312,7 +340,7 @@ theorem card_fibre (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.Nonsingular 
   have hrange : Set.range φ =
       {P : W.Point | n • P = Point.some x₀ y₀ hQ ∨ n • P = -Point.some x₀ y₀ hQ} := by
     ext P
-    rw [Set.mem_setOf_eq, smul_eq_or_neg_iff ha₁ ha₃ n hn hQ hy₀, Set.mem_range]
+    rw [Set.mem_setOf_eq, smul_eq_or_neg_iff ha₁ ha₃ n hn hQ, Set.mem_range]
     constructor
     · rintro ⟨⟨⟨r, hr⟩, ⟨s, hs⟩⟩, rfl⟩
       exact ⟨r, s, _, rfl, (hmem r).mp hr⟩
@@ -335,7 +363,7 @@ theorem card_fibre (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.Nonsingular 
           rw [show r.1 ^ 3 + W.a₂ * r.1 ^ 2 + W.a₄ * r.1 + W.a₆ = cubic W r from rfl, h0] at this
           exact pow_eq_zero_iff two_ne_zero |>.mp this
         refine y_ne_zero_of_smul_eq ha₁ ha₃ n hQ hy₀ h₁ ?_ hy₁
-        exact (smul_eq_or_neg_iff ha₁ ha₃ n hn hQ hy₀ _).mpr ⟨_, _, h₁, rfl, (hmem r).mp r.2⟩)
+        exact (smul_eq_or_neg_iff ha₁ ha₃ n hn hQ _).mpr ⟨_, _, h₁, rfl, (hmem r).mp r.2⟩)
   rw [Nat.card_sigma]
   have : ∀ r : R, Nat.card {s : K // s ^ 2 = cubic W r} = 2 := fun r => by
     rw [card_sq_eq]
@@ -346,11 +374,12 @@ theorem card_fibre (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.Nonsingular 
       rw [show r.1 ^ 3 + W.a₂ * r.1 ^ 2 + W.a₄ * r.1 + W.a₆ = cubic W r from rfl, h0] at this
       exact pow_eq_zero_iff two_ne_zero |>.mp this
     refine y_ne_zero_of_smul_eq ha₁ ha₃ n hQ hy₀ h₁ ?_ hy₁
-    exact (smul_eq_or_neg_iff ha₁ ha₃ n hn hQ hy₀ _).mpr ⟨_, _, h₁, rfl, (hmem r).mp r.2⟩
+    exact (smul_eq_or_neg_iff ha₁ ha₃ n hn hQ _).mpr ⟨_, _, h₁, rfl, (hmem r).mp r.2⟩
   simp only [this, Finset.sum_const, Finset.card_univ, Fintype.card_coe, smul_eq_mul]
   ring
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [CharZero K] [IsAlgClosed K] [WeierstrassCurve.IsElliptic W] in
 /-- A fibre of the multiplication by `n` is in bijection with the `n`-torsion. -/
 theorem card_coset (n : ℕ) {Q P₀ : W.Point} (hP₀ : n • P₀ = Q) :
     Nat.card {P : W.Point // n • P = Q} = Nat.card (AddSubgroup.torsionBy W.Point n) := by
@@ -362,6 +391,7 @@ theorem card_coset (n : ℕ) {Q P₀ : W.Point} (hP₀ : n • P₀ = Q) :
   · rw [AddSubgroup.torsionBy.nsmul_iff, smul_sub, P.2, hP₀, sub_self]
   · rw [smul_add, hP₀, AddSubgroup.torsionBy.nsmul_iff.mp T.2, add_zero]
 
+open scoped Classical in
 /-- The number of points with `nP = ±Q` is twice `|E[n]|`. -/
 theorem card_fibre_eq_two_mul (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.Nonsingular x₀ y₀)
     (hy₀ : y₀ ≠ 0) [Finite (AddSubgroup.torsionBy W.Point n)] :
@@ -372,7 +402,7 @@ theorem card_fibre_eq_two_mul (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.N
     rw [degree_eq_natDegree (fibrePoly_ne_zero n hn x₀), natDegree_fibrePoly n hn]
     exact_mod_cast pow_ne_zero 2 hn)
   obtain ⟨y₁, h₁⟩ := exists_point ha₁ ha₃ x₁
-  have hmem := (smul_eq_or_neg_iff ha₁ ha₃ n hn hQ hy₀ (Point.some x₁ y₁ h₁)).mpr
+  have hmem := (smul_eq_or_neg_iff ha₁ ha₃ n hn hQ (Point.some x₁ y₁ h₁)).mpr
     ⟨x₁, y₁, h₁, rfl, hx₁⟩
   obtain ⟨P₀, hP₀⟩ : ∃ P₀ : W.Point, n • P₀ = Point.some x₀ y₀ hQ := by
     rcases hmem with h' | h'
@@ -400,7 +430,8 @@ theorem card_fibre_eq_two_mul (n : ℕ) (hn : n ≠ 0) {x₀ y₀ : K} (hQ : W.N
   rw [Nat.card_sum, h1, h2]
   ring
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [IsAlgClosed K] [WeierstrassCurve.IsElliptic W] in
 /-- The polynomial `w = Φₙ' ΨSqₙ − Φₙ ΨSqₙ'` is nonzero: its coefficient of degree `2n² − 2` is
 `n²`. -/
 theorem wpoly_ne_zero (n : ℕ) (hn : n ≠ 0) :
@@ -458,6 +489,7 @@ theorem wpoly_ne_zero (n : ℕ) (hn : n ≠ 0) :
   apply hNK
   linear_combination hc
 
+open scoped Classical in
 /-- There is an `x₀` with `f(x₀) ≠ 0` such that `hₓ₀` has only simple roots. -/
 theorem exists_good_x₀ (n : ℕ) (hn : n ≠ 0) :
     ∃ x₀ : K, cubic W x₀ ≠ 0 ∧ (fibrePoly W n x₀).roots.Nodup := by
@@ -483,7 +515,7 @@ theorem exists_good_x₀ (n : ℕ) (hn : n ≠ 0) :
     intro x₁
     rw [count_roots]
     by_contra hlt
-    push_neg at hlt
+    push Not at hlt
     obtain ⟨hr, hr'⟩ := (one_lt_rootMultiplicity_iff_isRoot (fibrePoly_ne_zero n hn x₀)).mp hlt
     have hΨ := ΨSq_ne_zero_of_root ha₁ ha₃ n hn hr
     apply hx₀
@@ -498,9 +530,10 @@ theorem exists_good_x₀ (n : ℕ) (hn : n ≠ 0) :
       field_simp at hr'
       linear_combination hr'
     · rw [IsRoot, eval_fibrePoly] at hr
-      show (W.Φ n).eval x₁ / (W.ΨSq n).eval x₁ = x₀
+      change (W.Φ n).eval x₁ / (W.ΨSq n).eval x₁ = x₀
       rw [div_eq_iff hΨ]; linear_combination hr
 
+open scoped Classical in
 /-- **The `n`-torsion of an elliptic curve over an algebraically closed field of
 characteristic `0` has `n²` elements.** -/
 theorem card_torsionBy_eq_sq (n : ℕ) (hn : n ≠ 0) :
@@ -527,6 +560,7 @@ theorem card_torsionBy_eq_sq (n : ℕ) (hn : n ≠ 0) :
     natDegree_fibrePoly n hn] at h2
   omega
 
+open scoped Classical in
 /-- **`E[ℓ] ≅ (ℤ/ℓ)²` for a prime `ℓ`.** -/
 theorem torsionBasis (ℓ : ℕ) [hℓ : Fact ℓ.Prime] :
     Nonempty (AddSubgroup.torsionBy W.Point ℓ ≃+ (Fin 2 → ZMod ℓ)) := by

@@ -36,7 +36,6 @@ characteristic lies over a place of `VBadOdd` (`exists_mem_VBadOdd`).
 namespace Iut.EllipticCurveData
 
 open WeierstrassCurve NumberField Iut
-open scoped Classical
 
 universe u
 
@@ -46,6 +45,7 @@ variable (C : EllipticCurveData.{u})
 
 /-! ### The odd multiplicative places -/
 
+open scoped Classical in
 /-- The places of `F_mod` of odd residue characteristic over which `E` has multiplicative
 reduction (at every place of `F` above, and there is one): `VBadOf ℓ` without the condition
 `p ≠ ℓ`. -/
@@ -53,6 +53,7 @@ def VBadOdd : Set (FinitePlace ↥(fieldOfModuli C.F C.E)) :=
   {v | residueChar v ≠ 2 ∧ (∃ w : FinitePlace C.F, FinitePlace.LiesOver w v) ∧
     ∀ w : FinitePlace C.F, FinitePlace.LiesOver w v → HasMultiplicativeReductionAt C.E w}
 
+open scoped Classical in
 /-- Every multiplicative place of `F` of odd residue characteristic lies over a place of
 `VBadOdd`. -/
 lemma exists_mem_VBadOdd (CA : C.CurveArithmetic) {w : FinitePlace C.F} (hw : w ∈ C.badAll)
@@ -61,6 +62,7 @@ lemma exists_mem_VBadOdd (CA : C.CurveArithmetic) {w : FinitePlace C.F} (hw : w 
   have hv2 : residueChar v ≠ 2 := by rwa [← CA.residueChar_liesOver v w hwv]
   exact ⟨v, ⟨hv2, ⟨w, hwv⟩, fun w' hw' => CA.mult_invariant v hv2 w w' hwv hw' hw⟩, hwv⟩
 
+open scoped Classical in
 /-- The place of `F` below a place of `K` over `VBadOdd` is multiplicative. -/
 lemma placeUnder_mem_badAll_of_isBadPlace {Fbar : Type u} [Field Fbar] [Algebra C.F Fbar]
     [IsAlgClosure C.F Fbar] (K : IntermediateField C.F Fbar) [NumberField ↥K]
@@ -68,6 +70,7 @@ lemma placeUnder_mem_badAll_of_isBadPlace {Fbar : Type u} [Field Fbar] [Algebra 
     (placeUnder w : FinitePlace C.F) ∈ C.badAll :=
   mult_placeUnder C.E K (fun _ hv w hwv => hv.2.2 w hwv) hw
 
+open scoped Classical in
 /-- The place of `F` below a place of `K` lies over the place of `F_mod` below. -/
 lemma placeUnder_liesOver_of_liesOver {Fbar : Type u} [Field Fbar] [Algebra C.F Fbar]
     (K : IntermediateField C.F Fbar) [NumberField ↥K] {w : FinitePlace ↥K}
@@ -78,6 +81,7 @@ lemma placeUnder_liesOver_of_liesOver {Fbar : Type u} [Field Fbar] [Algebra C.F 
   rw [hwv.over, placeUnder_maximalIdeal, Ideal.under_def, Ideal.under_def, Ideal.comap_comap,
     ← IsScalarTower.algebraMap_eq]
 
+open scoped Classical in
 /-- The place of `F` below a place of `K` over `VBadOdd` has odd residue characteristic. -/
 lemma residueChar_placeUnder_ne_two_of_isBadPlace {Fbar : Type u} [Field Fbar]
     [Algebra C.F Fbar] (K : IntermediateField C.F Fbar) [NumberField ↥K]
@@ -91,31 +95,37 @@ namespace ModEllRepData
 
 variable {C} {ℓ : ℕ} (R : C.ModEllRepData ℓ)
 
+open scoped Classical in
 /-- The classical decidable equality on `K`, as used by the Tate families. -/
 local instance (priority := 1100) instDecidableEqTorsionFieldR : DecidableEq ↥R.torsionField :=
   fun a b => Classical.propDecidable (a = b)
 
 /-! ### The ℓ-torsion over the torsion field -/
 
+open scoped Classical in
 /-- The base change of points `E(K) → E(F̄)`. -/
 noncomputable def bcKR : (curveK C.E R.torsionField).toAffine.Point →+
     Affine.Point (Affine.baseChange C.E C.Fbar) :=
   Affine.Point.map (W' := C.E) (S := C.F) (IsScalarTower.toAlgHom C.F ↥R.torsionField C.Fbar)
 
+open scoped Classical in
 lemma bcKR_injective : Function.Injective R.bcKR :=
   Affine.Point.map_injective (W' := C.E) (S := C.F)
     (IsScalarTower.toAlgHom C.F ↥R.torsionField C.Fbar)
 
+open scoped Classical in
 /-- The ℓ-torsion of `E(K)`. -/
 abbrev TKR : AddSubgroup (curveK C.E R.torsionField).toAffine.Point :=
   AddSubgroup.torsionBy (curveK C.E R.torsionField).toAffine.Point ℓ
 
+open scoped Classical in
 /-- The ℓ-torsion of `E(F̄)` (with the representation data as an argument, for field
 notation). -/
 abbrev TFbarR (_R : C.ModEllRepData ℓ) :
     AddSubgroup (Affine.Point (Affine.baseChange C.E C.Fbar)) :=
   AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ
 
+open scoped Classical in
 /-- Elements of the kernel of the mod-ℓ representation fix the ℓ-torsion. -/
 lemma galPointMap_eq_of_mem_ker_cyc {σ : C.Fbar ≃ₐ[C.F] C.Fbar} (hσ : σ ∈ R.rep.ker)
     (Q : ↥R.TFbarR) : galPointMap C.F C.E C.Fbar σ Q.1 = Q.1 := by
@@ -124,6 +134,7 @@ lemma galPointMap_eq_of_mem_ker_cyc {σ : C.Fbar ≃ₐ[C.F] C.Fbar} (hσ : σ �
   simp only [Units.val_one, Matrix.one_mulVec] at h
   exact congrArg Subtype.val (R.torsionBasis.injective h)
 
+open scoped Classical in
 /-- Every ℓ-torsion point of `E(F̄)` comes from `E(K)`. -/
 lemma exists_bcKR_eq (Q : Affine.Point (Affine.baseChange C.E C.Fbar)) (hQ : Q ∈ R.TFbarR) :
     ∃ P : (curveK C.E R.torsionField).toAffine.Point, R.bcKR P = Q := by
@@ -146,17 +157,20 @@ lemma exists_bcKR_eq (Q : Affine.Point (Affine.baseChange C.E C.Fbar)) (hQ : Q �
         (IsScalarTower.toAlgHom C.F ↥R.torsionField C.Fbar).injective _ _).mp h
     exact ⟨.some _ _ hns, rfl⟩
 
+open scoped Classical in
 lemma bcKR_mem_TFbarR {P : (curveK C.E R.torsionField).toAffine.Point} (hP : P ∈ R.TKR) :
     R.bcKR P ∈ R.TFbarR := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hP ⊢
   rw [← map_nsmul, hP, map_zero]
 
+open scoped Classical in
 lemma mem_TKR_of_bcKR {P : (curveK C.E R.torsionField).toAffine.Point}
     (hP : R.bcKR P ∈ R.TFbarR) : P ∈ R.TKR := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hP ⊢
   rw [← map_nsmul] at hP
   exact R.bcKR_injective (hP.trans (map_zero _).symm)
 
+open scoped Classical in
 /-- **The ℓ-torsion is rational over `K`**: `E(K)[ℓ] ≃ E(F̄)[ℓ]`. -/
 noncomputable def torsionEquivR : ↥R.TKR ≃+ ↥R.TFbarR :=
   AddEquiv.ofBijective (R.bcKR.restrict R.TKR |>.codRestrict _ fun P => R.bcKR_mem_TFbarR P.2)
@@ -165,9 +179,11 @@ noncomputable def torsionEquivR : ↥R.TKR ≃+ ↥R.TFbarR :=
       obtain ⟨P, hP⟩ := R.exists_bcKR_eq Q.1 Q.2
       exact ⟨⟨P, R.mem_TKR_of_bcKR (hP ▸ Q.2)⟩, Subtype.ext hP⟩⟩
 
+open scoped Classical in
 @[simp] lemma coe_torsionEquivR (P : ↥R.TKR) :
     (R.torsionEquivR P : Affine.Point _) = R.bcKR P := rfl
 
+open scoped Classical in
 /-- `E(K)[ℓ]` has `ℓ²` elements. -/
 lemma card_TKR : Nat.card R.TKR = ℓ ^ 2 := by
   rw [Nat.card_congr (R.torsionEquivR.trans R.torsionBasis).toEquiv, Nat.card_pi, Nat.card_zmod]
@@ -175,18 +191,22 @@ lemma card_TKR : Nat.card R.TKR = ℓ ^ 2 := by
 
 /-! ### The Galois action on `E(K)` -/
 
+open scoped Classical in
 /-- `K/F` is Galois (the fixed field of the normal subgroup `ker ρ`). -/
 instance isGalois_torsionField_cyc : IsGalois C.F ↥R.torsionField :=
   IsGalois.of_fixedField_normal_subgroup R.rep.ker
 
+open scoped Classical in
 /-- The restriction of `σ ∈ Gal(F̄/F)` to `K`. -/
 noncomputable def restrictKR (σ : C.Fbar ≃ₐ[C.F] C.Fbar) :
     ↥R.torsionField ≃ₐ[C.F] ↥R.torsionField :=
   AlgEquiv.restrictNormalHom R.torsionField σ
 
+open scoped Classical in
 lemma restrictKR_surjective : Function.Surjective R.restrictKR :=
   AlgEquiv.restrictNormalHom_surjective (F := C.F) (K₁ := ↥R.torsionField) C.Fbar
 
+open scoped Classical in
 lemma map_map_restrictKR (σ : C.Fbar ≃ₐ[C.F] C.Fbar)
     (P : (Affine.baseChange C.E ↥R.torsionField).Point) :
     Affine.Point.map (IsScalarTower.toAlgHom C.F ↥R.torsionField C.Fbar)
@@ -202,18 +222,21 @@ lemma map_map_restrictKR (σ : C.Fbar ≃ₐ[C.F] C.Fbar)
     exact AlgEquiv.restrictNormalHom_apply R.torsionField σ x
   rw [h]
 
+open scoped Classical in
 /-- Base change to `F̄` intertwines the restricted action with the action of `σ`. -/
 lemma bcKR_galK (σ : C.Fbar ≃ₐ[C.F] C.Fbar) (P : (curveK C.E R.torsionField).toAffine.Point) :
     R.bcKR (galK C.E R.torsionField (R.restrictKR σ) P) =
       galPointMap C.F C.E C.Fbar σ (R.bcKR P) :=
   R.map_map_restrictKR σ P
 
+open scoped Classical in
 lemma galK_mem_TKR (σ : ↥R.torsionField ≃ₐ[C.F] ↥R.torsionField)
     {P : (curveK C.E R.torsionField).toAffine.Point} (hP : P ∈ R.TKR) :
     galK C.E R.torsionField σ P ∈ R.TKR := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hP ⊢
   rw [← map_nsmul, hP, map_zero]
 
+open scoped Classical in
 /-- **The action of `Gal(K/F)` on `E(K)[ℓ]` is faithful**: an automorphism of `K/F` fixing
 the ℓ-torsion pointwise is trivial (it is the restriction of an element of `ker ρ`, which
 fixes `K = F̄^{ker ρ}`). -/
@@ -243,6 +266,7 @@ theorem eq_one_of_forall_galK_eq (σ : ↥R.torsionField ≃ₐ[C.F] ↥R.torsio
 
 /-! ### The Tate family at the odd multiplicative places -/
 
+open scoped Classical in
 /-- **The Tate family of `E` over `K` at the places over `VBadOdd`** (Tate's theorem at the
 odd multiplicative places, from the rationality of the ℓ-torsion over `K`,
 `Iut.tateFamilyOfTorsion`). -/

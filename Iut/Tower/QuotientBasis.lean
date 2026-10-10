@@ -58,9 +58,11 @@ lemma mk_eq_sum_repr_smul (b : Basis ι R S) (I : Ideal R) (x : S) :
   rw [map_sum]
   exact Finset.sum_congr rfl fun i _ => (mk_smul_mk I _ _).symm
 
+omit [Fintype ι] in
 /-- The induced family `b_i mod IS` is linearly independent over `R/I`. -/
-lemma linearIndependent_mk_basis (b : Basis ι R S) (I : Ideal R) :
+lemma linearIndependent_mk_basis [Finite ι] (b : Basis ι R S) (I : Ideal R) :
     LinearIndependent (R ⧸ I) fun i => Ideal.Quotient.mk (I.map (algebraMap R S)) (b i) := by
+  have := Fintype.ofFinite ι
   rw [Fintype.linearIndependent_iff]
   intro g hg i
   choose g' hg' using fun i => Ideal.Quotient.mk_surjective (g i)

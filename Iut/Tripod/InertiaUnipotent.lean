@@ -23,10 +23,10 @@ namespace Iut
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WeierstrassCurve
   WeierstrassCurve.Affine Iut.Tripod
 
-open scoped Classical
 
 variable {k K : Type} [Field k] [NumberField k] [Field K] [NumberField K] [Algebra k K]
 
+open scoped Classical in
 /-- The Legendre coefficients of `E_μ` base changed to `K`. -/
 lemma legendreCoeffs_baseChange (μ₀ : k) :
     (Affine.baseChange (legendre μ₀) K).a₁ = 0 ∧
@@ -48,6 +48,7 @@ lemma legendreCoeffs_baseChange (μ₀ : k) :
 
 set_option maxHeartbeats 1000000 in
 -- the three model cases each elaborate a conjugate action on the points of a twisted model
+open scoped Classical in
 /-- **Inertia acts unipotently on the prime-to-`p` torsion at a bad place**: for `σ` in the
 inertia group of `v` (odd residue characteristic), fixing `√−1` and `√μ`, and an `n`-torsion
 point `Q` of `E_μ(K)` (`n` odd, `v(n) = 1`), `σ^n Q = Q` when `v(μ) ≠ 1` or `v(μ − 1) ≠ 1`. -/

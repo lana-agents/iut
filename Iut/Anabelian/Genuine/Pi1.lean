@@ -53,27 +53,30 @@ universe u
 
 open WeierstrassCurve Polynomial
 
-open scoped Classical
 
 noncomputable section
 
 variable {k : Type u} [Field k] (E : WeierstrassCurve k) [E.IsElliptic]
 
+open scoped Classical in
 /-- The points of `E` over `Ω`. -/
 abbrev Pt : Type u := (E⁄(Ω E)).toAffine.Point
 
 /-! ### Division points of the generic point -/
 
+open scoped Classical in
 /-- A **compatible system of division points** of the generic point: `Q₁ = G` and
 `n Q_{nℓ} = Q_ℓ`. -/
 def Compatible (Q : ℕ → Pt E) : Prop :=
   Q 1 = genericPoint E ∧ ∀ n ℓ : ℕ, 0 < n → 0 < ℓ → n • Q (n * ℓ) = Q ℓ
 
+open scoped Classical in
 /-- **The chosen compatible system of division points** of the generic point (one exists
 since `E(Ω)` is divisible; see `compatible_divSys`). -/
 def divSys : ℕ → Pt E :=
   if h : ∃ Q, Compatible E Q then h.choose else fun _ => genericPoint E
 
+open scoped Classical in
 lemma exists_compatible (hdiv : ∀ n : ℕ, 0 < n → ∀ Q : Pt E, ∃ R : Pt E, n • R = Q) :
     ∃ Q, Compatible E Q := by
   -- `R m` with `(m + 1) • R (m + 1) = R m`, `R 0 = G`
@@ -116,48 +119,59 @@ lemma exists_compatible (hdiv : ∀ n : ℕ, 0 < n → ∀ Q : Pt E, ∃ R : Pt 
       exact Nat.eq_of_mul_eq_mul_left hℓ this
     rw [smul_smul, key, mul_smul, hd, hasc]
 
+open scoped Classical in
 lemma compatible_divSys (hdiv : ∀ n : ℕ, 0 < n → ∀ Q : Pt E, ∃ R : Pt E, n • R = Q) :
     Compatible E (divSys E) := by
   have h := exists_compatible E hdiv
   rw [divSys, dif_pos h]
   exact h.choose_spec
 
+open scoped Classical in
 instance [CharZero k] : CharZero (Ω E) :=
   charZero_of_injective_algebraMap (algebraMap k (Ω E)).injective
 
+open scoped Classical in
 lemma divisible [CharZero k] (n : ℕ) (hn : 0 < n) (Q : Pt E) : ∃ R : Pt E, n • R = Q :=
   haveI : CharZero (Ω E) := charZero_of_injective_algebraMap (algebraMap k (Ω E)).injective
   Torsion.nsmul_surjective (E⁄(Ω E)) n hn.ne' Q
 
+open scoped Classical in
 lemma compatible_divSys_of_charZero [CharZero k] : Compatible E (divSys E) :=
   compatible_divSys E (fun n hn Q => divisible E n hn Q)
 
 /-! ### The subgroups `Aut(Ω / L_X)`, `Aut(Ω / F_X)` -/
 
+open scoped Classical in
 /-- The effective level (the degenerate level `0` is replaced by `1`). -/
 def effLevel (ℓ : ℕ) : ℕ := if ℓ = 0 then 1 else ℓ
 
+open scoped Classical in
 lemma effLevel_pos (ℓ : ℕ) : 0 < effLevel ℓ := by
   unfold effLevel; split_ifs with h
   · exact one_pos
   · exact Nat.pos_of_ne_zero h
 
+open scoped Classical in
 /-- The division point `Q_ℓ` at the effective level. -/
 def Qpt (ℓ : ℕ) : Pt E := divSys E (effLevel ℓ)
 
+open scoped Classical in
 /-- The subgroup `M ∩ E(k)[ℓ]`, as a subgroup of `E(Ω)`. -/
 def Mbar (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) : AddSubgroup (Pt E) :=
   (M ⊓ AddSubgroup.torsionBy E.toAffine.Point (effLevel ℓ)).map (base E)
 
+open scoped Classical in
 /-- The admissible signs: `+1`, and `−1` when the `±`-flag is set. -/
 def SignOK (pm : Bool) (ε : ℤ) : Prop := ε = 1 ∨ (pm = true ∧ ε = -1)
 
+open scoped Classical in
 omit [E.IsElliptic] in
 lemma act_mem_Mbar (σ : Gal E) {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {T : Pt E}
     (hT : T ∈ Mbar E ℓ M) : act E σ T = T := by
   obtain ⟨T', -, rfl⟩ := hT
   exact act_base E σ T'
 
+open scoped Classical in
 /-- **`Aut(Ω / F_X)`** for `X = (E, ℓ, M, ±)`: the automorphisms `σ` with
 `σ(Q_ℓ) = ±Q_ℓ + T`, `T ∈ M` (sign `−` only with the `±`-flag). -/
 def Hgp (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) : Subgroup (Gal E) where
@@ -197,14 +211,17 @@ def Hgp (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) : Subgroup (G
 
 /-! ### Openness -/
 
+open scoped Classical in
 /-- The subfield generated over `P` by the coordinates of `Q_ℓ`. -/
 def QField (ℓ : ℕ) : IntermediateField (baseField E) (Ω E) :=
   IntermediateField.adjoin (baseField E) {ptX (Qpt E ℓ), ptY (Qpt E ℓ)}
 
+open scoped Classical in
 instance (ℓ : ℕ) : FiniteDimensional (baseField E) (QField E ℓ) :=
   IntermediateField.finiteDimensional_adjoin (fun x _ =>
     (Algebra.IsAlgebraic.isAlgebraic (R := baseField E) x).isIntegral)
 
+open scoped Classical in
 omit [E.IsElliptic] in
 lemma act_eq_self_of_fix (σ : Gal E) (Q : Pt E) (hx : σ (ptX Q) = ptX Q)
     (hy : σ (ptY Q) = ptY Q) : act E σ Q = Q := by
@@ -214,6 +231,7 @@ lemma act_eq_self_of_fix (σ : Gal E) (Q : Pt E) (hx : σ (ptX Q) = ptX Q)
     simp only [ptX, ptY] at hx hy
     congr 1
 
+open scoped Classical in
 lemma QField_fixing_le (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     (QField E ℓ).fixingSubgroup ≤ Hgp E ℓ M pm := by
   intro σ hσ
@@ -224,16 +242,19 @@ lemma QField_fixing_le (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool
   rw [act_eq_self_of_fix E σ _ (hfix _ (by simp)) (hfix _ (by simp)), one_smul, sub_self]
   exact zero_mem _
 
+open scoped Classical in
 lemma isOpen_Hgp (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     IsOpen (Hgp E ℓ M pm : Set (Gal E)) :=
   Subgroup.isOpen_mono (QField_fixing_le E ℓ M pm) (QField E ℓ).fixingSubgroup_isOpen
 
+open scoped Classical in
 lemma isClosed_Hgp (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     IsClosed (Hgp E ℓ M pm : Set (Gal E)) :=
   Subgroup.isClosed_of_isOpen _ (isOpen_Hgp E ℓ M pm)
 
 /-! ### Inertia and the fundamental groups -/
 
+open scoped Classical in
 /-- **The inertia generators of `X_M`**: the automorphisms of `Ω` over `L_X` (`σ(Q_ℓ) − Q_ℓ ∈ M`)
 lying in the inertia group of a valuation subring `W ⊆ Ω` centered on `X_M` (`k ⊆ W`,
 `x ∈ W`). -/
@@ -241,6 +262,7 @@ def Sgen (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) : Set (Gal E) :=
   {σ | act E σ (Qpt E ℓ) - Qpt E ℓ ∈ Mbar E ℓ M ∧ ∃ W : ValuationSubring (Ω E),
     (∀ c : k, algebraMap k (Ω E) c ∈ W) ∧ xG E ∈ W ∧ σ ∈ GaloisPi1.inertia W}
 
+open scoped Classical in
 /-- **The arithmetic étale fundamental group of the model orbicurve `(E, ℓ, M, ±)`**:
 `Aut(Ω / F_X) ⧸ ⟨⟨inertia over X_M⟩⟩`. -/
 def pi1Of (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) : ProfiniteGrp.{u} :=
@@ -248,12 +270,14 @@ def pi1Of (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) : Profinite
 
 /-! ### Covers -/
 
+open scoped Classical in
 lemma Qpt_of_compatible (hc : Compatible E (divSys E)) {n ℓ ℓ' : ℕ} (hn : 0 < n)
     (hℓ : n * ℓ' = ℓ) (hℓ' : 0 < ℓ') : Qpt E ℓ' = n • Qpt E ℓ := by
   have hℓ0 : ℓ ≠ 0 := by subst hℓ; exact (Nat.mul_pos hn hℓ').ne'
   simp only [Qpt, effLevel, if_neg hℓ0, if_neg hℓ'.ne']
   rw [← hℓ, hc.2 n ℓ' hn hℓ']
 
+open scoped Classical in
 omit [E.IsElliptic] in
 lemma nsmul_mem_Mbar {n ℓ ℓ' : ℕ} (hℓ : n * ℓ' = ℓ) (hℓ' : 0 < ℓ')
     {M M' : AddSubgroup E.toAffine.Point} (hM : ∀ P ∈ M, n • P ∈ M') {T : Pt E}
@@ -271,6 +295,7 @@ lemma nsmul_mem_Mbar {n ℓ ℓ' : ℕ} (hℓ : n * ℓ' = ℓ) (hℓ' : 0 < ℓ
   refine (AddSubgroup.torsionBy.nsmul_iff (A := E.toAffine.Point)).mpr ?_
   rw [smul_smul, mul_comm, hℓ, h1]
 
+open scoped Classical in
 omit [E.IsElliptic] in
 lemma Mbar_zero (M : AddSubgroup E.toAffine.Point) {T : Pt E} (hT : T ∈ Mbar E 0 M) : T = 0 := by
   obtain ⟨T₀, ⟨-, hT₀t⟩, rfl⟩ := hT
@@ -280,6 +305,7 @@ lemma Mbar_zero (M : AddSubgroup E.toAffine.Point) {T : Pt E} (hT : T ∈ Mbar E
   rw [one_smul] at h1
   rw [h1, map_zero]
 
+open scoped Classical in
 /-- The groups attached to a cover are nested (for a compatible system of division points). -/
 theorem Hgp_le (hc : Compatible E (divSys E)) {n ℓ ℓ' : ℕ} (hn : 0 < n) (hℓ : n * ℓ' = ℓ)
     {M M' : AddSubgroup E.toAffine.Point} (hM : ∀ P ∈ M, n • P ∈ M') {pm pm' : Bool}
@@ -302,6 +328,7 @@ theorem Hgp_le (hc : Compatible E (divSys E)) {n ℓ ℓ' : ℕ} (hn : 0 < n) (h
     rw [e]
     exact nsmul_mem_Mbar E hℓ hℓ' hM hσ
 
+open scoped Classical in
 /-- The inertia generators attached to a cover are nested. -/
 theorem Sgen_subset (hc : Compatible E (divSys E)) {n ℓ ℓ' : ℕ} (hn : 0 < n) (hℓ : n * ℓ' = ℓ)
     {M M' : AddSubgroup E.toAffine.Point} (hM : ∀ P ∈ M, n • P ∈ M') :
@@ -316,6 +343,7 @@ theorem Sgen_subset (hc : Compatible E (divSys E)) {n ℓ ℓ' : ℕ} (hn : 0 < 
   · rw [Qpt_of_compatible E hc hn hℓ hℓ', map_nsmul, ← nsmul_sub]
     exact nsmul_mem_Mbar E hℓ hℓ' hM hσ
 
+open scoped Classical in
 /-- **The homomorphism of fundamental groups induced by a cover** `(E, ℓ, M, ±) → (E, ℓ', M', ±')`
 (the map induced by `[n]`, `ℓ = n ℓ'`, `[n] M ⊆ M'`): induced by the inclusions
 `Aut(Ω / F_X) ⊆ Aut(Ω / F_Y)` (the embeddings `F_Y ⊆ F_X` of function fields are compatible with
@@ -326,6 +354,7 @@ def pi1MapOf {ℓ ℓ' : ℕ} {M M' : AddSubgroup E.toAffine.Point} {pm pm' : Bo
     GaloisPi1.pi1Map (isClosed_Hgp E ℓ M pm) (isClosed_Hgp E ℓ' M' pm') h.1 h.2
   else 1
 
+open scoped Classical in
 lemma continuous_pi1MapOf {ℓ ℓ' : ℕ} {M M' : AddSubgroup E.toAffine.Point} {pm pm' : Bool} :
     Continuous (pi1MapOf E (ℓ := ℓ) (ℓ' := ℓ') (M := M) (M' := M') (pm := pm) (pm' := pm')) := by
   unfold pi1MapOf

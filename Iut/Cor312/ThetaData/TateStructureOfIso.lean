@@ -20,7 +20,7 @@ the model `C • E` are by definition its coordinates after the change of variab
 namespace Iut
 
 open WeierstrassCurve TateCurvesTheta Iut.Anabelian
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -31,14 +31,23 @@ variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
 
 variable {E : WeierstrassCurve k}
 
+open scoped Classical in
+omit [Valued k (WithZero (Multiplicative ℤ))]
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k] in
 lemma xCoord_eq_ptX (C : VariableChange k) (P : E.toAffine.Point) :
     xCoord C P = ptX (vcPoint C E P) := by
   cases P <;> rfl
 
+open scoped Classical in
+omit [Valued k (WithZero (Multiplicative ℤ))]
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k] in
 lemma yCoord_eq_ptY (C : VariableChange k) (P : E.toAffine.Point) :
     yCoord C P = ptY (vcPoint C E P) := by
   cases P <;> rfl
 
+open scoped Classical in
+omit [Valued k (WithZero (Multiplicative ℤ))]
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k] in
 lemma xCoord_one (P : E.toAffine.Point) : xCoord 1 P = ptX P := by
   cases P with
   | zero => rfl
@@ -46,6 +55,9 @@ lemma xCoord_one (P : E.toAffine.Point) : xCoord 1 P = ptX P := by
     change (x - 0) / ((1 : kˣ) : k) ^ 2 = x
     simp
 
+open scoped Classical in
+omit [Valued k (WithZero (Multiplicative ℤ))]
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k] in
 lemma yCoord_one (P : E.toAffine.Point) : yCoord 1 P = ptY P := by
   cases P with
   | zero => rfl
@@ -55,14 +67,18 @@ lemma yCoord_one (P : E.toAffine.Point) : yCoord 1 P = ptY P := by
 
 namespace TateStructure
 
+open scoped Classical in
 /-- The Tate structure of `E_q` itself, under `TameResidueChar k`. -/
 def base (t : TateParameter k) (h12 : TameResidueChar k) : TateStructure t.tateCurve :=
   ofTateParameter t (fun _ hu => t.tatePoint_mem' h12.2 hu) h12
 
+open scoped Classical in
 @[simp] lemma base_t (t : TateParameter k) (h12 : TameResidueChar k) : (base t h12).t = t := rfl
 
+open scoped Classical in
 @[simp] lemma base_C (t : TateParameter k) (h12 : TameResidueChar k) : (base t h12).C = 1 := rfl
 
+open scoped Classical in
 /-- **The Tate structure of a curve isomorphic to a Tate curve**: `C • E = E_q` transports the
 uniformization of `E_q` to `E`. -/
 def ofVariableChange (t : TateParameter k) (C : VariableChange k) (hC : C • E = t.tateCurve)
@@ -84,24 +100,29 @@ def ofVariableChange (t : TateParameter k) (C : VariableChange k) (hC : C • E 
     rw [yCoord_eq_ptY, vcEquiv_symm_apply, ptY_pointCongr_symm]
     exact h0
 
+open scoped Classical in
 @[simp] lemma ofVariableChange_t (t : TateParameter k) (C : VariableChange k)
     (hC : C • E = t.tateCurve) (h12 : TameResidueChar k) :
     (ofVariableChange t C hC h12).t = t := rfl
 
+open scoped Classical in
 @[simp] lemma ofVariableChange_C (t : TateParameter k) (C : VariableChange k)
     (hC : C • E = t.tateCurve) (h12 : TameResidueChar k) :
     (ofVariableChange t C hC h12).C = C := rfl
 
+open scoped Classical in
 /-- **A Tate structure on `E` from one on a model `C • E = E'`**: the change of variables of
 `E'` to its Tate curve is composed with `C`. -/
 def ofCurveVariableChange {E' : WeierstrassCurve k} (C : VariableChange k) (h : C • E = E')
     (S : TateStructure E') (h12 : TameResidueChar k) : TateStructure E :=
   ofVariableChange S.t (S.C * C) (by rw [mul_smul, h]; exact S.hC) h12
 
+open scoped Classical in
 @[simp] lemma ofCurveVariableChange_t {E' : WeierstrassCurve k} (C : VariableChange k)
     (h : C • E = E') (S : TateStructure E') (h12 : TameResidueChar k) :
     (ofCurveVariableChange C h S h12).t = S.t := rfl
 
+open scoped Classical in
 @[simp] lemma ofCurveVariableChange_C {E' : WeierstrassCurve k} (C : VariableChange k)
     (h : C • E = E') (S : TateStructure E') (h12 : TameResidueChar k) :
     (ofCurveVariableChange C h S h12).C = S.C * C := rfl

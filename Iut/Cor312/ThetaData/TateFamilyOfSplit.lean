@@ -23,7 +23,7 @@ equivariance is automatic from the uniqueness of Tate structures
 namespace Iut
 
 open WeierstrassCurve TateCurvesTheta NumberField
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -33,12 +33,14 @@ variable {F : Type u} [Field F] [NumberField F] (E : WeierstrassCurve F) [E.IsEl
 variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar]
 variable (K : IntermediateField F Fbar) [NumberField ↥K]
 
+open scoped Classical in
 /-- The classical decidable equality on `K`, as used by the model orbicurves. -/
 local instance (priority := 1100) instDecidableEqIntermediateField' : DecidableEq ↥K :=
   fun a b => Classical.propDecidable (a = b)
 
 variable (w : FinitePlace ↥K)
 
+open scoped Classical in
 /-- **`E` over `K_w` is a Tate curve** at a place where `‖2‖ = 1`, `‖c₄‖ = 1`, `‖Δ‖ < 1` and the
 tangent quadratic at the node has a root modulo the maximal ideal. -/
 theorem exists_tateParameter_of_norms (h2 : ‖(2 : localCompletion w)‖ = 1)
@@ -51,6 +53,7 @@ theorem exists_tateParameter_of_norms (h2 : ‖(2 : localCompletion w)‖ = 1)
       C • curveKw E K w = t.tateCurve ∧ t.tateJ = (curveKw E K w).j :=
   exists_variableChange_tateCurve h2 (twelve_ne_zero w) (curveKw E K w) hc₄ hΔ hroot
 
+open scoped Classical in
 /-- **The Tate structure of `E` over `K_w`** from the norm conditions. -/
 def tateStructureOfNorms (h2 : ‖(2 : localCompletion w)‖ = 1)
     (hc₄ : ‖(curveKw E K w).c₄‖ = 1) (hΔ : ‖(curveKw E K w).Δ‖ < 1)
@@ -66,6 +69,7 @@ def tateStructureOfNorms (h2 : ‖(2 : localCompletion w)‖ = 1)
       (Classical.choose_spec (exists_tateParameter_of_norms E K w h2 hc₄ hΔ hroot))).1
     ⟨h2, twelve_ne_zero w⟩
 
+open scoped Classical in
 /-- **`E` over `K_w` is a Tate curve** at a place of split multiplicative reduction with `‖2‖ = 1`:
 there are a Tate parameter `q` and a change of variables `C` with `C • (E ×_K K_w) = E_q`. -/
 theorem exists_tateParameter_of_split (h2 : ‖(2 : localCompletion w)‖ = 1)
@@ -75,6 +79,7 @@ theorem exists_tateParameter_of_split (h2 : ‖(2 : localCompletion w)‖ = 1)
   exists_tateParameter_of_norms E K w h2 (norm_c₄_eq_one (curveKw E K w))
     (norm_Δ_lt_one (curveKw E K w)) ((exists_tangent_root (curveKw E K w)).imp fun _ hr => hr.2)
 
+open scoped Classical in
 /-- **The Tate structure of `E` over `K_w`** at a place of split multiplicative reduction. -/
 def tateStructureOfSplit (h2 : ‖(2 : localCompletion w)‖ = 1)
     [(curveKw E K w).HasSplitMultiplicativeReduction (w.maximalIdeal.adicCompletionIntegers ↥K)] :
@@ -84,6 +89,7 @@ def tateStructureOfSplit (h2 : ‖(2 : localCompletion w)‖ = 1)
 
 variable (ℓ : ℕ) {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
 
+open scoped Classical in
 /-- **The Tate family of `E` over the torsion field** from split multiplicative reduction at
 the places over `V_mod^bad` (of odd residue characteristic). -/
 def tateFamilyOfSplit (hVBad : ∀ v ∈ VBad, residueChar v ≠ 2)

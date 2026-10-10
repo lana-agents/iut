@@ -18,10 +18,10 @@ subgroup consists of `ℓ`-torsion points (`HasCyclicSubgroup.nsmul_eq_zero`,
 namespace Iut.EllipticCurveData
 
 open WeierstrassCurve NumberField
-open scoped Classical
 
 variable (C : EllipticCurveData.{u})
 
+open scoped Classical in
 /-- `E/F` has an **`ℓ`-cyclic subgroup scheme**: a `Gal(F̄/F)`-stable subgroup of `E(F̄)` of
 order `ℓ`. -/
 def HasCyclicSubgroup (ℓ : ℕ) : Prop :=
@@ -30,6 +30,7 @@ def HasCyclicSubgroup (ℓ : ℕ) : Prop :=
 
 variable {C}
 
+open scoped Classical in
 /-- An element of a subgroup of order `ℓ` is killed by `ℓ`. -/
 lemma nsmul_eq_zero_of_mem_of_card_eq {ℓ : ℕ}
     {H : AddSubgroup (Affine.Point (Affine.baseChange C.E C.Fbar))} (hH : Nat.card H = ℓ)
@@ -38,12 +39,14 @@ lemma nsmul_eq_zero_of_mem_of_card_eq {ℓ : ℕ}
   rw [hH] at h
   exact congrArg Subtype.val h
 
+open scoped Classical in
 /-- A subgroup of order `ℓ` lies in the `ℓ`-torsion. -/
 lemma le_torsionBy_of_card_eq {ℓ : ℕ}
     {H : AddSubgroup (Affine.Point (Affine.baseChange C.E C.Fbar))} (hH : Nat.card H = ℓ) :
     H ≤ AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ := fun _ hP =>
   AddSubgroup.torsionBy.nsmul_iff.mpr (nsmul_eq_zero_of_mem_of_card_eq hH hP)
 
+open scoped Classical in
 /-- The subgroup witnessing `HasCyclicSubgroup C ℓ` consists of `ℓ`-torsion points. -/
 lemma HasCyclicSubgroup.exists_le_torsionBy {ℓ : ℕ} (h : C.HasCyclicSubgroup ℓ) :
     ∃ H : AddSubgroup (Affine.Point (Affine.baseChange C.E C.Fbar)),

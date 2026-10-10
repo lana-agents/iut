@@ -33,7 +33,6 @@ universe u v
 
 open WeierstrassCurve Polynomial
 
-open scoped Classical
 
 noncomputable section
 
@@ -41,6 +40,7 @@ section Integral
 
 variable {K : Type v} [Field K] (W : ValuationSubring K)
 
+open scoped Classical in
 /-- A root of a monic polynomial with coefficients in an integrally closed subring `R` lies in
 `R`. -/
 lemma mem_of_monic_root' (R : Subring K) (hR : ∀ x : K, IsIntegral R x → x ∈ R) {p : K[X]}
@@ -56,6 +56,7 @@ lemma mem_of_monic_root' (R : Subring K) (hR : ∀ x : K, IsIntegral R x → x �
   have : q.map (algebraMap R K) = p := Polynomial.map_toSubring p R hsub
   rw [this, hx]
 
+open scoped Classical in
 /-- A root of a monic polynomial with coefficients in an integrally closed subalgebra `R` lies in
 `R`. -/
 lemma mem_of_monic_root_alg {k : Type*} [Field k] [Algebra k K] (R : Subalgebra k K)
@@ -66,17 +67,20 @@ lemma mem_of_monic_root_alg {k : Type*} [Field k] [Algebra k K] (R : Subalgebra 
   obtain ⟨q, hq, -, hqm⟩ := Polynomial.lifts_and_degree_eq_and_monic hl hp
   exact hR x ⟨q, hqm, by rw [eval₂_eq_eval_map, hq, hx]⟩
 
+open scoped Classical in
 lemma isIntegrallyClosed_valuationSubring (x : K) (hx : IsIntegral W.toSubring x) :
     x ∈ W.toSubring := by
   obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.mp (show IsIntegral W x from hx)
   rw [← hy]
   exact y.2
 
+open scoped Classical in
 /-- A root of a monic polynomial with `W`-integral coefficients is `W`-integral. -/
 lemma mem_of_monic_root {p : K[X]} (hp : p.Monic) (hc : ∀ i, p.coeff i ∈ W) {x : K}
     (hx : p.eval x = 0) : x ∈ W :=
   mem_of_monic_root' W.toSubring (isIntegrallyClosed_valuationSubring W) hp hc hx
 
+open scoped Classical in
 lemma valuation_eq_one_of_mem_of_inv_mem {c : K} (hc : c ∈ W) (hc' : c⁻¹ ∈ W) (h0 : c ≠ 0) :
     W.valuation c = 1 := by
   have h1 := (W.valuation_le_one_iff c).mpr hc
@@ -93,17 +97,20 @@ variable {k : Type u} [Field k] [CharZero k] {K : Type v} [Field K] [Algebra k K
   (W : ValuationSubring K) (hk : ∀ c : k, algebraMap k K c ∈ W)
   (R : Subalgebra k K) (hR : ∀ x : K, IsIntegral R x → x ∈ R) (hRW : R.toSubring ≤ W.toSubring)
 
+open scoped Classical in
 omit [CharZero k] in
 include hk in
 lemma valuation_algebraMap_eq_one {c : k} (hc : c ≠ 0) : W.valuation (algebraMap k K c) = 1 :=
   valuation_eq_one_of_mem_of_inv_mem W (hk c) (by rw [← map_inv₀]; exact hk _)
     ((map_ne_zero_iff _ (algebraMap k K).injective).mpr hc)
 
+open scoped Classical in
 omit [CharZero k] in
 include hk in
 lemma coeff_map_mem (p : k[X]) (i : ℕ) : (p.map (algebraMap k K)).coeff i ∈ W := by
   rw [coeff_map]; exact hk _
 
+open scoped Classical in
 omit [E₀.IsElliptic] in
 include ha₁ ha₃ hR in
 /-- The torsion points have `R`-integral `x`-coordinates. -/
@@ -127,6 +134,7 @@ lemma torsion_x_mem (n : ℕ) (hn : 0 < n) {x y : K} (h : (E₀⁄K).toAffine.No
   · exact (monic_C_mul_of_mul_leadingCoeff_eq_one (inv_mul_cancel₀ hc)).map _
   · simp only [p, Polynomial.map_mul, map_C, eval_mul, eval_C, ← hmap, hΨ, mul_zero]
 
+open scoped Classical in
 include ha₁ ha₃ hk hR hRW in
 /-- **Inertia fixes the division points of an integral point** (short model). Here `R ⊆ W` is an
 integrally closed subring containing `k` (e.g. `W` itself, or the coordinate ring of a curve whose
@@ -232,6 +240,7 @@ theorem inertia_fixes_of_nsmul_short' (σ : K →ₐ[k] K)
     have := torsion_x_mem E₀ ha₁ ha₃ R hR n hn h htor
     exact absurd ((hint x).mpr (hRW this)) (not_le.mpr hv)
 
+open scoped Classical in
 omit hR hRW in
 include ha₁ ha₃ hk in
 /-- **Inertia fixes the division points of an integral point** (short model, valuation-subring
@@ -260,29 +269,36 @@ section General
 
 variable {k : Type u} [Field k] [CharZero k] (E : WeierstrassCurve k) [E.IsElliptic]
 
+open scoped Classical in
 lemma pointCongr_some {K : Type*} [Field K] {W W' : WeierstrassCurve K} (h : W = W') {x y : K}
     (hxy : W.toAffine.Nonsingular x y) (hxy' : W'.toAffine.Nonsingular x y) :
     pointCongr h (Affine.Point.some x y hxy) = Affine.Point.some x y hxy' := by
   subst h; rfl
 
+open scoped Classical in
 /-- The model `y² = x³ + a₂'x² + a₄'x + a₆'` of `E` (completing the square). -/
 abbrev shortModel : WeierstrassCurve k := IntegralTorsion.completeSquare E • E
 
+open scoped Classical in
 /-- The change of variables to the short model, over `Ω`. -/
 abbrev vcΩ : VariableChange (Ω E) := (IntegralTorsion.completeSquare E).map (algebraMap k (Ω E))
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma vcΩ_smul : vcΩ E • (E⁄(Ω E)) = (shortModel E)⁄(Ω E) :=
   map_variableChange E (IntegralTorsion.completeSquare E) (algebraMap k (Ω E))
 
+open scoped Classical in
 /-- The points of `E` over `Ω` as points of the short model. -/
 def toShort : Pt E →+ ((shortModel E)⁄(Ω E)).toAffine.Point :=
   (pointCongr (vcΩ_smul E)).toAddMonoidHom.comp (vcEquiv (vcΩ E) (E⁄(Ω E))).toAddMonoidHom
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma toShort_injective : Function.Injective (toShort E) :=
   (pointCongr (vcΩ_smul E)).injective.comp (vcEquiv (vcΩ E) (E⁄(Ω E))).injective
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma toShort_some {x y : Ω E} (h : (E⁄(Ω E)).toAffine.Nonsingular x y)
     (h' : ((shortModel E)⁄(Ω E)).toAffine.Nonsingular (vcX (vcΩ E) x) (vcY (vcΩ E) x y)) :
@@ -291,10 +307,12 @@ lemma toShort_some {x y : Ω E} (h : (E⁄(Ω E)).toAffine.Nonsingular x y)
   rw [vcPoint_some]
   exact pointCongr_some _ _ _
 
+open scoped Classical in
 omit [E.IsElliptic] in
 lemma vcX_vcΩ (x : Ω E) : vcX (vcΩ E) x = x := by
   simp [vcX, IntegralTorsion.completeSquare, VariableChange.map]
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma toShort_act (σ : Gal E) (P : Pt E) :
     toShort E (act E σ P) = Affine.Point.map (W' := shortModel E) (S := k)
@@ -320,6 +338,7 @@ lemma toShort_act (σ : Gal E) (P : Pt E) :
     · simp only [vcY, VariableChange.map, map_div₀, map_sub, map_mul, map_pow, σk_apply, hσ,
         Units.coe_map, MonoidHom.coe_coe]
 
+open scoped Classical in
 /-- **Inertia fixes the division points of the generic point** (characteristic `0`): an
 automorphism `σ` of `Ω` over `k(x)` fixing `G` and lying in the inertia group of a valuation
 subring `W ⊇ k` with `x ∈ W` fixes every `Q` with `n Q = G`. -/
@@ -349,21 +368,26 @@ section GeneralField
 variable {k : Type u} [Field k] [CharZero k] (E : WeierstrassCurve k) [E.IsElliptic]
   (K : Type v) [Field K] [Algebra k K]
 
+open scoped Classical in
 /-- The change of variables to the short model, over `K`. -/
 abbrev vcK : VariableChange K := (IntegralTorsion.completeSquare E).map (algebraMap k K)
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma vcK_smul : vcK E K • (E⁄K) = (shortModel E)⁄K :=
   map_variableChange E (IntegralTorsion.completeSquare E) (algebraMap k K)
 
+open scoped Classical in
 /-- The points of `E` over `K` as points of the short model. -/
 def toShortK : (E⁄K).toAffine.Point →+ ((shortModel E)⁄K).toAffine.Point :=
   (pointCongr (vcK_smul E K)).toAddMonoidHom.comp (vcEquiv (vcK E K) (E⁄K)).toAddMonoidHom
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma toShortK_injective : Function.Injective (toShortK E K) :=
   (pointCongr (vcK_smul E K)).injective.comp (vcEquiv (vcK E K) (E⁄K)).injective
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma toShortK_some {x y : K} (h : (E⁄K).toAffine.Nonsingular x y)
     (h' : ((shortModel E)⁄K).toAffine.Nonsingular (vcX (vcK E K) x) (vcY (vcK E K) x y)) :
@@ -372,10 +396,12 @@ lemma toShortK_some {x y : K} (h : (E⁄K).toAffine.Nonsingular x y)
   rw [vcPoint_some]
   exact pointCongr_some _ _ _
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma vcX_vcK (x : K) : vcX (vcK E K) x = x := by
   simp [vcX, IntegralTorsion.completeSquare, VariableChange.map]
 
+open scoped Classical in
 omit [CharZero k] [E.IsElliptic] in
 lemma toShortK_map (σ : K →ₐ[k] K) (P : (E⁄K).toAffine.Point) :
     toShortK E K (Affine.Point.map (W' := E) (S := k) σ P) =
@@ -399,6 +425,7 @@ lemma toShortK_map (σ : K →ₐ[k] K) (P : (E⁄K).toAffine.Point) :
     · simp only [vcY, VariableChange.map, map_div₀, map_sub, map_mul, map_pow, hσ,
         Units.coe_map, MonoidHom.coe_coe]
 
+open scoped Classical in
 /-- **Inertia fixes the division points** (general Weierstrass model, over any field `K ⊇ k`,
 relative to an integrally closed subring `R ⊆ W` containing `k`). -/
 theorem inertia_fixes_of_nsmul (W : ValuationSubring K) (R : Subalgebra k K)

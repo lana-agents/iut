@@ -34,6 +34,7 @@ section Places
 
 variable {k K : Type*} [Field k] [NumberField k] [Field K] [NumberField K] [Algebra k K]
 
+omit [NumberField k] [NumberField K] in
 lemma algebraMap_ringOfIntegers_injective :
     Function.Injective (algebraMap (𝓞 k) (𝓞 K)) := by
   intro a b h
@@ -126,6 +127,7 @@ variable (K) (Fbar : Type*) [Field Fbar] [Algebra K Fbar]
 /-- The integral closure of `𝓞_K` in `F̄`. -/
 abbrev intClosure : Subalgebra (𝓞 K) Fbar := integralClosure (𝓞 K) Fbar
 
+omit [NumberField K] in
 lemma algebraMap_intClosure_injective :
     Function.Injective (algebraMap (𝓞 K) (intClosure K Fbar)) := by
   intro a b h
@@ -175,6 +177,7 @@ def decompGroup (w : FinitePlace K) : Subgroup (Fbar ≃ₐ[K] Fbar) where
     rw [← AlgEquiv.mul_apply, mul_inv_cancel, AlgEquiv.one_apply] at h
     exact h.symm
 
+omit [NumberField K] in
 /-- The set of automorphisms sending `x` to `y` is open (Krull topology). -/
 lemma isOpen_eval_eq [Algebra.IsIntegral K Fbar] (x y : Fbar) :
     IsOpen {σ : Fbar ≃ₐ[K] Fbar | σ x = y} := by
@@ -194,12 +197,13 @@ lemma isOpen_eval_eq [Algebra.IsIntegral K Fbar] (x y : Fbar) :
     rw [hset]
     exact (stabilizer_isOpen_of_isIntegral (K := K) x).preimage
       (continuous_const.mul continuous_id)
-  · push_neg at h
+  · push Not at h
     have : {σ : Fbar ≃ₐ[K] Fbar | σ x = y} = ∅ := by
       ext σ; simp [h σ]
     rw [this]
     exact isOpen_empty
 
+omit [NumberField K] in
 /-- The set of automorphisms sending `x` into (resp. out of) a set is open. -/
 lemma isOpen_eval_mem [Algebra.IsIntegral K Fbar] (x : Fbar) (S : Set Fbar) :
     IsOpen {σ : Fbar ≃ₐ[K] Fbar | σ x ∈ S} := by

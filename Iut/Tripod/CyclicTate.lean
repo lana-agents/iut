@@ -30,7 +30,7 @@ satisfies `(‖φ(r₁)‖ ‖φ(r₂)‖)⁴ ≤ ‖q‖^{ℓ − 1}` (`Iut.Cyc
 namespace Iut.CyclicTate
 
 open WeierstrassCurve TateCurvesTheta Iut.CyclicGain Iut.CyclicPoints Iut.Anabelian Heights.Velu
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -41,6 +41,7 @@ variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
 
 omit [Valued k (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k] in
+open scoped Classical in
 /-- `x` commutes with the point map. -/
 lemma xOf_pointMap (P : W.toAffine.Point) : xOf (pointMap W φ P) = φ (xOf P) := by
   rcases P with _ | ⟨x, y, h⟩
@@ -48,6 +49,8 @@ lemma xOf_pointMap (P : W.toAffine.Point) : xOf (pointMap W φ P) = φ (xOf P) :
     simp
   · rfl
 
+open scoped Classical in
+omit [CompleteSpace k] in
 /-- The Tate coordinate of the image of a nonzero point gives its `x`-coordinate. -/
 lemma map_xOf_eq {P : W.toAffine.Point} (hP : P ≠ 0) {u : kˣ}
     (hu : S.ofUnit u = pointMap W φ P) : φ (xOf P) = (S.C.u : k) ^ 2 * S.t.X u + S.C.r := by
@@ -56,6 +59,8 @@ lemma map_xOf_eq {P : W.toAffine.Point} (hP : P ≠ 0) {u : kˣ}
   · rw [pointMap_some] at hu
     exact x_eq_of_ofUnit S _ hu
 
+open scoped Classical in
+omit [CompleteSpace k] in
 /-- A normalized Tate coordinate of the image of a point. -/
 lemma exists_class (P : W.toAffine.Point) :
     ∃ u : kˣ, S.ofUnit u = pointMap W φ P ∧ ‖(S.t.q : k)‖ < ‖(u : k)‖ ∧ ‖(u : k)‖ ≤ 1 := by
@@ -65,11 +70,10 @@ lemma exists_class (P : W.toAffine.Point) :
   rw [← hu₀, S.ofUnit_eq_iff]
   exact ⟨-n, by rw [← mul_assoc, ← zpow_add, neg_add_cancel, zpow_zero, one_mul]⟩
 
-variable [W.IsElliptic] (H : AddSubgroup W.toAffine.Point) [Fintype H]
-
-omit [W.IsElliptic] in
+open scoped Classical in
 /-- **The Vélu ratio at a Tate place.** -/
-theorem ratio_bound {ℓ : ℕ} (hℓ : Odd ℓ) (hcard : Fintype.card H = ℓ) (h2 : ‖(2 : k)‖ = 1)
+theorem ratio_bound (H : AddSubgroup W.toAffine.Point) [Fintype H] {ℓ : ℕ} (hℓ : Odd ℓ)
+    (hcard : Fintype.card H = ℓ) (h2 : ‖(2 : k)‖ = 1)
     (hgraph : ∀ Q ∈ H, pointMap W φ Q ∈ S.graphLine ℓ) {T R : W.toAffine.Point}
     (hT0 : T ≠ 0) (hT2 : T + T = 0) (hRT : R + R = T) :
     ∃ τ : kˣ, S.ofUnit τ = pointMap W φ T ∧
@@ -154,10 +158,11 @@ theorem ratio_bound {ℓ : ℕ} (hℓ : Odd ℓ) (hcard : Fintype.card H = ℓ) 
           exact div_le_self (norm_nonneg _) hden
       _ ≤ ‖(S.t.q : k)‖ := hnum
 
-omit [W.IsElliptic] in
+open scoped Classical in
 /-- **The gain at a Tate place for two points of order `2`**: for distinct points `T₁ ≠ T₂` of
 order `2` with halves `R₁`, `R₂`, `(‖φ(r₁)‖ ‖φ(r₂)‖)⁴ ≤ ‖q‖^{ℓ − 1}`. -/
-theorem ratio_mul_bound {ℓ : ℕ} (hℓ : Odd ℓ) (hcard : Fintype.card H = ℓ) (h2 : ‖(2 : k)‖ = 1)
+theorem ratio_mul_bound (H : AddSubgroup W.toAffine.Point) [Fintype H] {ℓ : ℕ} (hℓ : Odd ℓ)
+    (hcard : Fintype.card H = ℓ) (h2 : ‖(2 : k)‖ = 1)
     (hgraph : ∀ Q ∈ H, pointMap W φ Q ∈ S.graphLine ℓ) {T₁ R₁ T₂ R₂ : W.toAffine.Point}
     (hT₁0 : T₁ ≠ 0) (hT₁2 : T₁ + T₁ = 0) (hRT₁ : R₁ + R₁ = T₁)
     (hT₂0 : T₂ ≠ 0) (hT₂2 : T₂ + T₂ = 0) (hRT₂ : R₂ + R₂ = T₂) (hT : T₁ ≠ T₂) :

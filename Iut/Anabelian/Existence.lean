@@ -58,7 +58,6 @@ namespace Iut.AdmissiblePrimeData
 universe u
 
 open WeierstrassCurve NumberField Iut Iut.Anabelian OrbicurveDataSection
-open scoped Classical
 
 noncomputable section
 
@@ -70,29 +69,39 @@ variable [NumberField ↥P.torsionField]
 
 attribute [local instance 1100] instDecidableEqK
 
+open scoped Classical in
 /-- `ℓ` is prime. -/
 local instance instFactPrime : Fact P.ℓ.Prime := ⟨P.ℓ_prime⟩
 
 /-! ## The chosen line and cusp -/
 
+open scoped Classical in
 /-- The first basis vector `e₁ ∈ E(K)[ℓ]`. -/
 def e₁ : ↥P.TK := P.basisK.symm (Pi.single 0 1)
 
+open scoped Classical in
 /-- The second basis vector `e₂ ∈ E(K)[ℓ]`. -/
 def e₂ : ↥P.TK := P.basisK.symm (Pi.single 1 1)
 
+open scoped Classical in
 /-- **The line `M = ⟨e₁⟩ ⊆ E(K)[ℓ]`** defining `C̲_K`. -/
 def M : AddSubgroup P.EK.toAffine.Point := AddSubgroup.zmultiples (P.e₁ : P.EK.toAffine.Point)
 
+open scoped Classical in
 /-- The line `⟨(1, 0)⟩ ⊆ 𝔽_ℓ²`. -/
 def M₀ : AddSubgroup (Fin 2 → ZMod P.ℓ) := AddSubgroup.zmultiples (Pi.single 0 1)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] [NumberField ↥P.torsionField] in
 lemma fact_prime : Fact P.ℓ.Prime := ⟨P.ℓ_prime⟩
 
+open scoped Classical in
 /-- The image in `𝔽_ℓ²` of a subgroup of `E(K)[ℓ]`. -/
 def toV (L : AddSubgroup P.EK.toAffine.Point) : AddSubgroup (Fin 2 → ZMod P.ℓ) :=
   (L.addSubgroupOf P.TK).map P.basisK.toAddMonoidHom
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma mem_toV_iff (L : AddSubgroup P.EK.toAffine.Point) (R : ↥P.TK) :
     P.basisK R ∈ P.toV L ↔ (R : P.EK.toAffine.Point) ∈ L := by
   unfold toV
@@ -105,6 +114,8 @@ lemma mem_toV_iff (L : AddSubgroup P.EK.toAffine.Point) (R : ↥P.TK) :
   · intro h
     exact ⟨R, (AddSubgroup.mem_addSubgroupOf).mpr h, rfl⟩
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma toV_injective {L L' : AddSubgroup P.EK.toAffine.Point} (hL : L ≤ P.TK) (hL' : L' ≤ P.TK)
     (h : P.toV L = P.toV L') : L = L' := by
   ext R
@@ -120,12 +131,16 @@ lemma toV_injective {L L' : AddSubgroup P.EK.toAffine.Point} (hL : L ≤ P.TK) (
     rw [← h] at this
     exact (P.mem_toV_iff L ⟨R, hRT⟩).mp this
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma card_toV {L : AddSubgroup P.EK.toAffine.Point} (hL : L ≤ P.TK) :
     Nat.card (P.toV L) = Nat.card L := by
   unfold toV
   rw [Nat.card_congr (AddSubgroup.equivMapOfInjective _ _ P.basisK.injective).symm.toEquiv,
     Nat.card_congr (AddSubgroup.addSubgroupOfEquivOfLe hL).toEquiv]
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] in
 lemma toV_map_galK (σ : Fbar ≃ₐ[F] Fbar) {L : AddSubgroup P.EK.toAffine.Point}
     (hL : L ≤ P.TK) :
     P.toV (L.map (P.galK (P.restrictK σ))) =
@@ -156,6 +171,8 @@ lemma toV_map_galK (σ : Fbar ≃ₐ[F] Fbar) {L : AddSubgroup P.EK.toAffine.Poi
     rw [← P.basisK_galTK]
     exact (P.mem_toV_iff _ _).mpr (AddSubgroup.mem_map_of_mem _ hR)
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma e₁_ne_zero : (P.e₁ : P.EK.toAffine.Point) ≠ 0 := by
   haveI := P.fact_prime
   intro h
@@ -165,10 +182,16 @@ lemma e₁_ne_zero : (P.e₁ : P.EK.toAffine.Point) ≠ 0 := by
   have := congrFun this 0
   simp at this
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma e₁_mem_TK : (P.e₁ : P.EK.toAffine.Point) ∈ P.TK := P.e₁.2
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma M_le_TK : P.M ≤ P.TK := (AddSubgroup.zmultiples_le).mpr P.e₁_mem_TK
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma card_M : Nat.card P.M = P.ℓ := by
   haveI := P.fact_prime
   unfold M
@@ -176,6 +199,8 @@ lemma card_M : Nat.card P.M = P.ℓ := by
   refine addOrderOf_eq_prime ?_ P.e₁_ne_zero
   exact (AddSubgroup.torsionBy.nsmul_iff).mp P.e₁_mem_TK
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma toV_M : P.toV P.M = P.M₀ := by
   ext v
   unfold toV M M₀
@@ -196,9 +221,13 @@ lemma toV_M : P.toV P.M = P.M₀ := by
       exact AddSubgroup.mem_zmultiples_iff.mpr ⟨n, rfl⟩
     · simp only [map_zsmul, e₁, AddEquiv.coe_toAddMonoidHom, AddEquiv.apply_symm_apply]
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma card_M₀ : Nat.card P.M₀ = P.ℓ := by
   rw [← P.toV_M, P.card_toV P.M_le_TK, P.card_M]
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma e₂_not_mem_M : (P.e₂ : P.EK.toAffine.Point) ∉ P.M := by
   haveI := P.fact_prime
   intro h
@@ -210,34 +239,45 @@ lemma e₂_not_mem_M : (P.e₂ : P.EK.toAffine.Point) ∉ P.M := by
   have := congrFun hn 1
   simp at this
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma single_one_not_mem_M₀ : (Pi.single 1 1 : Fin 2 → ZMod P.ℓ) ∉ P.M₀ := by
   have := P.e₂_not_mem_M
   rwa [← P.mem_toV_iff P.M P.e₂, P.toV_M, e₂, AddEquiv.apply_symm_apply] at this
 
 /-! ## The orbicurve data -/
 
+open scoped Classical in
 /-- **`C̲_K = (E_K, ℓ, M, ±)`.** -/
 def CKu : Orbicurve ↥P.torsionField := ⟨P.EK, P.ℓ, P.M, true⟩
 
+open scoped Classical in
 /-- **`X̲_K = (E_K, ℓ, M, −)`.** -/
 def XKu : Orbicurve ↥P.torsionField := ⟨P.EK, P.ℓ, P.M, false⟩
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma nsmul_mem_of_mem_M (R : P.EK.toAffine.Point) (hR : R ∈ P.M) : P.ℓ • R = 0 :=
   (AddSubgroup.torsionBy.nsmul_iff).mp (P.M_le_TK hR)
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma nsmul_mem_of_mem_M' (R : P.EK.toAffine.Point) (hR : R ∈ P.M)
     (S : AddSubgroup P.EK.toAffine.Point) : P.ℓ • R ∈ S := by
   rw [P.nsmul_mem_of_mem_M R hR]
   exact zero_mem _
 
+open scoped Classical in
 /-- `X_K` in the model. -/
 abbrev XK' : Orbicurve ↥P.torsionField :=
   (Orbicurve.oncePunctured E).baseChange (algebraMap F ↥P.torsionField)
 
+open scoped Classical in
 /-- `C_K` in the model. -/
 abbrev CK' : Orbicurve ↥P.torsionField :=
   (Orbicurve.pmQuotient (Orbicurve.oncePunctured E)).baseChange (algebraMap F ↥P.torsionField)
 
+open scoped Classical in
 /-- `X̲_K → X_K`. -/
 def coverXKu_XK : Orbicurve.Cover P.XKu P.XK' where
   E_eq := rfl
@@ -247,6 +287,7 @@ def coverXKu_XK : Orbicurve.Cover P.XKu P.XK' where
   M_le R hR := P.nsmul_mem_of_mem_M' R hR _
   pm_le h := absurd h Bool.false_ne_true
 
+open scoped Classical in
 /-- `X̲_K → C̲_K`. -/
 def coverXKu_CKu : Orbicurve.Cover P.XKu P.CKu where
   E_eq := rfl
@@ -259,6 +300,7 @@ def coverXKu_CKu : Orbicurve.Cover P.XKu P.CKu where
     exact hR
   pm_le _ := rfl
 
+open scoped Classical in
 /-- `X_K → C_K`. -/
 def coverXK_CK : Orbicurve.Cover P.XK' P.CK' where
   E_eq := rfl
@@ -271,6 +313,7 @@ def coverXK_CK : Orbicurve.Cover P.XK' P.CK' where
     exact hR
   pm_le _ := rfl
 
+open scoped Classical in
 /-- `C̲_K → C_K`. -/
 def coverCKu_CK : Orbicurve.Cover P.CKu P.CK' where
   E_eq := rfl
@@ -280,10 +323,13 @@ def coverCKu_CK : Orbicurve.Cover P.CKu P.CK' where
   M_le R hR := P.nsmul_mem_of_mem_M' R hR _
   pm_le _ := rfl
 
+open scoped Classical in
 /-- The second coordinate `E(K)[ℓ] → 𝔽_ℓ`, with kernel `M`. -/
 def coord₂ : ↥P.TK →+ ZMod P.ℓ :=
   (Pi.evalAddMonoidHom (fun _ => ZMod P.ℓ) 1).comp P.basisK.toAddMonoidHom
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma coord₂_ker : P.coord₂.ker = P.M.addSubgroupOf P.TK := by
   ext R
   rw [AddMonoidHom.mem_ker, AddSubgroup.mem_addSubgroupOf, ← P.mem_toV_iff, P.toV_M]
@@ -302,25 +348,34 @@ lemma coord₂_ker : P.coord₂.ker = P.M.addSubgroupOf P.TK := by
     have := congrFun hn 1
     simpa using this.symm
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma coord₂_surjective : Function.Surjective P.coord₂ := by
   intro a
   refine ⟨P.basisK.symm (Pi.single 1 a), ?_⟩
   simp [coord₂]
 
+open scoped Classical in
 /-- **The identification `Q = E(K)[ℓ]/M ≃ ℤ/ℓℤ`.** -/
 def QIso : P.CKu.Q ≃ ZMod P.ℓ :=
   ((QuotientAddGroup.quotientAddEquivOfEq P.coord₂_ker.symm).trans
     (QuotientAddGroup.quotientKerEquivOfSurjective P.coord₂ P.coord₂_surjective)).toEquiv
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma QIso_toQ (R : ↥P.TK) : P.QIso (P.CKu.toQ R) = P.coord₂ R := rfl
 
+open scoped Classical in
 /-- **The element `q = e₂ mod M`.** -/
 def q : P.CKu.Q := P.CKu.toQ P.e₂
 
+open scoped Classical in
+omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in
 lemma QIso_q : P.QIso P.q = 1 := by
   rw [q, QIso_toQ]
   simp [coord₂, e₂]
 
+open scoped Classical in
 /-- **The orbicurve data** `C̲_K`, `X̲_K`, `ε` of IUT I, Definition 3.1(d), (f), for the
 model. -/
 def orbicurveData (hcore : OrbicurveDataSection.HasCoreUniversally F E) :
@@ -341,12 +396,13 @@ def orbicurveData (hcore : OrbicurveDataSection.HasCoreUniversally F E) :
   QIso := P.QIso
   q := P.q
   q_ne_zero := by
-    show P.QIso P.q ≠ 0
+    change P.QIso P.q ≠ 0
     rw [P.QIso_q]
     exact one_ne_zero
   epsilon := P.CKu.cuspOf P.q
   epsilon_spec := rfl
 
+open scoped Classical in
 /-- `F̄` is algebraic over `K`. -/
 instance : Algebra.IsIntegral ↥P.torsionField Fbar :=
   have : Algebra.IsAlgebraic F Fbar := IsAlgClosure.isAlgebraic
@@ -356,6 +412,8 @@ instance : Algebra.IsIntegral ↥P.torsionField Fbar :=
 
 variable (TF : TateFamily E P.torsionField P.ℓ VBad)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] [NumberField ↥P.torsionField] in
 lemma map_map_symm (σ : ↥P.torsionField ≃ₐ[F] ↥P.torsionField)
     (R : (Affine.baseChange E ↥P.torsionField).Point) :
     Affine.Point.map (W' := E) (S := F) (σ : ↥P.torsionField →ₐ[F] ↥P.torsionField)
@@ -368,13 +426,18 @@ lemma map_map_symm (σ : ↥P.torsionField ≃ₐ[F] ↥P.torsionField)
   rw [this]
   exact Affine.Point.map_id R
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] [NumberField ↥P.torsionField] in
 lemma galK_galK_symm (σ : ↥P.torsionField ≃ₐ[F] ↥P.torsionField) (R : P.EK.toAffine.Point) :
     P.galK σ (P.galK σ.symm R) = R :=
   P.map_map_symm σ R
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] [NumberField ↥P.torsionField] in
 lemma galK_eq (σ : ↥P.torsionField ≃ₐ[F] ↥P.torsionField) :
     Iut.galK E P.torsionField σ = P.galK σ := rfl
 
+open scoped Classical in
 /-- **The good place over `v ∈ V_mod^bad`**: a place at which the graph line is `M` and the
 canonical generators are `±e₂ (mod M)`. -/
 theorem exists_good_place {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) :
@@ -433,11 +496,13 @@ theorem exists_good_place {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ V
     have h4 : R + P.galK σ g₀ - (P.galK σ g₀ - P.e₂) = R + P.e₂ := by abel
     rwa [h4] at h3
 
+open scoped Classical in
 /-- The chosen finite place of `K` over a finite place of `F_mod`. -/
 def sectFin (v : FinitePlace ↥(fieldOfModuli F E)) : FinitePlace ↥P.torsionField :=
   if hv : v ∈ VBad then (P.exists_good_place TF hv).choose
   else (FinitePlace.exists_liesOver (K := ↥P.torsionField) v).choose
 
+open scoped Classical in
 lemma sectFin_liesOver (v : FinitePlace ↥(fieldOfModuli F E)) :
     FinitePlace.LiesOver (P.sectFin TF v) v := by
   unfold sectFin
@@ -445,38 +510,47 @@ lemma sectFin_liesOver (v : FinitePlace ↥(fieldOfModuli F E)) :
   · exact (P.exists_good_place TF hv).choose_spec.choose
   · exact (FinitePlace.exists_liesOver (K := ↥P.torsionField) v).choose_spec
 
+open scoped Classical in
 lemma sectFin_isBad {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) :
     IsBadPlace E P.torsionField VBad (P.sectFin TF v) :=
   ⟨v, hv, P.sectFin_liesOver TF v⟩
 
+open scoped Classical in
 lemma sectFin_eq {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) :
     P.sectFin TF v = (P.exists_good_place TF hv).choose := by
   unfold sectFin
   rw [dif_pos hv]
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 lemma _root_.Iut.TateFamily.graphLineAt_congr {w w' : FinitePlace ↥P.torsionField} (h : w = w')
     (hw : IsBadPlace E P.torsionField VBad w) (hw' : IsBadPlace E P.torsionField VBad w') :
     TF.graphLineAt w hw = TF.graphLineAt w' hw' := by
   subst h
   rfl
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 lemma _root_.Iut.TateFamily.isCanonicalAt_congr {w w' : FinitePlace ↥P.torsionField} (h : w = w')
     (hw : IsBadPlace E P.torsionField VBad w) (hw' : IsBadPlace E P.torsionField VBad w')
     (R : P.EK.toAffine.Point) : TF.IsCanonicalAt w hw R ↔ TF.IsCanonicalAt w' hw' R := by
   subst h
   exact Iff.rfl
 
+open scoped Classical in
 lemma sectFin_graphLine {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) :
     TF.graphLineAt (P.sectFin TF v) (P.sectFin_isBad TF hv) = P.M :=
   (TF.graphLineAt_congr P (P.sectFin_eq TF hv) _ _).trans
     (P.exists_good_place TF hv).choose_spec.choose_spec.1
 
+open scoped Classical in
 lemma sectFin_canonical {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) (R)
     (hR : TF.IsCanonicalAt (P.sectFin TF v) (P.sectFin_isBad TF hv) R) :
     R - P.e₂ ∈ P.M ∨ R + P.e₂ ∈ P.M :=
   (P.exists_good_place TF hv).choose_spec.choose_spec.2 R
     ((TF.isCanonicalAt_congr P (P.sectFin_eq TF hv) _ _ R).mp hR)
 
+open scoped Classical in
 /-- **The valuation section `V ⊆ V(K)`** (IUT I, Definition 3.1(e)). -/
 def sect : ValuationSection F E Fbar VBad P where
   sectFin := P.sectFin TF
@@ -488,6 +562,7 @@ def sect : ValuationSection F E Fbar VBad P where
 
 variable {P TF}
 
+open scoped Classical in
 /-- The bad-place conditions hold at the chosen place. -/
 lemma localType {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) (b : Bool) :
     Orbicurve.IsTypeOneZModPM P.ℓ
@@ -504,6 +579,7 @@ lemma localType {v : FinitePlace ↥(fieldOfModuli F E)} (hv : v ∈ VBad) (b : 
 
 variable (P TF)
 
+open scoped Classical in
 /-- **The local theta data** `V` with the local conditions of IUT I, Definition 3.1(e), (f),
 for the model. -/
 def localThetaData (hcore : OrbicurveDataSection.HasCoreUniversally F E) :

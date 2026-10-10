@@ -52,14 +52,8 @@ check_root_imports Iut4Sec1 || exit 1
 # Fetch build cache
 lake exe cache get
 
-# Verify everything builds.
-#
-# Note: this is `lake build`, not `lake build --wfail`. Three pre-existing
-# `linter.unusedDecidableInType` warnings (Iut4Sec1/Real/LogError.lean and the two
-# mirrored Comparator/Challenge.lean statements) would fail --wfail, and the fix
-# changes theorem signatures that the comparator suite pins. The audits below are
-# the project's real honesty gate.
-lake build
+# Verify everything builds, with warnings as errors (as in CI).
+lake build --wfail
 
 # Comparator suite: shared public declarations must match between Challenge and
 # Solution, and the config must be complete.

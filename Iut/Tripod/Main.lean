@@ -76,9 +76,9 @@ constructions.
 namespace Iut.Tripod
 
 open Iut Iut.EllipticCurveData Iut.Anabelian NumberField Iut.LocalConstruct
-open scoped Classical
 
 
+open scoped Classical in
 /-- **Existence of suitable initial Θ-data for the Legendre curves**, with the constructed
 theta local data. -/
 theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
@@ -115,6 +115,7 @@ theorem concreteThetaDataExistence' {K : CompactlyBounded} {d : ℕ} {TK : ℝ}
   exact (CI.curve x hx).logQ_eq (CI.arith x hx) (CI.tate x hx) hℓ h7 (CI.modRep x hx ℓ hℓ)
     (hsl hx hℓ) hP2' hP5' hcore
 
+open scoped Classical in
 /-- **The Corollary 3.12 variant implies ABC on the tripod**, with propositional inputs. -/
 theorem abc_of_variant (h312 : Cor312VariantHolds) :
     tripodTheory.StatementII := by

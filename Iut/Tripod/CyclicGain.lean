@@ -341,7 +341,7 @@ end Iut.CyclicGain
 namespace Iut.CyclicGain
 
 open WeierstrassCurve TateCurvesTheta
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -349,6 +349,8 @@ variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
   {E : WeierstrassCurve k} (S : TateStructure E)
 
+open scoped Classical in
+omit [CompleteSpace k] in
 /-- **The `x`-coordinate of the point of a unit**: if `u` is a Tate coordinate of the affine point
 `(x, y)`, then `x = u_C² X(u) + r_C`. -/
 theorem x_eq_of_ofUnit {u : kˣ} {x y : k} (h : E.toAffine.Nonsingular x y)
@@ -369,6 +371,8 @@ theorem x_eq_of_ofUnit {u : kˣ} {x y : k} (h : E.toAffine.Nonsingular x y)
   field_simp [Units.ne_zero]
   ring
 
+open scoped Classical in
+omit [CompleteSpace k] in
 /-- **Tate coordinates of a nonzero point**: every nonzero point `P = (x, y)` of `E(k)` is the
 point of a unit `u` in the annulus `‖q‖ < ‖u‖ ≤ 1`, and `x = u_C² X(u) + r_C` for the change of
 variables `C` of the Tate structure. -/
@@ -398,6 +402,7 @@ theorem exists_unit_of_some {x y : k} (h : E.toAffine.Nonsingular x y) :
   field_simp [Units.ne_zero]
   ring
 
+open scoped Classical in
 /-- The norms `‖q‖^m` are strictly decreasing in `m`: from `‖q‖^k < ‖q‖^m ≤ 1` follows
 `0 ≤ m < k`. -/
 lemma zpow_bounds {a : ℝ} (ha₀ : 0 < a) (ha₁ : a < 1) {m : ℤ} {k : ℕ} (hlo : a ^ k < a ^ m)
@@ -411,6 +416,8 @@ lemma zpow_bounds {a : ℝ} (ha₀ : 0 < a) (ha₁ : a < 1) {m : ℤ} {k : ℕ} 
   · rw [← zpow_natCast] at hlo
     exact (zpow_lt_zpow_iff_right_of_lt_one₀ ha₀ ha₁).mp hlo
 
+open scoped Classical in
+omit [CompleteSpace k] in
 /-- **The Tate class of a point of order `2`**: its annulus representative is `−1` or has
 `‖τ‖² = ‖q‖`. -/
 theorem two_torsion_class {T : E.toAffine.Point} (hT0 : T ≠ 0) (hT2 : T + T = 0) {τ : kˣ}
@@ -442,6 +449,8 @@ theorem two_torsion_class {T : E.toAffine.Point} (hT0 : T ≠ 0) (hT2 : T + T = 
   · right
     rw [hnorm, h, zpow_one]
 
+open scoped Classical in
+omit [CompleteSpace k] in
 /-- **The Tate class of a half of a point of order `2`** reducing to the node:
 `‖ρ‖⁴ ∈ {‖q‖, ‖q‖³}`. -/
 theorem half_class_node {T R : E.toAffine.Point} (hRT : R + R = T) {τ ρ : kˣ}
@@ -474,6 +483,8 @@ theorem half_class_node {T R : E.toAffine.Point} (hRT : R + R = T) {τ ρ : kˣ}
   · left; rw [hnorm, h, zpow_one]
   · right; rw [hnorm, h]; norm_cast
 
+open scoped Classical in
+omit [CompleteSpace k] in
 /-- **The Tate class of a half of the point of order `2` of class `−1`**: `ρ² = −1` or
 `‖ρ‖² = ‖q‖`. -/
 theorem half_class_minus_one {T R : E.toAffine.Point} (hRT : R + R = T) {ρ : kˣ}

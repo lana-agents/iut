@@ -33,17 +33,18 @@ namespace Iut.Torsion
 
 open WeierstrassCurve WeierstrassCurve.Affine Polynomial
 
-open scoped Classical
 
 variable {F : Type*} [Field F] {W : Affine F}
 
 /-! ### The sequence `ψₙ(P)` -/
 
+open scoped Classical in
 /-- The value `ψₙ(x, y)` of the `n`-division polynomial at `(x, y)`, as the normalised EDS with
 initial values `2y`, `Ψ₃(x)`, `preΨ₄(x)` (for `a₁ = a₃ = 0`). -/
 noncomputable def eds (W : Affine F) (x y : F) (n : ℤ) : F :=
   normEDS (2 * y) (W.Ψ₃.eval x) (W.preΨ₄.eval x) n
 
+open scoped Classical in
 /-- The `2`-complement `cₙ` of the sequence `ψₙ(x, y)`: `ψₙ(P) cₙ = ψ₂ₙ(P)`. -/
 noncomputable def edsC (W : Affine F) (x y : F) (n : ℤ) : F :=
   complEDS₂ (2 * y) (W.Ψ₃.eval x) (W.preΨ₄.eval x) n
@@ -52,6 +53,7 @@ section eds
 
 variable (W : Affine F) (x y : F)
 
+open scoped Classical in
 @[simp] theorem eds_zero : eds W x y 0 = 0 := normEDS_zero ..
 @[simp] theorem eds_one : eds W x y 1 = 1 := normEDS_one ..
 @[simp] theorem eds_two : eds W x y 2 = 2 * y := normEDS_two ..
@@ -59,25 +61,31 @@ variable (W : Affine F) (x y : F)
 @[simp] theorem eds_four : eds W x y 4 = W.preΨ₄.eval x * (2 * y) := normEDS_four ..
 @[simp] theorem eds_neg (n : ℤ) : eds W x y (-n) = -eds W x y n := normEDS_neg ..
 
+open scoped Classical in
 theorem eds_even (m : ℤ) : eds W x y (2 * m) * (2 * y) =
     eds W x y (m - 1) ^ 2 * eds W x y m * eds W x y (m + 2) -
       eds W x y (m - 2) * eds W x y m * eds W x y (m + 1) ^ 2 :=
   normEDS_even ..
 
+open scoped Classical in
 theorem eds_odd (m : ℤ) : eds W x y (2 * m + 1) =
     eds W x y (m + 2) * eds W x y m ^ 3 - eds W x y (m - 1) * eds W x y (m + 1) ^ 3 :=
   normEDS_odd ..
 
+open scoped Classical in
 theorem eds_mul_edsC (k : ℤ) : eds W x y k * edsC W x y k = eds W x y (2 * k) :=
   normEDS_mul_complEDS₂ ..
 
+open scoped Classical in
 theorem edsC_mul (k : ℤ) : edsC W x y k * (2 * y) =
     eds W x y (k - 1) ^ 2 * eds W x y (k + 2) - eds W x y (k - 2) * eds W x y (k + 1) ^ 2 :=
   complEDS₂_mul_b ..
 
+open scoped Classical in
 @[simp] theorem edsC_one : edsC W x y 1 = 2 * y := complEDS₂_one ..
 @[simp] theorem edsC_two : edsC W x y 2 = W.preΨ₄.eval x := complEDS₂_two ..
 
+open scoped Classical in
 /-- `eₙ` is the value of Mathlib's `ψₙ` at `(x, y)`. -/
 theorem eds_eq_evalEval (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (n : ℤ) :
     eds W x y n = (W.ψ n).evalEval x y := by
@@ -85,12 +93,14 @@ theorem eds_eq_evalEval (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (n : ℤ) :
     evalEval_C, evalEval_C, ψ₂, evalEval_polynomialY, ha₁, ha₃]
   ring_nf
 
+open scoped Classical in
 /-- `eds 5 = preΨ₄(x)(2y)⁴ − Ψ₃(x)³`. -/
 theorem eds_five : eds W x y 5 = W.preΨ₄.eval x * (2 * y) ^ 4 - (W.Ψ₃.eval x) ^ 3 := by
   have := eds_odd W x y 2
   norm_num at this
   linear_combination this
 
+open scoped Classical in
 /-- `c₃ · 2y = (2y)²·e₅ − e₄²`. -/
 theorem edsC_three_mul :
     edsC W x y 3 * (2 * y) =
@@ -102,6 +112,7 @@ theorem edsC_three_mul :
 
 /-! ### The recursions in canonical index form -/
 
+open scoped Classical in
 theorem eds_two_mul_sub_one (m : ℤ) : eds W x y (2 * m - 1) =
     eds W x y (m + 1) * eds W x y (m - 1) ^ 3 - eds W x y (m - 2) * eds W x y m ^ 3 := by
   have := eds_odd W x y (m - 1)
@@ -109,19 +120,23 @@ theorem eds_two_mul_sub_one (m : ℤ) : eds W x y (2 * m - 1) =
     show m - 1 - 1 = m - 2 by ring, show m - 1 + 1 = m by ring] at this
   exact this
 
+open scoped Classical in
 theorem eds_two_mul_add_two (m : ℤ) :
     eds W x y (2 * m + 2) = eds W x y (m + 1) * edsC W x y (m + 1) := by
   rw [eds_mul_edsC, show 2 * (m + 1) = 2 * m + 2 by ring]
 
+open scoped Classical in
 theorem eds_two_mul_sub_two (m : ℤ) :
     eds W x y (2 * m - 2) = eds W x y (m - 1) * edsC W x y (m - 1) := by
   rw [eds_mul_edsC, show 2 * (m - 1) = 2 * m - 2 by ring]
 
+open scoped Classical in
 theorem edsC_two_mul (m : ℤ) : edsC W x y (2 * m) * (2 * y) =
     eds W x y (2 * m - 1) ^ 2 * eds W x y (2 * m + 2) -
       eds W x y (2 * m - 2) * eds W x y (2 * m + 1) ^ 2 :=
   edsC_mul W x y (2 * m)
 
+open scoped Classical in
 theorem edsC_two_mul_add_one (m : ℤ) : edsC W x y (2 * m + 1) * (2 * y) =
     eds W x y (2 * m) ^ 2 * eds W x y (2 * m + 3) -
       eds W x y (2 * m - 1) * eds W x y (2 * m + 2) ^ 2 := by
@@ -130,6 +145,7 @@ theorem edsC_two_mul_add_one (m : ℤ) : edsC W x y (2 * m + 1) * (2 * y) =
     show 2 * m + 1 - 2 = 2 * m - 1 by ring, show 2 * m + 1 + 1 = 2 * m + 2 by ring] at this
   exact this
 
+open scoped Classical in
 theorem eds_two_mul_add_three (m : ℤ) : eds W x y (2 * m + 3) =
     eds W x y (m + 3) * eds W x y (m + 1) ^ 3 - eds W x y m * eds W x y (m + 2) ^ 3 := by
   have := eds_odd W x y (m + 1)
@@ -146,29 +162,35 @@ section curve
 variable [NeZero (2 : F)] (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0)
 include ha₁ ha₃
 
+open scoped Classical in
 omit [NeZero (2 : F)] in
 theorem negY_eq (x y : F) : W.negY x y = -y := by
   simp [negY, ha₁, ha₃]
 
+open scoped Classical in
 omit [NeZero (2 : F)] in
 theorem equation_iff₀ (x y : F) :
     W.Equation x y ↔ y ^ 2 = x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆ := by
   rw [equation_iff, ha₁, ha₃]; simp
 
-omit [NeZero (2 : F)] in
+open scoped Classical in
+omit [NeZero (2 : F)] ha₃ in
 theorem addX_eq (x₁ x₂ ℓ : F) : W.addX x₁ x₂ ℓ = ℓ ^ 2 - W.a₂ - x₁ - x₂ := by
   simp [addX, ha₁]
 
+open scoped Classical in
 omit [NeZero (2 : F)] in
 theorem addY_eq (x₁ x₂ y₁ ℓ : F) :
     W.addY x₁ x₂ y₁ ℓ = -(ℓ * ((ℓ ^ 2 - W.a₂ - x₁ - x₂) - x₁) + y₁) := by
   simp [addY, negY, negAddY, addX, ha₁, ha₃]
 
-omit [NeZero (2 : F)] in
+open scoped Classical in
+omit [NeZero (2 : F)] ha₁ ha₃ in
 theorem slope_mul_of_X_ne {x₁ x₂ : F} (y₁ y₂ : F) (hx : x₁ ≠ x₂) :
     W.slope x₁ x₂ y₁ y₂ * (x₁ - x₂) = y₁ - y₂ := by
   rw [slope_of_X_ne hx, div_mul_cancel₀ _ (sub_ne_zero.mpr hx)]
 
+open scoped Classical in
 theorem slope_mul_of_Y_ne {x₁ y₁ : F} (hy : y₁ ≠ 0) :
     W.slope x₁ x₁ y₁ y₁ * (2 * y₁) = 3 * x₁ ^ 2 + 2 * W.a₂ * x₁ + W.a₄ := by
   have hy' : y₁ ≠ W.negY x₁ y₁ := by
@@ -182,18 +204,21 @@ theorem slope_mul_of_Y_ne {x₁ y₁ : F} (hy : y₁ ≠ 0) :
   rw [h2, div_mul_cancel₀ _ (mul_ne_zero (NeZero.ne 2) hy)]
   ring
 
+open scoped Classical in
 omit [NeZero (2 : F)] in
 theorem Ψ₃_eval (x : F) : W.Ψ₃.eval x = Ident.Ψ₃v W.a₂ W.a₄ W.a₆ x := by
   simp only [WeierstrassCurve.Ψ₃, b₂, b₄, b₆, b₈, ha₁, ha₃, Ident.Ψ₃v]
   simp only [eval_add, eval_mul, eval_pow, eval_C, eval_X, eval_ofNat]
   ring
 
+open scoped Classical in
 omit [NeZero (2 : F)] in
 theorem preΨ₄_eval (x : F) : W.preΨ₄.eval x = Ident.preΨ₄v W.a₂ W.a₄ W.a₆ x := by
   simp only [WeierstrassCurve.preΨ₄, b₂, b₄, b₆, b₈, ha₁, ha₃, Ident.preΨ₄v]
   simp only [eval_add, eval_mul, eval_pow, eval_C, eval_X, eval_ofNat]
   ring
 
+open scoped Classical in
 /-- `y ≠ 0` is the condition `y ≠ −y` for a point not to be `2`-torsion. -/
 theorem ne_negY_iff (x y : F) : y ≠ W.negY x y ↔ y ≠ 0 := by
   rw [negY_eq ha₁ ha₃]
@@ -212,6 +237,7 @@ section main
 
 variable [NeZero (2 : F)] (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) {x y : F} (h : W.Nonsingular x y)
 
+open scoped Classical in
 /-- The description of `n • P` by the division polynomials at `P = (x, y)`: `eₙ = 0 → nP = 0`,
 and if `eₙ ≠ 0` then `nP = (Xₙ, Yₙ)` with `Xₙ eₙ² = x eₙ² − eₙ₊₁ eₙ₋₁` and `2Yₙ eₙ³ = cₙ`. -/
 def Good (n : ℕ) : Prop :=
@@ -223,6 +249,8 @@ def Good (n : ℕ) : Prop :=
 
 variable {h}
 
+open scoped Classical in
+omit [NeZero (2 : F)] in
 theorem Good.smul_eq_zero_iff {n : ℕ} (hg : Good h n) :
     n • Point.some x y h = 0 ↔ eds W x y n = 0 := by
   refine ⟨fun h0 => ?_, hg.1⟩
@@ -231,28 +259,39 @@ theorem Good.smul_eq_zero_iff {n : ℕ} (hg : Good h n) :
   rw [hn] at h0
   exact Point.some_ne_zero hXY h0
 
+open scoped Classical in
+omit [NeZero (2 : F)] in
 theorem Good.eds_ne_zero {n : ℕ} (hg : Good h n) (hn : n • Point.some x y h ≠ 0) :
     eds W x y n ≠ 0 :=
   fun h0 => hn (hg.1 h0)
 
+open scoped Classical in
+omit [NeZero (2 : F)] in
 theorem Good.eds_eq_zero {n : ℕ} (hg : Good h n) (hn : n • Point.some x y h = 0) :
     eds W x y n = 0 :=
   hg.smul_eq_zero_iff.mp hn
 
 variable (h)
 
+open scoped Classical in
+omit [NeZero (2 : F)] in
 theorem good_zero : Good h 0 := by
   refine ⟨fun _ => zero_smul ℕ _, fun h0 => absurd (by simp) h0⟩
 
+open scoped Classical in
+omit [NeZero (2 : F)] in
 theorem good_one : Good h 1 := by
   refine ⟨fun h0 => absurd h0 (by simp), fun _ => ⟨x, y, h, one_smul ℕ _, by simp, by simp⟩⟩
 
 include ha₁ ha₃
 
+open scoped Classical in
+omit [NeZero (2 : F)] in
 theorem hQ_of (hXY : W.Nonsingular x y) :
     y ^ 2 = x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆ :=
   (equation_iff₀ ha₁ ha₃ x y).mp hXY.1
 
+open scoped Classical in
 /-- `2P` for `y ≠ 0`, with its coordinates. -/
 theorem two_smul_eq (hy : y ≠ 0) :
     2 • Point.some x y h =
@@ -260,6 +299,7 @@ theorem two_smul_eq (hy : y ≠ 0) :
         (nonsingular_add h h fun hxy => ((ne_negY_iff ha₁ ha₃ x y).mpr hy) hxy.2) := by
   rw [two_nsmul, Point.add_self_of_Y_ne ((ne_negY_iff ha₁ ha₃ x y).mpr hy)]
 
+open scoped Classical in
 theorem good_two (hy : y ≠ 0) : Good h 2 := by
   have hb : (2 : F) * y ≠ 0 := mul_ne_zero (NeZero.ne 2) hy
   refine ⟨fun h0 => absurd h0 (by simpa using hb), fun _ => ?_⟩
@@ -267,7 +307,7 @@ theorem good_two (hy : y ≠ 0) : Good h 2 := by
   have hI2 := Ident.double_X (hQ_of ha₁ ha₃ h) hμ hy
   have hI3 := Ident.double_Y (hQ_of ha₁ ha₃ h) hμ hy
   refine ⟨_, _, _, two_smul_eq ha₁ ha₃ h hy, ?_, ?_⟩
-  · rw [addX_eq ha₁ ha₃]
+  · rw [addX_eq ha₁]
     simp only [Nat.cast_ofNat, eds_two, Int.reduceAdd, eds_three, Int.reduceSub, eds_one,
       Ψ₃_eval ha₁ ha₃]
     linear_combination hI2
@@ -275,15 +315,17 @@ theorem good_two (hy : y ≠ 0) : Good h 2 := by
     simp only [Nat.cast_ofNat, eds_two, edsC_two, preΨ₄_eval ha₁ ha₃]
     linear_combination hI3
 
+open scoped Classical in
 include h in
 /-- The `x`-coordinate of `2P`: `x(2P)·(2y)² = x·(2y)² − Ψ₃(x)`. -/
 theorem two_smul_X (hy : y ≠ 0) :
     W.addX x x (W.slope x x y y) * (2 * y) ^ 2 = x * (2 * y) ^ 2 - W.Ψ₃.eval x := by
   have hμ := slope_mul_of_Y_ne ha₁ ha₃ (x₁ := x) hy
   have hI2 := Ident.double_X (hQ_of ha₁ ha₃ h) hμ hy
-  rw [addX_eq ha₁ ha₃, Ψ₃_eval ha₁ ha₃]
+  rw [addX_eq ha₁, Ψ₃_eval ha₁ ha₃]
   linear_combination hI2
 
+open scoped Classical in
 include h in
 /-- The `y`-coordinate of `2P`: `2y(2P)·(2y)³ = preΨ₄(x)`. -/
 theorem two_smul_Y (hy : y ≠ 0) :
@@ -293,6 +335,7 @@ theorem two_smul_Y (hy : y ≠ 0) :
   rw [addY_eq ha₁ ha₃, preΨ₄_eval ha₁ ha₃]
   linear_combination hI3
 
+open scoped Classical in
 theorem good_three (hy : y ≠ 0) : Good h 3 := by
   have h2 : (2 : F) ≠ 0 := NeZero.ne 2
   have hb : (2 : F) * y ≠ 0 := mul_ne_zero h2 hy
@@ -328,7 +371,7 @@ theorem good_three (hy : y ≠ 0) : Good h 3 := by
       intro hX
       apply hne
       rw [← hc, hX, sub_self, zero_mul]
-    have hp : W.slope X₂ x Y₂ y * (X₂ - x) = Y₂ - y := slope_mul_of_X_ne ha₁ ha₃ Y₂ y hXx
+    have hp : W.slope X₂ x Y₂ y * (X₂ - x) = Y₂ - y := slope_mul_of_X_ne Y₂ y hXx
     have h3P : (3 : ℕ) • Point.some x y h =
         Point.some (W.addX X₂ x (W.slope X₂ x Y₂ y)) (W.addY X₂ x Y₂ (W.slope X₂ x Y₂ y))
           (nonsingular_add h₂ h fun hxy => hXx hxy.1) := by
@@ -341,7 +384,7 @@ theorem good_three (hy : y ≠ 0) : Good h 3 := by
       rw [← h2P, two_nsmul, add_neg_cancel_right]
     rw [Point.neg_some, Point.add_of_X_ne hXx] at hsub
     have hsubX : W.addX X₂ x (W.slope X₂ x Y₂ (W.negY x y)) = x := (Point.some.inj hsub).1
-    rw [addX_eq ha₁ ha₃] at hsubX
+    rw [addX_eq ha₁] at hsubX
     have hD := Ident.chord_diff (a₂ := W.a₂) hXx hp hm
     rw [hsubX] at hD
     set lp := W.slope X₂ x Y₂ y with hlp
@@ -349,16 +392,16 @@ theorem good_three (hy : y ≠ 0) : Good h 3 := by
     · -- the `x`-coordinate
       have e4 : eds W x y (3 + 1) = W.preΨ₄.eval x * (2 * y) := by norm_num
       have e2 : eds W x y (3 - 1) = 2 * y := by norm_num
-      rw [Nat.cast_ofNat, eds_three, e4, e2, addX_eq ha₁ ha₃, ← hc, ← hY₂]
+      rw [Nat.cast_ofNat, eds_three, e4, e2, addX_eq ha₁, ← hc, ← hY₂]
       linear_combination (-16 * y ^ 4) * hD
     · -- the `y`-coordinate
       have hQ₂ := hQ_of ha₁ ha₃ h₂
       have hT : Y₂ * (2 * y) = -2 * y ^ 2 - (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄) * (X₂ - x) := by
-        rw [hY₂def, hX₂def, addY_eq ha₁ ha₃, addX_eq ha₁ ha₃]
+        rw [hY₂def, hX₂def, addY_eq ha₁ ha₃, addX_eq ha₁]
         linear_combination (-(μ ^ 2 - W.a₂ - x - x - x)) * hμ
       have hD2 : X₂ * (4 * y ^ 2) =
           (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄) ^ 2 - 4 * y ^ 2 * (W.a₂ + 2 * x) := by
-        rw [hX₂def, addX_eq ha₁ ha₃]
+        rw [hX₂def, addX_eq ha₁]
         linear_combination (μ * (2 * y) + (3 * x ^ 2 + 2 * W.a₂ * x + W.a₄)) * hμ
       have hG3 := Ident.three_Y (hQ_of ha₁ ha₃ h) hQ₂ hT hD2 hp hy
       have hc3 : edsC W x y 3 = (2 * y) * (W.preΨ₄.eval x * (2 * y) ^ 4 - (W.Ψ₃.eval x) ^ 3) -
@@ -374,21 +417,26 @@ theorem good_three (hy : y ≠ 0) : Good h 3 := by
 
 /-! ### The even step -/
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [NeZero (2 : F)] in
 /-- `Good n` when `eₙ = 0` and `n • P = 0`. -/
 theorem good_of_eq_zero {n : ℕ} (h0 : eds W x y n = 0) (hn : n • Point.some x y h = 0) :
     Good h n :=
   ⟨fun _ => hn, fun hne => absurd h0 hne⟩
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [NeZero (2 : F)] in
 theorem smul_succ (k : ℕ) : (k + 1) • Point.some x y h = k • Point.some x y h + Point.some x y h :=
   succ_nsmul _ _
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [NeZero (2 : F)] in
 theorem smul_pred {k : ℕ} (hk : 1 ≤ k) :
     (k - 1) • Point.some x y h = k • Point.some x y h - Point.some x y h := by
   conv_rhs => rw [← Nat.sub_add_cancel hk, succ_nsmul, add_sub_cancel_right]
 
+open scoped Classical in
+omit [NeZero (2 : F)] ha₁ ha₃ in
 /-- Coordinates of `Q + P` for `X ≠ x`. -/
 theorem add_eq_of_X_ne {X Y : F} (hQ : W.Nonsingular X Y) (hX : X ≠ x) :
     Point.some X Y hQ + Point.some x y h =
@@ -396,6 +444,8 @@ theorem add_eq_of_X_ne {X Y : F} (hQ : W.Nonsingular X Y) (hX : X ≠ x) :
         (nonsingular_add hQ h fun hxy => hX hxy.1) :=
   Point.add_of_X_ne hX
 
+open scoped Classical in
+omit [NeZero (2 : F)] ha₁ ha₃ in
 /-- Coordinates of `Q − P` for `X ≠ x`. -/
 theorem sub_eq_of_X_ne {X Y : F} (hQ : W.Nonsingular X Y) (hX : X ≠ x) :
     Point.some X Y hQ - Point.some x y h =
@@ -404,12 +454,16 @@ theorem sub_eq_of_X_ne {X Y : F} (hQ : W.Nonsingular X Y) (hX : X ≠ x) :
         (nonsingular_add hQ ((nonsingular_neg ..).mpr h) fun hxy => hX hxy.1) := by
   rw [sub_eq_add_neg, Point.neg_some, Point.add_of_X_ne hX]
 
+open scoped Classical in
+omit [NeZero (2 : F)] in
 /-- The slope of the chord through `Q` and `−P`. -/
 theorem slope_neg_mul {X Y : F} (hX : X ≠ x) :
     W.slope X x Y (W.negY x y) * (X - x) = Y + y := by
   rw [slope_of_X_ne hX, negY_eq ha₁ ha₃, div_mul_cancel₀ _ (sub_ne_zero.mpr hX)]
   ring
 
+open scoped Classical in
+omit ha₁ ha₃ [NeZero (2 : F)] in
 /-- If `Q = m • P = (X, Y)` with `(m − 1) • P ≠ 0` and `(m + 1) • P ≠ 0`, then `X ≠ x`. -/
 theorem X_ne_of_smul {m : ℕ} (hm : 1 ≤ m) {X Y : F} {hQ : W.Nonsingular X Y}
     (hmP : m • Point.some x y h = Point.some X Y hQ)
@@ -421,6 +475,7 @@ theorem X_ne_of_smul {m : ℕ} (hm : 1 ≤ m) {X Y : F} {hQ : W.Nonsingular X Y}
   · apply h₂
     rw [smul_succ h, hmP, h', neg_add_cancel]
 
+open scoped Classical in
 /-- Coordinates of `−(2 • P)` for `y ≠ 0`. -/
 theorem neg_two_smul_eq (hy : y ≠ 0) :
     -(2 • Point.some x y h) =
@@ -430,6 +485,7 @@ theorem neg_two_smul_eq (hy : y ≠ 0) :
           (nonsingular_add h h fun hxy => ((ne_negY_iff ha₁ ha₃ x y).mpr hy) hxy.2)) := by
   rw [two_smul_eq ha₁ ha₃ h hy, Point.neg_some]
 
+open scoped Classical in
 /-- The even step of the induction: `Good (2m)` from `Good (m − 1)`, `Good m`, `Good (m + 1)`,
 for `m ≥ 2`. -/
 theorem good_even (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m)
@@ -507,7 +563,7 @@ theorem good_even (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m)
       2 * (-(μ * ((μ ^ 2 - W.a₂ - X - X) - X) + Y)) * eds W x y (2 * m) ^ 3 =
         edsC W x y (2 * m) by
     refine ⟨fun h0 => absurd h0 (by rwa [hcast]), fun _ => ⟨_, _, _, h2Q, ?_, ?_⟩⟩
-    · rw [hcast, addX_eq ha₁ ha₃]; exact key.1
+    · rw [hcast, addX_eq ha₁]; exact key.1
     · rw [hcast, addY_eq ha₁ ha₃]; exact key.2
   have hc : (x - x₂) * (2 * y) ^ 2 = W.Ψ₃.eval x := by linear_combination -hX₂
   -- abbreviations
@@ -547,7 +603,7 @@ theorem good_even (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m)
       rw [hsmul, hmP, hQP0, smul_neg, hn2P]
     rw [h2Q] at h2Q'
     obtain ⟨hxq, hyq⟩ := Point.some.inj h2Q'
-    rw [addX_eq ha₁ ha₃] at hxq
+    rw [addX_eq ha₁] at hxq
     rw [addY_eq ha₁ ha₃] at hyq
     rw [hyq, hxq, hny₂]
     -- the sequence
@@ -593,7 +649,7 @@ theorem good_even (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m)
       rw [hsmul, hmP, hQP, h2P]
     rw [h2Q] at h2Q'
     obtain ⟨hxq, hyq⟩ := Point.some.inj h2Q'
-    rw [addX_eq ha₁ ha₃] at hxq
+    rw [addX_eq ha₁] at hxq
     rw [addY_eq ha₁ ha₃] at hyq
     rw [hyq, hxq]
     rw [hem1] at r_odd1 r_odd2 r_cm
@@ -631,18 +687,18 @@ theorem good_even (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m)
     obtain ⟨X', Y', h', hh, -, -⟩ := g₃.2 hep
     rw [hh] at h0
     exact Point.some_ne_zero h' h0
-  have hXx : X ≠ x := X_ne_of_smul ha₁ ha₃ h (by omega) hmP hmm0 hpp0
+  have hXx : X ≠ x := X_ne_of_smul h (by omega) hmP hmm0 hpp0
   obtain ⟨Xp, Yp, hQp, hpP, hXp, hYp⟩ := g₃.2 hep
   obtain ⟨Xm, Ym, hQm, hmmP, hXm, hYm⟩ := g₁.2 hem1
   have hpP' := hpP
-  rw [smul_succ h, hmP, add_eq_of_X_ne ha₁ ha₃ h hQ hXx] at hpP'
+  rw [smul_succ h, hmP, add_eq_of_X_ne h hQ hXx] at hpP'
   obtain ⟨hXp', hYp'⟩ := Point.some.inj hpP'
   have hmmP' := hmmP
-  rw [smul_pred h (by omega), hmP, sub_eq_of_X_ne ha₁ ha₃ h hQ hXx] at hmmP'
+  rw [smul_pred h (by omega), hmP, sub_eq_of_X_ne h hQ hXx] at hmmP'
   obtain ⟨hXm', hYm'⟩ := Point.some.inj hmmP'
-  rw [addX_eq ha₁ ha₃] at hXp' hXm'
+  rw [addX_eq ha₁] at hXp' hXm'
   rw [addY_eq ha₁ ha₃] at hYp' hYm'
-  have hp : W.slope X x Y y * (X - x) = Y - y := slope_mul_of_X_ne ha₁ ha₃ Y y hXx
+  have hp : W.slope X x Y y * (X - x) = Y - y := slope_mul_of_X_ne Y y hXx
   have hmn : W.slope X x Y (W.negY x y) * (X - x) = Y + y := slope_neg_mul ha₁ ha₃ hXx
   have hI5 := Ident.double_X_sub (hQ_of ha₁ ha₃ hQ) (hQ_of ha₁ ha₃ h) hXx hp hmn hμ hY0
   have hI6 := Ident.double_Y_mul (hQ_of ha₁ ha₃ hQ) (hQ_of ha₁ ha₃ h) hXx hp hmn hμ hY0
@@ -666,6 +722,7 @@ theorem good_even (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m)
           ((Xm - X) ^ 2 * (2 * Yp) - (X - Xp) ^ 2 * (2 * Ym)) * hX
     exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right hb)
 
+open scoped Classical in
 /-- The odd step of the induction: `Good (2m + 1)` from `Good (m − 1)`, …, `Good (m + 2)`, for
 `m ≥ 2`. -/
 theorem good_odd (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m) (g₁ : Good h (m - 1)) (g₂ : Good h m)
@@ -801,15 +858,15 @@ theorem good_odd (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m) (g₁ : Good h (m - 1))
   -- `Q − Q⁺ = −P` and `Q⁺ − Q = P`
   have hsub : Point.some X Y hQ - Point.some Xp Yp hQp = -Point.some x y h := by
     rw [← hmP, ← hpP, smul_succ h]; abel
-  rw [sub_eq_of_X_ne ha₁ ha₃ hQp hQ hXX, Point.neg_some] at hsub
+  rw [sub_eq_of_X_ne hQp hQ hXX, Point.neg_some] at hsub
   obtain ⟨hsx, -⟩ := Point.some.inj hsub
   have hsub' : Point.some Xp Yp hQp - Point.some X Y hQ = Point.some x y h := by
     rw [← hmP, ← hpP, smul_succ h]; abel
-  rw [sub_eq_of_X_ne ha₁ ha₃ hQ hQp (Ne.symm hXX)] at hsub'
+  rw [sub_eq_of_X_ne hQ hQp (Ne.symm hXX)] at hsub'
   obtain ⟨hsx', hsy'⟩ := Point.some.inj hsub'
-  rw [addX_eq ha₁ ha₃] at hsx hsx'
+  rw [addX_eq ha₁] at hsx hsx'
   rw [addY_eq ha₁ ha₃] at hsy'
-  have hl : W.slope X Xp Y Yp * (X - Xp) = Y - Yp := slope_mul_of_X_ne ha₁ ha₃ Y Yp hXX
+  have hl : W.slope X Xp Y Yp * (X - Xp) = Y - Yp := slope_mul_of_X_ne Y Yp hXX
   have hn : W.slope Xp X Yp (W.negY X Y) * (Xp - X) = Yp + Y :=
     slope_neg_mul ha₁ ha₃ (Ne.symm hXX)
   have hn' : W.slope X Xp Y (W.negY Xp Yp) * (X - Xp) = Y + Yp := slope_neg_mul ha₁ ha₃ hXX
@@ -838,7 +895,7 @@ theorem good_odd (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m) (g₁ : Good h (m - 1))
     exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right
       (mul_ne_zero (pow_ne_zero _ hem) hep))
   refine ⟨fun h0 => absurd h0 hEp0, fun _ => ⟨_, _, _, hQQ.symm, ?_, ?_⟩⟩
-  · rw [addX_eq ha₁ ha₃, h1, h4, h3]
+  · rw [addX_eq ha₁, h1, h4, h3]
     linear_combination (-E1 ^ 4 * E2 ^ 4) * hD
   · rw [addY_eq ha₁ ha₃, h1]
     rw [h3, h4] at r_C
@@ -852,7 +909,8 @@ theorem good_odd (hy : y ≠ 0) (m : ℕ) (hm : 2 ≤ m) (g₁ : Good h (m - 1))
 
 /-! ### The `2`-torsion points and the main theorem -/
 
-omit ha₁ ha₃ in
+open scoped Classical in
+omit ha₁ ha₃ [NeZero (2 : F)] in
 /-- The odd terms of the auxiliary sequence with `b = 0` are nonzero when `c ≠ 0`. -/
 theorem preNormEDS'_odd_ne_zero {c d : F} (hc : c ≠ 0) (k : ℕ) :
     preNormEDS' (0 : F) c d (2 * k + 1) ≠ 0 := by
@@ -880,12 +938,15 @@ theorem preNormEDS'_odd_ne_zero {c d : F} (hc : c ≠ 0) (k : ℕ) :
       simp only [mul_one, mul_zero, sub_zero]
       exact mul_ne_zero h2 (pow_ne_zero _ h1)
 
+open scoped Classical in
 omit [NeZero (2 : F)] ha₁ ha₃ in
 /-- The even terms of `eₙ` vanish at a `2`-torsion point. -/
 theorem eds_eq_zero_of_even (hy : y = 0) {n : ℤ} (hn : Even n) : eds W x y n = 0 := by
   rw [eds, normEDS, if_pos hn, hy]; ring
 
+open scoped Classical in
 include h in
+omit [NeZero (2 : F)] in
 /-- `Ψ₃(x) ≠ 0` at a `2`-torsion point `(x, 0)`: `Ψ₃(x) = −f'(x)²` there. -/
 theorem Ψ₃_ne_zero_of_y_eq_zero (hy : y = 0) : W.Ψ₃.eval x ≠ 0 := by
   have hf := hQ_of ha₁ ha₃ h
@@ -904,7 +965,9 @@ theorem Ψ₃_ne_zero_of_y_eq_zero (hy : y = 0) : W.Ψ₃.eval x ≠ 0 := by
   rw [this, ← hf, zero_pow two_ne_zero, mul_zero, zero_sub, neg_ne_zero]
   exact pow_ne_zero _ hf'
 
+open scoped Classical in
 include h in
+omit [NeZero (2 : F)] in
 /-- The odd terms of `eₙ` do not vanish at a `2`-torsion point. -/
 theorem eds_ne_zero_of_odd (hy : y = 0) (k : ℕ) : eds W x y (2 * k + 1) ≠ 0 := by
   have hc := Ψ₃_ne_zero_of_y_eq_zero ha₁ ha₃ h hy
@@ -913,6 +976,8 @@ theorem eds_ne_zero_of_odd (hy : y = 0) (k : ℕ) : eds W x y (2 * k + 1) ≠ 0 
     show (2 * (k : ℤ) + 1) = ((2 * k + 1 : ℕ) : ℤ) by push_cast; ring, preNormEDS_ofNat]
   simpa using preNormEDS'_odd_ne_zero hc k
 
+open scoped Classical in
+omit [NeZero (2 : F)] in
 /-- `Good n` for every `n` at a `2`-torsion point `(x, 0)`. -/
 theorem good_of_y_eq_zero (hy : y = 0) (n : ℕ) : Good h n := by
   have h2P : 2 • Point.some x y h = 0 := by
@@ -922,13 +987,14 @@ theorem good_of_y_eq_zero (hy : y = 0) (n : ℕ) : Good h n := by
   · refine good_of_eq_zero h (eds_eq_zero_of_even hy ⟨k, by push_cast; ring⟩) ?_
     rw [mul_nsmul, h2P, smul_zero]
   · have hne := eds_ne_zero_of_odd ha₁ ha₃ h hy k
-    refine ⟨fun h0 => absurd (by push_cast; exact h0) hne, fun _ => ⟨x, y, h, ?_, ?_, ?_⟩⟩
+    refine ⟨fun h0 => absurd (by exact h0) hne, fun _ => ⟨x, y, h, ?_, ?_, ?_⟩⟩
     · rw [succ_nsmul, mul_nsmul, h2P, smul_zero, zero_add]
     · have e1 : eds W x y (((2 * k + 1 : ℕ) : ℤ) + 1) = 0 :=
         eds_eq_zero_of_even hy ⟨k + 1, by push_cast; ring⟩
       rw [e1, zero_mul, sub_zero]
     · rw [hy, edsC, complEDS₂, if_neg (Int.not_even_iff_odd.mpr ⟨k, by push_cast; ring⟩)]; ring
 
+open scoped Classical in
 /-- **The division polynomials describe the multiples of a point**: for every nonsingular point
 `P = (x, y)` of `y² = x³ + a₂x² + a₄x + a₆` and every `n`, `eₙ = ψₙ(x, y) = 0` iff `nP = 0`, and
 if `eₙ ≠ 0` then `nP = (Xₙ, Yₙ)` with `Xₙ eₙ² = x eₙ² − eₙ₊₁ eₙ₋₁` and `2Yₙ eₙ³ = cₙ`. -/
@@ -950,6 +1016,7 @@ theorem good (n : ℕ) : Good h n := by
       exact good_odd ha₁ ha₃ h hy m (by omega) (ih _ (by omega)) (ih _ (by omega))
         (ih _ (by omega)) (ih _ (by omega))
 
+open scoped Classical in
 /-- `n • P = 0 ↔ ψₙ(P) = 0`. -/
 theorem smul_eq_zero_iff_eds (n : ℕ) : n • Point.some x y h = 0 ↔ eds W x y n = 0 :=
   (good ha₁ ha₃ h n).smul_eq_zero_iff

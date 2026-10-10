@@ -22,22 +22,25 @@ generators exist (`exists_canonical`) and form the two cosets `±g + μ_ℓ`
 namespace Iut.TateStructure
 
 open WeierstrassCurve TateCurvesTheta
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
 noncomputable section
 
 variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
-  [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
+  [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))]
 variable {E : WeierstrassCurve k} (S : TateStructure E)
 
 /-! ### Powers of the Tate parameter -/
 
+open scoped Classical in
 lemma norm_q_lt_one : ‖(S.t.q : k)‖ < 1 := S.t.norm_lt_one
 
+open scoped Classical in
 lemma norm_q_pos : 0 < ‖(S.t.q : k)‖ := S.t.norm_q_pos
 
+open scoped Classical in
 lemma q_zpow_injective : Function.Injective (fun n : ℤ => S.t.q ^ n) := by
   intro a b h
   have h' : ‖((S.t.q ^ a : kˣ) : k)‖ = ‖((S.t.q ^ b : kˣ) : k)‖ := by
@@ -46,6 +49,7 @@ lemma q_zpow_injective : Function.Injective (fun n : ℤ => S.t.q ^ n) := by
   rw [Units.val_zpow_eq_zpow_val, Units.val_zpow_eq_zpow_val, norm_zpow, norm_zpow] at h'
   exact zpow_right_injective₀ S.norm_q_pos S.norm_q_lt_one.ne h'
 
+open scoped Classical in
 lemma ofUnit_eq_zero_iff (u : kˣ) : S.ofUnit u = 0 ↔ ∃ n : ℤ, u = S.t.q ^ n := by
   rw [← S.ofUnit_one, S.ofUnit_eq_iff]
   constructor
@@ -56,15 +60,18 @@ lemma ofUnit_eq_zero_iff (u : kˣ) : S.ofUnit u = 0 ↔ ∃ n : ℤ, u = S.t.q ^
   · rintro ⟨n, rfl⟩
     exact ⟨-n, by rw [zpow_neg, inv_mul_cancel]⟩
 
+open scoped Classical in
 lemma nsmul_ofUnit (n : ℕ) (u : kˣ) : n • S.ofUnit u = S.ofUnit (u ^ n) := by
   unfold ofUnit
   rw [← map_nsmul]
   rfl
 
+open scoped Classical in
 lemma ofUnit_mem_torsionBy_iff (ℓ : ℕ) (u : kˣ) :
     S.ofUnit u ∈ AddSubgroup.torsionBy E.toAffine.Point ℓ ↔ ∃ n : ℤ, u ^ ℓ = S.t.q ^ n := by
   rw [AddSubgroup.torsionBy.nsmul_iff, nsmul_ofUnit, ofUnit_eq_zero_iff]
 
+open scoped Classical in
 /-- The exponent of `q` in `u^ℓ` is determined modulo `ℓ` by the point of `u`. -/
 lemma expo_congr (ℓ : ℕ) {u v : kˣ} {n m : ℤ} (huv : S.ofUnit u = S.ofUnit v)
     (hu : u ^ ℓ = S.t.q ^ n) (hv : v ^ ℓ = S.t.q ^ m) : (m : ZMod ℓ) = n := by
@@ -80,27 +87,34 @@ lemma expo_congr (ℓ : ℕ) {u v : kˣ} {n m : ℤ} (huv : S.ofUnit u = S.ofUni
 
 variable (ℓ : ℕ)
 
+open scoped Classical in
 /-- The ℓ-torsion of `E(k)`. -/
 abbrev torsion (E : WeierstrassCurve k) : AddSubgroup E.toAffine.Point :=
   AddSubgroup.torsionBy E.toAffine.Point ℓ
 
+open scoped Classical in
 lemma exists_rep (P : ↥(torsion ℓ E)) :
     ∃ u : kˣ, S.ofUnit u = P ∧ ∃ n : ℤ, u ^ ℓ = S.t.q ^ n := by
   obtain ⟨u, hu⟩ := S.ofUnit_surjective P.1
   exact ⟨u, hu, (S.ofUnit_mem_torsionBy_iff ℓ u).mp (hu ▸ P.2)⟩
 
+open scoped Classical in
 /-- A chosen unit representing an ℓ-torsion point. -/
 def rep (P : ↥(torsion ℓ E)) : kˣ := (S.exists_rep ℓ P).choose
 
+open scoped Classical in
 lemma ofUnit_rep (P : ↥(torsion ℓ E)) : S.ofUnit (S.rep ℓ P) = P :=
   (S.exists_rep ℓ P).choose_spec.1
 
+open scoped Classical in
 /-- The exponent of `q` in the ℓ-th power of the chosen representative. -/
 def expo (P : ↥(torsion ℓ E)) : ℤ := (S.exists_rep ℓ P).choose_spec.2.choose
 
+open scoped Classical in
 lemma rep_pow (P : ↥(torsion ℓ E)) : S.rep ℓ P ^ ℓ = S.t.q ^ S.expo ℓ P :=
   (S.exists_rep ℓ P).choose_spec.2.choose_spec
 
+open scoped Classical in
 /-- **The residue homomorphism** `E(k)[ℓ] → ℤ/ℓℤ`, `[u] ↦ n mod ℓ` where `u^ℓ = q^n`. -/
 def resid : ↥(torsion ℓ E) →+ ZMod ℓ where
   toFun P := (S.expo ℓ P : ZMod ℓ)
@@ -119,13 +133,16 @@ def resid : ↥(torsion ℓ E) →+ ZMod ℓ where
     simp only [Int.cast_add] at this
     exact this.symm
 
+open scoped Classical in
 lemma resid_apply (P : ↥(torsion ℓ E)) : S.resid ℓ P = (S.expo ℓ P : ZMod ℓ) := rfl
 
+open scoped Classical in
 lemma resid_ofUnit {u : kˣ} {n : ℤ} (hu : u ^ ℓ = S.t.q ^ n) (hP : S.ofUnit u ∈ torsion ℓ E) :
     S.resid ℓ ⟨S.ofUnit u, hP⟩ = (n : ZMod ℓ) := by
   rw [resid_apply]
   exact S.expo_congr ℓ (S.ofUnit_rep ℓ ⟨S.ofUnit u, hP⟩).symm hu (S.rep_pow ℓ _)
 
+open scoped Classical in
 /-- The kernel of the residue homomorphism is the graph line. -/
 lemma resid_eq_zero_iff (P : ↥(torsion ℓ E)) :
     S.resid ℓ P = 0 ↔ (P : E.toAffine.Point) ∈ S.graphLine ℓ := by
@@ -148,10 +165,14 @@ lemma resid_eq_zero_iff (P : ↥(torsion ℓ E)) :
 
 variable [NeZero ℓ]
 
+open scoped Classical in
+omit [NeZero ℓ] in
 lemma graphLine_le_torsion : S.graphLine ℓ ≤ torsion ℓ E := by
   rintro _ ⟨ζ, hζ, rfl⟩
   rw [AddSubgroup.torsionBy.nsmul_iff, nsmul_ofUnit, hζ, ofUnit_one]
 
+open scoped Classical in
+omit [NeZero ℓ] in
 /-- The roots of unity map onto the graph line. -/
 lemma ofUnit_rootsOfUnity_surjective :
     Function.Surjective (fun ζ : rootsOfUnity ℓ k =>
@@ -159,17 +180,23 @@ lemma ofUnit_rootsOfUnity_surjective :
   rintro ⟨P, ζ, hζ, rfl⟩
   exact ⟨⟨ζ, (mem_rootsOfUnity ℓ ζ).mpr hζ⟩, rfl⟩
 
+open scoped Classical in
 instance finite_graphLine : Finite ↥(S.graphLine ℓ) :=
   Finite.of_surjective _ (S.ofUnit_rootsOfUnity_surjective ℓ)
 
+open scoped Classical in
 lemma card_graphLine_le : Nat.card ↥(S.graphLine ℓ) ≤ ℓ :=
   (Nat.card_le_card_of_surjective _ (S.ofUnit_rootsOfUnity_surjective ℓ)).trans
     (card_rootsOfUnity (R := k) (k := ℓ))
 
+open scoped Classical in
+omit [NeZero ℓ] in
 lemma resid_ker : (S.resid ℓ).ker = (S.graphLine ℓ).addSubgroupOf (torsion ℓ E) := by
   ext P
   rw [AddMonoidHom.mem_ker, AddSubgroup.mem_addSubgroupOf, resid_eq_zero_iff]
 
+open scoped Classical in
+omit [NeZero ℓ] in
 lemma card_torsion_eq :
     Nat.card ↥(torsion ℓ E) = Nat.card ↥(S.graphLine ℓ) * Nat.card ↥(S.resid ℓ).range := by
   rw [← AddSubgroup.card_mul_index (S.resid ℓ).ker, AddSubgroup.index_eq_card, resid_ker]
@@ -178,15 +205,18 @@ lemma card_torsion_eq :
   · rw [← resid_ker]
     exact Nat.card_congr (QuotientAddGroup.quotientKerEquivRange (S.resid ℓ)).toEquiv
 
+open scoped Classical in
 lemma card_range_le : Nat.card ↥(S.resid ℓ).range ≤ ℓ :=
   (Nat.card_le_card_of_injective _ Subtype.val_injective).trans (by rw [Nat.card_zmod])
 
+open scoped Classical in
 include S in
 /-- **The ℓ-torsion of a Tate curve has at most `ℓ²` elements.** -/
 lemma card_torsion_le : Nat.card ↥(torsion ℓ E) ≤ ℓ * ℓ := by
   rw [S.card_torsion_eq ℓ]
   exact Nat.mul_le_mul (S.card_graphLine_le ℓ) (S.card_range_le ℓ)
 
+open scoped Classical in
 include S in
 theorem finite_torsion : Finite ↥(torsion ℓ E) := by
   apply Nat.finite_of_card_ne_zero
@@ -195,6 +225,7 @@ theorem finite_torsion : Finite ↥(torsion ℓ E) := by
 
 /-! ### Curves with `ℓ²` rational ℓ-torsion points -/
 
+open scoped Classical in
 lemma eq_of_mul_ge {a b : ℕ} (ha : a ≤ ℓ) (hb : b ≤ ℓ) (h : ℓ * ℓ ≤ a * b) :
     a = ℓ ∧ b = ℓ := by
   have hℓ : 0 < ℓ := Nat.pos_of_ne_zero (NeZero.ne ℓ)
@@ -212,10 +243,12 @@ lemma eq_of_mul_ge {a b : ℕ} (ha : a ≤ ℓ) (hb : b ≤ ℓ) (h : ℓ * ℓ 
 variable (h2 : ℓ * ℓ ≤ Nat.card ↥(torsion ℓ E))
 include h2
 
+open scoped Classical in
 /-- If the ℓ-torsion has `ℓ²` elements, the graph line has `ℓ` elements. -/
 lemma card_graphLine_eq : Nat.card ↥(S.graphLine ℓ) = ℓ :=
   (eq_of_mul_ge ℓ (S.card_graphLine_le ℓ) (S.card_range_le ℓ) (by rwa [← S.card_torsion_eq])).1
 
+open scoped Classical in
 /-- If the ℓ-torsion has `ℓ²` elements, the residue homomorphism is surjective. -/
 lemma resid_range_eq_top : (S.resid ℓ).range = ⊤ := by
   apply AddSubgroup.eq_top_of_card_eq
@@ -223,6 +256,7 @@ lemma resid_range_eq_top : (S.resid ℓ).range = ⊤ := by
   exact (eq_of_mul_ge ℓ (S.card_graphLine_le ℓ) (S.card_range_le ℓ)
     (by rwa [← S.card_torsion_eq])).2
 
+open scoped Classical in
 /-- If the ℓ-torsion has `ℓ²` elements, `q` has an ℓ-th root modulo `q^{ℓℤ}`. -/
 lemma exists_root_class : ∃ u : kˣ, ∃ m : ℤ, u ^ ℓ = S.t.q ^ (1 + ℓ * m) := by
   have h1 : (1 : ZMod ℓ) ∈ (S.resid ℓ).range := by rw [S.resid_range_eq_top ℓ h2]; trivial
@@ -242,9 +276,10 @@ end
 section Canonical
 
 variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
-  [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
+  [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))]
 variable {E : WeierstrassCurve k} (S : TateStructure E) (ℓ : ℕ)
 
+open scoped Classical in
 lemma mem_graphLine_of_pow_eq {u : kˣ} {j : ℤ} (h : u ^ ℓ = S.t.q ^ (ℓ * j)) :
     S.ofUnit u ∈ S.graphLine ℓ := by
   refine ⟨u * (S.t.q ^ j)⁻¹, ?_, ?_⟩
@@ -254,17 +289,21 @@ lemma mem_graphLine_of_pow_eq {u : kˣ} {j : ℤ} (h : u ^ ℓ = S.t.q ^ (ℓ * 
 variable {u₁ : kˣ} {m₁ : ℤ} (hu₁ : u₁ ^ ℓ = S.t.q ^ (1 + ℓ * m₁))
 include hu₁
 
+open scoped Classical in
 lemma isCanonical_ofUnit : S.IsCanonical ℓ (S.ofUnit u₁) := ⟨u₁, rfl, m₁, Or.inl hu₁⟩
 
+open scoped Classical in
 lemma ofUnit_mem_torsion : S.ofUnit u₁ ∈ torsion ℓ E :=
   (S.ofUnit_mem_torsionBy_iff ℓ u₁).mpr ⟨_, hu₁⟩
 
+open scoped Classical in
 lemma ofUnit_not_mem_graphLine [Fact (1 < ℓ)] : S.ofUnit u₁ ∉ S.graphLine ℓ := by
   intro h
   have := (S.resid_eq_zero_iff ℓ ⟨_, S.ofUnit_mem_torsion ℓ hu₁⟩).mpr h
   rw [S.resid_ofUnit ℓ hu₁] at this
   simp at this
 
+open scoped Classical in
 /-- **The canonical generators are the two cosets `±g + μ_ℓ`** of a root class `g`. -/
 lemma isCanonical_iff (P : E.toAffine.Point) :
     S.IsCanonical ℓ P ↔

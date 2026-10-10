@@ -28,7 +28,6 @@ follow from the rationality of the ℓ-torsion over `K` (`E(K)[ℓ]` has `ℓ²`
 namespace Iut.TateFamily
 
 open WeierstrassCurve NumberField Iut Iut.Anabelian
-open scoped Classical
 
 universe u
 
@@ -41,15 +40,19 @@ variable (P : Iut.AdmissiblePrimeData F E Fbar VBad) [NumberField ↥P.torsionFi
 
 attribute [local instance 1100] Iut.AdmissiblePrimeData.instDecidableEqK
 
+open scoped Classical in
 /-- `ℓ` is prime. -/
 local instance instFactPrime : Fact P.ℓ.Prime := ⟨P.ℓ_prime⟩
 
+open scoped Classical in
 local instance instNeZero : NeZero P.ℓ := ⟨P.ℓ_prime.ne_zero⟩
 
+open scoped Classical in
 local instance instFactOneLt : Fact (1 < P.ℓ) := ⟨P.ℓ_prime.one_lt⟩
 
 variable (TF : TateFamily E P.torsionField P.ℓ VBad)
 
+open scoped Classical in
 /-- The map `E(K) → E(K_w)`. -/
 abbrev toLocal (w : FinitePlace ↥P.torsionField) :
     P.EK.toAffine.Point →+ (curveKw E P.torsionField w).toAffine.Point :=
@@ -57,34 +60,45 @@ abbrev toLocal (w : FinitePlace ↥P.torsionField) :
 
 variable {w : FinitePlace ↥P.torsionField} (hw : IsBadPlace E P.torsionField VBad w)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- `K`-rational ℓ-torsion maps to local ℓ-torsion. -/
 lemma toLocal_mem_torsion {R : P.EK.toAffine.Point} (hR : R ∈ P.TK) :
     toLocal P w R ∈ TateStructure.torsion P.ℓ (curveKw E P.torsionField w) := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hR ⊢
   rw [← map_nsmul, hR, map_zero]
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 lemma mem_TK_of_toLocal {R : P.EK.toAffine.Point}
     (hR : toLocal P w R ∈ TateStructure.torsion P.ℓ (curveKw E P.torsionField w)) : R ∈ P.TK := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hR ⊢
   rw [← map_nsmul] at hR
   exact pointMap_injective _ _ (hR.trans (map_zero _).symm)
 
+open scoped Classical in
 /-- The image of `E(K)[ℓ]` in `E(K_w)`. -/
 abbrev imageTK (w : FinitePlace ↥P.torsionField) :
     AddSubgroup (curveKw E P.torsionField w).toAffine.Point :=
   P.TK.map (toLocal P w)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 lemma imageTK_le_torsion :
     imageTK P w ≤ TateStructure.torsion P.ℓ (curveKw E P.torsionField w) := by
   rintro _ ⟨R, hR, rfl⟩
   exact toLocal_mem_torsion P hR
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 lemma card_imageTK : Nat.card (imageTK P w) = P.ℓ * P.ℓ := by
   rw [← pow_two, ← P.card_TK]
   exact (Nat.card_congr (AddSubgroup.equivMapOfInjective _ _ (pointMap_injective _ _)).toEquiv).symm
 
 include TF hw
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- `ℓ² ≤ |E(K_w)[ℓ]|`. -/
 lemma sq_le_card_torsion :
     P.ℓ * P.ℓ ≤ Nat.card (TateStructure.torsion P.ℓ (curveKw E P.torsionField w)) := by
@@ -92,6 +106,8 @@ lemma sq_le_card_torsion :
   rw [← card_imageTK P]
   exact AddSubgroup.card_le_of_le (imageTK_le_torsion P)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- **The local ℓ-torsion is rational over `K`.** -/
 theorem torsion_surj :
     imageTK P w = TateStructure.torsion P.ℓ (curveKw E P.torsionField w) := by
@@ -100,12 +116,16 @@ theorem torsion_surj :
   rw [card_imageTK]
   exact (TF.S w hw).card_torsion_le P.ℓ
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 lemma exists_toLocal_eq {Q : (curveKw E P.torsionField w).toAffine.Point}
     (hQ : Q ∈ TateStructure.torsion P.ℓ (curveKw E P.torsionField w)) :
     ∃ R ∈ P.TK, toLocal P w R = Q := by
   rw [← TF.torsion_surj P hw] at hQ
   exact hQ
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- The graph line at `w` maps onto the graph line of the Tate structure. -/
 theorem map_graphLineAt :
     (TF.graphLineAt w hw).map (toLocal P w) = (TF.S w hw).graphLine P.ℓ := by
@@ -118,6 +138,8 @@ theorem map_graphLineAt :
       ((TF.S w hw).graphLine_le_torsion P.ℓ hQ)
     exact ⟨R, hQ, rfl⟩
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- The graph line at `w` has `ℓ` elements. -/
 theorem card_graphLineAt : Nat.card (TF.graphLineAt w hw) = P.ℓ := by
   have h1 : Nat.card (TF.graphLineAt w hw) =
@@ -126,10 +148,14 @@ theorem card_graphLineAt : Nat.card (TF.graphLineAt w hw) = P.ℓ := by
   rw [h1, TF.map_graphLineAt P hw]
   exact (TF.S w hw).card_graphLine_eq P.ℓ (TF.sq_le_card_torsion P hw)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- The graph line at `w` consists of ℓ-torsion points. -/
-theorem graphLineAt_le_TK : TF.graphLineAt w hw ≤ P.TK := fun R hR =>
+theorem graphLineAt_le_TK : TF.graphLineAt w hw ≤ P.TK := fun _ hR =>
   mem_TK_of_toLocal P ((TF.S w hw).graphLine_le_torsion P.ℓ hR)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- **The canonical generators at `w`** are the two cosets `±g + L_w` of an ℓ-torsion point
 `g ∉ L_w`. -/
 theorem exists_canonical :

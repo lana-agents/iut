@@ -33,24 +33,26 @@ namespace Iut.Anabelian
 universe u
 
 open WeierstrassCurve
-open scoped Classical
 
 variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
 
 namespace Orbicurve
 
+open scoped Classical in
 /-- **Type `(1, ℤ/ℓℤ)^±`** relative to a Tate structure: level a prime `ℓ` and `M` the graph
 line `μ_ℓ`. The `±`-flag is not constrained: both `X̲` and `C̲ = X̲/±` of the Θ-data are
 required to be of this type at the bad places. -/
 def IsTypeOneZModPM (ℓ : ℕ) (X : Orbicurve k) (S : TateStructure X.E) : Prop :=
   ℓ.Prime ∧ X.level = ℓ ∧ X.M = S.graphLine ℓ ∧ Nat.card X.M = ℓ
 
+open scoped Classical in
 /-- **Theta-root models** (*Étale Theta*, Definition 2.5), in the model: the orbicurve of
 type `(1, ℤ/ℓℤ)^±` attached to the graph quotient of the Tate structure. -/
 def IsThetaRootModel (ℓ : ℕ) (X : Orbicurve k) (S : TateStructure X.E) : Prop :=
   IsTypeOneZModPM ℓ X S
 
+open scoped Classical in
 /-- **The canonical graph cusp**: the cusp of a canonical generator `±q^{1/ℓ}` of the graph
 quotient (`0` if there is none). -/
 noncomputable def canonicalGraphCusp (X : Orbicurve k) (S : TateStructure X.E) : X.Cusp :=

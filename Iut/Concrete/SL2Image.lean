@@ -43,7 +43,7 @@ universe u
 
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum TateCurvesTheta
   WeierstrassCurve WithZero Iut.Anabelian
-open scoped WithZero Valued MatrixGroups Classical
+open scoped WithZero Valued MatrixGroups
 
 noncomputable section
 
@@ -53,17 +53,20 @@ section Valued
 
 variable {k : Type*} [Field k] [NumberField k] {w : FinitePlace k}
 
+open scoped Classical in
 /-- Elements of `k_w` of the same norm have the same valuation. -/
 lemma valued_eq_of_norm_eq {x y : localCompletion w} (h : ‖x‖ = ‖y‖) :
     Valued.v x = Valued.v y :=
   le_antisymm (Valued.toNormedField.norm_le_iff.mp h.le) (Valued.toNormedField.norm_le_iff.mp h.ge)
 
+open scoped Classical in
 /-- The valuation on `k_w` of the image of `x ∈ k` is the `w`-adic valuation of `x`. -/
 lemma valued_embedding (x : k) :
     Valued.v (FinitePlace.embedding w.maximalIdeal x : localCompletion w) =
       w.maximalIdeal.valuation k x := by
   rw [FinitePlace.embedding_apply, valuedAdicCompletion_eq_valuation']
 
+open scoped Classical in
 /-- A uniformizer of `k_w` in the sense of the norm has valuation `exp (−1)`. -/
 lemma valued_of_isUniformizer {π : localCompletion w} (hπ : IsUniformizer π) :
     Valued.v π = exp (-1 : ℤ) := by
@@ -90,6 +93,7 @@ lemma valued_of_isUniformizer {π : localCompletion w} (hπ : IsUniformizer π) 
   congr 1
   omega
 
+open scoped Classical in
 /-- The valuation of a Tate parameter is `exp (−ord q)`, for the discrete order with respect
 to a uniformizer. -/
 lemma valued_q_toOrdered (t : TateParameter (localCompletion w)) {π : localCompletion w}
@@ -101,6 +105,7 @@ lemma valued_q_toOrdered (t : TateParameter (localCompletion w)) {π : localComp
   congr 1
   simp
 
+open scoped Classical in
 /-- `v(q) = v(j(E_q))⁻¹` for a Tate curve over `k_w`. -/
 lemma valued_q_eq_inv_tateJ (t : TateParameter (localCompletion w)) :
     Valued.v (t.q : localCompletion w) = (Valued.v t.tateJ)⁻¹ := by
@@ -117,11 +122,13 @@ namespace EllipticCurveData
 variable (C : EllipticCurveData.{u}) (CA : C.CurveArithmetic) (TI : C.TateInputs) {ℓ : ℕ}
   (hℓ : ℓ.Prime) (hodd : ℓ ≠ 2) (R : C.ModEllRepData ℓ)
 
+open scoped Classical in
 /-- The classical decidable equality on `K`, as used by the model orbicurves. -/
 local instance (priority := 1100) instDecidableEqTorsionField' :
     DecidableEq ↥R.torsionField :=
   fun a b => Classical.propDecidable (a = b)
 
+open scoped Classical in
 /-- The ramification index of a place of the torsion field divides the order of its Galois
 group (the fundamental identity `g·e·f = |Gal(K/F)|`). -/
 lemma ramificationIdx'_dvd_card_gal {w : FinitePlace C.F} {w' : FinitePlace ↥R.torsionField}
@@ -137,6 +144,7 @@ lemma ramificationIdx'_dvd_card_gal {w : FinitePlace C.F} {w' : FinitePlace ↥R
   exact ⟨(w.maximalIdeal.asIdeal.primesOver (𝓞 ↥R.torsionField)).ncard *
     w.maximalIdeal.asIdeal.inertiaDegIn (𝓞 ↥R.torsionField), by rw [← h]; ring⟩
 
+open scoped Classical in
 /-- The `ℓ`-torsion of `E(K)` embeds in the `ℓ`-torsion of `E(K_{w'})`. -/
 lemma card_torsion_curveKw_ge (w' : FinitePlace ↥R.torsionField)
     [Finite ↥(TateStructure.torsion ℓ (curveKw C.E R.torsionField w'))] :
@@ -155,6 +163,7 @@ lemma card_torsion_curveKw_ge (w' : FinitePlace ↥R.torsionField)
   calc ℓ * ℓ = Nat.card ↥R.TK := by rw [R.card_torsionBy_EK, sq]
     _ ≤ _ := Nat.card_le_card_of_injective f hf
 
+open scoped Classical in
 include CA hℓ hodd in
 /-- **`ℓ` divides the ramification index** of a place `w'` of the torsion field `K = F(E[ℓ])`
 over a place `w` of multiplicative reduction of residue characteristic `≠ 2, ℓ` with
@@ -212,6 +221,7 @@ theorem prime_dvd_ramificationIdx {w : FinitePlace C.F} (hw : w ∈ C.badAll)
   have hdvd' : ℓ ∣ e * n := by exact_mod_cast hdvd
   exact (hℓ.dvd_mul.mp hdvd').resolve_right hP2
 
+open scoped Classical in
 include CA TI hℓ hodd in
 /-- **`ℓ` divides `|ρ(Gal(F̄/F))|`** under (P2) and (P5). -/
 theorem prime_dvd_card_range (hP2 : ∀ w (hw : w ∈ C.badAll), ¬ ℓ ∣ TI.qOrder w hw)
@@ -223,6 +233,7 @@ theorem prime_dvd_card_range (hP2 : ∀ w (hw : w ∈ C.badAll), ¬ ℓ ∣ TI.q
   exact (C.prime_dvd_ramificationIdx CA TI hℓ hodd R hw h2 hwℓ (hP2 w hw) hw'w).trans
     (C.ramificationIdx'_dvd_card_gal R hw'w)
 
+open scoped Classical in
 include CA TI hℓ in
 /-- **[GenEll], Lemma 3.1(iii)**: under (P2), (P4), (P5) the image of the mod-`ℓ`
 representation contains `SL₂(𝔽_ℓ)`. -/

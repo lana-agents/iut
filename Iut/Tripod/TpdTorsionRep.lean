@@ -22,14 +22,15 @@ namespace Iut.Tripod
 
 open Iut Iut.EllipticCurveData NumberField WeierstrassCurve WeierstrassCurve.Affine
 
-open scoped Classical
 
 /-! ### Points along an equality of curves -/
 
+open scoped Classical in
 /-- The identification of the points of two equal curves. -/
 noncomputable def castPoint {K : Type*} [Field K] {W W' : WeierstrassCurve K} (h : W = W') :
     W.toAffine.Point ≃+ W'.toAffine.Point := h ▸ AddEquiv.refl _
 
+open scoped Classical in
 lemma castPoint_some {K : Type*} [Field K] {W W' : WeierstrassCurve K} (h : W = W') {a b : K}
     (hab : W.toAffine.Nonsingular a b) :
     castPoint h (Point.some a b hab) = Point.some a b (h ▸ hab) := by
@@ -44,16 +45,19 @@ local notation "EF" => Affine.baseChange (legendre (genT P x)) (P.curve x).F
 
 /-! ### The base change `E_λ(F_λ) → E_λ(ℚ̄)` -/
 
+open scoped Classical in
 /-- The base change of points `E_λ(F_λ) → E_λ(ℚ̄)`. -/
 noncomputable def toQbar : (EF).Point →+ (legendre x.1).toAffine.Point :=
   (castPoint (baseChange_legendre_genT_Fbar P x)).toAddMonoidHom.comp
     (Point.map (W' := legendre (genT P x)) (S := tpd P x)
       (IsScalarTower.toAlgHom (tpd P x) (P.curve x).F (P.curve x).Fbar))
 
+open scoped Classical in
 lemma toQbar_injective : Function.Injective (toQbar P x) := by
   intro a b h
   exact Point.map_injective _ ((castPoint (baseChange_legendre_genT_Fbar P x)).injective h)
 
+open scoped Classical in
 lemma toQbar_some {a b : (P.curve x).F} (h : (EF).Nonsingular a b) :
     toQbar P x (Point.some a b h) =
       Point.some (algebraMap (P.curve x).F (P.curve x).Fbar a)
@@ -64,6 +68,7 @@ lemma toQbar_some {a b : (P.curve x).F} (h : (EF).Nonsingular a b) :
             h) := by
   rfl
 
+open scoped Classical in
 /-- **The `n`-torsion of `E_λ(ℚ̄)` comes from `E_λ(F_λ)`** when its coordinates lie in
 `F_λ`. -/
 theorem exists_toQbar_eq {n : ℕ} (hsub : torsionCoords x.1 n ⊆ (fieldOf' x.1 : Set Qbar))
@@ -91,12 +96,14 @@ theorem exists_toQbar_eq {n : ℕ} (hsub : torsionCoords x.1 n ⊆ (fieldOf' x.1
 
 variable (n : ℕ) [Fact n.Prime] (hsub : torsionCoords x.1 n ⊆ (fieldOf' x.1 : Set Qbar))
 
+open scoped Classical in
 omit [Fact n.Prime] in
 lemma toQbar_mem_torsionBy {R : (EF).Point} (hR : R ∈ AddSubgroup.torsionBy (EF).Point n) :
     toQbar P x R ∈ AddSubgroup.torsionBy (legendre x.1).toAffine.Point n := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hR ⊢
   rw [← map_nsmul, hR, map_zero]
 
+open scoped Classical in
 /-- **`E_λ(F_λ)[n] ≃ E_λ(ℚ̄)[n]`.** -/
 noncomputable def torsionEquivF :
     ↥(AddSubgroup.torsionBy (EF).Point n) ≃+
@@ -112,29 +119,35 @@ noncomputable def torsionEquivF :
       rw [map_nsmul, hR, map_zero]
       exact AddSubgroup.torsionBy.nsmul_iff.mp Q.2⟩
 
+open scoped Classical in
 omit [Fact n.Prime] in
 @[simp] lemma coe_torsionEquivF (R : ↥(AddSubgroup.torsionBy (EF).Point n)) :
     (torsionEquivF P x n hsub R : (legendre x.1).toAffine.Point) = toQbar P x R := rfl
 
+open scoped Classical in
 /-- **A basis `E_λ(F_λ)[n] ≃ (ℤ/n)²`.** -/
 noncomputable def basisF : ↥(AddSubgroup.torsionBy (EF).Point n) ≃+ (Fin 2 → ZMod n) :=
   (torsionEquivF P x n hsub).trans (legendre_torsionBasis x n).some
 
 /-! ### The Galois action and the mod-`n` representation -/
 
+open scoped Classical in
 /-- The action of `σ ∈ Gal(F_λ/ℚ(λ))` on `E_λ(F_λ)`. -/
 noncomputable def galF (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) : (EF).Point →+ (EF).Point :=
   Point.map (W' := legendre (genT P x)) (S := tpd P x) (σ : (P.curve x).F →ₐ[tpd P x] (P.curve x).F)
 
+open scoped Classical in
 lemma galF_one (Q : (EF).Point) : galF P x 1 Q = Q := by
   cases Q <;> rfl
 
+open scoped Classical in
 lemma galF_mul (σ τ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) (Q : (EF).Point) :
     galF P x (σ * τ) Q = galF P x σ (galF P x τ Q) := by
   unfold galF
   rw [Point.map_map]
   rfl
 
+open scoped Classical in
 omit [Fact n.Prime] in
 lemma galF_mem_torsionBy (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) {R : (EF).Point}
     (hR : R ∈ AddSubgroup.torsionBy (EF).Point n) :
@@ -142,26 +155,31 @@ lemma galF_mem_torsionBy (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) {R :
   rw [AddSubgroup.torsionBy.nsmul_iff] at hR ⊢
   rw [← map_nsmul, hR, map_zero]
 
+open scoped Classical in
 /-- The action on the `n`-torsion. -/
 noncomputable def galTorsionF (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) :
     ↥(AddSubgroup.torsionBy (EF).Point n) →+ ↥(AddSubgroup.torsionBy (EF).Point n) :=
   (galF P x σ).restrict _ |>.codRestrict _ fun R => galF_mem_torsionBy P x n σ R.2
 
+open scoped Classical in
 omit [Fact n.Prime] hsub in
 @[simp] lemma coe_galTorsionF (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F)
     (R : ↥(AddSubgroup.torsionBy (EF).Point n)) :
     (galTorsionF P x n σ R : (EF).Point) = galF P x σ R := rfl
 
+open scoped Classical in
 /-- The linear endomorphism `b ∘ σ ∘ b⁻¹` of `(ℤ/n)²`. -/
 noncomputable def repLinF (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) :
     Module.End (ZMod n) (Fin 2 → ZMod n) :=
   ((basisF P x n hsub).toAddMonoidHom.comp
     ((galTorsionF P x n σ).comp (basisF P x n hsub).symm.toAddMonoidHom)).toZModLinearMap n
 
+open scoped Classical in
 lemma repLinF_apply (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) (w : Fin 2 → ZMod n) :
     repLinF P x n hsub σ w = basisF P x n hsub (galTorsionF P x n σ ((basisF P x n hsub).symm w)) :=
   rfl
 
+open scoped Classical in
 /-- `σ ↦ b ∘ σ ∘ b⁻¹` as a monoid homomorphism. -/
 noncomputable def repEndF :
     ((P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) →* Module.End (ZMod n) (Fin 2 → ZMod n) where
@@ -179,6 +197,7 @@ noncomputable def repEndF :
     congr 1
     exact Subtype.ext (galF_mul P x σ τ _)
 
+open scoped Classical in
 /-- **The mod-`n` representation** `Gal(F_λ/ℚ(λ)) →* GL₂(ℤ/n)` in the basis `b`. -/
 noncomputable def repF : ((P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) →*
     Matrix.GeneralLinearGroup (Fin 2) (ZMod n) :=
@@ -186,6 +205,7 @@ noncomputable def repF : ((P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) →*
     Module.End (ZMod n) (Fin 2 → ZMod n) ≃ₐ[ZMod n] Matrix (Fin 2) (Fin 2) (ZMod n)).toMulEquiv
     ).toMonoidHom.comp (repEndF P x n hsub).toHomUnits
 
+open scoped Classical in
 /-- `σ ∈ ker ρₙ` iff `σ` fixes every `n`-torsion point of `E_λ(F_λ)`. -/
 theorem mem_repF_ker_iff (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) :
     σ ∈ (repF P x n hsub).ker ↔ ∀ Q : (EF).Point, n • Q = 0 → galF P x σ Q = Q := by
@@ -205,6 +225,7 @@ theorem mem_repF_ker_iff (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) :
 
 /-! ### The torsion coordinates are fixed by the kernel -/
 
+open scoped Classical in
 omit [Fact n.Prime] in
 include hsub in
 /-- An automorphism fixing the `n`-torsion of `E_λ(F_λ)` pointwise fixes its coordinates. -/

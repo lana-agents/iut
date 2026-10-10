@@ -34,13 +34,13 @@ namespace Iut.Tripod
 
 open Iut Iut.EllipticCurveData NumberField
 
-open scoped Classical
 
 variable (P : CurveProviders) (x : Pt) {ℓ : ℕ} (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ)
   (hsl : ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ), A.toGL ∈ (P.modRep x ℓ hℓ).rep.range)
   (hP2 : ∀ w (hw : w ∈ (P.curve x).badAll), ¬ ℓ ∣ (P.tate x).qOrder w hw)
   [NumberField ↥(primeDataOf P x hℓ h7 hsl hP2).torsionField]
 
+open scoped Classical in
 /-- **The ramification bound away from `2·3·5·ℓ`**: `e(v/u) ≤ 30ℓ` for every place `v` of
 `K = F_λ(E_λ[ℓ])` of residue characteristic `∉ {2, 3, 5, ℓ}`, `u` the place of `ℚ(λ)` below. -/
 theorem relRamIdx_le_thirty_mul (v : FinitePlace ↥(primeDataOf P x hℓ h7 hsl hP2).torsionField)

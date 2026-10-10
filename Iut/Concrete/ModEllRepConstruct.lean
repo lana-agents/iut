@@ -29,7 +29,6 @@ The result is `EllipticCurveData.modEllRepData C ℓ hbasis`.
 namespace Iut
 
 open NumberField WeierstrassCurve
-open scoped Classical
 
 /-! ## The Galois action on the torsion as a homomorphism -/
 
@@ -38,16 +37,19 @@ section GaloisTorsion
 variable (F : Type*) [Field F] [NumberField F] (E : WeierstrassCurve F) [E.IsElliptic]
 variable (Fbar : Type*) [Field Fbar] [Algebra F Fbar]
 
+open scoped Classical in
 omit [NumberField F] [E.IsElliptic] in
 lemma galPointMap_one (P : Affine.Point (Affine.baseChange E Fbar)) :
     galPointMap F E Fbar 1 P = P := by
   cases P <;> rfl
 
+open scoped Classical in
 omit [NumberField F] [E.IsElliptic] in
 lemma galPointMap_mul (σ τ : Fbar ≃ₐ[F] Fbar) (P : Affine.Point (Affine.baseChange E Fbar)) :
     galPointMap F E Fbar (σ * τ) P = galPointMap F E Fbar σ (galPointMap F E Fbar τ P) := by
   cases P <;> rfl
 
+open scoped Classical in
 /-- The action of `σ ∈ Gal(F̄/F)` on the `n`-torsion `E(F̄)[n]`, as an additive
 endomorphism of the torsion subgroup. -/
 noncomputable def galTorsionHom (n : ℕ) (σ : Fbar ≃ₐ[F] Fbar) :
@@ -58,11 +60,13 @@ noncomputable def galTorsionHom (n : ℕ) (σ : Fbar ≃ₐ[F] Fbar) :
     (AddSubgroup.torsionBy (Affine.Point (Affine.baseChange E Fbar)) n)
     (fun P => galPointMap_torsionBy F E Fbar σ P.2)
 
+open scoped Classical in
 omit [NumberField F] [E.IsElliptic] in
 @[simp]
 lemma galTorsionHom_apply (n : ℕ) (σ : Fbar ≃ₐ[F] Fbar)
     (P : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange E Fbar)) n) :
-    galTorsionHom F E Fbar n σ P = ⟨galPointMap F E Fbar σ P.1, galPointMap_torsionBy F E Fbar σ P.2⟩ :=
+    galTorsionHom F E Fbar n σ P =
+      ⟨galPointMap F E Fbar σ P.1, galPointMap_torsionBy F E Fbar σ P.2⟩ :=
   rfl
 
 end GaloisTorsion
@@ -72,22 +76,32 @@ end GaloisTorsion
 namespace EllipticCurveData
 
 variable (C : EllipticCurveData.{u}) (ℓ : ℕ)
-variable (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
-  (Fin 2 → ZMod ℓ))
 
+open scoped Classical in
 /-- The `𝔽_ℓ`-linear endomorphism `b ∘ σ ∘ b⁻¹` of `𝔽_ℓ²` induced by `σ ∈ Gal(F̄/F)` through
 the basis `b`. -/
-noncomputable def repLin (σ : C.Fbar ≃ₐ[C.F] C.Fbar) :
+noncomputable def repLin
+    (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
+      (Fin 2 → ZMod ℓ))
+    (σ : C.Fbar ≃ₐ[C.F] C.Fbar) :
     Module.End (ZMod ℓ) (Fin 2 → ZMod ℓ) :=
   (b.toAddMonoidHom.comp
     ((galTorsionHom C.F C.E C.Fbar ℓ σ).comp b.symm.toAddMonoidHom)).toZModLinearMap ℓ
 
-lemma repLin_apply (σ : C.Fbar ≃ₐ[C.F] C.Fbar) (v : Fin 2 → ZMod ℓ) :
+open scoped Classical in
+lemma repLin_apply
+    (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
+      (Fin 2 → ZMod ℓ))
+    (σ : C.Fbar ≃ₐ[C.F] C.Fbar) (v : Fin 2 → ZMod ℓ) :
     repLin C ℓ b σ v = b (galTorsionHom C.F C.E C.Fbar ℓ σ (b.symm v)) :=
   rfl
 
+open scoped Classical in
 /-- `σ ↦ b ∘ σ ∘ b⁻¹` as a monoid homomorphism to the endomorphisms of `𝔽_ℓ²`. -/
-noncomputable def repEnd : (C.Fbar ≃ₐ[C.F] C.Fbar) →* Module.End (ZMod ℓ) (Fin 2 → ZMod ℓ) where
+noncomputable def repEnd
+    (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
+      (Fin 2 → ZMod ℓ)) :
+    (C.Fbar ≃ₐ[C.F] C.Fbar) →* Module.End (ZMod ℓ) (Fin 2 → ZMod ℓ) where
   toFun := repLin C ℓ b
   map_one' := by
     refine LinearMap.ext fun v => ?_
@@ -101,28 +115,44 @@ noncomputable def repEnd : (C.Fbar ≃ₐ[C.F] C.Fbar) →* Module.End (ZMod ℓ
     congr 1
     exact Subtype.ext (galPointMap_mul C.F C.E C.Fbar σ τ _)
 
+open scoped Classical in
 /-- **The mod-`ℓ` representation** `ρ : Gal(F̄/F) → GL₂(𝔽_ℓ)` in the basis `b`: `ρ σ` is the
 matrix of `b ∘ σ ∘ b⁻¹`. -/
-noncomputable def repOf : (C.Fbar ≃ₐ[C.F] C.Fbar) →* Matrix.GeneralLinearGroup (Fin 2) (ZMod ℓ) :=
+noncomputable def repOf
+    (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
+      (Fin 2 → ZMod ℓ)) :
+    (C.Fbar ≃ₐ[C.F] C.Fbar) →* Matrix.GeneralLinearGroup (Fin 2) (ZMod ℓ) :=
   (Units.mapEquiv (LinearMap.toMatrixAlgEquiv' :
     Module.End (ZMod ℓ) (Fin 2 → ZMod ℓ) ≃ₐ[ZMod ℓ] Matrix (Fin 2) (Fin 2) (ZMod ℓ)).toMulEquiv
     ).toMonoidHom.comp (repEnd C ℓ b).toHomUnits
 
-lemma coe_repOf (σ : C.Fbar ≃ₐ[C.F] C.Fbar) :
+open scoped Classical in
+lemma coe_repOf
+    (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
+      (Fin 2 → ZMod ℓ))
+    (σ : C.Fbar ≃ₐ[C.F] C.Fbar) :
     (repOf C ℓ b σ : Matrix (Fin 2) (Fin 2) (ZMod ℓ)) = LinearMap.toMatrix' (repEnd C ℓ b σ) :=
   rfl
 
+open scoped Classical in
 /-- `ρ σ` computes the Galois action in the basis `b`. -/
-lemma repOf_spec (σ : C.Fbar ≃ₐ[C.F] C.Fbar)
+lemma repOf_spec
+    (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
+      (Fin 2 → ZMod ℓ))
+    (σ : C.Fbar ≃ₐ[C.F] C.Fbar)
     (P : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ) :
     b ⟨galPointMap C.F C.E C.Fbar σ P.1, galPointMap_torsionBy C.F C.E C.Fbar σ P.2⟩ =
       (repOf C ℓ b σ : Matrix (Fin 2) (Fin 2) (ZMod ℓ)).mulVec (b P) := by
   rw [coe_repOf, LinearMap.toMatrix'_mulVec]
-  show _ = repLin C ℓ b σ (b P)
+  change _ = repLin C ℓ b σ (b P)
   rw [repLin_apply, b.symm_apply_apply, galTorsionHom_apply]
 
+open scoped Classical in
 /-- An automorphism fixing the `ℓ`-torsion pointwise lies in the kernel of `ρ`. -/
-lemma mem_repOf_ker_of_fixed (σ : C.Fbar ≃ₐ[C.F] C.Fbar)
+lemma mem_repOf_ker_of_fixed
+    (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
+      (Fin 2 → ZMod ℓ))
+    (σ : C.Fbar ≃ₐ[C.F] C.Fbar)
     (hσ : ∀ P : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ,
       galPointMap C.F C.E C.Fbar σ P.1 = P.1) :
     σ ∈ (repOf C ℓ b).ker := by
@@ -136,6 +166,7 @@ lemma mem_repOf_ker_of_fixed (σ : C.Fbar ≃ₐ[C.F] C.Fbar)
   have h : galTorsionHom C.F C.E C.Fbar ℓ σ (b.symm v) = b.symm v := Subtype.ext (hσ _)
   rw [h, b.apply_symm_apply]
 
+open scoped Classical in
 /-- The set of automorphisms fixing a given point of `E(F̄)` is open. -/
 lemma isOpen_galPointMap_eq (P : Affine.Point (Affine.baseChange C.E C.Fbar)) :
     IsOpen {σ : C.Fbar ≃ₐ[C.F] C.Fbar | galPointMap C.F C.E C.Fbar σ P = P} := by
@@ -153,9 +184,13 @@ lemma isOpen_galPointMap_eq (P : Affine.Point (Affine.baseChange C.E C.Fbar)) :
     rw [this]
     exact (isOpen_eval_eq C.F C.Fbar x x).inter (isOpen_eval_eq C.F C.Fbar y y)
 
+open scoped Classical in
 /-- **The kernel of `ρ` is open**: it contains the pointwise stabilizer of the finitely many
 `ℓ`-torsion points, a finite intersection of open sets. -/
-lemma repOf_ker_isOpen [NeZero ℓ] : IsOpen ((repOf C ℓ b).ker : Set (C.Fbar ≃ₐ[C.F] C.Fbar)) := by
+lemma repOf_ker_isOpen [NeZero ℓ]
+    (b : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ ≃+
+      (Fin 2 → ZMod ℓ)) :
+    IsOpen ((repOf C ℓ b).ker : Set (C.Fbar ≃ₐ[C.F] C.Fbar)) := by
   haveI : Finite (AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ) :=
     Finite.of_equiv _ b.symm.toEquiv
   have hS : IsOpen (⋂ P : AddSubgroup.torsionBy (Affine.Point (Affine.baseChange C.E C.Fbar)) ℓ,
@@ -168,6 +203,7 @@ lemma repOf_ker_isOpen [NeZero ℓ] : IsOpen ((repOf C ℓ b).ker : Set (C.Fbar 
     simp only [Set.mem_iInter, Set.mem_setOf_eq] at hσ
     exact mem_repOf_ker_of_fixed C ℓ b σ hσ
 
+open scoped Classical in
 /-- **The mod-`ℓ` representation data** of `E/F` from a basis of the `ℓ`-torsion
 (taxis #277). -/
 noncomputable def modEllRepData [NeZero ℓ]

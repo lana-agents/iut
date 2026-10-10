@@ -19,10 +19,10 @@ namespace Iut.Torsion
 
 open WeierstrassCurve WeierstrassCurve.Affine Polynomial
 
-open scoped Classical
 
 variable {K : Type*} [Field K] [CharZero K] [IsAlgClosed K]
 
+open scoped Classical in
 /-- Surjectivity of `[n]` for a model `y² = x³ + a₂x² + a₄x + a₆`. -/
 theorem nsmul_surjective_of_a₁_a₃ {W : Affine K} [W.IsElliptic] (ha₁ : W.a₁ = 0)
     (ha₃ : W.a₃ = 0) (n : ℕ) (hn : n ≠ 0) (Q : W.Point) : ∃ R : W.Point, n • R = Q := by
@@ -53,6 +53,7 @@ theorem nsmul_surjective_of_a₁_a₃ {W : Affine K} [W.IsElliptic] (ha₁ : W.a
     congr 1
     rw [negY_eq ha₁ ha₃, neg_neg]
 
+open scoped Classical in
 /-- **Divisibility**: over an algebraically closed field of characteristic `0`, the
 multiplication by `n ≠ 0` is surjective on the points of an elliptic curve. -/
 theorem nsmul_surjective (W : WeierstrassCurve K) [W.IsElliptic] (n : ℕ) (hn : n ≠ 0)

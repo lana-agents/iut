@@ -32,23 +32,26 @@ namespace Iut.Anabelian.Genuine
 universe u
 
 open WeierstrassCurve Polynomial
-open scoped Classical
 
 noncomputable section
 
 variable {k : Type u} [Field k] (E : WeierstrassCurve k)
 
+open scoped Classical in
 /-- **An algebraic closure `Ω` of the function field `k(E)`**. -/
 abbrev Ω : Type u := AlgebraicClosure E.toAffine.FunctionField
 
+open scoped Classical in
 /-- The class of `x` in the function field `k(E)`. -/
 def xF : E.toAffine.FunctionField :=
   algebraMap E.toAffine.CoordinateRing _ (Affine.CoordinateRing.mk E.toAffine (C X))
 
+open scoped Classical in
 /-- The class of `y` in the function field `k(E)`. -/
 def yF : E.toAffine.FunctionField :=
   algebraMap E.toAffine.CoordinateRing _ (Affine.CoordinateRing.mk E.toAffine X)
 
+open scoped Classical in
 lemma equation_xF_yF : (E⁄E.toAffine.FunctionField).toAffine.Equation (xF E) (yF E) := by
   rw [Affine.equation_iff]
   have h : Affine.CoordinateRing.mk E.toAffine (X ^ 2 + C (C E.a₁ * X + C E.a₃) * X -
@@ -62,56 +65,73 @@ lemma equation_xF_yF : (E⁄E.toAffine.FunctionField).toAffine.Equation (xF E) (
   simp only [xF, yF, baseChange, map_a₁, map_a₂, map_a₃, map_a₄, map_a₆]
   linear_combination this
 
+open scoped Classical in
 instance [E.IsElliptic] : (E⁄(Ω E)).IsElliptic := inferInstanceAs (E.map _).IsElliptic
 
+open scoped Classical in
 /-- The `x`-coordinate of the generic point, in `Ω`. -/
 def xG : Ω E := algebraMap E.toAffine.FunctionField (Ω E) (xF E)
 
+open scoped Classical in
 /-- The `y`-coordinate of the generic point, in `Ω`. -/
 def yG : Ω E := algebraMap E.toAffine.FunctionField (Ω E) (yF E)
 
+open scoped Classical in
 lemma nonsingular_generic [E.IsElliptic] : (E⁄(Ω E)).toAffine.Nonsingular (xG E) (yG E) := by
   rw [← Affine.equation_iff_nonsingular]
   exact (equation_xF_yF E).baseChange (IsScalarTower.toAlgHom k E.toAffine.FunctionField (Ω E))
 
+open scoped Classical in
 /-- **The generic point** `G = (x, y) ∈ E(Ω)`. -/
 def genericPoint [E.IsElliptic] : (E⁄(Ω E)).toAffine.Point :=
   Affine.Point.some (xG E) (yG E) (nonsingular_generic E)
 
+open scoped Classical in
 /-- The subfield `k(x) ⊆ Ω`: the function field of the `x`-line. -/
 abbrev xLine : IntermediateField k (Ω E) := IntermediateField.adjoin k {xG E}
 
+open scoped Classical in
 /-- **The base field** `P`: the perfect closure of `k(x)` in `Ω` (equal to `k(x)` in
 characteristic `0`). -/
 def baseField : IntermediateField k (Ω E) :=
   (perfectClosure (xLine E) (Ω E)).restrictScalars k
 
+open scoped Classical in
 instance : PerfectField (baseField E) :=
   inferInstanceAs (PerfectField (perfectClosure (xLine E) (Ω E)))
 
 
+open scoped Classical in
 /-- The embedding `k(E) → Ω`. -/
 abbrev ιF : E.toAffine.FunctionField →ₐ[k] Ω E := IsScalarTower.toAlgHom k _ _
 
+open scoped Classical in
 lemma xG_eq : xG E = ιF E (xF E) := rfl
 
+open scoped Classical in
 lemma yG_eq : yG E = ιF E (yF E) := rfl
 
+open scoped Classical in
 /-- The subfield `k(x, y) = k(E) ⊆ Ω`, over `k(x)`. -/
 def fnField : IntermediateField (xLine E) (Ω E) := IntermediateField.adjoin (xLine E) {yG E}
 
+open scoped Classical in
 lemma xG_mem_xLine : xG E ∈ xLine E := IntermediateField.subset_adjoin k _ (Set.mem_singleton _)
 
+open scoped Classical in
 lemma xG_mem_fnField : xG E ∈ fnField E :=
   (fnField E).algebraMap_mem ⟨xG E, xG_mem_xLine E⟩
 
+open scoped Classical in
 lemma yG_mem_fnField : yG E ∈ fnField E :=
   IntermediateField.subset_adjoin _ _ (Set.mem_singleton _)
 
+open scoped Classical in
 lemma algebraMap_mem_fnField (c : k) : algebraMap k (Ω E) c ∈ fnField E := by
   have : algebraMap k (Ω E) c ∈ xLine E := (xLine E).algebraMap_mem c
   exact (fnField E).algebraMap_mem ⟨_, this⟩
 
+open scoped Classical in
 lemma coordRing_mem_fnField (a : E.toAffine.CoordinateRing) :
     ιF E (algebraMap _ E.toAffine.FunctionField a) ∈ fnField E := by
   obtain ⟨p, rfl⟩ := AdjoinRoot.mk_surjective a
@@ -133,11 +153,13 @@ lemma coordRing_mem_fnField (a : E.toAffine.CoordinateRing) :
     rw [pow_succ, ← mul_assoc, map_mul, map_mul, map_mul]
     exact mul_mem hq (yG_mem_fnField E)
 
+open scoped Classical in
 lemma ιF_mem_fnField (f : E.toAffine.FunctionField) : ιF E f ∈ fnField E := by
   obtain ⟨a, b, _, rfl⟩ := IsFractionRing.div_surjective (A := E.toAffine.CoordinateRing) f
   rw [map_div₀]
   exact div_mem (coordRing_mem_fnField E a) (coordRing_mem_fnField E b)
 
+open scoped Classical in
 lemma isIntegral_yG : IsIntegral (xLine E) (yG E) := by
   have h := equation_xF_yF E
   rw [Affine.equation_iff] at h
@@ -158,12 +180,14 @@ lemma isIntegral_yG : IsIntegral (xLine E) (yG E) := by
       algebraMap k (Ω E) E.a₄ * ιF E (xF E) + algebraMap k (Ω E) E.a₆)) = 0
     linear_combination h'
 
+open scoped Classical in
 lemma xG_mem_baseField : xG E ∈ baseField E := by
   change xG E ∈ perfectClosure (xLine E) (Ω E)
   exact (perfectClosure (xLine E) (Ω E)).algebraMap_mem
     ⟨xG E, IntermediateField.subset_adjoin k _ (Set.mem_singleton _)⟩
 
 
+open scoped Classical in
 instance isAlgebraic_xLine : Algebra.IsAlgebraic (xLine E) (Ω E) := by
   haveI : Algebra.IsAlgebraic (xLine E) (fnField E) :=
     IntermediateField.isAlgebraic_adjoin_simple (isIntegral_yG E)
@@ -176,42 +200,54 @@ instance isAlgebraic_xLine : Algebra.IsAlgebraic (xLine E) (Ω E) := by
       (fun a b h => (ιF E).injective (congrArg Subtype.val h))⟩
   exact Algebra.IsAlgebraic.trans (xLine E) (fnField E) (Ω E)
 
+open scoped Classical in
 instance : Algebra.IsAlgebraic (baseField E) (Ω E) :=
   inferInstanceAs (Algebra.IsAlgebraic (perfectClosure (xLine E) (Ω E)) (Ω E))
 
+open scoped Classical in
 instance : IsAlgClosure (baseField E) (Ω E) := ⟨inferInstance, inferInstance⟩
 
+open scoped Classical in
 instance : IsGalois (baseField E) (Ω E) where
   to_isSeparable := Algebra.IsAlgebraic.isSeparable_of_perfectField
   to_normal := inferInstance
 
+open scoped Classical in
 /-- **The Galois group** `Gal(Ω / P)`: `P` is the perfect closure of `k(x)`, so `Gal(Ω / P)` is
 the group of automorphisms of `Ω` over `k(x)`. -/
 abbrev Gal : Type u := Ω E ≃ₐ[baseField E] Ω E
 
+open scoped Classical in
 /-- An automorphism in `Gal(Ω / P)`, as a `k`-algebra map. -/
 def σk (σ : Gal E) : Ω E →ₐ[k] Ω E := σ.toAlgHom.restrictScalars k
 
+open scoped Classical in
 @[simp] lemma σk_apply (σ : Gal E) (a : Ω E) : σk E σ a = σ a := rfl
 
+open scoped Classical in
 /-- The action of `Gal(Ω / P)` on the points `E(Ω)`. -/
 def act (σ : Gal E) : (E⁄(Ω E)).toAffine.Point →+ (E⁄(Ω E)).toAffine.Point :=
   Affine.Point.map (W' := E) (S := k) (σk E σ)
 
+open scoped Classical in
 lemma act_some (σ : Gal E) {x y : Ω E} (h : (E⁄(Ω E)).toAffine.Nonsingular x y)
     (h' : (E⁄(Ω E)).toAffine.Nonsingular (σ x) (σ y)) :
     act E σ (Affine.Point.some x y h) = Affine.Point.some (σ x) (σ y) h' := rfl
 
+open scoped Classical in
 lemma act_mul (σ τ : Gal E) (Q : (E⁄(Ω E)).toAffine.Point) :
     act E (σ * τ) Q = act E σ (act E τ Q) := by
   cases Q <;> rfl
 
+open scoped Classical in
 lemma act_one (Q : (E⁄(Ω E)).toAffine.Point) : act E 1 Q = Q := by
   cases Q <;> rfl
 
+open scoped Classical in
 /-- A `k`-rational point of `E`, as a point of `E(Ω)`. -/
 abbrev base : E.toAffine.Point →+ (E⁄(Ω E)).toAffine.Point := pointMap E (algebraMap k (Ω E))
 
+open scoped Classical in
 lemma act_base (σ : Gal E) (T : E.toAffine.Point) : act E σ (base E T) = base E T := by
   rcases T with _ | ⟨x, y, h⟩
   · rfl

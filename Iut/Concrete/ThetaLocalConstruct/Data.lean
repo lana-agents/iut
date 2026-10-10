@@ -45,7 +45,6 @@ Definition 3.1(b), and `|E(F̄)[2]| = 4`, `Iut.four_le_card_torsionBy_two`).
 namespace Iut
 
 open NumberField WeierstrassCurve Iut.Anabelian TateCurvesTheta
-open scoped Classical
 
 universe u v
 
@@ -57,6 +56,7 @@ section Under
 
 variable {k K : Type*} [Field k] [NumberField k] [Field K] [NumberField K] [Algebra k K]
 
+open scoped Classical in
 /-- The place of `k` below a place of `K` over `w` is `w`. -/
 lemma eq_placeUnder_of_liesOver {v : FinitePlace K} {w : FinitePlace k}
     (hvw : FinitePlace.LiesOver v w) : w = placeUnder v := by
@@ -76,10 +76,12 @@ variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar]
 variable (K : IntermediateField F Fbar) [NumberField ↥K]
 variable {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
 
+open scoped Classical in
 /-- The classical decidable equality on `K`, as used by the model orbicurves. -/
 local instance (priority := 1100) instDecidableEqIntermediateFieldTLC : DecidableEq ↥K :=
   fun a b => Classical.propDecidable (a = b)
 
+open scoped Classical in
 /-- A place of `K` over a place of `V(F)^bad` is a bad place of `K`. -/
 lemma isBadPlace_of_liesOver {v : FinitePlace ↥K} {w : FinitePlace F}
     (hvw : FinitePlace.LiesOver v w) (hw : w ∈ badPlacesOver F E VBad) :
@@ -87,6 +89,7 @@ lemma isBadPlace_of_liesOver {v : FinitePlace ↥K} {w : FinitePlace F}
   obtain ⟨u, hu, hwu⟩ := hw
   exact ⟨u, hu, FinitePlace.liesOver_trans hvw hwu⟩
 
+open scoped Classical in
 /-- A bad place of `K` lies over a place of `V(F)^bad`. -/
 lemma exists_liesOver_of_isBadPlace {v : FinitePlace ↥K} (hv : IsBadPlace E K VBad v) :
     ∃ w ∈ badPlacesOver F E VBad, FinitePlace.LiesOver v w := by
@@ -97,6 +100,7 @@ lemma exists_liesOver_of_isBadPlace {v : FinitePlace ↥K} (hv : IsBadPlace E K 
   rw [hvu.over, placeUnder_maximalIdeal, Ideal.under_def, Ideal.under_def, Ideal.comap_comap,
     ← IsScalarTower.algebraMap_eq]
 
+open scoped Classical in
 omit [E.IsElliptic] in
 /-- Four rational `2`-torsion points over `F` give four rational `2`-torsion points over
 `K_v`. -/
@@ -132,6 +136,8 @@ variable {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
 variable (P : AdmissiblePrimeData F E Fbar VBad) [NumberField ↥P.torsionField]
 variable (TF : TateFamily E P.torsionField P.ℓ VBad)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- **Existence of the `2ℓ`-th root of the Tate parameter** at a bad place of `K`. -/
 theorem exists_qroot
     (htwo : 2 * 2 ≤ Nat.card ↥(AddSubgroup.torsionBy E.toAffine.Point ((2 : ℕ) : ℤ)))
@@ -149,6 +155,7 @@ section Sum
 
 variable {F K : Type*} [Field F] [NumberField F] [Field K] [NumberField K] [Algebra F K]
 
+open scoped Classical in
 /-- The weighted sum `∑_{v ∣ p} ([K_v : ℚ_p]/[K : ℚ])·o(v)` for a function `o` on the places
 of `K` which is `c(w)/e_w` at the places over `w ∈ B` and `0` at the places over no `w ∈ B`,
 equals `∑_{w ∈ B, w ∣ p} (f_w/[F : ℚ])·c(w)`. -/
@@ -233,20 +240,24 @@ section Data
 
 variable (D : InitialThetaData.{u})
 
+open scoped Classical in
 /-- The bad places of `K`: the places over `V_mod^bad`. -/
 abbrev IsBadK (v : FinitePlace D.Kt) : Prop := IsBadPlace D.E D.prime.torsionField D.VBad v
 
+open scoped Classical in
 /-- The hypothesis **`E[2] ⊆ E(F)`**, in the form used here: `E(F)[2]` has (at least) four
 elements. A consequence of `SixTorsionRational` (IUT I, Definition 3.1(b);
 `InitialThetaData.twoTorsionRational`). -/
 abbrev TwoTorsionRational : Prop :=
   2 * 2 ≤ Nat.card ↥(AddSubgroup.torsionBy D.E.toAffine.Point ((2 : ℕ) : ℤ))
 
+open scoped Classical in
 /-- **`E[2] ⊆ E(F)`** for initial Θ-data, from the rationality of the `6`-torsion (IUT I,
 Definition 3.1(b)). -/
 theorem InitialThetaData.twoTorsionRational : TwoTorsionRational D :=
   four_le_card_torsionBy_two D.E D.global.six_torsion_rational
 
+open scoped Classical in
 /-- **The bad locus `V(F)^bad` is finite**: `E` has multiplicative reduction at every place of
 `F` over `V_mod^bad` (IUT I, Definition 3.1(b)), where `v_w(j(E)) > 1`, and a nonzero `j(E)` has
 `w`-adic norm `1` at all but finitely many places (for `j(E) = 0` there is no such place). -/
@@ -265,27 +276,32 @@ theorem InitialThetaData.bad_finite : (badPlacesOver D.F D.E D.VBad).Finite := b
   exact absurd ((norm_emb_le_one_iff _).1 h.le)
     (not_le.2 (one_lt_valuation_j_of_mult D.E w (hmult w hw)))
 
+open scoped Classical in
 /-- The chosen `2ℓ`-th root of the Tate parameter at a bad place of `K`; `1` elsewhere. -/
 def qrootOf (v : FinitePlace D.Kt) : completionAt D.Kt v :=
   if hv : IsBadK D v then
     Classical.choose (exists_qroot D.prime D.tate D.twoTorsionRational hv)
   else 1
 
+open scoped Classical in
 lemma qrootOf_spec {v : FinitePlace D.Kt} (hv : IsBadK D v) :
     qrootOf D v ^ (2 * D.ℓ) = ((D.tate.S v hv).t.q : localCompletion v) := by
   unfold qrootOf
   rw [dif_pos hv]
   exact Classical.choose_spec (exists_qroot D.prime D.tate D.twoTorsionRational hv)
 
+open scoped Classical in
 lemma qrootOf_of_not {v : FinitePlace D.Kt} (hv : ¬ IsBadK D v) : qrootOf D v = 1 := by
   unfold qrootOf
   rw [dif_neg hv]
 
+open scoped Classical in
 /-- The comparison map `F_w → K_v` of the local theta data. -/
 def embedFOf (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) : localCompletion w →+* completionAt D.Kt v :=
   embedCompletion (v := v) (w := w) h
 
+open scoped Classical in
 /-- `q_v^{2ℓ}` is the image of the Tate parameter of `E` at `w`. -/
 lemma qrootOf_pow (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
@@ -297,6 +313,7 @@ lemma qrootOf_pow (v : FinitePlace D.Kt) (w : FinitePlace D.F)
   exact TateStructure.t_q_eq_embedCompletion hvw (D.tate.S v hv) (D.prime.tate w hw)
     (D.prime.tateJ_eq w hw)
 
+open scoped Classical in
 lemma qrootOf_ne_zero (v : FinitePlace D.Kt) : qrootOf D v ≠ 0 := by
   by_cases hv : IsBadK D v
   · intro h0
@@ -306,6 +323,7 @@ lemma qrootOf_ne_zero (v : FinitePlace D.Kt) : qrootOf D v ≠ 0 := by
   · rw [qrootOf_of_not D hv]
     exact one_ne_zero
 
+open scoped Classical in
 /-- `ord_p(q_v) = ord_w(q_w)/(2ℓ e_w)`. -/
 lemma ordp_qrootOf (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
@@ -328,16 +346,19 @@ lemma ordp_qrootOf (v : FinitePlace D.Kt) (w : FinitePlace D.F)
   unfold AdmissiblePrimeData.qOrder
   ring
 
+open scoped Classical in
 /-- The residue characteristics of the bad places of `F`. -/
 def badCharsOf : Finset ℕ :=
   D.bad_finite.toFinset.image residueChar
 
+open scoped Classical in
 lemma residueChar_mem_badCharsOf {v : FinitePlace D.Kt}
     {w : FinitePlace D.F} (hvw : FinitePlace.LiesOver v w)
     (hw : w ∈ badPlacesOver D.F D.E D.VBad) : residueChar v ∈ badCharsOf D :=
   Finset.mem_image.mpr
     ⟨w, D.bad_finite.mem_toFinset.mpr hw, (residueChar_eq_of_liesOver hvw).symm⟩
 
+open scoped Classical in
 lemma not_isBadK_of_notMem {v : FinitePlace D.Kt}
     (hv : residueChar v ∉ badCharsOf D) : ¬ IsBadK D v := by
   intro h
@@ -353,20 +374,25 @@ finite set `badChars` (the residue characteristics of the bad places) carry `q_v
 
 namespace InitialThetaData
 
+open scoped Classical in
 /-- The residue characteristics of the bad places. -/
 abbrev badChars : Finset ℕ := badCharsOf D
 
+open scoped Classical in
 /-- The `2ℓ`-th root `q_v` of the Tate parameter at `v` (`1` away from the bad places). -/
 abbrev qroot (v : FinitePlace D.Kt) : completionAt D.Kt v := qrootOf D v
 
+open scoped Classical in
 /-- The comparison map of completions `F_w → K_v` for `v ∣ w`. -/
 abbrev embedF (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) : localCompletion w →+* completionAt D.Kt v :=
   embedFOf D v w h
 
+open scoped Classical in
 /-- `q_v ≠ 0`. -/
 theorem qroot_ne_zero (v : FinitePlace D.Kt) : D.qroot v ≠ 0 := qrootOf_ne_zero D v
 
+open scoped Classical in
 /-- `ord_p(q_v) ≥ 0`. -/
 theorem ordp_qroot_nonneg (v : FinitePlace D.Kt) : 0 ≤ ordp D.Kt v (D.qroot v) := by
   by_cases hv : IsBadK D v
@@ -376,39 +402,46 @@ theorem ordp_qroot_nonneg (v : FinitePlace D.Kt) : 0 ≤ ordp D.Kt v (D.qroot v)
   · rw [qroot, qrootOf_of_not D hv]
     simp [ordp, norm_one]
 
+open scoped Classical in
 /-- Away from the bad residue characteristics, `q_v = 1`. -/
 theorem qroot_eq_one (v : FinitePlace D.Kt) (hv : residueChar v ∉ D.badChars) :
     D.qroot v = 1 :=
   qrootOf_of_not D (not_isBadK_of_notMem D hv)
 
+open scoped Classical in
 /-- `q_v^{2ℓ}` is the Tate parameter of `E` at `w` (IUT I, Example 3.2(iv)). -/
 theorem qroot_pow (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
     D.qroot v ^ (2 * D.ℓ) = D.embedF v w h ((D.prime.tate w hw).q : localCompletion w) :=
   qrootOf_pow D v w h hw
 
+open scoped Classical in
 /-- `ord_p(q_v) = ord_w(q_w)/(2ℓ·e_w)`. -/
 theorem ordp_qroot (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
     ordp D.Kt v (D.qroot v) = (D.prime.qOrder w hw : ℝ) / (2 * D.ℓ * ramIdx D.F w) :=
   ordp_qrootOf D v w h hw
 
+open scoped Classical in
 /-- The bad places of `K` have residue characteristic in `badChars`. -/
 theorem residueChar_mem (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
     residueChar v ∈ D.badChars :=
   residueChar_mem_badCharsOf D h hw
 
+open scoped Classical in
 /-- The bad places of `F` have residue characteristic in `badChars`. -/
 theorem bad_residueChar_mem (w : FinitePlace D.F) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
     residueChar w ∈ D.badChars :=
   Finset.mem_image.mpr ⟨w, D.bad_finite.mem_toFinset.mpr hw, rfl⟩
 
+open scoped Classical in
 /-- The bad residue characteristics are prime. -/
 theorem badChars_prime (p : ℕ) (hp : p ∈ D.badChars) : p.Prime := by
   obtain ⟨w, -, rfl⟩ := Finset.mem_image.mp hp
   exact residueChar_prime w
 
+open scoped Classical in
 /-- **Base-change invariance of the `q`-degree** at each prime `p`: the weighted sum over the
 places `v ∣ p` of `K` of `[K_v : ℚ_p]/[K : ℚ]·ord_p(q_v)` equals
 `(1/2ℓ)·∑_{w ∣ p, w bad} (f_w/[F : ℚ])·ord_w(q_w)` (from `∑_{v ∣ w} e_v f_v = [K : F]·e_w f_w`

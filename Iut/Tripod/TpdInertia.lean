@@ -30,7 +30,6 @@ namespace Iut
 
 open NumberField WeierstrassCurve WeierstrassCurve.Affine
 
-open scoped Classical
 
 /-! ### The sign of an automorphism on a square root -/
 
@@ -38,6 +37,7 @@ section Sign
 
 variable {k L : Type*} [Field k] [Field L] [CharZero L] [Algebra k L]
 
+open scoped Classical in
 /-- The sign `±1` of `σ ∈ Aut(L/k)` on a square root `s` of an element of `k`. -/
 noncomputable def signHom (s : L) (hs : ∃ a : k, s ^ 2 = algebraMap k L a) (hs0 : s ≠ 0) :
     (L ≃ₐ[k] L) →* ℤˣ where
@@ -58,6 +58,7 @@ noncomputable def signHom (s : L) (hs : ∃ a : k, s ^ 2 = algebraMap k L a) (hs
       · simp [hτ, hσ, hne]
       · simp [hτ, hσ, hne]
 
+open scoped Classical in
 lemma signHom_eq_one_iff {s : L} (hs : ∃ a : k, s ^ 2 = algebraMap k L a) (hs0 : s ≠ 0)
     (σ : L ≃ₐ[k] L) : signHom s hs hs0 σ = 1 ↔ σ s = s := by
   change (if σ s = s then (1 : ℤˣ) else -1) = 1 ↔ σ s = s
@@ -74,7 +75,6 @@ namespace Iut.Tripod
 open Iut Iut.EllipticCurveData NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
   WeierstrassCurve WeierstrassCurve.Affine
 
-open scoped Classical
 
 variable (P : CurveProviders) (x : Pt)
 
@@ -82,28 +82,33 @@ set_option quotPrecheck false in
 /-- The Legendre curve `E_λ` over `F = F_λ`. -/
 local notation "EF" => Affine.baseChange (legendre (genT P x)) (P.curve x).F
 
+open scoped Classical in
 /-- `√λ ∈ F`, as a square root of an element of `F_tpd`. -/
 lemma sqrtLam'_sq_mem : ∃ a : tpd P x, (sqrtLam' x.1 : (P.curve x).F) ^ 2 =
     algebraMap (tpd P x) (P.curve x).F a :=
   ⟨genT P x, by rw [algebraMap_genT]; exact sqrtLam'_sq x.1⟩
 
+open scoped Classical in
 /-- `√(1 − λ) ∈ F`, as a square root of an element of `F_tpd`. -/
 lemma sqrtOneSubLam'_sq_mem : ∃ a : tpd P x, (sqrtOneSubLam' x.1 : (P.curve x).F) ^ 2 =
     algebraMap (tpd P x) (P.curve x).F a :=
   ⟨1 - genT P x, by rw [map_sub, map_one, algebraMap_genT]; exact sqrtOneSubLam'_sq x.1⟩
 
+open scoped Classical in
 lemma sqrtLam'_ne_zero : sqrtLam' x.1 ≠ 0 := by
   intro h
   have hsq := sqrtLam'_sq x.1
   rw [h, zero_pow two_ne_zero] at hsq
   exact gen'_ne_zero x.2.1 hsq.symm
 
+open scoped Classical in
 lemma sqrtOneSubLam'_ne_zero : sqrtOneSubLam' x.1 ≠ 0 := by
   intro h
   have hsq := sqrtOneSubLam'_sq x.1
   rw [h, zero_pow two_ne_zero, eq_comm, sub_eq_zero] at hsq
   exact gen'_ne_one x.2.2 hsq.symm
 
+open scoped Classical in
 /-- **The subgroup `I⁺`** of the automorphisms of `F/F_tpd` in the inertia group of `w` fixing
 `√λ` and `√(1 − λ)`. -/
 noncomputable def inertiaPlus (w : FinitePlace (P.curve x).F) :
@@ -112,6 +117,7 @@ noncomputable def inertiaPlus (w : FinitePlace (P.curve x).F) :
     ((signHom _ (sqrtLam'_sq_mem P x) (sqrtLam'_ne_zero x)).ker ⊓
       (signHom _ (sqrtOneSubLam'_sq_mem P x) (sqrtOneSubLam'_ne_zero x)).ker)
 
+open scoped Classical in
 lemma mem_inertiaPlus_iff (w : FinitePlace (P.curve x).F)
     (σ : (P.curve x).F ≃ₐ[tpd P x] (P.curve x).F) :
     σ ∈ inertiaPlus P x w ↔ σ ∈ w.maximalIdeal.asIdeal.inertia _ ∧
@@ -120,6 +126,7 @@ lemma mem_inertiaPlus_iff (w : FinitePlace (P.curve x).F)
 
 /-! ### `[I : I⁺] ≤ 2` -/
 
+open scoped Classical in
 /-- **The index of `I⁺` in `I` is at most `2`**: if `I` fixes an element `r` and fixing a
 square root `f` of an element of `F_tpd` together with `r` forces fixing `√λ` and `√(1 − λ)`,
 then the sign of `I` on `f` is a homomorphism `I →* ℤˣ` with kernel `I⁺`. -/
@@ -153,6 +160,7 @@ theorem card_inertia_le_two_mul (w : FinitePlace (P.curve x).F) (f : (P.curve x)
 
 /-! ### `I⁺` acts unipotently on the `3`- and `5`-torsion -/
 
+open scoped Classical in
 /-- **`I⁺` acts unipotently on `E_λ(F)[n]` at a bad place** (`n` odd, `w(n) = 1`, `w(2) = 1`):
 `σ^n` fixes the `n`-torsion pointwise for `σ ∈ I⁺`. -/
 theorem galF_pow_eq_self_of_mem_inertiaPlus (w : FinitePlace (P.curve x).F)
@@ -188,6 +196,7 @@ theorem galF_pow_eq_self_of_mem_inertiaPlus (w : FinitePlace (P.curve x).F)
 
 /-! ### `|I⁺| ≤ 15` -/
 
+open scoped Classical in
 /-- **`|I⁺| ≤ 15`** at a bad place of residue characteristic `∉ {2, 3, 5}`. -/
 theorem card_inertiaPlus_le (w : FinitePlace (P.curve x).F) (h2 : residueChar w ≠ 2)
     (h3 : residueChar w ≠ 3) (h5 : residueChar w ≠ 5)
@@ -271,6 +280,7 @@ theorem card_inertiaPlus_le (w : FinitePlace (P.curve x).F) (h2 : residueChar w 
 
 /-! ### `e(w/u) ≤ 30` -/
 
+open scoped Classical in
 /-- **`F_λ/ℚ(λ)` has ramification index `≤ 30` at the bad places of residue characteristic
 `∉ {2, 3, 5}`.** -/
 theorem relRamIdx_tpd_le_thirty {w : FinitePlace (P.curve x).F} {𝔭 : FinitePlace (tpd P x)}

@@ -27,36 +27,41 @@ universe u
 
 open WeierstrassCurve
 
-open scoped Classical
 
 noncomputable section
 
 variable {k : Type u} [Field k] (E : WeierstrassCurve k) [E.IsElliptic]
 
+open scoped Classical in
 /-- The inertia generators: `Sgen E ℓ M` in characteristic `0`; all of `Gal E` otherwise (a junk
 value making the fundamental group trivial). -/
 def SgenC (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) : Set (Gal E) :=
   if CharZero k then Sgen E ℓ M else Set.univ
 
+open scoped Classical in
 lemma SgenC_of_charZero [CharZero k] (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
     SgenC E ℓ M = Sgen E ℓ M := by
   unfold SgenC; exact if_pos ‹CharZero k›
 
+open scoped Classical in
 lemma SgenC_of_not_charZero (h : ¬ CharZero k) (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
     SgenC E ℓ M = Set.univ := by
   unfold SgenC; exact if_neg h
 
+open scoped Classical in
 /-- **The étale fundamental group of the model orbicurve `(E, ℓ, M, ±)`** used by the instance:
 `pi1Of E ℓ M ±` in characteristic `0`, trivial otherwise. -/
 def pi1C (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) : ProfiniteGrp.{u} :=
   GaloisPi1.pi1 (Hgp E ℓ M pm) (SgenC E ℓ M) (isClosed_Hgp E ℓ M pm)
 
+open scoped Classical in
 /-- In characteristic `0`, `pi1C` is the genuine étale fundamental group `pi1Of`. -/
 def pi1EquivC [CharZero k] (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     pi1Of E ℓ M pm ≃ₜ* pi1C E ℓ M pm := by
   unfold pi1C pi1Of
   rw [SgenC_of_charZero]
 
+open scoped Classical in
 omit [E.IsElliptic] in
 lemma GaloisPi1_pi1_univ_subsingleton {P Ω : Type u} [Field P] [Field Ω] [Algebra P Ω]
     [IsGalois P Ω] (H : Subgroup (Ω ≃ₐ[P] Ω)) (hH : IsClosed (H : Set (Ω ≃ₐ[P] Ω))) :
@@ -75,12 +80,14 @@ lemma GaloisPi1_pi1_univ_subsingleton {P Ω : Type u} [Field P] [Field Ω] [Alge
   rw [QuotientGroup.eq, hker]
   trivial
 
+open scoped Classical in
 lemma pi1C_subsingleton (h : ¬ CharZero k) (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point)
     (pm : Bool) : Subsingleton (pi1C E ℓ M pm) := by
   unfold pi1C
   rw [SgenC_of_not_charZero E h]
   exact GaloisPi1_pi1_univ_subsingleton _ _
 
+open scoped Classical in
 /-- **The homomorphism of fundamental groups induced by a cover** (the inclusion
 `Aut(Ω / F_X) ⊆ Aut(Ω / F_Y)`; trivial in positive characteristic). -/
 def pi1MapC {ℓ ℓ' : ℕ} {M M' : AddSubgroup E.toAffine.Point} {pm pm' : Bool} :
@@ -89,6 +96,7 @@ def pi1MapC {ℓ ℓ' : ℕ} {M M' : AddSubgroup E.toAffine.Point} {pm pm' : Boo
     GaloisPi1.pi1Map (isClosed_Hgp E ℓ M pm) (isClosed_Hgp E ℓ' M' pm') h.1 h.2
   else 1
 
+open scoped Classical in
 lemma continuous_pi1MapC {ℓ ℓ' : ℕ} {M M' : AddSubgroup E.toAffine.Point} {pm pm' : Bool} :
     Continuous (pi1MapC E (ℓ := ℓ) (ℓ' := ℓ') (M := M) (M' := M') (pm := pm) (pm' := pm')) := by
   unfold pi1MapC
@@ -96,6 +104,7 @@ lemma continuous_pi1MapC {ℓ ℓ' : ℕ} {M M' : AddSubgroup E.toAffine.Point} 
   · exact GaloisPi1.continuous_pi1Map _ _ _ _
   · exact continuous_const
 
+open scoped Classical in
 omit [E.IsElliptic] in
 lemma isOpenEmbedding_of_subsingleton {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
     [Subsingleton X] [Subsingleton Y] [Nonempty X] (f : X → Y) (hf : Continuous f) :
@@ -111,6 +120,7 @@ lemma isOpenEmbedding_of_subsingleton {X Y : Type*} [TopologicalSpace X] [Topolo
     rw [this]
     exact isOpen_univ
 
+open scoped Classical in
 /-- **The maps induced by covers are open embeddings.** -/
 theorem isOpenEmbedding_pi1MapC {n ℓ ℓ' : ℕ} (hn : 0 < n) (hℓ : n * ℓ' = ℓ)
     {M M' : AddSubgroup E.toAffine.Point} (hM : ∀ P ∈ M, n • P ∈ M') {pm pm' : Bool}

@@ -24,7 +24,7 @@ Tate structures gives a `TateFamily` (`Iut.TateFamily.ofStructures`).
 namespace Iut
 
 open WeierstrassCurve NumberField Iut.Anabelian
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -36,6 +36,7 @@ section Congr
 
 variable {k : Type u} [Field k]
 
+open scoped Classical in
 /-- Transport of a point of `.some` form along an equality of curves. -/
 lemma pointCongr_some {W W' : WeierstrassCurve k} (h : W = W') {x y : k}
     (hxy : W.toAffine.Nonsingular x y) :
@@ -48,11 +49,14 @@ variable [Valued k (WithZero (Multiplicative ℤ))]
 
 namespace TateStructure
 
+open scoped Classical in
 /-- Transport of a Tate structure along an equality of curves. -/
 def congr {W W' : WeierstrassCurve k} (h : W = W') (S : TateStructure W) : TateStructure W' := by
   subst h
   exact S
 
+open scoped Classical in
+omit [CompleteSpace k] in
 /-- The graph line of the transported structure. -/
 theorem graphLine_congr {W W' : WeierstrassCurve k} (h : W = W') (S : TateStructure W) (ℓ : ℕ) :
     (S.congr h).graphLine ℓ = (S.graphLine ℓ).map (pointCongr h).toAddMonoidHom := by
@@ -61,6 +65,7 @@ theorem graphLine_congr {W W' : WeierstrassCurve k} (h : W = W') (S : TateStruct
   rw [AddSubgroup.mem_map_equiv]
   rfl
 
+open scoped Classical in
 omit [CompleteSpace k] in
 /-- The canonical generators of the transported structure. -/
 theorem isCanonical_congr' {W W' : WeierstrassCurve k} (h : W = W') (S : TateStructure W) (ℓ : ℕ)
@@ -82,6 +87,7 @@ variable (K : IntermediateField F Fbar) [NumberField ↥K]
 
 attribute [local instance 1100] instDecidableEqIntermediateField
 
+open scoped Classical in
 /-- `12 ≠ 0` in the completions of `K`. -/
 lemma twelve_ne_zero_localCompletion (w : FinitePlace ↥K) : (12 : localCompletion w) ≠ 0 := by
   rw [← map_ofNat (emb K w) 12]
@@ -89,6 +95,7 @@ lemma twelve_ne_zero_localCompletion (w : FinitePlace ↥K) : (12 : localComplet
 
 variable (σ : ↥K ≃ₐ[F] ↥K) (w : FinitePlace ↥K)
 
+open scoped Classical in
 /-- `K_{σ·w}` is a normed `K_w`-algebra through the isometry `σ_w`. -/
 @[reducible] def galNormedAlgebra :
     NormedAlgebra (localCompletion w) (localCompletion (galPlace σ w)) :=
@@ -102,19 +109,24 @@ variable (σ : ↥K ≃ₐ[F] ↥K) (w : FinitePlace ↥K)
 
 attribute [local instance] galNormedAlgebra
 
+open scoped Classical in
 /-- `σ_w` as the structure map of the `K_w`-algebra `K_{σ·w}`. -/
 abbrev galCompletionHom : localCompletion w →+* localCompletion (galPlace σ w) :=
   algebraMap (localCompletion w) (localCompletion (galPlace σ w))
 
+open scoped Classical in
 lemma galCompletionHom_apply (x : localCompletion w) :
     galCompletionHom K σ w x = galCompletion σ w x := rfl
 
+open scoped Classical in
 lemma galCompletionHom_bijective : Function.Bijective (galCompletionHom K σ w) :=
   (galCompletion σ w).bijective
 
+open scoped Classical in
 omit [E.IsElliptic] in
 /-- **`σ_w` carries `E ×_F K_w` to `E ×_F K_{σ·w}`.** -/
-theorem map_curveKw : (curveKw E K w).map (galCompletionHom K σ w) = curveKw E K (galPlace σ w) := by
+theorem map_curveKw :
+    (curveKw E K w).map (galCompletionHom K σ w) = curveKw E K (galPlace σ w) := by
   unfold curveKw curveK
   rw [WeierstrassCurve.map_map, WeierstrassCurve.map_map, WeierstrassCurve.map_map]
   congr 1
@@ -122,13 +134,15 @@ theorem map_curveKw : (curveKw E K w).map (galCompletionHom K σ w) = curveKw E 
   simp only [RingHom.comp_apply]
   rw [galCompletionHom_apply, galCompletion_emb, AlgEquiv.commutes]
 
+open scoped Classical in
 omit [E.IsElliptic] in
 /-- **The point map of `σ_w` on `E(K_w)`, through `σ`**: on `E(K)`, the action of `σ` followed by
 the inclusion into `E(K_{σ·w})` is the inclusion into `E(K_w)` followed by `σ_w`. -/
 theorem pointMap_emb_galK (R : (curveK E K).toAffine.Point) :
     pointMap (curveK E K) (emb K (galPlace σ w)) (galK E K σ R) =
       pointCongr (map_curveKw E K σ w)
-        (pointMap (curveKw E K w) (galCompletionHom K σ w) (pointMap (curveK E K) (emb K w) R)) := by
+        (pointMap (curveKw E K w) (galCompletionHom K σ w)
+          (pointMap (curveK E K) (emb K w) R)) := by
   cases R with
   | zero =>
     change pointMap _ _ (galK E K σ 0) = pointCongr _ (pointMap _ _ (pointMap _ _ 0))
@@ -138,6 +152,7 @@ theorem pointMap_emb_galK (R : (curveK E K).toAffine.Point) :
     exact some_ext ((galCompletionHom_apply K σ w _).trans (galCompletion_emb K σ w x)).symm
       ((galCompletionHom_apply K σ w _).trans (galCompletion_emb K σ w y)).symm
 
+open scoped Classical in
 /-- **The graph lines at `w` and `σ·w` correspond under `σ_w`**, for arbitrary Tate structures. -/
 theorem mem_graphLine_galCompletion (S : TateStructure (curveKw E K w))
     (S' : TateStructure (curveKw E K (galPlace σ w))) (ℓ : ℕ) (P : (curveKw E K w).toAffine.Point) :
@@ -149,6 +164,7 @@ theorem mem_graphLine_galCompletion (S : TateStructure (curveKw E K w))
     AddSubgroup.mem_map_equiv, AddEquiv.symm_apply_apply, TateStructure.graphLine_baseChange]
   exact AddSubgroup.mem_map_iff_mem (pointMap_injective _ _)
 
+open scoped Classical in
 /-- **The canonical generators at `w` and `σ·w` correspond under `σ_w`**, for arbitrary Tate
 structures. -/
 theorem isCanonical_galCompletion (S : TateStructure (curveKw E K w))
@@ -163,6 +179,7 @@ theorem isCanonical_galCompletion (S : TateStructure (curveKw E K w))
 
 /-! ### The action of `Gal(K/F)` on `E(K)` is bijective -/
 
+open scoped Classical in
 omit [NumberField F] [E.IsElliptic] [NumberField ↥K] in
 lemma galK_inv_galK (R : (curveK E K).toAffine.Point) : galK E K σ⁻¹ (galK E K σ R) = R := by
   cases R with
@@ -174,10 +191,12 @@ lemma galK_inv_galK (R : (curveK E K).toAffine.Point) : galK E K σ⁻¹ (galK E
     · change σ⁻¹ (σ y) = y
       rw [AlgEquiv.aut_inv, AlgEquiv.symm_apply_apply]
 
+open scoped Classical in
 omit [NumberField F] [E.IsElliptic] [NumberField ↥K] in
 lemma galK_injective : Function.Injective (galK E K σ) := fun R R' h => by
   rw [← galK_inv_galK E K σ R, h, galK_inv_galK]
 
+open scoped Classical in
 omit [NumberField F] [E.IsElliptic] [NumberField ↥K] in
 lemma galK_surjective : Function.Surjective (galK E K σ) := fun R => by
   refine ⟨galK E K σ⁻¹ R, ?_⟩
@@ -188,6 +207,7 @@ lemma galK_surjective : Function.Surjective (galK E K σ) := fun R => by
 
 variable (ℓ : ℕ) (VBad : Set (FinitePlace ↥(fieldOfModuli F E)))
 
+open scoped Classical in
 /-- **Galois equivariance of the graph line for an arbitrary family of Tate structures.** -/
 theorem graphLine_galPlace_of_forall
     (S : ∀ w : FinitePlace ↥K, IsBadPlace E K VBad w → TateStructure (curveKw E K w))
@@ -212,6 +232,7 @@ theorem graphLine_galPlace_of_forall
     rw [← galK_injective E K σ hR]
     exact h₁
 
+open scoped Classical in
 /-- **Galois equivariance of the canonical generators for an arbitrary family of Tate
 structures.** -/
 theorem isCanonical_galPlace_of_forall
@@ -223,6 +244,7 @@ theorem isCanonical_galPlace_of_forall
       (S w hw).IsCanonical ℓ (pointMap (curveK E K) (emb K w) R) := by
   rw [pointMap_emb_galK, isCanonical_galCompletion]
 
+open scoped Classical in
 /-- **Any family of Tate structures at the bad places is a `TateFamily`**: the equivariance
 fields are theorems. -/
 def TateFamily.ofStructures
@@ -232,6 +254,7 @@ def TateFamily.ofStructures
   graphLine_galPlace := graphLine_galPlace_of_forall E K ℓ VBad S
   isCanonical_galPlace := isCanonical_galPlace_of_forall E K ℓ VBad S
 
+open scoped Classical in
 @[simp] lemma TateFamily.ofStructures_S
     (S : ∀ w : FinitePlace ↥K, IsBadPlace E K VBad w → TateStructure (curveKw E K w)) :
     (TateFamily.ofStructures E K ℓ VBad S).S = S := rfl

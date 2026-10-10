@@ -30,7 +30,7 @@ not close to `1`, and `r = u⁵ s` is the required root for `E`.
 namespace Iut
 
 open WeierstrassCurve TateCurvesTheta Iut.Anabelian
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -42,6 +42,7 @@ section Congr
 
 variable {k : Type u} [Field k]
 
+open scoped Classical in
 lemma pointCongr_pointCongr_symm {W W' : WeierstrassCurve k} (h : W = W') (P : W'.toAffine.Point) :
     pointCongr h (pointCongr h.symm P) = P := by
   subst h
@@ -52,18 +53,21 @@ variable [Valued k (WithZero (Multiplicative ℤ))]
 
 namespace TateStructure
 
+open scoped Classical in
 omit [CompleteSpace k] in
 lemma congr_t {W W' : WeierstrassCurve k} (h : W = W') (S : TateStructure W) :
     (S.congr h).t = S.t := by
   subst h
   rfl
 
+open scoped Classical in
 omit [CompleteSpace k] in
 lemma congr_C {W W' : WeierstrassCurve k} (h : W = W') (S : TateStructure W) :
     (S.congr h).C = S.C := by
   subst h
   rfl
 
+open scoped Classical in
 omit [CompleteSpace k] in
 lemma ofUnit_congr {W W' : WeierstrassCurve k} (h : W = W') (S : TateStructure W) (u : kˣ) :
     (S.congr h).ofUnit u = pointCongr h (S.ofUnit u) := by
@@ -84,6 +88,7 @@ variable {E : WeierstrassCurve k} [E.IsElliptic]
 
 namespace TateStructure
 
+open scoped Classical in
 /-- If the changes of variables of two Tate structures differ by the negation of `E_q`, their
 point maps differ by the sign `−1` (the second branch of `ofUnit_eq_or_neg`). -/
 lemma ofUnit_eq_neg_of_C (S S' : TateStructure E) (h12 : (12 : k) ≠ 0)
@@ -130,10 +135,12 @@ variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
 variable {E : WeierstrassCurve k} [E.IsElliptic]
 
+open scoped Classical in
 /-- An odd prime does not divide `2`. -/
 lemma not_dvd_two_of_odd_prime {ℓ : ℕ} (hℓ : ℓ.Prime) (hodd : ℓ ≠ 2) : ¬ ℓ ∣ 2 := fun h =>
   hodd ((Nat.prime_dvd_prime_iff_eq hℓ Nat.prime_two).mp h)
 
+open scoped Classical in
 /-- **The change of variables is fixed.** Given a second Tate structure `S'` on `E` obtained by
 transporting `S` along an endomorphism `f` of `k` fixing `E`, if the ℓ-torsion is `f`-fixed
 and has `ℓ²` elements (`ℓ` an odd prime), then `f` fixes the Tate parameter and the change of
@@ -180,6 +187,7 @@ theorem TateStructure.map_eq_of_fixed (f : k →+* k) (hE : E.map f = E) (h12 : 
     have hdvd : (ℓ : ℤ) ∣ 2 := ⟨n - 2 * m, by linear_combination hexp⟩
     exact not_dvd_two_of_odd_prime hℓ hodd (Int.natCast_dvd_ofNat.mp hdvd)
 
+open scoped Classical in
 omit [E.IsElliptic] in
 /-- **The square root, given that `f` fixes the change of variables.** -/
 theorem TateStructure.exists_sqrt_of_map_C_eq (f : k →+* k) (hf : ∀ x, ‖f x‖ = ‖x‖)
@@ -240,28 +248,36 @@ section Twist
 variable (k : Type u) [Field k] [Valued k (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
 
+open scoped Classical in
 /-- A type synonym for `k`, to be made a normed `k`-algebra through an isometric automorphism
 `σ` of `k` (so that `algebraMap k (Twist k) = σ`). -/
 def Twist : Type u := k
 
+open scoped Classical in
 instance : Field (Twist k) := inferInstanceAs (Field k)
 
+open scoped Classical in
 instance : Valued (Twist k) (WithZero (Multiplicative ℤ)) :=
   inferInstanceAs (Valued k (WithZero (Multiplicative ℤ)))
 
+open scoped Classical in
 instance : Valuation.RankOne (Valued.v : Valuation (Twist k) (WithZero (Multiplicative ℤ))) :=
   inferInstanceAs (Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ))))
 
+open scoped Classical in
 instance : CompleteSpace (Twist k) := inferInstanceAs (CompleteSpace k)
 
 variable {k}
 
+open scoped Classical in
 /-- The `k`-algebra structure on `Twist k` through `σ`. -/
 @[reducible] def twistAlgebra (σ : k ≃+* k) : Algebra k (Twist k) :=
   ((σ : k →+* k) : k →+* Twist k).toAlgebra
 
+open scoped Classical in
 /-- The normed `k`-algebra structure on `Twist k` through an isometric `σ`. -/
-@[reducible] def twistNormedAlgebra (σ : k ≃+* k) (hσ : ∀ x, ‖σ x‖ = ‖x‖) : NormedAlgebra k (Twist k) :=
+@[reducible] def twistNormedAlgebra (σ : k ≃+* k) (hσ : ∀ x, ‖σ x‖ = ‖x‖) :
+    NormedAlgebra k (Twist k) :=
   @NormedAlgebra.mk _ _ _ _ (twistAlgebra σ) fun r x => by
     letI := twistAlgebra σ
     rw [Algebra.smul_def, norm_mul]
@@ -277,6 +293,7 @@ section Main
 variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
 
+open scoped Classical in
 /-- **The local sign theorem.** Let `σ` be an isometric automorphism of `k` fixing the
 coefficients of an elliptic curve `E` with a Tate structure `S`, and let `ℓ` be an odd prime
 such that `E(k)[ℓ]` has at least `ℓ²` elements, all fixed by `σ`. Then `−c₄(E)c₆(E)` has a

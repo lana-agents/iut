@@ -43,8 +43,9 @@ representations of the curves, `LegendreHeightHyp` (IUT IV, Corollary 2.2(i); [G
 Proposition 3.4; proved in `Iut/Tripod/Height.lean`, `Iut.Tripod.legendreHeight`),
 `TwoAdicBoundHyp` (the `2`-adic contribution to `log(q_∀)`; proved in `TwoAdic.lean`),
 `CyclicBoundHyp` ([GenEll], Lemma 3.5; not used) and its weakening away from `2`,
-`CyclicBoundOddHyp` (proved in `CyclicIsogeny.lean`, `Iut.Tripod.cyclicBoundOdd`), `SL2ImageHyp` ([GenEll], Lemma 3.1(iii); proved in
-this file, `Iut.Tripod.sl2Image`, from `Iut/Concrete/SL2Image.lean`),
+`CyclicBoundOddHyp` (proved in `CyclicIsogeny.lean`, `Iut.Tripod.cyclicBoundOdd`), `SL2ImageHyp`
+([GenEll], Lemma 3.1(iii); proved in this file, `Iut.Tripod.sl2Image`, from
+`Iut/Concrete/SL2Image.lean`),
 `LogCondGeHyp`, `LogCondLeHyp` (the comparison of the conductor of `F_tpd = ℚ(λ)` away from
 `2ℓ` with `log-cond_{{0,1,∞}}(λ)`, from the reduction theory of the Legendre curve; proved in
 `LogCond.lean`) and `CoreFinitenessHyp` ([CanLift], Proposition 2.7; proved for the genuine
@@ -473,7 +474,7 @@ a once-punctured elliptic curve `X_λ` that fails to have the `F_λ`-core `C_λ 
 (the four exceptional `j`-invariants), for the genuine cores. Proved in
 `Iut.Tripod.coreFiniteness`. -/
 def CoreFinitenessHyp : Prop :=
-  {x | ∃ hx : x ∈ tripodTheory.cbsSet K ∩ tripodTheory.ptLE tripodTheory.tripod d,
+  {x | ∃ _ : x ∈ tripodTheory.cbsSet K ∩ tripodTheory.ptLE tripodTheory.tripod d,
     ¬ OrbicurveDataSection.HasCoreUniversally (P.curve x).F (P.curve x).E}.Finite
 
 /-- **The facts about the curves of the points not proved in this file**, collected: exactly

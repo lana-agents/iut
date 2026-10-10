@@ -97,7 +97,6 @@ end Iut
 namespace Iut.Tripod
 
 open Iut Iut.EllipticCurveData Iut.EllipticCurveData.ModEllRepData WeierstrassCurve NumberField
-open scoped Classical
 
 variable (P : CurveProviders) (x : Pt) {ℓ : ℕ} (hℓ : ℓ.Prime) (hodd : ℓ ≠ 2)
 
@@ -105,15 +104,18 @@ attribute [local instance 1100] Iut.EllipticCurveData.ModEllRepData.instDecidabl
 
 /-! ### The graph-line condition at the odd multiplicative places -/
 
+open scoped Classical in
 /-- The mod-`ℓ` representation data of `E_λ`, as data of the curve `P.curve x`. -/
 noncomputable def repOf : (P.curve x).ModEllRepData ℓ := P.modRep x ℓ hℓ
 
+open scoped Classical in
 /-- The Tate family of `E_λ` over its ℓ-torsion field `K = F_λ(E_λ[ℓ])` at the places of `K`
 over the multiplicative places of odd residue characteristic. -/
 noncomputable def tateFamilyOddOf :
     TateFamily (P.curve x).E (repOf P x hℓ).torsionField ℓ (P.curve x).VBadOdd :=
   (repOf P x hℓ).tateFamilyOdd hℓ hodd
 
+open scoped Classical in
 /-- **`H` is the graph line at the multiplicative place `w₀` of `F_λ`**: at every place `w` of
 the ℓ-torsion field over `w₀` (and over `VBadOdd`), the pull-back of `H` to `E_λ(K)` is the
 graph line `μ_ℓ` of the Tate uniformisation of `E_λ` over `K_w`. -/
@@ -125,6 +127,7 @@ def IsGraphPlace
     placeUnder w = w₀ →
     H.comap (repOf P x hℓ).bcKR = (tateFamilyOddOf P x hℓ hodd).graphLineAt w hw
 
+open scoped Classical in
 /-- **`H` is the graph line at all odd multiplicative places.** -/
 def IsGraphLineOdd
     (H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))) :
@@ -133,11 +136,13 @@ def IsGraphLineOdd
     (hw : IsBadPlace (P.curve x).E (repOf P x hℓ).torsionField (P.curve x).VBadOdd w),
     H.comap (repOf P x hℓ).bcKR = (tateFamilyOddOf P x hℓ hodd).graphLineAt w hw
 
+open scoped Classical in
 lemma isGraphLineOdd_iff
     (H : AddSubgroup (Affine.Point (Affine.baseChange (P.curve x).E (P.curve x).Fbar))) :
     IsGraphLineOdd P x hℓ hodd H ↔ ∀ w₀, IsGraphPlace P x hℓ hodd H w₀ :=
   ⟨fun h _ w hw _ => h w hw, fun h w hw => h _ w hw rfl⟩
 
+open scoped Classical in
 /-- The local height `h_{w₀}` of the local height data is the order of the Tate parameter. -/
 lemma localData_hv_eq {w₀ : FinitePlace (P.curve x).F} (hw₀ : w₀ ∈ (P.curve x).badAll) :
     (P.localData x).hv w₀ = (P.curve x).tateInputs.qOrder w₀ hw₀ := by
@@ -145,11 +150,13 @@ lemma localData_hv_eq {w₀ : FinitePlace (P.curve x).F} (hw₀ : w₀ ∈ (P.cu
   rw [dif_pos hw₀]
   rfl
 
+open scoped Classical in
 /-- The bad places of the local height data are the multiplicative places. -/
 lemma mem_localData_bad_iff (w₀ : FinitePlace (P.curve x).F) :
     w₀ ∈ (P.localData x).bad ↔ w₀ ∈ (P.curve x).badAll :=
   (P.arith x).badAll_finite.mem_toFinset
 
+open scoped Classical in
 /-- **[GenEll], Lemma 3.2(i) for `E_λ`**: under (P2) at `w₀`, a Galois-stable subgroup of order
 `ℓ` is the graph line at `w₀`. -/
 theorem isGraphPlace_of_not_dvd
@@ -167,6 +174,7 @@ theorem isGraphPlace_of_not_dvd
 
 /-! ### The decomposition of `log q_∀` by the graph-line places -/
 
+open scoped Classical in
 /-- **The decomposition of `log q_∀(E_λ)`** into the parts supported at the multiplicative
 places where `H` is the graph line and at the others. -/
 theorem h_eq_heightOn_graph_add
@@ -175,6 +183,7 @@ theorem h_eq_heightOn_graph_add
       (P.localData x).heightOn (fun w₀ => ¬ IsGraphPlace P x hℓ hodd H w₀) :=
   (P.localData x).height_eq_heightOn_add _
 
+open scoped Classical in
 /-- **Under (P2), the places where `H` is not the graph line lie over `2`**: the non-graph
 part of `log q_∀(E_λ)` is at most the `2`-adic part. -/
 theorem heightOn_not_graph_le
@@ -190,6 +199,7 @@ theorem heightOn_not_graph_le
   by_contra h2
   exact hng (isGraphPlace_of_not_dvd P x hℓ hodd hH hgal w₀ (hP2 w₀ hw₀))
 
+open scoped Classical in
 /-- On a compactly bounded subset, under (P2), the non-graph part of `log q_∀(E_λ)` is bounded
 by the `2`-adic bound `max (4c) 0` (`Iut.Tripod.twoAdicBound`). -/
 theorem heightOn_not_graph_le_of_mem {K : CompactlyBounded} (hx : x ∈ K.set)
@@ -205,6 +215,7 @@ theorem heightOn_not_graph_le_of_mem {K : CompactlyBounded} (hx : x ∈ K.set)
 
 variable (K : CompactlyBounded) (d : ℕ)
 
+open scoped Classical in
 /-- **[GenEll], Lemma 3.5 with Proposition 3.4, for a cyclic subgroup which is the graph line
 at the odd multiplicative places**: for `x ∈ K ∩ U^{≤ d}`, a prime `ℓ ≥ 7` prime to the local
 heights at the places over `2`, and a Galois-stable subgroup `H ⊆ E_λ(ℚ̄)` of order `ℓ` which
@@ -235,6 +246,7 @@ def CyclicGraphBoundHyp (TK : ℝ) : Prop :=
       IsGraphLineOdd P x hℓ (by omega) H →
       ((ℓ : ℝ) - 2) / 24 * P.h x ≤ 2 * Real.log ℓ + TK
 
+open scoped Classical in
 /-- **The cyclic-subgroup bound from its residual statement**: `CyclicBoundHyp` follows from
 `CyclicGraphBoundHyp` by [GenEll], Lemma 3.2(i) at the odd multiplicative places
 (`isGraphPlace_of_not_dvd`). -/

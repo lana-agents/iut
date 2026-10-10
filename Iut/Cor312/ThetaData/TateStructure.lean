@@ -32,7 +32,7 @@ Definitions 2.3–2.5, at the level of ℓ-torsion:
 namespace Iut
 
 open WeierstrassCurve TateCurvesTheta
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -41,6 +41,7 @@ noncomputable section
 variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k]
 
+open scoped Classical in
 /-- The `x`-coordinate of a point in the model `C • E` (Mathlib's convention
 `(X, Y) ↦ (u²X' + r, u³Y' + u²sX' + t)`: the new coordinate is `X' = (X - r)/u²`); `0` at
 the point at infinity. -/
@@ -48,12 +49,14 @@ def xCoord (C : VariableChange k) : {E : WeierstrassCurve k} → E.toAffine.Poin
   | _, Affine.Point.zero => 0
   | _, Affine.Point.some x _ _ => (x - C.r) / (C.u : k) ^ 2
 
+open scoped Classical in
 /-- The `y`-coordinate of a point in the model `C • E`: `Y' = (Y - t - s(X - r))/u³`; `0`
 at the point at infinity. -/
 def yCoord (C : VariableChange k) : {E : WeierstrassCurve k} → E.toAffine.Point → k
   | _, Affine.Point.zero => 0
   | _, Affine.Point.some x y _ => (y - C.t - C.s * (x - C.r)) / (C.u : k) ^ 3
 
+open scoped Classical in
 /-- **A Tate structure** on `E`: a Tate uniformization `k^×/q^ℤ ≃ E(k)`, pinned by the
 coordinates of the Tate parametrization in the model `C • E = E_q`. -/
 structure TateStructure (E : WeierstrassCurve k) : Type u where
@@ -76,19 +79,26 @@ namespace TateStructure
 
 variable {E : WeierstrassCurve k} (S : TateStructure E)
 
+open scoped Classical in
 /-- The point of `E(k)` attached to a unit. -/
 def ofUnit (u : kˣ) : E.toAffine.Point := S.iso (Additive.ofMul (QuotientGroup.mk u))
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma ofUnit_mul (u v : kˣ) : S.ofUnit (u * v) = S.ofUnit u + S.ofUnit v := by
   unfold ofUnit
   rw [← map_add]
   rfl
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma ofUnit_one : S.ofUnit 1 = 0 := by
   unfold ofUnit
   rw [← map_zero S.iso]
   rfl
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma ofUnit_eq_iff (u v : kˣ) : S.ofUnit u = S.ofUnit v ↔ ∃ n : ℤ, v = S.t.q ^ n * u := by
   unfold ofUnit
   rw [S.iso.injective.eq_iff, Additive.ofMul.injective.eq_iff, QuotientGroup.eq]
@@ -99,14 +109,19 @@ lemma ofUnit_eq_iff (u v : kˣ) : S.ofUnit u = S.ofUnit v ↔ ∃ n : ℤ, v = S
   · rintro ⟨n, hn⟩
     exact ⟨n, by rw [hn, mul_comm (S.t.q ^ n) u, inv_mul_cancel_left]⟩
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma ofUnit_surjective : Function.Surjective S.ofUnit := fun P => by
   obtain ⟨a, ha⟩ := S.iso.surjective P
   obtain ⟨u, hu⟩ := QuotientGroup.mk_surjective (Additive.toMul a)
   exact ⟨u, by unfold ofUnit; rw [hu]; simpa using ha⟩
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma ofUnit_inv (u : kˣ) : S.ofUnit u⁻¹ = -S.ofUnit u := by
   rw [eq_neg_iff_add_eq_zero, ← ofUnit_mul, inv_mul_cancel, ofUnit_one]
 
+open scoped Classical in
 /-- **The graph line** `μ_ℓ ⊆ E(k)[ℓ]`: the points of the ℓ-th roots of unity. -/
 def graphLine (ℓ : ℕ) : AddSubgroup E.toAffine.Point where
   carrier := {P | ∃ u : kˣ, u ^ ℓ = 1 ∧ S.ofUnit u = P}
@@ -118,9 +133,12 @@ def graphLine (ℓ : ℕ) : AddSubgroup E.toAffine.Point where
     rintro _ ⟨u, hu, rfl⟩
     exact ⟨u⁻¹, by rw [inv_pow, hu, inv_one], S.ofUnit_inv u⟩
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma mem_graphLine_iff (ℓ : ℕ) (P : E.toAffine.Point) :
     P ∈ S.graphLine ℓ ↔ ∃ u : kˣ, u ^ ℓ = 1 ∧ S.ofUnit u = P := Iff.rfl
 
+open scoped Classical in
 /-- **Canonical generators of the graph quotient**: the points of the units `u` with
 `u^ℓ ∈ q^{±1}·q^{ℓℤ}` — the ℓ-th roots `q^{±1/ℓ}` of the Tate parameter modulo `μ_ℓ`. -/
 def IsCanonical (ℓ : ℕ) (P : E.toAffine.Point) : Prop :=
@@ -129,6 +147,7 @@ def IsCanonical (ℓ : ℕ) (P : E.toAffine.Point) : Prop :=
 
 /-! ### The Tate structure of a Tate curve -/
 
+open scoped Classical in
 /-- **The Tate structure of the Tate curve `E_q` itself**, packaging the uniformization
 `k^×/q^ℤ ≃ E_q(k)` of `lana-agents/tate-curves-theta`
 (`TateParameter.tateUniformization`) under that library's hypotheses: the Weierstrass

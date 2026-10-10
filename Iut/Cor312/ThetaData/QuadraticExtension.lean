@@ -136,7 +136,7 @@ noncomputable def sqrtPowerBasis (d : ↥K) : PowerBasis ↥K ↥(sqrtField K d)
 lemma sqrtPowerBasis_gen (d : ↥K) : (sqrtPowerBasis K d).gen = sqrtD K d := rfl
 
 lemma sqrtPowerBasis_dim {d : ↥K} (hd : ¬ IsSquare d) : (sqrtPowerBasis K d).dim = 2 := by
-  show (minpoly ↥K (sqrtRoot K d)).natDegree = 2
+  change (minpoly ↥K (sqrtRoot K d)).natDegree = 2
   rw [minpoly_sqrtRoot K hd, sqrtPoly_natDegree]
 
 lemma minpoly_sqrtD {d : ↥K} (hd : ¬ IsSquare d) :

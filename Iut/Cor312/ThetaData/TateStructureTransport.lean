@@ -20,7 +20,7 @@ those of the original one (`graphLine_baseChange`, `isCanonical_baseChange`).
 namespace Iut
 
 open WeierstrassCurve TateCurvesTheta Iut.Anabelian
-open scoped Classical Valued
+open scoped Valued
 
 universe u v
 
@@ -31,6 +31,7 @@ section PointMapEquiv
 variable {k : Type u} {k' : Type v} [Field k] [Field k'] (E : WeierstrassCurve k)
   (f : k →+* k') (hbij : Function.Bijective f)
 
+open scoped Classical in
 /-- The isomorphism on points induced by a bijective ring homomorphism. -/
 def pointMapEquiv : E.toAffine.Point ≃+ (E.map f).toAffine.Point :=
   AddEquiv.ofBijective (pointMap E f) ⟨pointMap_injective E f, fun P => by
@@ -41,9 +42,11 @@ def pointMapEquiv : E.toAffine.Point ≃+ (E.map f).toAffine.Point :=
       obtain ⟨y, rfl⟩ := hbij.2 y'
       exact ⟨.some x y ((E.toAffine.map_nonsingular hbij.1 x y).mp h), rfl⟩⟩
 
+open scoped Classical in
 @[simp] lemma pointMapEquiv_apply (P : E.toAffine.Point) :
     pointMapEquiv E f hbij P = pointMap E f P := rfl
 
+open scoped Classical in
 /-- Coordinates in the model `C • E` are natural in the base field. -/
 lemma xCoord_pointMap (C : VariableChange k) (P : E.toAffine.Point) :
     xCoord (C.map f) (pointMap E f P) = f (xCoord C P) := by
@@ -57,6 +60,7 @@ lemma xCoord_pointMap (C : VariableChange k) (P : E.toAffine.Point) :
     rw [Units.coe_map, map_div₀, map_sub, map_pow]
     rfl
 
+open scoped Classical in
 lemma yCoord_pointMap (C : VariableChange k) (P : E.toAffine.Point) :
     yCoord (C.map f) (pointMap E f P) = f (yCoord C P) := by
   cases P with
@@ -80,33 +84,42 @@ variable {k' : Type v} [Field k'] [Valued k' (WithZero (Multiplicative ℤ))]
   [Valuation.RankOne (Valued.v : Valuation k' (WithZero (Multiplicative ℤ)))] [CompleteSpace k']
 variable [NormedAlgebra k k'] (hbij : Function.Bijective (algebraMap k k'))
 
+open scoped Classical in
 /-- The isomorphism on units induced by a bijective `algebraMap`. -/
 def unitsEquiv : kˣ ≃* k'ˣ :=
   Units.mapEquiv (MulEquiv.ofBijective (algebraMap k k' : k →* k') hbij)
 
+open scoped Classical in
 omit [CompleteSpace k] [CompleteSpace k'] in
 @[simp] lemma unitsEquiv_apply (u : kˣ) :
     unitsEquiv hbij u = Units.map (algebraMap k k').toMonoidHom u := rfl
 
+open scoped Classical in
 omit [CompleteSpace k] [CompleteSpace k'] in
 lemma coe_unitsEquiv (u : kˣ) : ((unitsEquiv hbij u : k'ˣ) : k') = algebraMap k k' u := rfl
 
 variable (t : TateParameter k)
 
+open scoped Classical in
 omit [CompleteSpace k] [CompleteSpace k'] in
 lemma map_zpowers_q :
-    (Subgroup.zpowers t.q).map (unitsEquiv hbij).toMonoidHom = Subgroup.zpowers (t.baseChange k').q := by
+    (Subgroup.zpowers t.q).map (unitsEquiv hbij).toMonoidHom =
+      Subgroup.zpowers (t.baseChange k').q := by
   rw [MonoidHom.map_zpowers]
   congr 1
 
+open scoped Classical in
 /-- The isomorphism of analytic quotients `kˣ/qᶻ ≃ k'ˣ/q'ᶻ`. -/
 def quotEquiv : kˣ ⧸ Subgroup.zpowers t.q ≃* k'ˣ ⧸ Subgroup.zpowers (t.baseChange k').q :=
   QuotientGroup.congr _ _ (unitsEquiv hbij) (map_zpowers_q hbij t)
 
+open scoped Classical in
 omit [CompleteSpace k] [CompleteSpace k'] in
 lemma quotEquiv_mk (u : kˣ) :
     quotEquiv hbij t (QuotientGroup.mk u) = QuotientGroup.mk (unitsEquiv hbij u) := rfl
 
+open scoped Classical in
+omit [CompleteSpace k] [CompleteSpace k'] in
 lemma notMem_of_notMem {u : kˣ} (hu : ∀ n : ℤ, ((t.baseChange k').q : k') ^ n *
     ((unitsEquiv hbij u : k'ˣ) : k') ≠ 1) : ∀ n : ℤ, (t.q : k) ^ n * (u : k) ≠ 1 := by
   intro n hn
@@ -118,6 +131,7 @@ variable {E : WeierstrassCurve k}
 
 namespace TateStructure
 
+open scoped Classical in
 /-- **Transport of a Tate structure** along a bijective isometric base change. -/
 def baseChange (S : TateStructure E) : TateStructure (E.map (algebraMap k k')) where
   t := S.t.baseChange k'
@@ -150,8 +164,12 @@ def baseChange (S : TateStructure E) : TateStructure (E.map (algebraMap k k')) w
 
 variable (S : TateStructure E)
 
+open scoped Classical in
+omit [CompleteSpace k'] in
 @[simp] lemma baseChange_t : (S.baseChange hbij).t = S.t.baseChange k' := rfl
 
+open scoped Classical in
+omit [CompleteSpace k'] in
 lemma baseChange_ofUnit (u : kˣ) :
     (S.baseChange hbij).ofUnit (unitsEquiv hbij u) = pointMap E (algebraMap k k') (S.ofUnit u) := by
   unfold ofUnit
@@ -168,12 +186,15 @@ lemma baseChange_ofUnit (u : kˣ) :
   rw [h1]
   rfl
 
+open scoped Classical in
 omit [CompleteSpace k] [CompleteSpace k'] in
 lemma unitsEquiv_pow_eq_one_iff (u : kˣ) (ℓ : ℕ) :
     unitsEquiv hbij u ^ ℓ = 1 ↔ u ^ ℓ = 1 := by
   rw [← map_pow, ← map_one (unitsEquiv hbij)]
   exact (unitsEquiv hbij).injective.eq_iff
 
+open scoped Classical in
+omit [CompleteSpace k'] in
 /-- The graph line of the transported structure is the image of the graph line. -/
 theorem graphLine_baseChange (ℓ : ℕ) :
     (S.baseChange hbij).graphLine ℓ = (S.graphLine ℓ).map (pointMap E (algebraMap k k')) := by
@@ -189,6 +210,7 @@ theorem graphLine_baseChange (ℓ : ℕ) :
     exact ⟨unitsEquiv hbij u, (unitsEquiv_pow_eq_one_iff hbij u ℓ).mpr hu,
       S.baseChange_ofUnit hbij u⟩
 
+open scoped Classical in
 omit [CompleteSpace k] [CompleteSpace k'] in
 lemma unitsEquiv_pow_eq_zpow_iff (u : kˣ) (ℓ : ℕ) (m : ℤ) :
     unitsEquiv hbij u ^ ℓ = (S.t.baseChange k').q ^ m ↔ u ^ ℓ = S.t.q ^ m := by
@@ -196,6 +218,8 @@ lemma unitsEquiv_pow_eq_zpow_iff (u : kˣ) (ℓ : ℕ) (m : ℤ) :
   rw [hq, ← map_pow, ← map_zpow]
   exact (unitsEquiv hbij).injective.eq_iff
 
+open scoped Classical in
+omit [CompleteSpace k'] in
 /-- The canonical generators of the transported structure are the images of the canonical
 generators. -/
 theorem isCanonical_baseChange (ℓ : ℕ) (P : E.toAffine.Point) :

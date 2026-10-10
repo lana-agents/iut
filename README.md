@@ -760,13 +760,14 @@ dependencies:
 
 | Package | Revision |
 | --- | --- |
-| [`tempered-fundamental-groups`](https://github.com/lana-agents/tempered-fundamental-groups) | `1936070` (Theorem A `andreEquiv'`, Theorem B `TateOrbicurve.nondegenerate_of_normalForm`) |
-| [`oka`](https://github.com/lana-agents/oka) | `405aadd` (needed by `tempered-fundamental-groups`: Zariski connectedness, `Oka.AlgebraicGeometry.ProjectiveSpace.ZariskiConnected`) |
-| [`pi1`](https://github.com/lana-agents/pi1) | `7647d28` |
-| [`heights`](https://github.com/lana-agents/heights) | `721496c` |
+| [`tempered-fundamental-groups`](https://github.com/lana-agents/tempered-fundamental-groups) | `33b1c27` (Theorem A `andreEquiv'`, Theorem B `TateOrbicurve.nondegenerate_of_normalForm`) |
+| [`oka`](https://github.com/lana-agents/oka) | `31c0576` (needed by `tempered-fundamental-groups`: Zariski connectedness, `Oka.AlgebraicGeometry.ProjectiveSpace.ZariskiConnected`) |
+| [`pi1`](https://github.com/lana-agents/pi1) | `2c1e2f0` |
+| [`heights`](https://github.com/lana-agents/heights) | `f4379db` |
 | [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta) | `ca6c227` |
-| [`genl`](https://github.com/lana-agents/genl) | `ea2846c` |
-| [`orbicurve-cores`](https://github.com/lana-agents/orbicurve-cores) | `61616dc` |
+| [`genl`](https://github.com/lana-agents/genl) | `179e26f` |
+| [`orbicurve-cores`](https://github.com/lana-agents/orbicurve-cores) | `21ce4b7` |
+| [`belyi`](https://github.com/lana-agents/belyi) | `1d84db9` (also pinned by `heights` and `genl`) |
 
 ## Comparator suite
 

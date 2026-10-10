@@ -29,7 +29,7 @@ rev = "ca6c2279d3cea0690cdb01328e727118d5485d68"
 [[require]]
 name = "genl"
 git = "https://github.com/lana-agents/genl"
-rev = "ea2846c877d1e16d8f0b911a5fed07f5ee69eaaf"
+rev = "179e26f6f7becc379b32ea526aaf7fb8ae81441a"
 
 # Heights and elliptic-curve height estimates (taxis #32): the complex uniformization of
 # elliptic curves, consumed by the archimedean torsion bound of the cyclic-subgroup bound;
@@ -37,7 +37,7 @@ rev = "ea2846c877d1e16d8f0b911a5fed07f5ee69eaaf"
 [[require]]
 name = "heights"
 git = "https://github.com/lana-agents/heights"
-rev = "721496ca4c158e511d25d8ccf6bfe8503eda73c1"
+rev = "f4379dbccc8cdc4faa894a236d5581a6a635c5b5"
 
 # Étale fundamental groups (Galois-theoretic π₁, inertia) and cores of orbicurves
 # ([CanLift] §2), consumed by the genuine instance of Iut.Anabelian.EtalePi1Theory; also
@@ -46,28 +46,34 @@ rev = "721496ca4c158e511d25d8ccf6bfe8503eda73c1"
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "7647d28f361ba3c9705ed0a179b6a377d461c57a"
+rev = "2c1e2f06be1e7d383e3318a9846884136866a96c"
 
 # [CanLift], Prop. 2.7 over ℂ (`OrbicurveCores.U2.canLift27C`, branch wp-u2), which together
 # with `AffOrbicurve.canLift27_of_complex` discharges `AffOrbicurve.CanLift27`.
 [[require]]
 name = "orbicurve-cores"
 git = "https://github.com/lana-agents/orbicurve-cores"
-rev = "61616dcd77fbe45c083a8ebfa7cc80728f86e841"
+rev = "21ce4b72b553f2b1a1dd14b25c5ffb111791975e"
 
-# Pinned directly so that one `oka` revision serves both `belyi` (which pins the ancestor
-# da228a2) and `orbicurve-cores` (which pins this revision, branch wp-u2).
+# Pinned directly to the warning-free revision (also pinned by `heights`).
+[[require]]
+name = "belyi"
+git = "https://github.com/lana-agents/belyi"
+rev = "1d84db91ffaaa64a869993507194b1b51263af07"
+
+# Pinned directly so that one warning-free `oka` revision serves `belyi`, `genl`,
+# `orbicurve-cores` (which pins the ancestor 75dcdc3) and `tempered-fundamental-groups`.
 [[require]]
 name = "oka"
 git = "https://github.com/lana-agents/oka.git"
-rev = "405aadd70a16b05bd1a179a489b2c1c1299df695"
+rev = "31c057652d601cf5373004673c4e9d49fe8c0721"
 # The tempered fundamental group of the model orbicurves (taxis #7): the construction through
 # integral models, `TemperedFundamentalGroups.temperedPi1`, consumed by
 # `Iut.Anabelian.TemperedPi1Theory` in `Iut/Anabelian/Tempered.lean`.
 [[require]]
 name = "tempered-fundamental-groups"
 git = "https://github.com/lana-agents/tempered-fundamental-groups"
-rev = "1936070525eca2a9015c6f8528e879824af436a0"
+rev = "33b1c273171d8e9f0843175cf3e2305efc84d538"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]

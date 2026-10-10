@@ -49,7 +49,7 @@ Step 5 is the well-known fact that the ℓ-torsion field is wildly ramified at `
 namespace Iut.EllipticCurveData.ModEllRepData
 
 open WeierstrassCurve NumberField Iut Iut.Anabelian TateCurvesTheta
-open scoped Classical Pointwise
+open scoped Pointwise
 
 universe u
 
@@ -66,6 +66,7 @@ section Local
 variable {VBad : Set (FinitePlace ↥(fieldOfModuli C.F C.E))}
   (TF : TateFamily C.E R.torsionField ℓ VBad)
 
+open scoped Classical in
 /-- The map `E(K) → E(K_w)`. -/
 abbrev toLocalR (w : FinitePlace ↥R.torsionField) :
     (curveK C.E R.torsionField).toAffine.Point →+
@@ -74,11 +75,13 @@ abbrev toLocalR (w : FinitePlace ↥R.torsionField) :
 
 variable {w : FinitePlace ↥R.torsionField}
 
+open scoped Classical in
 lemma toLocalR_mem_torsion {P : (curveK C.E R.torsionField).toAffine.Point} (hP : P ∈ R.TKR) :
     R.toLocalR w P ∈ TateStructure.torsion ℓ (curveKw C.E R.torsionField w) := by
   rw [AddSubgroup.torsionBy.nsmul_iff] at hP ⊢
   rw [← map_nsmul, hP, map_zero]
 
+open scoped Classical in
 lemma mem_TKR_of_toLocalR {P : (curveK C.E R.torsionField).toAffine.Point}
     (hP : R.toLocalR w P ∈ TateStructure.torsion ℓ (curveKw C.E R.torsionField w)) :
     P ∈ R.TKR := by
@@ -86,6 +89,7 @@ lemma mem_TKR_of_toLocalR {P : (curveK C.E R.torsionField).toAffine.Point}
   rw [← map_nsmul] at hP
   exact pointMap_injective _ _ (hP.trans (map_zero _).symm)
 
+open scoped Classical in
 lemma card_map_toLocalR : Nat.card (R.TKR.map (R.toLocalR w)) = ℓ * ℓ := by
   rw [← pow_two, ← R.card_TKR]
   exact (Nat.card_congr (AddSubgroup.equivMapOfInjective _ _ (pointMap_injective _ _)).toEquiv).symm
@@ -93,6 +97,7 @@ lemma card_map_toLocalR : Nat.card (R.TKR.map (R.toLocalR w)) = ℓ * ℓ := by
 variable (hw : IsBadPlace C.E R.torsionField VBad w)
 include TF hw
 
+open scoped Classical in
 /-- `ℓ² ≤ |E(K_w)[ℓ]|`. -/
 lemma sq_le_card_torsionR [NeZero ℓ] :
     ℓ * ℓ ≤ Nat.card (TateStructure.torsion ℓ (curveKw C.E R.torsionField w)) := by
@@ -101,6 +106,7 @@ lemma sq_le_card_torsionR [NeZero ℓ] :
   exact AddSubgroup.card_le_of_le
     (AddSubgroup.map_le_iff_le_comap.mpr fun _ hP => R.toLocalR_mem_torsion hP)
 
+open scoped Classical in
 /-- **The local ℓ-torsion is rational over `K`.** -/
 lemma map_toLocalR_eq [NeZero ℓ] :
     R.TKR.map (R.toLocalR w) = TateStructure.torsion ℓ (curveKw C.E R.torsionField w) := by
@@ -110,12 +116,14 @@ lemma map_toLocalR_eq [NeZero ℓ] :
   · rw [R.card_map_toLocalR]
     exact (TF.S w hw).card_torsion_le ℓ
 
+open scoped Classical in
 lemma exists_toLocalR_eq [NeZero ℓ] {Q : (curveKw C.E R.torsionField w).toAffine.Point}
     (hQ : Q ∈ TateStructure.torsion ℓ (curveKw C.E R.torsionField w)) :
     ∃ P ∈ R.TKR, R.toLocalR w P = Q := by
   rw [← R.map_toLocalR_eq TF hw] at hQ
   exact hQ
 
+open scoped Classical in
 /-- The graph line at `w` maps onto the graph line of the Tate structure. -/
 lemma map_graphLineAtR [NeZero ℓ] :
     (TF.graphLineAt w hw).map (R.toLocalR w) = (TF.S w hw).graphLine ℓ := by
@@ -127,6 +135,7 @@ lemma map_graphLineAtR [NeZero ℓ] :
     obtain ⟨P, -, rfl⟩ := R.exists_toLocalR_eq TF hw ((TF.S w hw).graphLine_le_torsion ℓ hQ)
     exact ⟨P, hQ, rfl⟩
 
+open scoped Classical in
 /-- The graph line at `w` has `ℓ` elements. -/
 lemma card_graphLineAtR [NeZero ℓ] : Nat.card (TF.graphLineAt w hw) = ℓ := by
   have h1 : Nat.card (TF.graphLineAt w hw) =
@@ -135,10 +144,12 @@ lemma card_graphLineAtR [NeZero ℓ] : Nat.card (TF.graphLineAt w hw) = ℓ := b
   rw [h1, R.map_graphLineAtR TF hw]
   exact (TF.S w hw).card_graphLine_eq ℓ (R.sq_le_card_torsionR TF hw)
 
+open scoped Classical in
 /-- The graph line at `w` consists of ℓ-torsion points. -/
 lemma graphLineAtR_le_TKR [NeZero ℓ] : TF.graphLineAt w hw ≤ R.TKR := fun _ hP =>
   R.mem_TKR_of_toLocalR ((TF.S w hw).graphLine_le_torsion ℓ hP)
 
+open scoped Classical in
 /-- **The canonical generators at `w`** are the two cosets `±g + L_w` of an ℓ-torsion point
 `g ∉ L_w`. -/
 lemma exists_canonicalR [NeZero ℓ] [Fact (1 < ℓ)] :
@@ -165,15 +176,18 @@ section GalK
 
 variable (σ τ : ↥R.torsionField ≃ₐ[C.F] ↥R.torsionField)
 
+open scoped Classical in
 lemma galK_one_apply (P : (curveK C.E R.torsionField).toAffine.Point) :
     galK C.E R.torsionField 1 P = P := by
   cases P <;> rfl
 
+open scoped Classical in
 lemma galK_mul_apply (P : (curveK C.E R.torsionField).toAffine.Point) :
     galK C.E R.torsionField (σ * τ) P =
       galK C.E R.torsionField σ (galK C.E R.torsionField τ P) := by
   cases P <;> rfl
 
+open scoped Classical in
 /-- The iterates of `σ` on a point `a` with `σ a = m • a`. -/
 lemma galK_pow_apply_of_zsmul {a : (curveK C.E R.torsionField).toAffine.Point} {m : ℤ}
     (h : galK C.E R.torsionField σ a = m • a) (n : ℕ) :
@@ -183,6 +197,7 @@ lemma galK_pow_apply_of_zsmul {a : (curveK C.E R.torsionField).toAffine.Point} {
   | succ n ih =>
     rw [pow_succ, R.galK_mul_apply, h, map_zsmul, ih, smul_smul, pow_succ, mul_comm]
 
+open scoped Classical in
 /-- The restriction of `σ ∈ Gal(F̄/F)` carries a `Gal(F̄/F)`-stable subgroup of `E(F̄)`,
 pulled back to `E(K)`, to itself. -/
 lemma galK_mem_comap_bcKR {H : AddSubgroup (Affine.Point (Affine.baseChange C.E C.Fbar))}
@@ -338,7 +353,7 @@ end Iut
 namespace Iut.EllipticCurveData.ModEllRepData
 
 open WeierstrassCurve NumberField Iut Iut.Anabelian TateCurvesTheta IsDedekindDomain
-open scoped Classical Pointwise
+open scoped Pointwise
 
 universe u
 
@@ -349,6 +364,7 @@ variable {C : EllipticCurveData.{u}} {ℓ : ℕ} (R : C.ModEllRepData ℓ)
 attribute [local instance 1100] Iut.EllipticCurveData.ModEllRepData.instDecidableEqTorsionFieldR
 attribute [local instance] Iut.instGalRingOfIntegersAction Iut.instGalRingOfIntegersGaloisGroup
 
+open scoped Classical in
 lemma graphLineAt_congrR {VBad : Set (FinitePlace ↥(fieldOfModuli C.F C.E))}
     (TF : TateFamily C.E R.torsionField ℓ VBad) {w w' : FinitePlace ↥R.torsionField} (h : w = w')
     (hw : IsBadPlace C.E R.torsionField VBad w) (hw' : IsBadPlace C.E R.torsionField VBad w') :
@@ -356,6 +372,7 @@ lemma graphLineAt_congrR {VBad : Set (FinitePlace ↥(fieldOfModuli C.F C.E))}
   subst h
   rfl
 
+open scoped Classical in
 lemma isCanonicalAt_congrR {VBad : Set (FinitePlace ↥(fieldOfModuli C.F C.E))}
     (TF : TateFamily C.E R.torsionField ℓ VBad) {w w' : FinitePlace ↥R.torsionField} (h : w = w')
     (hw : IsBadPlace C.E R.torsionField VBad w) (hw' : IsBadPlace C.E R.torsionField VBad w')
@@ -370,6 +387,7 @@ variable {VBad : Set (FinitePlace ↥(fieldOfModuli C.F C.E))}
   (TF : TateFamily C.E R.torsionField ℓ VBad) {w : FinitePlace ↥R.torsionField}
   (hw : IsBadPlace C.E R.torsionField VBad w)
 
+open scoped Classical in
 /-- The `j`-invariant of the Tate curve of `E` over `K_w` is `j(E)`. -/
 lemma tateJ_eq_emb :
     (TF.S w hw).t.tateJ = emb R.torsionField w (algebraMap C.F ↥R.torsionField C.E.j) := by
@@ -380,6 +398,7 @@ lemma tateJ_eq_emb :
   simp only [curveKw, curveK, map_c₄, map_Δ]
   rw [← map_pow, ← map_pow, ← map_div₀, ← map_div₀, Iut.j_eq_inv_Δ_mul C.E, div_eq_inv_mul]
 
+open scoped Classical in
 /-- **The valuation of the Tate parameter at `w`**: `ord_w(q) = e(w/w₀)·ord_{w₀}(q)`, from
 `‖j‖ = ‖q‖⁻¹` and `w(j) = w₀(j)^{e(w/w₀)}`. -/
 lemma valued_q_eq (hw₀ : (placeUnder w : FinitePlace C.F) ∈ C.badAll) :
@@ -397,6 +416,7 @@ lemma valued_q_eq (hw₀ : (placeUnder w : FinitePlace C.F) ∈ C.badAll) :
     ← WithZero.exp_nsmul] at h1
   rw [eq_inv_of_mul_eq_one_right h1, ← WithZero.exp_neg, nsmul_eq_mul]
 
+open scoped Classical in
 include TF hw in
 /-- **`ℓ ∣ e(w/w₀)·ord_{w₀}(q)`**: the ℓ-torsion field contains `q^{1/ℓ}`
 (`Iut.TateStructure.exists_root_class`), whose valuation is `ord_w(q)/ℓ`. -/
@@ -425,6 +445,7 @@ section Main
 
 variable {w : FinitePlace ↥R.torsionField}
 
+open scoped Classical in
 /-- **No element of the decomposition group has order `ℓ`**, when `E(K)[ℓ] = ⟨a⟩ ⊕ ⟨b⟩` with
 `⟨a⟩` stable under `D_w` and `D_w` acting on `b` by `±1`: such an element would fix `a` (by
 Fermat's little theorem) and `b` (as `ℓ` is odd), hence all of `E(K)[ℓ]`, hence be trivial by
@@ -509,6 +530,7 @@ theorem not_dvd_card_stabilizer (hℓ : ℓ.Prime) (hodd : ℓ ≠ 2)
 variable (TF : TateFamily C.E R.torsionField ℓ C.VBadOdd)
   (hw : IsBadPlace C.E R.torsionField C.VBadOdd w)
 
+open scoped Classical in
 /-- **[GenEll], Lemma 3.2(i)**: a `Gal(F̄/F)`-stable subgroup `H ⊆ E(F̄)` of order `ℓ` is
 the graph line `μ_ℓ ⊆ E[ℓ]` at every place `w` of the ℓ-torsion field over a multiplicative
 place `w₀` of `F` of odd residue characteristic with `ℓ ∤ ord_{w₀}(q)`. -/

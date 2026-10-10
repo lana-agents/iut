@@ -37,7 +37,7 @@ namespace Iut
 
 open NumberField WeierstrassCurve Iut.Anabelian TateCurvesTheta
 open IsDedekindDomain.HeightOneSpectrum
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -49,10 +49,12 @@ section Root
 
 variable {k : Type*} [NormedField k]
 
+open scoped Classical in
 /-- A square root of `−c₄c₆` gives a root of the tangent quadratic. -/
 lemma exists_tangent_root_of_sq (W : WeierstrassCurve k) (h2 : (2 : k) ≠ 0) (hc₄ : W.c₄ ≠ 0)
     {s : k} (hs : s ^ 2 = -(W.c₄ * W.c₆)) :
-    ∃ r : k, ‖W.c₄ * r ^ 2 + W.a₁ * W.c₄ * r - (54 * W.b₆ - 3 * W.b₂ * W.b₄ + W.a₂ * W.c₄)‖ < 1 := by
+    ∃ r : k,
+      ‖W.c₄ * r ^ 2 + W.a₁ * W.c₄ * r - (54 * W.b₆ - 3 * W.b₂ * W.b₄ + W.a₂ * W.c₄)‖ < 1 := by
   set r := (s - W.a₁ * W.c₄) / (2 * W.c₄) with hr
   refine ⟨r, ?_⟩
   have h := tangent_sq_eq W r
@@ -82,6 +84,7 @@ section Trans
 variable {A B C : Type*} [Field A] [NumberField A] [Field B] [NumberField B] [Field C]
   [NumberField C] [Algebra A B] [Algebra B C] [Algebra A C] [IsScalarTower A B C]
 
+open scoped Classical in
 lemma FinitePlace.liesOver_trans {w₃ : FinitePlace C} {w₂ : FinitePlace B} {w₁ : FinitePlace A}
     (h₁ : FinitePlace.LiesOver w₃ w₂) (h₂ : FinitePlace.LiesOver w₂ w₁) :
     FinitePlace.LiesOver w₃ w₁ := by
@@ -99,10 +102,13 @@ variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
 variable (K : IntermediateField F Fbar) [NumberField ↥K]
 variable {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
 
+open scoped Classical in
 /-- The classical decidable equality on `K`, as used by the model orbicurves. -/
 local instance (priority := 1100) instDecidableEqIntermediateField''' : DecidableEq ↥K :=
   fun a b => Classical.propDecidable (a = b)
 
+open scoped Classical in
+omit [IsAlgClosure F Fbar] in
 /-- The place of `F` below a bad place of `K` is a place of multiplicative reduction. -/
 lemma mult_placeUnder
     (hmult : ∀ v ∈ VBad, ∀ w : FinitePlace F, FinitePlace.LiesOver w v →
@@ -121,6 +127,7 @@ variable {K' : Type u} [Field K'] [NumberField K'] [Algebra F K'] {w : FinitePla
   {w₀ : FinitePlace F} (hww₀ : FinitePlace.LiesOver w w₀)
   (hc₄ : w₀.maximalIdeal.valuation F E.c₄ = 1) (hΔ : w₀.maximalIdeal.valuation F E.Δ < 1)
 
+open scoped Classical in
 omit [E.IsElliptic] in
 include hww₀ hc₄ in
 /-- `‖c₄‖ = 1` over `K'_w` for a model `E` with `v_{w₀}(c₄(E)) = 1` at the place `w₀` below `w`. -/
@@ -128,6 +135,7 @@ lemma norm_c₄_curveLoc : ‖(curveLoc E K' w).c₄‖ = 1 := by
   rw [curveLoc, map_c₄, map_c₄, norm_emb_eq_one_iff, valuation_algebraMap_eq_one_iff hww₀]
   exact hc₄
 
+open scoped Classical in
 omit [E.IsElliptic] in
 include hww₀ hΔ in
 /-- `‖Δ‖ < 1` over `K'_w` for a model `E` with `v_{w₀}(Δ(E)) < 1` at the place `w₀` below `w`. -/
@@ -135,11 +143,13 @@ lemma norm_Δ_curveLoc : ‖(curveLoc E K' w).Δ‖ < 1 := by
   rw [curveLoc, map_Δ, map_Δ, norm_emb_lt_one_iff, valuation_algebraMap_lt_one_iff hww₀]
   exact hΔ
 
+open scoped Classical in
 omit [E.IsElliptic] in
 include hww₀ hc₄ hΔ in
 lemma norm_c₆_curveLoc : ‖(curveLoc E K' w).c₆‖ = 1 :=
   norm_c₆_eq_one _ (norm_c₄_curveLoc E hww₀ hc₄) (norm_Δ_curveLoc E hww₀ hΔ)
 
+open scoped Classical in
 omit [E.IsElliptic] in
 include hww₀ hc₄ hΔ in
 lemma norm_d_curveLoc : ‖-((curveLoc E K' w).c₄ * (curveLoc E K' w).c₆)‖ = 1 := by
@@ -147,6 +157,7 @@ lemma norm_d_curveLoc : ‖-((curveLoc E K' w).c₄ * (curveLoc E K' w).c₆)‖
 
 end NormsAt
 
+open scoped Classical in
 omit [E.IsElliptic] in
 /-- `-(c₄c₆)` of `E` over `K'_w` is the image of the global `-(c₄c₆)`. -/
 lemma neg_c₄_mul_c₆_curveLoc {K' : Type u} [Field K'] [NumberField K'] [Algebra F K']
@@ -165,9 +176,10 @@ variable (hVBad : ∀ v ∈ VBad, residueChar v ≠ 2)
   (hTK : TK ≤ AddSubgroup.torsionBy (E.map (algebraMap F ↥K)).toAffine.Point ℓ)
   (hcard : ℓ * ℓ ≤ Nat.card ↥TK)
 
-include hℓ hodd hTK hcard in
 set_option maxHeartbeats 1000000 in
 -- the Galois-fixed-point and Hensel arguments over `K'_{w'}` and `K_w` are long
+open scoped Classical in
+include hℓ hodd hTK hcard in
 /-- **`−c₄c₆` is a square in `K_w`** for a model `E` with `v(c₄) = 1`, `v(Δ) < 1` at the place
 of `F` below a place `w ∤ 2` of a field `K` over which `E` has `ℓ²` rational ℓ-torsion points. -/
 theorem exists_sq_eq_neg_c₄_mul_c₆_of_valuation {w : FinitePlace ↥K}
@@ -330,10 +342,12 @@ theorem exists_sq_eq_neg_c₄_mul_c₆_of_valuation {w : FinitePlace ↥K}
         exact hdbK.ne'
       rw [norm_pow] at h1
       exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).mp h1
-    obtain ⟨s, hs, -⟩ := exists_sq_eq_of_norm_sq_sub_lt h2K hbn (a := FinitePlace.embedding w.maximalIdeal dK)
+    obtain ⟨s, hs, -⟩ := exists_sq_eq_of_norm_sq_sub_lt h2K hbn
+      (a := FinitePlace.embedding w.maximalIdeal dK)
       (by rw [← map_pow, ← map_sub, ← neg_sub, map_neg, norm_neg]; exact hdbK)
     exact ⟨s, hs⟩
 
+open scoped Classical in
 include hVBad hmult hℓ hodd hTK hcard in
 /-- **`−c₄c₆` is a square in `K_w`** at every bad place `w` of a field `K` over which `E` has
 `ℓ²` rational ℓ-torsion points. The valuation conditions hold for a model `C • E` at the place

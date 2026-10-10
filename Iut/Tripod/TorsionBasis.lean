@@ -21,22 +21,25 @@ namespace Iut.Tripod
 
 open WeierstrassCurve
 
-open scoped Classical
 
+open scoped Classical in
 /-- **The `n`-torsion of `E_λ(ℚ̄)` is finite** for every `λ ∈ ℚ̄` and `n ≠ 0`. -/
 theorem legendre_torsionFinite (l : Qbar) (n : ℕ) (hn : n ≠ 0) : TorsionFinite l n :=
   Iut.Torsion.torsion_finite (W := legendre l) rfl rfl n hn
 
+open scoped Classical in
 /-- **`E_λ(ℚ̄)[ℓ] ≅ (ℤ/ℓ)²`** for a point `λ ∉ {0, 1}` of the tripod and a prime `ℓ`. -/
 theorem legendre_torsionBasis (x : Pt) (ℓ : ℕ) [Fact ℓ.Prime] :
     Nonempty (AddSubgroup.torsionBy (legendre x.1).toAffine.Point ℓ ≃+ (Fin 2 → ZMod ℓ)) :=
   haveI : (legendre x.1).IsElliptic := legendre_isElliptic x.2.1 x.2.2
   Iut.Torsion.torsionBasis (W := legendre x.1) rfl rfl ℓ
 
+open scoped Classical in
 /-- The torsion degree bound for `n = 3` at the points of the tripod. -/
 theorem torsionDegreeBound_three' (x : Pt) : TorsionDegreeBound x.1 3 :=
   torsionDegreeBound_three x.1 (legendre_torsionBasis x 3)
 
+open scoped Classical in
 /-- The torsion degree bound for `n = 5` at the points of the tripod. -/
 theorem torsionDegreeBound_five' (x : Pt) : TorsionDegreeBound x.1 5 :=
   haveI : Fact (Nat.Prime 5) := ⟨by norm_num⟩

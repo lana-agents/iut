@@ -29,7 +29,6 @@ namespace Iut.Tripod
 open Iut Iut.EllipticCurveData NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
   WeierstrassCurve WeierstrassCurve.Affine
 
-open scoped Classical
 
 attribute [local instance 1100] AdmissiblePrimeData.instDecidableEqK
 
@@ -46,6 +45,7 @@ section Bad
 variable [NumberField ↥(primeDataOf P x hℓ h7 hsl hP2).torsionField]
   (v : FinitePlace ↥(primeDataOf P x hℓ h7 hsl hP2).torsionField)
 
+open scoped Classical in
 omit [NumberField ↥(primeDataOf P x hℓ h7 hsl hP2).torsionField] in
 /-- The Legendre coefficients of `E_λ` base changed to `K`. -/
 lemma legendreCoeffs_EK :
@@ -70,6 +70,7 @@ lemma legendreCoeffs_EK :
 
 set_option maxHeartbeats 1000000 in
 -- the three model cases each elaborate a conjugate action on the points of a twisted model
+open scoped Classical in
 /-- **The inertia group at a bad place acts unipotently on `E(K)[ℓ]`**: `σ^ℓ = 1` for every
 `σ` in the inertia group of a place `v` of residue characteristic `∉ {2, ℓ}` over a bad place
 of `F`. -/
@@ -192,6 +193,7 @@ theorem inertia_pow_eq_one (h2 : residueChar v ≠ 2) (hpℓ : residueChar v ≠
     rw [hφ', iterate_conj] at this
     exact e.injective this
 
+open scoped Classical in
 /-- **`e(v/w) ≤ ℓ` at a bad place**: the inertia group is an `ℓ`-group whose order divides
 `[K : F] ∣ ℓ(ℓ² − 1)(ℓ − 1)`. -/
 theorem relRamIdx_torsionField_le_of_bad (h2 : residueChar v ≠ 2) (hpℓ : residueChar v ≠ ℓ)
@@ -205,6 +207,7 @@ theorem relRamIdx_torsionField_le_of_bad (h2 : residueChar v ≠ 2) (hpℓ : res
   rw [IsGalois.card_aut_eq_finrank, ← card_GL_two_eq_mul]
   exact finrank_torsionField_dvd (primeDataOf P x hℓ h7 hsl hP2)
 
+open scoped Classical in
 /-- **`K/F` is tamely ramified at the bad places away from `2·ℓ`**: `p ∤ e(v/w)` for the
 residue characteristic `p ∉ {2, ℓ}` (the inertia group is an `ℓ`-group). -/
 theorem not_dvd_relRamIdx_torsionField_of_bad (h2 : residueChar v ≠ 2) (hpℓ : residueChar v ≠ ℓ)
@@ -216,6 +219,7 @@ theorem not_dvd_relRamIdx_torsionField_of_bad (h2 : residueChar v ≠ 2) (hpℓ 
   exact not_dvd_card_of_forall_pow_eq_one _ ℓ
     (fun σ hσ => inertia_pow_eq_one P x hℓ h7 hsl hP2 v h2 hpℓ hbad σ hσ) (residueChar_prime v) hpℓ
 
+open scoped Classical in
 /-- **`K/F` is tamely ramified away from `2·ℓ`**: `p ∤ e(v/w)` for the residue characteristic
 `p ∉ {2, ℓ}` of `v`. -/
 theorem not_dvd_relRamIdx_torsionField (h2 : residueChar v ≠ 2) (hpℓ : residueChar v ≠ ℓ) :
@@ -226,6 +230,7 @@ theorem not_dvd_relRamIdx_torsionField (h2 : residueChar v ≠ 2) (hpℓ : resid
     exact (residueChar_prime v).not_dvd_one
   · exact not_dvd_relRamIdx_torsionField_of_bad P x hℓ h7 hsl hP2 v h2 hpℓ (not_and_or.mp hgood)
 
+open scoped Classical in
 /-- **`e(v/w) ≤ ℓ` away from `2·ℓ`**, for `v` a place of `K = F(E[ℓ])` over `w` of `F`. -/
 theorem relRamIdx_torsionField_le (h2 : residueChar v ≠ 2) (hpℓ : residueChar v ≠ ℓ) :
     relRamIdx v (placeUnder (k := (P.curve x).F) v) ≤ ℓ := by

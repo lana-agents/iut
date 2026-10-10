@@ -16,7 +16,6 @@ with its basic properties.
 namespace Iut.Anabelian
 
 open WeierstrassCurve
-open scoped Classical
 
 /-! ## Points of Weierstrass curves along ring homomorphisms -/
 
@@ -24,6 +23,7 @@ section PointMap
 
 variable {k K L : Type*} [Field k] [Field K] [Field L]
 
+open scoped Classical in
 /-- The group homomorphism on points induced by a ring homomorphism of fields
 (`WeierstrassCurve.Affine.Point.map` for the base change `E.map f`). -/
 noncomputable def pointMap (E : WeierstrassCurve k) (f : k →+* K) :
@@ -33,20 +33,25 @@ noncomputable def pointMap (E : WeierstrassCurve k) (f : k →+* K) :
 
 variable (E : WeierstrassCurve k) (f : k →+* K)
 
+open scoped Classical in
 @[simp] lemma pointMap_zero : pointMap E f 0 = 0 := rfl
 
+open scoped Classical in
 lemma pointMap_some {x y : k} (h : E.toAffine.Nonsingular x y) :
     pointMap E f (Affine.Point.some x y h) =
       Affine.Point.some (f x) (f y) ((E.toAffine.map_nonsingular f.injective x y).mpr h) := rfl
 
+open scoped Classical in
 lemma pointMap_injective : Function.Injective (pointMap E f) := by
   letI := f.toAlgebra
   exact Affine.Point.map_injective (W' := E) (S := k) (F := k) (K := K) (Algebra.ofId k K)
 
+open scoped Classical in
 lemma pointMap_map (g : K →+* L) (P : E.toAffine.Point) :
     pointMap (E.map f) g (pointMap E f P) = pointMap E (g.comp f) P := by
   cases P <;> rfl
 
+open scoped Classical in
 lemma pointMap_id (P : E.toAffine.Point) : pointMap E (RingHom.id k) P = P := by
   cases P <;> rfl
 

@@ -23,10 +23,10 @@ order prime to the residue characteristic are integral.
 namespace Iut.TorsionNewton
 
 open WeierstrassCurve WeierstrassCurve.Affine Polynomial NumberField
-open scoped Classical
 
 variable {K : Type*} [Field K] [NumberField K] (w : FinitePlace K)
 
+open scoped Classical in
 /-- The ultrametric inequality for finite sums: if every term has `|·|_w ≤ B` and `B ≥ 0`,
 so does the sum. -/
 lemma apply_sum_le {ι : Type*} (s : Finset ι) (f : ι → K) {B : ℝ} (hB : 0 ≤ B)
@@ -39,6 +39,7 @@ lemma apply_sum_le {ι : Type*} (s : Finset ι) (f : ι → K) {B : ℝ} (hB : 0
     exact (FinitePlace.add_le w _ _).trans (max_le (hf i (Finset.mem_insert_self _ _))
       (ih fun j hj => hf j (Finset.mem_insert_of_mem hj)))
 
+open scoped Classical in
 /-- The subring of `w`-integral elements. -/
 def integers : Subring K where
   carrier := {z | w z ≤ 1}
@@ -50,17 +51,21 @@ def integers : Subring K where
   zero_mem' := by simp
   neg_mem' {a} ha := by simpa using ha
 
+open scoped Classical in
 lemma mem_integers {z : K} : z ∈ integers w ↔ w z ≤ 1 := Iff.rfl
 
+open scoped Classical in
 /-- The integral model of `W` over the `w`-integral elements. -/
 def intModel (W : Affine K) (h₁ : w W.a₁ ≤ 1) (h₂ : w W.a₂ ≤ 1) (h₃ : w W.a₃ ≤ 1)
     (h₄ : w W.a₄ ≤ 1) (h₆ : w W.a₆ ≤ 1) : WeierstrassCurve (integers w) :=
   ⟨⟨W.a₁, h₁⟩, ⟨W.a₂, h₂⟩, ⟨W.a₃, h₃⟩, ⟨W.a₄, h₄⟩, ⟨W.a₆, h₆⟩⟩
 
+open scoped Classical in
 lemma intModel_map (W : Affine K) (h₁ : w W.a₁ ≤ 1) (h₂ : w W.a₂ ≤ 1) (h₃ : w W.a₃ ≤ 1)
     (h₄ : w W.a₄ ≤ 1) (h₆ : w W.a₆ ≤ 1) :
     (intModel w W h₁ h₂ h₃ h₄ h₆).map (integers w).subtype = W := rfl
 
+open scoped Classical in
 /-- The coefficients of the division polynomials of an integral model are integral. -/
 lemma apply_coeff_ΨSq_le_one (W : Affine K) (h₁ : w W.a₁ ≤ 1) (h₂ : w W.a₂ ≤ 1)
     (h₃ : w W.a₃ ≤ 1) (h₄ : w W.a₄ ≤ 1) (h₆ : w W.a₆ ≤ 1) (n : ℤ) (k : ℕ) :
@@ -68,6 +73,7 @@ lemma apply_coeff_ΨSq_le_one (W : Affine K) (h₁ : w W.a₁ ≤ 1) (h₂ : w W
   rw [← intModel_map w W h₁ h₂ h₃ h₄ h₆, map_ΨSq, coeff_map]
   exact ((intModel w W h₁ h₂ h₃ h₄ h₆).ΨSq n).coeff k |>.2
 
+open scoped Classical in
 /-- **The Newton bound for torsion points**: on a model with `a₁ = a₃ = 0` and `w`-integral
 `a₂, a₄, a₆`, an affine point `(x, y)` with `n • (x, y) = 0` (`n ≥ 1`) has `|n|_w² |x|_w ≤ 1`. -/
 theorem apply_x_le {W : Affine K} (ha₁ : W.a₁ = 0) (ha₃ : W.a₃ = 0) (h₂ : w W.a₂ ≤ 1)
@@ -131,10 +137,10 @@ end Iut.TorsionNewton
 namespace Iut.TorsionNewton
 
 open WeierstrassCurve WeierstrassCurve.Affine NumberField Iut.Tripod
-open scoped Classical
 
 variable {K : Type*} [Field K] [NumberField K] (w : FinitePlace K)
 
+open scoped Classical in
 /-- **The Newton bound on a Legendre curve**: for `W = E_λ` and an affine point `(x, y)` with
 `n • (x, y) = 0` (`n ≥ 1`), `|n|_w² |x|_w ≤ max(1, |λ|_w)²`. For `|λ|_w > 1` the model is
 rescaled by `u = λ` (`x = λ² X`), which is integral. -/

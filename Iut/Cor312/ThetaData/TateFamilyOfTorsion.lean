@@ -22,7 +22,7 @@ structure is transported to the given model `E` along the composite change of va
 namespace Iut
 
 open NumberField WeierstrassCurve Iut.Anabelian TateCurvesTheta
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -33,6 +33,7 @@ variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
 variable (K : IntermediateField F Fbar) [NumberField ↥K]
 variable {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
 
+open scoped Classical in
 /-- The classical decidable equality on `K`, as used by the model orbicurves. -/
 local instance (priority := 1100) instDecidableEqIntermediateField'''' : DecidableEq ↥K :=
   fun a b => Classical.propDecidable (a = b)
@@ -46,6 +47,7 @@ variable (ℓ : ℕ)
   (hTK : TK ≤ AddSubgroup.torsionBy (E.map (algebraMap F ↥K)).toAffine.Point ℓ)
   (hcard : ℓ * ℓ ≤ Nat.card ↥TK)
 
+open scoped Classical in
 omit [NumberField F] [E.IsElliptic] [IsAlgClosure F Fbar] in
 /-- The model `C • E` over `K_w` is the change of variables `C` (mapped to `K_w`) of `E` over
 `K_w`. -/
@@ -53,7 +55,9 @@ lemma curveKw_variableChange (C : VariableChange F) (w : FinitePlace ↥K) :
     curveKw (C • E) K w = ((C.map (algebraMap F ↥K)).map (emb K w)) • curveKw E K w := by
   rw [curveKw, curveK, map_variableChange, map_variableChange]
 
+open scoped Classical in
 include hmult in
+omit [IsAlgClosure F Fbar] in
 /-- `c₄(E) ≠ 0`: some model `C • E` has `v(c₄) = 1` at a bad place. -/
 lemma c₄_ne_zero_of_bad {w : FinitePlace ↥K} (hw : IsBadPlace E K VBad w) : E.c₄ ≠ 0 := by
   obtain ⟨C, -, hc₄, -⟩ := exists_variableChange_of_mult E _ (mult_placeUnder E K hmult hw)
@@ -61,6 +65,7 @@ lemma c₄_ne_zero_of_bad {w : FinitePlace ↥K} (hw : IsBadPlace E K VBad w) : 
   rw [variableChange_c₄, h, mul_zero, map_zero] at hc₄
   exact zero_ne_one hc₄
 
+open scoped Classical in
 include hVBad hmult hℓ hodd hTK hcard in
 /-- **The tangent quadratic has a root at every bad place of `K`** (split multiplicative
 reduction), for the given model `E`. -/
@@ -81,6 +86,7 @@ theorem exists_tangent_root_of_torsion {w : FinitePlace ↥K} (hw : IsBadPlace E
     exact (map_ne_zero _).2 ((map_ne_zero _).2 (c₄_ne_zero_of_bad E K hmult hw))
   exact exists_tangent_root_of_sq _ h2' hc₄' (hs.trans (neg_c₄_mul_c₆_curveLoc E w).symm)
 
+open scoped Classical in
 include hVBad hmult hℓ hodd hTK hcard in
 /-- **The tangent quadratic of a model `C • E` has a root at every bad place of `K`**: the
 square root of `−c₄c₆(E)` in `K_w` is transported to one of `−c₄c₆(C • E) = u⁻¹⁰ · (−c₄c₆(E))`. -/
@@ -113,6 +119,7 @@ theorem exists_tangent_root_of_torsion_variableChange {w : FinitePlace ↥K}
       ← map_mul, hd]
   exact exists_tangent_root_of_sq _ h2' hc₄' hs'
 
+open scoped Classical in
 include hVBad hmult hℓ hodd hTK hcard in
 /-- **The Tate structure of `E` over `K_w`** at a bad place: the model `C • E` given by
 `Iut.exists_variableChange_of_mult` at the place of `F` below `w` satisfies the norm conditions
@@ -132,6 +139,7 @@ def tateStructureOfTorsion {w : FinitePlace ↥K} (hw : IsBadPlace E K VBad w) :
       (exists_tangent_root_of_torsion_variableChange E K ℓ hVBad hmult hℓ hodd TK hTK hcard hw C))
     ⟨h2, twelve_ne_zero w⟩
 
+open scoped Classical in
 /-- **The Tate family of `E` over `K`** from multiplicative reduction over `F` and the
 rationality of the ℓ-torsion over `K`. -/
 def tateFamilyOfTorsion : TateFamily E K ℓ VBad :=

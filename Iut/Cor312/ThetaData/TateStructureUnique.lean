@@ -21,7 +21,7 @@ on the Tate structure (`Iut.TateStructure.graphLine_eq`, `isCanonical_congr`).
 namespace Iut
 
 open WeierstrassCurve TateCurvesTheta Iut.Anabelian
-open scoped Classical Valued
+open scoped Valued
 
 universe u
 
@@ -31,6 +31,7 @@ section Composition
 
 variable {k : Type*} [Field k]
 
+open scoped Classical in
 lemma vcX_mul (D C : VariableChange k) (x : k) : vcX (D * C) x = vcX D (vcX C x) := by
   simp only [vcX, VariableChange.mul_def, Units.val_mul]
   have hu := u_ne_zero C
@@ -38,6 +39,7 @@ lemma vcX_mul (D C : VariableChange k) (x : k) : vcX (D * C) x = vcX D (vcX C x)
   field_simp
   ring
 
+open scoped Classical in
 lemma vcY_mul (D C : VariableChange k) (x y : k) :
     vcY (D * C) x y = vcY D (vcX C x) (vcY C x y) := by
   simp only [vcX, vcY, VariableChange.mul_def, Units.val_mul]
@@ -47,12 +49,15 @@ lemma vcY_mul (D C : VariableChange k) (x y : k) :
   ring
 
 variable (k) in
+open scoped Classical in
 /-- The negation change of variables `(-1, 0, -1, 0)`. -/
 def negChange : VariableChange k := ⟨-1, 0, -1, 0⟩
 
+open scoped Classical in
 lemma vcX_negChange (x : k) : vcX (negChange k) x = x := by
   simp [vcX, negChange]
 
+open scoped Classical in
 lemma vcY_negChange (x y : k) : vcY (negChange k) x y = -y - x := by
   simp only [vcY, negChange]
   rw [Units.val_neg, Units.val_one]
@@ -64,22 +69,26 @@ section Coordinates
 
 variable {k : Type u} [Field k] {E : WeierstrassCurve k}
 
+open scoped Classical in
 lemma xCoord_mul (D C : VariableChange k) {P : E.toAffine.Point} (hP : P ≠ 0) :
     xCoord (D * C) P = vcX D (xCoord C P) := by
   cases P with
   | zero => exact absurd rfl hP
   | some x y h => exact vcX_mul D C x
 
+open scoped Classical in
 lemma yCoord_mul (D C : VariableChange k) {P : E.toAffine.Point} (hP : P ≠ 0) :
     yCoord (D * C) P = vcY D (xCoord C P) (yCoord C P) := by
   cases P with
   | zero => exact absurd rfl hP
   | some x y h => exact vcY_mul D C x y
 
+open scoped Classical in
 lemma xCoord_neg (C : VariableChange k) (P : E.toAffine.Point) :
     xCoord C (-P) = xCoord C P := by
   cases P <;> rfl
 
+open scoped Classical in
 lemma yCoord_neg (C : VariableChange k) {P : E.toAffine.Point} (hP : P ≠ 0) :
     yCoord C (-P) = (C • E).toAffine.negY (xCoord C P) (yCoord C P) := by
   cases P with
@@ -88,6 +97,7 @@ lemma yCoord_neg (C : VariableChange k) {P : E.toAffine.Point} (hP : P ≠ 0) :
     rw [Affine.Point.neg_some]
     exact vcY_negY C E x y
 
+open scoped Classical in
 /-- Nonzero points with the same coordinates in a model are equal. -/
 lemma eq_of_coords (C : VariableChange k) {P Q : E.toAffine.Point} (hP : P ≠ 0) (hQ : Q ≠ 0)
     (hx : xCoord C P = xCoord C Q) (hy : yCoord C P = yCoord C Q) : P = Q := by
@@ -111,21 +121,27 @@ section Aut
 
 variable {k : Type u} [NormedField k] [IsUltrametricDist k] [CompleteSpace k]
 
+open scoped Classical in
+omit [IsUltrametricDist k] [CompleteSpace k] in
 lemma negChange_smul_tateCurve (t : TateParameter k) :
     negChange k • t.tateCurve = t.tateCurve := by
   ext
   · rw [variableChange_a₁, t.tateCurve_a₁]
-    simp [negChange] <;> norm_num
+    simp [negChange]
+    norm_num
   · rw [variableChange_a₂, t.tateCurve_a₂, t.tateCurve_a₁]
-    simp [negChange] <;> norm_num
+    simp [negChange]
   · rw [variableChange_a₃, t.tateCurve_a₃, t.tateCurve_a₁]
-    simp [negChange] <;> norm_num
+    simp [negChange]
   · rw [variableChange_a₄, t.tateCurve_a₄, t.tateCurve_a₃, t.tateCurve_a₂, t.tateCurve_a₁]
-    simp [negChange] <;> norm_num
+    simp [negChange]
+    norm_num
   · rw [variableChange_a₆, t.tateCurve_a₆, t.tateCurve_a₄, t.tateCurve_a₃, t.tateCurve_a₂,
       t.tateCurve_a₁]
-    simp [negChange] <;> norm_num
+    simp [negChange]
+    norm_num
 
+open scoped Classical in
 /-- **The automorphisms of a Tate curve** are `1` and the negation. -/
 theorem eq_one_or_negChange_of_smul_tateCurve (t : TateParameter k) (h12 : (12 : k) ≠ 0)
     {D : VariableChange k} (hD : D • t.tateCurve = t.tateCurve) : D = 1 ∨ D = negChange k := by
@@ -235,6 +251,9 @@ variable {k : Type u} [Field k] [Valued k (WithZero (Multiplicative ℤ))]
 
 variable {E : WeierstrassCurve k}
 
+open scoped Classical in
+omit [Valued k (WithZero (Multiplicative ℤ))]
+    [Valuation.RankOne (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))] [CompleteSpace k] in
 /-- `j` is compatible with equality of curves. -/
 lemma j_congr {W W' : WeierstrassCurve k} [W.IsElliptic] [W'.IsElliptic] (h : W = W') :
     W.j = W'.j := by
@@ -245,6 +264,8 @@ namespace TateStructure
 
 variable (S : TateStructure E)
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma notMem_zpowers_iff (u : kˣ) :
     u ∉ Subgroup.zpowers S.t.q ↔ ∀ n : ℤ, (S.t.q : k) ^ n * (u : k) ≠ 1 := by
   constructor
@@ -262,6 +283,8 @@ lemma notMem_zpowers_iff (u : kˣ) :
     rw [← hn, Units.val_zpow_eq_zpow_val, zpow_neg,
       inv_mul_cancel₀ (zpow_ne_zero _ S.t.q.ne_zero)]
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma ofUnit_ne_zero {u : kˣ} (hu : u ∉ Subgroup.zpowers S.t.q) : S.ofUnit u ≠ 0 := by
   intro h
   rw [← S.ofUnit_one, S.ofUnit_eq_iff] at h
@@ -272,6 +295,8 @@ lemma ofUnit_ne_zero {u : kˣ} (hu : u ∉ Subgroup.zpowers S.t.q) : S.ofUnit u 
   rw [zpow_neg]
   exact inv_eq_of_mul_eq_one_right hn.symm
 
+open scoped Classical in
+omit [CompleteSpace k] in
 lemma ofUnit_eq_zero_of_mem {u : kˣ} (hu : u ∈ Subgroup.zpowers S.t.q) : S.ofUnit u = 0 := by
   rw [Subgroup.mem_zpowers_iff] at hu
   obtain ⟨n, rfl⟩ := hu
@@ -280,6 +305,7 @@ lemma ofUnit_eq_zero_of_mem {u : kˣ} (hu : u ∈ Subgroup.zpowers S.t.q) : S.of
 
 variable [E.IsElliptic]
 
+open scoped Classical in
 /-- **Uniqueness of the Tate parameter.** -/
 theorem t_eq (S S' : TateStructure E) (h12 : (12 : k) ≠ 0) : S'.t = S.t := by
   apply TateParameter.tateJ_injective _ _ h12
@@ -288,6 +314,7 @@ theorem t_eq (S S' : TateStructure E) (h12 : (12 : k) ≠ 0) : S'.t = S.t := by
   rw [S.t.tateJ_eq_j h12, S'.t.tateJ_eq_j h12, ← j_congr S.hC, ← j_congr S'.hC,
     variableChange_j, variableChange_j]
 
+open scoped Classical in
 /-- **Uniqueness of the Tate structure up to sign**: two Tate structures on `E` have point
 maps agreeing up to a global sign. -/
 theorem ofUnit_eq_or_neg (S S' : TateStructure E) (h12 : (12 : k) ≠ 0) :
@@ -348,6 +375,7 @@ theorem ofUnit_eq_or_neg (S S' : TateStructure E) (h12 : (12 : k) ≠ 0) :
         rw [hnegY]
         linear_combination -hy
 
+open scoped Classical in
 /-- The graph line does not depend on the Tate structure. -/
 theorem graphLine_eq (S S' : TateStructure E) (h12 : (12 : k) ≠ 0) (ℓ : ℕ) :
     S'.graphLine ℓ = S.graphLine ℓ := by
@@ -362,6 +390,7 @@ theorem graphLine_eq (S S' : TateStructure E) (h12 : (12 : k) ≠ 0) (ℓ : ℕ)
     · rintro ⟨u, hu, rfl⟩
       exact ⟨u⁻¹, by rw [inv_pow, hu, inv_one], by rw [h, S.ofUnit_inv, neg_neg]⟩
 
+open scoped Classical in
 /-- The canonical generators do not depend on the Tate structure. -/
 theorem isCanonical_congr (S S' : TateStructure E) (h12 : (12 : k) ≠ 0) (ℓ : ℕ)
     (P : E.toAffine.Point) : S'.IsCanonical ℓ P ↔ S.IsCanonical ℓ P := by

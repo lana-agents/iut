@@ -35,7 +35,6 @@ universe u
 open WeierstrassCurve Polynomial AffOrbicurve IntermediateField
 open IntermediateField.algebraAdjoinAdjoin
 
-open scoped Classical
 
 noncomputable section
 
@@ -43,34 +42,42 @@ variable {k : Type u} [Field k] [CharZero k] (E : WeierstrassCurve k) [E.IsEllip
 
 /-! ### The base field in characteristic `0` -/
 
+open scoped Classical in
+omit [E.IsElliptic] in
 @[simp] lemma galHom_apply (σ : Ω E ≃ₐ[xLine E] Ω E) (a : Ω E) : galHom E σ a = σ a :=
   galEquiv_symm_apply E σ a
 
 /-! ### The function fields of the model orbicurves -/
 
+open scoped Classical in
 /-- `Aut(Ω / F_X)` for `X = (E, ℓ, M, ±)`, as a subgroup of `Gal(Ω / k(x))`. -/
 def fullSub (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     Subgroup (Ω E ≃ₐ[xLine E] Ω E) :=
   (Hgp E ℓ M pm).comap (galHom E)
 
+open scoped Classical in
 /-- **The function field `F_X` of the coarse space of `(E, ℓ, M, ±)`** (for `pm = false`: the
 function field `L_X` of `X_M`). -/
 def coarseField (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     IntermediateField (xLine E) (Ω E) :=
   fixedField (fullSub E ℓ M pm)
 
+open scoped Classical in
 /-- **The function field `L_X` of `X_M = (E/M) ∖ (E[ℓ]/M)`**. -/
 abbrev geomField (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) : IntermediateField (xLine E) (Ω E) :=
   coarseField E ℓ M false
 
+open scoped Classical in
 /-- The field generated over `k(x)` by the coordinates of `Q_ℓ`. -/
 def QFieldX (ℓ : ℕ) : IntermediateField (xLine E) (Ω E) :=
   IntermediateField.adjoin (xLine E) {ptX (Qpt E ℓ), ptY (Qpt E ℓ)}
 
+open scoped Classical in
 instance (ℓ : ℕ) : FiniteDimensional (xLine E) (QFieldX E ℓ) :=
   IntermediateField.finiteDimensional_adjoin (fun x _ =>
     (Algebra.IsAlgebraic.isAlgebraic (R := xLine E) x).isIntegral)
 
+open scoped Classical in
 lemma QFieldX_fixing_le (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     (QFieldX E ℓ).fixingSubgroup ≤ fullSub E ℓ M pm := by
   intro σ hσ
@@ -87,10 +94,12 @@ lemma QFieldX_fixing_le (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Boo
     sub_self]
   exact zero_mem _
 
+open scoped Classical in
 lemma isOpen_fullSub (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     IsOpen (fullSub E ℓ M pm : Set (Ω E ≃ₐ[xLine E] Ω E)) :=
   Subgroup.isOpen_mono (QFieldX_fixing_le E ℓ M pm) (QFieldX E ℓ).fixingSubgroup_isOpen
 
+open scoped Classical in
 instance finiteDimensional_coarseField (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     FiniteDimensional (xLine E) (coarseField E ℓ M pm) := by
   have hc : IsClosed (fullSub E ℓ M pm : Set (Ω E ≃ₐ[xLine E] Ω E)) :=
@@ -102,11 +111,13 @@ instance finiteDimensional_coarseField (ℓ : ℕ) (M : AddSubgroup E.toAffine.P
   rw [h]
   exact isOpen_fullSub E ℓ M pm
 
+open scoped Classical in
 instance (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     Algebra.IsSeparable (xLine E) (coarseField E ℓ M pm) := by
   haveI : CharZero (xLine E) := charZero_of_injective_algebraMap (algebraMap k (xLine E)).injective
   exact Algebra.IsAlgebraic.isSeparable_of_perfectField
 
+open scoped Classical in
 lemma fullSub_mono {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm pm' : Bool}
     (h : pm = true → pm' = true) : fullSub E ℓ M pm ≤ fullSub E ℓ M pm' := by
   rintro σ ⟨ε, hε, hT⟩
@@ -115,6 +126,7 @@ lemma fullSub_mono {ℓ : ℕ} {M : AddSubgroup E.toAffine.Point} {pm pm' : Bool
   · exact Or.inl h1
   · exact Or.inr ⟨h h2, h3⟩
 
+open scoped Classical in
 lemma coarseField_le_geomField (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (pm : Bool) :
     coarseField E ℓ M pm ≤ geomField E ℓ M :=
   IntermediateField.fixedField_antitone (fullSub_mono E (by simp))
@@ -122,11 +134,13 @@ lemma coarseField_le_geomField (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) (p
 
 /-! ### The realizations -/
 
+open scoped Classical in
 /-- The coordinate ring of the coarse space `X_M / {±1}` over that of `X_M`. -/
 abbrev pmAlg (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
     Algebra (coordRing k (xG E) (coarseField E ℓ M true)) (coordRing k (xG E) (geomField E ℓ M)) :=
   algRing (xG E) (coarseField_le_geomField E ℓ M true)
 
+open scoped Classical in
 /-- **The stabilizer orders of `[X_M / {±1}]`**: the ramification index of `X_M → X_M / {±1}`
 over a closed point of the coarse space. -/
 def pmMult (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point)
@@ -134,6 +148,7 @@ def pmMult (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point)
   letI := pmAlg E ℓ M
   v.ramificationIdxIn (coordRing k (xG E) (geomField E ℓ M))
 
+open scoped Classical in
 lemma pmMult_pos (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point)
     (v : Ideal (coordRing k (xG E) (coarseField E ℓ M true))) (hv : v.IsMaximal) :
     0 < pmMult E ℓ M v := by
@@ -157,11 +172,13 @@ lemma pmMult_pos (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point)
   have := hex.choose_spec.1
   exact Ideal.ramificationIdx_pos _ _
 
+open scoped Classical in
 lemma pmMult_finite (ℓ : ℕ) (M : AddSubgroup E.toAffine.Point) :
     {v : Ideal (coordRing k (xG E) (coarseField E ℓ M true)) |
       v.IsMaximal ∧ pmMult E ℓ M v ≠ 1}.Finite :=
   finite_ramified (xG E) (transcendental_xG E) (coarseField_le_geomField E ℓ M true)
 
+open scoped Classical in
 /-- **The genuine model orbicurve `(E, ℓ, M, ±)`** as an affine orbicurve over `k`
 (characteristic `0`): `X_M` (the normalization of the `x`-line in `L_X`) without `±`; the quotient
 stack `[X_M / {±1}]` (coarse space the normalization of the `x`-line in `F_X`, stabilizer orders

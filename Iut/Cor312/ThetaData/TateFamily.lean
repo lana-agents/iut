@@ -34,7 +34,6 @@ The objects on `E(K)`:
 namespace Iut
 
 open WeierstrassCurve NumberField Iut.Anabelian
-open scoped Classical
 
 universe u
 
@@ -44,35 +43,43 @@ variable {F : Type u} [Field F] [NumberField F] (E : WeierstrassCurve F) [E.IsEl
 variable {Fbar : Type u} [Field Fbar] [Algebra F Fbar]
 variable (K : IntermediateField F Fbar) [NumberField ↥K]
 
+open scoped Classical in
 /-- The classical decidable equality on `K`, as used by the model orbicurves. -/
 local instance (priority := 1100) instDecidableEqIntermediateField : DecidableEq ↥K :=
   fun a b => Classical.propDecidable (a = b)
 
+open scoped Classical in
 /-- The curve `E` over `K`. -/
 abbrev curveK : WeierstrassCurve ↥K := E.map (algebraMap F ↥K)
 
+open scoped Classical in
 /-- The embedding `K → K_w` into the completion at a finite place. -/
 abbrev emb (w : FinitePlace ↥K) : ↥K →+* localCompletion w :=
   FinitePlace.embedding w.maximalIdeal
 
+open scoped Classical in
 /-- The curve `E` over `K_w`. -/
 abbrev curveKw (w : FinitePlace ↥K) : WeierstrassCurve (localCompletion w) :=
   (curveK E K).map (emb K w)
 
+open scoped Classical in
 /-- The action of `σ ∈ Gal(K/F)` on `E(K)`. -/
 def galK (σ : ↥K ≃ₐ[F] ↥K) : (curveK E K).toAffine.Point →+ (curveK E K).toAffine.Point :=
   Affine.Point.map (W' := E) (S := F) (σ : ↥K →ₐ[F] ↥K)
 
 variable (ℓ : ℕ) (VBad : Set (FinitePlace ↥(fieldOfModuli F E)))
 
+open scoped Classical in
 /-- A finite place of `K` over `V_mod^bad`. -/
 def IsBadPlace (w : FinitePlace ↥K) : Prop := ∃ v ∈ VBad, FinitePlace.LiesOver w v
 
+open scoped Classical in
 lemma isBadPlace_galPlace {w : FinitePlace ↥K} (hw : IsBadPlace E K VBad w)
     (σ : ↥K ≃ₐ[F] ↥K) : IsBadPlace E K VBad (galPlace σ w) := by
   obtain ⟨v, hv, hwv⟩ := hw
   exact ⟨v, hv, galPlace_liesOver (fun _ => rfl) σ hwv⟩
 
+open scoped Classical in
 /-- **The family of Tate uniformizations** of `E` over the completions `K_w` at the finite
 places `w` of `K` over `V_mod^bad`, Galois-equivariant on the ℓ-torsion (IUT I, Definition
 3.1(f); *The Étale Theta Function*, §1–2). -/
@@ -96,11 +103,13 @@ namespace TateFamily
 
 variable {E K ℓ VBad} (TF : TateFamily E K ℓ VBad)
 
+open scoped Classical in
 /-- The graph line at `w`, pulled back to `E(K)`. -/
 def graphLineAt (w : FinitePlace ↥K) (hw : IsBadPlace E K VBad w) :
     AddSubgroup (curveK E K).toAffine.Point :=
   ((TF.S w hw).graphLine ℓ).comap (pointMap (curveK E K) (emb K w))
 
+open scoped Classical in
 /-- `R ∈ E(K)` maps to a canonical generator of the graph quotient at `w`. -/
 def IsCanonicalAt (w : FinitePlace ↥K) (hw : IsBadPlace E K VBad w)
     (R : (curveK E K).toAffine.Point) : Prop :=

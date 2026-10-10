@@ -454,7 +454,7 @@ noncomputable def toCorollary22Inputs : Corollary22Inputs T K d where
   cyclic_bound := CI.cyclic_bound
   SL2Image x ℓ := ∀ hx (hℓ : ℓ.Prime), ∀ A : Matrix.SpecialLinearGroup (Fin 2) (ZMod ℓ),
     A.toGL ∈ (CI.modRep x hx ℓ hℓ).rep.range
-  sl2_of x hx ℓ hp h5 hP2 hcyc hP5 _ hp' := CI.sl2_of x hx ℓ hp' h5 hP2 hcyc hP5
+  sl2_of x hx ℓ _ h5 hP2 hcyc hP5 _ hp' := CI.sl2_of x hx ℓ hp' h5 hP2 hcyc hP5
   excCore := CI.excCore
   excCore_finite := CI.excCore_finite.subset Set.inter_subset_left
 

@@ -20,7 +20,6 @@ line transforming as `ℓ ↦ (ℓ - s)/u`). We record it as the additive isomor
 namespace Iut.Anabelian
 
 open WeierstrassCurve
-open scoped Classical
 
 noncomputable section
 
@@ -28,20 +27,25 @@ section Coordinates
 
 variable {k : Type*} [Field k] (C : VariableChange k) (W : WeierstrassCurve k)
 
+open scoped Classical in
 /-- The `X`-coordinate in the model `C • W` of a point with `x`-coordinate `x`. -/
 def vcX (x : k) : k := (x - C.r) / (C.u : k) ^ 2
 
+open scoped Classical in
 /-- The `Y`-coordinate in the model `C • W` of the point `(x, y)`. -/
 def vcY (x y : k) : k := (y - C.t - C.s * (x - C.r)) / (C.u : k) ^ 3
 
+open scoped Classical in
 lemma u_ne_zero : (C.u : k) ≠ 0 := C.u.ne_zero
 
+open scoped Classical in
 lemma vcX_injective : Function.Injective (vcX C) := by
   intro a b h
   unfold vcX at h
   rw [div_left_inj' (pow_ne_zero _ (u_ne_zero C))] at h
   linear_combination h
 
+open scoped Classical in
 lemma vcY_inj (x y y' : k) : vcY C x y = vcY C x y' ↔ y = y' := by
   unfold vcY
   rw [div_left_inj' (pow_ne_zero _ (u_ne_zero C))]
@@ -51,19 +55,23 @@ lemma vcY_inj (x y y' : k) : vcY C x y = vcY C x y' ↔ y = y' := by
   · intro h
     rw [h]
 
+open scoped Classical in
 /-- `x = u²X' + r` recovers `x` from `X'`. -/
 lemma vcX_of (x' : k) : vcX C ((C.u : k) ^ 2 * x' + C.r) = x' := by
   unfold vcX
   field_simp
   ring
 
+open scoped Classical in
 /-- `y = u³Y' + u²sX' + t` recovers `y` from `(X', Y')`. -/
 lemma vcY_of (x' y' : k) :
-    vcY C ((C.u : k) ^ 2 * x' + C.r) ((C.u : k) ^ 3 * y' + (C.u : k) ^ 2 * C.s * x' + C.t) = y' := by
+    vcY C ((C.u : k) ^ 2 * x' + C.r)
+      ((C.u : k) ^ 3 * y' + (C.u : k) ^ 2 * C.s * x' + C.t) = y' := by
   unfold vcY
   field_simp
   ring
 
+open scoped Classical in
 /-- The coefficients of `C • W`, in terms of the inverse of the unit `u`. -/
 lemma variableChange_coeffs :
     (C • W).a₁ = (C.u : k)⁻¹ * (W.a₁ + 2 * C.s) ∧
@@ -77,6 +85,7 @@ lemma variableChange_coeffs :
     simp only [variableChange_a₁, variableChange_a₂, variableChange_a₃, variableChange_a₄,
       variableChange_a₆, Units.val_inv_eq_inv_val]
 
+open scoped Classical in
 /-- The Weierstrass polynomial of `C • W` at the transformed point. -/
 lemma evalEval_polynomial_vc (x y : k) :
     (C • W).toAffine.polynomial.evalEval (vcX C x) (vcY C x y) =
@@ -88,12 +97,14 @@ lemma evalEval_polynomial_vc (x y : k) :
   field_simp
   ring
 
+open scoped Classical in
 /-- The equation of `W` at `(x, y)` is the equation of `C • W` at the transformed point. -/
 lemma equation_vc (x y : k) :
     W.toAffine.Equation x y ↔ (C • W).toAffine.Equation (vcX C x) (vcY C x y) := by
   rw [Affine.Equation, Affine.Equation, evalEval_polynomial_vc, mul_eq_zero, or_iff_right]
   exact pow_ne_zero _ (inv_ne_zero (u_ne_zero C))
 
+open scoped Classical in
 /-- The partial derivative in `X` transforms as `∂_X' = u⁻⁴(∂_x + s ∂_y)`. -/
 lemma polynomialX_vc (x y : k) :
     (C • W).toAffine.polynomialX.evalEval (vcX C x) (vcY C x y) =
@@ -107,6 +118,7 @@ lemma polynomialX_vc (x y : k) :
   field_simp
   ring
 
+open scoped Classical in
 /-- The partial derivative in `Y` transforms as `∂_Y' = u⁻³ ∂_y`. -/
 lemma polynomialY_vc (x y : k) :
     (C • W).toAffine.polynomialY.evalEval (vcX C x) (vcY C x y) =
@@ -118,6 +130,7 @@ lemma polynomialY_vc (x y : k) :
   field_simp
   ring
 
+open scoped Classical in
 /-- Nonsingularity of `W` at `(x, y)` is nonsingularity of `C • W` at the transformed point. -/
 lemma nonsingular_vc (x y : k) :
     W.toAffine.Nonsingular x y ↔ (C • W).toAffine.Nonsingular (vcX C x) (vcY C x y) := by
@@ -138,6 +151,7 @@ lemma nonsingular_vc (x y : k) :
       exact h (by linear_combination hc.1 + C.s * hc.2)
     · exact Or.inr h
 
+open scoped Classical in
 /-- Negation commutes with the transformation of coordinates. -/
 lemma vcY_negY (x y : k) :
     vcY C x (W.toAffine.negY x y) = (C • W).toAffine.negY (vcX C x) (vcY C x y) := by
@@ -149,6 +163,7 @@ lemma vcY_negY (x y : k) :
   field_simp
   ring
 
+open scoped Classical in
 /-- The `X`-coordinate of a sum transforms compatibly, the slope transforming as
 `ℓ ↦ (ℓ - s)/u`. -/
 lemma vcX_addX (x₁ x₂ ℓ : k) :
@@ -162,6 +177,7 @@ lemma vcX_addX (x₁ x₂ ℓ : k) :
   field_simp
   ring
 
+open scoped Classical in
 /-- The `Y`-coordinate of a sum transforms compatibly. -/
 lemma vcY_addY (x₁ x₂ y₁ ℓ : k) :
     vcY C (W.toAffine.addX x₁ x₂ ℓ) (W.toAffine.addY x₁ x₂ y₁ ℓ) =
@@ -174,6 +190,7 @@ lemma vcY_addY (x₁ x₂ y₁ ℓ : k) :
   field_simp
   ring
 
+open scoped Classical in
 /-- The slope of the line through two points transforms as `ℓ ↦ (ℓ - s)/u`. -/
 lemma slope_vc {x₁ x₂ y₁ y₂ : k} (h₁ : W.toAffine.Equation x₁ y₁) (h₂ : W.toAffine.Equation x₂ y₂)
     (hxy : ¬(x₁ = x₂ ∧ y₁ = W.toAffine.negY x₂ y₂)) :
@@ -234,11 +251,13 @@ section Points
 
 variable {k : Type*} [Field k] (C : VariableChange k) (W : WeierstrassCurve k)
 
+open scoped Classical in
 /-- The point of `C • W` corresponding to a point of `W`. -/
 def vcPoint : W.toAffine.Point → (C • W).toAffine.Point
   | .zero => .zero
   | .some x y h => .some (vcX C x) (vcY C x y) ((nonsingular_vc C W x y).mp h)
 
+open scoped Classical in
 /-- Two affine points with the same coordinates are equal. -/
 lemma some_ext {W : WeierstrassCurve k} {x y x' y' : k} {h : W.toAffine.Nonsingular x y}
     {h' : W.toAffine.Nonsingular x' y'} (hx : x = x') (hy : y = y') :
@@ -246,11 +265,14 @@ lemma some_ext {W : WeierstrassCurve k} {x y x' y' : k} {h : W.toAffine.Nonsingu
   subst hx hy
   rfl
 
+open scoped Classical in
 @[simp] lemma vcPoint_zero : vcPoint C W 0 = 0 := rfl
 
+open scoped Classical in
 lemma vcPoint_some {x y : k} (h : W.toAffine.Nonsingular x y) :
     vcPoint C W (.some x y h) = .some (vcX C x) (vcY C x y) ((nonsingular_vc C W x y).mp h) := rfl
 
+open scoped Classical in
 lemma vcPoint_neg (P : W.toAffine.Point) : vcPoint C W (-P) = -vcPoint C W P := by
   cases P with
   | zero => rfl
@@ -258,6 +280,7 @@ lemma vcPoint_neg (P : W.toAffine.Point) : vcPoint C W (-P) = -vcPoint C W P := 
     rw [Affine.Point.neg_some, vcPoint_some, vcPoint_some, Affine.Point.neg_some]
     exact some_ext rfl (vcY_negY C W x y)
 
+open scoped Classical in
 lemma vcPoint_add (P Q : W.toAffine.Point) :
     vcPoint C W (P + Q) = vcPoint C W P + vcPoint C W Q := by
   cases P with
@@ -287,14 +310,17 @@ lemma vcPoint_add (P Q : W.toAffine.Point) :
         exact some_ext (by rw [vcX_addX, slope_vc C W h₁.1 h₂.1 hxy])
           (by rw [vcY_addY, slope_vc C W h₁.1 h₂.1 hxy])
 
+open scoped Classical in
 /-- The additive homomorphism `W(k) → (C • W)(k)`. -/
 def vcHom : W.toAffine.Point →+ (C • W).toAffine.Point where
   toFun := vcPoint C W
   map_zero' := rfl
   map_add' := vcPoint_add C W
 
+open scoped Classical in
 @[simp] lemma vcHom_apply (P : W.toAffine.Point) : vcHom C W P = vcPoint C W P := rfl
 
+open scoped Classical in
 lemma vcPoint_injective : Function.Injective (vcPoint C W) := by
   intro P Q h
   cases P with
@@ -320,6 +346,7 @@ lemma vcPoint_injective : Function.Injective (vcPoint C W) := by
       subst hy
       rfl
 
+open scoped Classical in
 lemma vcPoint_surjective : Function.Surjective (vcPoint C W) := by
   intro P'
   cases P' with
@@ -333,49 +360,59 @@ lemma vcPoint_surjective : Function.Surjective (vcPoint C W) := by
       exact h'
     exact ⟨.some _ _ hns, some_ext hx hy⟩
 
+open scoped Classical in
 /-- **The additive isomorphism `W(k) ≃+ (C • W)(k)`** induced by a change of variables. -/
 def vcEquiv : W.toAffine.Point ≃+ (C • W).toAffine.Point :=
   AddEquiv.ofBijective (vcHom C W) ⟨vcPoint_injective C W, vcPoint_surjective C W⟩
 
+open scoped Classical in
 @[simp] lemma vcEquiv_apply (P : W.toAffine.Point) : vcEquiv C W P = vcPoint C W P := rfl
 
+open scoped Classical in
 lemma vcEquiv_symm_apply (P' : (C • W).toAffine.Point) :
     vcPoint C W ((vcEquiv C W).symm P') = P' :=
   (vcEquiv C W).apply_symm_apply P'
 
 /-! ### Coordinates of points -/
 
+open scoped Classical in
 /-- The `x`-coordinate of a point (`0` at infinity). -/
 def ptX {W : WeierstrassCurve k} : W.toAffine.Point → k
   | .zero => 0
   | .some x _ _ => x
 
+open scoped Classical in
 /-- The `y`-coordinate of a point (`0` at infinity). -/
 def ptY {W : WeierstrassCurve k} : W.toAffine.Point → k
   | .zero => 0
   | .some _ y _ => y
 
+open scoped Classical in
 /-- Transport of points along an equality of curves. -/
 def pointCongr {W W' : WeierstrassCurve k} (h : W = W') :
     W.toAffine.Point ≃+ W'.toAffine.Point := by
   subst h
   exact AddEquiv.refl _
 
+open scoped Classical in
 @[simp] lemma ptX_pointCongr {W W' : WeierstrassCurve k} (h : W = W') (P : W.toAffine.Point) :
     ptX (pointCongr h P) = ptX P := by
   subst h
   rfl
 
+open scoped Classical in
 @[simp] lemma ptY_pointCongr {W W' : WeierstrassCurve k} (h : W = W') (P : W.toAffine.Point) :
     ptY (pointCongr h P) = ptY P := by
   subst h
   rfl
 
+open scoped Classical in
 @[simp] lemma ptX_pointCongr_symm {W W' : WeierstrassCurve k} (h : W = W')
     (P : W'.toAffine.Point) : ptX ((pointCongr h).symm P) = ptX P := by
   subst h
   rfl
 
+open scoped Classical in
 @[simp] lemma ptY_pointCongr_symm {W W' : WeierstrassCurve k} (h : W = W')
     (P : W'.toAffine.Point) : ptY ((pointCongr h).symm P) = ptY P := by
   subst h

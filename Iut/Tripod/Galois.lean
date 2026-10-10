@@ -52,10 +52,11 @@ namespace Iut.Tripod
 
 open WeierstrassCurve WeierstrassCurve.Affine Polynomial
 
-open scoped Classical IntermediateField
+open scoped IntermediateField
 
 /-! ### The Legendre curves of `1 − λ` and `1/λ` as changes of variables of `E_λ` -/
 
+open scoped Classical in
 /-- `E_{1−λ} = ⟨√−1, 1, 0, 0⟩ • E_λ`: the change of variables `(x, y) ↦ (1 − x, √−1·y)`. -/
 theorem legendre_vc_one_sub {i : Qbar} (hi : i ^ 2 = -1) (hi0 : i ≠ 0) (l : Qbar) :
     (⟨Units.mk0 i hi0, 1, 0, 0⟩ : VariableChange Qbar) • legendre l = legendre (1 - l) := by
@@ -74,6 +75,7 @@ theorem legendre_vc_one_sub {i : Qbar} (hi : i ^ 2 = -1) (hi0 : i ≠ 0) (l : Qb
       legendre_a₆, legendre_a₄, legendre_a₃, legendre_a₂, legendre_a₁]
     ring
 
+open scoped Classical in
 /-- `E_{1/λ} = ⟨√λ, 0, 0, 0⟩ • E_λ`: the change of variables `(x, y) ↦ (λx, λ√λ·y)`. -/
 theorem legendre_vc_inv {u l : Qbar} (hu : u ^ 2 = l) (hu0 : u ≠ 0) :
     (⟨Units.mk0 u hu0, 0, 0, 0⟩ : VariableChange Qbar) • legendre l = legendre l⁻¹ := by
@@ -96,6 +98,7 @@ theorem legendre_vc_inv {u l : Qbar} (hu : u ^ 2 = l) (hu0 : u ≠ 0) :
 
 /-! ### Transport of the torsion coordinates along a change of variables -/
 
+open scoped Classical in
 /-- Torsion is transported along an equality of curves. -/
 theorem nsmul_some_eq_zero_of_eq {W W' : WeierstrassCurve Qbar} (h : W = W') {x y : Qbar}
     (hW : W.toAffine.Nonsingular x y) (hW' : W'.toAffine.Nonsingular x y) (n : ℕ)
@@ -103,6 +106,7 @@ theorem nsmul_some_eq_zero_of_eq {W W' : WeierstrassCurve Qbar} (h : W = W') {x 
   subst h
   exact hP
 
+open scoped Classical in
 /-- **The torsion coordinates of `E_μ` lie in `F` if those of `E_λ` do**, when
 `E_μ = C • E_λ` for a change of variables `C = (u, r, s, t)` with `u, r, s, t ∈ F`: the
 isomorphism `E_λ(ℚ̄) ≅ E_μ(ℚ̄)` maps `E_λ[n]` onto `E_μ[n]`, and the coordinates
@@ -139,11 +143,13 @@ theorem torsionCoords_subset_of_vc {l m : Qbar} {C : VariableChange Qbar}
 
 /-! ### The six conjugates of `λ` over `ℚ(j)` -/
 
+open scoped Classical in
 /-- **The conjugates of `λ` over `ℚ(j)`**: `μ ∈ {λ, 1 − λ, 1/λ, 1/(1 − λ), 1 − 1/λ,
 1 − 1/(1 − λ)}`. -/
 def Conj (l m : Qbar) : Prop :=
   m = l ∨ m = 1 - l ∨ m = l⁻¹ ∨ m = (1 - l)⁻¹ ∨ m = 1 - l⁻¹ ∨ m = 1 - (1 - l)⁻¹
 
+open scoped Classical in
 /-- The factorisation
 `(μ² − μ + 1)³·λ²(λ − 1)² − (λ² − λ + 1)³·μ²(μ − 1)² = ∏ (μ − μᵢ)` (up to the leading
 coefficient), for the six conjugates `μᵢ` of `λ`. -/
@@ -153,6 +159,7 @@ theorem j_poly_factor (l m : Qbar) :
         ((1 - l) * m + l) := by
   ring
 
+open scoped Classical in
 /-- **`j(μ) = j(λ)` implies that `μ` is a conjugate of `λ`.** -/
 theorem conj_of_j_eq {l m : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1)
     (h : (m ^ 2 - m + 1) ^ 3 * (l ^ 2 * (l - 1) ^ 2) =
@@ -175,6 +182,7 @@ theorem conj_of_j_eq {l m : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1)
     field_simp
     linear_combination h
 
+open scoped Classical in
 /-- The conjugates of `λ` are closed under `μ ↦ 1 − μ`. -/
 theorem conj_one_sub {l m : Qbar} (h : Conj l m) : Conj l (1 - m) := by
   rcases h with h | h | h | h | h | h <;> subst m
@@ -185,6 +193,7 @@ theorem conj_one_sub {l m : Qbar} (h : Conj l m) : Conj l (1 - m) := by
   · exact Or.inr (Or.inr (Or.inl (sub_sub_cancel 1 l⁻¹)))
   · exact Or.inr (Or.inr (Or.inr (Or.inl (sub_sub_cancel 1 (1 - l)⁻¹))))
 
+open scoped Classical in
 /-- The conjugates of `λ` lie in every subfield containing `λ`. -/
 theorem conj_mem {l m : Qbar} (h : Conj l m) {F : IntermediateField ℚ Qbar} (hl : l ∈ F) :
     m ∈ F := by
@@ -196,6 +205,7 @@ theorem conj_mem {l m : Qbar} (h : Conj l m) {F : IntermediateField ℚ Qbar} (h
   · exact sub_mem (one_mem _) (inv_mem hl)
   · exact sub_mem (one_mem _) (inv_mem (sub_mem (one_mem _) hl))
 
+open scoped Classical in
 /-- **`F_λ` contains a square root of every conjugate of `λ`**: `√(1/λ) = 1/√λ`,
 `√(1/(1 − λ)) = 1/√(1 − λ)`, `√(1 − 1/λ) = √−1·√(1 − λ)/√λ`,
 `√(1 − 1/(1 − λ)) = √−1·√λ/√(1 − λ)`. -/
@@ -221,6 +231,7 @@ theorem conj_exists_sq {l m : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) (h : Conj l 
     field_simp
     ring
 
+open scoped Classical in
 /-- **The torsion coordinates of the conjugate curves lie in `F_λ`**: `E_μ ≅ E_λ` over
 `F_λ` for every conjugate `μ` of `λ`, by the changes of variables `legendre_vc_one_sub` and
 `legendre_vc_inv` with `u ∈ {√−1, √λ, √(1 − λ)}`, `r ∈ {0, 1}`. -/
@@ -262,12 +273,15 @@ theorem conj_torsionCoords_subset {l m : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) (
 
 /-! ### The Galois group of `ℚ̄/ℚ(j)` -/
 
+open scoped Classical in
 /-- `j(E_λ) = 256(λ² − λ + 1)³/(λ²(λ − 1)²)` as an element of `ℚ̄`. -/
 noncomputable def jQ (l : Qbar) : Qbar := 256 * (l ^ 2 - l + 1) ^ 3 / (l ^ 2 * (l - 1) ^ 2)
 
+open scoped Classical in
 /-- The field of moduli `ℚ(j) ⊆ ℚ̄`. -/
 noncomputable abbrev fieldOfJ (l : Qbar) : IntermediateField ℚ Qbar := ℚ⟮jQ l⟯
 
+open scoped Classical in
 theorem jQ_mem_fieldOf (l : Qbar) : jQ l ∈ fieldOf l := by
   have hl : l ∈ fieldOf l := IntermediateField.mem_adjoin_simple_self ℚ l
   have h256 : (256 : Qbar) ∈ fieldOf l := by
@@ -277,18 +291,22 @@ theorem jQ_mem_fieldOf (l : Qbar) : jQ l ∈ fieldOf l := by
   exact div_mem (mul_mem h256 (pow_mem (add_mem (sub_mem (pow_mem hl 2) hl) (one_mem _)) 3))
     (mul_mem (pow_mem hl 2) (pow_mem (sub_mem hl (one_mem _)) 2))
 
+open scoped Classical in
 /-- `ℚ(j) ⊆ ℚ(λ)`. -/
 theorem fieldOfJ_le_fieldOf (l : Qbar) : fieldOfJ l ≤ fieldOf l :=
   IntermediateField.adjoin_simple_le_iff.mpr (jQ_mem_fieldOf l)
 
+open scoped Classical in
 /-- `ℚ(j) ⊆ F_λ`. -/
 theorem fieldOfJ_le_fieldOf' (l : Qbar) : fieldOfJ l ≤ fieldOf' l :=
   (fieldOfJ_le_fieldOf l).trans (fieldOf_le_fieldOf' l)
 
+open scoped Classical in
 /-- `σ ∈ Gal(ℚ̄/ℚ(j))` fixes `j`. -/
 theorem gal_jQ {l : Qbar} (σ : Qbar ≃ₐ[fieldOfJ l] Qbar) : σ (jQ l) = jQ l :=
   σ.commutes ⟨jQ l, IntermediateField.mem_adjoin_simple_self ℚ _⟩
 
+open scoped Classical in
 /-- **`σ(λ)` is a conjugate of `λ`** for `σ ∈ Gal(ℚ̄/ℚ(j))`. -/
 theorem conj_of_gal {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) (σ : Qbar ≃ₐ[fieldOfJ l] Qbar) :
     Conj l (σ l) := by
@@ -310,6 +328,7 @@ theorem conj_of_gal {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) (σ : Qbar ≃ₐ
   apply mul_left_cancel₀ h256
   linear_combination key
 
+open scoped Classical in
 /-- `σ` maps the coordinates of `E_λ[n]` to coordinates of `E_{σ(λ)}[n]`. -/
 theorem torsionCoords_map_subset {l : Qbar} (σ : Qbar ≃ₐ[fieldOfJ l] Qbar) {n : ℕ} {c : Qbar}
     (hc : c ∈ torsionCoords l n) : σ c ∈ torsionCoords (σ l) n := by
@@ -330,6 +349,7 @@ theorem torsionCoords_map_subset {l : Qbar} (σ : Qbar ≃ₐ[fieldOfJ l] Qbar) 
     · exact mem_torsionCoords hQ' (Set.mem_insert _ _)
     · exact mem_torsionCoords hQ' (Set.mem_insert_of_mem _ (Set.mem_singleton _))
 
+open scoped Classical in
 /-- **`F_λ` is stable under `Gal(ℚ̄/ℚ(j))`.** -/
 theorem gal_map_mem_fieldOf' {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1)
     (σ : Qbar ≃ₐ[fieldOfJ l] Qbar) {a : Qbar} (ha : a ∈ fieldOf' l) : σ a ∈ fieldOf' l := by
@@ -367,6 +387,7 @@ theorem gal_map_mem_fieldOf' {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1)
   | inv x _ hx => rw [map_inv₀]; exact inv_mem hx
   | mul x y _ _ hx hy => rw [map_mul]; exact mul_mem hx hy
 
+open scoped Classical in
 /-- **`F_λ/ℚ(j)` is normal.** -/
 theorem fieldOf'_normal {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) :
     Normal (fieldOfJ l) (IntermediateField.extendScalars (fieldOfJ_le_fieldOf' l)) := by
@@ -374,6 +395,7 @@ theorem fieldOf'_normal {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) :
   rintro σ _ ⟨a, ha, rfl⟩
   exact gal_map_mem_fieldOf' hl0 hl1 σ ha
 
+open scoped Classical in
 /-- **`F_λ/ℚ(j)` is Galois.** -/
 theorem fieldOf'_isGalois {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) :
     IsGalois (fieldOfJ l) (IntermediateField.extendScalars (fieldOfJ_le_fieldOf' l)) where
@@ -382,6 +404,7 @@ theorem fieldOf'_isGalois {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) :
 
 /-! ### Transfer between intermediate fields of `F` and of `ℚ̄` -/
 
+open scoped Classical in
 /-- The identification of `L ⊆ ℚ̄` with itself as an extension of `M' ≤ L`. -/
 def extendScalarsEquiv {L M' : IntermediateField ℚ Qbar} (h : M' ≤ L) :
     IntermediateField.extendScalars h ≃+* L where
@@ -392,6 +415,7 @@ def extendScalarsEquiv {L M' : IntermediateField ℚ Qbar} (h : M' ≤ L) :
   map_mul' _ _ := rfl
   map_add' _ _ := rfl
 
+open scoped Classical in
 /-- `L/M` is Galois for `M ⊆ L ⊆ ℚ̄` if `L` is Galois over the lift `M' ⊆ ℚ̄` of `M`. -/
 theorem isGalois_of_lift_eq {L : IntermediateField ℚ Qbar} {M : IntermediateField ℚ L}
     {M' : IntermediateField ℚ Qbar} (hM : IntermediateField.lift M = M') (h : M' ≤ L)
@@ -400,6 +424,7 @@ theorem isGalois_of_lift_eq {L : IntermediateField ℚ Qbar} {M : IntermediateFi
   exact IsGalois.of_equiv_equiv (f := (IntermediateField.liftAlgEquiv M).symm.toRingEquiv)
     (g := extendScalarsEquiv h) (RingHom.ext fun _ ↦ rfl)
 
+open scoped Classical in
 /-- `[L : M] = [L : M']` for the lift `M' ⊆ ℚ̄` of `M ⊆ L`. -/
 theorem finrank_eq_relfinrank_of_lift_eq {L : IntermediateField ℚ Qbar}
     {M : IntermediateField ℚ L} {M' : IntermediateField ℚ Qbar}
@@ -410,6 +435,7 @@ theorem finrank_eq_relfinrank_of_lift_eq {L : IntermediateField ℚ Qbar}
   exact Algebra.finrank_eq_of_equiv_equiv (IntermediateField.liftAlgEquiv M).toRingEquiv
     (extendScalarsEquiv h).symm (RingHom.ext fun _ ↦ rfl)
 
+open scoped Classical in
 /-- The lift of the field of moduli `ℚ(j(E_λ)) ⊆ F_λ` to `ℚ̄` is `ℚ(j) ⊆ ℚ̄`. -/
 theorem lift_fieldOfModuli (x : Pt) (h3 : TorsionFinite x.1 3) (h5 : TorsionFinite x.1 5) :
     IntermediateField.lift (fieldOfModuli (curveOf x h3 h5).F (curveOf x h3 h5).E) =
@@ -428,12 +454,14 @@ theorem lift_fieldOfModuli (x : Pt) (h3 : TorsionFinite x.1 3) (h5 : TorsionFini
 
 /-! ### The degree -/
 
+open scoped Classical in
 /-- A positive integer `d < ℓ` is prime to the prime `ℓ`. -/
 theorem coprime_of_pos_of_lt {d ℓ : ℕ} (hℓ : ℓ.Prime) (hd : 0 < d) (h : d < ℓ) :
     Nat.Coprime d ℓ :=
   Nat.Coprime.symm ((Nat.Prime.coprime_iff_not_dvd hℓ).mpr fun hdvd ↦
     absurd (Nat.le_of_dvd hd hdvd) (not_le.mpr h))
 
+open scoped Classical in
 /-- `|GL₂(𝔽_3)| = 48` and `|GL₂(𝔽_5)| = 480` are prime to every prime `ℓ ≥ 7`. -/
 theorem coprime_gl_card {ℓ : ℕ} (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ) :
     Nat.Coprime 48 ℓ ∧ Nat.Coprime 480 ℓ := by
@@ -446,6 +474,7 @@ theorem coprime_gl_card {ℓ : ℕ} (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ) :
   · rw [show (480 : ℕ) = 2 ^ 5 * 3 * 5 by norm_num]
     exact Nat.Coprime.mul_left (Nat.Coprime.mul_left (Nat.Coprime.pow_left 5 h2) h3) h5
 
+open scoped Classical in
 /-- `K ⊆ K ⊔ ℚ(S)` viewed over `K` is `K(S)`. -/
 theorem extendScalars_sup_adjoin (K : IntermediateField ℚ Qbar) (S : Set Qbar) :
     IntermediateField.extendScalars (le_sup_left : K ≤ K ⊔ IntermediateField.adjoin ℚ S) =
@@ -458,6 +487,7 @@ theorem extendScalars_sup_adjoin (K : IntermediateField ℚ Qbar) (S : Set Qbar)
       (le_sup_right : IntermediateField.adjoin ℚ S ≤ K ⊔ IntermediateField.adjoin ℚ S)
         (IntermediateField.subset_adjoin ℚ S ha))
 
+open scoped Classical in
 /-- `[K(s) : K] ≤ 2` for `s² ∈ K`. -/
 theorem relfinrank_sup_adjoin_sq_le (K : IntermediateField ℚ Qbar) {s : Qbar} (hs : s ^ 2 ∈ K) :
     IntermediateField.relfinrank K (K ⊔ ℚ⟮s⟯) ≤ 2 := by
@@ -468,6 +498,7 @@ theorem relfinrank_sup_adjoin_sq_le (K : IntermediateField ℚ Qbar) {s : Qbar} 
   have := natDegree_le_natDegree hmin
   rwa [natDegree_X_pow_sub_C] at this
 
+open scoped Classical in
 /-- **`[K(E_λ[n]) : K]` divides `|GL₂(𝔽_n)| = (n² − 1)(n² − n)`**: it is the index of the
 kernel of the mod-`n` representation, the order of its image. -/
 theorem relfinrank_sup_torsion_dvd (K : IntermediateField ℚ Qbar) {l : Qbar} (hl : l ∈ K)
@@ -480,6 +511,7 @@ theorem relfinrank_sup_torsion_dvd (K : IntermediateField ℚ Qbar) {l : Qbar} (
     Subgroup.index_ker, ← card_GL_two n]
   exact Subgroup.card_subgroup_dvd_card _
 
+open scoped Classical in
 /-- `j/256` as an element of `ℚ(j)`. -/
 noncomputable def jC (l : Qbar) : fieldOfJ l :=
   ⟨jQ l / 256, div_mem (IntermediateField.mem_adjoin_simple_self ℚ _) (by
@@ -487,19 +519,23 @@ noncomputable def jC (l : Qbar) : fieldOfJ l :=
     rw [this]
     exact IntermediateField.natCast_mem _ _)⟩
 
+open scoped Classical in
 /-- The polynomial `(T² − T + 1)³ − (j/256)·T²(T − 1)²` over `ℚ(j)`, of degree `6`, of which
 `λ` is a root. -/
 noncomputable def jPoly (l : Qbar) : Polynomial (fieldOfJ l) :=
   (X ^ 2 - X + 1) ^ 3 - C (jC l) * (X ^ 2 * (X - 1) ^ 2)
 
+open scoped Classical in
 theorem jPoly_monic (l : Qbar) : (jPoly l).Monic := by
   unfold jPoly
   monicity!
 
+open scoped Classical in
 theorem jPoly_natDegree_le (l : Qbar) : (jPoly l).natDegree ≤ 6 := by
   unfold jPoly
   compute_degree!
 
+open scoped Classical in
 theorem jPoly_aeval {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) : aeval l (jPoly l) = 0 := by
   have h1 : l - 1 ≠ 0 := sub_ne_zero.mpr hl1
   simp only [jPoly, map_sub, map_pow, map_add, map_mul, aeval_X, aeval_C, map_one]
@@ -508,6 +544,7 @@ theorem jPoly_aeval {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) : aeval l (jPoly 
   field_simp
   ring
 
+open scoped Classical in
 /-- `[ℚ(λ) : ℚ(j)] ≤ 6`. -/
 theorem relfinrank_fieldOfJ_fieldOf_le {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1) :
     IntermediateField.relfinrank (fieldOfJ l) (fieldOf l) ≤ 6 := by
@@ -518,6 +555,7 @@ theorem relfinrank_fieldOfJ_fieldOf_le {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1
   exact (natDegree_le_of_dvd (minpoly.dvd _ l (jPoly_aeval hl0 hl1))
     (jPoly_monic l).ne_zero).trans (jPoly_natDegree_le l)
 
+open scoped Classical in
 /-- **`[F_λ : ℚ(j)]` is prime to every prime `ℓ ≥ 7`**, given bases of `E_λ[3]`, `E_λ[5]`
 and `[F_λ : ℚ(j)] ≠ 0`: it is the product of the relative degrees of the tower
 `ℚ(j) ⊆ ℚ(λ) ⊆ ℚ(λ, √−1) ⊆ ℚ(λ, √−1, √λ) ⊆ ℚ(λ, √−1, √λ, √(1 − λ)) ⊆ …(E_λ[3]) ⊆ F_λ`, of
@@ -600,11 +638,13 @@ theorem coprime_relfinrank_fieldOfJ {l : Qbar} (hl0 : l ≠ 0) (hl1 : l ≠ 1)
 
 /-! ### The main theorem -/
 
+open scoped Classical in
 /-- **`F_λ/F_mod` is Galois of degree prime to `ℓ` for every prime `ℓ ≥ 7`** (the field
 `galois_deg_prime` of `Iut.EllipticCurveData.CurveArithmetic` for the curve of a point of the
 tripod), given that `E_μ[n](ℚ̄) ≅ (ℤ/n)²` for all `μ` and `n ≠ 0` (used for `n = 3, 5`). -/
-theorem galois_deg_prime (x : Pt) (h3 : TorsionFinite x.1 3) (h5 : TorsionFinite x.1 5) (ℓ : ℕ) (hℓ : ℓ.Prime)
-    (h7 : 7 ≤ ℓ) : IsGaloisOfDegreePrimeTo (curveOf x h3 h5).F (curveOf x h3 h5).E ℓ := by
+theorem galois_deg_prime (x : Pt) (h3 : TorsionFinite x.1 3) (h5 : TorsionFinite x.1 5) (ℓ : ℕ)
+    (hℓ : ℓ.Prime) (h7 : 7 ≤ ℓ) :
+    IsGaloisOfDegreePrimeTo (curveOf x h3 h5).F (curveOf x h3 h5).E ℓ := by
   have hlift := lift_fieldOfModuli x h3 h5
   have hle := fieldOfJ_le_fieldOf' x.1
   haveI := fieldOf'_isGalois x.2.1 x.2.2

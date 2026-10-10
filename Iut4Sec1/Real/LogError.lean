@@ -70,13 +70,14 @@ lemma nonarchimedeanLogError_le_four_div (p e : ℕ) (hp : p.Prime) (hp2 : 2 < p
   exact herr_lt.le.trans hdenom
 
 /-- The total ceiling error is supported on the exceptional index set. -/
-theorem nonarchimedean_logError_sum_le {ι : Type*} [DecidableEq ι]
+theorem nonarchimedean_logError_sum_le {ι : Type*}
     (p : ℕ) (I Istar : Finset ι) (e : ι → ℕ)
     (hp : p.Prime) (hp2 : 2 < p) (hIstar : Istar ⊆ I)
     (he : ∀ i ∈ I, 0 < e i)
     (hsmall : ∀ i ∈ I, i ∉ Istar → e i ≤ p - 2) :
     ∑ i ∈ I, nonarchimedeanLogError p (e i) ≤
       4 * (Istar.card : ℝ) / p := by
+  classical
   have hpointwise : ∀ i ∈ I, nonarchimedeanLogError p (e i) ≤
       if i ∈ Istar then 4 / (p : ℝ) else 0 := by
     intro i hi
