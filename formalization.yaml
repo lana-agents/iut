@@ -262,7 +262,8 @@ review:
     All results are machine-checked by the Lean kernel (axioms as listed under status); the main
     theorem is conditional on the Corollary 3.12 variant h312, which is a hypothesis and is not
     proved. The comparator challenge Comparator/Challenge.lean states, as
-    Iut.abc_of_cor312Variant, that h312 implies the official ABC statement ABC.abc of
+    Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC, that h312 implies the definition
+    ABC : Prop, whose body is the official ABC statement ABC.abc of
     google-deepmind/formal-conjectures (FormalConjectures/Wikipedia/ABC.lean, commit
     1646ca16afd6cc7a693d3bdc9f066c4d3cc01a89, Apache-2.0), verbatim with their definition
     ABC.radical, with one deliberate proof placeholder (not counted in sorry_count);

@@ -160,7 +160,7 @@ readonly challenge_file='Comparator/Challenge.lean'
 # The comparator challenge has exactly one target (the main theorem); its only `sorry` is
 # the proof placeholder of that target.
 readonly challenge_targets=(
-  'abc_of_cor312Variant'
+  'Iut.abc_of_cor312Variant'
 )
 
 audit_challenge() {
@@ -189,13 +189,13 @@ audit_challenge() {
   fi
 
   for target in "${challenge_targets[@]}"; do
-    declaration_count="$(grep -Ec "^theorem[[:space:]]+${target}([[:space:]]|$)" "$challenge_file" || true)"
+    declaration_count="$(grep -Ec "^theorem[[:space:]]+${target//./\\.}([[:space:]]|$)" "$challenge_file" || true)"
     if [[ "$declaration_count" != 1 ]]; then
-      echo "audit_trust: expected exactly one challenge theorem declaration for Iut.$target (found $declaration_count)" >&2
+      echo "audit_trust: expected exactly one challenge theorem declaration for $target (found $declaration_count)" >&2
       audit_failed=1
       continue
     fi
-    block_count="$(awk -v target="$target" '
+    block_count="$(awk -v target="${target//./\\.}" '
       $0 ~ ("^theorem[[:space:]]+" target "([[:space:]]|$)") { active = 1; next }
       active && /^theorem[[:space:]]+/ { exit }
       active {
@@ -208,7 +208,7 @@ audit_challenge() {
       END { print count + 0 }
     ' "$challenge_file")"
     if [[ "$block_count" != 1 ]]; then
-      echo "audit_trust: Iut.$target must have exactly one proof placeholder (found $block_count)" >&2
+      echo "audit_trust: $target must have exactly one proof placeholder (found $block_count)" >&2
       audit_failed=1
     fi
   done

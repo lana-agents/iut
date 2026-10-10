@@ -782,7 +782,7 @@ dependencies:
 [`leanprover/comparator`](https://github.com/leanprover/comparator), that the hypothesis of the
 main theorem implies the **official** ABC statement of
 [google-deepmind/formal-conjectures](https://github.com/google-deepmind/formal-conjectures/blob/1646ca16afd6cc7a693d3bdc9f066c4d3cc01a89/FormalConjectures/Wikipedia/ABC.lean),
-their theorem `ABC.abc` (commit `1646ca1`, Apache-2.0), verbatim:
+their theorem `ABC.abc` (commit `1646ca1`, Apache-2.0), verbatim, as the definition `ABC`:
 
 ```lean
 namespace ABC
@@ -791,19 +791,22 @@ def radical (n : ℕ) : ℕ := n.primeFactors.prod id
 
 end ABC
 
-theorem Iut.abc_of_cor312Variant :
-    Cor312VariantHolds → ∀ ε : ℝ, 0 < ε →
+open ABC in
+def ABC : Prop := ∀ ε : ℝ, 0 < ε →
     {(a, b, c) : ℕ × ℕ × ℕ | 0 < a ∧ 0 < b ∧ 0 < c ∧ ({a, b, c} : Set ℕ).Pairwise Nat.Coprime ∧
     a + b = c ∧ (radical <| a * b * c : ℝ)^(1 + ε) < c}.Finite
+
+theorem Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC
 ```
 
-The conclusion is their statement of `ABC.abc`, with their arguments `(ε : ℝ) (hε : 0 < ε)`
-written as `∀ ε : ℝ, 0 < ε →`, and their definition `ABC.radical`, copied into the challenge.
-The hypothesis `Iut.Cor312VariantHolds` comes from its defining module
-`Iut.Concrete.ThetaRegion`, the challenge's only project import. The challenge therefore
+The body of `ABC` is their statement of `ABC.abc`, with their arguments
+`(ε : ℝ) (hε : 0 < ε)` written as `∀ ε : ℝ, 0 < ε →`, and their definition `ABC.radical`,
+copied into the challenge. The hypothesis `Iut.Cor312VariantHolds` comes from its defining
+module `Iut.Concrete.ThetaRegion`, the challenge's only project import. The challenge therefore
 trusts the definitions of the statement vocabulary, but no module of the proof. The audit
 `scripts/AuditComparatorChallenge.lean` checks this. `Comparator/Solution.lean` declares the
-identical `ABC.radical` and proves the statement with `Iut.formalConjecturesABC_of_variant`.
+identical `ABC.radical` and `ABC` (the comparator compares both in full, values included) and
+proves the statement with `Iut.formalConjecturesABC_of_variant`.
 The trusted closure, the config and how to run the comparator are described in
 [`Comparator/README.md`](Comparator/README.md).
 

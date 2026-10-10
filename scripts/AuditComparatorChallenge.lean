@@ -17,10 +17,10 @@ challenge's own environment, that this closure is statement-only:
   `Iut.Tripod`, `Iut.Implication`, `Iut.Abc`), and none of the declarations of the proof
   chain is present;
 * no safe declaration of the closure, Lean's core included, and no declaration of
-  `Challenge` other than the challenge theorem (such as the copied definition `ABC.radical`
-  and the auxiliary matcher of the set-builder) refers directly to any axioms other than
-  `propext`, `Classical.choice` and `Quot.sound`; in particular none refers to `sorryAx` or
-  to the compiler-trust axioms. Since every
+  `Challenge` other than the challenge theorem (the definition `ABC`, the copied definition
+  `ABC.radical` and the auxiliary matcher of the set-builder) refers directly to any axioms
+  other than `propext`, `Classical.choice` and `Quot.sound`; in particular none refers to
+  `sorryAx` or to the compiler-trust axioms. Since every
   transitive dependency on such axioms passes through a direct reference, no declaration of
   the closure depends on them;
 * no module outside Lean's core declares axioms;
@@ -46,6 +46,10 @@ private def forbiddenDeclarations : List Name :=
     `Iut.Tripod.statementI_of_statementII, `Iut.Tripod.classicalABC_of_statementI,
     `Iut.ClassicalABC, `Iut.formalConjecturesABC_of_variant, `Iut.classicalABC_iff_abc,
     `FormalConjecturesABC.abc]
+
+/-- The definitions of `Challenge` that the statement uses; each must be present as a
+definition, and is scanned in step 3 like every other declaration of the closure. -/
+private def challengeDefinitions : List Name := [`ABC, `ABC.radical]
 
 private def allowedAxioms : List Name :=
   [``propext, ``Quot.sound, ``Classical.choice]
@@ -84,6 +88,12 @@ run_cmd liftCoreM do
     logInfo m!"  {root}: {packages.getD root 0} modules"
   let iutModules := sortNames (modules.filter (`Iut).isPrefixOf)
   logInfo m!"Iut modules of the closure:\n{String.intercalate "\n" (iutModules.toList.map Name.toString)}"
+  -- The statement definitions are present, as definitions of `Challenge`.
+  for declName in challengeDefinitions do
+    unless env.find? declName matches some (.defnInfo _) do
+      throwError "the challenge does not define {declName}"
+    unless env.getModuleFor? declName == some challengeModule do
+      throwError "{declName} is not declared in {challengeModule}"
   -- 3. No declaration of the closure refers to disallowed axioms, and no module outside
   -- Lean's core declares axioms.
   let mut checked := 0
@@ -105,6 +115,8 @@ run_cmd liftCoreM do
       if let some c := found then
         throwError "{declName} ({moduleName}) refers to {c}"
       checked := checked + 1
+      if isChallenge && challengeDefinitions.contains declName then
+        logInfo m!"{declName}: definition of {challengeModule}, refers only to allowed axioms"
   logInfo m!"no declaration of the trusted closure refers to axioms other than propext, \
     Classical.choice, Quot.sound ({checked} declarations checked)"
   -- 4. The challenge theorem: its placeholder is its only `sorryAx`.

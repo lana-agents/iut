@@ -11,7 +11,7 @@ at commit `1646ca16afd6cc7a693d3bdc9f066c4d3cc01a89`.
 
 ## The challenge
 
-`Challenge.lean` has one definition, one theorem and one proof placeholder:
+`Challenge.lean` has two definitions, one theorem and one proof placeholder:
 
 ```lean
 namespace ABC
@@ -23,22 +23,21 @@ def radical (n : ℕ) : ℕ := n.primeFactors.prod id
 
 end ABC
 
-namespace Iut
-
-open ABC
-
-theorem abc_of_cor312Variant :
-    Cor312VariantHolds → ∀ ε : ℝ, 0 < ε →
+open ABC in
+/-- The ABC conjecture as stated by formal-conjectures (`ABC.abc`, verbatim body). -/
+def ABC : Prop := ∀ ε : ℝ, 0 < ε →
     {(a, b, c) : ℕ × ℕ × ℕ | 0 < a ∧ 0 < b ∧ 0 < c ∧ ({a, b, c} : Set ℕ).Pairwise Nat.Coprime ∧
-    a + b = c ∧ (radical <| a * b * c : ℝ)^(1 + ε) < c}.Finite := by
-  sorry
+    a + b = c ∧ (radical <| a * b * c : ℝ)^(1 + ε) < c}.Finite
 
-end Iut
+theorem Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC := by
+  sorry
 ```
 
-* The conclusion is the statement of formal-conjectures' `ABC.abc`, verbatim: their theorem
-  arguments `(ε : ℝ) (hε : 0 < ε)` are written `∀ ε : ℝ, 0 < ε →`, and the set-builder, the
-  pairwise coprimality and the coercions are theirs, unchanged. Their definition
+* The conclusion is the definition `ABC : Prop`, whose body is the statement of
+  formal-conjectures' `ABC.abc`, verbatim: their theorem arguments `(ε : ℝ) (hε : 0 < ε)` are
+  written `∀ ε : ℝ, 0 < ε →`, and the set-builder, the pairwise coprimality and the coercions
+  are theirs, unchanged. In the body, `radical` denotes `ABC.radical` (`open ABC in`); the
+  top-level constant `ABC` and the namespace `ABC` coexist. Their definition
   `ABC.radical` (the product of the distinct prime factors) is copied verbatim, with the same
   name, docstring and body. The copied code is "Copyright 2025 The Formal Conjectures
   Authors", licensed under the Apache License, Version 2.0; `Challenge.lean` carries the full
@@ -52,9 +51,10 @@ end Iut
   log-volumes and hulls, the theta-pilot region, and the variant inequality.
 
 `config.json` lists this one theorem, has no definition holes, and permits only `propext`,
-`Quot.sound` and `Classical.choice`. `ABC.radical` is not a definition hole: the comparator
-compares every constant that the statement uses, and that is not a listed target, between
-Challenge and Solution in full (type and value), so the Solution must declare `ABC.radical`
+`Quot.sound` and `Classical.choice`. `ABC` and `ABC.radical` are not definition holes
+(`definition_names` is empty): the comparator compares every constant that the statement uses,
+transitively, and that is not a listed target, between Challenge and Solution in full (its
+whole `ConstantInfo`, type and value), so the Solution must declare `ABC` and `ABC.radical`
 identically, and does.
 
 ## What the challenge trusts
@@ -90,21 +90,26 @@ challenge's own environment:
   `FormalConjecturesABC.abc` are absent;
 * that no safe declaration of the closure, Lean's core included, refers to axioms other than
   `propext`, `Classical.choice` and `Quot.sound` (so none refers to `sorryAx`), that the same
-  holds for the declarations of `Challenge` other than the theorem (`ABC.radical` and the
-  matcher of the set-builder), and that no module outside Lean's core declares axioms;
+  holds for the declarations of `Challenge` other than the theorem (`ABC`, `ABC.radical` and
+  the matcher of the set-builder), and that no module outside Lean's core declares axioms;
 * that the challenge theorem depends on `sorryAx`, from its placeholder, and otherwise only
   on the three standard axioms.
 
 ## The solution
 
 `Solution.lean` imports the challenge's modules and `Iut.Abc.FormalConjectures`. It declares
-`ABC.radical` exactly as the challenge does and proves the same statement with the term
+`ABC.radical` and `ABC` exactly as the challenge does and proves the same statement with the
+term
 `Iut.formalConjecturesABC_of_variant : Cor312VariantHolds → FormalConjecturesABC.abc`
 (`Iut/Abc/FormalConjectures.lean`), which derives formal-conjectures' statement from the main
 theorem `Iut.classicalABC_of_variant` through `Iut.classicalABC_iff_abc`. The project's
-verbatim copy `FormalConjecturesABC.abc` has the challenge's statement as its body, with
+verbatim copy `FormalConjecturesABC.abc` has the body of `ABC`, with
 `FormalConjecturesABC.radical` (the same body as `ABC.radical`) in place of `ABC.radical`, so
-the two agree by unfolding definitions and the term type-checks as it stands. Challenge and
+the two agree by unfolding definitions and the term type-checks as it stands. The Solution
+writes the conclusion `_root_.ABC`: inside `Iut.abc_of_cor312Variant` the namespace `Iut` is
+open, and the Solution's imports contain the unrelated `Iut.ABC` (`Iut/Abc/Target.lean`),
+which plain `ABC` would denote there; the Challenge does not import it.
+`scripts/check_comparator_signature.sh` confirms that both elaborate to the same type. Challenge and
 Solution are separate Lake roots and are never imported into the same environment.
 
 ## Checks

@@ -19,10 +19,12 @@ google-deepmind/formal-conjectures, the theorem `ABC.abc` of
 * The hypothesis is `Iut.Cor312VariantHolds`, i.e.
   `∀ D : Iut.InitialThetaData.{0}, Iut.Corollary312Variant (Iut.concreteVariantData D)`
   (`Iut/Concrete/ThetaRegion.lean`).
-* The conclusion is the statement of their `ABC.abc`, verbatim: their arguments
-  `(ε : ℝ) (hε : 0 < ε)` are written `∀ ε : ℝ, 0 < ε →`, and everything else (the
-  set-builder, the pairwise coprimality, the coercions) is theirs, unchanged. It uses their
-  definition `ABC.radical`, which is copied here verbatim (same name, docstring and body).
+* The conclusion is the definition `ABC : Prop`, whose body is the statement of their
+  `ABC.abc`, verbatim: their arguments `(ε : ℝ) (hε : 0 < ε)` are written
+  `∀ ε : ℝ, 0 < ε →`, and everything else (the set-builder, the pairwise coprimality, the
+  coercions) is theirs, unchanged. It uses their definition `ABC.radical`, which is copied
+  here verbatim (same name, docstring and body); `radical` in the body denotes `ABC.radical`
+  (`open ABC in`).
 
 The copied code (the definition `ABC.radical` and the statement of `ABC.abc`) is
 "Copyright 2025 The Formal Conjectures Authors.
@@ -47,9 +49,9 @@ inequality). None of the modules that prove the implication (`Iut.MainTheorem`,
 `scripts/AuditComparatorChallenge.lean` checks this, and that no declaration of the trusted
 closure refers to `sorryAx` or to non-standard axioms.
 
-The comparator compares every definition the statement uses, `ABC.radical` included, between
-Challenge and Solution (it is not a definition hole), so the Solution declares the identical
-definition.
+The comparator compares every definition the statement uses, `ABC` and `ABC.radical`
+included, between Challenge and Solution in full, values included (neither is a definition
+hole), so the Solution declares the identical definitions.
 -/
 
 namespace ABC
@@ -61,16 +63,13 @@ def radical (n : ℕ) : ℕ := n.primeFactors.prod id
 
 end ABC
 
-namespace Iut
-
-open ABC
+open ABC in
+/-- The ABC conjecture as stated by formal-conjectures (`ABC.abc`, verbatim body). -/
+def ABC : Prop := ∀ ε : ℝ, 0 < ε →
+    {(a, b, c) : ℕ × ℕ × ℕ | 0 < a ∧ 0 < b ∧ 0 < c ∧ ({a, b, c} : Set ℕ).Pairwise Nat.Coprime ∧
+    a + b = c ∧ (radical <| a * b * c : ℝ)^(1 + ε) < c}.Finite
 
 /-- **The Corollary 3.12 variant implies the ABC conjecture as stated by formal-conjectures
 (`ABC.abc`).** -/
-theorem abc_of_cor312Variant :
-    Cor312VariantHolds → ∀ ε : ℝ, 0 < ε →
-    {(a, b, c) : ℕ × ℕ × ℕ | 0 < a ∧ 0 < b ∧ 0 < c ∧ ({a, b, c} : Set ℕ).Pairwise Nat.Coprime ∧
-    a + b = c ∧ (radical <| a * b * c : ℝ)^(1 + ε) < c}.Finite := by
+theorem Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC := by
   sorry
-
-end Iut
