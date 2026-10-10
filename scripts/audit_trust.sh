@@ -160,7 +160,7 @@ readonly challenge_file='Comparator/Challenge.lean'
 # The comparator challenge has exactly one target (the main theorem); its only `sorry` is
 # the proof placeholder of that target.
 readonly challenge_targets=(
-  'classicalABC_of_cor312Variant'
+  'abc_of_cor312Variant'
 )
 
 audit_challenge() {

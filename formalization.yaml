@@ -21,8 +21,9 @@ project:
     of the Θ-data at the bad places with André's tempered fundamental group, and proves Theorem B
     (nondegeneracy) for the tempered groups of the geometric presentations of the Tate
     orbicurves of the Θ-data. A separate library, Iut4Sec1, formalizes self-contained
-    mathematics of IUT IV, Section 1 ("Log-volume Estimates"). A comparator challenge states the
-    main theorem (Comparator/Challenge.lean).
+    mathematics of IUT IV, Section 1 ("Log-volume Estimates"). A comparator challenge
+    (Comparator/Challenge.lean) states that the hypothesis of the main theorem implies the
+    official ABC statement of google-deepmind/formal-conjectures.
   authors:
     - "Claude (Anthropic)"
     - "LANA Project"
@@ -147,6 +148,15 @@ status:
       file: "Iut/MainTheorem.lean"
       sorry_count: 0
       axioms: ["propext", "Classical.choice", "Quot.sound"]
+      literature_dependencies:
+        - statement: >-
+            Hypothesis h312 : Iut.Cor312VariantHolds (Iut/Concrete/ThetaRegion.lean), a variant of
+            Corollary 3.12 for every D : InitialThetaData. Assumed, not proved.
+          source: "Inter-universal Teichmüller Theory III, Corollary 3.12"
+    - declaration: "Iut.formalConjecturesABC_of_variant"
+      file: "Iut/Abc/FormalConjectures.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
       comparator_config: "Comparator/config.json"
       literature_dependencies:
         - statement: >-
@@ -251,10 +261,12 @@ review:
     The formalization has only been reviewed by Claude; it has not been reviewed by a human.
     All results are machine-checked by the Lean kernel (axioms as listed under status); the main
     theorem is conditional on the Corollary 3.12 variant h312, which is a hypothesis and is not
-    proved. The comparator challenge Comparator/Challenge.lean states the main theorem
-    (as Iut.classicalABC_of_cor312Variant, with Iut.ClassicalABC spelled out) with one deliberate
-    proof placeholder (not counted in sorry_count); Comparator/Solution.lean proves it by
-    Iut.classicalABC_of_variant.
+    proved. The comparator challenge Comparator/Challenge.lean states, as
+    Iut.abc_of_cor312Variant, that h312 implies the official ABC statement ABC.abc of
+    google-deepmind/formal-conjectures (FormalConjectures/Wikipedia/ABC.lean, commit
+    1646ca16afd6cc7a693d3bdc9f066c4d3cc01a89, Apache-2.0), verbatim with their definition
+    ABC.radical, with one deliberate proof placeholder (not counted in sorry_count);
+    Comparator/Solution.lean proves it by Iut.formalConjecturesABC_of_variant.
 
 alignment:
   namespace: "Iut"

@@ -598,7 +598,9 @@ Our `ClassicalABC` is proved equivalent to formal-conjectures' `ABC.abc` and
 [`Iut/Abc/FormalConjectures.lean`](Iut/Abc/FormalConjectures.lean):
 `Iut.classicalABC_iff_abc`, `Iut.classicalABC_iff_ltConstantMul`, and likewise
 `Iut.classicalABC_iff_qualityVariant` for `ABC.abc.variants.quality`; hence
-`Iut.formalConjecturesABC_of_variant : Cor312VariantHolds → FormalConjecturesABC.abc`.
+`Iut.formalConjecturesABC_of_variant : Cor312VariantHolds → FormalConjecturesABC.abc`. The
+comparator challenge (see [Comparator](#comparator)) states this implication with their
+`ABC.abc` verbatim.
 
 * `Iut.Tripod.classicalABC_of_statementI : tripodTheory.StatementI → ClassicalABC`
   (**proved**; via `classicalABCInt_of_statementI`): for `λ = −a/c ∈ ℚ` of degree `1`,
@@ -776,23 +778,34 @@ dependencies:
 
 ## Comparator
 
-[`Comparator/Challenge.lean`](Comparator/Challenge.lean) states the main theorem for
-[`leanprover/comparator`](https://github.com/leanprover/comparator):
+[`Comparator/Challenge.lean`](Comparator/Challenge.lean) states, for
+[`leanprover/comparator`](https://github.com/leanprover/comparator), that the hypothesis of the
+main theorem implies the **official** ABC statement of
+[google-deepmind/formal-conjectures](https://github.com/google-deepmind/formal-conjectures/blob/1646ca16afd6cc7a693d3bdc9f066c4d3cc01a89/FormalConjectures/Wikipedia/ABC.lean),
+their theorem `ABC.abc` (commit `1646ca1`, Apache-2.0), verbatim:
 
 ```lean
-theorem Iut.classicalABC_of_cor312Variant :
-    Cor312VariantHolds →
-      ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, ∀ a b c : ℕ, 0 < a → 0 < b → Nat.Coprime a b → a + b = c →
-        (c : ℝ) ≤ C * ((UniqueFactorizationMonoid.radical (a * b * c) : ℕ) : ℝ) ^ (1 + ε)
+namespace ABC
+
+def radical (n : ℕ) : ℕ := n.primeFactors.prod id
+
+end ABC
+
+theorem Iut.abc_of_cor312Variant :
+    Cor312VariantHolds → ∀ ε : ℝ, 0 < ε →
+    {(a, b, c) : ℕ × ℕ × ℕ | 0 < a ∧ 0 < b ∧ 0 < c ∧ ({a, b, c} : Set ℕ).Pairwise Nat.Coprime ∧
+    a + b = c ∧ (radical <| a * b * c : ℝ)^(1 + ε) < c}.Finite
 ```
 
-The conclusion is the classical ABC conjecture written out in Mathlib terms (the body of
-`Iut.ClassicalABC`). The hypothesis `Iut.Cor312VariantHolds` comes from its defining module
+The conclusion is their statement of `ABC.abc`, with their arguments `(ε : ℝ) (hε : 0 < ε)`
+written as `∀ ε : ℝ, 0 < ε →`, and their definition `ABC.radical`, copied into the challenge.
+The hypothesis `Iut.Cor312VariantHolds` comes from its defining module
 `Iut.Concrete.ThetaRegion`, the challenge's only project import. The challenge therefore
 trusts the definitions of the statement vocabulary, but no module of the proof. The audit
-`scripts/AuditComparatorChallenge.lean` checks this. `Comparator/Solution.lean` proves the
-statement with `Iut.classicalABC_of_variant`. The trusted closure, the config and how to run
-the comparator are described in [`Comparator/README.md`](Comparator/README.md).
+`scripts/AuditComparatorChallenge.lean` checks this. `Comparator/Solution.lean` declares the
+identical `ABC.radical` and proves the statement with `Iut.formalConjecturesABC_of_variant`.
+The trusted closure, the config and how to run the comparator are described in
+[`Comparator/README.md`](Comparator/README.md).
 
 ## Libraries
 

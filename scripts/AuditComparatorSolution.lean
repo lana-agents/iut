@@ -10,7 +10,7 @@ import Lean.Util.CollectAxioms
 /-!
 # Comparator-solution logical-dependency audit
 
-This file audits the configured theorem of `Solution`, `Iut.classicalABC_of_cor312Variant`,
+This file audits the configured theorem of `Solution`, `Iut.abc_of_cor312Variant`,
 in its separate environment.
 -/
 
@@ -23,7 +23,7 @@ private def sortNames (names : Array Name) : Array Name :=
   names.qsort fun left right => left.toString < right.toString
 
 private def configuredTheorems : List Name :=
-  [``Iut.classicalABC_of_cor312Variant]
+  [``Iut.abc_of_cor312Variant]
 
 run_cmd liftCoreM do
   logInfo "solution-exported declaration\tlogical dependencies"

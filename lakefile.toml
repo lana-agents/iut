@@ -83,7 +83,7 @@ name = "Iut"
 [[lean_lib]]
 name = "Iut4Sec1"
 
-# Comparator challenge/solution roots for the main theorem (Iut.classicalABC_of_cor312Variant).
+# Comparator challenge/solution roots for the main theorem (Iut.abc_of_cor312Variant).
 # They declare matching names and must remain in separate environments.
 [[lean_lib]]
 name = "Challenge"

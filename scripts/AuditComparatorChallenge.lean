@@ -16,9 +16,11 @@ challenge's own environment, that this closure is statement-only:
 * none of the modules that prove the main theorem is imported (`Iut.MainTheorem`,
   `Iut.Tripod`, `Iut.Implication`, `Iut.Abc`), and none of the declarations of the proof
   chain is present;
-* no safe declaration of the closure (outside `Challenge`), Lean's core included, refers
-  directly to any axioms other than `propext`, `Classical.choice` and `Quot.sound`; in
-  particular none refers to `sorryAx` or to the compiler-trust axioms. Since every
+* no safe declaration of the closure, Lean's core included, and no declaration of
+  `Challenge` other than the challenge theorem (such as the copied definition `ABC.radical`
+  and the auxiliary matcher of the set-builder) refers directly to any axioms other than
+  `propext`, `Classical.choice` and `Quot.sound`; in particular none refers to `sorryAx` or
+  to the compiler-trust axioms. Since every
   transitive dependency on such axioms passes through a direct reference, no declaration of
   the closure depends on them;
 * no module outside Lean's core declares axioms;
@@ -32,7 +34,7 @@ open Lean Elab Command
 
 private def challengeModule : Name := `Challenge
 
-private def challengeTheorem : Name := `Iut.classicalABC_of_cor312Variant
+private def challengeTheorem : Name := `Iut.abc_of_cor312Variant
 
 /-- Module prefixes of the proof of the main theorem; none may be imported. -/
 private def forbiddenModulePrefixes : List Name :=
@@ -42,7 +44,8 @@ private def forbiddenModulePrefixes : List Name :=
 private def forbiddenDeclarations : List Name :=
   [`Iut.classicalABC_of_variant, `Iut.Tripod.abc_of_variant,
     `Iut.Tripod.statementI_of_statementII, `Iut.Tripod.classicalABC_of_statementI,
-    `Iut.ClassicalABC]
+    `Iut.ClassicalABC, `Iut.formalConjecturesABC_of_variant, `Iut.classicalABC_iff_abc,
+    `FormalConjecturesABC.abc]
 
 private def allowedAxioms : List Name :=
   [``propext, ``Quot.sound, ``Classical.choice]
@@ -86,8 +89,10 @@ run_cmd liftCoreM do
   let mut checked := 0
   for h : moduleIdx in *...modules.size do
     let moduleName := modules[moduleIdx]
-    if moduleName == challengeModule then continue
+    let isChallenge := moduleName == challengeModule
     for declName in env.header.moduleData[moduleIdx]!.constNames do
+      -- The challenge theorem carries the placeholder; it is checked in step 4.
+      if isChallenge && declName == challengeTheorem then continue
       let some info := env.find? declName | continue
       if info matches .axiomInfo _ then
         unless isCoreModule moduleName do

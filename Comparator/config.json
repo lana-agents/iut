@@ -1,7 +1,7 @@
 {
     "challenge_module": "Challenge",
     "solution_module": "Solution",
-    "theorem_names": ["Iut.classicalABC_of_cor312Variant"],
+    "theorem_names": ["Iut.abc_of_cor312Variant"],
     "definition_names": [],
     "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
     "enable_nanoda": false
