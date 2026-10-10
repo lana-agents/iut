@@ -48,7 +48,11 @@ theorem Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC := by
   inlined: it covers the initial Θ-data of IUT I, Definition 3.1, stated about the genuine
   étale and tempered fundamental groups of the model orbicurves (`pi1`,
   `tempered-fundamental-groups`), together with the tensor packets with their log-shells,
-  log-volumes and hulls, the theta-pilot region, and the variant inequality.
+  log-volumes and hulls, the theta-pilot region, and the variant inequality. The
+  theta-pilot region is the union of the images of `q_{v_j}^{j²}·(R_I)^∼` under the
+  indeterminacy automorphisms of IUT IV, Propositions 1.2 and 1.5
+  (`Iut/Concrete/LocalConstruct/IndAut.lean`): at a prime, all `ℚ_p`-linear automorphisms
+  of the packet preserving the lattice `⊗_j 𝓘_j`; at `∞`, the primitive automorphisms.
 
 `config.json` lists this one theorem, has no definition holes, and permits only `propext`,
 `Quot.sound` and `Classical.choice`. `ABC` and `ABC.radical` are not definition holes
@@ -63,12 +67,12 @@ The comparator trusts `Challenge` and its import closure. Besides the Mathlib mo
 `Mathlib.Analysis.SpecialFunctions.Pow.Real` (whose closure provides `Real.rpow`,
 `Set.Finite`, `Set.Pairwise`, `Nat.Coprime` and `Nat.primeFactors`), the challenge imports
 only `Iut.Concrete.ThetaRegion`, the module that defines `Cor312VariantHolds`. Its closure
-(11224 modules) consists of Lean core, Mathlib and its dependencies, and these project
+(11234 modules) consists of Lean core, Mathlib and its dependencies, and these project
 packages:
 
 | Package | Modules |
 | --- | ---: |
-| `Iut` (`Iut.Anabelian`, `Iut.Concrete`, `Iut.Cor312`, `Iut.Torsion`, three `Iut.Tower` modules) | 87 |
+| `Iut` (`Iut.Anabelian`, `Iut.Concrete`, `Iut.Cor312`, `Iut.Torsion`, three `Iut.Tower` modules) | 97 |
 | `TemperedFundamentalGroups` | 533 |
 | `Oka` | 81 |
 | `TateCurvesTheta` | 68 |
@@ -127,5 +131,9 @@ Solution are separate Lake roots and are never imported into the same environmen
 
 The pair is checked with [`leanprover/comparator`](https://github.com/leanprover/comparator)
 using `config.json`, which permits only the standard axioms `propext`, `Quot.sound` and
-`Classical.choice`. The check was confirmed on 2026-10-10: the comparator accepted the
-solution (`Your solution is okay!`).
+`Classical.choice`. The check was confirmed on 2026-10-10, after the correction of the
+indeterminacy automorphisms: the comparator (commit `07bc4ea`, for Lean v4.32.0, with its
+pinned `lean4export`) accepted the solution (`Lean default kernel accepts the solution`,
+`Your solution is okay!`). With `landrun` 0.1.18 the comparator's `lean4export` argument
+separator `--` is consumed by `landrun`'s own flag parser; a pass-through wrapper inserting
+`--` before the sandboxed command avoids this.
