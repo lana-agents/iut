@@ -20,10 +20,10 @@ For initial Θ-data with prime `ℓ` and bad locus `V(F)^bad`:
   places `w`, of `ord_w(q_w) · log p_w`, where `ord_w(q_w)` is the normalized integer
   order of the Tate parameter at `w` (`AdmissiblePrimeData.qOrder`, from taxis #37),
   `p_w` the residue characteristic, and the weights are the normalized
-  arithmetic-degree weights (in the intended instantiation `[F_w : ℚ_{p_w}]/[F : ℚ]`),
-  carried as data with their positivity exposed (`QPilotData.weight`,
-  `QPilotData.weight_pos`). This corresponds to the `q`-divisor conventions of IUT I,
-  Example 3.2(iv).
+  arithmetic-degree weights (in the intended instantiation `f_w/[F : ℚ]`, `f_w` the
+  residue degree, since `ord_w` is the integer order), carried as data with their
+  positivity exposed (`QPilotData.weight`, `QPilotData.weight_pos`). This corresponds to
+  the `q`-divisor conventions of IUT I, Example 3.2(iv).
 * `|log(q)| := (1/2ℓ) · log(q)`: the quantity `|log(q)| ∈ ℝ_{>0}` of IUT III,
   Corollary 3.12, whose value in this normalization is recorded in IUT IV, the proof
   of Theorem 1.10 ("the quantity `|log(q)|` … is equal to `(1/2ℓ)·log(q)`").
@@ -60,7 +60,7 @@ structure QPilotData (D : InitialThetaData.{u}) : Type u where
   /-- The finite set enumerates exactly `V(F)^bad`. -/
   badFinset_spec : ↑badFinset = badPlacesOver D.F D.E D.VBad
   /-- The normalized arithmetic-degree weight of each place (intended:
-  `[F_w : ℚ_{p_w}]/[F : ℚ]`). -/
+  `f_w/[F : ℚ]`, `f_w` the residue degree). -/
   weight : FinitePlace D.F → ℝ
   /-- Weights of bad places are positive. -/
   weight_pos : ∀ w ∈ badFinset, 0 < weight w

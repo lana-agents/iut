@@ -24,8 +24,10 @@ IUT III, Corollary 3.12 itself:
    representing the union of the images of the theta-pilot under the indeterminacies
    `(Ind1)`, `(Ind2)`, `(Ind3)` of IUT III, Theorem 3.11 — enters as *data*: the
    multiradial algorithm that produces it is out of scope for this repository
-   (taxis #43), so the region is an explicit input, with its containment in the
-   log-shells recorded as an explicit hypothesis (not proved);
+   (taxis #43), so the region is an explicit input. It is not required to lie in the
+   log-shells: the container of IUT IV, proof of Theorem 1.10, Step (v), for the images
+   under the automorphisms of Proposition 1.2 is larger than the log-shell at wildly
+   ramified primes;
 5. the **holomorphic hull** (taxis #45) is applied capsule-wise;
 6. the **procession-normalized log-volume** (taxis #44) of the hull is the value.
 
@@ -84,10 +86,6 @@ structure RHSData (D : InitialThetaData.{u}) : Type (max u (v + 1)) where
   compactness and the finite-log-volume hypotheses live in the hull system's
   admissible class; explicit, per taxis #45). -/
   thetaPilot_hullAdmissible : ∀ i, hull.IsAdmissible (thetaPilot i)
-  /-- Explicit hypothesis (not a theorem of this repository): the theta-pilot region
-  is contained in the mono-analytic log-shells, placewise (IUT III,
-  Proposition 3.9/Theorem 3.11 territory; recorded as a visible assumption). -/
-  thetaPilot_le_shell : ∀ i, thetaPilot i ≤ container.logShellAdmissible i
 
 namespace RHSData
 

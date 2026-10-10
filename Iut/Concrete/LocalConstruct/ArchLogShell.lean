@@ -14,7 +14,8 @@ archimedean packet region of IUT IV, Proposition 1.5 is `π^{|I|}·B_I`, the clo
 radius `π^{|I|}` of the projective tensor norm — the closed absolutely convex hull of the
 elementary tensors of the discs of radius `π`. We take this ball as the archimedean log-shell
 (`archLogShell`, `Iut.LocalTheory.logShell` at `∞`), so that Proposition 1.5(iii),(iv)
-(`prop15`) reduces to the statement that the indeterminacy automorphisms preserve `B_I`
+(`galAut_prop15`) reduces to the statement that the Galois automorphisms of the packet
+preserve `B_I`
 (`mapAlgHom_image_archIntegral_subset`): the automorphisms `σ_j` of the factors `ℝ`, `ℂ`
 over `ℝ` are isometries (`norm_archAut_apply`: an `ℝ`-algebra automorphism of `ℂ` is the
 identity or complex conjugation), and the projective norm is contractive under tensor
@@ -106,7 +107,7 @@ lemma archAutCLM_apply (σ : ArchFactor K v ≃ₐ[ℝ] ArchFactor K v) (x : Arc
 lemma norm_archAutCLM_le (σ : ArchFactor K v ≃ₐ[ℝ] ArchFactor K v) : ‖archAutCLM v σ‖ ≤ 1 :=
   LinearMap.mkContinuous_norm_le _ zero_le_one _
 
-/-! ### The indeterminacy automorphisms preserve `B_I` -/
+/-! ### the Galois automorphisms of the packet preserve `B_I` -/
 
 variable {ι : Type} [Fintype ι] (c : ι → Place K)
 
@@ -132,7 +133,7 @@ lemma toArchModel_mapAlgHom (σ : ∀ j, ArchFactor K (c j) ≃ₐ[ℝ] ArchFact
         (toArchModel c x + toArchModel c y : ArchModel c)
     rw [map_add, hx, hy]
 
-/-- **The projective norm is contractive under the indeterminacy automorphisms.** -/
+/-- **The projective norm is contractive under the Galois automorphisms of the packet.** -/
 theorem archNorm_mapAlgHom_le (σ : ∀ j, ArchFactor K (c j) ≃ₐ[ℝ] ArchFactor K (c j))
     (x : Tensor K .infinite c) : archNorm c (mapAlgHom .infinite c σ x) ≤ archNorm c x := by
   unfold archNorm
@@ -142,16 +143,16 @@ theorem archNorm_mapAlgHom_le (σ : ∀ j, ArchFactor K (c j) ≃ₐ[ℝ] ArchFa
   refine (PiTensorProduct.opNorm_mapL _).trans ?_
   exact Finset.prod_le_one (fun j _ => norm_nonneg _) fun j _ => norm_archAutCLM_le (c j) (σ j)
 
-/-- **IUT IV, Proposition 1.5(iii)**: the indeterminacy automorphisms preserve `B_I`. -/
+/-- **IUT IV, Proposition 1.5(iii)**: the Galois automorphisms of the packet preserve `B_I`. -/
 theorem mapAlgHom_image_archIntegral_subset
     (σ : ∀ j, ArchFactor K (c j) ≃ₐ[ℝ] ArchFactor K (c j)) :
     mapAlgHom .infinite c σ '' archIntegral c ⊆ archIntegral c := by
   rintro _ ⟨x, hx, rfl⟩
   exact (archNorm_mapAlgHom_le c σ x).trans hx
 
-/-- The indeterminacy automorphisms preserve every real multiple of `B_I`. -/
-theorem indAut_image_smul_archIntegral_subset (t : ℝ) :
-    ∀ φ ∈ indAut .infinite c, φ '' (algebraMap ℝ (Tensor K .infinite c) t • archIntegral c) ⊆
+/-- the Galois automorphisms of the packet preserve every real multiple of `B_I`. -/
+theorem galAut_image_smul_archIntegral_subset (t : ℝ) :
+    ∀ φ ∈ galAut .infinite c, φ '' (algebraMap ℝ (Tensor K .infinite c) t • archIntegral c) ⊆
       algebraMap ℝ (Tensor K .infinite c) t • archIntegral c := by
   rintro _ ⟨σ, rfl⟩ _ ⟨_, ⟨x, hx, rfl⟩, rfl⟩
   refine ⟨mapAlgHom .infinite c σ x, mapAlgHom_image_archIntegral_subset c σ ⟨x, hx, rfl⟩, ?_⟩
@@ -178,21 +179,21 @@ lemma isCompact_closure_archLogShell : IsCompact (closure (archLogShell c)) := b
   rw [(isCompact_archLogShell c).isClosed.closure_eq]
   exact isCompact_archLogShell c
 
-/-- **IUT IV, Proposition 1.5(iii),(iv)** (`LocalTheory.prop15`): the images of the
-archimedean log-shell under the indeterminacy automorphisms lie in `π^{|I|}·B_I`. -/
-theorem prop15 : ∀ φ ∈ indAut .infinite c, φ '' archLogShell c ⊆
+/-- **IUT IV, Proposition 1.5(iii),(iv)** (`LocalTheory.galAut_prop15`): the images of the
+archimedean log-shell under the Galois automorphisms of the packet lie in `π^{|I|}·B_I`. -/
+theorem galAut_prop15 : ∀ φ ∈ galAut .infinite c, φ '' archLogShell c ⊆
     algebraMap ℝ (Tensor K .infinite c) (Real.pi ^ Fintype.card ι) • integralAt .infinite c :=
-  indAut_image_smul_archIntegral_subset c _
+  galAut_image_smul_archIntegral_subset c _
 
-/-- The indeterminacy automorphisms preserve the archimedean log-shell
-(`LocalTheory.indAut_logShell` at `∞`). -/
-theorem indAut_archLogShell : ∀ φ ∈ indAut .infinite c, φ '' archLogShell c ⊆ archLogShell c :=
-  indAut_image_smul_archIntegral_subset c _
+/-- the Galois automorphisms of the packet preserve the archimedean log-shell
+(`LocalTheory.galAut_logShell` at `∞`). -/
+theorem galAut_archLogShell : ∀ φ ∈ galAut .infinite c, φ '' archLogShell c ⊆ archLogShell c :=
+  galAut_image_smul_archIntegral_subset c _
 
-/-- **`LocalTheory.thetaShell_admissible`** at `∞`. -/
-theorem thetaShell_admissible_infinite :
-    (⋃ φ ∈ indAut .infinite c, φ '' archLogShell c) ∈ admissible .infinite c :=
-  iUnion_indAut_admissible .infinite c (isCompact_archLogShell c)
+/-- **`LocalTheory.galAut_thetaShell_admissible`** at `∞`. -/
+theorem galAut_thetaShell_admissible_infinite :
+    (⋃ φ ∈ galAut .infinite c, φ '' archLogShell c) ∈ admissible .infinite c :=
+  iUnion_galAut_admissible .infinite c (isCompact_archLogShell c)
     (haar_smul_integralAt_pos (isUnit_archScalar c))
 
 end LocalConstruct

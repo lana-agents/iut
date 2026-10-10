@@ -47,9 +47,9 @@ This formalization must not be read as Mochizuki's published Corollary 3.12:
 * the container, log-volume, and hull are the interface abstractions of
   taxis #43–#45, whose correspondence with IUT III, Propositions 3.1–3.3 and 3.9 and
   Remark 3.9.5 is documented per-module but not itself a theorem;
-* every assumption is a visible field of the input bundle; in particular
-  `RHSData.thetaPilot_le_shell` and the hull-admissibility of the theta-pilot region
-  are hypotheses, and no disputed implication is encoded as a proved theorem.
+* every assumption is a visible field of the input bundle; in particular the
+  hull-admissibility of the theta-pilot region is a hypothesis, and no disputed
+  implication is encoded as a proved theorem.
 
 The intended statement may differ from the formulation printed in the IUT papers; the
 data, hypotheses, definitions and conclusion follow the per-issue specifications of

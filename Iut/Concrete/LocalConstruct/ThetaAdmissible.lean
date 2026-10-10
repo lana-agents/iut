@@ -6,17 +6,18 @@ Authors: LANA Project
 import Iut.Concrete.LocalConstruct.Admissible
 
 /-!
-# Finiteness of the indeterminacy automorphisms and admissibility of theta regions (taxis #4, #278)
+# Finiteness of the Galois automorphisms of a packet and admissibility (taxis #4, #278)
 
-The class `indAut vQ c` of indeterminacy automorphisms of a packet is the image of the
+The class `galAut vQ c` of Galois automorphisms `⊗_j σ_j` of a packet is the image of the
 finite type `∀ j, Factor' K vQ (c j) ≃ₐ Factor' K vQ (c j)` (the automorphism groups of the
 factors are finite: the factors are finite field extensions of `ℚ_p`, resp. `ℝ` or `ℂ`, or the
-zero ring), so it is finite (`indAut_finite`), and each of its members is continuous
-(`continuous_of_mem_indAut`). Hence the union of the images of a compact set of positive
-measure under the indeterminacy automorphisms is admissible (`iUnion_indAut_admissible`),
-which gives `LocalTheory.theta_admissible` (`theta_admissible`) and, once the log-shells are
-constructed, `LocalTheory.thetaShell_admissible`. The unconditional form of IUT IV,
-Proposition 1.4(iv) for the maximal order is `prop14_iv`.
+zero ring), so it is finite (`galAut_finite`), and each of its members is continuous
+(`continuous_of_mem_galAut`). Hence the union of the images of a compact set of positive
+measure under the Galois automorphisms is admissible (`iUnion_galAut_admissible`,
+`galAut_theta_admissible`), and they preserve `(R_I)^∼` (`galAut_integral_subset`). The
+indeterminacy automorphisms of IUT IV, Proposition 1.2 form a much larger class
+(`IndAut.lean`); the Galois automorphisms are used at the archimedean place
+(`ArchPrimitive.lean`).
 -/
 
 namespace Iut
@@ -83,13 +84,13 @@ end Finite
 
 variable {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K)
 
-/-- **The class of indeterminacy automorphisms is finite.** -/
-theorem indAut_finite : (indAut vQ c).Finite := by
-  have : indAut vQ c = Set.range
+/-- **The class of Galois automorphisms is finite.** -/
+theorem galAut_finite : (galAut vQ c).Finite := by
+  have : galAut vQ c = Set.range
       fun σ : ∀ j, Factor' K vQ (c j) ≃ₐ[baseField vQ] Factor' K vQ (c j) =>
         ⇑(mapAlgHom vQ c σ) := by
     ext φ
-    simp only [indAut, Set.mem_setOf_eq, Set.mem_range]
+    simp only [galAut, Set.mem_setOf_eq, Set.mem_range]
     exact ⟨fun ⟨σ, h⟩ => ⟨σ, h.symm⟩, fun ⟨σ, h⟩ => ⟨σ, h.symm⟩⟩
   rw [this]
   exact Set.finite_range _
@@ -100,7 +101,7 @@ lemma continuous_mapAlgHom (σ : ∀ j, Factor' K vQ (c j) ≃ₐ[baseField vQ] 
   LinearMap.continuous_of_finiteDimensional (mapAlgHom vQ c σ).toLinearMap
 
 /-- Indeterminacy automorphisms are continuous. -/
-lemma continuous_of_mem_indAut {φ : Tensor K vQ c → Tensor K vQ c} (hφ : φ ∈ indAut vQ c) :
+lemma continuous_of_mem_galAut {φ : Tensor K vQ c → Tensor K vQ c} (hφ : φ ∈ galAut vQ c) :
     Continuous φ := by
   obtain ⟨σ, rfl⟩ := hφ
   exact continuous_mapAlgHom vQ c σ
@@ -108,13 +109,13 @@ lemma continuous_of_mem_indAut {φ : Tensor K vQ c → Tensor K vQ c} (hφ : φ 
 /-! ### Admissibility of unions over the indeterminacies -/
 
 /-- **The union of the images of a compact set of positive Haar measure under the
-indeterminacy automorphisms is admissible.** -/
-theorem iUnion_indAut_admissible {S : Set (Tensor K vQ c)} (hS : IsCompact S)
-    (hpos : 0 < haar vQ c S) : (⋃ φ ∈ indAut vQ c, φ '' S) ∈ admissible vQ c := by
-  have hsub : S ⊆ ⋃ φ ∈ indAut vQ c, φ '' S := fun x hx =>
-    Set.mem_iUnion₂.mpr ⟨id, id_mem_indAut vQ c, ⟨x, hx, rfl⟩⟩
-  have hcpt : IsCompact (⋃ φ ∈ indAut vQ c, φ '' S) :=
-    (indAut_finite vQ c).isCompact_biUnion fun φ hφ => hS.image (continuous_of_mem_indAut vQ c hφ)
+Galois automorphisms is admissible.** -/
+theorem iUnion_galAut_admissible {S : Set (Tensor K vQ c)} (hS : IsCompact S)
+    (hpos : 0 < haar vQ c S) : (⋃ φ ∈ galAut vQ c, φ '' S) ∈ admissible vQ c := by
+  have hsub : S ⊆ ⋃ φ ∈ galAut vQ c, φ '' S := fun x hx =>
+    Set.mem_iUnion₂.mpr ⟨id, id_mem_galAut vQ c, ⟨x, hx, rfl⟩⟩
+  have hcpt : IsCompact (⋃ φ ∈ galAut vQ c, φ '' S) :=
+    (galAut_finite vQ c).isCompact_biUnion fun φ hφ => hS.image (continuous_of_mem_galAut vQ c hφ)
   refine ⟨?_, ?_, hcpt.isClosed.measurableSet, lt_of_lt_of_le hpos (measure_mono hsub),
     hcpt.measure_lt_top⟩
   · obtain ⟨x, hx⟩ := nonempty_of_measure_ne_zero hpos.ne'
@@ -122,16 +123,15 @@ theorem iUnion_indAut_admissible {S : Set (Tensor K vQ c)} (hS : IsCompact S)
   · rw [hcpt.isClosed.closure_eq]
     exact hcpt
 
-/-- **`LocalTheory.theta_admissible`**: the union of the images of a scaled integral
-structure under the indeterminacy automorphisms is admissible. -/
-theorem theta_admissible (s : Tensor K vQ c) (hs : IsUnit s) :
-    (⋃ φ ∈ indAut vQ c, φ '' (s • integralAt vQ c)) ∈ admissible vQ c :=
-  iUnion_indAut_admissible vQ c (isCompact_smul_integralAt s) (haar_smul_integralAt_pos hs)
+/-- **`LocalTheory.galAut_theta_admissible`**: the union of the images of a scaled integral
+structure under the Galois automorphisms of the packet is admissible. -/
+theorem galAut_theta_admissible (s : Tensor K vQ c) (hs : IsUnit s) :
+    (⋃ φ ∈ galAut vQ c, φ '' (s • integralAt vQ c)) ∈ admissible vQ c :=
+  iUnion_galAut_admissible vQ c (isCompact_smul_integralAt s) (haar_smul_integralAt_pos hs)
 
-/-- **IUT IV, Proposition 1.4(iv)** for the maximal order, at every prime
-(`LocalTheory.prop14_iv`): the indeterminacy automorphisms preserve `(R_I)^∼`. -/
-theorem prop14_iv (p : Nat.Primes) (c : ι → Place K) :
-    ∀ φ ∈ indAut (.finite p) c,
+/-- The Galois automorphisms of the packet preserve `(R_I)^∼`, at every prime. -/
+theorem galAut_integral_subset (p : Nat.Primes) (c : ι → Place K) :
+    ∀ φ ∈ galAut (.finite p) c,
       φ '' integralAt (.finite p) c ⊆ integralAt (.finite p) c := by
   rintro _ ⟨σ, rfl⟩
   exact mapAlgHom_image_integral_subset p c σ

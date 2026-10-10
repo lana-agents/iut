@@ -6,12 +6,13 @@ Authors: LANA Project
 import Iut.Concrete.LocalConstruct.Integral
 
 /-!
-# The indeterminacy automorphisms of the tensor packets (taxis #4, #278)
+# The Galois automorphisms of the tensor packets (taxis #4, #278)
 
-The automorphisms `φ` of IUT IV, Proposition 1.2, through which the indeterminacies (Ind1),
-(Ind2) act on a packet `⊗_j K_{c j}`, are the automorphisms `⊗_j σ_j` induced by
-automorphisms `σ_j` of the factors over the base field (`mapAlgHom`); their class is
-`indAut` (`Iut.LocalTheory.indAut`). This file proves `id_mem_indAut` and the general
+The automorphisms `⊗_j σ_j` of a packet `⊗_j K_{c j}` induced by automorphisms `σ_j` of the
+factors over the base field (`mapAlgHom`); their class is `galAut`. These are only a small
+part of the indeterminacy automorphisms of IUT IV, Proposition 1.2 (which are all the
+`ℚ_p`-linear automorphisms preserving the log lattice, `LocalConstruct.indAut`); they are
+kept as a tool, e.g. at the archimedean place. This file proves `id_mem_galAut` and the general
 transport principle `mapAlgHom_image_span_subset`: such an automorphism maps the
 `ℤ_p`-span of the elementary tensors of a family of subsets of the factors into itself as
 soon as each `σ_j` preserves the corresponding subset — the tool for `indAut_logShell`
@@ -61,9 +62,9 @@ lemma mapAlgHom_tprod (σ : ∀ j, Factor' K vQ (c j) ≃ₐ[baseField vQ] Facto
     MultilinearMap.compLinearMap_apply]
   rfl
 
-/-- **The indeterminacy automorphisms** (`LocalTheory.indAut`): the maps `⊗_j σ_j` induced
+/-- **The Galois automorphisms of the packet**: the maps `⊗_j σ_j` induced
 by automorphisms of the factors over the base field. -/
-def indAut : Set (Tensor K vQ c → Tensor K vQ c) :=
+def galAut : Set (Tensor K vQ c → Tensor K vQ c) :=
   {φ | ∃ σ : ∀ j, Factor' K vQ (c j) ≃ₐ[baseField vQ] Factor' K vQ (c j), φ = ⇑(mapAlgHom vQ c σ)}
 
 lemma mapAlgHom_refl : mapAlgHom vQ c (fun _ => AlgEquiv.refl) = AlgHom.id _ _ := by
@@ -73,14 +74,14 @@ lemma mapAlgHom_refl : mapAlgHom vQ c (fun _ => AlgEquiv.refl) = AlgHom.id _ _ :
   simp only [AlgHom.comp_apply, PiTensorProduct.singleAlgHom_apply, mapAlgHom_tprod,
     AlgHom.id_apply, AlgEquiv.coe_refl, id_eq]
 
-/-- The identity is an indeterminacy automorphism (`LocalTheory.id_mem_indAut`). -/
-lemma id_mem_indAut : id ∈ indAut vQ c :=
+/-- The identity is a Galois automorphism of the packet. -/
+lemma id_mem_galAut : id ∈ galAut vQ c :=
   ⟨fun _ => AlgEquiv.refl, by rw [mapAlgHom_refl]; rfl⟩
 
 variable {vQ c}
 
-/-- Indeterminacy automorphisms are ring homomorphisms. -/
-lemma indAut_map_mul {φ : Tensor K vQ c → Tensor K vQ c} (hφ : φ ∈ indAut vQ c) (x y) :
+/-- Galois automorphisms of the packet are ring homomorphisms. -/
+lemma galAut_map_mul {φ : Tensor K vQ c → Tensor K vQ c} (hφ : φ ∈ galAut vQ c) (x y) :
     φ (x * y) = φ x * φ y := by
   obtain ⟨σ, rfl⟩ := hφ
   exact map_mul _ _ _

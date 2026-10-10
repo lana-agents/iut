@@ -111,30 +111,13 @@ lemma thetaComponent_admissible (i : Fin n) (vQ : RationalPlace)
   · exact LocalTheory.theta_admissible D.Kt _ _ _ (D.isUnit_scaleElt n i p c)
   · exact LocalTheory.thetaShell_admissible D.Kt _ _
 
-/-- Each theta-pilot component lies in the log-shell. -/
-lemma thetaComponent_subset_logShell (i : Fin n) (vQ : RationalPlace)
-    (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber D.Kt vQ) :
-    D.thetaComponent n i vQ c ⊆ LocalTheory.logShell D.Kt vQ (LocalTheory.tuple D.Kt _ c) := by
-  rcases vQ with p | _
-  · intro x hx
-    change x ∈ ⋃ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
-      φ '' (D.scaleElt n i p c • LocalTheory.integral D.Kt (.finite p)
-          (LocalTheory.tuple D.Kt _ c)) at hx
-    obtain ⟨φ, hφ, hx⟩ := Set.mem_iUnion₂.mp hx
-    refine LocalTheory.indAut_logShell D.Kt _ _ φ hφ (Set.image_mono ?_ hx)
-    exact (LocalTheory.smul_integral_subset D.Kt p _ _ _ _ _ (pow_ne_zero _ (D.qroot_ne_zero _))
-      (D.ordp_pow_nonneg _ _)).trans (LocalTheory.integral_subset_logShell D.Kt p _)
-  · intro x hx
-    change x ∈ ⋃ φ ∈ LocalTheory.indAut D.Kt .infinite (LocalTheory.tuple D.Kt .infinite c),
-      φ '' LocalTheory.logShell D.Kt .infinite (LocalTheory.tuple D.Kt .infinite c) at hx
-    obtain ⟨φ, hφ, hx⟩ := Set.mem_iUnion₂.mp hx
-    exact LocalTheory.indAut_logShell D.Kt _ _ φ hφ hx
-
-/-- Away from the bad residue characteristics, the theta-pilot component is the integral
-structure (the indeterminacy automorphisms preserve the maximal order at every prime). -/
+/-- At an odd prime which is not a bad residue characteristic and is unramified in `K`, the
+theta-pilot component is the integral structure (there the indeterminacy automorphisms
+preserve the maximal order, IUT IV, Proposition 1.4(iv)). -/
 lemma thetaComponent_eq_integral (i : Fin n) (p : Nat.Primes)
     (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber D.Kt (.finite p))
-    (hbad : (p : ℕ) ∉ D.badChars) :
+    (hbad : (p : ℕ) ∉ D.badChars) (hodd : Odd (p : ℕ))
+    (hunr : ∀ w : FinitePlace D.Kt, residueChar w = p → ramIdx D.Kt w = 1) :
     D.thetaComponent n i (.finite p) c = LocalTheory.integral D.Kt (.finite p)
         (LocalTheory.tuple D.Kt _ c) := by
   have hscale : D.scaleElt n i p c = 1 := by
@@ -148,7 +131,12 @@ lemma thetaComponent_eq_integral (i : Fin n) (p : Nat.Primes)
           (LocalTheory.tuple D.Kt _ c)) at hx
     obtain ⟨φ, hφ, hx⟩ := Set.mem_iUnion₂.mp hx
     rw [hscale, one_smul] at hx
-    exact LocalTheory.prop14_iv D.Kt p _ φ hφ hx
+    refine LocalTheory.prop14_iv D.Kt p _ (LocalTheory.tuple_isOver D.Kt p c) hodd ?_ φ hφ hx
+    intro j w hw
+    obtain ⟨w', hw', hres⟩ := LocalTheory.tuple_isOver D.Kt p c j
+    rw [hw] at hw'
+    cases Sum.inl.inj hw'
+    exact hunr w hres
   · intro x hx
     change x ∈ ⋃ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
       φ '' (D.scaleElt n i p c • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c))
@@ -175,13 +163,24 @@ noncomputable def thetaPilot (i : Fin (LocalTheory.container D.Kt n).proc.length
         apply hmem
         refine Or.inr ⟨p, hb, ?_⟩
         simp [p.2]
+      have hodd : Odd (p : ℕ) := by
+        refine p.2.odd_of_ne_two fun h2 => hmem (Or.inl (Or.inl (Or.inr ?_)))
+        change RationalPlace.finite p = RationalPlace.finite ⟨2, Nat.prime_two⟩
+        exact congrArg _ (Subtype.ext h2)
+      have hunr : ∀ w : FinitePlace D.Kt, residueChar w = p → ramIdx D.Kt w = 1 := by
+        intro w hw
+        by_contra hram
+        apply hmem
+        refine Or.inl (Or.inr ⟨w, hram, ?_⟩)
+        change RationalPlace.finite _ = RationalPlace.finite p
+        exact congrArg _ (Subtype.ext hw)
       change (LocalTheory.packet D.Kt _ _).productRegion _ =
           (LocalTheory.packet D.Kt _ _).integralRegion
       ext x
       simp only [DirectSumPresentation.mem_productRegion,
         DirectSumPresentation.mem_integralRegion]
       refine forall_congr' fun c => ?_
-      rw [D.thetaComponent_eq_integral n i p c hbad]
+      rw [D.thetaComponent_eq_integral n i p c hbad hodd hunr]
       rfl
     · exact absurd (Or.inl (Or.inl (Or.inl rfl))) hmem
 
@@ -196,8 +195,6 @@ noncomputable def rhsData : RHSData.{u, u} D where
   thetaPilot := D.thetaPilot _
   thetaPilot_hullAdmissible i vQ :=
     ⟨fun c => D.thetaComponent _ i vQ c, fun c => D.thetaComponent_admissible _ i vQ c, rfl⟩
-  thetaPilot_le_shell i vQ _ hx c :=
-    D.thetaComponent_subset_logShell _ i vQ c (hx c)
 
 end InitialThetaData
 
@@ -222,7 +219,7 @@ noncomputable def concreteVariantData : Corollary312VariantData.{u} where
 /-- **The Corollary 3.12 variant** (IUT III, Corollary 3.12, in the form of IUT IV,
 Theorem 1.10's input): for all initial Θ-data `D` (IUT I, Definition 3.1, stated about the
 genuine étale and tempered fundamental groups of the model orbicurves), the concrete variant
-data of `D` satisfy the variant inequality `−|log(Θ)| ≤ −|log(q)|`. -/
+data of `D` satisfy the variant inequality `−|log(q)| ≤ −|log(Θ)|`. -/
 def Cor312VariantHolds : Prop :=
   ∀ D : InitialThetaData.{0}, Corollary312Variant (concreteVariantData D)
 

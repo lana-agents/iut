@@ -7,24 +7,19 @@ import Iut.Concrete.LocalConstruct.Volume
 import Iut.Concrete.LocalConstruct.Arithmetic
 
 /-!
-# IUT IV, Proposition 1.4(iii) for the concrete packets (taxis #4, #278)
+# Proposition 1.4(iii)-type bounds for the Galois automorphisms of the packets (taxis #4, #278)
 
-The theorem `LocalTheory.prop14_iii` asks, for a scaling element `x ∈ K_w` of the `j`-th
-factor of a packet at `p` with `ord_p(x) = λ ≥ 0`, for a unit `a` of the packet such that
-the images `φ(x·(R_I)^∼)` under all indeterminacy automorphisms lie in `a·(R_I)^∼`, with
+*Superseded for the indeterminacy automorphisms by `Prop14Lattice.lean`*: the statement below
+is for the small class `galAut` of Galois automorphisms `⊗_j σ_j`, which preserve
+`(R_I)^∼`; the indeterminacy automorphisms of IUT IV, Proposition 1.2 do not, and their bound
+needs Propositions 1.1 and 1.2. The file is kept for its elementary volume lemmas.
 
-`μ^log(a·(R_I)^∼) ≤ (−λ + ∑_i d_i + 1)·log p + ∑_{p − 2 < e_i} (3 + log e_i)`.
-
-For the maximal order `(R_I)^∼` — the integral closure of `ℤ_p` in the packet — the hull
-region can be taken to be `p^{⌊λ⌋}·(R_I)^∼` (`prop14iii_of_isOver`): the indeterminacy
-automorphisms are `ℚ_p`-algebra automorphisms, so they fix `p^{⌊λ⌋}` and preserve
-`(R_I)^∼` (`mapAlgHom_image_integral_subset`), while `x/p^{⌊λ⌋}` is integral; and
+For a scaling element `x ∈ K_w` of the `j`-th factor with `ord_p(x) = λ ≥ 0`, the images
+`φ(x·(R_I)^∼)` under the Galois automorphisms lie in `p^{⌊λ⌋}·(R_I)^∼` (`prop14iii_galAut`):
+these `φ` are `ℚ_p`-algebra automorphisms, so they fix `p^{⌊λ⌋}` and preserve `(R_I)^∼`
+(`mapAlgHom_image_integral_subset`), while `x/p^{⌊λ⌋}` is integral; and
 `μ^log(p^m·(R_I)^∼) = −m·log p` by the scaling law `componentVol_prime_preimage'`
-(`componentVol_prime_pow_smul_integral`), which is at most `(−λ + 1)·log p`. The
-different exponents and the ramification terms of the bound are nonnegative and are not
-needed: the sharper bound of IUT IV, Proposition 1.4(iii) concerns the log-shell `𝓘_I`
-rather than `(R_I)^∼`, whose hull is controlled by the different; the theorem as stated is
-about `(R_I)^∼` and is implied by the elementary estimate.
+(`componentVol_prime_pow_smul_integral`).
 
 ## The hypothesis that every place lies over `p`
 
@@ -129,14 +124,14 @@ theorem componentVol_prime_pow_smul_integral (hc : ∀ j, IsOver K p (c j)) (m :
     push_cast
     linarith
 
-/-! ### Containment of the indeterminacy images -/
+/-! ### Containment of the Galois images -/
 
-/-- **The images of `x·(R_I)^∼` under the indeterminacy automorphisms lie in
+/-- **The images of `x·(R_I)^∼` under the Galois automorphisms of the packet lie in
 `n^m·(R_I)^∼`** as soon as `x/n^m` is integral. -/
-theorem indAut_image_smul_integral_subset (j : ι) (w : FinitePlace K)
+theorem galAut_image_smul_integral_subset (j : ι) (w : FinitePlace K)
     (h : c j = Place.finite w) (x : completionAt K w) (n m : ℕ)
     (hn : (n : completionAt K w) ^ m ≠ 0) (hx : ‖x / (n : completionAt K w) ^ m‖ ≤ 1)
-    {φ : Tensor K (.finite p) c → Tensor K (.finite p) c} (hφ : φ ∈ indAut (.finite p) c) :
+    {φ : Tensor K (.finite p) c → Tensor K (.finite p) c} (hφ : φ ∈ galAut (.finite p) c) :
     φ '' (incl p c j w h x • integral p c) ⊆
       ((n : ℕ) : Tensor K (.finite p) c) ^ m • integral p c := by
   obtain ⟨σ, rfl⟩ := hφ
@@ -158,12 +153,12 @@ theorem indAut_image_smul_integral_subset (j : ι) (w : FinitePlace K)
 /-- **IUT IV, Proposition 1.4(iii)** for the concrete packets all of whose places lie over
 `p` (`Iut.LocalTheory.prop14_iii` under the hypothesis of
 `LocalTheory.componentVol_prime_preimage`): the hull region is `p^{⌊ord_p x⌋}·(R_I)^∼`. -/
-theorem prop14iii_of_isOver (hc : ∀ j, IsOver K p (c j)) (d : ι → ℝ) (j : ι)
+theorem prop14iii_galAut (hc : ∀ j, IsOver K p (c j)) (d : ι → ℝ) (j : ι)
     (w : FinitePlace K) (h : c j = Place.finite w) (x : completionAt K w) (hx : x ≠ 0)
     (hord : 0 ≤ ordp K w x)
     (hd : ∀ i w', c i = Place.finite w' → d i = differentExponent K w') :
     ∃ a : Tensor K (.finite p) c, IsUnit a ∧
-      (∀ φ ∈ indAut (.finite p) c,
+      (∀ φ ∈ galAut (.finite p) c,
         φ '' (incl p c j w h x • integral p c) ⊆ a • integral p c) ∧
       componentVol (.finite p) c (a • integral p c) ≤
         (-ordp K w x + ∑ i, d i + 1) * Real.log p +
@@ -180,7 +175,7 @@ theorem prop14iii_of_isOver (hc : ∀ j, IsOver K p (c j)) (d : ι → ℝ) (j :
       rw [← hw, ← map_natCast (algebraMap K (completionAt K w))]
       exact pow_ne_zero _
         ((map_ne_zero _).mpr (Nat.cast_ne_zero.mpr (residueChar_prime w).ne_zero))
-    refine indAut_image_smul_integral_subset p c j w h x p m hn ?_ hφ
+    refine galAut_image_smul_integral_subset p c j w h x p m hn ?_ hφ
     refine norm_le_one_of_ordp_nonneg ?_
     rw [← hw, ordp_div_residueChar_pow w x hx, sub_nonneg]
     exact Nat.floor_le hord

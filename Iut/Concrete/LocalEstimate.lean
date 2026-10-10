@@ -314,7 +314,11 @@ lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     · intro c
       have hxc : x c ∈ D.thetaComponent _ i (.finite p) c := hx c
       have hbad : (p : ℕ) ∉ D.badChars := fun h => hp (D.mem_dst_of_badChars _ h)
-      rw [D.thetaComponent_eq_integral _ i p c hbad] at hxc
+      have hodd : Odd (p : ℕ) :=
+        p.2.odd_of_ne_two fun h2 => hp (h2 ▸ D.two_mem_dst)
+      have hunr : ∀ w : FinitePlace D.Kt, residueChar w = p → ramIdx D.Kt w = 1 :=
+        fun w hw => by_contra fun hram => hp (hw ▸ D.mem_dst_of_ramified w hram)
+      rw [D.thetaComponent_eq_integral _ i p c hbad hodd hunr] at hxc
       exact hxc
   · intro x hx c
     have hxc : x c ∈ LocalTheory.thetaInfinite D.Kt _ i c := hx c

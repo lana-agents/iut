@@ -7,6 +7,7 @@ import Iut.Concrete.LocalConstruct.LogShell
 import Iut.Concrete.LocalConstruct.ArchLogShell
 import Iut.Concrete.LocalConstruct.Hull
 import Iut.Concrete.LocalConstruct.Prop14
+import Iut.Concrete.LocalConstruct.Prop14Lattice
 
 /-!
 # The concrete local theory (taxis #4, #278)
@@ -25,8 +26,11 @@ directly.
   (`exists_leastHull_finite`, `Hull.lean`; componentwise in the residue fields of the packet,
   `ResidueField.lean`); the archimedean counterpart `exists_leastHull_infinite` is in
   `Admissible.lean`.
-* IUT IV, Proposition 1.4(iii) (`prop14iii_of_isOver`, `Prop14.lean`): the hull region is
-  `p^{⌊ord_p x⌋}·(R_I)^∼`.
+* The indeterminacy automorphisms (`IndAut.lean`): at a prime, all `ℚ_p`-linear automorphisms
+  of the packet preserving `⊗_j 𝓘_{c j}` (IUT IV, Proposition 1.2); at `∞`, the primitive
+  automorphisms (Proposition 1.5).
+* IUT IV, Proposition 1.4(iii) (`prop14iii_lattice`, `Prop14Lattice.lean`), from Propositions
+  1.1 (`PacketDifferent.lean`, `LocalDifferent.lean`) and 1.2 (`LatticeSandwich.lean`).
 -/
 
 namespace Iut
@@ -110,8 +114,10 @@ noncomputable abbrev admissible {ι : Type} [Fintype ι] (vQ : RationalPlace) (c
     Set (Set (Tensor K vQ c)) :=
   LocalConstruct.admissible vQ c
 
-/-- **The indeterminacy automorphisms** `φ` of IUT IV, Proposition 1.2: the automorphisms of
-the packet through which the indeterminacies (Ind1), (Ind2) act. -/
+/-- **The indeterminacy automorphisms** `φ` of IUT IV, Propositions 1.2 and 1.5, through which
+the indeterminacies (Ind1), (Ind2) act on the packet: at a prime, every `ℚ_p`-linear
+automorphism preserving the lattice `⊗_j 𝓘_{c j}` (equivalently `log_p(R_I^×)`); at `∞`, the
+maps induced by the primitive automorphisms of the factors. -/
 noncomputable abbrev indAut {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K) :
     Set (Tensor K vQ c → Tensor K vQ c) :=
   LocalConstruct.indAut vQ c
@@ -263,14 +269,6 @@ theorem id_mem_indAut {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → 
     id ∈ indAut K vQ c :=
   LocalConstruct.id_mem_indAut vQ c
 
-/-- Indeterminacy automorphisms preserve the log-shell (IUT IV, Proposition 1.2). -/
-theorem indAut_logShell {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K)
-    (φ : Tensor K vQ c → Tensor K vQ c) (hφ : φ ∈ indAut K vQ c) :
-    φ '' logShell K vQ c ⊆ logShell K vQ c := by
-  cases vQ with
-  | finite p => exact LocalConstruct.indAut_logShell p c φ hφ
-  | infinite => exact LocalConstruct.indAut_archLogShell c φ hφ
-
 /-- The union of the images of a scaled integral structure under the indeterminacy
 automorphisms is admissible. -/
 theorem theta_admissible {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K)
@@ -283,8 +281,8 @@ admissible. -/
 theorem thetaShell_admissible {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → Place K) :
     (⋃ φ ∈ indAut K vQ c, φ '' logShell K vQ c) ∈ admissible K vQ c := by
   cases vQ with
-  | finite p => exact LocalConstruct.thetaShell_admissible p c
-  | infinite => exact LocalConstruct.thetaShell_admissible_infinite c
+  | finite p => exact LocalConstruct.latticeAut_thetaShell_admissible p c
+  | infinite => exact LocalConstruct.primAut_thetaShell_admissible c
 
 /-- **IUT IV, Proposition 1.4(iii)**: for a scaling element `x` of the `j`-th factor with
 `ord_p(x) = λ ≥ 0`, the images `φ(x·(R_I)^∼)` lie in a hull region `a·(R_I)^∼` of log-volume
@@ -301,19 +299,22 @@ theorem prop14_iii {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K
       componentVol K (.finite p) c (a • integral K (.finite p) c) ≤
         (-ordp K w x + ∑ i, d i + 1) * Real.log p +
           ∑ i, if (p : ℕ) - 2 < ramIdxAt K (c i) then 3 + Real.log (ramIdxAt K (c i)) else 0 :=
-  LocalConstruct.prop14iii_of_isOver p c hc d j w h x hx hord hd
+  LocalConstruct.prop14iii_lattice p c hc d j w h x hx hord hd
 
-/-- **IUT IV, Proposition 1.4(iv)**: the indeterminacy automorphisms preserve `(R_I)^∼`. -/
-theorem prop14_iv {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K) :
+/-- **IUT IV, Proposition 1.4(iv)**: at an odd prime unramified in every factor, the
+indeterminacy automorphisms preserve `(R_I)^∼`. -/
+theorem prop14_iv {ι : Type} [Fintype ι] (p : Nat.Primes) (c : ι → Place K)
+    (hc : ∀ j, ∃ w : FinitePlace K, c j = Place.finite w ∧ residueChar w = p)
+    (hp : Odd (p : ℕ)) (hunr : ∀ j w, c j = Place.finite w → ramIdx K w = 1) :
     ∀ φ ∈ indAut K (.finite p) c, φ '' integral K (.finite p) c ⊆ integral K (.finite p) c :=
-  LocalConstruct.prop14_iv p c
+  LocalConstruct.latticeAut_integral_subset p c hc hp hunr
 
 /-- **IUT IV, Proposition 1.5(iii),(iv)**: at the archimedean place the images of the
 log-shell under the indeterminacy automorphisms lie in `π^{|I|}·B_I`. -/
 theorem prop15 {ι : Type} [Fintype ι] (c : ι → Place K) :
     ∀ φ ∈ indAut K .infinite c, φ '' logShell K .infinite c ⊆
       algebraMap ℝ (Tensor K .infinite c) (Real.pi ^ Fintype.card ι) • integral K .infinite c :=
-  LocalConstruct.prop15 c
+  LocalConstruct.primAut_prop15 c
 
 end LocalTheory
 
