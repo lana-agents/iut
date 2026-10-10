@@ -83,36 +83,10 @@ environment.
 * `scripts/audit_axioms.sh` audits the Solution theorem's axioms
   (`scripts/AuditComparatorSolution.lean`) and the trusted closure
   (`scripts/AuditComparatorChallenge.lean`).
-* `scripts/run_comparator.sh` runs the comparator itself, as its README prescribes: inside a
-  `systemd-run --user` unit with `RestrictAddressFamilies=~AF_UNIX`, using `lake env`.
 
-### Running the comparator
+### The comparator
 
-The comparator needs [`landrun`](https://github.com/Zouuup/landrun) (built from `main`) and
-[`lean4export`](https://github.com/leanprover/lean4export) for this project's Lean version,
-`v4.32.0` (`lean4export` revision `4e79152`). Upstream comparator `main` targets
-Lean `v4.35.0-rc4`. For `v4.32.0`, use comparator `07bc4ea` (its `v4.32.0` bump) with all
-later non-toolchain commits applied. That needs two backports:
-
-1. `Main.lean`, `runBuiltinKernel`: in `v4.32.0`, core's `replay` takes a
-   `Lean.Environment`. Use `kernelEnv := (← env.replay kernelConstMap).toKernelEnv`.
-2. `Comparator/Util.lean`, `Comparator/Compare.lean`: before Lean `v4.34`,
-   `Expr.getUsedConstants` does not report the structure names of `Expr.proj` nodes.
-   Add those names to the collected constants (comparator issue 68, test `proj_trick`).
-
-3. `Main.lean`, `safeExport`/`verifyMatch` (memory, not a version issue): the solution export
-   is about 1.3 GB (24.6 million lines), because it covers the whole proof down to the
-   kernel primitives. Upstream holds it in memory as a `String` and then copies it to a
-   `ByteArray`, which exceeds 7 GB. Instead, stream `lean4export`'s stdout into a temporary
-   file and parse that file. The sandboxing does not change.
-
-With these backports, all 16 non-nanoda tests of the comparator test suite pass. Then:
-
-```bash
-COMPARATOR=/path/to/comparator COMPARATOR_LANDRUN=/path/to/landrun \
-  COMPARATOR_LEAN4EXPORT=/path/to/lean4export ./scripts/run_comparator.sh
-```
-
-The script runs `Comparator/config.json`, which permits only `propext`, `Quot.sound` and
-`Classical.choice`. On this pair the run ends with `Lean default kernel accepts the solution`
-and `Your solution is okay!`. It takes about 9 minutes and peaks at 4.9 GB.
+The pair is checked with [`leanprover/comparator`](https://github.com/leanprover/comparator)
+using `config.json`, which permits only the standard axioms `propext`, `Quot.sound` and
+`Classical.choice`. The check was confirmed on 2026-10-10: the comparator accepted the
+solution (`Your solution is okay!`).

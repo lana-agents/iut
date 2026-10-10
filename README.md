@@ -593,6 +593,13 @@ coverings of [GenEll] Theorem 2.1, which remain in genl's scope.
 symmetric form over `ℤ` (`a + b + c = 0`, bounding `max(|a|, |b|, |c|)`), and
 `Iut.classicalABC_iff_int` proves the two equivalent.
 
+Our `ClassicalABC` is proved equivalent to formal-conjectures' `ABC.abc` and
+`ABC.abc.variants.lt_constant_mul` (verbatim copies) in
+[`Iut/Abc/FormalConjectures.lean`](Iut/Abc/FormalConjectures.lean):
+`Iut.classicalABC_iff_abc`, `Iut.classicalABC_iff_ltConstantMul`, and likewise
+`Iut.classicalABC_iff_qualityVariant` for `ABC.abc.variants.quality`; hence
+`Iut.formalConjecturesABC_of_variant : Cor312VariantHolds → FormalConjecturesABC.abc`.
+
 * `Iut.Tripod.classicalABC_of_statementI : tripodTheory.StatementI → ClassicalABC`
   (**proved**; via `classicalABCInt_of_statementI`): for `λ = −a/c ∈ ℚ` of degree `1`,
   `htCan λ ≥ log max(|a|, |c|)`, `logDiff λ = 0` (`disc ℚ = 1`) and
@@ -813,8 +820,10 @@ git diff --check
 
 The challenge contains one reviewed proof placeholder, for its only theorem. The trust and
 axiom audits check the public project modules, the Solution theorem and the challenge's
-trusted import closure separately. `./scripts/run_comparator.sh` runs the comparator itself
-(see [`Comparator/README.md`](Comparator/README.md)).
+trusted import closure separately. The challenge/solution pair is checked with
+[`leanprover/comparator`](https://github.com/leanprover/comparator) using
+`Comparator/config.json`, which permits only the standard axioms; this was confirmed on
+2026-10-10 (`Your solution is okay!`). See [`Comparator/README.md`](Comparator/README.md).
 
 ## Validation
 

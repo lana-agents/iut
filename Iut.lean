@@ -5,6 +5,7 @@ Authors: LANA Project
 -/
 
 import Iut.Abc.Classical
+import Iut.Abc.FormalConjectures
 import Iut.Abc.Target
 import Iut.Anabelian.AdicCompletion
 import Iut.Anabelian.CanLift
