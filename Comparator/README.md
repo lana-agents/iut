@@ -100,6 +100,12 @@ later non-toolchain commits applied. That needs two backports:
    `Expr.getUsedConstants` does not report the structure names of `Expr.proj` nodes.
    Add those names to the collected constants (comparator issue 68, test `proj_trick`).
 
+3. `Main.lean`, `safeExport`/`verifyMatch` (memory, not a version issue): the solution export
+   is about 1.3 GB (24.6 million lines), because it covers the whole proof down to the
+   kernel primitives. Upstream holds it in memory as a `String` and then copies it to a
+   `ByteArray`, which exceeds 7 GB. Instead, stream `lean4export`'s stdout into a temporary
+   file and parse that file. The sandboxing does not change.
+
 With these backports, all 16 non-nanoda tests of the comparator test suite pass. Then:
 
 ```bash
@@ -108,4 +114,5 @@ COMPARATOR=/path/to/comparator COMPARATOR_LANDRUN=/path/to/landrun \
 ```
 
 The script runs `Comparator/config.json`, which permits only `propext`, `Quot.sound` and
-`Classical.choice`.
+`Classical.choice`. On this pair the run ends with `Lean default kernel accepts the solution`
+and `Your solution is okay!`. It takes about 9 minutes and peaks at 4.9 GB.
