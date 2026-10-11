@@ -73,17 +73,18 @@ The comparator trusts `Challenge` and its import closure. Besides the Mathlib mo
 `Mathlib.Analysis.SpecialFunctions.Pow.Real` (whose closure provides `Real.rpow`,
 `Set.Finite`, `Set.Pairwise`, `Nat.Coprime` and `Nat.primeFactors`), the challenge imports
 only `Iut.Concrete.ThetaRegion`, the module that defines `Cor312VariantHolds`. Its closure
-(11234 modules) consists of Lean core, Mathlib and its dependencies, and these project
+(11239 modules) consists of Lean core, Mathlib and its dependencies, and these project
 packages:
 
 | Package | Modules |
 | --- | ---: |
-| `Iut` (`Iut.Anabelian`, `Iut.Concrete`, `Iut.Cor312`, `Iut.Torsion`, three `Iut.Tower` modules) | 97 |
+| `Iut` (`Iut.Anabelian`, `Iut.Concrete`, `Iut.Cor312`, `Iut.Torsion`, three `Iut.Tower` modules) | 98 |
 | `TemperedFundamentalGroups` | 533 |
 | `Oka` | 81 |
-| `TateCurvesTheta` | 68 |
+| `TateCurvesTheta` | 69 |
 | `Pi1` | 24 |
 | `EllipticCurves` | 24 |
+| `PadicLogVolume` | 3 |
 
 These are the modules that define the statement. No module that proves the implication
 needed moving: `Iut.MainTheorem`, `Iut.Tripod`, `Iut.Implication`, `Iut.Abc` and
@@ -137,8 +138,9 @@ Solution are separate Lake roots and are never imported into the same environmen
 
 The pair is checked with [`leanprover/comparator`](https://github.com/leanprover/comparator)
 using `config.json`, which permits only the standard axioms `propext`, `Quot.sound` and
-`Classical.choice`. The check was confirmed on 2026-10-10, after the correction of the
-indeterminacy automorphisms: the comparator (commit `07bc4ea`, for Lean v4.32.0, with its
+`Classical.choice`. The check was last confirmed on 2026-10-11, after the faithful redesign of the theta-pilot
+region (the indeterminacies of IUT III, Theorem 3.11, the valuation section `V`, the slimmed
+initial Θ-data): the comparator (commit `07bc4ea`, for Lean v4.32.0, with its
 pinned `lean4export`) accepted the solution (`Lean default kernel accepts the solution`,
 `Your solution is okay!`). With `landrun` 0.1.18 the comparator's `lean4export` argument
 separator `--` is consumed by `landrun`'s own flag parser; a pass-through wrapper inserting
