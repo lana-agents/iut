@@ -33,9 +33,8 @@ assumed silently here. Instead:
   which a least one exists may depend on the place; in the concrete instantiation
   (`Iut/Concrete/Container.lean`) they are, at every place, all regions `a · O` with every
   direct-summand component of `a` nonzero (at the archimedean place `O = B_I` is the product
-  of the unit balls of the copies of `ℝ`, `ℂ`; IUT IV, Proposition 1.5(iii)). Producing a `HullSystem` for the
-  concrete packets is the certificate discharged by the local-field project (taxis #4);
-  nothing in this repository asserts that such a system exists.
+  of the unit balls of the copies of `ℝ`, `ℂ`; IUT IV, Proposition 1.5(iii)); the concrete
+  `HullSystem` is constructed there.
 
 Given a `HullSystem`, the four defining elementary properties requested by taxis #45
 are **proved** below, not postulated:
