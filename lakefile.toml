@@ -20,14 +20,14 @@ rev = "v4.32.0"
 [[require]]
 name = "tate-curves-theta"
 git = "https://github.com/lana-agents/tate-curves-theta"
-rev = "725412bfc261e1bfdf796caee4858476f0618bfc"
+rev = "a951400b7ed4ec97b981623cf2b6e42b45175676"
 
-# The p-adic logarithm, log-shells and log lattices (IUT IV, Proposition 1.2(i)) and the
+# The p-adic logarithm and the
 # trace-duality lemmas for finite Q_p-algebras (IUT IV, Proposition 1.1).
 [[require]]
 name = "padic-log-volume"
 git = "https://github.com/lana-agents/padic-log-volume"
-rev = "b2c75423071fd14dc056665ad28e6db4f8d1118a"
+rev = "9a190da26368465ccf92561bc283fe710ae730f0"
 
 # Arithmetic elliptic curves in general position (taxis #2): the height formalism and
 # Theorem 2.1, consumed by the ABC target statement and the implication strand
