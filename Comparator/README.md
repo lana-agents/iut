@@ -52,7 +52,10 @@ theorem Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC := by
   theta-pilot region is the union of the images of `q_{v_j}^{j²}·(R_I)^∼` under the
   indeterminacy automorphisms of IUT IV, Propositions 1.2 and 1.5
   (`Iut/Concrete/LocalConstruct/IndAut.lean`): at a prime, all `ℚ_p`-linear automorphisms
-  of the packet preserving the lattice `⊗_j 𝓘_j`; at `∞`, the primitive automorphisms.
+  of the packet preserving the lattice `⊗_j 𝓘_j`; at `∞`, the maps `⊗_j ψ_j` with
+  `ψ_j ∈ {id, conj, −1, −conj}` (IUT III, Theorem 3.11 (Ind1), (Ind2); `ArchIndAut.lean`),
+  applied at `∞` to the tensor products of log-shell elements, with hulls among the polydiscs
+  `a·B_I`.
 
 `config.json` lists this one theorem, has no definition holes, and permits only `propext`,
 `Quot.sound` and `Classical.choice`. `ABC` and `ABC.radical` are not definition holes

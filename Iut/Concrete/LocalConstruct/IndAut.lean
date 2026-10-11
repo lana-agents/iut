@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Concrete.LocalConstruct.LogShell
-import Iut.Concrete.LocalConstruct.ArchPrimitive
+import Iut.Concrete.LocalConstruct.ArchIndAut
 
 /-!
 # The indeterminacy automorphisms of the tensor packets (IUT III, Theorem 3.11; IUT IV, 1.2, 1.5)
@@ -22,7 +22,12 @@ automorphisms `φ` of IUT IV, Proposition 1.2, is much larger; it is used here o
 auxiliary class (`tensorAut_subset_latticeAut`): its members are continuous, and the union of
 the images of a bounded set lies in a scaled lattice `p^{-k}·⊗_j 𝓘_{c j}`, hence is bounded.
 
-At the archimedean place the class is `primAut` (`ArchPrimitive.lean`).
+At the archimedean place the class
+is `archIndAut` (`ArchIndAut.lean`; IUT III, Theorem 3.11 (Ind1), (Ind2), Proposition 1.2(vii)):
+the maps `⊗_j ψ_j` induced by independent actions of `{±1}` on the direct factors `ℝ`, `ℝ·i` of
+the factors (`ψ_j ∈ {id, conj, −1, −conj}` on `ℂ`, `±1` on `ℝ`), which preserve `B_I` (IUT IV,
+Proposition 1.5(iii)).
+
 -/
 
 namespace Iut
@@ -280,20 +285,22 @@ end Finite
 variable (vQ : RationalPlace) (c : ι → Place K)
 
 /-- **The indeterminacy automorphisms** of a packet (`LocalTheory.indAut`; IUT IV,
-Propositions 1.2 and 1.5): the lattice automorphisms at a prime, the primitive automorphisms at
-the archimedean place. -/
+Propositions 1.2 and 1.5; IUT III, Theorem 3.11 (Ind1), (Ind2)): the lattice automorphisms at a
+prime the tensor products of `Ism`-automorphisms of the factors, the maps induced by the
+independent sign-and-conjugation indeterminacies of the factors
+at the archimedean place. -/
 def indAut : ∀ (vQ : RationalPlace) (c : ι → Place K), Set (Tensor K vQ c → Tensor K vQ c)
   | .finite p, c => tensorAut p c
-  | .infinite, c => primAut c
+  | .infinite, c => archIndAut c
 
 lemma indAut_finite_eq (p : Nat.Primes) : indAut (.finite p) c = tensorAut p c := rfl
 
-lemma indAut_infinite_eq : indAut .infinite c = primAut c := rfl
+lemma indAut_infinite_eq : indAut .infinite c = archIndAut c := rfl
 
 lemma id_mem_indAut : id ∈ indAut vQ c := by
   cases vQ with
   | finite p => exact id_mem_tensorAut p c
-  | infinite => exact id_mem_primAut c
+  | infinite => exact id_mem_archIndAut c
 
 /-- **`LocalTheory.theta_admissible`**: the union of the images of a scaled integral
 structure under the indeterminacy automorphisms is admissible. -/
@@ -305,7 +312,7 @@ theorem theta_admissible (s : Tensor K vQ c) (hs : IsUnit s) :
       (isCompact_smul_integralAt (vQ := .finite p) (c := c) s).isBounded
       (isOpen_smul_of_isUnit (vQ := .finite p) hs (isOpen_integral p c))
       (haar_smul_integralAt_pos (vQ := .finite p) hs)
-  | infinite => exact primAut_theta_admissible c s hs
+  | infinite => exact archIndAut_theta_admissible c s hs
 
 end LocalConstruct
 

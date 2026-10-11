@@ -30,10 +30,10 @@ assumed silently here. Instead:
   together with a hull operation and its defining least-hull-region properties relative
   to `HullRegions`, plus the explicit relative-compactness requirement on admissible
   regions. The class `HullRegions` is part of the data because the hull regions among
-  which a least one exists depend on the place: at a nonarchimedean place they are all
-  regions `a · O` with `a` a unit; at the archimedean place they are the real radial
-  scalings `t · B_I` of the product of unit balls (IUT IV, Proposition 1.5(iii)), among
-  arbitrary units a least region need not exist. Producing a `HullSystem` for the
+  which a least one exists may depend on the place; in the concrete instantiation
+  (`Iut/Concrete/Container.lean`) they are, at every place, all regions `a · O` with every
+  direct-summand component of `a` nonzero (at the archimedean place `O = B_I` is the product
+  of the unit balls of the copies of `ℝ`, `ℂ`; IUT IV, Proposition 1.5(iii)). Producing a `HullSystem` for the
   concrete packets is the certificate discharged by the local-field project (taxis #4);
   nothing in this repository asserts that such a system exists.
 
@@ -118,9 +118,9 @@ structure HullSystem {C : Type u} (P : DirectSumPresentation.{u, v} C) :
   /-- Explicit hypothesis: admissible regions are relatively compact. Regions that are
   not relatively compact are outside the domain of this interface. -/
   relCompact_of_admissible : ∀ U ∈ Admissible, IsCompact (closure U)
-  /-- The class of hull regions among which the hull is least: at a nonarchimedean place
-  all regions `a · O` with `a` a unit, at the archimedean place the real radial scalings
-  `t · B_I` (IUT IV, Proposition 1.5(iii)). -/
+  /-- The class of hull regions among which the hull is least: in the concrete
+  instantiation, all regions `a · O` with `a` a unit (every direct-summand component of `a`
+  nonzero), at every place (IUT III, Remark 3.9.5(i)). -/
   HullRegions : Set (Set P.Total)
   /-- Members of the class are hull regions `a · O` with all components of `a` units. -/
   isHullRegion_of_mem : ∀ R ∈ HullRegions, P.IsHullRegion R

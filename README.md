@@ -265,8 +265,8 @@ proof and without axiom. The stack beneath it:
   (the tensor products of local fields are products of fields), integral structures are
   sets (the archimedean one is the unit ball), the packet-volume combination law is
   stated for nonempty components, and a hull system carries the class of hull regions
-  among which its hull is least (all `a·O` at a prime; the real radial scalings `t·B_I`
-  at `∞`, where a least region among arbitrary units need not exist).
+  among which its hull is least (all `a·O` with every direct-summand component of `a`
+  nonzero, IUT III Remark 3.9.5(i)).
 * **LHS/RHS** (taxis #34/#35): `−|log(q)|` from the bad-place `q`-orders with the
   `(1/2ℓ)` normalization recorded in IUT IV, and the procession-normalized log-volume of
   the holomorphic hull of the theta-pilot region.
@@ -289,7 +289,9 @@ initial Θ-data `D` alone (`Iut.concreteVariantData D`); there are no residual i
   (`Packet.lean`), the order `R_I = ⊗ 𝓞_{v_j}` (`Integral.lean`) and the maximal order
   `(R_I)^∼` as the integral closure of `ℤ_p` — bounded because the packet is reduced
   (formally unramified over `ℚ_p`) and embeds in the product of its residue fields
-  (`MaximalOrder.lean`), the projective unit ball `B_I` at `∞` (`Archimedean.lean`), the
+  (`MaximalOrder.lean`), at `∞` the integral structure `B_I` of IUT IV Proposition 1.5(iii) —
+  the product of the unit balls of the copies of `ℝ`, `ℂ` in the decomposition of the
+  (reduced) packet into its residue fields (`Archimedean.lean`) —, the
   normalized Haar log-volume with its scaling laws (`Haar.lean`, `Volume.lean`), the
   admissible class (`Admissible.lean`), the Galois automorphisms `⊗ σ_j` of a packet
   (`Indeterminacy.lean`, `ThetaAdmissible.lean`),
@@ -298,12 +300,14 @@ initial Θ-data `D` alone (`Iut.concreteVariantData D`); there are no residual i
   `(R_I)^∼` (`LogShell.lean`) —, **the indeterminacy automorphisms** of IUT IV,
   Propositions 1.2 and 1.5 (`IndAut.lean`): at a prime, *all* `ℚ_p`-linear automorphisms of
   the packet preserving the lattice `⊗_j 𝓘_j` (equivalently `log_p(R_I^×)`), at `∞` the
-  primitive automorphisms (conjugation, `±1`, `±√−1`; `ArchPrimitive.lean`),
-  the archimedean log-shell `π^{|I|}·B_I` with Proposition 1.5 (`ArchLogShell.lean`), and
+  maps `⊗_j ψ_j` with `ψ_j ∈ {id, conj, −1, −conj}` (independent actions of `{±1}` on the
+  direct factors `ℝ`, `ℝ·i` of each factor; IUT III Theorem 3.11 (Ind1), (Ind2),
+  Proposition 1.2(vii); `ArchIndAut.lean`), the archimedean log-shell — the closed absolutely
+  convex hull of the tensor products of log-shell elements `|y_j| ≤ π`, contained in
+  `π^{|I|}·B_I` by Proposition 1.5(iv) (`ArchLogShell.lean`) —, and
   the arithmetic of the number field — places over `p`, `∑ e_v f_v = [K : ℚ]`, the
-  different (`Arithmetic.lean`), and the least hull regions at `∞` — the least real
-  radial scaling `t·B_I` containing an admissible region, `t = sup ‖·‖_π`
-  (`Admissible.lean`), and at the primes — least among all `a·(R_I)^∼`, computed
+  different (`Arithmetic.lean`), and the least hull regions at `∞` — least among all
+  `a·B_I`, the polydisc with radii `sup_U |x mod 𝔪|` (`Admissible.lean`), and at the primes — least among all `a·(R_I)^∼`, computed
   componentwise in the residue fields of the packet with their spectral norms
   (`ResidueField.lean`, `Hull.lean`) — and IUT IV Proposition 1.4(iii),(iv) for the
   indeterminacy automorphisms (`Prop14Lattice.lean`), from Proposition 1.1 (the different
@@ -315,7 +319,7 @@ initial Θ-data `D` alone (`Iut.concreteVariantData D`); there are no residual i
   propositional input remains.
 * [`Container.lean`](Iut/Concrete/Container.lean) — the container, log-volume data
   (weights `[K_v : ℚ_p]/[K : ℚ]` summing to `1`) and hull system (least among all hull
-  regions `a·(R_I)^∼` at a prime, among the real radial scalings `t·B_I` at `∞`), all
+  regions `a·(R_I)^∼` at a prime, among all `a·B_I` at `∞`), all
   proved from the constructions.
 * [`ThetaLocalConstruct/Data.lean`](Iut/Concrete/ThetaLocalConstruct/Data.lean) — the
   **local theta data** of `D` (IUT I, Example 3.2(iv)): the `2ℓ`-th roots

@@ -39,7 +39,7 @@ import Iut.Concrete.Invariants
 import Iut.Concrete.Literal
 import Iut.Concrete.LocalConstruct.Admissible
 import Iut.Concrete.LocalConstruct.ArchLogShell
-import Iut.Concrete.LocalConstruct.ArchPrimitive
+import Iut.Concrete.LocalConstruct.ArchIndAut
 import Iut.Concrete.LocalConstruct.Archimedean
 import Iut.Concrete.LocalConstruct.Arithmetic
 import Iut.Concrete.LocalConstruct.FactorShell

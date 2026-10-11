@@ -17,7 +17,7 @@ measure under the Galois automorphisms is admissible (`iUnion_galAut_admissible`
 `galAut_theta_admissible`), and they preserve `(R_I)^∼` (`galAut_integral_subset`). The
 indeterminacy automorphisms of IUT IV, Proposition 1.2 form a much larger class
 (`IndAut.lean`); the Galois automorphisms are used at the archimedean place
-(`ArchPrimitive.lean`).
+(`ArchLogShell.lean`, `ArchIndAut.lean`).
 -/
 
 namespace Iut
