@@ -6,25 +6,36 @@ Authors: LANA Project
 import Iut.Concrete.LocalConstruct.Theory
 
 /-!
-# The concrete large volume container over a number field (taxis #278)
+# The concrete large volume container over a section of places (taxis #278)
 
 From the tensor packets of a number field `K` (`Iut.LocalTheory`), this file builds
 the concrete instances of the container interfaces of taxis #43–#45 for the standard
-procession of length `n`:
+procession of length `n`, **indexed by a section of places** `V ⊆ V(K)` of the restriction
+`V(K) → V(k)` to a subfield `k` (for the Θ-data: `k = F_mod`, `V ≅ V_mod`, IUT I,
+Definition 3.1(e)):
 
-* `LocalTheory.container K n : LargeVolumeContainerData ℕ (Place K)` — the places of
-  `K` mapped to their rational places, the tensor packets `⊗_{j ∈ S} K_{v_j}` presented
-  with the tuple index of IUT III, Proposition 3.1, and the tensor products of log-shells
-  as product regions;
-* `LocalTheory.vol K n : LogVolumeData (container)` — the normalized Haar log-volume
-  with the weights `[K_v : ℚ_{v_ℚ}]/[K : ℚ]`, whose sum over the places above a rational
-  place is `1` by `∑_{v ∣ p} e_v f_v = [K : ℚ]`;
-* `LocalTheory.hull K n : ContainerHullSystem (container)` — the packet-wise holomorphic
+* `LocalTheory.PlaceSection k K`: a section `V(k) → V(K)`, place-type preserving, over the
+  same rational places;
+* `LocalTheory.container σ n : LargeVolumeContainerData ℕ (Place k)` — the direct summands of
+  the packet at a rational place `v_ℚ` are indexed by the tuples of places `w ∈ V(k)` over `v_ℚ`,
+  i.e. (via the section) by the tuples of places `v ∈ V` over `v_ℚ`, as in IUT III,
+  Propositions 3.1, 3.2 and Theorem 3.11 (Ind2) ("the cardinality of the collection of direct
+  summands is equal to the cardinality of the set of `v ∈ V` that lie over `v_ℚ`"); the summand
+  at a tuple `(w_j)_j` is `⊗_{j ∈ S} K_{σ(w_j)}`, and the tensor products of log-shells are
+  product regions;
+* `LocalTheory.vol σ n : LogVolumeData (container)` — the normalized Haar log-volume with the
+  weights `[k_w : ℚ_{v_ℚ}]/[k : ℚ]` of IUT III, Remark 3.1.1(ii): the log-volume on `K_v`,
+  `v = σ(w) ∈ V`, counted with weight `[K_v : k_w]⁻¹` and normalized by
+  `∑_{w' ∣ v_ℚ} [k_{w'} : ℚ_{v_ℚ}]` (the component log-volume `componentVol` is already
+  normalized by the `ℚ_{v_ℚ}`-dimension of `K_v`); the weights over a rational place sum to `1`
+  by `∑_{w ∣ p} e_w f_w = [k : ℚ]` (and `∑_{w ∣ ∞} [k_w : ℝ] = [k : ℚ]`);
+* `LocalTheory.hull σ n : ContainerHullSystem (container)` — the packet-wise holomorphic
   hull, from the least hull regions of the components: the hull of a product region is
   the product of the component hulls.
 
 Everything here is proved from the constructions of `Iut/Concrete/LocalConstruct/*`
-(standard local-field theory, taxis #4/#278).
+(standard local-field theory, taxis #4/#278); the packet machinery works for any family of
+places `c : ι → Place K`, here `c = σ ∘ (tuple of places of k)`.
 -/
 
 namespace Iut
@@ -94,27 +105,161 @@ noncomputable instance fiberFintype (vQ : RationalPlace) : Fintype (LocalTheory.
     exact Fintype.ofEquiv _ (fiberFiniteEquiv K p).symm
   · exact Fintype.ofEquiv _ (fiberInfiniteEquiv K).symm
 
-/-- The family of places underlying a tuple of the fiber. -/
-def tuple {ι : Type} (vQ : RationalPlace) (c : ι → LocalTheory.Fiber K vQ) : ι → Place K :=
-  fun j => (c j).1
+/-- The finite place underlying an element of the fiber over a prime. -/
+noncomputable def fiberPlace {p : Nat.Primes} (v : LocalTheory.Fiber K (.finite p)) :
+    FinitePlace K :=
+  (fiberFiniteEquiv K p v).1
+
+lemma fiberPlace_spec {p : Nat.Primes} (v : LocalTheory.Fiber K (.finite p)) :
+    v.1 = Place.finite (fiberPlace K v) := by
+  rcases v with ⟨v, hv⟩
+  rcases v with w | w
+  · rfl
+  · exact absurd hv (by simp [toRational])
+
+lemma residueChar_fiberPlace {p : Nat.Primes} (v : LocalTheory.Fiber K (.finite p)) :
+    residueChar (fiberPlace K v) = p :=
+  (fiberFiniteEquiv K p v).2
+
+/-- The infinite place underlying an element of the fiber over the archimedean place. -/
+def fiberInfPlace (v : LocalTheory.Fiber K .infinite) : InfinitePlace K :=
+  fiberInfiniteEquiv K v
+
+lemma fiberInfPlace_spec (v : LocalTheory.Fiber K .infinite) :
+    v.1 = Place.infinite (fiberInfPlace K v) := by
+  rcases v with ⟨v, hv⟩
+  rcases v with w | w
+  · exact absurd hv (by simp [toRational])
+  · rfl
+
+/-! ### The weights (IUT III, Remark 3.1.1(ii)) -/
+
+/-- The weight of a place of `K` over a rational place: `[K_w : ℚ_p]/[K : ℚ]` at a finite place,
+`[K_w : ℝ]/[K : ℚ]` at an infinite place. -/
+noncomputable def weight (vQ : RationalPlace) (v : LocalTheory.Fiber K vQ) : ℝ :=
+  match v.1 with
+  | Sum.inl w => placeWeight K w
+  | Sum.inr w => infPlaceWeight K w
+
+lemma finrank_pos : (0 : ℝ) < Module.finrank ℚ K := by
+  exact_mod_cast Module.finrank_pos
+
+lemma weight_pos (vQ : RationalPlace) (v : LocalTheory.Fiber K vQ) : 0 < weight K vQ v := by
+  rcases v with ⟨v, hv⟩
+  rcases v with w | w
+  · change 0 < placeWeight K w
+    exact div_pos (by exact_mod_cast (localDeg_pos K) w) (finrank_pos K)
+  · change 0 < infPlaceWeight K w
+    exact div_pos (by exact_mod_cast w.mult_pos) (finrank_pos K)
+
+/-- The weight of a finite place of the fiber over `p` is `[K_w : ℚ_p]/[K : ℚ]`. -/
+lemma weight_finite_eq {p : Nat.Primes} (v : LocalTheory.Fiber K (.finite p)) :
+    weight K (.finite p) v = placeWeight K (fiberPlace K v) := by
+  unfold weight
+  rw [fiberPlace_spec K v]
+  rfl
+
+/-- The weights over a rational place sum to `1`. -/
+lemma weight_sum_one (vQ : RationalPlace) : ∑ v, weight K vQ v = 1 := by
+  rcases vQ with p | _
+  · haveI := fiber_finite K p
+    haveI : Fintype {w : FinitePlace K // residueChar w = p} := Fintype.ofFinite _
+    have hsum := sum_localDeg K p p.2
+    rw [Fintype.sum_equiv (fiberFiniteEquiv K p) (fun v => weight K (.finite p) v)
+      (fun w => placeWeight K w.1)
+      (fun v => by
+        rcases v with ⟨v, hv⟩
+        rcases v with w | w
+        · rfl
+        · exact absurd hv (by simp [toRational]))]
+    simp only [placeWeight, ← Finset.sum_div]
+    rw [div_eq_one_iff_eq (finrank_pos K).ne']
+    rw [← Nat.cast_sum, hsum]
+  · rw [Fintype.sum_equiv (fiberInfiniteEquiv K) (fun v => weight K .infinite v)
+      (fun w => infPlaceWeight K w)
+      (fun v => by
+        rcases v with ⟨v, hv⟩
+        rcases v with w | w
+        · exact absurd hv (by simp [toRational])
+        · rfl)]
+    simp only [infPlaceWeight, ← Finset.sum_div]
+    rw [div_eq_one_iff_eq (finrank_pos K).ne']
+    exact_mod_cast (sum_mult K)
+
+/-! ### Sections of places -/
+
+/-- **A section of places** `V(k) → V(K)` (IUT I, Definition 3.1(e); IUT III, Remark 3.1.1(ii)):
+a place-type preserving map sending each place `w` of `k` to a place of `K` over the same
+rational place. For the Θ-data, `k = F_mod` and the section is the valuation section
+`V_mod ≅ V ⊆ V(K)` (`Iut.ValuationSection`), whose image `V` indexes the direct summands of the
+tensor packets (IUT III, Proposition 3.1, Remark 3.1.1(ii)). -/
+structure PlaceSection (k : Type u) [Field k] [NumberField k] where
+  /-- The section on nonarchimedean places. -/
+  fin : FinitePlace k → FinitePlace K
+  /-- The section on archimedean places. -/
+  inf : InfinitePlace k → InfinitePlace K
+  /-- The section preserves residue characteristics. -/
+  residueChar_fin : ∀ w, residueChar (fin w) = residueChar w
+
+variable {K}
+variable {k : Type u} [Field k] [NumberField k] (σ : PlaceSection K k)
+
+/-- The section as a map `V(k) → V(K)`. -/
+def PlaceSection.toPlace : Place k → Place K
+  | Sum.inl w => Place.finite (σ.fin w)
+  | Sum.inr w => Place.infinite (σ.inf w)
+
+/-- The section lies over the same rational places. -/
+lemma PlaceSection.toRational_toPlace (w : Place k) :
+    toRational K (σ.toPlace w) = toRational k w := by
+  rcases w with w | w
+  · change RationalPlace.finite _ = RationalPlace.finite _
+    congr 1
+    exact Subtype.ext (σ.residueChar_fin w)
+  · rfl
+
+/-- The family of places `σ(w_j) ∈ V` of `K` underlying a tuple `(w_j)_j` of the fiber of `k`. -/
+def tuple {ι : Type} (vQ : RationalPlace) (c : ι → LocalTheory.Fiber k vQ) : ι → Place K :=
+  fun j => σ.toPlace (c j).1
+
+/-- At a prime, the places of a tuple are the images of the finite places of the fiber. -/
+lemma tuple_finite {ι : Type} {p : Nat.Primes} (c : ι → LocalTheory.Fiber k (.finite p))
+    (j : ι) : tuple σ _ c j = Place.finite (σ.fin (fiberPlace k (c j))) := by
+  unfold tuple
+  rw [fiberPlace_spec k (c j)]
+  rfl
+
+/-- At the archimedean place, the places of a tuple are the images of the infinite places of
+the fiber. -/
+lemma tuple_infinite {ι : Type} (c : ι → LocalTheory.Fiber k .infinite) (j : ι) :
+    tuple σ _ c j = Place.infinite (σ.inf (fiberInfPlace k (c j))) := by
+  unfold tuple
+  rw [fiberInfPlace_spec k (c j)]
+  rfl
 
 /-- Every place of a tuple of the fiber over `p` lies over `p`. -/
-lemma tuple_isOver {ι : Type} (p : Nat.Primes) (c : ι → LocalTheory.Fiber K (.finite p)) :
-    ∀ j, ∃ w : FinitePlace K, tuple K _ c j = Place.finite w ∧ residueChar w = p := by
+lemma tuple_isOver {ι : Type} (p : Nat.Primes) (c : ι → LocalTheory.Fiber k (.finite p)) :
+    ∀ j, ∃ w : FinitePlace K, tuple σ _ c j = Place.finite w ∧ residueChar w = p := by
   intro j
-  have hv := (c j).2
-  change toRational K (tuple K _ c j) = _ at hv
-  rcases hw : tuple K _ c j with w | w
-  · rw [hw] at hv
-    exact ⟨w, rfl, congrArg Subtype.val (RationalPlace.finite.inj hv)⟩
-  · rw [hw] at hv
-    exact absurd hv (by simp [toRational])
+  refine ⟨_, tuple_finite σ c j, ?_⟩
+  rw [σ.residueChar_fin, residueChar_fiberPlace]
 
-/-- The packet presentation at capsule labels `ι` and rational place `v_ℚ`. -/
+/-- The finite place `σ(w) ∈ V` of `K` of an element `w` of the fiber of `k` over a prime. -/
+noncomputable def sectPlace {p : Nat.Primes} (v : LocalTheory.Fiber k (.finite p)) :
+    FinitePlace K :=
+  σ.fin (fiberPlace k v)
+
+lemma residueChar_sectPlace {p : Nat.Primes} (v : LocalTheory.Fiber k (.finite p)) :
+    residueChar (sectPlace σ v) = p := by
+  unfold sectPlace
+  rw [σ.residueChar_fin, residueChar_fiberPlace]
+
+/-- The packet presentation at capsule labels `ι` and rational place `v_ℚ`: the direct summands
+are indexed by the tuples of places of `V` over `v_ℚ` (IUT III, Proposition 3.1). -/
 noncomputable def packet (ι : Type) [Fintype ι] (vQ : RationalPlace) :
-    DirectSumPresentation.{u, u} (ι → LocalTheory.Fiber K vQ) where
-  Summand c := Tensor K vQ (tuple K vQ c)
-  integral c := integral K vQ (tuple K vQ c)
+    DirectSumPresentation.{u, u} (ι → LocalTheory.Fiber k vQ) where
+  Summand c := Tensor K vQ (tuple σ vQ c)
+  integral c := integral K vQ (tuple σ vQ c)
 
 /-- A product region is a `Set.pi`. -/
 lemma productRegion_eq_pi {C : Type*} (P : DirectSumPresentation C)
@@ -131,13 +276,13 @@ lemma isCompact_closure_productRegion {C : Type*} (P : DirectSumPresentation C)
   exact isCompact_univ_pi hU
 
 /-- **The concrete large volume container** for the standard procession of length `n`
-(IUT III, Propositions 3.1–3.3). -/
-noncomputable def container (n : ℕ) : LargeVolumeContainerData.{0, u, u} ℕ (Place K) where
+(IUT III, Propositions 3.1–3.3), indexed by the places of `V` (through `V ≅ V(k)`). -/
+noncomputable def container (n : ℕ) : LargeVolumeContainerData.{0, u, u} ℕ (Place k) where
   proc := Procession.standard n
-  toRational := toRational K
-  fiberFintype vQ := fiberFintype K vQ
-  packet i vQ := packet K ((Procession.standard n).capsule i).LabelType vQ
-  logShell i vQ := (packet K _ vQ).productRegion fun c => logShell K vQ (tuple K vQ c)
+  toRational := toRational k
+  fiberFintype vQ := fiberFintype k vQ
+  packet i vQ := packet σ ((Procession.standard n).capsule i).LabelType vQ
+  logShell i vQ := (packet σ _ vQ).productRegion fun c => logShell K vQ (tuple σ vQ c)
   logShell_isProduct i vQ := DirectSumPresentation.isProductRegion_productRegion _ _
   logShell_relCompact i vQ :=
     isCompact_closure_productRegion _ _ fun c => logShell_relCompact K vQ _
@@ -167,18 +312,18 @@ noncomputable def container (n : ℕ) : LargeVolumeContainerData.{0, u, u} ℕ (
         apply hmem
         refine Or.inr ⟨w, hne, ?_⟩
         all_goals (simp only [toRational_finite]; congr 1; exact Subtype.ext hw)
-      change (packet K _ _).productRegion _ = (packet K _ _).integralRegion
+      change (packet σ _ _).productRegion _ = (packet σ _ _).integralRegion
       ext x
       simp only [DirectSumPresentation.mem_productRegion,
         DirectSumPresentation.mem_integralRegion]
       refine forall_congr' fun c => ?_
-      rw [logShell_eq_integral K p (tuple K _ c) hodd]
+      rw [logShell_eq_integral K p (tuple σ _ c) hodd]
       · rfl
       · intro j w hw
-        apply hunr
-        have := (c j).2
-        rw [show (c j).1 = Place.finite w from hw, toRational_finite] at this
-        exact congrArg Subtype.val (RationalPlace.finite.inj this)
+        obtain ⟨w', hw', hres⟩ := tuple_isOver σ p c j
+        rw [hw] at hw'
+        cases Sum.inl.inj hw'
+        exact hunr w hres
     · exact absurd (Or.inl (Or.inl rfl)) hmem
   integral_subset_logShell_nonarch i p := by
     intro x hx c
@@ -186,77 +331,35 @@ noncomputable def container (n : ℕ) : LargeVolumeContainerData.{0, u, u} ℕ (
 
 variable (n : ℕ)
 
-@[simp] lemma container_proc : (container K n).proc = Procession.standard n := rfl
+@[simp] lemma container_proc : (container σ n).proc = Procession.standard n := rfl
 
-/-- The weight of a place of `K` over a rational place. -/
-noncomputable def weight (vQ : RationalPlace) (v : LocalTheory.Fiber K vQ) : ℝ :=
-  match v.1 with
-  | Sum.inl w => placeWeight K w
-  | Sum.inr w => infPlaceWeight K w
-
-lemma finrank_pos : (0 : ℝ) < Module.finrank ℚ K := by
-  exact_mod_cast Module.finrank_pos
-
-lemma weight_pos (vQ : RationalPlace) (v : LocalTheory.Fiber K vQ) : 0 < weight K vQ v := by
-  rcases v with ⟨v, hv⟩
-  rcases v with w | w
-  · change 0 < placeWeight K w
-    exact div_pos (by exact_mod_cast (localDeg_pos K) w) (finrank_pos K)
-  · change 0 < infPlaceWeight K w
-    exact div_pos (by exact_mod_cast w.mult_pos) (finrank_pos K)
-
-lemma weight_sum_one (vQ : RationalPlace) : ∑ v, weight K vQ v = 1 := by
-  rcases vQ with p | _
-  · haveI := fiber_finite K p
-    haveI : Fintype {w : FinitePlace K // residueChar w = p} := Fintype.ofFinite _
-    have hsum := sum_localDeg K p p.2
-    rw [Fintype.sum_equiv (fiberFiniteEquiv K p) (fun v => weight K (.finite p) v)
-      (fun w => placeWeight K w.1)
-      (fun v => by
-        rcases v with ⟨v, hv⟩
-        rcases v with w | w
-        · rfl
-        · exact absurd hv (by simp [toRational]))]
-    simp only [placeWeight, ← Finset.sum_div]
-    rw [div_eq_one_iff_eq (finrank_pos K).ne']
-    rw [← Nat.cast_sum, hsum]
-  · rw [Fintype.sum_equiv (fiberInfiniteEquiv K) (fun v => weight K .infinite v)
-      (fun w => infPlaceWeight K w)
-      (fun v => by
-        rcases v with ⟨v, hv⟩
-        rcases v with w | w
-        · exact absurd hv (by simp [toRational])
-        · rfl)]
-    simp only [infPlaceWeight, ← Finset.sum_div]
-    rw [div_eq_one_iff_eq (finrank_pos K).ne']
-    exact_mod_cast (sum_mult K)
-
-/-- The packet weight of a tuple: the product of the place weights. -/
+/-- The packet weight of a tuple: the product of the place weights (IUT III,
+Remark 3.1.1(ii)). -/
 noncomputable def tupleWeight {ι : Type} [Fintype ι] (vQ : RationalPlace)
-    (c : ι → LocalTheory.Fiber K vQ) : ℝ :=
-  ∏ j, weight K vQ (c j)
+    (c : ι → LocalTheory.Fiber k vQ) : ℝ :=
+  ∏ j, weight k vQ (c j)
 
 /-- The scaled integral structure `a·O` of a component. -/
-def scaled {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → LocalTheory.Fiber K vQ)
-    (a : Tensor K vQ (tuple K vQ c)) : Set (Tensor K vQ (tuple K vQ c)) :=
-  a • integral K vQ (tuple K vQ c)
+def scaled {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → LocalTheory.Fiber k vQ)
+    (a : Tensor K vQ (tuple σ vQ c)) : Set (Tensor K vQ (tuple σ vQ c)) :=
+  a • integral K vQ (tuple σ vQ c)
 
 /-- The element `a·1` of the scaled integral structure `a·O` of a component. -/
 noncomputable def scaledOne {ι : Type} [Fintype ι] (vQ : RationalPlace)
-    (c : ι → LocalTheory.Fiber K vQ)
-    (a : Tensor K vQ (tuple K vQ c)) : Tensor K vQ (tuple K vQ c) :=
-  a • (1 : Tensor K vQ (tuple K vQ c))
+    (c : ι → LocalTheory.Fiber k vQ)
+    (a : Tensor K vQ (tuple σ vQ c)) : Tensor K vQ (tuple σ vQ c) :=
+  a • (1 : Tensor K vQ (tuple σ vQ c))
 
 /-- The projection of a region of the packet to a component. -/
-def proj {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → LocalTheory.Fiber K vQ)
-    (U : Set (packet K ι vQ).Total) : Set (Tensor K vQ (tuple K vQ c)) :=
+def proj {ι : Type} [Fintype ι] (vQ : RationalPlace) (c : ι → LocalTheory.Fiber k vQ)
+    (U : Set (packet σ ι vQ).Total) : Set (Tensor K vQ (tuple σ vQ c)) :=
   (fun x => x c) '' U
 
 /-- The projection of a product region with nonempty components is the component. -/
 lemma proj_productRegion {ι : Type} [Fintype ι] (vQ : RationalPlace)
-    (U : ∀ c : ι → LocalTheory.Fiber K vQ, Set (Tensor K vQ (tuple K vQ c)))
-    (hU : ∀ c, (U c).Nonempty) (c : ι → LocalTheory.Fiber K vQ) :
-    proj K vQ c ((packet K ι vQ).productRegion U) = U c := by
+    (U : ∀ c : ι → LocalTheory.Fiber k vQ, Set (Tensor K vQ (tuple σ vQ c)))
+    (hU : ∀ c, (U c).Nonempty) (c : ι → LocalTheory.Fiber k vQ) :
+    proj σ vQ c ((packet σ ι vQ).productRegion U) = U c := by
   ext y
   constructor
   · rintro ⟨x, hx, rfl⟩
@@ -268,33 +371,36 @@ lemma proj_productRegion {ι : Type} [Fintype ι] (vQ : RationalPlace)
     · subst h; rw [Function.update_self]; exact hy
     · rw [Function.update_of_ne h]; exact (hU c').some_mem
 
-/-- **The concrete log-volume data** (IUT III, Proposition 3.9). -/
-noncomputable def vol : LogVolumeData (container K n) where
-  weight := weight K
-  weight_pos := weight_pos K
-  weight_sum_one := weight_sum_one K
-  componentVol i vQ c U := componentVol K vQ (tuple K vQ c) U
+/-- **The concrete log-volume data** (IUT III, Proposition 3.9, with the weights of
+Remark 3.1.1(ii)): the packet log-volume is the sum over the direct summands, indexed by the
+tuples of places of `V` over `v_ℚ`, of the component log-volumes weighted by the products of the
+weights `[k_w : ℚ_{v_ℚ}]/[k : ℚ]`. -/
+noncomputable def vol : LogVolumeData (container σ n) where
+  weight := weight k
+  weight_pos := weight_pos k
+  weight_sum_one := weight_sum_one k
+  componentVol i vQ c U := componentVol K vQ (tuple σ vQ c) U
   componentVol_integral_nonarch i p c := componentVol_integral K _ _
   componentVol_prime_preimage i p c a ha :=
-    componentVol_prime_preimage K p _ (tuple_isOver K p c) _
+    componentVol_prime_preimage K p _ (tuple_isOver σ p c) _
       (smul_integral_admissible K _ _ a ha)
-  archBall i c := integral K .infinite (tuple K .infinite c)
+  archBall i c := integral K .infinite (tuple σ .infinite c)
   componentVol_archBall i c := componentVol_integral K _ _
-  packetVol i vQ U := ∑ c : (container K n).Components i vQ,
-    tupleWeight K vQ c * componentVol K vQ (tuple K vQ c) (proj K vQ c U)
+  packetVol i vQ U := ∑ c : (container σ n).Components i vQ,
+    tupleWeight vQ c * componentVol K vQ (tuple σ vQ c) (proj σ vQ c U)
   packetVol_integral i vQ := by
     refine Finset.sum_eq_zero fun c _ => ?_
-    have h : proj K vQ c ((container K n).packet i vQ).integralRegion =
-        integral K vQ (tuple K vQ c) :=
-      proj_productRegion K vQ (fun c => integral K vQ (tuple K vQ c))
+    have h : proj σ vQ c ((container σ n).packet i vQ).integralRegion =
+        integral K vQ (tuple σ vQ c) :=
+      proj_productRegion σ vQ (fun c => integral K vQ (tuple σ vQ c))
         (fun c => ⟨1, one_mem_integral K vQ _⟩) c
-    have := congrArg (fun S => tupleWeight K vQ c * componentVol K vQ (tuple K vQ c) S) h
+    have := congrArg (fun S => tupleWeight vQ c * componentVol K vQ (tuple σ vQ c) S) h
     rw [componentVol_integral K, mul_zero] at this
     exact this
   packetVol_product i vQ U hU := by
     refine Finset.sum_congr rfl fun c _ => ?_
-    have h := proj_productRegion K vQ U hU c
-    exact congrArg (fun S => tupleWeight K vQ c * componentVol K vQ (tuple K vQ c) S) h
+    have h := proj_productRegion σ vQ U hU c
+    exact congrArg (fun S => tupleWeight vQ c * componentVol K vQ (tuple σ vQ c) S) h
 
 /-- **The class of hull regions of a packet** among which the holomorphic hull is least
 (`HullSystem.HullRegions`): all regions `a·O` with all components of `a` units, i.e. with every
@@ -302,57 +408,57 @@ direct-summand component of `a` nonzero (IUT III, Remark 3.9.5(i)) — at a prim
 at the archimedean place `O = B_I`, the product of the unit balls of the copies of `ℝ`, `ℂ` in
 the direct sum decomposition of the packet (IUT IV, Proposition 1.5(iii)). -/
 def hullRegions (ι : Type) [Fintype ι] :
-    ∀ vQ : RationalPlace, Set (Set (packet K ι vQ).Total)
-  | .finite p => {R | (packet K ι (.finite p)).IsHullRegion R}
-  | .infinite => {R | (packet K ι .infinite).IsHullRegion R}
+    ∀ vQ : RationalPlace, Set (Set (packet σ ι vQ).Total)
+  | .finite p => {R | (packet σ ι (.finite p)).IsHullRegion R}
+  | .infinite => {R | (packet σ ι .infinite).IsHullRegion R}
 
 /-- Members of the class of hull regions are hull regions `a·O` with all components of
 `a` units. -/
 lemma isHullRegion_of_mem_hullRegions (ι : Type) [Fintype ι] (vQ : RationalPlace) :
-    ∀ R ∈ hullRegions K ι vQ, (packet K ι vQ).IsHullRegion R := by
+    ∀ R ∈ hullRegions σ ι vQ, (packet σ ι vQ).IsHullRegion R := by
   cases vQ with
   | finite p => exact fun R hR => hR
   | infinite => exact fun R hR => hR
 
 /-- The holomorphic integral region belongs to the class of hull regions. -/
 lemma integralRegion_mem_hullRegions (ι : Type) [Fintype ι] (vQ : RationalPlace) :
-    (packet K ι vQ).integralRegion ∈ hullRegions K ι vQ := by
+    (packet σ ι vQ).integralRegion ∈ hullRegions σ ι vQ := by
   cases vQ with
-  | finite p => exact (packet K ι (.finite p)).isHullRegion_integralRegion
-  | infinite => exact (packet K ι .infinite).isHullRegion_integralRegion
+  | finite p => exact (packet σ ι (.finite p)).isHullRegion_integralRegion
+  | infinite => exact (packet σ ι .infinite).isHullRegion_integralRegion
 
 /-- **Least hull regions of product regions** with admissible components, from the least
 hull regions of the components (`exists_leastHull` at a prime, `exists_leastHull_infinite` at
 `∞`). -/
 lemma exists_leastHullRegion (ι : Type) [Fintype ι] (vQ : RationalPlace)
-    (fam : ∀ c : ι → LocalTheory.Fiber K vQ, Set (Tensor K vQ (tuple K vQ c)))
-    (hfam : ∀ c, fam c ∈ admissible K vQ (tuple K vQ c)) :
-    ∃ R, (packet K ι vQ).IsLeastHullRegionIn (hullRegions K ι vQ)
-      ((packet K ι vQ).productRegion fam) R := by
+    (fam : ∀ c : ι → LocalTheory.Fiber k vQ, Set (Tensor K vQ (tuple σ vQ c)))
+    (hfam : ∀ c, fam c ∈ admissible K vQ (tuple σ vQ c)) :
+    ∃ R, (packet σ ι vQ).IsLeastHullRegionIn (hullRegions σ ι vQ)
+      ((packet σ ι vQ).productRegion fam) R := by
   cases vQ with
   | finite p =>
-    choose a ha using fun c => exists_leastHull K p (tuple K _ c) (fam c) (hfam c)
-    refine ⟨(packet K _ _).scaledIntegral a, ⟨a, fun c => (ha c).1, rfl⟩, ?_, ?_⟩
+    choose a ha using fun c => exists_leastHull K p (tuple σ _ c) (fam c) (hfam c)
+    refine ⟨(packet σ _ _).scaledIntegral a, ⟨a, fun c => (ha c).1, rfl⟩, ?_, ?_⟩
     · intro x hx c
       exact (ha c).2.1 (hx c)
     · rintro R ⟨b, hb, rfl⟩ hUR
       intro x hx c
-      have hproj : fam c ⊆ scaled K _ c (b c) := by
-        have := proj_productRegion K _ fam
+      have hproj : fam c ⊆ scaled σ _ c (b c) := by
+        have := proj_productRegion σ _ fam
           (fun c => admissible_nonempty K _ _ _ (hfam c)) c
         rw [← this]
         rintro y ⟨z, hz, rfl⟩
         exact hUR hz c
       exact (ha c).2.2 (b c) (hb c) hproj (hx c)
   | infinite =>
-    choose a ha using fun c => exists_leastHull_infinite K (tuple K _ c) (fam c) (hfam c)
-    refine ⟨(packet K _ _).scaledIntegral a, ⟨a, fun c => (ha c).1, rfl⟩, ?_, ?_⟩
+    choose a ha using fun c => exists_leastHull_infinite K (tuple σ _ c) (fam c) (hfam c)
+    refine ⟨(packet σ _ _).scaledIntegral a, ⟨a, fun c => (ha c).1, rfl⟩, ?_, ?_⟩
     · intro x hx c
       exact (ha c).2.1 (hx c)
     · rintro R ⟨b, hb, rfl⟩ hUR
       intro x hx c
-      have hproj : fam c ⊆ scaled K _ c (b c) := by
-        have := proj_productRegion K _ fam
+      have hproj : fam c ⊆ scaled σ _ c (b c) := by
+        have := proj_productRegion σ _ fam
           (fun c => admissible_nonempty K _ _ _ (hfam c)) c
         rw [← this]
         rintro y ⟨z, hz, rfl⟩
@@ -361,56 +467,40 @@ lemma exists_leastHullRegion (ι : Type) [Fintype ι] (vQ : RationalPlace)
 
 /-- **The concrete hull system**: least hull regions of product regions with admissible
 components, from the least hull regions of the components. -/
-noncomputable def hull : ContainerHullSystem (container K n) where
+noncomputable def hull : ContainerHullSystem (container σ n) where
   system i vQ :=
-    HullSystem.ofExists (packet K _ vQ)
-      {U | ∃ fam : ∀ c, Set (Tensor K vQ (tuple K vQ c)),
-        (∀ c, fam c ∈ admissible K vQ (tuple K vQ c)) ∧
-          U = (packet K _ vQ).productRegion fam}
+    HullSystem.ofExists (packet σ _ vQ)
+      {U | ∃ fam : ∀ c, Set (Tensor K vQ (tuple σ vQ c)),
+        (∀ c, fam c ∈ admissible K vQ (tuple σ vQ c)) ∧
+          U = (packet σ _ vQ).productRegion fam}
       (by
         rintro U ⟨fam, hfam, rfl⟩
         exact isCompact_closure_productRegion _ _ fun c =>
           admissible_relCompact K vQ _ _ (hfam c))
-      (hullRegions K _ vQ)
-      (isHullRegion_of_mem_hullRegions K _ vQ)
-      (integralRegion_mem_hullRegions K _ vQ)
+      (hullRegions σ _ vQ)
+      (isHullRegion_of_mem_hullRegions σ _ vQ)
+      (integralRegion_mem_hullRegions σ _ vQ)
       (by
         rintro U ⟨fam, hfam, rfl⟩
-        exact exists_leastHullRegion K _ vQ fam hfam)
+        exact exists_leastHullRegion σ _ vQ fam hfam)
       (by
         rintro U ⟨fam, hfam, rfl⟩ R ⟨hR, _, _⟩
-        obtain ⟨a, ha, rfl⟩ := isHullRegion_of_mem_hullRegions K _ vQ R hR
-        exact ⟨fun c => scaled K vQ c (a c),
+        obtain ⟨a, ha, rfl⟩ := isHullRegion_of_mem_hullRegions σ _ vQ R hR
+        exact ⟨fun c => scaled σ vQ c (a c),
           fun c => smul_integral_admissible K vQ _ (a c) (ha c), rfl⟩)
   integral_admissible i vQ :=
-    ⟨fun c => integral K vQ (tuple K vQ c), fun c => integral_admissible K vQ _, rfl⟩
-
-/-- The finite place underlying an element of the fiber over a prime. -/
-noncomputable def fiberPlace {p : Nat.Primes} (v : LocalTheory.Fiber K (.finite p)) :
-    FinitePlace K :=
-  (fiberFiniteEquiv K p v).1
-
-lemma fiberPlace_spec {p : Nat.Primes} (v : LocalTheory.Fiber K (.finite p)) :
-    v.1 = Place.finite (fiberPlace K v) := by
-  rcases v with ⟨v, hv⟩
-  rcases v with w | w
-  · rfl
-  · exact absurd hv (by simp [toRational])
-
-lemma residueChar_fiberPlace {p : Nat.Primes} (v : LocalTheory.Fiber K (.finite p)) :
-    residueChar (fiberPlace K v) = p :=
-  (fiberFiniteEquiv K p v).2
+    ⟨fun c => integral K vQ (tuple σ vQ c), fun c => integral_admissible K vQ _, rfl⟩
 
 /-- **The theta-pilot component at the archimedean place** (IUT IV, Theorem 1.10, Step (vii)):
 the union of the images of the tensor product of the log-shells (the closed absolutely convex
 hull of the tensor products `⊗_j y_j` of log-shell elements `|y_j| ≤ π`, IUT III, Proposition
 3.2(ii); IUT IV, Proposition 1.5(iv)) under the indeterminacy automorphisms (IUT III, Theorem
 3.11 (Ind1), (Ind2)). -/
-noncomputable def thetaInfinite (n : ℕ) (i : Fin n)
-    (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber K .infinite) :
-    Set (Tensor K .infinite (tuple K .infinite c)) :=
-  ⋃ φ ∈ indAut K .infinite (tuple K .infinite c),
-    φ '' logShell K .infinite (tuple K .infinite c)
+noncomputable def thetaInfinite (i : Fin n)
+    (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber k .infinite) :
+    Set (Tensor K .infinite (tuple σ .infinite c)) :=
+  ⋃ φ ∈ indAut K .infinite (tuple σ .infinite c),
+    φ '' logShell K .infinite (tuple σ .infinite c)
 
 end LocalTheory
 

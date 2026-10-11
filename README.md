@@ -317,10 +317,18 @@ initial Θ-data `D` alone (`Iut.concreteVariantData D`); there are no residual i
   `LogLattice.lean`, `FactorShell.lean`, `LatticeSandwich.lean`), and the integrality and
   log-volume of elementary scalings (`TensorIntegral.lean`, `ScaleVolume.lean`). No
   propositional input remains.
-* [`Container.lean`](Iut/Concrete/Container.lean) — the container, log-volume data
-  (weights `[K_v : ℚ_p]/[K : ℚ]` summing to `1`) and hull system (least among all hull
-  regions `a·(R_I)^∼` at a prime, among all `a·B_I` at `∞`), all
-  proved from the constructions.
+* [`Container.lean`](Iut/Concrete/Container.lean) — the container, log-volume data and hull
+  system (least among all hull regions `a·(R_I)^∼` at a prime, among all `a·B_I` at `∞`), all
+  proved from the constructions, for a section of places `V(k) → V(K)`
+  (`LocalTheory.PlaceSection`): for the Θ-data the valuation section `V ≅ V_mod`
+  (`InitialThetaData.placeSect`), so that, as in IUT III Propositions 3.1, 3.2, Theorem 3.11
+  (Ind2) and Remark 3.1.1(ii), the direct summands of the packet at `v_ℚ` are indexed by the
+  tuples of places of `V` over `v_ℚ`, with the weights `[(F_mod)_w : ℚ_{v_ℚ}]/[F_mod : ℚ]`
+  summing to `1`. [`SectionAverage.lean`](Iut/Concrete/SectionAverage.lean) identifies the
+  `V`-averages of the local estimates with `log(d^K_p)` (`K/F_mod` Galois, IUT I Remark 3.1.5,
+  [`TorsionFieldGalois.lean`](Iut/Concrete/TorsionFieldGalois.lean); conjugate places have
+  equal different exponents, [`GaloisPlaces.lean`](Iut/Concrete/GaloisPlaces.lean)) and with
+  `log(q_p)/2ℓ` (`‖q‖ = ‖j(E)‖⁻¹`, `j(E) ∈ F_mod`).
 * [`ThetaLocalConstruct/Data.lean`](Iut/Concrete/ThetaLocalConstruct/Data.lean) — the
   **local theta data** of `D` (IUT I, Example 3.2(iv)): the `2ℓ`-th roots
   `InitialThetaData.qroot` of the Tate parameters at the bad places of `K`, the comparison

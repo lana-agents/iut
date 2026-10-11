@@ -18,8 +18,11 @@ IUT III, Corollary 3.12 itself:
    and its places;
 2. **Tate `q`-parameters** (taxis #37) enter through the Θ-data (they are consumed by
    the left-hand side, taxis #34; the right-hand side shares the same Θ-data);
-3. the **large volume container** (taxis #43) is instantiated over the places of `K`
-   with the standard procession of length `ℓ* = (ℓ−1)/2`;
+3. the **large volume container** (taxis #43) is instantiated over the valuation section
+   `V ≅ V_mod` (IUT I, Definition 3.1(e)): its rational-place map is defined on `V_mod`, the
+   places of `F_mod`, so that the direct summands of the packet at `v_ℚ` are indexed by the
+   tuples of places of `V` over `v_ℚ` (IUT III, Propositions 3.1, 3.2, Theorem 3.11 (Ind2),
+   Remark 3.1.1(ii)), with the standard procession of length `ℓ* = (ℓ−1)/2`;
 4. a **theta-pilot region** — an admissible region of the container for each capsule,
    representing the union of the images of the theta-pilot under the indeterminacies
    `(Ind1)`, `(Ind2)`, `(Ind3)` of IUT III, Theorem 3.11 — enters as *data*: the
@@ -42,7 +45,7 @@ IUT formulation.
 
 The container is tied to the Θ-data by explicit compatibility fields: the procession
 is the standard one of length `ℓ*`, and the place map of the container matches the
-places of `K` (by residue characteristic at finite places, and sending infinite places
+places of `V_mod ≅ V` (by residue characteristic at finite places, and sending infinite places
 to the archimedean rational place). Each is a visible assumption, never silently
 assumed.
 -/
@@ -55,23 +58,24 @@ open NumberField
 
 
 /-- The **right-hand-side input data** of the Corollary 3.12 variant (taxis #35): a
-large volume container over the places of the `ℓ`-torsion field with the standard
+large volume container over the valuation section `V ≅ V_mod` with the standard
 procession of length `ℓ* = (ℓ−1)/2`, log-volume data, a holomorphic hull system, and
 the theta-pilot region (with indeterminacies) as explicit data. See the module
 docstring for the composition order and the honesty boundary. -/
 structure RHSData (D : InitialThetaData.{u}) : Type (max u (v + 1)) where
-  /-- The large volume container (taxis #43), indexed by the places of `K`. -/
-  container : LargeVolumeContainerData.{0, u, v} ℕ (Place ↥D.prime.torsionField)
+  /-- The large volume container (taxis #43), indexed by the places of `V ≅ V_mod`
+  (IUT I, Definition 3.1(e); IUT III, Remark 3.1.1(ii)). -/
+  container : LargeVolumeContainerData.{0, u, v} ℕ (ModPlace D.F D.E)
   /-- The procession is the standard one with `ℓ* = (ℓ − 1)/2` capsules
   (IUT III, Propositions 3.1–3.3). -/
   proc_standard : container.proc = Procession.standard ((D.ℓ - 1) / 2)
   /-- Compatibility at finite places: the container's rational-place map matches the
   residue characteristic. -/
-  toRational_finite : ∀ w : FinitePlace ↥D.prime.torsionField,
+  toRational_finite : ∀ w : FinitePlace ↥(fieldOfModuli D.F D.E),
     (container.toRational (Place.finite w)).residueChar = residueChar w
   /-- Compatibility at infinite places: infinite places lie over the archimedean
   rational place. -/
-  toRational_infinite : ∀ w : InfinitePlace ↥D.prime.torsionField,
+  toRational_infinite : ∀ w : InfinitePlace ↥(fieldOfModuli D.F D.E),
     container.toRational (Place.infinite w) = RationalPlace.infinite
   /-- The log-volume data on the container (taxis #44). -/
   vol : LogVolumeData container

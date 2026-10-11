@@ -35,6 +35,7 @@ import Iut.Concrete.Container
 import Iut.Concrete.CurveArithmeticProved
 import Iut.Concrete.CyclicSubgroup
 import Iut.Concrete.Existence
+import Iut.Concrete.GaloisPlaces
 import Iut.Concrete.Invariants
 import Iut.Concrete.Literal
 import Iut.Concrete.LocalConstruct.Admissible
@@ -71,6 +72,7 @@ import Iut.Concrete.Main
 import Iut.Concrete.ModEllRepConstruct
 import Iut.Concrete.ModEllRepGalois
 import Iut.Concrete.SL2Image
+import Iut.Concrete.SectionAverage
 import Iut.Concrete.TateInputsConstruct
 import Iut.Concrete.ThetaLocalConstruct.Data
 import Iut.Concrete.ThetaLocalConstruct.EmbedCompletion
@@ -78,6 +80,7 @@ import Iut.Concrete.ThetaLocalConstruct.Ordp
 import Iut.Concrete.ThetaLocalConstruct.Roots
 import Iut.Concrete.ThetaLocalConstruct.TateCompat
 import Iut.Concrete.ThetaRegion
+import Iut.Concrete.TorsionFieldGalois
 import Iut.Cor312.Container
 import Iut.Cor312.ContainerHull
 import Iut.Cor312.HolomorphicHull

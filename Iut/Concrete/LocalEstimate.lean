@@ -3,7 +3,7 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
-import Iut.Concrete.Invariants
+import Iut.Concrete.SectionAverage
 
 /-!
 # The local estimates for the concrete theta-pilot region (IUT IV, Step (v)–(vii))
@@ -14,11 +14,16 @@ Theorem 1.10 are *derived* here from the local-field theory:
 * at a distinguished prime `p`, the containing hull region of a tuple `c` is the region
   `a_c·(R_I)^∼` provided by Proposition 1.4(iii) for the scaling element
   `q_{v_j}^{j²}`, with the bound `(−λ_c + d_I + 1)·log p + ∑_{i ∈ I*} (3 + log e_i)`;
-  the packet log-volume is the weighted sum over tuples (taxis #44), and the weighted
-  average of Proposition 1.7 turns the per-tuple bounds into
+  the packet log-volume is the weighted sum over the tuples of places of the section
+  `V ≅ V_mod` over `p`, with the weights `∏_j [(F_mod)_{v_j} : ℚ_p]/[F_mod : ℚ]` of IUT III,
+  Remark 3.1.1(ii) (taxis #44), and the weighted average of Proposition 1.7 turns the
+  per-tuple bounds into
   `(j+1)·log(d^K_p) − (j²/2ℓ)·log(q_p) + log p + 4(j+1)·l*_mod·ι_p` — the bound
-  `capsuleBound` of Step (v), using (R4) for the ramification terms and the base-change
-  invariance of the `q`-degree for the `λ` terms;
+  `capsuleBound` of Step (v), using (R4) for the ramification terms, and identifying the
+  `V`-averages of the different exponents and of the orders of the theta values with
+  `log(d^K_p)` and `log(q_p)/2ℓ` (`InitialThetaData.logDK_sect`: `d_v` is constant on the places
+  of `K` over a place of `F_mod`, as `K/F_mod` is Galois, IUT I, Remark 3.1.5;
+  `InitialThetaData.logQAt_eq_sect`: `ord_p(q_v) = −ord_p(j(E))/2ℓ` with `j(E) ∈ F_mod`);
 * at a non-distinguished prime the container is the integral structure itself
   (Proposition 1.4(iv)), of log-volume `0`;
 * at the archimedean place the container is `π^{|I|}·B_I` (Proposition 1.5(iii),(iv)), a hull
@@ -58,16 +63,17 @@ lemma ordp_pow (w : FinitePlace K) (x : completionAt K w) (hx : x ≠ 0) (m : �
 
 /-- The packet log-volume of a scaled integral region is the weighted sum of the component
 log-volumes. -/
-lemma packetVol_scaledIntegral (n : ℕ) (i : Fin (LocalTheory.container K n).proc.length)
-    (vQ : RationalPlace) (a : ((LocalTheory.container K n).packet i vQ).Total) :
-    (LocalTheory.vol K n).packetVol i vQ
-        (((LocalTheory.container K n).packet i vQ).scaledIntegral a) =
-      ∑ c : (LocalTheory.container K n).Components i vQ, (∏ j, LocalTheory.weight K vQ (c j)) *
-        LocalTheory.componentVol K vQ (LocalTheory.tuple K vQ c)
-            (LocalTheory.scaled K vQ c (a c)) :=
-  (LocalTheory.vol K n).packetVol_product i vQ (fun c => LocalTheory.scaled K vQ c (a c)) fun c =>
-    ⟨_, Set.smul_mem_smul_set (a := (a c : LocalTheory.Tensor K vQ (LocalTheory.tuple K vQ c)))
-      (LocalTheory.one_mem_integral K vQ (LocalTheory.tuple K vQ c))⟩
+lemma packetVol_scaledIntegral {k : Type u} [Field k] [NumberField k] (σ : PlaceSection K k)
+    (n : ℕ) (i : Fin (LocalTheory.container σ n).proc.length)
+    (vQ : RationalPlace) (a : ((LocalTheory.container σ n).packet i vQ).Total) :
+    (LocalTheory.vol σ n).packetVol i vQ
+        (((LocalTheory.container σ n).packet i vQ).scaledIntegral a) =
+      ∑ c : (LocalTheory.container σ n).Components i vQ, (∏ j, LocalTheory.weight k vQ (c j)) *
+        LocalTheory.componentVol K vQ (LocalTheory.tuple σ vQ c)
+            (LocalTheory.scaled σ vQ c (a c)) :=
+  (LocalTheory.vol σ n).packetVol_product i vQ (fun c => LocalTheory.scaled σ vQ c (a c)) fun c =>
+    ⟨_, Set.smul_mem_smul_set (a := (a c : LocalTheory.Tensor K vQ (LocalTheory.tuple σ vQ c)))
+      (LocalTheory.one_mem_integral K vQ (LocalTheory.tuple σ vQ c))⟩
 
 /-- The cardinality of the label type of a capsule of the standard procession. -/
 lemma card_labelType (n : ℕ) (i : Fin n) :
@@ -78,18 +84,6 @@ lemma card_labelType (n : ℕ) (i : Fin n) :
 
 end LocalTheory
 
-namespace InitialThetaData
-
-/-- `log(d^K_p)` at a prime, as the weighted sum over the fiber. -/
-lemma logDK_prime (D : InitialThetaData.{u}) (p : Nat.Primes) :
-    D.logDK p = ∑ v : LocalTheory.Fiber D.Kt (.finite p),
-      LocalTheory.weight D.Kt _ v * differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v) *
-          Real.log p := by
-  unfold InitialThetaData.logDK
-  rw [dif_pos p.2]
-  rfl
-
-end InitialThetaData
 
 
 /-- Evaluation of the weighted average of the per-tuple bounds (Proposition 1.7). -/
@@ -130,18 +124,16 @@ variable (D)
 
 /-- The different exponents along a tuple. -/
 noncomputable def dTuple {ι : Type} (p : Nat.Primes)
-    (c : ι → LocalTheory.Fiber D.Kt (.finite p)) (i : ι) :
+    (c : ι → LocalTheory.Fiber D.Fmod (.finite p)) (i : ι) :
     ℝ :=
-  differentExponent D.Kt (LocalTheory.fiberPlace D.Kt (c i))
+  differentExponent D.Kt (LocalTheory.sectPlace D.placeSect (c i))
 
-lemma dTuple_spec {ι : Type} (p : Nat.Primes) (c : ι → LocalTheory.Fiber D.Kt (.finite p)) (i : ι)
-    (w' : FinitePlace D.Kt) (h : LocalTheory.tuple D.Kt _ c i = Place.finite w') :
+lemma dTuple_spec {ι : Type} (p : Nat.Primes) (c : ι → LocalTheory.Fiber D.Fmod (.finite p))
+    (i : ι) (w' : FinitePlace D.Kt) (h : LocalTheory.tuple D.placeSect _ c i = Place.finite w') :
     dTuple D p c i = differentExponent D.Kt w' := by
   unfold dTuple
   congr 1
-  have := LocalTheory.fiberPlace_spec D.Kt (c i)
-  simp only [LocalTheory.tuple] at h
-  rw [this] at h
+  rw [LocalTheory.tuple_finite D.placeSect c i] at h
   exact Sum.inl.inj h
 
 variable {D}
@@ -149,113 +141,104 @@ variable {D}
 /-- **Proposition 1.4(iii)** applied to the scaling element of a tuple at a distinguished
 prime. -/
 lemma prop14 (i : Fin (nCaps (D := D))) (p : Nat.Primes)
-    (c : Lab i → LocalTheory.Fiber D.Kt (.finite p)) :
-    ∃ a : LocalTheory.Tensor D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c), IsUnit a ∧
-      (∀ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
-        φ '' (D.scaleElt _ i p c • LocalTheory.shell D.Kt p (LocalTheory.tuple D.Kt _ c)) ⊆
-          a • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)) ∧
-      LocalTheory.componentVol D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)
-          (a • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)) ≤
-        (-ordp D.Kt (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i)))
-            (D.qroot (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i))) ^
+    (c : Lab i → LocalTheory.Fiber D.Fmod (.finite p)) :
+    ∃ a : LocalTheory.Tensor D.Kt (.finite p) (LocalTheory.tuple D.placeSect _ c), IsUnit a ∧
+      (∀ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.placeSect _ c),
+        φ '' (D.scaleElt _ i p c • LocalTheory.shell D.Kt p (LocalTheory.tuple D.placeSect _ c)) ⊆
+          a • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.placeSect _ c)) ∧
+      LocalTheory.componentVol D.Kt (.finite p) (LocalTheory.tuple D.placeSect _ c)
+          (a • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.placeSect _ c)) ≤
+        (-ordp D.Kt (LocalTheory.sectPlace D.placeSect (c (InitialThetaData.distinguished _ i)))
+            (D.qroot (LocalTheory.sectPlace D.placeSect (c (InitialThetaData.distinguished _ i))) ^
                 (i.1 + 1) ^ 2) +
           ∑ j, dTuple D p c j + 1) * Real.log p +
-          (∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j) then
-            3 + Real.log (ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j)) else 0) +
+          (∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LocalTheory.tuple D.placeSect _ c j) then
+            3 + Real.log (ramIdxAt D.Kt (LocalTheory.tuple D.placeSect _ c j)) else 0) +
           (if (p : ℕ) - 2 < ramIdxAt D.Kt
-              (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i)) then
+              (LocalTheory.tuple D.placeSect _ c (InitialThetaData.distinguished _ i)) then
             3 + Real.log (ramIdxAt D.Kt
-              (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i))) else 0) :=
-  LocalTheory.prop14_iii D.Kt p (LocalTheory.tuple D.Kt _ c) (LocalTheory.tuple_isOver D.Kt p c)
+              (LocalTheory.tuple D.placeSect _ c (InitialThetaData.distinguished _ i))) else 0) :=
+  LocalTheory.prop14_iii D.Kt p (LocalTheory.tuple D.placeSect _ c)
+      (LocalTheory.tuple_isOver D.placeSect p c)
       (dTuple D p c) (fun j w' h => dTuple_spec D p c j w' h)
     (InitialThetaData.distinguished _ i)
-    (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i)))
-        (LocalTheory.fiberPlace_spec D.Kt _)
+    (LocalTheory.sectPlace D.placeSect (c (InitialThetaData.distinguished _ i)))
+        (LocalTheory.tuple_finite D.placeSect c _)
     (D.qroot _ ^ (i.1 + 1) ^ 2) (pow_ne_zero _ (D.qroot_ne_zero _))
 
 /-- The chosen containing scalar `a_c` of a tuple at a distinguished prime. -/
 noncomputable def contScalar (i : Fin (nCaps (D := D))) (p : Nat.Primes)
-    (c : Lab i → LocalTheory.Fiber D.Kt (.finite p)) : LocalTheory.Tensor D.Kt (.finite p)
-        (LocalTheory.tuple D.Kt _ c) :=
+    (c : Lab i → LocalTheory.Fiber D.Fmod (.finite p)) : LocalTheory.Tensor D.Kt (.finite p)
+        (LocalTheory.tuple D.placeSect _ c) :=
   Classical.choose (prop14 (D := D) i p c)
 
 lemma contScalar_spec (i : Fin (nCaps (D := D))) (p : Nat.Primes)
-    (c : Lab i → LocalTheory.Fiber D.Kt (.finite p)) :
+    (c : Lab i → LocalTheory.Fiber D.Fmod (.finite p)) :
     IsUnit (contScalar (D := D) i p c) ∧
-      (∀ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
-        φ '' (D.scaleElt _ i p c • LocalTheory.shell D.Kt p (LocalTheory.tuple D.Kt _ c)) ⊆
+      (∀ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.placeSect _ c),
+        φ '' (D.scaleElt _ i p c • LocalTheory.shell D.Kt p (LocalTheory.tuple D.placeSect _ c)) ⊆
           contScalar (D := D) i p c • LocalTheory.integral D.Kt (.finite p)
-              (LocalTheory.tuple D.Kt _ c)) ∧
-      LocalTheory.componentVol D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)
+              (LocalTheory.tuple D.placeSect _ c)) ∧
+      LocalTheory.componentVol D.Kt (.finite p) (LocalTheory.tuple D.placeSect _ c)
         (contScalar (D := D) i p c • LocalTheory.integral D.Kt (.finite p)
-            (LocalTheory.tuple D.Kt _ c)) ≤
-        (-ordp D.Kt (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i)))
-            (D.qroot (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i))) ^
+            (LocalTheory.tuple D.placeSect _ c)) ≤
+        (-ordp D.Kt (LocalTheory.sectPlace D.placeSect (c (InitialThetaData.distinguished _ i)))
+            (D.qroot (LocalTheory.sectPlace D.placeSect (c (InitialThetaData.distinguished _ i))) ^
                 (i.1 + 1) ^ 2) +
           ∑ j, dTuple D p c j + 1) * Real.log p +
-          (∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j) then
-            3 + Real.log (ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j)) else 0) +
+          (∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LocalTheory.tuple D.placeSect _ c j) then
+            3 + Real.log (ramIdxAt D.Kt (LocalTheory.tuple D.placeSect _ c j)) else 0) +
           (if (p : ℕ) - 2 < ramIdxAt D.Kt
-              (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i)) then
+              (LocalTheory.tuple D.placeSect _ c (InitialThetaData.distinguished _ i)) then
             3 + Real.log (ramIdxAt D.Kt
-              (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i))) else 0) :=
+              (LocalTheory.tuple D.placeSect _ c (InitialThetaData.distinguished _ i))) else 0) :=
   Classical.choose_spec (prop14 (D := D) i p c)
 
 /-- The archimedean scalar `π^{|I|}`. -/
 noncomputable def archScalar (i : Fin (nCaps (D := D)))
-    (c : Lab i → LocalTheory.Fiber D.Kt .infinite) :
-    LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.Kt .infinite c) :=
-  algebraMap ℝ (LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.Kt .infinite c))
+    (c : Lab i → LocalTheory.Fiber D.Fmod .infinite) :
+    LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.placeSect .infinite c) :=
+  algebraMap ℝ (LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.placeSect .infinite c))
       (Real.pi ^ (i.1 + 2))
 
-lemma isUnit_archScalar (i : Fin (nCaps (D := D))) (c : Lab i → LocalTheory.Fiber D.Kt .infinite) :
+lemma isUnit_archScalar (i : Fin (nCaps (D := D)))
+    (c : Lab i → LocalTheory.Fiber D.Fmod .infinite) :
     IsUnit (archScalar (D := D) i c) :=
   (isUnit_iff_ne_zero.mpr (pow_ne_zero _ Real.pi_ne_zero)).map (algebraMap ℝ _)
 
 /-- The containing region at a rational place, as a region of the packet
-`LocalTheory.packet D.Kt (Lab i) v_ℚ` (definitionally the container's packet). -/
+`LocalTheory.packet D.placeSect (Lab i) v_ℚ` (definitionally the container's packet). -/
 noncomputable def cont (i : Fin (nCaps (D := D))) :
-    ∀ vQ : RationalPlace, Set (LocalTheory.packet D.Kt (Lab i) vQ).Total
+    ∀ vQ : RationalPlace, Set (LocalTheory.packet D.placeSect (Lab i) vQ).Total
   | .finite p =>
     if (p : ℕ) ∈ D.dst then
-      (LocalTheory.packet D.Kt (Lab i) (.finite p)).scaledIntegral fun c => contScalar
+      (LocalTheory.packet D.placeSect (Lab i) (.finite p)).scaledIntegral fun c => contScalar
           (D := D) i p c
-    else (LocalTheory.packet D.Kt (Lab i) (.finite p)).integralRegion
-  | .infinite => (LocalTheory.packet D.Kt (Lab i) .infinite).scaledIntegral fun c => archScalar
-      (D := D) i c
+    else (LocalTheory.packet D.placeSect (Lab i) (.finite p)).integralRegion
+  | .infinite => (LocalTheory.packet D.placeSect (Lab i) .infinite).scaledIntegral fun c =>
+      archScalar (D := D) i c
 
 /-- The packet log-volume of a scaled integral region, in the theta-region's types. -/
 lemma packetVol_scaledIntegral' (i : Fin (nCaps (D := D))) (vQ : RationalPlace)
-    (a : (LocalTheory.packet D.Kt (Lab i) vQ).Total) :
-    (LocalTheory.vol D.Kt (nCaps (D := D))).packetVol i vQ
-        ((LocalTheory.packet D.Kt (Lab i) vQ).scaledIntegral a) =
-      ∑ c : Lab i → LocalTheory.Fiber D.Kt vQ, (∏ j, LocalTheory.weight D.Kt vQ (c j)) *
-        LocalTheory.componentVol D.Kt vQ (LocalTheory.tuple D.Kt vQ c)
-            (LocalTheory.scaled D.Kt vQ c (a c)) :=
-  (LocalTheory.packetVol_scaledIntegral D.Kt (nCaps (D := D)) i vQ a).trans
+    (a : (LocalTheory.packet D.placeSect (Lab i) vQ).Total) :
+    (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i vQ
+        ((LocalTheory.packet D.placeSect (Lab i) vQ).scaledIntegral a) =
+      ∑ c : Lab i → LocalTheory.Fiber D.Fmod vQ, (∏ j, LocalTheory.weight D.Fmod vQ (c j)) *
+        LocalTheory.componentVol D.Kt vQ (LocalTheory.tuple D.placeSect vQ c)
+            (LocalTheory.scaled D.placeSect vQ c (a c)) :=
+  (LocalTheory.packetVol_scaledIntegral D.Kt D.placeSect (nCaps (D := D)) i vQ a).trans
     (@Fintype.sum_equiv _ _ ℝ
-        ((LocalTheory.container D.Kt (nCaps (D := D))).instFintypeComponents i vQ)
+        ((LocalTheory.container D.placeSect (nCaps (D := D))).instFintypeComponents i vQ)
       Pi.instFintype _ (Equiv.refl _) _ _ fun _ => rfl)
 
-/-- `log(q_p)` for the concrete `q`-pilot data, in terms of the local theta data. -/
+/-- `log(q_p)` for the concrete `q`-pilot data, in terms of the local theta data at the places
+of the section `V` (`InitialThetaData.logQAt_eq_sect`). -/
 lemma logQAt_eq (p : Nat.Primes) :
     (𝒳).logQAt p = 2 * D.ℓ * Real.log p *
-      ∑ v : LocalTheory.Fiber D.Kt (.finite p), LocalTheory.weight D.Kt (.finite p) v *
-        ordp D.Kt (LocalTheory.fiberPlace D.Kt v) (D.qroot (LocalTheory.fiberPlace D.Kt v)) := by
-  rw [D.sum_weight_ordp_qroot p D.bad_finite.toFinset D.bad_finite.coe_toFinset]
-  have hℓ : (2 * D.ℓ : ℝ) ≠ 0 := by
-    have : (5 : ℝ) ≤ D.ℓ := by exact_mod_cast D.prime.five_le
-    positivity
-  have h1 : (𝒳).logQAt p = ∑ w ∈ (D.qPilot).badFinset.attach.filter
-      (fun w => residueChar w.1 = p),
-      (inertDeg D.F w.1 : ℝ) / Module.finrank ℚ D.F *
-        (D.qOrder w.1 ((D.qPilot).mem_bad w.2) : ℝ) *
-        Real.log (residueChar w.1) := rfl
-  rw [h1, mul_div_assoc', mul_comm (2 * (D.ℓ : ℝ)) (Real.log p), mul_assoc, mul_div_assoc,
-    mul_div_cancel_left₀ _ hℓ, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun w hw => ?_
-  rw [(Finset.mem_filter.mp hw).2]
-  ring
+      ∑ v : LocalTheory.Fiber D.Fmod (.finite p), LocalTheory.weight D.Fmod (.finite p) v *
+        ordp D.Kt (LocalTheory.sectPlace D.placeSect v)
+          (D.qroot (LocalTheory.sectPlace D.placeSect v)) :=
+  D.logQAt_eq_sect p
 
 include TA in
 /-- The (R4) bound in the form used per place: each ramification term is at most
@@ -287,7 +270,7 @@ lemma ramTerm_le (p : Nat.Primes) (v : FinitePlace D.Kt) (hv : residueChar v = p
 /-! ### The estimates -/
 
 lemma cont_isHullRegion (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
-    (LocalTheory.packet D.Kt (Lab i) vQ).IsHullRegion (cont (D := D) i vQ) := by
+    (LocalTheory.packet D.placeSect (Lab i) vQ).IsHullRegion (cont (D := D) i vQ) := by
   rcases vQ with p | _
   · change DirectSumPresentation.IsHullRegion _ (if (p : ℕ) ∈ D.dst then _ else _)
     split_ifs with hp
@@ -298,13 +281,13 @@ lemma cont_isHullRegion (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
 /-- Each container belongs to the class of hull regions of the concrete hull system: it is a
 hull region `a·O` with all components of `a` units (at `∞`, `a = π^{|I|}`). -/
 lemma cont_mem_hullRegions (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
-    cont (D := D) i vQ ∈ LocalTheory.hullRegions D.Kt (Lab i) vQ := by
+    cont (D := D) i vQ ∈ LocalTheory.hullRegions D.placeSect (Lab i) vQ := by
   rcases vQ with p | _
   · exact cont_isHullRegion (D := D) i (.finite p)
   · exact cont_isHullRegion (D := D) i .infinite
 
 lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
-    (LocalTheory.packet D.Kt (Lab i) vQ).productRegion (fun c => D.thetaComponent _ i vQ c) ⊆
+    (LocalTheory.packet D.placeSect (Lab i) vQ).productRegion (fun c => D.thetaComponent _ i vQ c) ⊆
       cont (D := D) i vQ := by
   rcases vQ with p | _
   · intro x hx
@@ -328,67 +311,73 @@ lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
         hodd hunr] at hxc
       exact hxc
   · intro x hx c
-    have hxc : x c ∈ LocalTheory.thetaInfinite D.Kt _ i c := hx c
-    change x c ∈ ⋃ φ ∈ LocalTheory.indAut D.Kt .infinite (LocalTheory.tuple D.Kt .infinite c),
-      φ '' LocalTheory.logShell D.Kt .infinite (LocalTheory.tuple D.Kt .infinite c) at hxc
+    have hxc : x c ∈ LocalTheory.thetaInfinite D.placeSect _ i c := hx c
+    change x c ∈ ⋃ φ ∈ LocalTheory.indAut D.Kt .infinite
+        (LocalTheory.tuple D.placeSect .infinite c),
+      φ '' LocalTheory.logShell D.Kt .infinite (LocalTheory.tuple D.placeSect .infinite c) at hxc
     obtain ⟨φ, hφ, hxc⟩ := Set.mem_iUnion₂.mp hxc
-    have := LocalTheory.prop15 D.Kt (LocalTheory.tuple D.Kt .infinite c) φ hφ hxc
+    have := LocalTheory.prop15 D.Kt (LocalTheory.tuple D.placeSect .infinite c) φ hφ hxc
     rw [LocalTheory.card_labelType] at this
     exact this
 
 include TA in
 lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈ D.dst) :
-    (LocalTheory.vol D.Kt (nCaps (D := D))).packetVol i (.finite p) (cont (D := D) i (.finite p)) ≤
+    (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i (.finite p)
+        (cont (D := D) i (.finite p)) ≤
       (D.invariants).capsuleBound (i.1 + 2) p := by
-  change (LocalTheory.vol D.Kt (nCaps (D := D))).packetVol i (.finite p)
+  change (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i (.finite p)
     (if (p : ℕ) ∈ D.dst then _ else _) ≤ _
   rw [if_pos hp, packetVol_scaledIntegral']
   have hcardι : Fintype.card (Lab i) = i.1 + 2 := LocalTheory.card_labelType _ i
-  have hw1 : ∑ v, LocalTheory.weight D.Kt (.finite p) v = 1 := LocalTheory.weight_sum_one D.Kt _
+  have hw1 : ∑ v, LocalTheory.weight D.Fmod (.finite p) v = 1 := LocalTheory.weight_sum_one D.Fmod _
   -- bound each tuple by the (R4)-simplified form
-  have hstep : ∀ c : Lab i → LocalTheory.Fiber D.Kt (.finite p),
-      (∏ l, LocalTheory.weight D.Kt (.finite p) (c l)) *
-        LocalTheory.componentVol D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)
-            (LocalTheory.scaled D.Kt _ c (contScalar (D := D) i p c)) ≤
-      (∏ l, LocalTheory.weight D.Kt (.finite p) (c l)) *
+  have hstep : ∀ c : Lab i → LocalTheory.Fiber D.Fmod (.finite p),
+      (∏ l, LocalTheory.weight D.Fmod (.finite p) (c l)) *
+        LocalTheory.componentVol D.Kt (.finite p) (LocalTheory.tuple D.placeSect _ c)
+            (LocalTheory.scaled D.placeSect _ c (contScalar (D := D) i p c)) ≤
+      (∏ l, LocalTheory.weight D.Fmod (.finite p) (c l)) *
         ((-(((i.1 + 1 : ℕ) : ℝ) ^ 2) *
-            (fun v => ordp D.Kt (LocalTheory.fiberPlace D.Kt v)
-                (D.qroot (LocalTheory.fiberPlace D.Kt v)))
+            (fun v => ordp D.Kt (LocalTheory.sectPlace D.placeSect v)
+                (D.qroot (LocalTheory.sectPlace D.placeSect v)))
               (c (InitialThetaData.distinguished _ i))
-            + ∑ l, (fun v => differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v)) (c l) + 1) *
+            + ∑ l, (fun v => differentExponent D.Kt (LocalTheory.sectPlace D.placeSect v)) (c l)
+            + 1) *
                 Real.log p +
           ∑ _l : Lab i, (4 * (D.invariants).lmod *
               (D.invariants).ι p) + 4 * (D.invariants).lmod * (D.invariants).ι p) := by
     intro c
     apply mul_le_mul_of_nonneg_left _
-        (Finset.prod_nonneg fun l _ => (LocalTheory.weight_pos D.Kt _ _).le)
+        (Finset.prod_nonneg fun l _ => (LocalTheory.weight_pos D.Fmod _ _).le)
     refine (contScalar_spec (D := D) i p c).2.2.trans ?_
     rw [LocalTheory.ordp_pow D.Kt _ _ (D.qroot_ne_zero _)]
     push_cast
-    have hramd : ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i)) =
-        ramIdx D.Kt (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i))) := by
-      simp only [LocalTheory.tuple]
-      rw [LocalTheory.fiberPlace_spec D.Kt (c (InitialThetaData.distinguished _ i))]; rfl
+    have hramd : ramIdxAt D.Kt
+        (LocalTheory.tuple D.placeSect _ c (InitialThetaData.distinguished _ i)) =
+        ramIdx D.Kt
+          (LocalTheory.sectPlace D.placeSect (c (InitialThetaData.distinguished _ i))) := by
+      rw [LocalTheory.tuple_finite D.placeSect c]; rfl
     refine add_le_add (add_le_add (le_of_eq ?_) ?_) ?_
     · simp only [dTuple]; ring
     swap
     · rw [hramd]
-      exact TA.ramTerm_le p _ (LocalTheory.residueChar_fiberPlace D.Kt _)
+      exact TA.ramTerm_le p _ (LocalTheory.residueChar_sectPlace D.placeSect _)
     refine Finset.sum_le_sum fun l _ => ?_
-    have hram : ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c l) = ramIdx D.Kt
-        (LocalTheory.fiberPlace D.Kt (c l)) := by
-      simp only [LocalTheory.tuple]; rw [LocalTheory.fiberPlace_spec D.Kt (c l)]; rfl
+    have hram : ramIdxAt D.Kt (LocalTheory.tuple D.placeSect _ c l) = ramIdx D.Kt
+        (LocalTheory.sectPlace D.placeSect (c l)) := by
+      rw [LocalTheory.tuple_finite D.placeSect c]; rfl
     rw [hram]
-    exact TA.ramTerm_le p _ (LocalTheory.residueChar_fiberPlace D.Kt _)
+    exact TA.ramTerm_le p _ (LocalTheory.residueChar_sectPlace D.placeSect _)
   refine (Finset.sum_le_sum fun c _ => hstep c).trans ?_
-  rw [sum_bound_eval (LocalTheory.weight D.Kt (.finite p)) hw1
-    (fun v => ordp D.Kt (LocalTheory.fiberPlace D.Kt v) (D.qroot (LocalTheory.fiberPlace D.Kt v)))
-    (fun v => differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v)) _ _ _
+  rw [sum_bound_eval (LocalTheory.weight D.Fmod (.finite p)) hw1
+    (fun v => ordp D.Kt (LocalTheory.sectPlace D.placeSect v)
+      (D.qroot (LocalTheory.sectPlace D.placeSect v)))
+    (fun v => differentExponent D.Kt (LocalTheory.sectPlace D.placeSect v)) _ _ _
         (InitialThetaData.distinguished _ i),
     hcardι]
   -- identify the averaged quantities
-  have hq : (∑ e, LocalTheory.weight D.Kt (.finite p) e *
-      ordp D.Kt (LocalTheory.fiberPlace D.Kt e) (D.qroot (LocalTheory.fiberPlace D.Kt e))) *
+  have hq : (∑ e, LocalTheory.weight D.Fmod (.finite p) e *
+      ordp D.Kt (LocalTheory.sectPlace D.placeSect e)
+        (D.qroot (LocalTheory.sectPlace D.placeSect e))) *
           Real.log p =
       (𝒳).logQAt p / (2 * D.ℓ) := by
     rw [logQAt_eq (D := D) p]
@@ -397,10 +386,10 @@ lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈
       positivity
     field_simp
   have hd :
-      (∑ e, LocalTheory.weight D.Kt (.finite p) e * differentExponent D.Kt
-      (LocalTheory.fiberPlace D.Kt e)) *
+      (∑ e, LocalTheory.weight D.Fmod (.finite p) e * differentExponent D.Kt
+      (LocalTheory.sectPlace D.placeSect e)) *
       Real.log p = D.logDK p := by
-    rw [D.logDK_prime p, Finset.sum_mul]
+    rw [D.logDK_sect p, Finset.sum_mul]
   change _ ≤ ((i.1 + 2 : ℕ) : ℝ) * D.logDK p -
     (((i.1 + 2 : ℕ) : ℝ) - 1) ^ 2 / (2 * D.ℓ) * (𝒳).logQAt p + Real.log p +
     4 * (((i.1 + 2 : ℕ) : ℝ) + 1) * (D.invariants).lmod *
@@ -414,44 +403,46 @@ lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈
   ring
 
 lemma vol_infinite (i : Fin (nCaps (D := D))) :
-    (LocalTheory.vol D.Kt (nCaps (D := D))).packetVol i .infinite (cont (D := D) i .infinite) ≤
+    (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i .infinite
+        (cont (D := D) i .infinite) ≤
       ((i.1 + 2 : ℕ) : ℝ) * Real.log Real.pi := by
-  change (LocalTheory.vol D.Kt (nCaps (D := D))).packetVol i .infinite
-    ((LocalTheory.packet D.Kt (Lab i) .infinite).scaledIntegral fun c => archScalar
+  change (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i .infinite
+    ((LocalTheory.packet D.placeSect (Lab i) .infinite).scaledIntegral fun c => archScalar
         (D := D) i c) ≤ _
   rw [packetVol_scaledIntegral']
-  have : ∀ c : Lab i → LocalTheory.Fiber D.Kt .infinite,
-      LocalTheory.componentVol D.Kt .infinite (LocalTheory.tuple D.Kt _ c)
-          (LocalTheory.scaled D.Kt _ c (archScalar (D := D) i c)) =
+  have : ∀ c : Lab i → LocalTheory.Fiber D.Fmod .infinite,
+      LocalTheory.componentVol D.Kt .infinite (LocalTheory.tuple D.placeSect _ c)
+          (LocalTheory.scaled D.placeSect _ c (archScalar (D := D) i c)) =
         ((i.1 + 2 : ℕ) : ℝ) * Real.log Real.pi := by
     intro c
-    change LocalTheory.componentVol D.Kt .infinite (LocalTheory.tuple D.Kt _ c)
-      (algebraMap ℝ (LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.Kt .infinite c))
+    change LocalTheory.componentVol D.Kt .infinite (LocalTheory.tuple D.placeSect _ c)
+      (algebraMap ℝ (LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.placeSect .infinite c))
           (Real.pi ^ (i.1 + 2)) •
-        LocalTheory.integral D.Kt .infinite (LocalTheory.tuple D.Kt _ c)) = _
+        LocalTheory.integral D.Kt .infinite (LocalTheory.tuple D.placeSect _ c)) = _
     rw [LocalTheory.componentVol_arch_scale D.Kt _ _ (pow_pos Real.pi_pos _), Real.log_pow]
   simp_rw [this]
-  rw [← Finset.sum_mul, sum_prod_tuple_eq_one _ (LocalTheory.weight_sum_one D.Kt _), one_mul]
+  rw [← Finset.sum_mul, sum_prod_tuple_eq_one _ (LocalTheory.weight_sum_one D.Fmod _), one_mul]
 
 lemma packetVol_mono (i : Fin (nCaps (D := D))) (vQ : RationalPlace)
-    (U V : Set (LocalTheory.packet D.Kt (Lab i) vQ).Total)
-        (hU : (LocalTheory.packet D.Kt (Lab i) vQ).IsHullRegion U)
-    (hV : (LocalTheory.packet D.Kt (Lab i) vQ).IsHullRegion V) (hUV : U ⊆ V) :
-    (LocalTheory.vol D.Kt (nCaps (D := D))).packetVol i vQ U ≤
-        (LocalTheory.vol D.Kt (nCaps (D := D))).packetVol i vQ V := by
+    (U V : Set (LocalTheory.packet D.placeSect (Lab i) vQ).Total)
+        (hU : (LocalTheory.packet D.placeSect (Lab i) vQ).IsHullRegion U)
+    (hV : (LocalTheory.packet D.placeSect (Lab i) vQ).IsHullRegion V) (hUV : U ⊆ V) :
+    (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i vQ U ≤
+        (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i vQ V := by
   obtain ⟨a, ha, rfl⟩ := hU
   obtain ⟨b, hb, rfl⟩ := hV
   rw [packetVol_scaledIntegral', packetVol_scaledIntegral']
   refine Finset.sum_le_sum fun c _ => ?_
   apply mul_le_mul_of_nonneg_left _
-      (Finset.prod_nonneg fun l _ => (LocalTheory.weight_pos D.Kt _ _).le)
+      (Finset.prod_nonneg fun l _ => (LocalTheory.weight_pos D.Fmod _ _).le)
   apply LocalTheory.componentVol_mono D.Kt vQ _ _ _ (ha c) (hb c)
   intro y hy
   classical
   have hx :
       (Function.update
-      (fun c' : Lab i → LocalTheory.Fiber D.Kt vQ => LocalTheory.scaledOne D.Kt vQ c' (a c')) c y) ∈
-      (LocalTheory.packet D.Kt (Lab i) vQ).scaledIntegral a := by
+      (fun c' : Lab i → LocalTheory.Fiber D.Fmod vQ =>
+        LocalTheory.scaledOne D.placeSect vQ c' (a c')) c y) ∈
+      (LocalTheory.packet D.placeSect (Lab i) vQ).scaledIntegral a := by
     intro c'
     by_cases h : c' = c
     · subst h; rw [Function.update_self]; exact hy
