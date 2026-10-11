@@ -306,12 +306,12 @@ open scoped Classical in
 lemma qrootOf_pow (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
     qrootOf D v ^ (2 * D.ℓ) =
-      embedFOf D v w h ((D.prime.tate w hw).q : localCompletion w) := by
+      embedFOf D v w h ((D.tateParam w hw).q : localCompletion w) := by
   have hvw : FinitePlace.LiesOver v w := h
   have hv : IsBadK D v := isBadPlace_of_liesOver D.E D.prime.torsionField hvw hw
   rw [qrootOf_spec D hv]
-  exact TateStructure.t_q_eq_embedCompletion hvw (D.tate.S v hv) (D.prime.tate w hw)
-    (D.prime.tateJ_eq w hw)
+  exact TateStructure.t_q_eq_embedCompletion hvw (D.tate.S v hv) (D.tateParam w hw)
+    (D.tateParam_tateJ w hw)
 
 open scoped Classical in
 lemma qrootOf_ne_zero (v : FinitePlace D.Kt) : qrootOf D v ≠ 0 := by
@@ -327,7 +327,7 @@ open scoped Classical in
 /-- `ord_p(q_v) = ord_w(q_w)/(2ℓ e_w)`. -/
 lemma ordp_qrootOf (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
-    ordp D.Kt v (qrootOf D v) = (D.prime.qOrder w hw : ℝ) / (2 * D.ℓ * ramIdx D.F w) := by
+    ordp D.Kt v (qrootOf D v) = (D.qOrder w hw : ℝ) / (2 * D.ℓ * ramIdx D.F w) := by
   have hvw : FinitePlace.LiesOver v w := h
   have hℓ : (2 * D.ℓ : ℝ) ≠ 0 := by
     have : (5 : ℝ) ≤ D.ℓ := by exact_mod_cast D.prime.five_le
@@ -335,15 +335,15 @@ lemma ordp_qrootOf (v : FinitePlace D.Kt) (w : FinitePlace D.F)
   have h1 := ordp_pow' v (qrootOf D v) (2 * D.ℓ)
   rw [qrootOf_pow D v w h hw] at h1
   unfold embedFOf at h1
-  rw [ordp_embedCompletion hvw, ordp_tateParameter _ (D.prime.unif_isUniformizer w hw)] at h1
+  rw [ordp_embedCompletion hvw, ordp_tateParameter _ (isUniformizer_unifAt w)] at h1
   have h2 : ordp D.Kt v (qrootOf D v) =
-      ((D.prime.tate w hw).toOrdered (D.prime.unif_isUniformizer w hw)).orderNat /
+      ((D.tateParam w hw).toOrdered (isUniformizer_unifAt w)).orderNat /
         ramIdx D.F w / (2 * D.ℓ) := by
     rw [h1]
     push_cast
     rw [mul_div_cancel_left₀ _ hℓ]
   rw [h2]
-  unfold AdmissiblePrimeData.qOrder
+  rw [InitialThetaData.qOrder_eq_orderNat]
   ring
 
 open scoped Classical in
@@ -412,14 +412,14 @@ open scoped Classical in
 /-- `q_v^{2ℓ}` is the Tate parameter of `E` at `w` (IUT I, Example 3.2(iv)). -/
 theorem qroot_pow (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
-    D.qroot v ^ (2 * D.ℓ) = D.embedF v w h ((D.prime.tate w hw).q : localCompletion w) :=
+    D.qroot v ^ (2 * D.ℓ) = D.embedF v w h ((D.tateParam w hw).q : localCompletion w) :=
   qrootOf_pow D v w h hw
 
 open scoped Classical in
 /-- `ord_p(q_v) = ord_w(q_w)/(2ℓ·e_w)`. -/
 theorem ordp_qroot (v : FinitePlace D.Kt) (w : FinitePlace D.F)
     (h : (Place.finite v).LiesOver (Place.finite w)) (hw : w ∈ badPlacesOver D.F D.E D.VBad) :
-    ordp D.Kt v (D.qroot v) = (D.prime.qOrder w hw : ℝ) / (2 * D.ℓ * ramIdx D.F w) :=
+    ordp D.Kt v (D.qroot v) = (D.qOrder w hw : ℝ) / (2 * D.ℓ * ramIdx D.F w) :=
   ordp_qrootOf D v w h hw
 
 open scoped Classical in
@@ -452,7 +452,7 @@ theorem sum_weight_ordp_qroot (p : Nat.Primes) (bad : Finset (FinitePlace D.F))
         ordp D.Kt (LocalTheory.fiberPlace D.Kt v) (D.qroot (LocalTheory.fiberPlace D.Kt v)) =
       (∑ w ∈ bad.attach.filter (fun w => residueChar w.1 = p),
         (inertDeg D.F w.1 : ℝ) / Module.finrank ℚ D.F *
-          (D.prime.qOrder w.1 (hbad ▸ Finset.mem_coe.mpr w.2) : ℝ)) / (2 * D.ℓ) := by
+          (D.qOrder w.1 (hbad ▸ Finset.mem_coe.mpr w.2) : ℝ)) / (2 * D.ℓ) := by
   haveI := LocalTheory.fiber_finite D.Kt p
   haveI : Fintype {w : FinitePlace D.Kt // residueChar w = p} := Fintype.ofFinite _
   -- the weight function on the places of `K`
@@ -468,7 +468,7 @@ theorem sum_weight_ordp_qroot (p : Nat.Primes) (bad : Finset (FinitePlace D.F))
   rw [h1]
   -- the order function `c` on the places of `F`
   let c : FinitePlace D.F → ℝ := fun w =>
-    if h : w ∈ badPlacesOver D.F D.E D.VBad then (D.prime.qOrder w h : ℝ) / (2 * D.ℓ) else 0
+    if h : w ∈ badPlacesOver D.F D.E D.VBad then (D.qOrder w h : ℝ) / (2 * D.ℓ) else 0
   rw [sum_placeWeight_mul p (badPlacesOver D.F D.E D.VBad) bad hbad c
     (fun v => ordp D.Kt v (qrootOf D v))
     (fun v w hvw hw => by

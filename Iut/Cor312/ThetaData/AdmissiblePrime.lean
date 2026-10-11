@@ -43,15 +43,16 @@ Definition 3.1(b)–(c), for the Corollary 3.12 variant statement (taxis #33):
   kernel in the Krull topology (`ker_isOpen`), which for the profinite group
   `Gal(F̄/F)` is equivalent to continuity with respect to the discrete topology on the
   finite group `GL₂(𝔽_ℓ)`, and makes `K/F` finite.
-* **Tate parameters at bad places.** At each place `w ∈ V(F)^bad` the structure
-  carries a Tate parameter `q_w` of the completed local field `F_w`, pinned to `E` by
-  the requirement that the `j`-invariant of its Tate curve is the image of `j(E)` in
-  `F_w` (`tateJ_eq`); by the uniqueness theorem of taxis #37
-  (`TateCurvesTheta.TateParameter.existsUnique_splitMultiplicative_tateParameter`)
-  this determines `q_w` uniquely. A uniformizer of `F_w` normalizes its integer order
-  (`TateCurvesTheta.IsUniformizer`, `TateParameter.toOrdered`), and the coprimality
-  condition of Definition 3.1(c) is `OrderedTateParameter.PrimeToOrder ℓ`, exactly the
-  predicate exposed by taxis #37.
+* **Tate parameters at bad places are derived, not carried.** The Tate parameter `q_w` of `E`
+  at a place `w ∈ V(F)^bad` is the unique Tate parameter of the completed local field `F_w`
+  whose Tate curve has `j`-invariant the image of `j(E)` (taxis #37,
+  `TateCurvesTheta.TateParameter.existsUnique_tateParameter_tateJ_eq`); it exists because `E`
+  has multiplicative reduction at `w` (Definition 3.1(b)), so `‖j(E)‖_w > 1`. It is the
+  definition `Iut.tateParameterAt` (on initial Θ-data: `Iut.InitialThetaData.tateParam`), and its
+  normalized integer order is `Iut.qOrderAt` (`Iut.InitialThetaData.qOrder`), independent of the
+  uniformizer of `F_w` used to normalize it. The only condition of Definition 3.1(c) about
+  `q_w` — `ℓ` prime to its order — is the field `q_order_coprime`, stated for every Tate
+  parameter with `j`-invariant `j(E)` and every uniformizer, so that it involves no choice.
 * Following IUT I, Remark 3.1.5, **no hypothesis that `K/F_mod` is Galois is added**:
   it is a later consequence, not a field of the definition.
 -/
@@ -141,25 +142,18 @@ structure AdmissiblePrimeData : Type _ where
   /-- `ℓ` is prime to the residue characteristics of the places of `V_mod^bad`
   (IUT I, Definition 3.1(c)). -/
   residueChar_coprime : ∀ v ∈ VBad, Nat.Coprime ℓ (residueChar v)
-  /-- The Tate parameter `q_w ∈ F_wˣ` of `E` at each bad place `w ∈ V(F)^bad`
-  (taxis #37 interface). -/
-  tate : ∀ w ∈ badPlacesOver F E VBad, TateParameter (localCompletion w)
-  /-- The Tate parameter is *the* parameter of `E` at `w`: the `j`-invariant of its
-  Tate curve is the image of `j(E)` in the completion. By taxis #37
-  (`existsUnique_splitMultiplicative_tateParameter`) this determines it uniquely. -/
-  tateJ_eq : ∀ w (hw : w ∈ badPlacesOver F E VBad),
-    (tate w hw).tateJ = FinitePlace.embedding w.maximalIdeal E.j
-  /-- A chosen uniformizer of each bad completed local field, normalizing the integer
-  order of the Tate parameter (the seam shared with the normalized-valuation
-  infrastructure of taxis #4, as documented in taxis #37). -/
-  unif : ∀ w ∈ badPlacesOver F E VBad, localCompletion w
-  /-- The chosen elements are uniformizers. -/
-  unif_isUniformizer : ∀ w (hw : w ∈ badPlacesOver F E VBad),
-    IsUniformizer (unif w hw)
-  /-- `ℓ` is prime to the normalized orders of the bad-place `q`-parameters
-  (IUT I, Definition 3.1(c)), via the `PrimeToOrder` predicate of taxis #37. -/
-  q_order_coprime : ∀ w (hw : w ∈ badPlacesOver F E VBad),
-    ((tate w hw).toOrdered (unif_isUniformizer w hw)).PrimeToOrder ℓ
+  /-- `ℓ` is prime to the normalized orders of the Tate `q`-parameters of `E` at the places of
+  `V(F)^bad` (IUT I, Definition 3.1(c)), via the `PrimeToOrder` predicate of taxis #37. The
+  condition is stated **without any choice**: for every Tate parameter `t` of `F_w` whose Tate
+  curve has `j`-invariant `j(E)` — by the uniqueness theorem of taxis #37
+  (`TateCurvesTheta.TateParameter.existsUnique_tateParameter_tateJ_eq`) this is *the* Tate
+  parameter `q_w` of `E` at `w`, which exists by the multiplicative reduction of
+  Definition 3.1(b) (`Iut.tateParameterAt`) — and for every uniformizer `π` of `F_w` (the order
+  does not depend on `π`, `Iut.orderNat_eq_qOrderAt`), `ℓ` is prime to `ord_π(t)`. In terms of
+  the derived objects this is `Iut.InitialThetaData.coprime_qOrder`. -/
+  q_order_coprime : ∀ w ∈ badPlacesOver F E VBad, ∀ t : TateParameter (localCompletion w),
+    t.tateJ = FinitePlace.embedding w.maximalIdeal E.j →
+    ∀ (π : localCompletion w) (hπ : IsUniformizer π), (t.toOrdered hπ).PrimeToOrder ℓ
 
 namespace AdmissiblePrimeData
 
@@ -170,15 +164,6 @@ kernel of the mod-`ℓ` representation, *defined* as the fixed field of `ker ρ`
 (IUT I, Definition 3.1(c)). -/
 noncomputable def torsionField : IntermediateField F Fbar :=
   IntermediateField.fixedField D.rep.ker
-
-/-- The normalized order of the Tate parameter at a bad place, as a positive integer
-(taxis #37: `OrderedTateParameter.orderNat`). -/
-noncomputable def qOrder (w : FinitePlace F) (hw : w ∈ badPlacesOver F E VBad) : ℕ :=
-  ((D.tate w hw).toOrdered (D.unif_isUniformizer w hw)).orderNat
-
-lemma qOrder_pos (w : FinitePlace F) (hw : w ∈ badPlacesOver F E VBad) :
-    0 < D.qOrder w hw :=
-  ((D.tate w hw).toOrdered (D.unif_isUniformizer w hw)).orderNat_pos
 
 end AdmissiblePrimeData
 

@@ -6,6 +6,7 @@ Authors: LANA Project
 import Iut.Concrete.Existence
 import Iut.Cor312.ThetaData.PlaceUnder
 import Iut.Cor312.ThetaData.BadPlaceNorm
+import Iut.Cor312.ThetaData.TateParameterAt
 
 /-!
 # Construction of the Tate inputs of an elliptic curve
@@ -22,7 +23,7 @@ unconditionally:
   parameter `q_w` with `j(E_{q_w}) = j(E)`;
 * the image in `F_w` of a uniformizer of the `w`-adic valuation of `F` is a uniformizer of
   the norm of `F_w` in the sense of `TateCurvesTheta.IsUniformizer`
-  (`Iut.exists_isUniformizer`).
+  (`Iut.exists_isUniformizer`, in `Iut.Cor312.ThetaData.TateParameterAt`).
 
 The resulting inputs are `EllipticCurveData.tateInputs`.
 -/
@@ -31,47 +32,6 @@ namespace Iut
 
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WeierstrassCurve
   TateCurvesTheta
-
-/-! ## Uniformizers of the completions -/
-
-section Uniformizer
-
-variable {F : Type*} [Field F] [NumberField F] (w : FinitePlace F)
-
-/-- The image in `F_w` of an element of `F` of valuation `exp (-1)` is a uniformizer of the
-normed field `F_w`. -/
-lemma isUniformizer_of_valuation_eq {π : F}
-    (hπ : w.maximalIdeal.valuation F π = WithZero.exp (-1 : ℤ)) :
-    IsUniformizer (FinitePlace.embedding w.maximalIdeal π) := by
-  have hv : Valued.v (FinitePlace.embedding w.maximalIdeal π) = WithZero.exp (-1 : ℤ) := by
-    rw [FinitePlace.embedding_apply, valuedAdicCompletion_eq_valuation', hπ]
-  have hne : FinitePlace.embedding w.maximalIdeal π ≠ 0 := by
-    rw [← (Valued.v).ne_zero_iff, hv]
-    exact WithZero.exp_ne_zero
-  refine ⟨hne, ?_, ?_⟩
-  · rw [norm_lt_one_iff_valued, hv, ← WithZero.exp_zero, WithZero.exp_lt_exp]
-    norm_num
-  · intro x
-    set π' := FinitePlace.embedding w.maximalIdeal π with hπ'
-    have hx0 : Valued.v (x : localCompletion w) ≠ 0 := (Valued.v).ne_zero_iff.mpr x.ne_zero
-    refine ⟨-WithZero.log (Valued.v (x : localCompletion w)), ?_⟩
-    -- the quotient `x / π ^ n` has valuation `1`, hence norm `1`
-    have hunit : ‖(x : localCompletion w) / π' ^ (-WithZero.log (Valued.v (x : localCompletion w)))‖
-        = 1 := by
-      rw [norm_eq_one_iff_valued, map_div₀, map_zpow₀, hv, ← WithZero.exp_zsmul, smul_neg,
-        smul_eq_mul, mul_one, neg_neg, WithZero.exp_log hx0, div_self hx0]
-    rw [norm_div, norm_zpow] at hunit
-    have hπpos : 0 < ‖π'‖ := norm_pos_iff.mpr hne
-    have hpow : 0 < ‖π'‖ ^ (-WithZero.log (Valued.v (x : localCompletion w))) := zpow_pos hπpos _
-    rw [div_eq_one_iff_eq hpow.ne'] at hunit
-    exact hunit
-
-/-- Every completion `F_w` has a uniformizer in the sense of `TateCurvesTheta.IsUniformizer`. -/
-lemma exists_isUniformizer : ∃ π : localCompletion w, IsUniformizer π := by
-  obtain ⟨π, hπ⟩ := w.maximalIdeal.valuation_exists_uniformizer F
-  exact ⟨_, isUniformizer_of_valuation_eq w hπ⟩
-
-end Uniformizer
 
 /-! ## The Tate inputs of an elliptic curve -/
 
@@ -83,7 +43,7 @@ variable (C : EllipticCurveData.{u})
 (`Iut.one_lt_valuation_j_of_mult`, via a minimal model `C • E`). -/
 lemma one_lt_norm_j {w : FinitePlace C.F} (hw : w ∈ C.badAll) :
     1 < ‖FinitePlace.embedding w.maximalIdeal C.E.j‖ :=
-  not_le.1 fun h => not_le.2 (one_lt_valuation_j_of_mult C.E w hw) ((norm_emb_le_one_iff _).1 h)
+  one_lt_norm_j_of_mult C.E hw
 
 /-- The Tate parameter of `E` at a place of multiplicative reduction: the unique Tate
 parameter of `F_w` whose Tate curve has `j`-invariant `j(E)`. -/

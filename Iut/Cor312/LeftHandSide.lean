@@ -18,7 +18,7 @@ For initial Θ-data with prime `ℓ` and bad locus `V(F)^bad`:
 
 * `log(q)` is the normalized degree of the `q`-divisor: the weighted sum, over the bad
   places `w`, of `ord_w(q_w) · log p_w`, where `ord_w(q_w)` is the normalized integer
-  order of the Tate parameter at `w` (`AdmissiblePrimeData.qOrder`, from taxis #37),
+  order of the Tate parameter at `w` (`InitialThetaData.qOrder`, derived from `j(E)`; taxis #37),
   `p_w` the residue characteristic, and the weights are the normalized
   arithmetic-degree weights (in the intended instantiation `f_w/[F : ℚ]`, `f_w` the
   residue degree, since `ord_w` is the integer order), carried as data with their
@@ -35,9 +35,10 @@ For initial Θ-data with prime `ℓ` and bad locus `V(F)^bad`:
 The finiteness of the bad locus and the values of the weights are *inputs* (fields of
 `QPilotData`), not theorems of this repository; both are provable for actual number
 fields and the intended weights, and nothing here asserts any disputed equality or
-inequality. The local Tate-parameter orders come pinned to `E` by the `j`-invariant
-characterization of taxis #37 (see `AdmissiblePrimeData.tateJ_eq`). The `q`-pilot
-*object* of IUT III (a Frobenioid-theoretic gadget) is not constructed; this module
+inequality. The local Tate-parameter orders are derived from `E` by the `j`-invariant
+characterization of taxis #37 (`InitialThetaData.tateParam`,
+`InitialThetaData.eq_tateParam`). The `q`-pilot *object* of IUT III (a Frobenioid-theoretic
+gadget) is not constructed; this module
 computes only its log-volume side, which is all that the variant statement uses —
 this distinction is exactly the "local `q`-parameter vs global `q`-pilot" separation
 requested by taxis #37.
@@ -79,7 +80,7 @@ over the bad places of `ord_w(q_w) · log p_w` (IUT I, Example 3.2(iv); see the 
 docstring). -/
 noncomputable def logQ : ℝ :=
   ∑ w ∈ Q.badFinset.attach,
-    Q.weight w.1 * (D.prime.qOrder w.1 (Q.mem_bad w.2) : ℝ) *
+    Q.weight w.1 * (D.qOrder w.1 (Q.mem_bad w.2) : ℝ) *
       Real.log (residueChar w.1)
 
 /-- The quantity `|log(q)| = (1/2ℓ) · log(q)` of IUT III, Corollary 3.12, in the

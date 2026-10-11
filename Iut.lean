@@ -30,6 +30,7 @@ import Iut.Anabelian.Tempered
 import Iut.Anabelian.TemperedAndre
 import Iut.Anabelian.Torsion
 import Iut.Basic
+import Iut.Basic.TateCurves
 import Iut.Concrete.Container
 import Iut.Concrete.CurveArithmeticProved
 import Iut.Concrete.CyclicSubgroup
@@ -108,6 +109,7 @@ import Iut.Cor312.ThetaData.TateFamilyGalois
 import Iut.Cor312.ThetaData.TateFamilyOfSplit
 import Iut.Cor312.ThetaData.TateFamilyOfTorsion
 import Iut.Cor312.ThetaData.TateIsomorphism
+import Iut.Cor312.ThetaData.TateParameterAt
 import Iut.Cor312.ThetaData.TateSign
 import Iut.Cor312.ThetaData.TateStructure
 import Iut.Cor312.ThetaData.TateStructureOfIso

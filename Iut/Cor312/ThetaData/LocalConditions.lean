@@ -107,6 +107,12 @@ theorem AdmissiblePrimeData.numberField_torsionField
   have : FiniteDimensional ℚ ↥P.torsionField := Module.Finite.trans F ↥P.torsionField
   exact { }
 
+/-- The `NumberField` instance on the `ℓ`-torsion field (derived:
+`AdmissiblePrimeData.numberField_torsionField`). -/
+instance AdmissiblePrimeData.instNumberFieldTorsionField
+    (P : AdmissiblePrimeData F E Fbar VBad) : NumberField ↥P.torsionField :=
+  P.numberField_torsionField
+
 end TorsionFieldFinite
 
 /-! ## The valuation section and local data -/

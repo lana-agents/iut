@@ -113,7 +113,7 @@ noncomputable abbrev dmod : ℕ := Module.finrank ℚ ↥(fieldOfModuli X.data.F
 `log(q)` (`QPilotData.logQ`). Derived from the Θ-data, not data. -/
 noncomputable def logQAt (p : ℕ) : ℝ :=
   ∑ w ∈ X.qPilot.badFinset.attach.filter (fun w => residueChar w.1 = p),
-    X.qPilot.weight w.1 * (X.data.prime.qOrder w.1 (X.qPilot.mem_bad w.2) : ℝ) *
+    X.qPilot.weight w.1 * (X.data.qOrder w.1 (X.qPilot.mem_bad w.2) : ℝ) *
       Real.log (residueChar w.1)
 
 lemma one_le_dmod : 1 ≤ X.dmod :=

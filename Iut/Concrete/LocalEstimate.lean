@@ -248,7 +248,7 @@ lemma logQAt_eq (p : Nat.Primes) :
   have h1 : (𝒳).logQAt p = ∑ w ∈ (D.qPilot).badFinset.attach.filter
       (fun w => residueChar w.1 = p),
       (inertDeg D.F w.1 : ℝ) / Module.finrank ℚ D.F *
-        (D.prime.qOrder w.1 ((D.qPilot).mem_bad w.2) : ℝ) *
+        (D.qOrder w.1 ((D.qPilot).mem_bad w.2) : ℝ) *
         Real.log (residueChar w.1) := rfl
   rw [h1, mul_div_assoc', mul_comm (2 * (D.ℓ : ℝ)) (Real.log p), mul_assoc, mul_div_assoc,
     mul_div_cancel_left₀ _ hℓ, Finset.mul_sum]
