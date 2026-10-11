@@ -23,9 +23,9 @@ which are identified here with the global invariants of Theorem 1.10:
 * **the different term** `InitialThetaData.logDK_sect`: `log(d^K_p)` (the contribution of `p` to
   the normalized degree of the different of `K`, averaged over *all* places of `K` over `p`) is
   the `V`-average `∑_{w ∣ p} [(F_mod)_w : ℚ_p]/[F_mod : ℚ]·d_{v(w)}·log p` of the different
-  exponents at the places `v(w) ∈ V`, because `d_v` is constant on the places of `K` over a place
-  of `F_mod` (`Iut.differentExponent_eq_of_liesOver`) for `K/F_mod` Galois (IUT I,
-  Remark 3.1.5);
+  exponents at the places `v(w) ∈ V`, because `d_v` takes the same value at all places of `K`
+  over a place of `F_mod` (`Iut.differentExponent_eq_of_liesOver`) for `K/F_mod` Galois
+  (IUT I, Remark 3.1.5);
 * **the `q`-degree** `InitialThetaData.logQAt_eq_sect`: `log(q_p)` (the normalized degree of
   the `q`-divisor of `F` at `p`) is `2ℓ·log p` times the `V`-average of `ord_p(q_v)`, because
   `ord_p(q_v) = −ord_p(j(E))/2ℓ` at the places over `V_mod^bad` (`‖q‖ = ‖j(E)‖⁻¹`,

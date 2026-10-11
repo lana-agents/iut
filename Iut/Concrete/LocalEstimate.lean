@@ -21,7 +21,7 @@ Theorem 1.10 are *derived* here from the local-field theory:
   `(j+1)·log(d^K_p) − (j²/2ℓ)·log(q_p) + log p + 4(j+1)·l*_mod·ι_p` — the bound
   `capsuleBound` of Step (v), using (R4) for the ramification terms, and identifying the
   `V`-averages of the different exponents and of the orders of the theta values with
-  `log(d^K_p)` and `log(q_p)/2ℓ` (`InitialThetaData.logDK_sect`: `d_v` is constant on the places
+  `log(d^K_p)` and `log(q_p)/2ℓ` (`InitialThetaData.logDK_sect`: `d_v` takes one value on the places
   of `K` over a place of `F_mod`, as `K/F_mod` is Galois, IUT I, Remark 3.1.5;
   `InitialThetaData.logQAt_eq_sect`: `ord_p(q_v) = −ord_p(j(E))/2ℓ` with `j(E) ∈ F_mod`);
 * at a non-distinguished prime the container is the integral structure itself
