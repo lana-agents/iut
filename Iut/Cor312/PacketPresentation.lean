@@ -36,8 +36,8 @@ container consumes such a presentation; every instantiation obligation is an exp
 structure field of the container data (taxis #43). The concrete tensor packets of a number
 field, their log-shells (via the `p`-adic logarithm) and their normalized Haar log-volume are
 constructed in this repository (`Iut/Concrete/LocalConstruct/`, taxis #4, #278) and
-instantiate the interface in `Iut/Concrete/Container.lean` (`Iut.LocalTheory.container`); no
-external local-field repository (such as `lana-agents/padic-log-volume`) is used.
+instantiate the interface in `Iut/Concrete/Container.lean` (`Iut.LocalTheory.container`), using
+the `p`-adic logarithm of `lana-agents/padic-log-volume`.
 
 ## Source correspondence
 

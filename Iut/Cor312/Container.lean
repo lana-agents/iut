@@ -55,8 +55,8 @@ The *construction* of the packet presentations from actual completions of a numb
 field — tensor products over the capsule labels and the log-shells themselves via the
 `p`-adic logarithm — is not part of this module; it is carried out in this repository in
 `Iut/Concrete/LocalConstruct/` (taxis #4, #278), and the concrete container is
-`Iut.LocalTheory.container` in `Iut/Concrete/Container.lean` (no external repository such as
-`lana-agents/padic-log-volume` is used). Here each packet presentation enters as an explicit
+`Iut.LocalTheory.container` in `Iut/Concrete/Container.lean` (using the `p`-adic logarithm of
+`lana-agents/padic-log-volume`). Here each packet presentation enters as an explicit
 structure field; nothing asserts that a theta-pilot
 image lies in the container, and no multiradial algorithm is constructed (out of scope
 for taxis #43).
