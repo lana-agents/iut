@@ -13,15 +13,15 @@ import Iut.Cor312.ThetaData.AdmissiblePrime
 The local conditions of IUT I, Definition 3.1(f) at a place `v ∈ V_mod^bad` are conditions
 on the Tate uniformization of `E` over the completion `K_v` of the ℓ-torsion field `K`
 (*The Étale Theta Function*, §1–2: `E` is a Tate curve over `K_v`, with parameter `q_v`).
-`Iut.TateFamily F E F̄ ℓ K V_mod^bad` records these uniformizations as **chosen data**
-pinned by the coordinates of the Tate parametrization (`Iut.TateStructure`), one at every
+`Iut.TateFamily F E F̄ ℓ K V_mod^bad` packages these uniformizations, pinned by the
+coordinates of the Tate parametrization (`Iut.TateStructure`), one at every
 finite place `w` of `K` over `V_mod^bad`, together with their **Galois equivariance**: for
 `σ ∈ Gal(K/F)`, the graph line and the canonical generators at `σ·w`, read on `E(K)`, are
 the images under `σ` of those at `w`. Both the existence of the uniformizations (Tate's
 theorem: the reduction at `w` is split multiplicative since `E[ℓ] ⊆ E(K)`) and their
 equivariance (uniqueness of the uniformization and naturality of the Tate parametrization)
-are theorems; as the uniformizations are uniquely determined by the pinning, carrying
-them as data does not change the mathematical content of the Θ-data.
+are theorems (`Iut.tateFamilyOfTorsion`, `Iut.TateFamily.ofStructures`), and the family of
+initial Θ-data is the derived `Iut.InitialThetaData.tate`, not a field.
 
 The objects on `E(K)`:
 

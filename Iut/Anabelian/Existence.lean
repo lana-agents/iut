@@ -42,9 +42,10 @@ proof of Corollary 2.2).
 
 ## The reduction-theoretic inputs
 
-The Θ-data carry the Tate uniformizations of `E` over the completions `K_w` at the places
-`w` over `V_mod^bad` (`InitialThetaData.tate : Iut.TateFamily`, chosen data pinned by the
-coordinates of the Tate parametrization, with their Galois equivariance). Everything the
+The construction takes a family of Tate uniformizations of `E` over the completions `K_w` at
+the places `w` over `V_mod^bad` (an `Iut.TateFamily`, pinned by the coordinates of the Tate
+parametrization, with its Galois equivariance); for initial Θ-data this is the derived family
+`InitialThetaData.tate`, constructed by Tate's theorem (`Iut.tateFamilyOfTorsion`). Everything the
 construction needs about the ℓ-torsion at the bad places — the rationality of the local
 ℓ-torsion over `K`, the graph line as a subgroup of order `ℓ`, the canonical generators as
 the cosets `±g + L` — is derived from it in `Iut.Anabelian.LocalInputs` (via the

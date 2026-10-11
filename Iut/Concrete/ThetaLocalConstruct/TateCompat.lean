@@ -10,10 +10,11 @@ import Iut.Cor312.ThetaData.BadPlaceNorm
 /-!
 # Compatibility of the Tate parameters of `F_w` and `K_v`
 
-The initial Θ-data carry two kinds of Tate parameters at a bad place: the parameter
-`q_w ∈ F_w^×` of `E` over the completion of `F` (`AdmissiblePrimeData.tate`, pinned by
+The initial Θ-data determine two kinds of Tate parameters at a bad place: the parameter
+`q_w ∈ F_w^×` of `E` over the completion of `F` (`InitialThetaData.tateParam`, characterized by
 `j(E_{q_w}) = j(E)`), and the Tate structures of `E` over the completions `K_v` of the
-`ℓ`-torsion field (`TateFamily.S`, pinned by the coordinates of the Tate parametrization).
+`ℓ`-torsion field (`InitialThetaData.tate`, `TateFamily.S`, pinned by the coordinates of the
+Tate parametrization).
 Both parameters are determined by the `j`-invariant of `E` (uniqueness of the Tate parameter
 with a given `j`-invariant, `TateCurvesTheta.TateParameter.tateJ_injective`), and the
 comparison map `F_w → K_v` carries `j(E_{q_w})` to `j(E_{q'})` for `q'` the image of `q_w`

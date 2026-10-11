@@ -266,12 +266,13 @@ noncomputable def primeData : AdmissiblePrimeData C.F C.E C.Fbar (C.VBadOf ℓ) 
   galois_deg_prime := CA.galois_deg_prime ℓ hℓ h7
   residueChar_coprime v hv :=
     (Nat.coprime_primes hℓ (residueChar_prime v)).mpr (Ne.symm hv.2.1)
-  tate w hw := TI.tate w (C.mem_badAll_of_mem_badPlacesOver hw)
-  tateJ_eq w hw := TI.tateJ_eq w _
-  unif w hw := TI.unif w (C.mem_badAll_of_mem_badPlacesOver hw)
-  unif_isUniformizer w hw := TI.unif_isUniformizer w _
-  q_order_coprime w hw :=
-    (Nat.Prime.coprime_iff_not_dvd hℓ).mpr (hP2 w (C.mem_badAll_of_mem_badPlacesOver hw))
+  q_order_coprime w hw t ht π hπ := by
+    have hw' := C.mem_badAll_of_mem_badPlacesOver hw
+    obtain rfl := TateParameter.tateJ_injective t (TI.tate w hw') (twelve_ne_zero w)
+      (ht.trans (TI.tateJ_eq w hw').symm)
+    change Nat.Coprime ℓ ((TI.tate w hw').toOrdered hπ).orderNat
+    rw [TateParameter.toOrdered_orderNat_eq _ hπ (TI.unif_isUniformizer w hw')]
+    exact (Nat.Prime.coprime_iff_not_dvd hℓ).mpr (hP2 w hw')
 
 end Construct
 
@@ -300,17 +301,23 @@ noncomputable def tateFamily : TateFamily C.E R.torsionField ℓ (C.VBadOf ℓ) 
 /-- **The initial Θ-data attached to `(E/F, ℓ)`** (IUT I, Definition 3.1; (P7) in the
 proof of IUT IV, Corollary 2.2), with `V_mod^bad = VBadOf ℓ`. -/
 noncomputable def thetaData : InitialThetaData.{u} :=
-  letI := (C.primeData CA TI hℓ h7 R hsl hP2).numberField_torsionField
   { F := C.F
     Fbar := C.Fbar
     E := C.E
     VBad := C.VBadOf ℓ
     global := C.globalData CA hP5
     prime := C.primeData CA TI hℓ h7 R hsl hP2
-    tate := C.tateFamily CA TI hℓ h7 R hsl hP2
     orb := (C.primeData CA TI hℓ h7 R hsl hP2).orbicurveData hcore
     localData := (C.primeData CA TI hℓ h7 R hsl hP2).localThetaData
       (C.tateFamily CA TI hℓ h7 R hsl hP2) hcore }
+
+/-- The derived order `ord_w(q_w)` of the constructed Θ-data is the order of the Tate input
+(uniqueness of the Tate parameter with given `j`-invariant, independence of the uniformizer). -/
+theorem thetaData_qOrder (w : FinitePlace C.F) (hw : w ∈ badPlacesOver C.F C.E (C.VBadOf ℓ)) :
+    (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore).qOrder w hw =
+      TI.qOrder w (C.mem_badAll_of_mem_badPlacesOver hw) :=
+  ((C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore).orderNat_eq_qOrder hw
+    (TI.tateJ_eq w _) (TI.unif_isUniformizer w _)).symm
 
 open scoped Classical in
 /-- **`log(q)` of the constructed Θ-data is the part of `log(q_∀)` away from `2` and
@@ -322,7 +329,8 @@ theorem logQ_eq :
     CA.badAll_finite.subset fun _ hw => C.mem_badAll_of_mem_badPlacesOver hw
   change ∑ w ∈ hfin.toFinset.attach,
       ((inertDeg C.F w.1 : ℝ) / Module.finrank ℚ C.F) *
-        ((TI.qOrder w.1 (C.mem_badAll_of_mem_badPlacesOver (hfin.mem_toFinset.mp w.2)) : ℕ) : ℝ) *
+        (((C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore).qOrder w.1 (hfin.mem_toFinset.mp w.2) :
+          ℕ) : ℝ) *
         Real.log (residueChar w.1) =
     (∑ w ∈ CA.badAll_finite.toFinset.filter (fun w => residueChar w ≠ 2 ∧ residueChar w ≠ ℓ),
       (((if h : w ∈ C.badAll then TI.qOrder w h else 0 : ℕ) : ℝ) * (inertDeg C.F w : ℝ) *
@@ -336,7 +344,8 @@ theorem logQ_eq :
   refine (Finset.sum_congr rfl (g := fun w => ((inertDeg C.F w.1 : ℝ) / Module.finrank ℚ C.F) *
       ((if h : w.1 ∈ C.badAll then TI.qOrder w.1 h else 0 : ℕ) : ℝ) *
       Real.log (residueChar w.1)) fun w _ => ?_).trans ?_
-  · rw [dif_pos (C.mem_badAll_of_mem_badPlacesOver (hfin.mem_toFinset.mp w.2))]
+  · rw [dif_pos (C.mem_badAll_of_mem_badPlacesOver (hfin.mem_toFinset.mp w.2)),
+      thetaData_qOrder]
   · rw [Finset.sum_attach _ (fun w => ((inertDeg C.F w : ℝ) / Module.finrank ℚ C.F) *
       ((if h : w ∈ C.badAll then TI.qOrder w h else 0 : ℕ) : ℝ) * Real.log (residueChar w)),
       hfinset]
