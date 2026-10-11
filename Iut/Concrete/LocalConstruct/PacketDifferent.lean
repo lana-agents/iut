@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Concrete.LocalConstruct.ResidueField
+import PadicLogVolume.TraceDuality
 
 /-!
 # The different bounds the index of `R_I` in `(R_I)^∼` (IUT IV, Proposition 1.1)
@@ -39,101 +40,14 @@ The local-different hypothesis is phrased through the trace: `y ∈ 𝔡_j^{-1}`
 
 namespace Iut
 
+open PadicLogVolume
+
 namespace LocalConstruct
 
 open NumberField
 open scoped TensorProduct
 
 universe u
-
-/-! ### Lattices of integral elements in finite `ℚ_p`-algebras -/
-
-section Lattice
-
-variable (p : Nat.Primes) (A : Type*) [CommRing A] [Algebra ℚ_[p] A] [Algebra ℤ_[p] A]
-  [IsScalarTower ℤ_[p] ℚ_[p] A] [Module.Finite ℚ_[p] A]
-
-/-- A finite `ℚ_p`-algebra is the localization of the integral closure of `ℤ_p` in it at the
-nonzero elements of `ℤ_p`. -/
-theorem isLocalization_integralClosure :
-    IsLocalization (Algebra.algebraMapSubmonoid (integralClosure ℤ_[p] A)
-      (nonZeroDivisors ℤ_[p])) A where
-  map_units := by
-    rintro ⟨_, r, hr, rfl⟩
-    rw [← IsScalarTower.algebraMap_apply, IsScalarTower.algebraMap_apply ℤ_[p] ℚ_[p] A]
-    refine (IsUnit.mk0 _ ?_).map (algebraMap ℚ_[p] A)
-    exact (map_ne_zero_iff _ (IsFractionRing.injective ℤ_[p] ℚ_[p])).mpr
-      (nonZeroDivisors.ne_zero hr)
-  surj z := by
-    obtain ⟨m, hm⟩ := IsIntegral.exists_multiple_integral_of_isLocalization
-      (nonZeroDivisors ℤ_[p]) (Rₘ := ℚ_[p]) z (Algebra.IsIntegral.isIntegral z)
-    refine ⟨(⟨m • z, hm⟩, ⟨algebraMap ℤ_[p] _ m, m, m.2, rfl⟩), ?_⟩
-    change z * algebraMap (integralClosure ℤ_[p] A) A (algebraMap ℤ_[p] _ (m : ℤ_[p])) = m • z
-    rw [← IsScalarTower.algebraMap_apply, Submonoid.smul_def, Algebra.smul_def, mul_comm]
-  exists_of_eq {x y} h := ⟨1, by
-    simp only [OneMemClass.coe_one, one_mul]
-    exact Subtype.ext h⟩
-
-/-- **A `ℚ_p`-basis of a finite `ℚ_p`-algebra which is a `ℤ_p`-basis of the integral
-closure of `ℤ_p`** (when the latter is a finitely generated `ℤ_p`-module): its vectors are
-integral, and integral elements have coordinates in `ℤ_p`. -/
-theorem exists_basis_isIntegral [Module.Finite ℤ_[p] (integralClosure ℤ_[p] A)] :
-    ∃ (n : ℕ) (b : Module.Basis (Fin n) ℚ_[p] A), (∀ i, IsIntegral ℤ_[p] (b i)) ∧
-      ∀ y : A, IsIntegral ℤ_[p] y → ∀ i, ‖b.repr y i‖ ≤ 1 := by
-  haveI := isLocalization_integralClosure p A
-  haveI : Module.IsTorsionFree ℤ_[p] A :=
-    Module.IsTorsionFree.comap (S := ℚ_[p]) (algebraMap ℤ_[p] ℚ_[p])
-      (fun r hr => by
-        rw [isRegular_iff_ne_zero] at hr ⊢
-        exact (map_ne_zero_iff _ (IsFractionRing.injective ℤ_[p] ℚ_[p])).mpr hr)
-      (fun r m => algebraMap_smul ℚ_[p] r m)
-  haveI : Module.IsTorsionFree ℤ_[p] (integralClosure ℤ_[p] A) :=
-    Function.Injective.moduleIsTorsionFree (fun x : integralClosure ℤ_[p] A => (x : A))
-      Subtype.val_injective fun _ _ => rfl
-  obtain ⟨n, bC⟩ := Module.basisOfFiniteTypeTorsionFree' (R := ℤ_[p])
-    (M := integralClosure ℤ_[p] A)
-  refine ⟨n, bC.localizationLocalization ℚ_[p] (nonZeroDivisors ℤ_[p]) A, fun i => ?_,
-    fun y hy i => ?_⟩
-  · rw [Module.Basis.localizationLocalization_apply]
-    exact (bC i).2
-  · have : y = algebraMap (integralClosure ℤ_[p] A) A ⟨y, hy⟩ := rfl
-    rw [this, Module.Basis.localizationLocalization_repr_algebraMap, PadicInt.algebraMap_apply,
-      ← PadicInt.norm_def]
-    exact PadicInt.norm_le_one _
-
-/-- **Traces of integral elements are integral**: for `x` integral over `ℤ_p` in a finite
-`ℚ_p`-algebra in which the integral closure of `ℤ_p` is finitely generated,
-`Tr(x) ∈ ℤ_p`. -/
-theorem norm_trace_le_one_of_isIntegral [Module.Finite ℤ_[p] (integralClosure ℤ_[p] A)]
-    {x : A} (hx : IsIntegral ℤ_[p] x) : ‖Algebra.trace ℚ_[p] A x‖ ≤ 1 := by
-  classical
-  obtain ⟨n, b, hb, hrepr⟩ := exists_basis_isIntegral p A
-  rw [Algebra.trace_eq_matrix_trace b, Matrix.trace]
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun i _ => ?_
-  rw [Matrix.diag_apply, Algebra.leftMulMatrix_eq_repr_mul]
-  exact hrepr _ (hx.mul (hb i)) i
-
-end Lattice
-
-/-! ### The trace of an elementary tensor -/
-
-/-- **The trace of an elementary tensor is the product of the traces**:
-`Tr_{⊗ A_i / R}(⊗ y_i) = ∏ Tr_{A_i/R}(y_i)`, for finite free `R`-algebras `A_i`. -/
-theorem PiTensorProduct.trace_tprod {R : Type*} [CommRing R] {ι : Type*} [Fintype ι]
-    (A : ι → Type*) [∀ i, CommRing (A i)] [∀ i, Algebra R (A i)] [∀ i, Module.Free R (A i)]
-    [∀ i, Module.Finite R (A i)] (y : ∀ i, A i) :
-    Algebra.trace R (⨂[R] i, A i) (PiTensorProduct.tprod R y) =
-      ∏ i, Algebra.trace R (A i) (y i) := by
-  classical
-  let b := fun i => Module.Free.chooseBasis R (A i)
-  rw [Algebra.trace_eq_matrix_trace (Basis.piTensorProduct b)]
-  simp_rw [fun i => Algebra.trace_eq_matrix_trace (b i) (y i)]
-  simp only [Matrix.trace, Matrix.diag_apply, Algebra.leftMulMatrix_eq_repr_mul]
-  rw [Fintype.prod_sum]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [Basis.piTensorProduct_apply, PiTensorProduct.tprod_mul_tprod,
-    Basis.piTensorProduct_repr_tprod_apply]
-  rfl
 
 variable {K : Type u} [Field K] [NumberField K]
 
