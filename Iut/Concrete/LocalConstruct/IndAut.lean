@@ -7,26 +7,22 @@ import Iut.Concrete.LocalConstruct.LogShell
 import Iut.Concrete.LocalConstruct.ArchPrimitive
 
 /-!
-# The indeterminacy automorphisms of the tensor packets (IUT IV, Propositions 1.2, 1.5)
+# The indeterminacy automorphisms of the tensor packets (IUT III, Theorem 3.11; IUT IV, 1.2, 1.5)
 
-The indeterminacies (Ind1), (Ind2) act on a packet `⊗_j K_{c j}` through the automorphisms `φ`
-of IUT IV, Proposition 1.2: at a prime `p`, **every** automorphism of the finite-dimensional
-`ℚ_p`-vector space `log_p(R_I^×) ⊗ ℚ_p` (the packet) that induces an automorphism of the
-submodule `log_p(R_I^×) = ⊗_{ℤ_p} log_p(R_i^×)`. Since the factor log-shells are
-`𝓘_i = (2p)⁻¹·log_p(R_i^×)`, the lattice `log_p(R_I^×)` is `(2p)^{|I|}` times the tensor
-product of the log-shells `⊗_j 𝓘_{c j}` (`tensorLogShell`), and a linear automorphism preserves
-one iff it preserves the other. So the class is
+The indeterminacy (Ind2) of IUT III, Theorem 3.11 acts on a tensor packet
+`⊗_{j ∈ S} (⊕_{v ∣ v_ℚ} K_v)` through *independent copies of `Ism`* — the automorphisms of the
+`ℤ_p`-modules `log_p(𝓞_v^×)`, equivalently of the log-shells `𝓘_v = (2p)⁻¹·log_p(𝓞_v^×)` —
+*on each direct summand of each tensor factor*. On the tuple component `⊗_j K_{c j}` of the
+packet this is the class `tensorAut p c` of tensor products `⊗_j g_j` with `g_j` a
+`ℚ_p`-linear automorphism of `K_{c j}` preserving `𝓘_{c j}` (`factorAut`). The field
+automorphisms of the factors (part of (Ind1)) preserve the log-shells and are among them.
 
-`indAut (.finite p) c = {φ | φ is a ℚ_p-linear automorphism with φ(⊗_j 𝓘_{c j}) = ⊗_j 𝓘_{c j}}`.
+The class `latticeAut p c` of *all* `ℚ_p`-linear automorphisms preserving `⊗_j 𝓘_j`, the
+automorphisms `φ` of IUT IV, Proposition 1.2, is much larger; it is used here only as an
+auxiliary class (`tensorAut_subset_latticeAut`): its members are continuous, and the union of
+the images of a bounded set lies in a scaled lattice `p^{-k}·⊗_j 𝓘_{c j}`, hence is bounded.
 
-These are not ring homomorphisms; they contain the Galois automorphisms `⊗_j σ_j` (`galAut`),
-but are much larger (an open compact subgroup `≅ GL_n(ℤ_p)`). At the archimedean place the class
-is `primAut` (IUT IV, Proposition 1.5): the maps induced by the primitive automorphisms of the
-factors (complex conjugation and multiplication by `±1`, `±√−1`), which preserve `B_I`.
-
-This file proves that `indAut` contains the identity, consists of continuous maps, and that the
-union of the images of a bounded open region is admissible (it lies in a scaled lattice
-`p^{-k}·⊗_j 𝓘_{c j}`, which is bounded).
+At the archimedean place the class is `primAut` (`ArchPrimitive.lean`).
 -/
 
 namespace Iut
@@ -156,6 +152,103 @@ theorem latticeAut_thetaShell_admissible :
   iUnion_latticeAut_admissible p c (isBounded_logShell p c) (isOpen_logShell p c)
     (haar_logShell_pos p c)
 
+/-! ### The indeterminacy (Ind2) of IUT III, Theorem 3.11: tensor products of `Ism`-actions -/
+
+variable {p c} in
+/-- A `ℚ_p`-linear automorphism of the packet maps `⊗_j 𝓘_j` into itself as soon as it maps
+the elementary tensors of log-shell elements into `⊗_j 𝓘_j`. -/
+lemma image_tensorLogShell_subset (e : Tensor K (.finite p) c ≃ₗ[ℚ_[p]] Tensor K (.finite p) c)
+    (he : ∀ x ∈ logShellSet p c, e x ∈ tensorLogShell p c) :
+    e '' tensorLogShell p c ⊆ tensorLogShell p c := by
+  rintro _ ⟨x, hx, rfl⟩
+  induction hx using Submodule.span_induction with
+  | mem x hx => exact he x hx
+  | zero => rw [map_zero]; exact (Submodule.span ℤ_[p] _).zero_mem
+  | add x y _ _ hx hy => rw [map_add]; exact (Submodule.span ℤ_[p] _).add_mem hx hy
+  | smul r x _ hx =>
+    rw [padicInt_smul_def, map_smul, ← padicInt_smul_def]
+    exact (Submodule.span ℤ_[p] _).smul_mem r hx
+
+/-- **The `Ism`-indeterminacy of a factor** (IUT III, Proposition 1.2(vi) and Theorem
+3.11 (Ind2); for `v` over `p`): the automorphisms of the `ℤ_p`-module `𝓘_v`
+(equivalently of `log_p(𝓞_v^×)`), extended `ℚ_p`-linearly to `K_v`. -/
+def factorAut (v : Place K) : Set (Factor K p v ≃ₗ[ℚ_[p]] Factor K p v) :=
+  {g | g '' factorLogShell p v = factorLogShell p v}
+
+/-- **The indeterminacy automorphisms of a packet at a prime** (IUT III, Theorem 3.11,
+(Ind2)): the tensor products `⊗_j g_j` of independent automorphisms `g_j ∈ Ism` of the log-shells
+of the factors (one for each direct summand of each tensor factor; in the tuple component
+`⊗_j K_{c j}` of the packet these act through the summands `K_{c j}`). The automorphisms of the
+factors as fields (part of (Ind1)) preserve the log-shells, hence are among them. -/
+def tensorAut : Set (Tensor K (.finite p) c → Tensor K (.finite p) c) :=
+  {φ | ∃ g : ∀ j, Factor K p (c j) ≃ₗ[ℚ_[p]] Factor K p (c j),
+    (∀ j, g j ∈ factorAut p (c j)) ∧ ⇑(PiTensorProduct.congr g) = φ}
+
+variable {p c} in
+lemma congr_mem_logShellSet {g : ∀ j, Factor K p (c j) ≃ₗ[ℚ_[p]] Factor K p (c j)}
+    (hg : ∀ j, g j '' factorLogShell p (c j) ⊆ factorLogShell p (c j))
+    {x : Tensor K (.finite p) c} (hx : x ∈ logShellSet p c) :
+    PiTensorProduct.congr g x ∈ logShellSet p c := by
+  obtain ⟨b, rfl⟩ := hx
+  rw [PiTensorProduct.congr_tprod]
+  exact ⟨fun j => ⟨g j (b j), hg j ⟨_, (b j).2, rfl⟩⟩, rfl⟩
+
+/-- The tensor products of `Ism`-automorphisms are lattice automorphisms. -/
+theorem tensorAut_subset_latticeAut : tensorAut p c ⊆ latticeAut p c := by
+  rintro _ ⟨g, hg, rfl⟩
+  refine ⟨PiTensorProduct.congr g, rfl, Set.Subset.antisymm ?_ ?_⟩
+  · exact image_tensorLogShell_subset _ fun x hx =>
+      Submodule.subset_span (congr_mem_logShellSet (fun j => (hg j).le) hx)
+  · intro x hx
+    have hsymm : ∀ j, (g j).symm '' factorLogShell p (c j) ⊆ factorLogShell p (c j) := by
+      intro j y hy
+      have := (hg j).symm ▸ hy
+      obtain ⟨z, hz, rfl⟩ := hy
+      rw [← (hg j)] at hz
+      obtain ⟨w, hw, rfl⟩ := hz
+      simpa using hw
+    have hs : (PiTensorProduct.congr g).symm '' tensorLogShell p c ⊆ tensorLogShell p c := by
+      refine image_tensorLogShell_subset _ fun y hy => Submodule.subset_span ?_
+      obtain ⟨b, rfl⟩ := hy
+      rw [PiTensorProduct.congr_symm_tprod]
+      exact ⟨fun j => ⟨(g j).symm (b j), hsymm j ⟨_, (b j).2, rfl⟩⟩, rfl⟩
+    exact ⟨(PiTensorProduct.congr g).symm x, hs ⟨x, hx, rfl⟩, by simp⟩
+
+lemma id_mem_tensorAut : id ∈ tensorAut p c :=
+  ⟨fun _ => LinearEquiv.refl _ _, fun _ => by simp [factorAut], by
+    ext x
+    change PiTensorProduct.congr (fun _ => LinearEquiv.refl _ _) x = x
+    induction x using PiTensorProduct.induction_on with
+    | smul_tprod r m => rw [map_smul, PiTensorProduct.congr_tprod]; rfl
+    | add x y hx hy => rw [map_add, hx, hy]⟩
+
+/-- The union of the images of a bounded open set of positive measure under the tensor
+products of `Ism`-automorphisms is admissible. -/
+theorem iUnion_tensorAut_admissible {S : Set (Tensor K (.finite p) c)}
+    (hb : Bornology.IsBounded S) (ho : IsOpen S) (hpos : 0 < haar (.finite p) c S) :
+    (⋃ φ ∈ tensorAut p c, φ '' S) ∈ admissible (.finite p) c := by
+  have hsub : S ⊆ ⋃ φ ∈ tensorAut p c, φ '' S := fun x hx =>
+    Set.mem_iUnion₂.mpr ⟨id, id_mem_tensorAut p c, ⟨x, hx, rfl⟩⟩
+  have hB : Bornology.IsBounded (⋃ φ ∈ tensorAut p c, φ '' S) :=
+    (isBounded_iUnion_latticeAut p c hb).subset (Set.biUnion_subset_biUnion_left
+      (tensorAut_subset_latticeAut p c))
+  have hopen : IsOpen (⋃ φ ∈ tensorAut p c, φ '' S) := by
+    refine isOpen_biUnion fun φ hφ => ?_
+    obtain ⟨e, rfl, -⟩ := tensorAut_subset_latticeAut p c hφ
+    exact (LinearEquiv.toContinuousLinearEquiv e).toHomeomorph.isOpenMap S ho
+  refine ⟨?_, hB.isCompact_closure, hopen.measurableSet,
+    lt_of_lt_of_le hpos (measure_mono hsub), ?_⟩
+  · obtain ⟨x, hx⟩ := nonempty_of_measure_ne_zero hpos.ne'
+    exact ⟨x, hsub hx⟩
+  · exact lt_of_le_of_lt (measure_mono subset_closure) hB.isCompact_closure.measure_lt_top
+
+/-- The union of the images of the log-shell `𝓘_I` under the indeterminacy automorphisms at a
+prime is admissible. -/
+theorem tensorAut_thetaShell_admissible :
+    (⋃ φ ∈ tensorAut p c, φ '' logShell p c) ∈ admissible (.finite p) c :=
+  iUnion_tensorAut_admissible p c (isBounded_logShell p c) (isOpen_logShell p c)
+    (haar_logShell_pos p c)
+
 end Finite
 
 /-! ### The indeterminacy automorphisms, uniformly in the rational place -/
@@ -166,16 +259,16 @@ variable (vQ : RationalPlace) (c : ι → Place K)
 Propositions 1.2 and 1.5): the lattice automorphisms at a prime, the primitive automorphisms at
 the archimedean place. -/
 def indAut : ∀ (vQ : RationalPlace) (c : ι → Place K), Set (Tensor K vQ c → Tensor K vQ c)
-  | .finite p, c => latticeAut p c
+  | .finite p, c => tensorAut p c
   | .infinite, c => primAut c
 
-lemma indAut_finite_eq (p : Nat.Primes) : indAut (.finite p) c = latticeAut p c := rfl
+lemma indAut_finite_eq (p : Nat.Primes) : indAut (.finite p) c = tensorAut p c := rfl
 
 lemma indAut_infinite_eq : indAut .infinite c = primAut c := rfl
 
 lemma id_mem_indAut : id ∈ indAut vQ c := by
   cases vQ with
-  | finite p => exact id_mem_latticeAut p c
+  | finite p => exact id_mem_tensorAut p c
   | infinite => exact id_mem_primAut c
 
 /-- **`LocalTheory.theta_admissible`**: the union of the images of a scaled integral
@@ -183,7 +276,11 @@ structure under the indeterminacy automorphisms is admissible. -/
 theorem theta_admissible (s : Tensor K vQ c) (hs : IsUnit s) :
     (⋃ φ ∈ indAut vQ c, φ '' (s • integralAt vQ c)) ∈ admissible vQ c := by
   cases vQ with
-  | finite p => exact latticeAut_theta_admissible p c s hs
+  | finite p =>
+    exact iUnion_tensorAut_admissible p c
+      (isCompact_smul_integralAt (vQ := .finite p) (c := c) s).isBounded
+      (isOpen_smul_of_isUnit (vQ := .finite p) hs (isOpen_integral p c))
+      (haar_smul_integralAt_pos (vQ := .finite p) hs)
   | infinite => exact primAut_theta_admissible c s hs
 
 end LocalConstruct

@@ -232,7 +232,7 @@ theorem prop14iii_lattice (hc : ∀ j, ∃ w : FinitePlace K, c j = Place.finite
         ((∏ i, incl p c i (W i) (hWi i) (δ i)) * (Z * r)) ∈ tensorLogShell p c := by
       rw [prod_incl_eq_tprod hc']
       exact tprod_scalA_mul_mem_tensorLogShell hc' hδr
-    obtain ⟨e', rfl, he'⟩ := hφ
+    obtain ⟨e', rfl, he'⟩ := tensorAut_subset_latticeAut p c hφ
     have hφL : e' ((∏ i, incl p c i (W i) (hWi i) (scalA c i)) *
         ((∏ i, incl p c i (W i) (hWi i) (δ i)) * (Z * r))) ∈ tensorLogShell p c :=
       he' ▸ ⟨_, hL, rfl⟩
@@ -301,7 +301,8 @@ theorem latticeAut_integral_subset
     (hc : ∀ j, ∃ w : FinitePlace K, c j = Place.finite w ∧ residueChar w = p)
     (hp : Odd (p : ℕ)) (hunr : ∀ j w, c j = Place.finite w → ramIdx K w = 1) :
     ∀ φ ∈ indAut (.finite p) c, φ '' integral p c ⊆ integral p c := by
-  rintro φ ⟨e, rfl, he⟩
+  intro φ hφ
+  obtain ⟨e, rfl, he⟩ := tensorAut_subset_latticeAut p c hφ
   have hL : tensorLogShell p c = integral p c := by
     rw [tensorLogShell_eq_order_of_unramified p c hp hunr,
       integral_eq_order_of_unramified p c hc hunr]
