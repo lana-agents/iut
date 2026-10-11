@@ -34,11 +34,21 @@ Step (v), obtains via Proposition 1.7. So the literal reading does not suffice f
 Theorem 1.10 / ABC argument: the points produced by the Belyi reduction have good and bad
 places above the same prime, where `min_l ord_p(q_{c(l)}) = 0`.
 
-IUT IV's reading equals the literal one **up to (Ind1)**: a label permutation `σ` (acting on the
-labels and on the tuples, `c ↦ c ∘ σ⁻¹`) preserves the weights `∏_l w(c l)` and the
-procession-normalized log-volume, so every (Ind1)-image of the theta-pilot region has the same
-volume as the image for `σ = id`. IUT IV thus takes the holomorphic hull over (Ind2), (Ind3)
-for each (Ind1)-image separately, and the label `j` is a representative.
+IUT IV's reading equals the literal one **up to (Ind1)** (`Iut/Concrete/Ind1Invariance.lean`):
+a label permutation `σ`, acting on the labels, on the tuples (`c ↦ c ∘ σ⁻¹`) and on the tensor
+packets (`LocalTheory.ind1Reindex`), preserves the weights `∏_l w(c l)`
+(`LocalTheory.tupleWeight_comp_perm`), the integral structures, log-shells, hull regions and
+log-volumes of the components (`LocalTheory.image_integral_ind1Reindex`,
+`LocalTheory.image_shell_ind1Reindex`, `LocalTheory.image_logShell_infinite_ind1Reindex`,
+`LocalTheory.image_smul_integral_ind1Reindex`, `LocalTheory.componentVol_image_ind1Reindex`),
+and maps the theta-pilot region with label positions `S` onto the one with label positions
+`σ(S)` (`InitialThetaData.image_thetaFiniteOn_ind1Reindex`); the region with the theta value at
+any label `l` is the image of IUT IV's region under the transposition `(l j)`
+(`InitialThetaData.thetaFiniteOn_singleton_eq_image`). Hence the procession-normalized
+log-volume of the hull is (Ind1)-invariant (`InitialThetaData.rhsDataOn_perm`), and every
+single-label reading gives IUT IV's value (`InitialThetaData.rhsDataOn_singleton`): IUT IV takes
+the holomorphic hull over (Ind2), (Ind3) for each (Ind1)-image separately, and the label `j` is
+a representative.
 -/
 
 namespace Iut

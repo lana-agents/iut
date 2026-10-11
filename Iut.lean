@@ -35,6 +35,7 @@ import Iut.Concrete.CurveArithmeticProved
 import Iut.Concrete.CyclicSubgroup
 import Iut.Concrete.Existence
 import Iut.Concrete.GaloisPlaces
+import Iut.Concrete.Ind1Invariance
 import Iut.Concrete.Invariants
 import Iut.Concrete.Literal
 import Iut.Concrete.LocalConstruct.Admissible

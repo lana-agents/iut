@@ -65,9 +65,13 @@ Two readings of (Ind1) are formalized:
   `Cor312VariantHolds → Cor312LiteralHolds` (`cor312Literal_of_variant`,
   `Iut/Concrete/Literal.lean`); the converse is the step from IUT III, Corollary 3.12 to IUT IV,
   Steps (iv)–(v). IUT IV's reading agrees with the literal one "up to (Ind1)": a label
-  permutation preserves the weights and the procession-normalized volume, so IUT IV takes the
-  hull over (Ind2), (Ind3) for each (Ind1)-image separately, whereas the hull of the literal
-  union is governed by `min_l ord_p(q_{v_l})` rather than the average.
+  permutation preserves the weights (`LocalTheory.tupleWeight_comp_perm`) and maps the region
+  with the theta value at the label `j` onto the region with the theta value at any other
+  label (`InitialThetaData.thetaFiniteOn_singleton_eq_image`), preserving the
+  procession-normalized volume of the hull (`InitialThetaData.rhsDataOn_perm`,
+  `InitialThetaData.rhsDataOn_singleton`, `Iut/Concrete/Ind1Invariance.lean`). So IUT IV takes
+  the hull over (Ind2), (Ind3) for each (Ind1)-image separately, whereas the hull of the
+  literal union is governed by `min_l ord_p(q_{v_l})` rather than the average.
 
 **Provenance.** The human-written specification of the right-hand side (taxis #33, #35, #43–#45)
 fixes the composition (container, theta-pilot region, holomorphic hull, procession-normalized
