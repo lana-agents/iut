@@ -50,6 +50,8 @@ import Iut.Concrete.LocalConstruct.Indeterminacy
 import Iut.Concrete.LocalConstruct.Integral
 import Iut.Concrete.LocalConstruct.LatticeSandwich
 import Iut.Concrete.LocalConstruct.LocalDifferent
+import Iut.Concrete.LocalConstruct.LocalLogShell
+import Iut.Concrete.LocalConstruct.LogLattice
 import Iut.Concrete.LocalConstruct.LogShell
 import Iut.Concrete.LocalConstruct.MaximalOrder
 import Iut.Concrete.LocalConstruct.Packet
@@ -96,6 +98,7 @@ import Iut.Cor312.ThetaData.GalCompletion
 import Iut.Cor312.ThetaData.GlobalField
 import Iut.Cor312.ThetaData.LocalAut
 import Iut.Cor312.ThetaData.LocalConditions
+import Iut.Cor312.ThetaData.LocalTateOfExistence
 import Iut.Cor312.ThetaData.Orbicurve
 import Iut.Cor312.ThetaData.PlaceUnder
 import Iut.Cor312.ThetaData.Places

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Cor312.ThetaData.LocalConditions
+import Iut.Cor312.ThetaData.LocalTateOfExistence
 import Iut.Cor312.ThetaData.TateFamily
 import Iut.Cor312.ThetaData.TateFamilyOfTorsion
 import Iut.Cor312.ThetaData.TateParameterAt
@@ -194,21 +195,103 @@ theorem coprime_qOrder (w : FinitePlace D.F) (hw : w ∈ badPlacesOver D.F D.E D
 
 /-! ### Derived objects: the Tate uniformizations over the completions of `K` -/
 
-open scoped Classical in
 /-- **The Tate uniformizations of `E` over the completions `K_w`** at the places `w` of `K` over
 `V_mod^bad` (derived; IUT I, Definition 3.1(f) refers to them): Tate's theorem at each such place,
 from the multiplicative reduction of `E` at the places of `F` over `V_mod^bad` (of odd residue
-characteristic) and the rationality of the ℓ-torsion over `K` (`Iut.tateFamilyOfTorsion`). The
-Galois equivariance of the family is a theorem (`Iut.TateFamily.ofStructures`). -/
+characteristic) and the rationality of the ℓ-torsion over `K` (`Iut.tateFamilyOfTorsion`, through
+`Iut.IsInitialThetaGlobalData.tateFamily`, which uses only `global` and `prime`). The Galois
+equivariance of the family is a theorem (`Iut.TateFamily.ofStructures`). -/
 noncomputable def tate : TateFamily D.E D.prime.torsionField D.prime.ℓ D.VBad :=
-  tateFamilyOfTorsion D.E D.prime.torsionField D.prime.ℓ
-    (fun v hv => by
-      have h := D.global.bad_odd v hv
-      intro h2
-      rw [h2] at h
-      exact (Nat.not_odd_iff_even.mpr even_two) h)
-    D.global.bad_multiplicative D.prime.ℓ_prime (by have := D.prime.five_le; omega)
-    D.prime.TK le_rfl ((sq D.prime.ℓ).symm.le.trans D.prime.card_TK.symm.le)
+  D.global.tateFamily D.prime
+
+/-! ### Construction with the local Tate structures filled in by existence -/
+
+open scoped Classical in
+/-- **Initial Θ-data with the local Tate structures given by existence** (IUT I,
+Definition 3.1(f)). At the places `v` of the section over `V_mod^bad`, the conditions of
+Definition 3.1(f) refer to the Tate uniformization of `E` over `K_v`; it exists (Tate's theorem:
+`E` has multiplicative reduction over `F` at these places, and its `ℓ`-torsion is rational over
+`K`, so the reduction over `K_v` is split multiplicative) and is unique up to `±1`
+(`Iut.TateStructureUnique`). This constructor takes all data and conditions of initial Θ-data
+except the fields `LocalThetaData.tateX`, `LocalThetaData.tateC`, which it fills with the
+canonical structures `Iut.IsInitialThetaGlobalData.canonicalTateX`, `canonicalTateC` from the
+same existence argument as `InitialThetaData.tate`; the bad-place conditions `bad_type`,
+`bad_theta_model`, `epsilon_graph` are stated for these canonical structures. -/
+noncomputable def ofExistence (F : Type u) [Field F] [NumberField F] (Fbar : Type u) [Field Fbar]
+    [Algebra F Fbar] [IsAlgClosure F Fbar] (E : WeierstrassCurve F) [E.IsElliptic]
+    (VBad : Set (FinitePlace ↥(fieldOfModuli F E)))
+    (global : IsInitialThetaGlobalData F E Fbar VBad) (prime : AdmissiblePrimeData F E Fbar VBad)
+    (orb : OrbicurveData F E Fbar VBad prime) (sect : ValuationSection F E Fbar VBad prime)
+    (local_diagram_cartesian : ∀ v : FinitePlace ↥(fieldOfModuli F E),
+      Anabelian.Orbicurve.IsCartesianSquare
+        (orb.XKu_to_XK.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal))
+        (orb.XK_to_CK.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal))
+        (orb.XKu_to_CKu.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal))
+        (orb.CKu_to_CK.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal)))
+    (decomp : ∀ _ : FinitePlace ↥prime.torsionField,
+      Subgroup (Fbar ≃ₐ[↥prime.torsionField] Fbar))
+    (decomp_isClosed : ∀ v, IsClosed ((decomp v) : Set (Fbar ≃ₐ[↥prime.torsionField] Fbar)))
+    (bad_type : ∀ v (hv : v ∈ VBad),
+      (localize (sect.sectFin v) orb.XKu).IsTypeOneZModPM prime.ℓ
+        (global.canonicalTateX orb sect v hv))
+    (bad_theta_model : ∀ v (hv : v ∈ VBad),
+      (localize (sect.sectFin v) orb.XKu).IsThetaRootModel prime.ℓ
+        (global.canonicalTateX orb sect v hv))
+    (epsilon_graph : ∀ v (hv : v ∈ VBad),
+      orb.CKu.cuspBaseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal) orb.epsilon =
+        (localize (sect.sectFin v) orb.CKu).canonicalGraphCusp
+          (global.canonicalTateC orb sect v hv)) :
+    InitialThetaData.{u} where
+  F := F
+  Fbar := Fbar
+  E := E
+  VBad := VBad
+  global := global
+  prime := prime
+  orb := orb
+  localData :=
+    { sect := sect
+      local_diagram_cartesian := local_diagram_cartesian
+      decomp := decomp
+      decomp_isClosed := decomp_isClosed
+      tateX := global.canonicalTateX orb sect
+      tateC := global.canonicalTateC orb sect
+      bad_type := bad_type
+      bad_theta_model := bad_theta_model
+      epsilon_graph := epsilon_graph }
+
+section OfExistence
+
+variable {F : Type u} [Field F] [NumberField F] {Fbar : Type u} [Field Fbar] [Algebra F Fbar]
+  [IsAlgClosure F Fbar] {E : WeierstrassCurve F} [E.IsElliptic]
+  {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
+  {global : IsInitialThetaGlobalData F E Fbar VBad} {prime : AdmissiblePrimeData F E Fbar VBad}
+  {orb : OrbicurveData F E Fbar VBad prime} {sect : ValuationSection F E Fbar VBad prime}
+  {hcart decomp hclosed htype htheta heps}
+
+@[simp]
+lemma ofExistence_localData_sect :
+    (ofExistence F Fbar E VBad global prime orb sect hcart decomp hclosed htype htheta
+      heps).localData.sect = sect := rfl
+
+@[simp]
+lemma ofExistence_localData_tateX :
+    (ofExistence F Fbar E VBad global prime orb sect hcart decomp hclosed htype htheta
+      heps).localData.tateX = global.canonicalTateX orb sect := rfl
+
+@[simp]
+lemma ofExistence_localData_tateC :
+    (ofExistence F Fbar E VBad global prime orb sect hcart decomp hclosed htype htheta
+      heps).localData.tateC = global.canonicalTateC orb sect := rfl
+
+/-- The Tate family of initial Θ-data built by `ofExistence` is `global.tateFamily prime`, the
+family from which its local Tate structures are taken. -/
+@[simp]
+lemma ofExistence_tate :
+    (ofExistence F Fbar E VBad global prime orb sect hcart decomp hclosed htype htheta
+      heps).tate = global.tateFamily prime := rfl
+
+end OfExistence
 
 end InitialThetaData
 

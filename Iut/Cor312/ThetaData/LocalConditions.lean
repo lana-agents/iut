@@ -205,8 +205,10 @@ structure LocalThetaData (O : OrbicurveData F E Fbar VBad P) : Type u where
   decomp_isClosed : ∀ v, IsClosed ((decomp v) : Set (Fbar ≃ₐ[↥P.torsionField] Fbar))
   /-- The Tate structure (Tate uniformization of `E` over `K_v`) on the local model `X̲_v`
   at each place of the section over `V_mod^bad` (IUT I, Definition 3.1(f) refers to the
-  Tate uniformization; chosen data, pinned by the coordinates of the Tate parametrization
-  in `Iut.TateStructure`). -/
+  Tate uniformization; pinned by the coordinates of the Tate parametrization in
+  `Iut.TateStructure`). The uniformization exists at these places and is unique up to `±1`;
+  `Iut.InitialThetaData.ofExistence` fills this field (and `tateC`) with the structures given by
+  the existence argument (`Iut.IsInitialThetaGlobalData.canonicalTateX`). -/
   tateX : ∀ v ∈ VBad, TateStructure (localize (sect.sectFin v) O.XKu).E
   /-- The Tate structure on the local model `C̲_v`. -/
   tateC : ∀ v ∈ VBad, TateStructure (localize (sect.sectFin v) O.CKu).E
