@@ -7,7 +7,7 @@ import Iut.Concrete.ThetaLocalConstruct.Data
 import Iut.Cor312.Statement
 
 /-!
-# The concrete theta-pilot region and the concrete variant data (taxis #278, #1449)
+# The concrete theta-pilot region and the concrete variant data (taxis #33, #35)
 
 This file fills the remaining inputs of the Corollary 3.12 variant with concrete
 implementations, as functions of the initial Θ-data `D` alone: the tensor packets of its
@@ -25,24 +25,47 @@ summands of the packet at a rational place `v_ℚ` are indexed by the tuples of 
 
 ## The theta-pilot region
 
-In IUT IV, Step (v) of the proof of Theorem 1.10, the union of the possible images of
-the Θ-pilot object in the tensor packet at a distinguished prime `p`, for the capsule
-`S_{j+1} = {0, …, j}` and a tuple `(v_i)_{i ∈ S_{j+1}}`, is contained in the images
-`φ(p^λ·(R_I)^∼)` under the indeterminacy automorphisms `φ` of Proposition 1.2, where
-`λ = ord_p(q_{v_j}^{j²})` and `q_v` is the `2ℓ`-th root of the Tate parameter of
-IUT I, Example 3.2(iv) (`λ = 0` at good places). At the archimedean place the images lie
-in `φ(⊗ 𝓘_{v_i})`, the images of the tensor product of the archimedean log-shells
-(Proposition 1.5(iii),(iv)).
+IUT III, Corollary 3.12 defines `−|log(Θ)|` as the procession-normalized log-volume of the
+holomorphic hull of the union of the possible images of a Θ-pilot object, subject to the
+indeterminacies (Ind1), (Ind2), (Ind3) of Theorem 3.11. The concrete region models them as
+follows, at a prime `p`, for the capsule `S_{j+1} = {0, …, j}` (`j = i + 1`) and a tuple
+`c = (v_l)_{l ∈ S_{j+1}}` of places of `V` over `p`:
 
-The **concrete theta-pilot region** of the variant is exactly this container:
+* the theta value of the capsule is `q_{v_l}^{j²}` placed in the `l`-th tensor factor
+  (`scaleEltAt`), `q_v` the `2ℓ`-th root of the Tate parameter (IUT I, Example 3.2(iv); `1` at
+  good places);
+* **(Ind3)**, the upper semi-compatibility of the log-Kummer correspondence (the Kummer images
+  lie *in the log-shells*): the theta value acts on the tensor product of the log-shells
+  `⊗_l 𝓘_{v_l}` (`LocalTheory.shell`), not on the integral structure;
+* **(Ind2)**: independent automorphisms `g_l ∈ Ism` of the log-shells of the factors, acting by
+  `⊗_l g_l` (`LocalTheory.indAut`, `LocalConstruct.tensorAut`);
+* **(Ind1)**: the automorphisms of the factors (contained in (Ind2)) and the permutations of the
+  labels of `S_{j+1}`, which move the theta value to any label `l`.
 
-`Θ_{i,v_ℚ} := ∏_{tuples c} ⋃_{φ ∈ indAut} φ(q_{v_j}^{j²}·(R_I)^∼)` (`p` finite), resp.
-`∏_c ⋃_{φ} φ(⊗ 𝓘)` (archimedean).
+So, for a set `S i ⊆ S_{j+1}` of admissible label positions,
 
-It contains the union of the possible images of the Θ-pilot object in the sense of
-IUT III, Theorem 3.11 (that containment is the content of IUT IV, Step (v); it is *not*
-needed for the implication to ABC, which only uses the region itself). This is the
-project-owner-specified concretization of the input `RHSData.thetaPilot` of taxis #35.
+`Θ_{i,p} := ∏_c ⋃_{φ ∈ indAut} φ(⋃_{l ∈ S i} q_{v_l}^{j²}·⊗_l 𝓘_{v_l})` (`thetaFiniteOn`), and
+`Θ_{i,∞} := ∏_c ⋃_{φ ∈ indAut} φ(𝓘_∞)` (`LocalTheory.thetaInfinite`; the absolutely convex hull
+of the tensors of elements of the archimedean log-shells, with the sign-and-conjugation
+indeterminacies of IUT III, Theorem 3.11 (Ind2) and Proposition 1.2(vii)).
+
+Two readings of (Ind1) are formalized:
+
+* `S i = {j}` (`ivLabels`): IUT IV, proof of Theorem 1.10, Steps (iv)–(v), which compute with the
+  theta value at the label `j` only; this gives `concreteVariantData` and `Cor312VariantHolds`,
+  the hypothesis of the implication to ABC;
+* `S i = S_{j+1}` (`litLabels`): the literal reading of IUT III, Corollary 3.12, giving
+  `concreteVariantDataLit` and `Cor312LiteralHolds`. The literal region is larger, so
+  `Cor312VariantHolds → Cor312LiteralHolds` (`cor312Literal_of_variant`,
+  `Iut/Concrete/Literal.lean`); the converse is the step from IUT III, Corollary 3.12 to IUT IV,
+  Steps (iv)–(v).
+
+**Provenance.** The human-written specification of the right-hand side (taxis #33, #35, #43–#45)
+fixes the composition (container, theta-pilot region, holomorphic hull, procession-normalized
+log-volume) but not the theta-pilot region itself ("the precise mathematical definition will be
+supplied by the project owner"). The region above is the project's concretization, chosen to be
+faithful to IUT III, Theorem 3.11 and Corollary 3.12, with IUT IV's reading of (Ind1) as the
+one deviation (documented above and in `Literal.lean`).
 
 ## The `q`-pilot data
 
@@ -333,10 +356,9 @@ noncomputable def concreteVariantDataLit : Corollary312VariantData.{u} where
   qPilot := D.qPilot
   rhsData := D.rhsDataLit
 
-/-- **The Corollary 3.12 variant** (IUT III, Corollary 3.12, in the form of IUT IV,
-Theorem 1.10's input): for all initial Θ-data `D` (IUT I, Definition 3.1, stated about the
-genuine étale and tempered fundamental groups of the model orbicurves), the concrete variant
-data of `D` satisfy the variant inequality `−|log(q)| ≤ −|log(Θ)|`. -/
+/-- **The Corollary 3.12 variant** (IUT III, Corollary 3.12, with (Ind1) read as in IUT IV,
+proof of Theorem 1.10, Steps (iv)–(v)): for all initial Θ-data `D` (IUT I, Definition 3.1), the
+concrete variant data of `D` satisfy the variant inequality `−|log(q)| ≤ −|log(Θ)|`. -/
 def Cor312VariantHolds : Prop :=
   ∀ D : InitialThetaData.{0}, Corollary312Variant (concreteVariantData D)
 

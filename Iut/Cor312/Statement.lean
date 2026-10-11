@@ -18,8 +18,9 @@ project-owner-specified **variant of IUT III, Corollary 3.12**, assembled from
   (taxis #43–#45), and
 * the theta-pilot right-hand side `−|log(Θ)|` (taxis #35),
 
-stated about the model orbicurves with their genuine étale and tempered fundamental groups
-and genuine cores (`Iut.Anabelian`), and the Tate `q`-parameter stack of taxis #37
+stated about the model orbicurves with their genuine cores (`Iut.Anabelian`; the étale and
+tempered fundamental groups are derived definitions), and the Tate `q`-parameter stack of
+taxis #37
 (`lana-agents/tate-curves-theta`).
 
 ## The statement and its specification boundary
@@ -33,8 +34,8 @@ right-hand-side data. **It is deliberately left without proof and without axioms
 declaration in this repository proves, assumes, or axiomatizes it. This is the
 visibly marked conjectural/specification boundary required by taxis #33 — proving the
 proposition is explicitly out of scope for the project, and the honesty boundary of
-this repository (see the README) forbids smuggling it in axiomatically or as a
-hypothesis of a "theorem".
+this repository (see the README) forbids smuggling it in axiomatically. It enters the
+main theorem only as an explicit hypothesis (`h312` of `Iut.classicalABC_of_variant`).
 
 ## Non-identification with the published Corollary 3.12
 
@@ -51,9 +52,11 @@ This formalization must not be read as Mochizuki's published Corollary 3.12:
   hull-admissibility of the theta-pilot region is a hypothesis, and no disputed
   implication is encoded as a proved theorem.
 
-The intended statement may differ from the formulation printed in the IUT papers; the
-data, hypotheses, definitions and conclusion follow the per-issue specifications of
-taxis #33–#45 supplied by the project owner.
+The intended statement may differ from the formulation printed in the IUT papers. The
+human-written specifications of taxis #33–#45 fix the data, the composition of the two sides
+and the interfaces; the concrete inputs (the theta-pilot region, its indeterminacies, the
+container and its weights) are the project's concretization, chosen to be faithful to IUT III,
+Theorem 3.11 and Corollary 3.12 (`Iut/Concrete/ThetaRegion.lean`).
 -/
 
 namespace Iut

@@ -73,7 +73,8 @@ open NumberField WeierstrassCurve OrbicurveDataSection
 
 /-- **Initial Θ-data** (IUT I, Definition 3.1; taxis #38): the packaged tuple
 `(F̄/F, X_F, ℓ, C̲_K, V, V_mod^bad, ε)`, stated about the model orbicurves with their genuine
-étale fundamental groups, genuine cores and tempered fundamental groups. See the module docstring
+cores (the étale and tempered fundamental groups are derived definitions). See the module
+docstring
 for the chosen-data/derived-object
 inventory and the honesty boundary. -/
 structure InitialThetaData : Type (u + 1) where

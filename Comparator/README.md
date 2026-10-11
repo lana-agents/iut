@@ -45,17 +45,20 @@ theorem Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC := by
 * The hypothesis is `Iut.Cor312VariantHolds :=
   ∀ D : InitialThetaData.{0}, Corollary312Variant (concreteVariantData D)`
   (`Iut/Concrete/ThetaRegion.lean`). Its vocabulary is a project definition and cannot be
-  inlined: it covers the initial Θ-data of IUT I, Definition 3.1, stated about the genuine
-  étale and tempered fundamental groups of the model orbicurves (`pi1`,
-  `tempered-fundamental-groups`), together with the tensor packets with their log-shells,
-  log-volumes and hulls, the theta-pilot region, and the variant inequality. The
-  theta-pilot region is the union of the images of `q_{v_j}^{j²}·(R_I)^∼` under the
-  indeterminacy automorphisms of IUT IV, Propositions 1.2 and 1.5
-  (`Iut/Concrete/LocalConstruct/IndAut.lean`): at a prime, all `ℚ_p`-linear automorphisms
-  of the packet preserving the lattice `⊗_j 𝓘_j`; at `∞`, the maps `⊗_j ψ_j` with
-  `ψ_j ∈ {id, conj, −1, −conj}` (IUT III, Theorem 3.11 (Ind1), (Ind2); `ArchIndAut.lean`),
-  applied at `∞` to the tensor products of log-shell elements, with hulls among the polydiscs
-  `a·B_I`.
+  inlined: it covers the initial Θ-data of IUT I, Definition 3.1 (stated about the model
+  orbicurves with their genuine cores; the étale and tempered fundamental groups of `pi1`,
+  `tempered-fundamental-groups` are derived definitions), the tensor packets at the places of
+  the valuation section `V ≅ V_mod` with their log-shells, log-volumes and hulls (IUT III,
+  Remark 3.1.1), the theta-pilot region, and the variant inequality. The theta-pilot region
+  models the indeterminacies of IUT III, Theorem 3.11: at a prime, the union of the images of
+  `q_{v_j}^{j²}·⊗_l 𝓘_{v_l}` (the tensor product of the log-shells, (Ind3)) under the tensor
+  products `⊗_l g_l` of independent automorphisms of the log-shells of the factors ((Ind2),
+  `Iut/Concrete/LocalConstruct/IndAut.lean`); at `∞`, the images of the log-shell under the
+  maps `⊗_l ψ_l`, `ψ_l ∈ {id, conj, −1, −conj}`, with hulls among the polydiscs `a·B_I`.
+  (Ind1) is read as in IUT IV, proof of Theorem 1.10, Steps (iv)–(v) (the theta value at the
+  label `j`); the literal reading of IUT III, Corollary 3.12 (the union over all labels) is
+  `Iut.Cor312LiteralHolds`, implied by `Iut.Cor312VariantHolds`
+  (`Iut.cor312Literal_of_variant`, `Iut/Concrete/Literal.lean`).
 
 `config.json` lists this one theorem, has no definition holes, and permits only `propext`,
 `Quot.sound` and `Classical.choice`. `ABC` and `ABC.radical` are not definition holes

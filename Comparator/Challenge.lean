@@ -41,9 +41,10 @@ Besides the Mathlib module `Mathlib.Analysis.SpecialFunctions.Pow.Real` (for `Re
 closure also provides `Set.Finite`, `Set.Pairwise`, `Nat.Coprime` and `Nat.primeFactors`), the
 only import is `Iut.Concrete.ThetaRegion`, the module that defines
 `Iut.Cor312VariantHolds`. Its import closure consists of the modules that define the
-statement vocabulary of the hypothesis (the initial Θ-data with the genuine étale and
-tempered fundamental groups from `pi1` and `tempered-fundamental-groups`, the tensor packets
-with their log-shells, log-volumes and hulls, the theta-pilot region, the variant
+statement vocabulary of the hypothesis (the initial Θ-data of IUT I, Definition 3.1, with the
+genuine cores and the derived étale and tempered fundamental groups from `pi1` and
+`tempered-fundamental-groups`, the tensor packets with their log-shells, log-volumes and hulls,
+the theta-pilot region with the indeterminacies of IUT III, Theorem 3.11, the variant
 inequality). None of the modules that prove the implication (`Iut.MainTheorem`,
 `Iut.Tripod`, `Iut.Implication`, `Iut.Abc`, ...) is imported;
 `scripts/AuditComparatorChallenge.lean` checks this, and that no declaration of the trusted
