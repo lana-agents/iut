@@ -38,6 +38,8 @@ directly.
 
 namespace Iut
 
+open PadicLogVolume
+
 namespace LocalConstruct
 
 open NumberField

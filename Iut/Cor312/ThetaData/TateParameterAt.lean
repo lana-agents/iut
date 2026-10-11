@@ -3,7 +3,7 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
-import Iut.Basic.TateCurves
+import TateCurvesTheta.QParameter.OfJ
 import Iut.Cor312.ThetaData.PlaceUnder
 import Iut.Cor312.ThetaData.ValuationTransfer
 import Iut.Cor312.ThetaData.BadPlaceNorm

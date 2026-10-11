@@ -26,6 +26,8 @@ indeterminacy automorphisms `φ = ⊗_i g_i` of IUT III, Theorem 3.11 (Ind2) (`t
 
 namespace Iut
 
+open PadicLogVolume
+
 namespace LocalConstruct
 
 open NumberField IsDedekindDomain
@@ -125,8 +127,8 @@ local notation "pw" w => ((residueChar w : ℕ) : completionAt K w)
 
 /-- **`x·𝓘_w ⊆ p^m·𝓘_w`** with `m = ⌊ord_p x − a − b⌋` (IUT IV, Proposition 1.2(i)). -/
 theorem exists_mul_mem_logShell (w : FinitePlace K) {x : completionAt K w} (hx : x ≠ 0)
-    {y : completionAt K w} (hy : y ∈ Iut.logShell (completionAt K w) (residueChar w)) :
-    ∃ y' ∈ Iut.logShell (completionAt K w) (residueChar w),
+    {y : completionAt K w} (hy : y ∈ PadicLogVolume.logShell (completionAt K w) (residueChar w)) :
+    ∃ y' ∈ PadicLogVolume.logShell (completionAt K w) (residueChar w),
       x * y = (pw w) ^ ⌊ordp K w x - (logLatticeA (residueChar w) (ramIdx K w) +
         logLatticeB (residueChar w) (ramIdx K w))⌋ * y' := by
   set a := logLatticeA (residueChar w) (ramIdx K w)
@@ -212,8 +214,8 @@ theorem incl_smul_tensorLogShell_subset (l : ι) (x : completionAt K (finPart K 
   set t : ℚ_[p] := ((p : ℕ) : ℚ_[p]) ^ shellExp (c := c) l x
   have hres' := hres hc l
   -- the factor statement, transported to `p`
-  have hfac : ∀ y ∈ Iut.logShell (completionAt K (finPart K (c l))) p,
-      ∃ y' ∈ Iut.logShell (completionAt K (finPart K (c l))) p,
+  have hfac : ∀ y ∈ PadicLogVolume.logShell (completionAt K (finPart K (c l))) p,
+      ∃ y' ∈ PadicLogVolume.logShell (completionAt K (finPart K (c l))) p,
         factorMk p (c l) x * factorMk p (c l) y = t • factorMk p (c l) y' := by
     intro y hy
     rw [← hres'] at hy

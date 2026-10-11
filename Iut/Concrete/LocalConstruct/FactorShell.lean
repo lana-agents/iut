@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Concrete.LocalConstruct.LogShell
-import Iut.Concrete.LocalConstruct.LogLattice
+import PadicLogVolume.LogLattice
 
 /-!
 # The log-shell of a completion between two scaled rings of integers (IUT IV, Prop. 1.2(i))
@@ -22,6 +22,8 @@ needed to apply the bounds of `LogLattice.lean`.
 -/
 
 namespace Iut
+
+open PadicLogVolume
 
 namespace LocalConstruct
 
@@ -182,7 +184,7 @@ lemma norm_eq_rpow_of_ordp {x : completionAt K w} (hx : x ≠ 0) {t : ℝ} (ht :
 
 /-- **`(2p)⁻¹·ϖ_a·𝓞_w ⊆ 𝓘_w`** (IUT IV, Proposition 1.2(i), first inclusion). -/
 theorem mul_mem_logShell_of_norm_le_one {r : completionAt K w} (hr : ‖r‖ ≤ 1) :
-    (2 * pw)⁻¹ * (varpiA w * r) ∈ Iut.logShell (completionAt K w) (residueChar w) := by
+    (2 * pw)⁻¹ * (varpiA w * r) ∈ PadicLogVolume.logShell (completionAt K w) (residueChar w) := by
   have hp : (residueChar w).Prime := residueChar_prime w
   have hpk : ‖((residueChar w : ℕ) : completionAt K w)‖ < 1 := norm_residueChar_lt_one w
   refine mem_logShell_of_norm_le hp hpk (ramIdx_pos' w) ?_
@@ -191,7 +193,7 @@ theorem mul_mem_logShell_of_norm_le_one {r : completionAt K w} (hr : ‖r‖ ≤
 
 /-- **`𝓘_w ⊆ (2p)⁻¹·ϖ_b·𝓞_w`** (IUT IV, Proposition 1.2(i), second inclusion). -/
 theorem norm_div_le_one_of_mem_logShell {y : completionAt K w}
-    (hy : y ∈ Iut.logShell (completionAt K w) (residueChar w)) :
+    (hy : y ∈ PadicLogVolume.logShell (completionAt K w) (residueChar w)) :
     ‖y / ((2 * pw)⁻¹ * varpiB w)‖ ≤ 1 := by
   have hp : (residueChar w).Prime := residueChar_prime w
   have hpk : ‖((residueChar w : ℕ) : completionAt K w)‖ < 1 := norm_residueChar_lt_one w

@@ -33,6 +33,8 @@ Proposition 1.4(iv)).
 
 namespace Iut
 
+open PadicLogVolume
+
 namespace LocalConstruct
 
 open NumberField

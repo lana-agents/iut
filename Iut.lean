@@ -30,7 +30,6 @@ import Iut.Anabelian.Tempered
 import Iut.Anabelian.TemperedAndre
 import Iut.Anabelian.Torsion
 import Iut.Basic
-import Iut.Basic.TateCurves
 import Iut.Concrete.Container
 import Iut.Concrete.CurveArithmeticProved
 import Iut.Concrete.CyclicSubgroup
@@ -51,12 +50,10 @@ import Iut.Concrete.LocalConstruct.Indeterminacy
 import Iut.Concrete.LocalConstruct.Integral
 import Iut.Concrete.LocalConstruct.LatticeSandwich
 import Iut.Concrete.LocalConstruct.LocalDifferent
-import Iut.Concrete.LocalConstruct.LogLattice
 import Iut.Concrete.LocalConstruct.LogShell
 import Iut.Concrete.LocalConstruct.MaximalOrder
 import Iut.Concrete.LocalConstruct.Packet
 import Iut.Concrete.LocalConstruct.PacketDifferent
-import Iut.Concrete.LocalConstruct.PadicLog
 import Iut.Concrete.LocalConstruct.Prop14
 import Iut.Concrete.LocalConstruct.Prop14Lattice
 import Iut.Concrete.LocalConstruct.ResidueField
