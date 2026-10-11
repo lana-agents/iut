@@ -35,6 +35,7 @@ import Iut.Concrete.CurveArithmeticProved
 import Iut.Concrete.CyclicSubgroup
 import Iut.Concrete.Existence
 import Iut.Concrete.Invariants
+import Iut.Concrete.Literal
 import Iut.Concrete.LocalConstruct.Admissible
 import Iut.Concrete.LocalConstruct.ArchLogShell
 import Iut.Concrete.LocalConstruct.ArchPrimitive
@@ -58,6 +59,7 @@ import Iut.Concrete.LocalConstruct.Prop14
 import Iut.Concrete.LocalConstruct.Prop14Lattice
 import Iut.Concrete.LocalConstruct.ResidueField
 import Iut.Concrete.LocalConstruct.ScaleVolume
+import Iut.Concrete.LocalConstruct.ShellBound
 import Iut.Concrete.LocalConstruct.TensorIntegral
 import Iut.Concrete.LocalConstruct.Theory
 import Iut.Concrete.LocalConstruct.ThetaAdmissible

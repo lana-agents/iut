@@ -104,9 +104,33 @@ lemma exists_subset_inv_pow_smul_tensorLogShell {S : Set (Tensor K (.finite p) c
         mul_le_mul_of_nonneg_right hk.le (le_trans zero_le_one (le_max_right _ _))
     _ = r := div_mul_cancel₀ _ (lt_max_of_lt_right one_pos).ne'
 
+/-- The tensor product of the log-shells is open (an additive subgroup containing a ball). -/
+lemma isOpen_tensorLogShell : IsOpen (tensorLogShell p c) := by
+  obtain ⟨r, hr, hsub⟩ := exists_closedBall_subset_order p c
+  let G : AddSubgroup (Tensor K (.finite p) c) :=
+    (Submodule.span ℤ_[p] (logShellSet p c)).toAddSubgroup
+  change IsOpen (G : Set (Tensor K (.finite p) c))
+  exact AddSubgroup.isOpen_of_mem_nhds _ (Filter.mem_of_superset (Metric.closedBall_mem_nhds 0 hr)
+    (hsub.trans (order_subset_tensorLogShell p c)))
+
 /-- The tensor product of the log-shells is bounded. -/
 lemma isBounded_tensorLogShell : Bornology.IsBounded (tensorLogShell p c) :=
   (isBounded_logShell p c).subset (tensorLogShell_subset_logShell p c)
+
+/-- Scaled tensor products of log-shells `s·⊗_j 𝓘_j` (`s` a unit) are bounded open sets of
+positive Haar measure. -/
+lemma smul_tensorLogShell_bounded_open_pos (s : Tensor K (.finite p) c) (hs : IsUnit s) :
+    Bornology.IsBounded (s • tensorLogShell p c) ∧ IsOpen (s • tensorLogShell p c) ∧
+      0 < haar (.finite p) c (s • tensorLogShell p c) := by
+  have ho : IsOpen (s • tensorLogShell p c) :=
+    isOpen_smul_of_isUnit (vQ := .finite p) hs (isOpen_tensorLogShell p c)
+  refine ⟨?_, ho, ho.measure_pos _ ⟨s • 0, Set.smul_mem_smul_set
+    (Submodule.zero_mem (Submodule.span ℤ_[p] (logShellSet p c)))⟩⟩
+  have hcont : Continuous fun z : Tensor K (.finite p) c => s * z :=
+    continuous_const.mul continuous_id
+  rw [smul_set_eq_image]
+  exact (((isBounded_tensorLogShell p c).isCompact_closure.image hcont).isBounded).subset
+    (Set.image_mono subset_closure)
 
 /-- **The union of the images of a bounded set under the lattice automorphisms is
 bounded**: it lies in `(p^k)⁻¹ • ⊗_j 𝓘_{c j}`. -/

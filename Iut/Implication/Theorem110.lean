@@ -28,7 +28,7 @@ What is proved here, following the printed proof step by step:
   standard procession of length `ℓ* = (ℓ−1)/2` using the identities (E1), (E2)
   (`sum_affine_quadratic`), giving the "procession-normalized upper bound"
   `((ℓ+5)/4)·log(d^K_{v_ℚ}) − ((ℓ+1)/24)·log(q_{v_ℚ}) + log(s^ℚ_{v_ℚ}) +
-  (ℓ+5)·l*_mod·log(s^≤_{v_ℚ})` at distinguished primes and `((ℓ+5)/4)·log π` at the
+  (ℓ+9)·l*_mod·log(s^≤_{v_ℚ})` at distinguished primes and `((ℓ+5)/4)·log π` at the
   archimedean place;
 * Step (viii): the sum over `v_ℚ`, the substitution of Corollary 3.12, the estimate
   `l*_mod·log(s^≤) ≤ (3/2)·(e*_mod·ℓ + η_prm)` from Proposition 1.6
@@ -79,34 +79,35 @@ lemma assembly {ℓ d D Q S T P DF E e lg : ℝ} (hℓ : 7 ≤ ℓ) (hd : 1 ≤ 
     (_hQ : 0 ≤ Q) (_hS : 0 ≤ S) (_hT : 0 ≤ T) (_hP0 : 0 ≤ P) (hP : P ≤ 2) (hDF : 0 ≤ DF)
     (_hlg0 : 0 ≤ lg) (hlg : lg ≤ ℓ) (he : 552960 * ℓ ≤ e) (hE : e ≤ E)
     (h1 : -12 * Q ≤ 6 * ℓ * (ℓ + 5) * D - ℓ * (ℓ + 1) * Q + 24 * ℓ * S +
-      24 * ℓ * (ℓ + 5) * T + 6 * ℓ * (ℓ + 5) * P)
+      24 * ℓ * (ℓ + 9) * T + 6 * ℓ * (ℓ + 5) * P)
     (h2 : D ≤ DF + 2 * lg + 21) (h3 : S ≤ 2 * d * DF + 5 + lg) (h4 : 2 * T ≤ 3 * E) :
     ℓ * Q ≤ 6 * (ℓ + 20 * d) * DF + 120 * ℓ * E := by
   have hE0 : 0 ≤ E := by linarith
   have hℓ5 : 0 ≤ ℓ + 5 := by linarith
   -- the bracket `B` of the local bounds and its estimate `B'`
-  set B : ℝ := (ℓ + 5) * D + 4 * S + 4 * (ℓ + 5) * T + (ℓ + 5) * P with hB
+  have hℓ9 : 0 ≤ ℓ + 9 := by linarith
+  set B : ℝ := (ℓ + 5) * D + 4 * S + 4 * (ℓ + 9) * T + (ℓ + 5) * P with hB
   have step1 : (ℓ ^ 2 + ℓ - 12) * Q ≤ 6 * ℓ * B := by rw [hB]; nlinarith
   have hB' : B ≤ (ℓ + 5 + 8 * d) * DF + (2 * ℓ + 14) * lg + 23 * ℓ + 135 +
-      6 * (ℓ + 5) * E := by
+      6 * (ℓ + 9) * E := by
     rw [hB]
-    nlinarith [mul_le_mul_of_nonneg_left h2 hℓ5, mul_le_mul_of_nonneg_left h4 hℓ5,
+    nlinarith [mul_le_mul_of_nonneg_left h2 hℓ5, mul_le_mul_of_nonneg_left h4 hℓ9,
       mul_le_mul_of_nonneg_left hP hℓ5]
   have hpos : 0 < ℓ ^ 2 + ℓ - 12 := by nlinarith
   -- the polynomial comparison of the two sides
   have hpoly : 6 * ℓ ^ 2 * ((ℓ + 5 + 8 * d) * DF + (2 * ℓ + 14) * lg + 23 * ℓ + 135 +
-      6 * (ℓ + 5) * E) ≤ (ℓ ^ 2 + ℓ - 12) * (6 * (ℓ + 20 * d) * DF + 120 * ℓ * E) := by
+      6 * (ℓ + 9) * E) ≤ (ℓ ^ 2 + ℓ - 12) * (6 * (ℓ + 20 * d) * DF + 120 * ℓ * E) := by
     have hDFc : 6 * ℓ ^ 2 * (ℓ + 5 + 8 * d) * DF ≤ (ℓ ^ 2 + ℓ - 12) * (6 * (ℓ + 20 * d)) * DF := by
       apply mul_le_mul_of_nonneg_right _ hDF
       nlinarith [mul_nonneg (sub_nonneg.2 hd) (show (0:ℝ) ≤ 12 * ℓ ^ 2 + 20 * ℓ - 240 by nlinarith),
         mul_le_mul hℓ hℓ (by norm_num) (by linarith)]
-    have hrest : 6 * ℓ ^ 2 * ((2 * ℓ + 14) * lg + 23 * ℓ + 135 + 6 * (ℓ + 5) * E) ≤
+    have hrest : 6 * ℓ ^ 2 * ((2 * ℓ + 14) * lg + 23 * ℓ + 135 + 6 * (ℓ + 9) * E) ≤
         (ℓ ^ 2 + ℓ - 12) * (120 * ℓ * E) := by
       have hlg' : (2 * ℓ + 14) * lg + 23 * ℓ + 135 ≤ 63 * ℓ ^ 2 := by nlinarith
       have he' : 63 * ℓ ^ 2 ≤ ℓ * E / 8000 := by nlinarith
       have hA : 6 * ℓ ^ 2 * ((2 * ℓ + 14) * lg + 23 * ℓ + 135) ≤ 6 * ℓ ^ 2 * (ℓ * E / 8000) :=
         mul_le_mul_of_nonneg_left (hlg'.trans he') (by positivity)
-      have hpoly' : 0 ≤ ℓ * E * (83 * ℓ ^ 2 - 60 * ℓ - 1440) :=
+      have hpoly' : 0 ≤ ℓ * E * (83 * ℓ ^ 2 - 204 * ℓ - 1440) :=
         mul_nonneg (mul_nonneg (by linarith) hE0) (by nlinarith)
       have hcube : 0 ≤ ℓ ^ 3 * E := by positivity
       nlinarith [hA, hpoly', hcube]
@@ -117,7 +118,7 @@ lemma assembly {ℓ d D Q S T P DF E e lg : ℝ} (hℓ : 7 ≤ ℓ) (hd : 1 ≤ 
       _ ≤ ℓ * (6 * ℓ * B) := mul_le_mul_of_nonneg_left step1 (by linarith)
       _ = 6 * ℓ ^ 2 * B := by ring
       _ ≤ 6 * ℓ ^ 2 * ((ℓ + 5 + 8 * d) * DF + (2 * ℓ + 14) * lg + 23 * ℓ + 135 +
-          6 * (ℓ + 5) * E) := mul_le_mul_of_nonneg_left hB' (by positivity)
+          6 * (ℓ + 9) * E) := mul_le_mul_of_nonneg_left hB' (by positivity)
       _ ≤ _ := hpoly
   exact le_of_mul_le_mul_left step2 hpos
 
@@ -145,11 +146,13 @@ lemma sum_card_standard {P : Procession ℕ} {L : ℕ} (hP : P = Procession.stan
 a distinguished prime `p`, via (E1) and (E2). -/
 lemma sum_capsuleBound (L : ℕ) (p : ℕ) :
     ∑ i : Fin L, inv.capsuleBound (i + 2) p =
-      (inv.logDK p + 4 * inv.lmod * inv.ι p) * (L * (L + 3) / 2) -
+      (inv.logDK p + 4 * inv.lmod * inv.ι p) * (L * (L + 3) / 2) +
+        4 * inv.lmod * inv.ι p * L -
         X.logQAt p / (2 * X.ℓ) * (L * (L + 1) * (2 * L + 1) / 6) + Real.log p * L := by
   calc ∑ i : Fin L, inv.capsuleBound (i + 2) p
       = ∑ i : Fin L, ((inv.logDK p + 4 * inv.lmod * inv.ι p) * ((i : ℝ) + 2) +
-          (-(X.logQAt p / (2 * X.ℓ))) * ((i : ℝ) + 1) ^ 2 + Real.log p) :=
+          (-(X.logQAt p / (2 * X.ℓ))) * ((i : ℝ) + 1) ^ 2 +
+            (Real.log p + 4 * inv.lmod * inv.ι p)) :=
         Finset.sum_congr rfl fun i _ => by unfold capsuleBound; push_cast; ring
     _ = _ := by rw [sum_affine_quadratic]; ring
 
@@ -258,14 +261,24 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
   simp only [sum_capsuleBound] at hsum
   -- the totals over the distinguished primes
   have hQsum : ∑ p ∈ inv.dst, X.logQAt p = X.qPilot.logQ := X.sum_logQAt cert.bad_mem_dst
-  have hsum' : ∑ p ∈ inv.dst, ((inv.logDK p + 4 * inv.lmod * inv.ι p) * (L * (L + 3) / 2) -
+  have hsum' : ∑ p ∈ inv.dst, ((inv.logDK p + 4 * inv.lmod * inv.ι p) * (L * (L + 3) / 2) +
+      4 * inv.lmod * inv.ι p * L -
       X.logQAt p / (2 * X.ℓ) * (L * (L + 1) * (2 * L + 1) / 6) + Real.log p * L) =
-      (inv.logDKtot + 4 * inv.lmod * inv.logSle) * (L * (L + 3) / 2) -
+      (inv.logDKtot + 4 * inv.lmod * inv.logSle) * (L * (L + 3) / 2) +
+        4 * inv.lmod * inv.logSle * L -
         X.qPilot.logQ / (2 * X.ℓ) * (L * (L + 1) * (2 * L + 1) / 6) + inv.logSQ * L := by
     unfold logDKtot logSle logSQ
-    rw [← hQsum, Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.sum_mul,
-      ← Finset.sum_mul, ← Finset.sum_mul, ← Finset.sum_div, Finset.sum_add_distrib,
+    rw [← hQsum]
+    have hsplit : ∀ p ∈ inv.dst, (inv.logDK p + 4 * inv.lmod * inv.ι p) * (L * (L + 3) / 2) +
+        4 * inv.lmod * inv.ι p * L -
+        X.logQAt p / (2 * X.ℓ) * (L * (L + 1) * (2 * L + 1) / 6) + Real.log p * L =
+        inv.logDK p * (L * (L + 3) / 2) + inv.lmod * inv.ι p * (4 * (L * (L + 3) / 2) + 4 * L) -
+          X.logQAt p * ((L * (L + 1) * (2 * L + 1) / 6) / (2 * X.ℓ)) + Real.log p * L :=
+      fun p _ => by ring
+    rw [Finset.sum_congr rfl hsplit]
+    simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.sum_mul,
       ← Finset.mul_sum]
+    ring
   rw [hsum'] at hsum
   -- Corollary 3.12: `−|log(q)| ≤ −|log(Θ)|`
   set q : ℝ := X.qPilot.logQ / (2 * X.ℓ) with hqdef
@@ -276,7 +289,8 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
   -- clear the denominators: multiply by `24ℓ` and cancel `L`
   have hmul := mul_le_mul_of_nonneg_left hrhs (by positivity : (0 : ℝ) ≤ 24 * X.ℓ)
   have hcancel : (L : ℝ) * (-(24 * X.ℓ * q)) ≤
-      L * (12 * X.ℓ * (inv.logDKtot + 4 * inv.lmod * inv.logSle) * (L + 3) -
+      L * (12 * X.ℓ * (inv.logDKtot + 4 * inv.lmod * inv.logSle) * (L + 3) +
+        96 * X.ℓ * (inv.lmod * inv.logSle) -
         4 * X.ℓ * q * ((L + 1) * (2 * L + 1)) + 24 * X.ℓ * inv.logSQ +
         12 * X.ℓ * Real.log Real.pi * (L + 3)) := by linarith [hmul]
   have h1L := le_of_mul_le_mul_left hcancel hLpos
@@ -286,7 +300,7 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
   have hq2 : X.ℓ ^ 2 * X.qPilot.logQ = 2 * X.ℓ ^ 3 * q := by rw [hq]; ring
   have h1 : -12 * X.qPilot.logQ ≤ 6 * X.ℓ * (X.ℓ + 5) * inv.logDKtot -
       X.ℓ * (X.ℓ + 1) * X.qPilot.logQ + 24 * X.ℓ * inv.logSQ +
-      24 * X.ℓ * (X.ℓ + 5) * (inv.lmod * inv.logSle) +
+      24 * X.ℓ * (X.ℓ + 9) * (inv.lmod * inv.logSle) +
       6 * X.ℓ * (X.ℓ + 5) * Real.log Real.pi := by
     linarith [h1L, hq, hq1, hq2]
   -- the remaining inputs of the assembly

@@ -55,10 +55,12 @@ variable {X : Corollary312VariantData.{u}} (inv : Theorem110Invariants X)
 
 /-- The Step (v) upper bound for the packet log-volume of the container of theta-pilot
 images at a distinguished prime `p`, for a capsule of cardinality `n = j + 1`:
-`n·log(d^K_p) − ((n−1)²/2ℓ)·log(q_p) + log p + 4·n·l*_mod·ι_p`. -/
+`n·log(d^K_p) − ((n−1)²/2ℓ)·log(q_p) + log p + 4·(n+1)·l*_mod·ι_p`. The ramification term
+counts `n + 1` factors: one for each label, and one more for the factor carrying the theta value
+(the cost of the log-shell base region of (Ind3), `LocalTheory.prop14_iii`). -/
 noncomputable def capsuleBound (n : ℕ) (p : ℕ) : ℝ :=
   n * inv.logDK p - ((n : ℝ) - 1) ^ 2 / (2 * X.ℓ) * X.logQAt p + Real.log p +
-    4 * n * inv.lmod * inv.ι p
+    4 * ((n : ℝ) + 1) * inv.lmod * inv.ι p
 
 /-- **The local estimates of Steps (iv)–(vii)** as an explicit certificate: for every
 capsule `i` and rational place `v_ℚ`, a hull region `cont i v_ℚ` containing the

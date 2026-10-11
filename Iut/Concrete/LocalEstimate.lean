@@ -94,16 +94,16 @@ end InitialThetaData
 /-- Evaluation of the weighted average of the per-tuple bounds (Proposition 1.7). -/
 lemma sum_bound_eval {ι E : Type*} [Fintype ι] [Fintype E] (w : E → ℝ)
     (hw : ∑ e, w e = 1) (o d : E → ℝ) (J L T : ℝ) (j : ι) [inst : Fintype (ι → E)] :
-    ∑ c : ι → E, (∏ l, w (c l)) * ((-J * o (c j) + ∑ l, d (c l) + 1) * L + ∑ _l : ι, T) =
+    ∑ c : ι → E, (∏ l, w (c l)) * ((-J * o (c j) + ∑ l, d (c l) + 1) * L + ∑ _l : ι, T + T) =
       (-J * ∑ e, w e * o e + Fintype.card ι * ∑ e, w e * d e + 1) * L +
-        Fintype.card ι * T := by
+        (Fintype.card ι + 1) * T := by
   classical
   rw [Subsingleton.elim inst Pi.instFintype]
   clear inst
   have key : ∀ c : ι → E, (∏ l, w (c l)) * ((-J * o (c j) + ∑ l, d (c l) + 1) * L +
-      ∑ _l : ι, T) = (-J * L) * ((∏ l, w (c l)) * o (c j)) +
+      ∑ _l : ι, T + T) = (-J * L) * ((∏ l, w (c l)) * o (c j)) +
         L * ((∏ l, w (c l)) * ∑ l, d (c l)) + L * (∏ l, w (c l)) +
-        (Fintype.card ι * T) * (∏ l, w (c l)) := by
+        ((Fintype.card ι + 1) * T) * (∏ l, w (c l)) := by
     intro c
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     ring
@@ -151,8 +151,7 @@ lemma prop14 (i : Fin (nCaps (D := D))) (p : Nat.Primes)
     (c : Lab i → LocalTheory.Fiber D.Kt (.finite p)) :
     ∃ a : LocalTheory.Tensor D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c), IsUnit a ∧
       (∀ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
-        φ '' (D.scaleElt _ i p c • LocalTheory.integral D.Kt (.finite p)
-            (LocalTheory.tuple D.Kt _ c)) ⊆
+        φ '' (D.scaleElt _ i p c • LocalTheory.shell D.Kt p (LocalTheory.tuple D.Kt _ c)) ⊆
           a • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)) ∧
       LocalTheory.componentVol D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)
           (a • LocalTheory.integral D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)) ≤
@@ -160,15 +159,18 @@ lemma prop14 (i : Fin (nCaps (D := D))) (p : Nat.Primes)
             (D.qroot (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i))) ^
                 (i.1 + 1) ^ 2) +
           ∑ j, dTuple D p c j + 1) * Real.log p +
-          ∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j) then
-            3 + Real.log (ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j)) else 0 :=
+          (∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j) then
+            3 + Real.log (ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j)) else 0) +
+          (if (p : ℕ) - 2 < ramIdxAt D.Kt
+              (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i)) then
+            3 + Real.log (ramIdxAt D.Kt
+              (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i))) else 0) :=
   LocalTheory.prop14_iii D.Kt p (LocalTheory.tuple D.Kt _ c) (LocalTheory.tuple_isOver D.Kt p c)
-      (dTuple D p c)
+      (dTuple D p c) (fun j w' h => dTuple_spec D p c j w' h)
     (InitialThetaData.distinguished _ i)
     (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i)))
         (LocalTheory.fiberPlace_spec D.Kt _)
     (D.qroot _ ^ (i.1 + 1) ^ 2) (pow_ne_zero _ (D.qroot_ne_zero _))
-    (D.ordp_pow_nonneg _ _) (fun j w' h => dTuple_spec D p c j w' h)
 
 /-- The chosen containing scalar `a_c` of a tuple at a distinguished prime. -/
 noncomputable def contScalar (i : Fin (nCaps (D := D))) (p : Nat.Primes)
@@ -180,8 +182,7 @@ lemma contScalar_spec (i : Fin (nCaps (D := D))) (p : Nat.Primes)
     (c : Lab i → LocalTheory.Fiber D.Kt (.finite p)) :
     IsUnit (contScalar (D := D) i p c) ∧
       (∀ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
-        φ '' (D.scaleElt _ i p c • LocalTheory.integral D.Kt (.finite p)
-            (LocalTheory.tuple D.Kt _ c)) ⊆
+        φ '' (D.scaleElt _ i p c • LocalTheory.shell D.Kt p (LocalTheory.tuple D.Kt _ c)) ⊆
           contScalar (D := D) i p c • LocalTheory.integral D.Kt (.finite p)
               (LocalTheory.tuple D.Kt _ c)) ∧
       LocalTheory.componentVol D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c)
@@ -191,8 +192,12 @@ lemma contScalar_spec (i : Fin (nCaps (D := D))) (p : Nat.Primes)
             (D.qroot (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i))) ^
                 (i.1 + 1) ^ 2) +
           ∑ j, dTuple D p c j + 1) * Real.log p +
-          ∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j) then
-            3 + Real.log (ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j)) else 0 :=
+          (∑ j, if (p : ℕ) - 2 < ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j) then
+            3 + Real.log (ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c j)) else 0) +
+          (if (p : ℕ) - 2 < ramIdxAt D.Kt
+              (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i)) then
+            3 + Real.log (ramIdxAt D.Kt
+              (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i))) else 0) :=
   Classical.choose_spec (prop14 (D := D) i p c)
 
 /-- The archimedean scalar `π^{|I|}`. -/
@@ -306,9 +311,8 @@ lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     split_ifs with hp
     · intro c
       have hxc : x c ∈ D.thetaComponent _ i (.finite p) c := hx c
-      change x c ∈ ⋃ φ ∈ LocalTheory.indAut D.Kt (.finite p) (LocalTheory.tuple D.Kt _ c),
-        φ '' (D.scaleElt _ i p c • LocalTheory.integral D.Kt (.finite p)
-            (LocalTheory.tuple D.Kt _ c)) at hxc
+      change x c ∈ D.thetaFinite _ i p c at hxc
+      rw [D.thetaFinite_eq] at hxc
       obtain ⟨φ, hφ, hxc⟩ := Set.mem_iUnion₂.mp hxc
       exact (contScalar_spec (D := D) i p c).2.1 φ hφ hxc
     · intro c
@@ -318,7 +322,9 @@ lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
         p.2.odd_of_ne_two fun h2 => hp (h2 ▸ D.two_mem_dst)
       have hunr : ∀ w : FinitePlace D.Kt, residueChar w = p → ramIdx D.Kt w = 1 :=
         fun w hw => by_contra fun hram => hp (hw ▸ D.mem_dst_of_ramified w hram)
-      rw [D.thetaComponent_eq_integral _ i p c hbad hodd hunr] at hxc
+      change x c ∈ D.thetaComponentOn _ i (InitialThetaData.ivLabels _ i) (.finite p) c at hxc
+      rw [D.thetaComponentOn_eq_integral _ i _ (InitialThetaData.ivLabels_nonempty _ i) p c hbad
+        hodd hunr] at hxc
       exact hxc
   · intro x hx c
     have hxc : x c ∈ LocalTheory.thetaInfinite D.Kt _ i c := hx c
@@ -351,15 +357,22 @@ lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈
             + ∑ l, (fun v => differentExponent D.Kt (LocalTheory.fiberPlace D.Kt v)) (c l) + 1) *
                 Real.log p +
           ∑ _l : Lab i, (4 * (D.invariants).lmod *
-              (D.invariants).ι p)) := by
+              (D.invariants).ι p) + 4 * (D.invariants).lmod * (D.invariants).ι p) := by
     intro c
     apply mul_le_mul_of_nonneg_left _
         (Finset.prod_nonneg fun l _ => (LocalTheory.weight_pos D.Kt _ _).le)
     refine (contScalar_spec (D := D) i p c).2.2.trans ?_
     rw [LocalTheory.ordp_pow D.Kt _ _ (D.qroot_ne_zero _)]
     push_cast
-    refine add_le_add (le_of_eq ?_) ?_
+    have hramd : ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c (InitialThetaData.distinguished _ i)) =
+        ramIdx D.Kt (LocalTheory.fiberPlace D.Kt (c (InitialThetaData.distinguished _ i))) := by
+      simp only [LocalTheory.tuple]
+      rw [LocalTheory.fiberPlace_spec D.Kt (c (InitialThetaData.distinguished _ i))]; rfl
+    refine add_le_add (add_le_add (le_of_eq ?_) ?_) ?_
     · simp only [dTuple]; ring
+    swap
+    · rw [hramd]
+      exact TA.ramTerm_le p _ (LocalTheory.residueChar_fiberPlace D.Kt _)
     refine Finset.sum_le_sum fun l _ => ?_
     have hram : ramIdxAt D.Kt (LocalTheory.tuple D.Kt _ c l) = ramIdx D.Kt
         (LocalTheory.fiberPlace D.Kt (c l)) := by
@@ -389,7 +402,7 @@ lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈
     rw [D.logDK_prime p, Finset.sum_mul]
   change _ ≤ ((i.1 + 2 : ℕ) : ℝ) * D.logDK p -
     (((i.1 + 2 : ℕ) : ℝ) - 1) ^ 2 / (2 * D.ℓ) * (𝒳).logQAt p + Real.log p +
-    4 * ((i.1 + 2 : ℕ) : ℝ) * (D.invariants).lmod *
+    4 * (((i.1 + 2 : ℕ) : ℝ) + 1) * (D.invariants).lmod *
       (D.invariants).ι p
   have h1 : (((i.1 + 2 : ℕ) : ℝ) - 1) ^ 2 = ((i.1 + 1 : ℕ) : ℝ) ^ 2 := by push_cast; ring
   rw [h1, ← hd]
