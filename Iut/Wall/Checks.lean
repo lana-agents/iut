@@ -36,7 +36,7 @@ restatement of Corollary 3.12.
   is `M = 1·S`, the image of `S` under the action of the theta values (a unit of the
   container), so its log-volume is `κ_ι + log-vol(S)` for a shift `κ_ι` depending only on the
   choice `ι` ([LANA], §9.2: "`M = 1·S` … represents `LGP·S`"). Under (T4) the trivial
-  instance is excluded (`not_isTrivial_of_lgpLaw`), since `S ↦ log-vol(S)` is not constant on
+  instance is excluded (`not_isTrivial_of_lgpLaw`), since `S ↦ log-vol(S)` takes several values on
   the (Ind3)-choices; but the wall is then the numerical condition
   `−|log(q)| − κ_ι ≤ log-vol(VC(I))` for some `ι` (`wall_iff_of_lgpLaw`), again a statement about
   real numbers, whose content is the value of `κ_ι`. For the identified-copies model `κ` is

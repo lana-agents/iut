@@ -195,3 +195,10 @@ import Iut.Tripod.TpdTorsionRep
 import Iut.Tripod.TwoAdic
 import Iut.Tripod.Unramified
 import Iut.Tripod.WildRamIdx
+import Iut.Wall.BPS
+import Iut.Wall.Checks
+import Iut.Wall.EtaAlg
+import Iut.Wall.IdentifiedCopies
+import Iut.Wall.Ind3
+import Iut.Wall.Pilots
+import Iut.Wall.Rss

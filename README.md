@@ -796,6 +796,22 @@ replaced by `Orbicurve.genuinePi1`/`genuinePi1Cover`/`genuineHasCore`/`canLift27
 `Orbicurve.temperedPi1`/`tempToEtale` ([#1528](https://taxis.lana.merten.dev/issues/1528));
 see the honesty note on the tempered group above.
 
+## The wall, Milestone 1 (`Iut/Wall`)
+
+A formulation of the wall of the LANA interim report (July 2026), the equation (9-1)
+`η_q = η^anab_S` of its §9.2, on top of the concrete container (taxis
+[#1450](https://taxis.lana.merten.dev/issues/1450)); see [`Iut/Wall/README.md`](Iut/Wall/README.md).
+The modules are not imported by the comparator challenge. The wall is a `Prop`
+(`Iut.Wall D A` for an η-algorithm interface `A : Iut.Wall.EtaAlg D`), never assumed.
+
+* `Iut.Wall.variant_of_wall : Wall D A → Corollary312Variant (concreteVariantData D)`, and
+  `Iut.Wall.classicalABC_of_wall`.
+* Checks: the numerical form of (9-1) is equivalent to the variant
+  (`Iut.Wall.numericalWall_iff`); an interface instance with `η^anab = η_q` exists iff the
+  variant holds (`Iut.Wall.exists_isTrivial_iff`, `Iut.Wall.exists_wall_iff`), so the interface
+  does not exclude the trivial solution; on the identified-copies model the wall is exactly
+  `(s − 1)·|log(q)| ≤ log-vol(VC(I))`, `s = (1² + ⋯ + ℓ*²)/ℓ*` (`Iut.Wall.wall_idAlg_iff`).
+
 ## Dependency pins
 
 `lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its
