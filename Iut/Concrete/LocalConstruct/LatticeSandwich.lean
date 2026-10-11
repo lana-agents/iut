@@ -110,7 +110,7 @@ theorem exists_mem_order_of_mem_tensorLogShell (hc : ∀ j, IsOver K p (c j))
   have hle : tensorLogShell p c ⊆ (N : Set (Tensor K (.finite p) c)) := by
     refine Submodule.span_le.mpr ?_
     rintro _ ⟨b, rfl⟩
-    have hy : ∀ j, ∃ y ∈ PadicLogVolume.logShell (completionAt K (finPart K (c j))) p,
+    have hy : ∀ j, ∃ y ∈ Iut.logShell (completionAt K (finPart K (c j))) p,
         factorMk p (c j) y = b j := fun j => (b j).2
     choose y hy hyb using hy
     have hr : ∀ j, ‖y j / scalB c j‖ ≤ 1 := by
