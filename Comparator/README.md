@@ -73,18 +73,18 @@ The comparator trusts `Challenge` and its import closure. Besides the Mathlib mo
 `Mathlib.Analysis.SpecialFunctions.Pow.Real` (whose closure provides `Real.rpow`,
 `Set.Finite`, `Set.Pairwise`, `Nat.Coprime` and `Nat.primeFactors`), the challenge imports
 only `Iut.Concrete.ThetaRegion`, the module that defines `Cor312VariantHolds`. Its closure
-(11239 modules) consists of Lean core, Mathlib and its dependencies, and these project
+(11241 modules) consists of Lean core, Mathlib and its dependencies, and these project
 packages:
 
 | Package | Modules |
 | --- | ---: |
-| `Iut` (`Iut.Anabelian`, `Iut.Concrete`, `Iut.Cor312`, `Iut.Torsion`, three `Iut.Tower` modules) | 98 |
+| `Iut` (`Iut.Anabelian`, `Iut.Concrete`, `Iut.Cor312`, `Iut.Torsion`, three `Iut.Tower` modules) | 101 |
 | `TemperedFundamentalGroups` | 533 |
 | `Oka` | 81 |
 | `TateCurvesTheta` | 69 |
 | `Pi1` | 24 |
 | `EllipticCurves` | 24 |
-| `PadicLogVolume` | 3 |
+| `PadicLogVolume` | 2 |
 
 These are the modules that define the statement. No module that proves the implication
 needed moving: `Iut.MainTheorem`, `Iut.Tripod`, `Iut.Implication`, `Iut.Abc` and
