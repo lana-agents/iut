@@ -31,7 +31,9 @@ they use them (as the holomorphic hull interface of taxis #45 does).
   (`componentVol_integral_nonarch`) and taking the preimage under multiplication by the
   residue characteristic `p` adds `log p` (`componentVol_prime_preimage`, recorded on
   the hull regions `a·O`; equivalently, multiplication by `p` itself subtracts `log p`).
-  This is the normalized Haar log-volume of IUT III, Proposition 3.9(i); its
+  This is the normalized Haar log-volume of IUT III, Proposition 3.9(i), whose sign
+  convention is used here: the human-written wording of taxis #44 ("multiplication by the
+  relevant prime adds `log(p)`") has the opposite sign, and we follow IUT III. Its
   construction from `p`-adic measure theory is the infrastructure of taxis #4 and enters
   here as interface fields.
 * **Archimedean radial normalization**: a designated Hermitian unit ball in each
@@ -96,7 +98,9 @@ structure LogVolumeData (D : LargeVolumeContainerData.{u₁, u₂, v} ι V) :
   for the hull regions `a·O` (`a` a unit) — nonempty relatively compact regions of finite
   nonzero volume — which is the finite nonzero volume regime of IUT III,
   Proposition 3.9(i); for arbitrary sets the identity is false (for `U = ∅` it would read
-  `log p = 0`). -/
+  `log p = 0`). The sign follows IUT III, Proposition 3.9(i) (multiplication by `p`
+  subtracts `log p`); the taxis #44 wording ("multiplication by the relevant prime adds
+  `log(p)`") has the opposite sign. -/
   componentVol_prime_preimage : ∀ i (p : Nat.Primes) (c : D.Components i (.finite p))
     (a : (D.packet i (.finite p)).Summand c), IsUnit a →
     componentVol i (.finite p) c

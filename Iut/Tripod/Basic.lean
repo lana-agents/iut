@@ -49,10 +49,11 @@ The Northcott property in the form needed by `Iut.CurveInputs.northcott` (finite
 the points of bounded degree *over all number fields* and bounded height) is not available
 in Mathlib, which proves the Northcott property for each fixed number field
 (`NumberField.finite_setOf_logHeight₁_le`). We prove the fixed-field form
-(`Iut.Tripod.finite_of_fieldOf_eq`), isolate the missing statement as the `Prop`
-`Iut.Tripod.NorthcottHyp` (nothing postulated), reduce it to the finiteness of the fields of
-definition of the points in question (`Iut.Tripod.northcottHyp_of_finite_fieldOf`), and
-derive the target form `Iut.Tripod.northcott` from it.
+(`Iut.Tripod.finite_of_fieldOf_eq`), state the uniform form as the `Prop`
+`Iut.Tripod.NorthcottHyp`, reduce it to the finiteness of the fields of definition of the
+points in question (`Iut.Tripod.northcottHyp_of_finite_fieldOf`), and derive the target form
+`Iut.Tripod.northcott` from it. `NorthcottHyp` itself is proved, uniformly over all number
+fields of bounded degree, in `Iut/Tripod/Northcott.lean` (`Iut.Tripod.northcottHyp`).
 
 ## References
 
@@ -417,10 +418,9 @@ theorem finite_of_fieldOf_eq (F : IntermediateField ℚ Qbar) [FiniteDimensional
 there are only finitely many `λ ∈ ℚ̄ ∖ {0, 1}` with `[ℚ(λ) : ℚ] ≤ d` and absolute
 logarithmic Weil height `≤ H`. This is the classical Northcott theorem [Northcott 1949];
 Mathlib provides it for each fixed number field (`NumberField.finite_setOf_logHeight₁_le`,
-i.e. `Iut.Tripod.finite_of_fieldOf_eq` here) but not, at present, uniformly over all
-number fields of bounded degree, which needs the comparison of the heights of an algebraic
-number and of the coefficients of its minimal polynomial (or the invariance of heights under
-field extensions). It is recorded as a `Prop`, not a postulate; see
+i.e. `Iut.Tripod.finite_of_fieldOf_eq` here) but not uniformly over all number fields of
+bounded degree. The uniform statement is proved in `Iut/Tripod/Northcott.lean`
+(`Iut.Tripod.northcottHyp`, via the minimal polynomials of the points); see also
 `Iut.Tripod.northcottHyp_of_finite_fieldOf` for a reduction. -/
 def NorthcottHyp : Prop :=
   ∀ (d : ℕ) (H : ℝ), {x : Pt | x ∈ ptLE d ∧ htCan x ≤ H}.Finite

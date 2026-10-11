@@ -26,9 +26,10 @@ Theorem 1.10 are *derived* here from the local-field theory:
   `InitialThetaData.logQAt_eq_sect`: `ord_p(q_v) = −ord_p(j(E))/2ℓ` with `j(E) ∈ F_mod`);
 * at a non-distinguished prime the container is the integral structure itself
   (Proposition 1.4(iv)), of log-volume `0`;
-* at the archimedean place the container is `π^{|I|}·B_I` (Proposition 1.5(iii),(iv)), a hull
-  region `a·B_I` of the polydisc `B_I` containing the images of the tensor products of
-  log-shell elements under the indeterminacies (Ind1), (Ind2), of log-volume `|I|·log π`;
+* at the archimedean place the container is `(√2·π)^{|I|}·B_I` (Proposition 1.5), a hull
+  region `a·B_I` of the polydisc `B_I` containing the images of the log-shell (the unit ball
+  of the tensor-product Hermitian metric, IUT III, Proposition 3.2(ii)) under the
+  indeterminacies (Ind1), (Ind2), of log-volume `|I|·log(√2·π)`;
 * monotonicity of the packet log-volume between hull regions follows from the
   component-wise monotonicity.
 
@@ -194,17 +195,19 @@ lemma contScalar_spec (i : Fin (nCaps (D := D))) (p : Nat.Primes)
               (LocalTheory.tuple D.placeSect _ c (InitialThetaData.distinguished _ i))) else 0) :=
   Classical.choose_spec (prop14 (D := D) i p c)
 
-/-- The archimedean scalar `π^{|I|}`. -/
+/-- The archimedean scalar `(√2·π)^{|I|}` (IUT IV, Proposition 1.5: the archimedean log-shell,
+the unit ball of the tensor-product Hermitian metric, lies in `(√2·π)^{|I|}·B_I`). -/
 noncomputable def archScalar (i : Fin (nCaps (D := D)))
     (c : Lab i → LocalTheory.Fiber D.Fmod .infinite) :
     LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.placeSect .infinite c) :=
   algebraMap ℝ (LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.placeSect .infinite c))
-      (Real.pi ^ (i.1 + 2))
+      ((Real.sqrt 2 * Real.pi) ^ (i.1 + 2))
 
 lemma isUnit_archScalar (i : Fin (nCaps (D := D)))
     (c : Lab i → LocalTheory.Fiber D.Fmod .infinite) :
     IsUnit (archScalar (D := D) i c) :=
-  (isUnit_iff_ne_zero.mpr (pow_ne_zero _ Real.pi_ne_zero)).map (algebraMap ℝ _)
+  (isUnit_iff_ne_zero.mpr (pow_ne_zero _ LocalConstruct.archHullRadius_pos.ne')).map
+    (algebraMap ℝ _)
 
 /-- The containing region at a rational place, as a region of the packet
 `LocalTheory.packet D.placeSect (Lab i) v_ℚ` (definitionally the container's packet). -/
@@ -279,7 +282,7 @@ lemma cont_isHullRegion (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
   · exact ⟨_, fun c => isUnit_archScalar (D := D) i c, rfl⟩
 
 /-- Each container belongs to the class of hull regions of the concrete hull system: it is a
-hull region `a·O` with all components of `a` units (at `∞`, `a = π^{|I|}`). -/
+hull region `a·O` with all components of `a` units (at `∞`, `a = (√2·π)^{|I|}`). -/
 lemma cont_mem_hullRegions (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     cont (D := D) i vQ ∈ LocalTheory.hullRegions D.placeSect (Lab i) vQ := by
   rcases vQ with p | _
@@ -405,7 +408,7 @@ lemma vol_finite (i : Fin (nCaps (D := D))) (p : Nat.Primes) (hp : (p : ℕ) ∈
 lemma vol_infinite (i : Fin (nCaps (D := D))) :
     (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i .infinite
         (cont (D := D) i .infinite) ≤
-      ((i.1 + 2 : ℕ) : ℝ) * Real.log Real.pi := by
+      ((i.1 + 2 : ℕ) : ℝ) * Real.log (Real.sqrt 2 * Real.pi) := by
   change (LocalTheory.vol D.placeSect (nCaps (D := D))).packetVol i .infinite
     ((LocalTheory.packet D.placeSect (Lab i) .infinite).scaledIntegral fun c => archScalar
         (D := D) i c) ≤ _
@@ -413,13 +416,14 @@ lemma vol_infinite (i : Fin (nCaps (D := D))) :
   have : ∀ c : Lab i → LocalTheory.Fiber D.Fmod .infinite,
       LocalTheory.componentVol D.Kt .infinite (LocalTheory.tuple D.placeSect _ c)
           (LocalTheory.scaled D.placeSect _ c (archScalar (D := D) i c)) =
-        ((i.1 + 2 : ℕ) : ℝ) * Real.log Real.pi := by
+        ((i.1 + 2 : ℕ) : ℝ) * Real.log (Real.sqrt 2 * Real.pi) := by
     intro c
     change LocalTheory.componentVol D.Kt .infinite (LocalTheory.tuple D.placeSect _ c)
       (algebraMap ℝ (LocalTheory.Tensor D.Kt .infinite (LocalTheory.tuple D.placeSect .infinite c))
-          (Real.pi ^ (i.1 + 2)) •
+          ((Real.sqrt 2 * Real.pi) ^ (i.1 + 2)) •
         LocalTheory.integral D.Kt .infinite (LocalTheory.tuple D.placeSect _ c)) = _
-    rw [LocalTheory.componentVol_arch_scale D.Kt _ _ (pow_pos Real.pi_pos _), Real.log_pow]
+    rw [LocalTheory.componentVol_arch_scale D.Kt _ _
+      (pow_pos (mul_pos (by positivity) Real.pi_pos) _), Real.log_pow]
   simp_rw [this]
   rw [← Finset.sum_mul, sum_prod_tuple_eq_one _ (LocalTheory.weight_sum_one D.Fmod _), one_mul]
 
@@ -467,7 +471,7 @@ noncomputable def localEstimate :
         (Procession.standard_capsule_card _ i).symm)
   vol_infinite i :=
     (vol_infinite (D := D) i).trans_eq
-      (congrArg (fun m : ℕ => (m : ℝ) * Real.log Real.pi)
+      (congrArg (fun m : ℕ => (m : ℝ) * Real.log (Real.sqrt 2 * Real.pi))
         (Procession.standard_capsule_card _ i).symm)
   packetVol_mono i vQ U V hU hV hUV := packetVol_mono (D := D) i vQ U V hU hV hUV
 

@@ -28,7 +28,7 @@ What is proved here, following the printed proof step by step:
   standard procession of length `ℓ* = (ℓ−1)/2` using the identities (E1), (E2)
   (`sum_affine_quadratic`), giving the "procession-normalized upper bound"
   `((ℓ+5)/4)·log(d^K_{v_ℚ}) − ((ℓ+1)/24)·log(q_{v_ℚ}) + log(s^ℚ_{v_ℚ}) +
-  (ℓ+9)·l*_mod·log(s^≤_{v_ℚ})` at distinguished primes and `((ℓ+5)/4)·log π` at the
+  (ℓ+9)·l*_mod·log(s^≤_{v_ℚ})` at distinguished primes and `((ℓ+5)/4)·log(√2·π)` at the
   archimedean place;
 * Step (viii): the sum over `v_ℚ`, the substitution of Corollary 3.12, the estimate
   `l*_mod·log(s^≤) ≤ (3/2)·(e*_mod·ℓ + η_prm)` from Proposition 1.6
@@ -59,17 +59,26 @@ lemma sum_affine_quadratic (L : ℕ) (a b c : ℝ) :
     push_cast
     ring
 
-/-- `log π ≤ 2` (via `π ≤ 4` and `log 2 < 0.7`). -/
-lemma log_pi_le_two : Real.log Real.pi ≤ 2 := by
-  have h4 : Real.log Real.pi ≤ Real.log 4 :=
-    Real.log_le_log Real.pi_pos Real.pi_le_four
-  have : Real.log 4 = 2 * Real.log 2 := by
-    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; push_cast; ring
-  have := Real.log_two_lt_d9
-  linarith
+/-- `log(√2·π) ≤ 2` (via `√2·π ≤ (3/2)·4 = 6` and `e > 2.7`), the archimedean hull radius of
+IUT IV, Proposition 1.5. -/
+lemma log_sqrt_two_mul_pi_le_two : Real.log (Real.sqrt 2 * Real.pi) ≤ 2 := by
+  have hs : Real.sqrt 2 ≤ 3 / 2 := by
+    rw [Real.sqrt_le_left (by norm_num)]
+    norm_num
+  have hpos : 0 < Real.sqrt 2 * Real.pi := mul_pos (by positivity) Real.pi_pos
+  have h6 : Real.sqrt 2 * Real.pi ≤ 6 := by
+    nlinarith [Real.pi_le_four, Real.sqrt_nonneg 2, Real.pi_pos]
+  have he : (6 : ℝ) ≤ Real.exp 2 := by
+    have := Real.exp_one_gt_d9
+    rw [show (2 : ℝ) = 1 + 1 by norm_num, Real.exp_add]
+    nlinarith
+  rw [Real.log_le_iff_le_exp hpos]
+  exact h6.trans he
 
-lemma log_pi_nonneg : 0 ≤ Real.log Real.pi :=
-  Real.log_nonneg (by linarith [Real.pi_gt_three])
+lemma log_sqrt_two_mul_pi_nonneg : 0 ≤ Real.log (Real.sqrt 2 * Real.pi) := by
+  refine Real.log_nonneg ?_
+  have : 1 ≤ Real.sqrt 2 := Real.one_le_sqrt.mpr one_le_two
+  nlinarith [Real.pi_gt_three]
 
 /-- The final numerical bookkeeping of Step (viii), as an inequality between real numbers.
 The hypotheses are: `h1`, the summed local bound after substitution of Corollary 3.12
@@ -156,11 +165,11 @@ lemma sum_capsuleBound (L : ℕ) (p : ℕ) :
         Finset.sum_congr rfl fun i _ => by unfold capsuleBound; push_cast; ring
     _ = _ := by rw [sum_affine_quadratic]; ring
 
-/-- The sum over the capsules of the archimedean bound `(j+1)·log π`, via (E1). -/
+/-- The sum over the capsules of the archimedean bound `(j+1)·log(√2·π)`, via (E1). -/
 lemma sum_arch (L : ℕ) :
-    ∑ i : Fin L, (((i : ℕ) + 2 : ℕ) : ℝ) * Real.log Real.pi =
-      Real.log Real.pi * (L * (L + 3) / 2) := by
-  have := sum_affine_quadratic L (Real.log Real.pi) 0 0
+    ∑ i : Fin L, (((i : ℕ) + 2 : ℕ) : ℝ) * Real.log (Real.sqrt 2 * Real.pi) =
+      Real.log (Real.sqrt 2 * Real.pi) * (L * (L + 3) / 2) := by
+  have := sum_affine_quadratic L (Real.log (Real.sqrt 2 * Real.pi)) 0 0
   simp only [zero_mul, add_zero] at this
   rw [← this]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -253,7 +262,7 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
   have hlen : (X.rhsData.container.proc.length : ℝ) = L := by
     rw [hproc, Procession.standard_length]
   have hs := sum_card_standard hproc
-    (fun n => ∑ p ∈ inv.dst, inv.capsuleBound n p + n * Real.log Real.pi)
+    (fun n => ∑ p ∈ inv.dst, inv.capsuleBound n p + n * Real.log (Real.sqrt 2 * Real.pi))
   beta_reduce at hs
   rw [hlen, hs] at hsum
   simp only [Finset.sum_add_distrib] at hsum
@@ -292,7 +301,7 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
       L * (12 * X.ℓ * (inv.logDKtot + 4 * inv.lmod * inv.logSle) * (L + 3) +
         96 * X.ℓ * (inv.lmod * inv.logSle) -
         4 * X.ℓ * q * ((L + 1) * (2 * L + 1)) + 24 * X.ℓ * inv.logSQ +
-        12 * X.ℓ * Real.log Real.pi * (L + 3)) := by linarith [hmul]
+        12 * X.ℓ * Real.log (Real.sqrt 2 * Real.pi) * (L + 3)) := by linarith [hmul]
   have h1L := le_of_mul_le_mul_left hcancel hLpos
   have hLℓ : (L : ℝ) = (X.ℓ - 1) / 2 := by linarith
   rw [hLℓ] at h1L
@@ -301,7 +310,7 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
   have h1 : -12 * X.qPilot.logQ ≤ 6 * X.ℓ * (X.ℓ + 5) * inv.logDKtot -
       X.ℓ * (X.ℓ + 1) * X.qPilot.logQ + 24 * X.ℓ * inv.logSQ +
       24 * X.ℓ * (X.ℓ + 9) * (inv.lmod * inv.logSle) +
-      6 * X.ℓ * (X.ℓ + 5) * Real.log Real.pi := by
+      6 * X.ℓ * (X.ℓ + 5) * Real.log (Real.sqrt 2 * Real.pi) := by
     linarith [h1L, hq, hq1, hq2]
   -- the remaining inputs of the assembly
   have hD := inv.logDKtot_nonneg
@@ -326,7 +335,8 @@ theorem theorem110 (cert : Theorem110Certificate inv) (est : inv.LocalEstimate)
   have hE : (inv.eStar : ℝ) * X.ℓ ≤ (inv.eStar : ℝ) * X.ℓ + pnt.η := by
     linarith [pnt.one_lt_η]
   have h4 := inv.lmod_mul_logSle_le pnt
-  have key := assembly hℓ7 hd hD hQ hS hT log_pi_nonneg log_pi_le_two hDF hlg0 hlg he hE h1
+  have key := assembly hℓ7 hd hD hQ hS hT log_sqrt_two_mul_pi_nonneg log_sqrt_two_mul_pi_le_two
+    hDF hlg0 hlg he hE h1
     cert.step_ii cert.step_iii (by linarith)
   -- conclude
   have hfinal : (1 + 20 * (X.dmod : ℝ) / X.ℓ) * (inv.logDtpd + inv.logFtpd) +

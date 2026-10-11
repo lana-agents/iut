@@ -53,8 +53,14 @@ theorem Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC := by
   models the indeterminacies of IUT III, Theorem 3.11: at a prime, the union of the images of
   `q_{v_j}^{j²}·⊗_l 𝓘_{v_l}` (the tensor product of the log-shells, (Ind3)) under the tensor
   products `⊗_l g_l` of independent automorphisms of the log-shells of the factors ((Ind2),
-  `Iut/Concrete/LocalConstruct/IndAut.lean`); at `∞`, the images of the log-shell under the
-  maps `⊗_l ψ_l`, `ψ_l ∈ {id, conj, −1, −conj}`, with hulls among the polydiscs `a·B_I`.
+  `Iut/Concrete/LocalConstruct/IndAut.lean`: every `ℤ_p`-linear automorphism `g_l` of `𝓘_{v_l}`,
+  which contains the image of IUT III's `Ism` and is in general larger — a deliberate
+  enlargement making the region larger and the hypothesis weaker — but is smaller than IUT IV,
+  Proposition 1.2's arbitrary `φ` preserving `⊗_l 𝓘_{v_l}`); at `∞`, the images of the
+  log-shell — the closed unit ball of the tensor-product Hermitian metric for which each
+  factor's log-shell (the disc of radius `π`) is the unit ball (IUT III, Proposition 3.2(ii))
+  — under the maps `⊗_l ψ_l`, `ψ_l ∈ {id, conj, −1, −conj}`, with hulls among the polydiscs
+  `a·B_I`.
   (Ind1) is read as in IUT IV, proof of Theorem 1.10, Steps (iv)–(v) (the theta value at the
   label `j`); the literal reading of IUT III, Corollary 3.12 (the union over all labels) is
   `Iut.Cor312LiteralHolds`, implied by `Iut.Cor312VariantHolds`

@@ -37,16 +37,22 @@ follows, at a prime `p`, for the capsule `S_{j+1} = {0, …, j}` (`j = i + 1`) a
 * **(Ind3)**, the upper semi-compatibility of the log-Kummer correspondence (the Kummer images
   lie *in the log-shells*): the theta value acts on the tensor product of the log-shells
   `⊗_l 𝓘_{v_l}` (`LocalTheory.shell`), not on the integral structure;
-* **(Ind2)**: independent automorphisms `g_l ∈ Ism` of the log-shells of the factors, acting by
-  `⊗_l g_l` (`LocalTheory.indAut`, `LocalConstruct.tensorAut`);
+* **(Ind2)**: independent automorphisms `g_l` of the log-shells of the factors, acting by
+  `⊗_l g_l` (`LocalTheory.indAut`, `LocalConstruct.tensorAut`), where `g_l` ranges over *every*
+  `ℤ_p`-linear automorphism of the lattice `𝓘_{v_l}`: this contains the image of `Ism` (IUT III,
+  Proposition 1.2(vi), Theorem 3.11 (Ind2)) and is in general larger — a deliberate
+  enlargement, making the region larger and the hypothesis weaker than with `Ism` exactly —
+  but is smaller than the arbitrary automorphisms `φ` preserving `⊗_l 𝓘_{v_l}` of IUT IV,
+  Proposition 1.2 (which include maps that are not tensor products);
 * **(Ind1)**: the automorphisms of the factors (contained in (Ind2)) and the permutations of the
   labels of `S_{j+1}`, which move the theta value to any label `l`.
 
 So, for a set `S i ⊆ S_{j+1}` of admissible label positions,
 
 `Θ_{i,p} := ∏_c ⋃_{φ ∈ indAut} φ(⋃_{l ∈ S i} q_{v_l}^{j²}·⊗_l 𝓘_{v_l})` (`thetaFiniteOn`), and
-`Θ_{i,∞} := ∏_c ⋃_{φ ∈ indAut} φ(𝓘_∞)` (`LocalTheory.thetaInfinite`; the absolutely convex hull
-of the tensors of elements of the archimedean log-shells, with the sign-and-conjugation
+`Θ_{i,∞} := ∏_c ⋃_{φ ∈ indAut} φ(𝓘_∞)` (`LocalTheory.thetaInfinite`; `𝓘_∞` is the closed unit
+ball of the tensor-product Hermitian metric for which the log-shell of each factor, the disc of
+radius `π`, is the unit ball, IUT III, Proposition 3.2(ii); with the sign-and-conjugation
 indeterminacies of IUT III, Theorem 3.11 (Ind2) and Proposition 1.2(vii)).
 
 Two readings of (Ind1) are formalized:
@@ -58,7 +64,10 @@ Two readings of (Ind1) are formalized:
   `concreteVariantDataLit` and `Cor312LiteralHolds`. The literal region is larger, so
   `Cor312VariantHolds → Cor312LiteralHolds` (`cor312Literal_of_variant`,
   `Iut/Concrete/Literal.lean`); the converse is the step from IUT III, Corollary 3.12 to IUT IV,
-  Steps (iv)–(v).
+  Steps (iv)–(v). IUT IV's reading agrees with the literal one "up to (Ind1)": a label
+  permutation preserves the weights and the procession-normalized volume, so IUT IV takes the
+  hull over (Ind2), (Ind3) for each (Ind1)-image separately, whereas the hull of the literal
+  union is governed by `min_l ord_p(q_{v_l})` rather than the average.
 
 **Provenance.** The human-written specification of the right-hand side (taxis #33, #35, #43–#45)
 fixes the composition (container, theta-pilot region, holomorphic hull, procession-normalized

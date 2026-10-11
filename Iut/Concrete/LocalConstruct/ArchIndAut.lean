@@ -28,10 +28,14 @@ up to absolute value (`norm_archChar_archIndMap`) and preserves `B_I` and its re
 (`archIndAut_image_smul_archIntegral_subset`; IUT IV, Proposition 1.5(iii)). The class is
 finite (`archIndAut_finite`), its members are continuous (`continuous_of_mem_archIndAut`), it
 contains the Galois automorphisms (`galAut_subset_archIndAut`), and it preserves the
-tensor products of log-shell elements (`archIndAut_image_archLogShellSet`). This gives
-IUT IV, Proposition 1.5(iii),(iv) for the archimedean theta region (`archIndAut_prop15`) and the
-admissibility of the corresponding regions (`archIndAut_theta_admissible`,
-`archIndAut_thetaShell_admissible`).
+tensor products of log-shell elements (`archIndAut_image_archLogShellSet`). Since each factor
+map `ψ_j` is an isometry of the Hermitian metric of its factor (`archInner_archFactorMap`),
+`⊗_j ψ_j` is an isometry of the tensor-product Hermitian metric (`archTensorInner_archIndMap`),
+so the class preserves the archimedean log-shell, the closed unit ball of that metric
+(`archIndAut_image_archLogShell`; IUT III, Proposition 3.2(ii)). This gives IUT IV,
+Proposition 1.5 for the archimedean theta region (`archIndAut_prop15`: it lies in
+`(√2·π)^{|I|}·B_I`) and the admissibility of the corresponding regions
+(`archIndAut_theta_admissible`, `archIndAut_thetaShell_admissible`).
 -/
 
 namespace Iut
@@ -164,12 +168,44 @@ theorem archIndAut_image_archLogShellSet :
   exact ⟨fun j => archFactorMap (σ j) (ε j) (y j),
     fun j => (archAbs_archFactorMap _ _ _).trans_le (hy j), (archIndMap_tprod c σ ε y).symm⟩
 
-/-- **IUT IV, Proposition 1.5(iii),(iv)** for the archimedean theta region: the images of the
-archimedean log-shell under the indeterminacy automorphisms lie in `π^{|I|}·B_I`. -/
+/-! ### The indeterminacy automorphisms preserve the tensor-product metric -/
+
+/-- The factor indeterminacies `ε·σ` are isometries of the Hermitian metric of the factor
+(they preserve the absolute value, hence, by polarization, the inner product). -/
+lemma archInner_archFactorMap {v : Place K} (σ : ArchFactor K v ≃ₐ[ℝ] ArchFactor K v) (ε : ℤˣ)
+    (a b : ArchFactor K v) :
+    archInner v (archFactorMap σ ε a) (archFactorMap σ ε b) = archInner v a b := by
+  rw [archInner_eq_polarization, archInner_eq_polarization, ← map_add, archAbs_archFactorMap,
+    archAbs_archFactorMap, archAbs_archFactorMap]
+
+/-- **The indeterminacy automorphisms are isometries of the tensor-product metric**: on
+elementary tensors, `⟨⊗ψ_j(a_j), ⊗ψ_j(b_j)⟩_T = ∏_j ⟨ψ_j(a_j), ψ_j(b_j)⟩ = ∏_j ⟨a_j, b_j⟩`. -/
+theorem archTensorInner_archIndMap (σ : ∀ j, ArchFactor K (c j) ≃ₐ[ℝ] ArchFactor K (c j))
+    (ε : ι → ℤˣ) (x y : Tensor K .infinite c) :
+    archTensorInner c (archIndMap c σ ε x) (archIndMap c σ ε y) = archTensorInner c x y := by
+  have h : (archTensorInner c).compl₁₂ (archIndMap c σ ε) (archIndMap c σ ε) =
+      archTensorInner c := by
+    refine PiTensorProduct.ext (MultilinearMap.ext fun a => ?_)
+    refine PiTensorProduct.ext (MultilinearMap.ext fun b => ?_)
+    simp only [LinearMap.compMultilinearMap_apply, LinearMap.compl₁₂_apply]
+    rw [archIndMap_tprod, archIndMap_tprod, archTensorInner_tprod, archTensorInner_tprod]
+    simp_rw [archInner_archFactorMap]
+  exact LinearMap.congr_fun₂ h x y
+
+/-- **The indeterminacy automorphisms preserve the archimedean log-shell** (the closed unit
+ball of the tensor-product metric). -/
+theorem archIndAut_image_archLogShell :
+    ∀ φ ∈ archIndAut c, φ '' archLogShell c ⊆ archLogShell c := by
+  rintro _ ⟨σ, ε, rfl⟩ _ ⟨x, hx, rfl⟩
+  rw [mem_archLogShell, archTensorInner_archIndMap]
+  exact hx
+
+/-- **IUT IV, Proposition 1.5** for the archimedean theta region: the images of the
+archimedean log-shell under the indeterminacy automorphisms lie in `(√2·π)^{|I|}·B_I`. -/
 theorem archIndAut_prop15 : ∀ φ ∈ archIndAut c, φ '' archLogShell c ⊆
-    algebraMap ℝ (Tensor K .infinite c) (Real.pi ^ Fintype.card ι) • integralAt .infinite c :=
-  fun φ hφ => (Set.image_mono (archLogShell_subset c)).trans
-    (archIndAut_image_smul_archIntegral_subset c _ φ hφ)
+    algebraMap ℝ (Tensor K .infinite c) (archHullRadius ^ Fintype.card ι) •
+      integralAt .infinite c :=
+  fun φ hφ => (archIndAut_image_archLogShell c φ hφ).trans (archLogShell_subset c)
 
 /-! ### Admissibility -/
 

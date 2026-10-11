@@ -36,9 +36,11 @@ The proof mixes three kinds of input, which are separated here:
 3. **The existence of the anabelian part of the Θ-data** (`ThetaDataExistence`, (P7)):
    given a curve and a prime `ℓ` satisfying (P1)–(P6), initial Θ-data in the situation
    of Theorem 1.10 with the expected invariants. This is the one input of IUT-theoretic
-   nature (IUT I, Definition 3.1(d)–(f); *The Étale Theta Function*, §2); it cannot be
-   discharged before the anabelian interfaces have constructions (taxis #276, #279) and
-   is tracked as an open obligation of this repository.
+   nature (IUT I, Definition 3.1(d)–(f); *The Étale Theta Function*, §2). It is an
+   explicit hypothesis of this file; it is discharged for the tripod, with the concrete data
+   bundles, in `Iut.Tripod.concreteThetaDataExistence'` (`Iut/Tripod/Main.lean`, from the
+   construction of `Iut/Concrete/Existence.lean` and the anabelian construction,
+   taxis #276, #279, #1469) via `ConcreteThetaDataExistence.toThetaDataExistence`.
 
 Everything else — the choice of `ℓ` (`LocalHeightData.exists_prime_selection`), the
 arguments for (P4) and (P5) at large height, the application of Theorem 1.10 and the
@@ -351,8 +353,10 @@ ones of `Iut.concreteVariantData`); the Corollary 3.12 variant is only assumed o
 
 This is the IUT-theoretic input of Corollary 2.2 (IUT I, Definition 3.1(d)–(f); *The
 Étale Theta Function*, Definitions 2.1–2.5): the construction of `C̲_K`, `V`, `ε` from
-the `SL₂` image. It is an open obligation of this repository, blocked on the anabelian
-interfaces (taxis #276, #279). -/
+the `SL₂` image. It is an explicit hypothesis here; for the tripod it is proved
+(`Iut.Tripod.concreteThetaDataExistence'` in `Iut/Tripod/Main.lean`, with
+`ConcreteThetaDataExistence.toThetaDataExistence`; the construction is in
+`Iut/Concrete/Existence.lean`). -/
 structure ThetaDataExistence (P : Corollary312VariantData.{u} → Prop)
     {K : T.CBS} {d : ℕ} (I : Corollary22Inputs T K d) : Prop where
   thetaData : ∀ x (hx : x ∈ T.cbsSet K ∩ T.ptLE T.tripod d), x ∉ I.excCore →

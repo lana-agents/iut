@@ -22,9 +22,23 @@ proof of Theorem 1.10, Steps (iv)–(v), computes with the theta value at the la
 
 The literal region contains IUT IV's region, so its hull has larger log-volume, and the IV
 reading implies the literal one (`cor312Literal_of_variant`). The converse is exactly the
-step from the literal Corollary 3.12 to IUT IV, Steps (iv)–(v): it holds when every place
-of `F_mod` above each bad prime is bad (then the theta values at all labels of a tuple have the
-same order), but not in general.
+step from the literal Corollary 3.12 to IUT IV, Steps (iv)–(v). The two regions coincide when
+`ord_p(q_v)` is the same for all places `v` of `F_mod` (in `V`) above each prime `p` (e.g. when
+there is a single place above `p`): then the theta values at all labels of a tuple have the
+same order. This fails in general; two bad places above `p` with different `ord_p(q_v)`
+already break it.
+
+Under the literal union over the labels, the holomorphic hull at a tuple `c` is governed by
+`min_l ord_p(q_{c(l)})` rather than by the average of `ord_p(q_v)` over the places that IUT IV,
+Step (v), obtains via Proposition 1.7. So the literal reading does not suffice for the
+Theorem 1.10 / ABC argument: the points produced by the Belyi reduction have good and bad
+places above the same prime, where `min_l ord_p(q_{c(l)}) = 0`.
+
+IUT IV's reading equals the literal one **up to (Ind1)**: a label permutation `σ` (acting on the
+labels and on the tuples, `c ↦ c ∘ σ⁻¹`) preserves the weights `∏_l w(c l)` and the
+procession-normalized log-volume, so every (Ind1)-image of the theta-pilot region has the same
+volume as the image for `σ = id`. IUT IV thus takes the holomorphic hull over (Ind2), (Ind3)
+for each (Ind1)-image separately, and the label `j` is a representative.
 -/
 
 namespace Iut

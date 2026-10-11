@@ -10,15 +10,19 @@ import Iut.Concrete.LocalConstruct.ArchIndAut
 # The indeterminacy automorphisms of the tensor packets (IUT III, Theorem 3.11; IUT IV, 1.2, 1.5)
 
 The indeterminacy (Ind2) of IUT III, Theorem 3.11 acts on a tensor packet
-`⊗_{j ∈ S} (⊕_{v ∣ v_ℚ} K_v)` through *independent copies of `Ism`* — the automorphisms of the
-`ℤ_p`-modules `log_p(𝓞_v^×)`, equivalently of the log-shells `𝓘_v = (2p)⁻¹·log_p(𝓞_v^×)` —
-*on each direct summand of each tensor factor*. On the tuple component `⊗_j K_{c j}` of the
-packet this is the class `tensorAut p c` of tensor products `⊗_j g_j` with `g_j` a
-`ℚ_p`-linear automorphism of `K_{c j}` preserving `𝓘_{c j}` (`factorAut`). The field
-automorphisms of the factors (part of (Ind1)) preserve the log-shells and are among them.
+`⊗_{j ∈ S} (⊕_{v ∣ v_ℚ} K_v)` through *independent copies of `Ism`* *on each direct summand
+of each tensor factor* (IUT III, Proposition 1.2(vi)). On the tuple component `⊗_j K_{c j}` of
+the packet we take the class `tensorAut p c` of tensor products `⊗_j g_j` with `g_j` **every**
+`ℚ_p`-linear automorphism of `K_{c j}` preserving `𝓘_{c j}`, i.e. every `ℤ_p`-linear
+automorphism of the lattice `𝓘_{c j} = (2p)⁻¹·log_p(𝓞^×)` (`factorAut`). This class contains
+the image of `Ism` and is in general larger: a **deliberate enlargement**, which makes the
+theta region larger and the hypothesis `Cor312VariantHolds` weaker than with `Ism` exactly. The
+field automorphisms of the factors (part of (Ind1)) preserve the log-shells and are among
+them.
 
 The class `latticeAut p c` of *all* `ℚ_p`-linear automorphisms preserving `⊗_j 𝓘_j`, the
-automorphisms `φ` of IUT IV, Proposition 1.2, is much larger; it is used here only as an
+arbitrary automorphisms `φ` of IUT IV, Proposition 1.2 (including maps that are not tensor
+products), is larger still; it is used here only as an
 auxiliary class (`tensorAut_subset_latticeAut`): its members are continuous, and the union of
 the images of a bounded set lies in a scaled lattice `p^{-k}·⊗_j 𝓘_{c j}`, hence is bounded.
 
@@ -181,7 +185,8 @@ theorem latticeAut_thetaShell_admissible :
   iUnion_latticeAut_admissible p c (isBounded_logShell p c) (isOpen_logShell p c)
     (haar_logShell_pos p c)
 
-/-! ### The indeterminacy (Ind2) of IUT III, Theorem 3.11: tensor products of `Ism`-actions -/
+/-! ### The indeterminacy (Ind2) of IUT III, Theorem 3.11: tensor products of lattice
+automorphisms of the factors -/
 
 variable {p c} in
 /-- A `ℚ_p`-linear automorphism of the packet maps `⊗_j 𝓘_j` into itself as soon as it maps
@@ -198,15 +203,17 @@ lemma image_tensorLogShell_subset (e : Tensor K (.finite p) c ≃ₗ[ℚ_[p]] Te
     rw [padicInt_smul_def, map_smul, ← padicInt_smul_def]
     exact (Submodule.span ℤ_[p] _).smul_mem r hx
 
-/-- **The `Ism`-indeterminacy of a factor** (IUT III, Proposition 1.2(vi) and Theorem
-3.11 (Ind2); for `v` over `p`): the automorphisms of the `ℤ_p`-module `𝓘_v`
-(equivalently of `log_p(𝓞_v^×)`), extended `ℚ_p`-linearly to `K_v`. -/
+/-- **The (Ind2)-indeterminacy of a factor** (for `v` over `p`): every automorphism of the
+`ℤ_p`-lattice `𝓘_v`, extended `ℚ_p`-linearly to `K_v`. This contains the image of `Ism`
+(IUT III, Proposition 1.2(vi) and Theorem 3.11 (Ind2)) and is in general larger; the
+enlargement is deliberate (a larger theta region, hence a weaker hypothesis). -/
 def factorAut (v : Place K) : Set (Factor K p v ≃ₗ[ℚ_[p]] Factor K p v) :=
   {g | g '' factorLogShell p v = factorLogShell p v}
 
 /-- **The indeterminacy automorphisms of a packet at a prime** (IUT III, Theorem 3.11,
-(Ind2)): the tensor products `⊗_j g_j` of independent automorphisms `g_j ∈ Ism` of the log-shells
-of the factors (one for each direct summand of each tensor factor; in the tuple component
+(Ind2)): the tensor products `⊗_j g_j` of independent automorphisms `g_j ∈ factorAut` of the
+log-shells of the factors (every lattice automorphism of `𝓘_{c j}`, containing the image of
+`Ism`; one for each direct summand of each tensor factor; in the tuple component
 `⊗_j K_{c j}` of the packet these act through the summands `K_{c j}`). The automorphisms of the
 factors as fields (part of (Ind1)) preserve the log-shells, hence are among them. -/
 def tensorAut : Set (Tensor K (.finite p) c → Tensor K (.finite p) c) :=
@@ -222,7 +229,7 @@ lemma congr_mem_logShellSet {g : ∀ j, Factor K p (c j) ≃ₗ[ℚ_[p]] Factor 
   rw [PiTensorProduct.congr_tprod]
   exact ⟨fun j => ⟨g j (b j), hg j ⟨_, (b j).2, rfl⟩⟩, rfl⟩
 
-/-- The tensor products of `Ism`-automorphisms are lattice automorphisms. -/
+/-- The tensor products of factor lattice automorphisms are lattice automorphisms. -/
 theorem tensorAut_subset_latticeAut : tensorAut p c ⊆ latticeAut p c := by
   rintro _ ⟨g, hg, rfl⟩
   refine ⟨PiTensorProduct.congr g, rfl, Set.Subset.antisymm ?_ ?_⟩
@@ -252,7 +259,7 @@ lemma id_mem_tensorAut : id ∈ tensorAut p c :=
     | add x y hx hy => rw [map_add, hx, hy]⟩
 
 /-- The union of the images of a bounded open set of positive measure under the tensor
-products of `Ism`-automorphisms is admissible. -/
+products of factor lattice automorphisms is admissible. -/
 theorem iUnion_tensorAut_admissible {S : Set (Tensor K (.finite p) c)}
     (hb : Bornology.IsBounded S) (ho : IsOpen S) (hpos : 0 < haar (.finite p) c S) :
     (⋃ φ ∈ tensorAut p c, φ '' S) ∈ admissible (.finite p) c := by
@@ -286,7 +293,7 @@ variable (vQ : RationalPlace) (c : ι → Place K)
 
 /-- **The indeterminacy automorphisms** of a packet (`LocalTheory.indAut`; IUT IV,
 Propositions 1.2 and 1.5; IUT III, Theorem 3.11 (Ind1), (Ind2)): the lattice automorphisms at a
-prime the tensor products of `Ism`-automorphisms of the factors, the maps induced by the
+prime the tensor products of lattice automorphisms of the factors, the maps induced by the
 independent sign-and-conjugation indeterminacies of the factors
 at the archimedean place. -/
 def indAut : ∀ (vQ : RationalPlace) (c : ι → Place K), Set (Tensor K vQ c → Tensor K vQ c)

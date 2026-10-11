@@ -20,16 +20,18 @@ this quantity from above, one rational place `v_ℚ` and one capsule `S_{j+1}` a
   after the weighted average of Proposition 1.7;
 * at a non-distinguished nonarchimedean `v_ℚ` (Step (vi)), the container is the
   holomorphic integral structure itself, of log-volume `0` (Proposition 1.4(iv));
-* at the archimedean place (Step (vii)), the container `π^{j+1}·B_I` has log-volume at
-  most `(j+1)·log π` (Proposition 1.5(iii),(iv)).
+* at the archimedean place (Step (vii)), the container `(√2·π)^{j+1}·B_I` has log-volume at
+  most `(j+1)·log(√2·π)` (Proposition 1.5: the comparison of the tensor-product Hermitian
+  metric, whose unit ball is the log-shell, with the direct-sum metric defining `B_I`).
 
 ## What is proved here and what is assumed
 
 The local-field content — the existence of the containing hull regions and the bounds
 on their log-volumes, i.e. IUT IV, Propositions 1.4 and 1.5 applied to the theta-pilot
-images, together with the weighted average of Proposition 1.7 — is the explicit
-certificate `LocalEstimate` (taxis #4, #278: it requires the `p`-adic log-shell theory
-that this repository does not yet have). It also records monotonicity of the packet
+images, together with the weighted average of Proposition 1.7 — is the structure
+`LocalEstimate`, a hypothesis of this file. For the concrete theta-pilot region it is
+proved from the local theory (taxis #4, #278) in `Iut/Concrete/LocalEstimate.lean`
+(`TowerArithmetic.localEstimate`). It also records monotonicity of the packet
 log-volume between hull regions, a standard law of Haar measure deliberately left out of
 the log-volume interface of taxis #44 (which records no law for zero or infinite
 volumes); it is stated here only for hull regions, where it is meaningful.
@@ -69,15 +71,17 @@ distinguished primes, with the log-volume bounds of Propositions 1.4(iii),(iv) a
 1.5(iii),(iv); and monotonicity of the packet log-volume between hull regions. -/
 structure LocalEstimate : Type u where
   /-- The containing hull region at capsule `i` and rational place `v_ℚ`
-  (`p^{⌊λ − d_I − a_I⌋ − b_I}·(R_I)^∼`, resp. `(R_I)^∼`, resp. `π^{j+1}·B_I`). -/
+  (`p^{⌊λ − d_I − a_I⌋ − b_I}·(R_I)^∼`, resp. `(R_I)^∼`, resp. `(√2·π)^{j+1}·B_I`). -/
   cont : ∀ (i : Fin X.rhsData.container.proc.length) (vQ : RationalPlace),
     Set (X.rhsData.container.packet i vQ).Total
   /-- Each container belongs to the class of hull regions of the hull system (a region
-  `a·O` with all components of `a` units; at `∞` the polydisc `π^{j+1}·B_I`). -/
+  `a·O` with all components of `a` units; at `∞` the polydisc `(√2·π)^{j+1}·B_I`). -/
   cont_mem_hullRegions : ∀ i vQ, cont i vQ ∈ (X.rhsData.hull.system i vQ).HullRegions
   /-- The theta-pilot region (the union of the images under (Ind1)–(Ind3)) is contained
   in the container: the inclusions `φ(p^λ·(R_I)^∼) ⊆ …` of Proposition 1.4(iii),(iv)
-  and `⊗ m_i ∈ π^{|I|}·B_I` of Proposition 1.5(iv). -/
+  and, at `∞`, the inclusion of the images of the archimedean log-shell (the unit ball of the
+  tensor-product Hermitian metric, IUT III, Proposition 3.2(ii)) in `(√2·π)^{|I|}·B_I`
+  (Proposition 1.5). -/
   thetaPilot_subset : ∀ i vQ, (X.rhsData.thetaPilot i).region vQ ⊆ cont i vQ
   /-- Away from the distinguished primes the container is the holomorphic integral
   structure (Proposition 1.4(iv): `φ((R_I)^∼) ⊆ (R_I)^∼`). -/
@@ -90,10 +94,10 @@ structure LocalEstimate : Type u where
     X.rhsData.vol.packetVol i (.finite p) (cont i (.finite p)) ≤
       inv.capsuleBound (X.rhsData.container.proc.capsule i).card p
   /-- Step (vii): at the archimedean place the packet log-volume of the container is at
-  most `(j+1)·log π` (Proposition 1.5(iii),(iv) and the normalization `μ(B_I) = 0`). -/
+  most `(j+1)·log(√2·π)` (Proposition 1.5(iii),(iv) and the normalization `μ(B_I) = 0`). -/
   vol_infinite : ∀ i,
     X.rhsData.vol.packetVol i .infinite (cont i .infinite) ≤
-      (X.rhsData.container.proc.capsule i).card * Real.log Real.pi
+      (X.rhsData.container.proc.capsule i).card * Real.log (Real.sqrt 2 * Real.pi)
   /-- Monotonicity of the packet log-volume between hull regions (a law of Haar
   measure for regions of finite nonzero volume). -/
   packetVol_mono : ∀ i vQ (U V : Set (X.rhsData.container.packet i vQ).Total),
@@ -107,10 +111,10 @@ variable (est : inv.LocalEstimate)
 
 /-- The pointwise upper bound function on rational places, for a capsule of
 cardinality `n`: `capsuleBound n p` at a distinguished prime `p`, `0` at the other
-primes, `n·log π` at the archimedean place. -/
+primes, `n·log(√2·π)` at the archimedean place. -/
 noncomputable def placeBound (n : ℕ) : RationalPlace → ℝ
   | .finite p => if (p : ℕ) ∈ inv.dst then inv.capsuleBound n p else 0
-  | .infinite => n * Real.log Real.pi
+  | .infinite => n * Real.log (Real.sqrt 2 * Real.pi)
 
 /-- The finite set of rational places carrying the distinguished primes. -/
 noncomputable def dstPlaces : Finset RationalPlace :=
@@ -134,7 +138,7 @@ lemma infinite_notMem_dstPlaces : RationalPlace.infinite ∉ dstPlaces inv := by
 /-- The finite sum of the pointwise bound over all rational places. -/
 lemma finsum_placeBound (n : ℕ) :
     ∑ᶠ vQ, placeBound inv n vQ =
-      ∑ p ∈ inv.dst, inv.capsuleBound n p + n * Real.log Real.pi := by
+      ∑ p ∈ inv.dst, inv.capsuleBound n p + n * Real.log (Real.sqrt 2 * Real.pi) := by
   rw [finsum_eq_sum_of_support_subset _ (support_placeBound_subset inv n),
     Finset.sum_insert (infinite_notMem_dstPlaces inv), add_comm]
   congr 1
@@ -195,7 +199,7 @@ bounded by the sum of the local bounds. -/
 lemma globalVol_thetaHull_le (i : Fin X.rhsData.container.proc.length) :
     X.rhsData.vol.globalVol (X.rhsData.thetaHull i) ≤
       ∑ p ∈ inv.dst, inv.capsuleBound (X.rhsData.container.proc.capsule i).card p +
-        (X.rhsData.container.proc.capsule i).card * Real.log Real.pi := by
+        (X.rhsData.container.proc.capsule i).card * Real.log (Real.sqrt 2 * Real.pi) := by
   rw [← finsum_placeBound]
   exact finsum_le_finsum_of_le (est.packetVol_hull_le i)
     (X.rhsData.vol.finite_support_packetVol _)
@@ -206,7 +210,7 @@ Corollary 3.12 variant is at most the procession average of the summed local bou
 theorem rhs_le :
     X.rhsData.rhs ≤
       (∑ i, (∑ p ∈ inv.dst, inv.capsuleBound (X.rhsData.container.proc.capsule i).card p +
-        (X.rhsData.container.proc.capsule i).card * Real.log Real.pi)) /
+        (X.rhsData.container.proc.capsule i).card * Real.log (Real.sqrt 2 * Real.pi))) /
         X.rhsData.container.proc.length := by
   unfold RHSData.rhs LogVolumeData.processionVol
   exact div_le_div_of_nonneg_right (Finset.sum_le_sum fun i _ => est.globalVol_thetaHull_le i)

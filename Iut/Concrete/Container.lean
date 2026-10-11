@@ -492,10 +492,10 @@ noncomputable def hull : ContainerHullSystem (container σ n) where
     ⟨fun c => integral K vQ (tuple σ vQ c), fun c => integral_admissible K vQ _, rfl⟩
 
 /-- **The theta-pilot component at the archimedean place** (IUT IV, Theorem 1.10, Step (vii)):
-the union of the images of the tensor product of the log-shells (the closed absolutely convex
-hull of the tensor products `⊗_j y_j` of log-shell elements `|y_j| ≤ π`, IUT III, Proposition
-3.2(ii); IUT IV, Proposition 1.5(iv)) under the indeterminacy automorphisms (IUT III, Theorem
-3.11 (Ind1), (Ind2)). -/
+the union of the images of the log-shell of the packet (the closed unit ball of the
+tensor-product Hermitian metric for which the log-shell of each factor, the disc of radius `π`,
+is the unit ball; IUT III, Proposition 3.2(ii)) under the indeterminacy automorphisms (IUT III,
+Theorem 3.11 (Ind1), (Ind2)). -/
 noncomputable def thetaInfinite (i : Fin n)
     (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber k .infinite) :
     Set (Tensor K .infinite (tuple σ .infinite c)) :=
