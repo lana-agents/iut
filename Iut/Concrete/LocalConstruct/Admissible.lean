@@ -14,14 +14,17 @@ relatively compact, measurable regions of positive finite Haar measure (`admissi
 `admissible_relCompact`, `integral_admissible`, `smul_integral_admissible`, and restates
 the scaling law of the log-volume for admissible regions.
 
-## Least hull regions
+## Least hull regions at the archimedean place
 
-At the archimedean place the hull regions are the real radial scalings `t·B_I` (`t > 0`)
-of the product of unit balls, and the least one containing an admissible region `U` is
-`t·B_I` with `t = sup_{x ∈ U} ‖x‖_π`, the supremum of the projective norm over `U`
-(`exists_leastHull_infinite`, `Iut.LocalTheory.exists_leastHull_infinite`); it is
-positive because a region of positive Haar measure is not contained in `{0}`. The radial
-scalings are monotone in `t` (`smul_integralAt_infinite_mono`).
+At the archimedean place the hull regions are the regions `a·B_I` with `a` a unit of the
+packet, i.e. with every component of `a` in the direct sum decomposition of the packet into
+copies of `ℝ` and `ℂ` nonzero (IUT III, Remark 3.9.5(i)). These are the polydiscs with radii
+`‖archChar 𝔪 a‖` (`mem_smul_archIntegral_iff`, `Archimedean.lean`), and the least one
+containing an admissible region `U` is computed componentwise: its radius at `𝔪` is
+`sup_{x ∈ U} ‖archChar 𝔪 x‖` (`exists_leastHull_infinite`,
+`Iut.LocalTheory.exists_leastHull_infinite`), positive because a region of positive Haar
+measure is not contained in the kernel of a component. The real radial scalings `t·B_I` are
+monotone in `t` (`smul_integralAt_infinite_mono`).
 
 ## Least hull regions at a prime
 
@@ -100,29 +103,9 @@ theorem componentVol_prime_preimage_of_admissible (p : Nat.Primes) (hc : ∀ j, 
   componentVol_prime_preimage' p hc U (admissible_measurableSet hU) (admissible_haar_pos hU).ne'
     (admissible_haar_lt_top hU).ne
 
-/-! ### Least real radial scalings of `B_I` -/
+/-! ### Least hull regions at the archimedean place -/
 
 variable (c)
-
-/-- `x ∈ t·B_I ↔ ‖x‖_π ≤ t`, for `t > 0`. -/
-lemma mem_algebraMap_smul_archIntegral {t : ℝ} (ht : 0 < t) {x : Tensor K .infinite c} :
-    x ∈ algebraMap ℝ (Tensor K .infinite c) t • archIntegral c ↔ archNorm c x ≤ t := by
-  rw [algebraMap_smul_set]
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    calc archNorm c (t • y) ≤ |t| * archNorm c y := archNorm_smul_le c t y
-      _ ≤ t * 1 := by
-          rw [abs_of_pos ht]
-          exact mul_le_mul_of_nonneg_left hy ht.le
-      _ = t := mul_one t
-  · intro hx
-    refine ⟨t⁻¹ • x, ?_, smul_inv_smul₀ ht.ne' x⟩
-    change archNorm c (t⁻¹ • x) ≤ 1
-    calc archNorm c (t⁻¹ • x) ≤ |t⁻¹| * archNorm c x := archNorm_smul_le c _ x
-      _ ≤ t⁻¹ * t := by
-          rw [abs_of_pos (inv_pos.mpr ht)]
-          exact mul_le_mul_of_nonneg_left hx (inv_pos.mpr ht).le
-      _ = 1 := inv_mul_cancel₀ ht.ne'
 
 /-- **Radial monotonicity of `B_I`**: `t·B_I ⊆ t'·B_I` for `0 < t ≤ t'`
 (`LocalTheory.smul_integral_infinite_mono`). -/
@@ -131,49 +114,74 @@ theorem smul_integralAt_infinite_mono (t t' : ℝ) (ht : 0 < t) (htt' : t ≤ t'
       algebraMap ℝ (Tensor K .infinite c) t' • integralAt .infinite c := by
   rw [integralAt_infinite]
   intro x hx
-  exact (mem_algebraMap_smul_archIntegral c (ht.trans_le htt')).mpr
-    (((mem_algebraMap_smul_archIntegral c ht).mp hx).trans htt')
+  exact (mem_algebraMap_smul_archIntegral (ht.trans_le htt')).mpr fun m =>
+    ((mem_algebraMap_smul_archIntegral ht).mp hx m).trans htt'
 
-/-- **Existence of least hull regions at the archimedean place**
-(`LocalTheory.exists_leastHull_infinite`): an admissible region `U` is contained in the
-least radial scaling `t·B_I`, with `t = sup_{x ∈ U} ‖x‖_π > 0`. -/
+/-- A region of positive Haar measure has, at every maximal ideal `𝔪`, a point with nonzero
+`𝔪`-component: the kernel of a component is a proper subspace, of Haar measure zero
+(`MeasureTheory.Measure.addHaar_submodule`). -/
+lemma exists_archChar_ne_zero_of_haar_pos {U : Set (Tensor K .infinite c)}
+    (hU : 0 < haar .infinite c U) (m : MaximalSpectrum (Tensor K .infinite c)) :
+    ∃ x ∈ U, archChar c m x ≠ 0 := by
+  by_contra h
+  push Not at h
+  have hsub : U ⊆ (LinearMap.ker (archChar c m).toLinearMap : Set (Tensor K .infinite c)) :=
+    fun x hx => h x hx
+  have hne : LinearMap.ker (archChar c m).toLinearMap ≠ ⊤ := by
+    intro htop
+    have h1 : (1 : Tensor K .infinite c) ∈ LinearMap.ker (archChar c m).toLinearMap :=
+      htop ▸ Submodule.mem_top
+    rw [LinearMap.mem_ker, AlgHom.toLinearMap_apply, map_one] at h1
+    exact one_ne_zero h1
+  exact absurd hU (not_lt.mpr ((measure_mono hsub).trans
+    (Measure.addHaar_submodule (haar .infinite c) _ hne).le))
+
+/-- **Existence of least hull regions at the archimedean place** (IUT III, Remark 3.9.5(i);
+`LocalTheory.exists_leastHull_infinite`): every admissible region `U` of an archimedean packet
+is contained in a least region `a·B_I` with `a` a unit, i.e. with every component of `a`
+nonzero. It is the polydisc whose radius at a maximal ideal `𝔪` is the supremum
+`M_𝔪 = sup_{x ∈ U} ‖x mod 𝔪‖`, finite since `U` is bounded and positive since `U` has positive
+Haar measure (`exists_archChar_ne_zero_of_haar_pos`); by the Chinese remainder theorem it is
+`a·B_I` for an element `a` with real components `M_𝔪` (`exists_forall_archChar_eq`). -/
 theorem exists_leastHull_infinite {U : Set (Tensor K .infinite c)}
     (hU : U ∈ admissible .infinite c) :
-    ∃ t : ℝ, 0 < t ∧ U ⊆ algebraMap ℝ (Tensor K .infinite c) t • integralAt .infinite c ∧
-      ∀ t' : ℝ, 0 < t' →
-        U ⊆ algebraMap ℝ (Tensor K .infinite c) t' • integralAt .infinite c → t ≤ t' := by
+    ∃ a : Tensor K .infinite c, IsUnit a ∧ U ⊆ a • integralAt .infinite c ∧
+      ∀ b : Tensor K .infinite c, IsUnit b → U ⊆ b • integralAt .infinite c →
+        a • integralAt .infinite c ⊆ b • integralAt .infinite c := by
   rw [integralAt_infinite]
-  have hbdd : BddAbove (archNorm c '' U) :=
-    ((admissible_relCompact hU).image (continuous_archNorm c)).bddAbove.mono
-      (Set.image_mono subset_closure)
-  have hne : (archNorm c '' U).Nonempty := (admissible_nonempty hU).image _
-  have hle : ∀ x ∈ U, archNorm c x ≤ sSup (archNorm c '' U) := fun x hx =>
-    le_csSup hbdd ⟨x, hx, rfl⟩
-  have ht0 : 0 ≤ sSup (archNorm c '' U) := by
-    obtain ⟨x, hx⟩ := admissible_nonempty hU
-    exact (archNorm_nonneg c x).trans (hle x hx)
-  have htpos : 0 < sSup (archNorm c '' U) := by
-    rcases ht0.lt_or_eq with h | h
-    · exact h
-    exfalso
-    have hsub : U ⊆ {0} := by
-      intro x hx
-      have h0 : archNorm c x = 0 :=
-        le_antisymm ((hle x hx).trans h.symm.le) (archNorm_nonneg c x)
-      obtain ⟨C, -, hC⟩ := exists_norm_le_archNorm c
-      have hx0 : ‖x‖ ≤ 0 := by
-        have := hC x
-        rwa [h0, mul_zero] at this
-      exact norm_le_zero_iff.mp hx0
-    haveI : Nontrivial (Tensor K .infinite c) :=
-      Module.nontrivial_of_finrank_pos (finrank_tensor_infinite_pos (c := c))
-    exact absurd (admissible_haar_pos hU) (not_lt.mpr ((measure_mono hsub).trans
-      (measure_singleton (0 : Tensor K .infinite c)).le))
-  refine ⟨_, htpos, fun x hx => ?_, fun t' ht' hUt' => ?_⟩
-  · exact (mem_algebraMap_smul_archIntegral c htpos).mpr (hle x hx)
-  · refine csSup_le hne ?_
-    rintro _ ⟨x, hx, rfl⟩
-    exact (mem_algebraMap_smul_archIntegral c ht').mp (hUt' hx)
+  have hne := admissible_nonempty hU
+  set M : MaximalSpectrum (Tensor K .infinite c) → ℝ :=
+    fun m => sSup ((fun x => ‖archChar c m x‖) '' U) with hM
+  have hMbdd : ∀ m, BddAbove ((fun x => ‖archChar c m x‖) '' U) := fun m =>
+    ((admissible_relCompact hU).image
+      (continuous_norm.comp (continuous_archChar c m))).bddAbove.mono
+        (Set.image_mono subset_closure)
+  have hMle : ∀ m, ∀ x ∈ U, ‖archChar c m x‖ ≤ M m := fun m x hx =>
+    le_csSup (hMbdd m) ⟨x, hx, rfl⟩
+  have hMpos : ∀ m, 0 < M m := fun m => by
+    obtain ⟨x, hx, hx0⟩ := exists_archChar_ne_zero_of_haar_pos c (admissible_haar_pos hU) m
+    exact (norm_pos_iff.mpr hx0).trans_le (hMle m x hx)
+  have hMsup : ∀ m (t : ℝ), (∀ x ∈ U, ‖archChar c m x‖ ≤ t) → M m ≤ t :=
+    fun m t ht => csSup_le (hne.image _) (by rintro _ ⟨x, hx, rfl⟩; exact ht x hx)
+  obtain ⟨a, ha⟩ := exists_forall_archChar_eq c M
+  have hna : ∀ m, ‖archChar c m a‖ = M m := fun m => by
+    rw [ha m, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hMpos m)]
+  have haU : IsUnit a := (isUnit_iff_forall_archChar_ne_zero c).mpr fun m h0 => by
+    have := hna m
+    rw [h0, norm_zero] at this
+    exact (hMpos m).ne this
+  refine ⟨a, haU, fun x hx => ?_, fun b hb hUb => ?_⟩
+  · rw [mem_smul_archIntegral_iff haU]
+    intro m
+    rw [hna m]
+    exact hMle m x hx
+  · intro x hx
+    rw [mem_smul_archIntegral_iff haU] at hx
+    rw [mem_smul_archIntegral_iff hb]
+    intro m
+    refine (hx m).trans ?_
+    rw [hna m]
+    exact hMsup m _ fun y hy => (mem_smul_archIntegral_iff hb).mp (hUb hy) m
 
 end LocalConstruct
 

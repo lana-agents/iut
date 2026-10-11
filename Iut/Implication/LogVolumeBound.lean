@@ -71,7 +71,7 @@ structure LocalEstimate : Type u where
   cont : ∀ (i : Fin X.rhsData.container.proc.length) (vQ : RationalPlace),
     Set (X.rhsData.container.packet i vQ).Total
   /-- Each container belongs to the class of hull regions of the hull system (a region
-  `a·O` with all components of `a` units; at `∞` a real radial scaling of `B_I`). -/
+  `a·O` with all components of `a` units; at `∞` the polydisc `π^{j+1}·B_I`). -/
   cont_mem_hullRegions : ∀ i vQ, cont i vQ ∈ (X.rhsData.hull.system i vQ).HullRegions
   /-- The theta-pilot region (the union of the images under (Ind1)–(Ind3)) is contained
   in the container: the inclusions `φ(p^λ·(R_I)^∼) ⊆ …` of Proposition 1.4(iii),(iv)

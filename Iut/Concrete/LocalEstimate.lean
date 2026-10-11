@@ -21,8 +21,9 @@ Theorem 1.10 are *derived* here from the local-field theory:
   invariance of the `q`-degree for the `λ` terms;
 * at a non-distinguished prime the container is the integral structure itself
   (Proposition 1.4(iv)), of log-volume `0`;
-* at the archimedean place the container is `π^{|I|}·B_I` (Proposition 1.5), of
-  log-volume `|I|·log π`;
+* at the archimedean place the container is `π^{|I|}·B_I` (Proposition 1.5(iii),(iv)), a hull
+  region `a·B_I` of the polydisc `B_I` containing the images of the tensor products of
+  log-shell elements under the indeterminacies (Ind1), (Ind2), of log-volume `|I|·log π`;
 * monotonicity of the packet log-volume between hull regions follows from the
   component-wise monotonicity.
 
@@ -289,13 +290,13 @@ lemma cont_isHullRegion (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     · exact DirectSumPresentation.isHullRegion_integralRegion _
   · exact ⟨_, fun c => isUnit_archScalar (D := D) i c, rfl⟩
 
-/-- Each container belongs to the class of hull regions of the concrete hull system: at a
-prime it is a hull region, at `∞` the real radial scaling `π^{|I|}·B_I`. -/
+/-- Each container belongs to the class of hull regions of the concrete hull system: it is a
+hull region `a·O` with all components of `a` units (at `∞`, `a = π^{|I|}`). -/
 lemma cont_mem_hullRegions (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     cont (D := D) i vQ ∈ LocalTheory.hullRegions D.Kt (Lab i) vQ := by
   rcases vQ with p | _
   · exact cont_isHullRegion (D := D) i (.finite p)
-  · exact ⟨fun _ => Real.pi ^ (i.1 + 2), fun _ => pow_pos Real.pi_pos _, rfl⟩
+  · exact cont_isHullRegion (D := D) i .infinite
 
 lemma thetaPilot_subset (i : Fin (nCaps (D := D))) (vQ : RationalPlace) :
     (LocalTheory.packet D.Kt (Lab i) vQ).productRegion (fun c => D.thetaComponent _ i vQ c) ⊆

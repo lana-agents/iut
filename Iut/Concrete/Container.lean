@@ -297,15 +297,14 @@ noncomputable def vol : LogVolumeData (container K n) where
     exact congrArg (fun S => tupleWeight K vQ c * componentVol K vQ (tuple K vQ c) S) h
 
 /-- **The class of hull regions of a packet** among which the holomorphic hull is least
-(`HullSystem.HullRegions`): at a prime all regions `a·O` with all components of `a` units
-(IUT III, Remark 3.9.5(i)); at the archimedean place the real radial scalings `t·B_I`
-with `t > 0` componentwise (IUT IV, Proposition 1.5(iii)). -/
+(`HullSystem.HullRegions`): all regions `a·O` with all components of `a` units, i.e. with every
+direct-summand component of `a` nonzero (IUT III, Remark 3.9.5(i)) — at a prime `O = (R_I)^∼`,
+at the archimedean place `O = B_I`, the product of the unit balls of the copies of `ℝ`, `ℂ` in
+the direct sum decomposition of the packet (IUT IV, Proposition 1.5(iii)). -/
 def hullRegions (ι : Type) [Fintype ι] :
     ∀ vQ : RationalPlace, Set (Set (packet K ι vQ).Total)
   | .finite p => {R | (packet K ι (.finite p)).IsHullRegion R}
-  | .infinite => {R | ∃ t : (ι → LocalTheory.Fiber K .infinite) → ℝ, (∀ c, 0 < t c) ∧
-      R = (packet K ι .infinite).scaledIntegral fun c =>
-        algebraMap ℝ (Tensor K .infinite (tuple K .infinite c)) (t c)}
+  | .infinite => {R | (packet K ι .infinite).IsHullRegion R}
 
 /-- Members of the class of hull regions are hull regions `a·O` with all components of
 `a` units. -/
@@ -313,26 +312,18 @@ lemma isHullRegion_of_mem_hullRegions (ι : Type) [Fintype ι] (vQ : RationalPla
     ∀ R ∈ hullRegions K ι vQ, (packet K ι vQ).IsHullRegion R := by
   cases vQ with
   | finite p => exact fun R hR => hR
-  | infinite =>
-    rintro R ⟨t, ht, rfl⟩
-    exact ⟨_, fun c => (isUnit_iff_ne_zero.mpr (ht c).ne').map
-      (algebraMap ℝ (Tensor K .infinite (tuple K .infinite c))), rfl⟩
+  | infinite => exact fun R hR => hR
 
 /-- The holomorphic integral region belongs to the class of hull regions. -/
 lemma integralRegion_mem_hullRegions (ι : Type) [Fintype ι] (vQ : RationalPlace) :
     (packet K ι vQ).integralRegion ∈ hullRegions K ι vQ := by
   cases vQ with
   | finite p => exact (packet K ι (.finite p)).isHullRegion_integralRegion
-  | infinite =>
-    refine ⟨fun _ => 1, fun _ => one_pos, ?_⟩
-    rw [← DirectSumPresentation.scaledIntegral_one]
-    congr 1
-    funext c
-    exact (map_one _).symm
+  | infinite => exact (packet K ι .infinite).isHullRegion_integralRegion
 
 /-- **Least hull regions of product regions** with admissible components, from the least
-hull regions of the components (`exists_leastHull` at a prime, `exists_leastHull_infinite`
-and the radial monotonicity `smul_integral_infinite_mono` at `∞`). -/
+hull regions of the components (`exists_leastHull` at a prime, `exists_leastHull_infinite` at
+`∞`). -/
 lemma exists_leastHullRegion (ι : Type) [Fintype ι] (vQ : RationalPlace)
     (fam : ∀ c : ι → LocalTheory.Fiber K vQ, Set (Tensor K vQ (tuple K vQ c)))
     (hfam : ∀ c, fam c ∈ admissible K vQ (tuple K vQ c)) :
@@ -354,23 +345,19 @@ lemma exists_leastHullRegion (ι : Type) [Fintype ι] (vQ : RationalPlace)
         exact hUR hz c
       exact (ha c).2.2 (b c) (hb c) hproj (hx c)
   | infinite =>
-    choose t ht using fun c => exists_leastHull_infinite K (tuple K _ c) (fam c) (hfam c)
-    refine ⟨(packet K _ _).scaledIntegral fun c =>
-      algebraMap ℝ (Tensor K .infinite (tuple K .infinite c)) (t c),
-      ⟨t, fun c => (ht c).1, rfl⟩, ?_, ?_⟩
+    choose a ha using fun c => exists_leastHull_infinite K (tuple K _ c) (fam c) (hfam c)
+    refine ⟨(packet K _ _).scaledIntegral a, ⟨a, fun c => (ha c).1, rfl⟩, ?_, ?_⟩
     · intro x hx c
-      exact (ht c).2.1 (hx c)
-    · rintro R ⟨t', ht', rfl⟩ hUR
+      exact (ha c).2.1 (hx c)
+    · rintro R ⟨b, hb, rfl⟩ hUR
       intro x hx c
-      have hproj : fam c ⊆ algebraMap ℝ (Tensor K .infinite (tuple K .infinite c)) (t' c) •
-          integral K .infinite (tuple K .infinite c) := by
+      have hproj : fam c ⊆ scaled K _ c (b c) := by
         have := proj_productRegion K _ fam
           (fun c => admissible_nonempty K _ _ _ (hfam c)) c
         rw [← this]
         rintro y ⟨z, hz, rfl⟩
         exact hUR hz c
-      exact smul_integral_infinite_mono K _ _ _ (ht c).1
-        ((ht c).2.2 (t' c) (ht' c) hproj) (hx c)
+      exact (ha c).2.2 (b c) (hb c) hproj (hx c)
 
 /-- **The concrete hull system**: least hull regions of product regions with admissible
 components, from the least hull regions of the components. -/
@@ -414,8 +401,11 @@ lemma residueChar_fiberPlace {p : Nat.Primes} (v : LocalTheory.Fiber K (.finite 
     residueChar (fiberPlace K v) = p :=
   (fiberFiniteEquiv K p v).2
 
-/-- The theta-pilot component at the archimedean place: the union of the images of the
-tensor product of the log-shells under the indeterminacy automorphisms. -/
+/-- **The theta-pilot component at the archimedean place** (IUT IV, Theorem 1.10, Step (vii)):
+the union of the images of the tensor product of the log-shells (the closed absolutely convex
+hull of the tensor products `⊗_j y_j` of log-shell elements `|y_j| ≤ π`, IUT III, Proposition
+3.2(ii); IUT IV, Proposition 1.5(iv)) under the indeterminacy automorphisms (IUT III, Theorem
+3.11 (Ind1), (Ind2)). -/
 noncomputable def thetaInfinite (n : ℕ) (i : Fin n)
     (c : ((Procession.standard n).capsule i).LabelType → LocalTheory.Fiber K .infinite) :
     Set (Tensor K .infinite (tuple K .infinite c)) :=
