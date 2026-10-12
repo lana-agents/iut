@@ -75,6 +75,7 @@ challenge or by `Iut/Concrete/*`.
 | 3(a) global realified | `Global.lean` | `globalRealified_isFrobenioid`, `degArith_toDiv`, `degree_ofBundle`, `degreeNorm_ofBundle`, `degArith_ratFun`, `picDeg_surjective`, `degree_eq_of_iso`, `degree_frobenius`, `ofBundle_iso_of_rel` |
 | 3(a') `δ_A` iso | `GlobalPic.lean` | `ker_degArith_le` (Dirichlet + finite class group), `picDeg_injective`, `picDegEquiv` (Thm 6.4(i)), `GlobalRealified.nonempty_iso_iff_degree_eq` |
 | 3(b) `p`-adic | `PAdic.lean` | `PAdic.isFrobenioid`, `PAdic.orhdEquiv` (`O^▷ = 𝒪 \ 0`), `PAdic.ounitsEquiv` (`O^× = 𝒪^×`), `PAdic.nonempty_iso` |
+| 3(d) archimedean | `Arch.lean` | `Arch.isFrobenioid`, `Arch.orhd_iff` (`O^▷ = {0 < |u| ≤ 1}`), `Arch.ounits_iff` (`O^× = {|u| = 1}`) |
 | 3(c) tempered | `Tempered.lean` | interface `TemperedFrobenioidData`, `TemperedFrobenioidData.isFrobenioid` |
 | 4 category-theoreticity | `Theoreticity.lean` | statements `PreservesFrobeniusStructure`, `PreservesBase`; `scale_preserves`, `endZeroEquiv`, `inducedDegAut` |
 | 5 the wall | `Wall.lean` | `degreeNorm_qPilotObj`, `degreeNorm_thetaPilotObj` (`= s·|log q|`), `logVol_qRegion_eq_neg_degreeNorm`, `logVol_lgp_eq_neg_degreeNorm`, `scale_thetaPilotObj`, `nonempty_iso_scale_iff`, `isEmpty_iso_thetaPilot_qPilot` |

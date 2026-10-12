@@ -89,7 +89,8 @@ theorem nf_σ (f : A.toThetaNF.Iso B.toThetaNF) (a : A.toThetaNF.J) : f.σ a = a
 
 /-- **Isomorphisms of `D-Θ^{±ell}NF`-Hodge theaters form a `{±1}`-torsor** (the analogue of IUT I,
 Proposition 6.6(iii), Remark 6.12.2(ii)). -/
-noncomputable def isoEquivPmEll (A B : DThetaPmEllNFHT ℓ V) : A.Iso B ≃ A.toPmEll.Iso B.toPmEll where
+noncomputable def isoEquivPmEll (A B : DThetaPmEllNFHT ℓ V) :
+    A.Iso B ≃ A.toPmEll.Iso B.toPmEll where
   toFun f := f.pmEll
   invFun g := ⟨g, default, nf_σ default⟩
   left_inv f := by

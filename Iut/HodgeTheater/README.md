@@ -88,6 +88,47 @@ Accordingly:
      holomorphic structure of `D`), and the procession of its containers is the procession of
      the theaters' `±`-label capsules.
 
-## Status
+## Status (milestones 1–6 formalised; no placeholders)
 
-(to be filled in as the milestones are completed)
+| Milestone | Files | Main results |
+|---|---|---|
+| 1 Labels | `Labels.lean` | `card_flStar` (`ℓ*`), `card_absFl` (`ℓ±`), `absRep`, `nonzeroAbsEquiv` (`|F_ℓ| = 0 ⊔ F_ℓ^*`), `card_flSemi` (`2ℓ`), `flSemi_isPretransitive`, `card_stabilizer_flSemi` (`2`), `PmTorsor.isoEquivSemi`, `PmTorsor.GrpIso.equiv`, `StarTorsor.isoEquiv` |
+| 2 Processions | `Procession.lean` | `prcStar`, `prcPm`, `card_sStar`, `card_sPm`, `starToPm` (Prop. 6.9(iii)), `card_choices_prcStar = ℓ*!`, `card_choices_prcPm = ℓ±!`, `factorial_lt_pow_self`, `standard_image_eq`, `standardToPm` |
+| 3 Bridges (label layer) | `Bridge.lean`, `PmBridge.lean` | Prop. 4.8(i)–(iii): `DNFBridge.isoEquiv`, `Unique (DThetaBridge.Iso _ _)`, `Unique (DThetaNFHT.Iso _ _)`, `DThetaNFHT.glueEquiv`; Prop. 4.9: `DNFBridge.existsUnique_aut`; Prop. 4.11: `DThetaBridge.prc`, `prc_map`; Prop. 6.6(i)–(iii): `DThetaPmBridge.isoEquiv` (`{±1} × {±1}^V`), `DThetaEllBridge.isoEquiv` (`F_ℓ^{⋊±}`), `DThetaPmEllHT.isoEquiv` (`{±1}`); Prop. 6.7: `DThetaPmBridge.toTheta`, `card_fiber_toAbs`; Prop. 6.8(i): `DThetaEllBridge.card_aut_apply`; models of Ex. 4.3, 4.4, 6.2, 6.3 |
+| 4 Prime-strips | `PrimeStrip.lean`, `../Frobenioid/Arch.lean` | `Kind`, `PrimeStrip`, `PrimeStrip.nonempty_iso`, `DStrip`, `DVdashStrip`, `FStrip`, `FVdashStrip`, `FMuStrip`, `FRlfStrip`, `DCirc`, `DCircPm` (models from `D`); `Frobenioid.Arch` (`Arch.isFrobenioid`, `orhd_iff`, `ounits_iff`) |
+| 5 `Θ^{±ell}NF`-Hodge theaters | `HodgeTheater.lean` | `DThetaPmEllNFHT` (`toThetaNF`, `isoEquiv : Iso ≃ {±1}`, `procPm`, `procStar`, `procStar_subset_procPm`), `ThetaPmEllNFHT D` (`toLabels_surjective`, `nonempty_iso`, `ofData`) |
+| 6 The wall | `Wall.lean` | `underPl`, `etUnitOf`, `theaterAlg`, `etUnitIsoOf`, `theaterModel`, `kummer_theaterModel`, `wall3_theaterModel_iff` (`↔ SSIneq D`), `chain`, `chainModel`, `container_capsule_eq`, `placeSect_fin` |
+
+## Simplifications (documented)
+
+* **Labels only for poly-morphisms.** Bridges are recorded by their label data (Examples 4.3,
+  4.4, 6.2, 6.3); the group-theoretic content (evaluation sections, `LabCusp` from `π_1`, the sign
+  `Aut(†D_v) ↠ {±1}`) is P17.
+* **`F_ℓ^±`-groups/torsors** are recorded by one chart of their orbit of charts; isomorphisms record
+  the sign and shift in the charts (determined by the bijection for `ℓ` odd, `PmTorsor.Iso.ext`).
+* **`T^* = |T| \ {0}`** is identified with the nonzero elements of `|F_ℓ|` through the
+  `F_ℓ^±`-group structure of `T` (`DThetaPmBridge.toTheta`).
+* **Objects** (see `PrimeStrip.lean`): `D_v` by `Π_v`; at `V^arc` the topological field `K_v` for
+  the Aut-holomorphic orbispace, no Kummer structure `κ_v`; Frobenioids over the trivial Galois
+  extension, the tempered Frobenioid at `V^bad` replaced by the `p`-adic one (P15 has only an
+  interface); `O^{×μ}` the base-field portion `O^×(K_v)/μ` with trivial Galois action; `F^⊩`
+  without `Prime(C^⊩) ≅ V` and the `ρ_v`; `D^⊚`, `D^⊚±` by their étale fundamental groups.
+* **Isomorphisms of `Θ^{±ell}NF`-Hodge theaters** are isomorphisms of the label layers with
+  isomorphisms of the attached objects along them; that the latter are *uniquely* determined
+  (IUT I, Corollaries 5.3, 5.6, 6.12) is Frobenioid-theoretic and not claimed (objects are recorded
+  up to equivalence), only that every isomorphism of the label layers lifts.
+* **Mono-analyticization** and `F ↦ D` are not defined on abstract prime-strips (P17); only the
+  interface `PrimeStrip.map`.
+* **The wall**: the η-algorithm over Hodge theaters uses the identified-copies output (the η-
+  algorithm itself is not constructed); the Kummer isomorphisms of theaters built from `D` are the
+  identity scalings; the wall indexes by the places of `F`, the prime-strips by `V ≅ V_mod`
+  (pull-back along `V(F) → V_mod`). κ-coric functions are not needed and not formalised.
+
+## What remains
+
+* P17: the group-theoretic reconstruction of the labels and of the mono-analyticizations from the
+  objects (and thereby the identification of the label layer with the object layer).
+* The tempered Frobenioids at `V^bad`, Aut-holomorphic orbispaces and Kummer structures at `V^arc`;
+  the Frobenioid-theoretic uniqueness of lifts of isomorphisms (IUT I, Corollary 5.3).
+* Θ-links between Hodge theaters as poly-isomorphisms of `F^{⊩▶×μ}`-prime-strips (IUT III), and a
+  construction of the η-algorithm whose output is not the identified-copies output.

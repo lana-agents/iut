@@ -136,6 +136,7 @@ import Iut.EtaleTheta.MonoTheta
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
+import Iut.Frobenioid.Arch
 import Iut.Frobenioid.Basic
 import Iut.Frobenioid.Defs
 import Iut.Frobenioid.Global
@@ -146,6 +147,13 @@ import Iut.Frobenioid.PAdic
 import Iut.Frobenioid.Tempered
 import Iut.Frobenioid.Theoreticity
 import Iut.Frobenioid.Wall
+import Iut.HodgeTheater.Bridge
+import Iut.HodgeTheater.HodgeTheater
+import Iut.HodgeTheater.Labels
+import Iut.HodgeTheater.PmBridge
+import Iut.HodgeTheater.PrimeStrip
+import Iut.HodgeTheater.Procession
+import Iut.HodgeTheater.Wall
 import Iut.Implication.ChebyshevExplicit
 import Iut.Implication.Corollary22
 import Iut.Implication.Corollary23
