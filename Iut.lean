@@ -167,8 +167,10 @@ import Iut.Reconstruction.Cusp.Belyi
 import Iut.Reconstruction.Cusp.Elliptic
 import Iut.Reconstruction.Cusp.OutSemidirect
 import Iut.Reconstruction.GroupTheoretic
+import Iut.Reconstruction.Local.Abelianization
 import Iut.Reconstruction.Local.CharCount
 import Iut.Reconstruction.Local.Cyclotome
+import Iut.Reconstruction.Local.Frobenius
 import Iut.Reconstruction.Local.Inertia
 import Iut.Reconstruction.Local.Invariants
 import Iut.Reconstruction.Local.LogShell
