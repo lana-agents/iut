@@ -180,6 +180,7 @@ import Iut.Reconstruction.Local.Frobenius
 import Iut.Reconstruction.Local.Inertia
 import Iut.Reconstruction.Local.Invariants
 import Iut.Reconstruction.Local.LogShell
+import Iut.Reconstruction.Local.LogShellIdent
 import Iut.Reconstruction.Local.LogVolume
 import Iut.Reconstruction.Local.LogVolumeCompletion
 import Iut.Reconstruction.Local.LogVolumeLCFT

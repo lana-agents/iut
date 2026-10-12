@@ -17,6 +17,7 @@ its valuation and of the spectral norm of `local-class-field-theory` agree
 log-shell `𝓘_{K_w} = Iut.logShell K_w p` of IUT III, Definition 1.1, used by the concrete
 `LocalTheory`:
 
+* `hball_completionAt`: the two unit balls of `K_w` agree;
 * `measure_logShell_completionAt`: `p^{f+m} μ(𝓘_{K_w}) = (p*)^d μ(𝒪_{K_w})`;
 * `logVolume_logShell_completionAt`: the normalised log-volume
   `log(μ(𝓘_{K_w})/μ(𝒪_{K_w})) / [K_w : ℚ_p]` is `(log p / e) · logShellConst p f e m`
@@ -29,6 +30,15 @@ open Iut.LocalConstruct MeasureTheory PadicField NumberField
 
 variable {K : Type*} [Field K] [NumberField K] {p : ℕ} [Fact p.Prime] {w : FinitePlace K}
   (hw : residueChar w = p)
+
+/-- The unit balls of the valuation of `K_w` and of the spectral norm agree. -/
+theorem hball_completionAt :
+    letI := padicAlgebra hw
+    haveI : FiniteDimensional ℚ_[p] (completionAt K w) := finite_padicAlgebra hw
+    ∀ x : completionAt K w, ‖x‖ ≤ 1 ↔ nrm p (completionAt K w) x ≤ 1 := by
+  letI := padicAlgebra hw
+  haveI : FiniteDimensional ℚ_[p] (completionAt K w) := finite_padicAlgebra hw
+  exact hball_of_continuous (continuous_padicEmb hw)
 
 /-- **The volume of the log-shell of a completion**: `p^{f+m} μ(𝓘_{K_w}) = (p*)^d μ(𝒪_{K_w})`. -/
 theorem measure_logShell_completionAt [MeasurableSpace (completionAt K w)]

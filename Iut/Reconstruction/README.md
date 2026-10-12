@@ -142,8 +142,12 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   (`ℚ_p`-algebra `padicAlgebra`, continuous `padicEmb`): **`measure_logShell_completionAt`**,
   **`logVolume_logShell_completionAt`** — the normalised log-volume of the log-shell
   `Iut.logShell K_w p` used by the concrete `LocalTheory` is `(log p / e) · logShellConst`.
-* Not done: the identification of `ℚ ⊗ 𝒪_Kˣ` with `K` through `log` (which would identify
-  `monoLogShell` with `Iut.logShell`).
+* `Local/LogShellIdent.lean` (M3f, [AbsTopIII], Prop. 5.8 (ii)) — done (same setting as M3d):
+  `logU : 𝒪_kˣ → k`, `u ↦ (q−1)⁻¹ log(u^{q−1})` (`logU_of_principal`; image `log(1 + 𝔪)` by
+  Teichmüller decomposition, `exists_logU_eq_iff`), `logShell_eq_range_logU`
+  (`(2p)⁻¹ log(1 + 𝔪) = (p*)⁻¹ log 𝒪ˣ`, square roots of principal units for odd `p`),
+  `logTensor : ℚ ⊗ 𝒪_kˣ → k`, `image_logTensor` and **`image_logTensor_monoLogShell`**: the
+  logarithm maps the group-theoretic `monoLogShell (Gal(Ω/k))` onto `Iut.logShell k p`.
 
 ### M4 — cuspidalisation skeleta ([AbsTopII], Cor. 3.3; [AbsTopIII], Thm. 1.9)
 * `Cusp/OutSemidirect.lean` (done): `inn`, `Out`, `outSemidirect ρ = Aut(N) ×_{Out(N)} Q`,
