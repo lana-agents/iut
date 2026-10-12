@@ -31,9 +31,9 @@ log-volume is `Iut.Reconstruction.logShellConst`, M3).
   `G = Gal(Ω/K)`, under `ℚ ⊗ 𝒪_Kˣ ≅ ℚ ⊗ 𝒪^×(G)` the log-shell `𝓘(G)` is
   `{(p*)⁻¹ ⊗ u | u ∈ 𝒪_Kˣ}`.
 
-The identification of `ℚ ⊗ 𝒪_Kˣ` with `K` through the `p`-adic logarithm, i.e. with
-`Iut.logShell` (which lives in the valued-field framework of `Iut/Concrete`), is not formalised
-here.
+The identification of `𝓘(G_K)` through the `p`-adic logarithm with `Iut.logShell` (which
+lives in the valued-field framework of `Iut/Concrete`) is `image_logTensor_monoLogShell`
+(`Local/LogShellIdent.lean`).
 -/
 
 open scoped TensorProduct
