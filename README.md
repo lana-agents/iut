@@ -880,6 +880,27 @@ research-level remainder. Not imported by the comparator challenge.
 * `Wall.lean`: the LGP theta values `q_v^{j²}` of `Iut/Wall` are the `ℓ`-th roots of the theta
   values `Θ_v(√-1·q^{j/2})` (`qroot_pow_ell_mul_thetaRatio`, `pow_eq_thetaRatio_inv_iff`).
 
+## Hodge theaters (`Iut/HodgeTheater`, roadmap P18)
+
+Prime-strips, bridges and `Θ^{±ell}NF`-Hodge theaters of IUT I, §4–§6, built from initial Θ-data
+and the Frobenioids of `Iut/Frobenioid` (P15); see
+[`Iut/HodgeTheater/README.md`](Iut/HodgeTheater/README.md) for milestones, scope decisions (the
+anabelian reconstruction of the labels is P17) and simplifications. Not imported by the comparator
+challenge.
+
+* `Labels.lean`, `Procession.lean`: `F_ℓ^*`, `|F_ℓ|`, `F_ℓ^{⋊±}` (cardinalities `ℓ*`, `ℓ±`, `2ℓ`),
+  `F_ℓ^±`-groups and -torsors and their isomorphism torsors; the processions `S^*_j`, `S^±_t`
+  (IUT I, Propositions 4.11, 6.9), and the standard procession of the container as the
+  `±`-label procession.
+* `Bridge.lean`, `PmBridge.lean`, `Gluing.lean`: `D-NF-`, `D-Θ-`, `D-Θ^±-`, `D-Θ^ell`-bridges and
+  `D-ΘNF-`, `D-Θ^{±ell}`-Hodge theaters (label layer) with IUT I, Propositions 4.8, 4.9, 6.6(i)–(iv),
+  6.7, 6.8.
+* `PrimeStrip.lean` (and `Iut/Frobenioid/Arch.lean`): `D`-, `D^⊢`-, `F`-, `F^⊢`-, `F^{⊢×μ}`-,
+  `F^⊩`-prime-strips as isomorphs of models built from `D`; `HodgeTheater.lean`: `Θ^{±ell}NF`-Hodge
+  theaters (`ThetaPmEllNFHT D`, `ofData D`).
+* `Wall.lean`: the multi-container model of the wall with actual Hodge theaters as sides
+  (`theaterModel`, `wall3_theaterModel_iff : Wall3 ↔ SSIneq D`).
+
 ## Dependency pins
 
 `lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its

@@ -148,6 +148,7 @@ import Iut.Frobenioid.Tempered
 import Iut.Frobenioid.Theoreticity
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
+import Iut.HodgeTheater.Gluing
 import Iut.HodgeTheater.HodgeTheater
 import Iut.HodgeTheater.Labels
 import Iut.HodgeTheater.PmBridge
