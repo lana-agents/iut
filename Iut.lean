@@ -201,6 +201,9 @@ import Iut.Wall.Constraints
 import Iut.Wall.EtaAlg
 import Iut.Wall.IdentifiedCopies
 import Iut.Wall.Ind3
+import Iut.Wall.MultiConstraints
+import Iut.Wall.MultiContainer
 import Iut.Wall.Pilots
 import Iut.Wall.QPilotRegion
 import Iut.Wall.Rss
+import Iut.Wall.Scaling

@@ -1,4 +1,4 @@
-# The wall, Milestones 1–2 (`Iut/Wall/`)
+# The wall, Milestones 1–3 (`Iut/Wall/`)
 
 A Lean formulation of **the wall** of the LANA interim report (July 2026; cited **[LANA]**;
 PDF page numbers equal printed page numbers): the equation **(9-1)**
@@ -32,6 +32,13 @@ wall is a `Prop` (`Iut.Wall`) that enters only as a hypothesis. Every theorem be
   `etaQ_pilot_eq_mk`.
 * `Constraints.lean` (M2 (b)): candidate constraints (C1)–(C10) and their status on the
   identified-copies algorithm.
+* `Scaling.lean` (M3): mono-analytic scalings of the container (`Scaling`, `act`, `shift`,
+  `logVol_act`, `units_mul_hom_iff`, `kmul_eq_iff`, `qScale`, `negScale`).
+* `MultiContainer.lean` (M3): the multi-container model (`MultiContainer`, `transport`,
+  `distortion`, `WallOn`, `Wall3`, `wallOn_iff_of_thetaShift`, `variant_of_wall3`, `ofAlg`,
+  `idModel`).
+* `MultiConstraints.lean` (M3): (C1)–(C11) in the multi-container model; `negModel`,
+  `chainModel`.
 
 ## M1a: basic prime strips ([LANA], §4.1, pp. 23–24; §4.2(c), p. 26; §7.1, pp. 37–38)
 
@@ -238,4 +245,158 @@ needs:
 The identified-copies model is the case of one container, the identity transport and
 `μ_{h₁} = μ_{h₂}`. In these terms the open question is whether an admissible transport or
 normalization changes the log-volume shift `−s·|log(q)|` of `LGP·O`; C9 shows that only this
-shift matters for the wall.
+shift matters for the wall. (This structure is built in Milestone 3, below; the answer there:
+only through the volume distortion of the transport.)
+
+## M3: the multi-container model (`Scaling.lean`, `MultiContainer.lean`, `MultiConstraints.lean`)
+
+The structure listed above under "Extra structure needed" is built, with every constraint a
+`Prop` or a hypothesis (no new fields beyond the data).
+
+**The model** `Wall.MultiContainer D`: an η-algorithm `alg : EtaAlg D` (its Hodge theaters
+`HT`, coric étale-unit BPSs and BPS-level Θ-links are shared) and, for each Hodge theater `h`, a
+Kummer isomorphism `kum h : Scaling D`.
+
+* **(1) Hodge-theater data.** `VCh h` (the container of `h`, a copy of the concrete container
+  of `D`), `vol h` (its native procession-normalized log-volume `μ_h`), `qRegionAt h` (its
+  native `q`-pilot region, `vol_qRegionAt : μ_h(qRegion_h) = −|log(q)|`), and the ring structure
+  of `h` presented on the common coric tensor components, `ringAt h i p c = (x, y) ↦ u_h·x·y`
+  (`kummer_ringAt`: `κ_h` is a ring isomorphism from it to the copy). Two Hodge theaters induce
+  the same ring structure iff their Kummer isomorphisms agree (`ringAt_eq_iff`).
+* **(2) Coric data and Kummer isomorphisms.** `Coric` (a copy of the container: the étale-like
+  mono-analytic log-shells), `kummer h = act (kum h) : Coric → VCh h`, inverse `kummerInv h`.
+  On each tensor component `κ_h` is `x ↦ u_h·x`: additive (`kummerAddEquiv`), a homeomorphism
+  (`continuous_kummer`, `continuous_kummer_symm`), multiplicative iff `u_h = 1`
+  (`units_mul_hom_iff`). It shifts log-volume by `shift(u_h) = log-vol(u_h·O)`
+  (`logVol_act`). Volume compatibility in the sense of IUT III, Proposition 3.9(ii), is
+  `KummerVolCompat` (`shift(u_h) = 0`) and implies `VolCompat` (all shifts equal); both are
+  hypotheses.
+* **(3) Θ-link transport.** `transport h₁ h₂ = κ_{h₂} ∘ κ_{h₁}⁻¹` (`transport_eq`), a
+  mono-analytic isomorphism (`transport_mono_analytic`) and a ring isomorphism iff
+  `kum h₁ = kum h₂` (`isRingTransport_iff`), with `transport_self`, `transport_trans`. It shifts
+  log-volume by the **distortion** `distortion h₁ h₂ = shift(u_{h₂}) − shift(u_{h₁})`
+  (`logVol_transport : μ_{h₂}(transport U) = μ_{h₁}(U) + distortion h₁ h₂`), a cocycle
+  (`distortion_self`, `distortion_swap`, `distortion_trans`); ring transports have distortion `0`
+  (`distortion_eq_zero_of_isRingTransport`).
+* **(4) The wall.** `WallOn L`: for every pair `L h₁ h₂` and BPS-level Θ-link there are `ι`, `S`
+  with `μ_{h₂}(transport h₁ h₂ (out ι S)) = μ_{h₂}(qRegion_{h₂})`; `Wall3 := WallOn ⊤`;
+  `wallOn_iff_rss` is the `R_ss` form (C3).
+
+**The wall in terms of the distortion.**
+
+```lean
+theorem MultiContainer.wallOn_iff_of_thetaShift (hS : M.alg.ThetaShift) (L) :
+    M.WallOn L ↔ ∀ h₁ h₂, L h₁ h₂ →
+      (sFactor (nC D) - 1) * D.qPilot.absLogQ - M.distortion h₁ h₂ ≤ logVol D (vcI D)
+theorem MultiContainer.wall3_iff_of_thetaShift (hS : M.alg.ThetaShift) :
+    M.Wall3 ↔ ∀ h₁ h₂,
+      (sFactor (nC D) - 1) * D.qPilot.absLogQ + |M.distortion h₁ h₂| ≤ logVol D (vcI D)
+```
+
+`ThetaShift` is the identified-copies log-volume law `log-vol(out ι S) = −s·|log(q)| + log-vol(S)`
+(M2, C9): the output through `h₁` is `LGP·S` computed in the ring structure of `h₁`.
+`wallOn_iff_of_shift` is the version for a general LGP law `κ_ι`.
+
+**`variant_of_wall` lifts.** `variant_of_wall3 : M.Wall3 → Corollary312Variant` for every model
+(the diagonal pair has identity transport); `variant_of_wallOn` (with `TransportRealisation`,
+the transported outputs in the hull of a single (Ind1)-image of the theta-pilot region of `h₂`,
+IUT III, Step (xi-b), (xi-d)) and `variant_of_wallOn_of_volCompat` for a nonempty relation `L`.
+
+**Consistency.** `MultiContainer.ofAlg A` (every `kum h = 1`) has identity transports
+(`transport_ofAlg`) and `Wall3 (ofAlg A) ↔ Wall D A` (`wall3_ofAlg_iff`); M1's `variant_of_wall`
+is `variant_of_wall3` on it (`variant_of_wall_eq_via_wall3`, `rfl`). The identified-copies
+model is `idModel D σ := ofAlg (idAlgOn D σ)` — one container up to the identity transport,
+`μ_{h₁} = μ_{h₂}` — and `wall3_idModel_iff : Wall3 (idModel D σ) ↔ SSIneq D`, where `SSIneq D`
+is the Scholze–Stix inequality `(s − 1)·|log(q)| ≤ log-vol(VC(I))`.
+
+### M3 (5): the constraint table in the multi-container model
+
+| | constraint (M3 form) | source | non-vacuous in M3? | excludes the collapse? | effect on the wall | Lean |
+|---|---|---|---|---|---|---|
+| C1 | IPL | IUT III Rem 3.11.1(iii); [LANA] §8.2, Rem 8.2.1 | no (BPS level, holds for every algorithm) | **No** | none | `EtaAlg.ipl` (M2) |
+| C2 | SHE, transported: `transport h₁ h₂ (out ι S)` is a function of `(h₂, S)` | IUT III Rem 3.11.1(iii), Step (xi-c) | **yes** (couples transport and output) | **No** (`idModel` satisfies it) | forces C11, hence the wall is SS | `SHE3`, `idModel_she3`, `volCompat_of_she3`, `wall3_iff_ss_of_she3` |
+| C3 | SHE (xi-e): transported class `= [qRegion_{h₂}]` in `R_ss` | IUT III Step (xi-e), (xi-f); [LANA] §8.3 | — | **Undecided**: it *is* the wall | — | `wallOn_iff_rss` |
+| C4 | distinct Hodge theaters with distinct Kummer identifications | IUT III Thm 3.11; [LANA] §7.1(b) | **yes** | **Yes, literally**; but `negModel` satisfies it with wall = SS | none | `DistinctKummer`, `not_distinctKummer_idModel`, `negModel_distinctKummer`, `wall3_negModel_iff` |
+| C5 | the wall only across distinct Hodge theaters | [LANA] §7.1(b) | yes | **No** | with two Hodge theaters it implies SS (the two directions cancel the distortion) | `WallDistinct3`, `ss_of_wallDistinct3`, `ss_of_wallOn_pair` |
+| C6 | multiradiality, transported: outputs through `h₁`, `h₁'` transported to `h₂` agree up to (Ind3) | IUT III Thm 3.11(i), Step (xi-b) | **yes** | **No** (`idModel` satisfies it) | forces C11, hence the wall is SS | `Multiradial3`, `idModel_multiradial3`, `volCompat_of_multiradial3`, `wall3_iff_ss_of_multiradial3` |
+| C7 | side-dependence | [LANA] §10.3 | unchanged (algorithm level) | as in M2 (incompatible with C6) | — | `EtaAlg.SideDependent` (M2) |
+| C8 | dependence on the input value group | [LANA] Rem 6.2.2 | unchanged | as in M2 (no algorithm satisfies it) | — | `EtaAlg.not_valDependent` (M2) |
+| C9 | APT | IUT III Rem 3.11.1(iv); [LANA] §8.2–8.3 | transports are set maps of regions by construction | **No** | the wall sees outputs only through their LGP shift and the distortion | `wallOn_iff_of_shift` |
+| C10 | alien rings: no transport between distinct Hodge theaters is a ring isomorphism | [LANA] §7.1(b)(c), §10.5; IUT III Step (xi-a) | **yes** (ring iff equal Kummer isomorphisms) | **Yes** (for ≥ 2 Hodge theaters); but `negModel` satisfies it with C11 and wall = SS | none by itself | `Alien3`, `alien3_iff`, `not_alien3_idModel`, `negModel_alien3`, `negModel_ringAt_ne`, `alien3_chain` |
+| C11 | **new**: volume compatibility of the Kummer isomorphisms / transports | IUT III Prop 3.9(ii), (iv); Step (x) | yes | **No** (`idModel` satisfies it) | with `ThetaShift` the wall along any nonempty relation is SS | `VolCompat`, `KummerVolCompat`, `wallOn_iff_ss_of_volCompat`, `wall3_iff_wall_of_volCompat` |
+
+**Outcome.** In the multi-container model C2, C4, C6, C10 (and the new C11) become non-vacuous,
+and C4 and C10 exclude the identified-copies collapse in the literal sense (one container,
+identity transport, `μ_{h₁} = μ_{h₂}`). None of them changes the wall: `negModel` (two Hodge
+theaters, Kummer isomorphisms `1` and `x ↦ −x` at the bad primes, with distinct induced ring
+structures and non-ring transports) satisfies C4, C10, C11, and its wall is exactly the
+Scholze–Stix inequality. C2 and C6 even force C11.
+
+### M3 (6): when does the wall reduce to the Scholze–Stix inequality?
+
+Assume the outputs through `h₁` have the identified-copies log-volumes (`ThetaShift`). Then,
+proved:
+
+1. **The wall depends on the transport only through its volume distortion**:
+   `WallOn L ↔ ∀ L h₁ h₂, (s − 1)·|log(q)| − distortion h₁ h₂ ≤ log-vol(VC(I))`
+   (`wallOn_iff_of_thetaShift`).
+2. **Mono-analytic vs. ring is not the relevant distinction.** Ring transports have zero
+   distortion (`distortion_eq_zero_of_isRingTransport`), and so do all volume-compatible
+   mono-analytic transports, including alien ones (`negModel`). Under volume compatibility
+   (C11, IUT III Proposition 3.9(ii)) the wall along any nonempty relation is the Scholze–Stix
+   inequality (`wallOn_iff_ss_of_volCompat`), whether or not the transports are ring
+   isomorphisms.
+3. **Symmetric walls reduce to it regardless of distortion.** If the wall is required for a pair
+   in both directions — in particular `Wall3` (all pairs, with the diagonal) or C5 with two Hodge
+   theaters — it implies `SSIneq D` (`ss_of_wallOn_pair`, `ss_of_wall3`,
+   `ss_of_wallDistinct3`); `Wall3` is even `(s − 1)·|log(q)| + |distortion| ≤ log-vol(VC(I))`
+   for all pairs, so non-zero distortion makes it *stronger*.
+4. **Non-reduction needs a directed wall and volume distortion.** In `chainModel D k` (Hodge
+   theaters `ℤ`, Θ-links `n → n + 1`, one row of the log-theta-lattice; Kummer isomorphisms
+   `q^{−k·n}`, mono-analytic, not ring) each Θ-link distorts volume by `k·|log(q)|`
+   (`distortion_chain`) and the wall along the Θ-links is
+   **`(s − 1 − k)·|log(q)| ≤ log-vol(VC(I))`** (`wallOn_chain_iff`; `k = 0`: Scholze–Stix,
+   `wallOn_chain_zero_iff`). The scale factor `s` is offset by the distortion per Θ-link in
+   units of `|log(q)|`. For every `D` some `k` makes this wall true (`exists_wallOn_chain`). But
+   for `k ≠ 0` the model violates C11, C2 and C6 (`not_volCompat_chain`, `not_she3_chain`,
+   `not_multiradial3_chain`), its wall for all pairs is false (`not_wall3_chain`), and its wall
+   implies the Corollary 3.12 variant only together with the realisation of the transported
+   outputs in the target container (`variant_of_wallOn`).
+
+So, in this model, the wall does **not** reduce to the Scholze–Stix inequality exactly when it
+is imposed only along directed Θ-links whose Kummer identifications distort the mono-analytic
+log-volume, i.e. when C11 fails. C11 is stated in IUT III (Proposition 3.9(ii), (iv); Step (x)),
+and, for identified-copies log-volumes, C2 and C6 imply it; under `ThetaShift` and C11 the wall
+is the Scholze–Stix inequality (item 2), so no constraint formalized here that is compatible
+with C11 makes the wall differ from it. Neither
+`SSIneq D` nor its negation is proved, and nothing here decides which model is the one IUT
+intends: these are statements about the multi-container model.
+
+### M3 modelling choices and deviations
+
+1. **Copies.** `VCh h` and `Coric` are the concrete container `Region D` of `D` (no separate
+   types); each Hodge theater's arithmetic holomorphic structure is a copy of that of `D` (IUT I:
+   Hodge theaters relative to fixed initial Θ-data are isomorphs), with its native log-volume
+   (IUT III, Proposition 3.9(i)) and native `q`-pilot region (IUT III, Step (xi-a)). What
+   distinguishes Hodge theaters is only their Kummer identification with the coric data (the
+   option suggested by the M2 analysis).
+2. **Kummer isomorphisms are scalings** `x ↦ u·x` by units of the tensor components, trivial at
+   good primes and at `∞`: a subgroup of the mono-analytic automorphisms (additive, topological;
+   [LANA], §5.1(c)(d), §9.1(i); IUT III, Propositions 3.2, 3.9(ii)). Galois conjugations (ring
+   automorphisms preserving Haar measure) and general `ℚ_p`-linear automorphisms (which shift
+   log-volume by their log-modulus, i.e. also by a fixed amount) are not included; the
+   distortion formula (1) of (6) holds for them as well, but this is not formalized.
+3. **No log-link.** The transport is `κ_{h₂} ∘ κ_{h₁}⁻¹`; the vertical log-links and the upper
+   semi-compatibility of the log-Kummer correspondence ([LANA], §7.2(c)) are not modelled
+   beyond the (Ind3)-choice of `S`.
+4. **Volume compatibility is a hypothesis** (C11, `VolCompat`, `KummerVolCompat`), although IUT
+   III, Proposition 3.9(ii), states it for the mono-analytic log-volumes, so that (6) can
+   analyse its failure.
+5. **Realisation.** The realisation (T3) of `EtaAlg` is in the source container; realisation of
+   the transported outputs in the target container is the hypothesis `TransportRealisation`.
+6. **Outputs.** The identified-copies log-volume law `ThetaShift` (output `LGP·S` in the ring
+   structure of `h₁`) is a hypothesis in (6), as in M2 (C9); `wallOn_iff_of_shift` covers
+   general LGP laws.
+7. **Directed Θ-links.** `WallOn L` allows the wall along a relation (IUT III, Definition 3.8:
+   the Θ-links of the log-theta-lattice go from column `n` to column `n + 1`); `Wall3` is the
+   all-pairs form of M1.
