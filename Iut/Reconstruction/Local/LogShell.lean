@@ -81,7 +81,7 @@ theorem muPInf_eq_pow : muPInf p K = p ^ mExp p K := by
 
 end Field
 
-section Constant
+section ShellVolume
 
 /-- `p* = p` for odd `p` and `p* = 4` for `p = 2` ([AbsTopIII], Definition 5.4 (iii)). -/
 def pStar (p : ℕ) : ℕ := if p = 2 then 4 else p
@@ -141,6 +141,6 @@ theorem recLogShellConst_gal :
     recLogShellConst (Ω ≃ₐ[K] Ω) = logShellConst p (f p ℚ_[p] K) (e p ℚ_[p] K) (mExp p K) := by
   rw [recLogShellConst, recPrime_gal p, recF_gal p, recE_gal p, recMExp_gal p]
 
-end Constant
+end ShellVolume
 
 end Iut.Reconstruction
