@@ -129,6 +129,10 @@ import Iut.Cor312.ThetaData.TwoTorsion
 import Iut.Cor312.ThetaData.UltrametricSqrt
 import Iut.Cor312.ThetaData.ValuationTransfer
 import Iut.Cor312.ThetaData.VariableChangePoint
+import Iut.Frobenioid.Basic
+import Iut.Frobenioid.Defs
+import Iut.Frobenioid.Model
+import Iut.Frobenioid.ModelFrobenioid
 import Iut.Implication.ChebyshevExplicit
 import Iut.Implication.Corollary22
 import Iut.Implication.Corollary23
