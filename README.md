@@ -924,6 +924,27 @@ decisions and simplifications. Not imported by the comparator challenge.
   (`LinkedChain`): distortion `0` along every Θ-link and wall along the Θ-links `↔ SSIneq D`
   (`LinkedChain.answer`); the drifting M3 rows are not of this form.
 
+## The log-link and the log-theta-lattice (`Iut/LogLink`, roadmap P20)
+
+Local log-links, the log-Kummer correspondence, the log-theta-lattice and Theorem 3.11 as a
+statement (IUT III, Definition 1.1, Propositions 1.2, 1.3, 3.5(ii), Definition 1.4, Theorems 1.5,
+3.11), with the derivation of P19's log-shell compatibility and the formal chain "Theorem 3.11 +
+Step (xi) ⇒ ABC"; see [`Iut/LogLink/README.md`](Iut/LogLink/README.md). Not imported by the
+comparator challenge.
+
+* `Local.lean`: the logarithm as a homomorphism on the principal units (`logHom`), local
+  log-links (`LocalLogLink`) and their holomorphic log-shells, Kummer non-compatibility,
+  unit-induced identifications preserve log-shells (`image_logShell_of_unitInduced`).
+* `Column.lean`: vertical lines (`LogColumn`), upper semi-compatibility (`upperSemiCompat`),
+  translation invariance, non-commutation of log-link and Gaussian Θ-link
+  (`log_theta_not_commute`).
+* `Lattice.lean`: log-links of Hodge theaters (`LogLinkHT`), the lattice (`LogThetaLattice`),
+  vertical/horizontal/bi-coricity.
+* `Kummer.lean`: `logShellCompat_of_unitInduced` (P19's hypothesis derived from unit-induced
+  tensor Kummer data), `unitInducedScaling_negScale`, `LatticeKummer`, zero distortion.
+* `Thm311.lean`: `Thm311` (holds in the model, `thm311_model`), `XiPrinciple` (Step (xi), a
+  hypothesis), `classicalABC_of_thm311`, `xi_iff_ss` (in the model Step (xi) is `SSIneq D`).
+
 ## Dependency pins
 
 `lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its
