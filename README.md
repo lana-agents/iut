@@ -812,6 +812,32 @@ The modules are not imported by the comparator challenge. The wall is a `Prop`
   does not exclude the trivial solution; on the identified-copies model the wall is exactly
   `(s − 1)·|log(q)| ≤ log-vol(VC(I))`, `s = (1² + ⋯ + ℓ*²)/ℓ*` (`Iut.Wall.wall_idAlg_iff`).
 
+## Arakelov degrees and log-volumes (`Iut/Arakelov`, roadmap P14)
+
+Arithmetic line bundles on number fields and the Arakelov degree as a sum of local
+contributions, and the comparison of IUT III, Proposition 3.9(iii) for the concrete container.
+Not imported by the comparator challenge.
+
+* `Iut/Arakelov/LineBundle.lean`: `Iut.Arakelov.ArithLineBundle K` (idelic description:
+  `a_w ∈ K_w^×`, almost all units, and metrics `r_v > 0` at the archimedean places), `deg`
+  (`−Σ_w log‖a_w‖_w − Σ_v mult(v)·log r_v`, Mathlib's product-formula normalizations),
+  `degNorm = deg/[K : ℚ]`; `deg_mul`, `deg_pow`, the product formula `deg_principal`
+  (from `NumberField.prod_abs_eq_one`), independence of the section `deg_mul_principal`,
+  the ideal-norm comparison `finsum_finDeg_principal_eq_absNorm`, and `degNorm_eq` (weights
+  `[K_w : ℚ_p]/[K : ℚ]` times `ord_p`).
+* `Iut/Arakelov/Container.lean`: scalings `scale D a lab O` of the integral structure of the
+  concrete container by idelic data `(b_v)_v` (`ScalingDatum`); the log-volume is
+  `−(1/ℓ*)·Σ_i sectDeg (a i)` (`logVol_scale_integral`), and for `F_mod`-rational data
+  `sectDeg b = deg(L_b)/[K : ℚ]` (`ScalingDatum.degNorm_toBundle`), so
+  `log-vol((b_v·𝒪_v)_v) = −deg(L_b)/[K : ℚ]` (`logVol_scaleConst_eq_neg_degNorm`,
+  `logVol_scale_integral_eq_degNorm`; IUT III, Proposition 3.9(iii)).
+* `Iut/Arakelov/QPilot.lean`: the `q`-divisor `qDivisor D` on `F` with
+  `degNorm_qDivisor : deg/[F : ℚ] = log(q)`, hence
+  `lhs_eq_neg_degNorm_qDivisor : (qPilot D).lhs = −(1/2ℓ)·deg(q-divisor)/[F : ℚ]`; the
+  `q`-pilot divisor `qPilotBundle D` on `K` (`degNorm_qPilotBundle_eq`: base change by
+  `q_v^{2ℓ} = q_w`), `logVol_qRegion_eq_neg_degNorm`, and the theta values
+  `logVol_lgp_integral_eq_degNorm : log-vol(LGP·O) = −(1/ℓ*)·Σ_j deg(q^{j²})/[K : ℚ]`.
+
 ## Dependency pins
 
 `lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its
