@@ -35,7 +35,7 @@ challenge or by `Iut/Concrete/*`.
      co-angular morphisms, `O▷`, `O×`.
    * `ModelFrobenioid.lean`: **Theorem 5.2(ii)**: the model is a Frobenioid of isotropic type
      (`Model.frobenioid`); Theorem 5.1(i) for the model (`Pic_C(A) ≅ Pic_Φ(A)`,
-     `Model.iso_iff`).
+     `Model.nonempty_iso_iff`).
 3. **Concrete instances.**
    * (a) `Global.lean`: the **global realified Frobenioid** `C^⊩` of a number field `K`
      (one-morphism base, divisor monoid the effective ℝ-arithmetic divisors
@@ -62,6 +62,52 @@ challenge or by `Iut/Concrete/*`.
    scaling automorphism carrying the Θ-pilot to the `q`-pilot has scale `1/s ≠ 1`
    (the hexagon of `Wall.hexagon_not_commutes` in Frobenioid language).
 
+## Status (all milestones formalised; no placeholders; only `propext`, `Classical.choice`,
+`Quot.sound`)
+
+| Milestone | Files | Main results |
+|---|---|---|
+| 1 Definitions | `Basic.lean`, `Defs.lean` | `DivMonoid`, `Elem`, `IsFrobenioid` (Def. 1.3 (i)–(vii)), `isIso_iff_isPullback_isBaseIso` (Rem. 1.2.1), `factorization_unique_of` |
+| 2 Model Frobenioids | `Model.lean`, `ModelFrobenioid.lean` | `Model.isFrobenioid` (Thm 5.2(ii)), `Model.isIso_iff`, `Model.isPullback_iff`, `Model.isIsotropic`, `Model.isCoangular`, `Model.nonempty_iso_iff` (Thm 5.1(i)) |
+| 3(a) global realified | `Global.lean` | `globalRealified_isFrobenioid`, `degArith_toDiv`, `degree_ofBundle`, `degreeNorm_ofBundle`, `degArith_ratFun`, `picDeg_surjective`, `degree_eq_of_iso`, `degree_frobenius`, `ofBundle_iso_of_rel` |
+| 3(b) `p`-adic | `PAdic.lean` | `PAdic.isFrobenioid`, `PAdic.orhdEquiv` (`O^▷ = 𝒪 \ 0`), `PAdic.ounitsEquiv` (`O^× = 𝒪^×`), `PAdic.nonempty_iso` |
+| 3(c) tempered | `Tempered.lean` | interface `TemperedFrobenioidData`, `TemperedFrobenioidData.isFrobenioid` |
+| 4 category-theoreticity | `Theoreticity.lean` | statements `PreservesFrobeniusStructure`, `PreservesBase`; `scale_preserves`, `endZeroEquiv`, `inducedDegAut` |
+| 5 the wall | `Wall.lean` | `degreeNorm_qPilotObj`, `degreeNorm_thetaPilotObj` (`= s·|log q|`), `logVol_qRegion_eq_neg_degreeNorm`, `logVol_lgp_eq_neg_degreeNorm`, `scale_thetaPilotObj`, `nonempty_iso_scale_iff`, `isEmpty_iso_thetaPilot_qPilot` |
+
 ## Encoding choices and simplifications
 
-(to be completed per milestone, see the sections below)
+* **Monoids.** A divisorial monoid `Φ` is recorded by its groupification `Φ^gp(A)` (abelian
+  groups with pull-backs) and the cone `Φ(A) ⊆ Φ^gp(A)` (sharp, saturated, generating);
+  characteristic injectivity is injectivity of the pull-backs. Rational function monoids are
+  families of abelian groups (`GrpOn`). See `Basic.lean`.
+* **Categories** are Mathlib categories; `C → F_Φ` is a Mathlib functor; Mathlib composes
+  diagrammatically (`ψ ≫ φ = φ ∘ ψ`).
+* **Definition 1.3** is recorded clause by clause; (i)(c) and (iii)(d) record the essential
+  surjectivity/fullness halves of the equivalences (faithfulness and full faithfulness are
+  automatic), (iii)(c) records the bijection with its intertwining property (multiplicativity
+  is `Orhd.equiv_mul`). See the docstring of `Defs.lean`.
+* **Not formalised** from [FrdI] §1–§4: perfections, realifications as a general construction
+  (only the realified global Frobenioid is built directly as a model Frobenioid), the types
+  "standard", "Frobenius-normalized", "FSMFF", base-Frobenius pairs as a structure (their
+  model instance is `Model.zeroSection` and the `ζ(n) = (n, id, 0, 0)` of
+  `Model.isFrobeniusTrivial_zero`).
+* **Base categories** of the concrete instances are the one-morphism category `Pt` (trivial
+  Galois extension), as in IUT I, Example 3.5(i) for `C^⊩_mod`. The Galois-category bases
+  `B(G)⁰` of [FrdI], Example 6.3 / [FrdII], Example 1.1 are not formalised.
+* **Global realified Frobenioid**: `Φ^gp = (V_fin →₀ ℝ) × (V_∞ → ℝ)` with the coordinates
+  `ord_w` (finite) and `−log|·|_v` (archimedean); rational functions the ℝ-span of the principal
+  divisors. The non-realified Frobenioid of [FrdI], Example 6.3 (with `ℤ`-coefficients at the
+  finite places and `B = K^×`) is not separately built.
+
+## What remains
+
+* [FrdI], Theorem 6.4(i), injectivity of `δ_A : Pic_Φ(A) → ℝ` for the global realified
+  Frobenioid (needs Dirichlet's unit theorem and the finiteness of the class group; both are in
+  Mathlib, the reduction is not done).
+* [FrdI], Theorem 3.4 / Corollary 4.11 for arbitrary equivalences (research-level here, see
+  `Theoreticity.lean`); Theorem 6.4(ii) for arbitrary equivalences of realified Frobenioids.
+* The tempered Frobenioid construction (connected tempered coverings, log-divisors on universal
+  combinatorial coverings, the theta function), see `Tempered.lean`.
+* Poly-Frobenioids and prime-strips ([FrdII] §5; IUT I §5), the Θ-link as a
+  poly-isomorphism of `F^{⊩▶×μ}`-prime-strips.

@@ -131,8 +131,13 @@ import Iut.Cor312.ThetaData.ValuationTransfer
 import Iut.Cor312.ThetaData.VariableChangePoint
 import Iut.Frobenioid.Basic
 import Iut.Frobenioid.Defs
+import Iut.Frobenioid.Global
 import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
+import Iut.Frobenioid.PAdic
+import Iut.Frobenioid.Tempered
+import Iut.Frobenioid.Theoreticity
+import Iut.Frobenioid.Wall
 import Iut.Implication.ChebyshevExplicit
 import Iut.Implication.Corollary22
 import Iut.Implication.Corollary23

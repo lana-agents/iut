@@ -26,7 +26,7 @@ subject to `deg(φ)·α + Div(φ) = Base(φ)^*β + Div_B(u_φ)` in `Φ^gp(A_D)`,
   Base(φ)^* u_ψ + deg(ψ)·u_φ)`.
 
 `Model.toElem` is the functor to the elementary Frobenioid `F_Φ` (degree, projection, zero
-divisor). This file proves the category axioms and the characterizations used for Theorem
+divisor). This file proves the category laws and the characterizations used for Theorem
 5.2(ii) (`Iut/Frobenioid/ModelFrobenioid.lean`):
 
 * `Model.isIso_iff`: `φ` is an isomorphism iff it is linear, isometric and a base-isomorphism
@@ -169,6 +169,10 @@ def toElem : Model Φ B divB ⥤ Elem Φ where
   map φ := ⟨φ.base, φ.div, φ.div_mem, φ.deg⟩
   map_id _ := rfl
   map_comp _ _ := rfl
+
+variable (Φ B divB) in
+/-- The projection `C → D` to the base category. -/
+abbrev forget : Model Φ B divB ⥤ D := toElem Φ B divB ⋙ Elem.proj
 
 local notation "𝐏" => toElem Φ B divB
 

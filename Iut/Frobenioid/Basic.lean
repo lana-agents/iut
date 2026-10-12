@@ -68,7 +68,7 @@ section Category
 variable {C : Type u} [Category.{v} C]
 
 /-- **Fiberwise-surjective arrows** ([FrdI] §0, p. 14): `β : B → A` such that every `γ : X → A`
-admits arrows `δ_B : Y → B`, `δ_X : Y → X` with `β ∘ δ_B = γ ∘ δ_X`. -/
+has arrows `δ_B : Y → B`, `δ_X : Y → X` with `β ∘ δ_B = γ ∘ δ_X`. -/
 def IsFiberwiseSurjective {B A : C} (β : B ⟶ A) : Prop :=
   ∀ ⦃X : C⦄ (γ : X ⟶ A), ∃ (Y : C) (δB : Y ⟶ B) (δX : Y ⟶ X), δB ≫ β = δX ≫ γ
 

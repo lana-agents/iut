@@ -28,7 +28,7 @@ Mathlib writes composition diagrammatically: `ψ ≫ φ = φ ∘ ψ`.
 `IsMetricallyTrivial`, `IsBaseTrivial`, `IsAutAmple`, `IsEndAmple`, `IsGroupLike`,
 `IsUnitTrivial`, `IsIsotropic`, `IsIsotropicHull`, `IsFrobeniusIsotropic`.
 
-## The Frobenioid axioms ([FrdI], Definition 1.3)
+## The Frobenioid conditions ([FrdI], Definition 1.3)
 
 `IsFrobenioid P` has one field per clause of Definition 1.3 (i)(a)–(vii)(b). Deviations from
 the literal text (each is a logically equivalent or weaker-looking but implied reformulation):
