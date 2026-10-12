@@ -152,6 +152,7 @@ import Iut.Frobenioid.GlobalPic
 import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.PAdic
+import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered
 import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity

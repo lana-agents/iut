@@ -90,7 +90,7 @@ challenge or by `Iut/Concrete/*`.
 | 3(a') `δ_A` iso | `GlobalPic.lean` | `ker_degArith_le` (Dirichlet + finite class group), `picDeg_injective`, `picDegEquiv` (Thm 6.4(i)), `GlobalRealified.nonempty_iso_iff_degree_eq` |
 | 3(b) `p`-adic | `PAdic.lean` | `PAdic.isFrobenioid`, `PAdic.orhdEquiv` (`O^▷ = 𝒪 \ 0`), `PAdic.ounitsEquiv` (`O^× = 𝒪^×`), `PAdic.nonempty_iso` |
 | 3(d) archimedean | `Arch.lean` | `Arch.isFrobenioid`, `Arch.orhd_iff` (`O^▷ = {0 < |u| ≤ 1}`), `Arch.ounits_iff` (`O^× = {|u| = 1}`) |
-| 3(c) tempered | `TemperedBase.lean`, `Tempered.lean` | `OrbitObj.isConnected`, `OrbitObj.totallyEpimorphic`, `OrbitHom.bijective_of_isFSM`, `TemperedFrobenioidData.isFrobenioid`, `thetaData_isFrobenioid`, `pb_deck_divTheta`, `tateThetaData_isFrobenioid` |
+| 3(c) tempered | `TemperedBase.lean`, `Tempered.lean`, `TateTheta.lean` | `OrbitObj.isConnected`, `OrbitObj.totallyEpimorphic`, `OrbitHom.bijective_of_isFSM`, `TemperedFrobenioidData.isFrobenioid`, `thetaData_isFrobenioid`, `pb_deck_divTheta`, `tateThetaData_isFrobenioid`; units in `B₀`: `unitThetaData_isFrobenioid`, `ker_unitThetaDiv` (kernel of the divisor map = units); `tateY_H` (`Y` has subgroup `Π^tp_Y = TateObject.piY`), `mem_tateY_H_iff` |
 | 4 category-theoreticity | `Theoreticity.lean` | statements `PreservesFrobeniusStructure`, `PreservesBase`; `scale_preserves`, `endZeroEquiv`, `inducedDegAut` |
 | 5 the wall | `Wall.lean` | `degreeNorm_qPilotObj`, `degreeNorm_thetaPilotObj` (`= s·|log q|`), `logVol_qRegion_eq_neg_degreeNorm`, `logVol_lgp_eq_neg_degreeNorm`, `scale_thetaPilotObj`, `nonempty_iso_scale_iff`, `isEmpty_iso_thetaPilot_qPilot` |
 

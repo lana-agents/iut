@@ -257,6 +257,16 @@ Files `ModelAut.lean`, `ModelTower.lean`.
   is isomorphic to the natural projective system — `RigidSystems.Tower.discreteRigidity` (9c)
   instantiated with (13b), (13c).
 
+### (14) Tempered Frobenioid refinements (`Iut/Frobenioid/TateTheta.lean`) — done (partial)
+
+* `unitThetaGrp χ U`, `unitThetaDiv`, `unitThetaData`: `B₀ = U × {theta-monomial divisors}`
+  with the units `U` (in [EtTh]: `O_K^×`); `ker_unitThetaDiv`: the kernel of `B₀ → Φ₀^gp` is
+  exactly `U` ([EtTh], Def. 3.3); `unitThetaData_isFrobenioid`.
+* `tateY_H`, `mem_tateY_H_iff`: the object `Y` of the tempered Frobenioid of the Tate curve has
+  subgroup `Π^tp_Y` (6a), the stabilizer of the base point of the fibre of `X₀`.
+* Not done: separating the components of `Y_H ×_X Y` (needs verticial subgroups, not provided by
+  `tempered-fundamental-groups`) and the cusps.
+
 ## Scope decisions
 
 Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.
