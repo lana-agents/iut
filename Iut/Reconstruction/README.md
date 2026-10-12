@@ -85,6 +85,12 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   `Gal(Ω/K) ≃ₜ* Gal(Ω'/K')` induces `Kˣ ≃* K'ˣ` mapping `𝒪_Kˣ` onto `𝒪_{K'}ˣ`
   (`galEquiv_multEquiv_units`).
 
+* `Local/Valuation.lean` (M1g, [AbsTopIII], Cor. 1.10 (i) (b); Prop. 5.8 (i)) — done:
+  `HasRecVal G x k` (`x ∈ G^ab` is the image of `φ^k τ`, `φ` a Frobenius lift, `τ` in
+  `recInertia G`; group-theoretic: `HasRecVal.map`), `zpow_arithFrob_eq_one_iff` (Frobenius has
+  infinite order in `G_K/I_K`), **`hasRecVal_gal_iff`** (`HasRecVal G_K (x ∈ Kˣ) k ↔ k = v(x)`)
+  and **`v_galEquiv_multEquiv`**: the induced `Kˣ ≃* K'ˣ` preserves the valuations.
+
 ### M2 — cyclotomic rigidity ([AbsTopIII], Prop. 3.2 (i); Cor. 1.10 (i), (c)) — done
 * `Local/Cyclotome.lean`: every endomorphism of `μ_n` is a power map and `G_K`-equivariant
   (`exists_pow_eq`, `map_smul_mu`); the induced map `coeffMap α` on `H²(G_K, μ_n)` is

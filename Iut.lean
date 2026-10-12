@@ -179,6 +179,7 @@ import Iut.Reconstruction.Local.MonoAnalytic
 import Iut.Reconstruction.Local.PowerIndex
 import Iut.Reconstruction.Local.Torsion
 import Iut.Reconstruction.Local.UnitIndex
+import Iut.Reconstruction.Local.Valuation
 import Iut.ThetaLink.Gauss
 import Iut.ThetaLink.Kummer
 import Iut.ThetaLink.Link
