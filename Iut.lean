@@ -29,7 +29,9 @@ import Iut.Anabelian.TateTorsion
 import Iut.Anabelian.Tempered
 import Iut.Anabelian.TemperedAndre
 import Iut.Anabelian.Torsion
+import Iut.Arakelov.ArchScaling
 import Iut.Arakelov.Container
+import Iut.Arakelov.FractionalIdeal
 import Iut.Arakelov.LineBundle
 import Iut.Arakelov.QPilot
 import Iut.Basic

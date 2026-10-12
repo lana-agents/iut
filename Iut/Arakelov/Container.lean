@@ -42,6 +42,9 @@ each capsule (the same choice as for `LGP·O` and the `q`-pilot region in
 * **`logVol_scale_integral_eq_degNorm`**, **`logVol_scaleConst_eq_neg_degNorm`** (IUT III,
   Proposition 3.9(iii)): `log-vol((b_v·𝒪_v)_v) = −deg(L_b)/[K : ℚ]`.
 
+Archimedean metrics (`r_v·B_v` in the archimedean packets) and the invariance of the log-volume
+under `F_mod^×` (the product formula on regions) are added in `Iut/Arakelov/ArchScaling.lean`.
+
 ## Sign convention
 
 The degree `deg(L_b) = −Σ_w log‖b_w‖_w` is the degree of the arithmetic divisor

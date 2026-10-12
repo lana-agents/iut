@@ -46,6 +46,10 @@ the concrete container).
   `infDeg_principal_sum` (the archimedean part is `−log|N(x)|`);
 * `finDeg_eq_ordp`, `degNorm_eq`: the normalized degree as a weighted sum of `ord_p`'s with the
   weights `[K_w : ℚ_p]/[K : ℚ]` of IUT III, Remark 3.1.1 (`placeWeight`, `infPlaceWeight`).
+* `deg_congr`: the degree depends only on the local norms and metrics.
+
+The fractional ideal `∏_w 𝔭_w^{ord_w(a_w)}` of an arbitrary bundle, its norm, and the arithmetic
+Picard group with its map to the class group are in `Iut/Arakelov/FractionalIdeal.lean`.
 -/
 
 namespace Iut
@@ -99,6 +103,11 @@ noncomputable def deg (L : ArithLineBundle K) : ℝ := (∑ᶠ w, L.finDeg w) + 
 /-- **The normalized Arakelov degree** `deg L/[K : ℚ]` (IUT III, Remark 3.1.1, Proposition
 3.9(iii): the normalization making the degree invariant under base change). -/
 noncomputable def degNorm (L : ArithLineBundle K) : ℝ := L.deg / Module.finrank ℚ K
+
+/-- The degree depends only on the local norms `‖a_w‖_w` and the metrics `r_v`. -/
+lemma deg_congr (L M : ArithLineBundle K) (hfin : ∀ w, ‖L.fin w‖ = ‖M.fin w‖)
+    (hinf : ∀ v, L.inf v = M.inf v) : L.deg = M.deg := by
+  simp only [deg, finDeg, infDeg, hfin, hinf]
 
 /-! ### The group structure -/
 

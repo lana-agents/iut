@@ -837,6 +837,23 @@ Not imported by the comparator challenge.
   `q`-pilot divisor `qPilotBundle D` on `K` (`degNorm_qPilotBundle_eq`: base change by
   `q_v^{2ℓ} = q_w`), `logVol_qRegion_eq_neg_degNorm`, and the theta values
   `logVol_lgp_integral_eq_degNorm : log-vol(LGP·O) = −(1/ℓ*)·Σ_j deg(q^{j²})/[K : ℚ]`.
+* `Iut/Arakelov/FractionalIdeal.lean`: the fractional ideal `I(L) = ∏_w 𝔭_w^{ord_w(a_w)}`
+  (`ArithLineBundle.fracIdeal`, `FractionalIdeal (𝓞 K)⁰ K`) of every bundle, with
+  `count_fracIdeal` (`ord_𝔭(I(L)) = ord_w(a_w)`), `finsum_finDeg_eq_log_absNorm` (finite part of
+  the degree `= log N(I(L)) = −log N(I(L)⁻¹)`, the lattice of `L` being `I(L)⁻¹`),
+  `deg_eq_log_absNorm`, `fracIdeal_mul`, `fracIdeal_principal : I(principal x) = (x)`; the
+  arithmetic Picard group `ArithPic K` (bundles modulo isomorphism / principal bundles), with
+  the degree `ArithPic.deg` well defined by the product formula and the ideal class
+  `ArithPic.idealClass : ArithPic K → ClassGroup (𝓞 K)` (principal bundles map to `1`).
+* `Iut/Arakelov/ArchScaling.lean`: archimedean metrics in the container. `FullScalingDatum`
+  (a `ScalingDatum` plus `r_v > 0` at the infinite places) and `fullScale D a lab S` (the
+  archimedean packets scaled by `r_v`, `μ^log(r·B_I) = log r`); with the archimedean section
+  average `sum_infPlaceWeight_comap` (from `∑_{v ∣ u} [K_v : ℝ] = [K : k]·[k_u : ℝ]`,
+  `sum_mult_comap_eq`), `logVol_fullScaleConst_eq_neg_degNorm :
+  log-vol((b_v·𝒪_v), (r_v·B_v)) = −deg(L)/[K : ℚ]` including the archimedean part; and the
+  product formula on regions (IUT III, Proposition 3.9(iii)): for `x ∈ F_mod^×` with diagonal
+  image `diag x hx`, `logVol_fullScale_mul_diag` (scaling `F_mod`-rational data further by `x`
+  does not change the log-volume) and `logVol_fullScale_diag : log-vol(x·O) = log-vol(O) = 0`.
 
 ## Dependency pins
 
