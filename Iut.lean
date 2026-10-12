@@ -162,13 +162,17 @@ import Iut.Implication.Invariants
 import Iut.Implication.LogVolumeBound
 import Iut.Implication.PrimeSelection
 import Iut.Implication.Theorem110
+import Iut.LogLink.Arch
 import Iut.LogLink.Column
 import Iut.LogLink.GalKummer
 import Iut.LogLink.Galois
+import Iut.LogLink.Global
 import Iut.LogLink.Kummer
 import Iut.LogLink.Lattice
 import Iut.LogLink.Local
+import Iut.LogLink.Split
 import Iut.LogLink.Thm311
+import Iut.LogLink.Thm311LGP
 import Iut.MainTheorem
 import Iut.Reconstruction.Cusp.Belyi
 import Iut.Reconstruction.Cusp.Elliptic

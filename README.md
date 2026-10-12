@@ -926,11 +926,11 @@ decisions and simplifications. Not imported by the comparator challenge.
 
 ## The log-link and the log-theta-lattice (`Iut/LogLink`, roadmap P20)
 
-Local log-links, the log-Kummer correspondence, the log-theta-lattice and Theorem 3.11 as a
-statement (IUT III, Definition 1.1, Propositions 1.2, 1.3, 3.5(ii), Definition 1.4, Theorems 1.5,
-3.11), with the derivation of P19's log-shell compatibility and the formal chain "Theorem 3.11 +
-Step (xi) ⇒ ABC"; see [`Iut/LogLink/README.md`](Iut/LogLink/README.md). Not imported by the
-comparator challenge.
+Local log-links (non-archimedean and archimedean), the log-Kummer correspondence, LGP-monoids,
+the log-theta-lattice and Theorem 3.11 as a statement (IUT III, Definition 1.1, Propositions 1.2,
+1.3, 3.4, 3.5, 3.10(ii), Definition 1.4, Theorems 1.5, 3.11), with the derivation of P19's
+log-shell compatibility and the formal chain "Theorem 3.11 + Step (xi) ⇒ ABC"; see
+[`Iut/LogLink/README.md`](Iut/LogLink/README.md). Not imported by the comparator challenge.
 
 * `Local.lean`: the logarithm as a homomorphism on the principal units (`logHom`), local
   log-links (`LocalLogLink`) and their holomorphic log-shells, Kummer non-compatibility,
@@ -944,6 +944,19 @@ comparator challenge.
   tensor Kummer data), `unitInducedScaling_negScale`, `LatticeKummer`, zero distortion.
 * `Thm311.lean`: `Thm311` (holds in the model, `thm311_model`), `XiPrinciple` (Step (xi), a
   hypothesis), `classicalABC_of_thm311`, `xi_iff_ss` (in the model Step (xi) is `SSIneq D`).
+* `Split.lean`: splitting monoids `Ψ⊥ = μ_r·g^ℕ`, local LGP-monoids (IUT III, Proposition
+  3.4(ii): `lgpMonoid`, `lgpMonoid_eq`), vertically coric splitting/LGP-monoids (`LGPColumn`,
+  `image_perpKummer`, `lgpKummer`), Theorem 3.11(ii)(b) (`LGPColumn.perp_compat`: only roots of
+  unity are related by the log-links, and their logarithm is `0`).
+* `Arch.lean`: archimedean log-links (`ArchLogLink`, Definition 1.1(ii): `exp` as universal
+  covering, homomorphism up to `2πiℤ`), vertical lines `ArchColumn`, upper semi-compatibility and
+  surjection at `v ∈ V^arc` (Proposition 3.5(ii)(b)), tensor packets (`tprod_mem_archLogShell`).
+* `Global.lean`: Proposition 3.10(ii) (`nonInterference`: `K^× ∩ ∏_v Ψ_log = μ_K`, Kronecker),
+  kernel of the divisor maps (`divisor_trivial_iff`), Theorem 3.11(ii)(c) (`globalLogKummer`,
+  `fmodLogKummer` for `F_mod` read in the local fields of `V`).
+* `Thm311LGP.lean`: LGP-Gaussian lattices (`LGPLattice`), `Thm311LGP` (Theorem 3.11 with (ii)(b),
+  (ii)(c) and the archimedean (Ind3)), `thm311LGP_model`; re-check: `xi_iff_ss_lgp`, `answerLGP`
+  (Step (xi) is still `SSIneq D`, no new distortion).
 
 ## Dependency pins
 

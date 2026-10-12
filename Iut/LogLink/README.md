@@ -1,9 +1,10 @@
 # The log-link and the log-theta-lattice (`Iut/LogLink/`, roadmap P20)
 
 A Lean formulation of IUT III, §1 (Definition 1.1, Propositions 1.2, 1.3, Definition 1.4,
-Theorem 1.5) and of the parts of §3 that the wall needs (Proposition 3.5(ii), the
-log-Kummer correspondence and (Ind3); Theorem 3.11 as a statement), on top of P15–P19, and the
-connection of Theorem 3.11 to the wall (`Iut/Wall/`).
+Theorem 1.5) and of the parts of §3 that the wall needs (Propositions 3.4(ii), 3.5, 3.10(ii), the
+LGP-monoids, the log-Kummer correspondence and (Ind3), also at the archimedean places; Theorem
+3.11 as a statement, including (ii)(b), (c)), on top of P15–P19, and the connection of Theorem
+3.11 to the wall (`Iut/Wall/`).
 
 Inputs: the `p`-adic logarithm `PadicLogVolume.padicLog` and the log-shell `Iut.logShell`
 (`Iut/Concrete/LocalConstruct/LocalLogShell.lean`, `LogShell.lean`: `map_padicLog`,
@@ -29,7 +30,8 @@ the modelling inputs listed below.
    IUT's domain `O^×_{k̄}` (with its `Π_v`-action) is replaced by the `G_v`-invariants, and these
    by their pro-`p` part `1 + 𝔪_k` (the logarithm kills the torsion, and `O^×/(1+𝔪)` is finite),
    which is also the domain of `Iut.logShell` (`(2p)⁻¹·log(1+𝔪)`, a finite-index variant of
-   `(p*)⁻¹·log(O^×)`). The archimedean log-links (Definition 1.1(ii)) are not formalised.
+   `(p*)⁻¹·log(O^×)`). The archimedean log-links (Definition 1.1(ii)) are modelled on `ℂ`
+   (scope decision 6).
 2. **Copies.** All levels of a vertical line carry copies of the same local field (as in P18 and
    M3: Hodge theaters relative to fixed initial Θ-data are isomorphs); a vertical line is a
    sequence of continuous ring automorphisms (`LogColumn`). What distinguishes the levels is the
@@ -51,6 +53,24 @@ the modelling inputs listed below.
    Corollary 3.12 that is disputed (Step (xi): the output, transported along the Θ-link, computes
    the `q`-pilot up to the indeterminacies) is the explicit hypothesis `XiPrinciple`.
 
+6. **Archimedean places** (`Arch.lean`). The local field is `ℂ`; the universal covering
+   `Ψ^∼ ↠ Ψ^gp` of Definition 1.1(ii) is `exp : (ℂ, +) → ℂˣ`, with deck group `2πiℤ`; a log-link
+   is the principal logarithm on the units followed by a continuous ring automorphism `φ` of `ℂ`
+   (the identity or the conjugation). The log-shell is the closed disc of radius `π`. The angular
+   and radial log-volumes are not formalised; the archimedean lines of a lattice are separate data
+   (`LGPLattice.arc`), as the non-archimedean ones.
+7. **LGP-monoids** (`Split.lean`). The local LGP-monoid of `†HT` is the pull-back of its Gaussian
+   monoid along the ring isomorphism `φ : log(‡F_v) ≅ †F_v` of the log-link (Proposition
+   3.4(ii)); the splitting monoid `Ψ⊥` is `μ_{2ℓ}·{q_v^{j²}}^ℕ`. That the Kummer isomorphisms of
+   the bad places fix the Gaussian generator (the Kummer isomorphisms of labeled data of IUT II,
+   Corollary 4.6(iii), are compatible with the theta values) is a field of the data
+   (`LGPColumn.kum_gen`, `LGPLattice.kum_gen`), satisfied by the tautological lines.
+8. **Number fields** (`Global.lean`). `M_mod = F_mod`, read in the local fields `K_v`, `v ∈ V`, of
+   the section `V_mod ≅ V` (`embFin`, `sectInf_apply`). The `F^⊛_MOD`-Frobenioids are recorded by
+   what they depend on: the multiplicative group and the divisor maps `β_v` (Example 3.6(i),
+   Remark 3.6.1); the Frobenioids themselves, the `F^⊛_mod`-Frobenioids (local fractional ideals)
+   and the global realified LGP-/lgp-Frobenioids of Proposition 3.7 are not built.
+
 ## Plan (lemma-level milestones) and status
 
 | Milestone | File | Main results | Status |
@@ -62,6 +82,10 @@ the modelling inputs listed below.
 | (5) Theorem 3.11 and the chain to ABC | `Thm311.lean` | `logShellCompat_mul`, `logShellCompat_inv`, `act_lgp`, `act_le`, `ind3Map`, `ind3Act`; `horizRel`, `vertRel`; **`Thm311`**; `LatticeKummer.model_multiradial3` (Thm 3.11(i) in the model), `model_thetaShift`; **`thm311_model`**; **`XiPrinciple`**; **`variant_of_thm311`**, **`wall_of_thm311`** (the input of `Iut/Wall`), **`classicalABC_of_thm311`**, `classicalABC_of_xi`, **`xi_iff_ss`**, `xi_iff_xi`; `logVol_transport_out`, **`answer`**, `alt_alien_horiz`, `alt_alien_vert` | done |
 | (6) Galois-induced identifications are unit-induced | `Galois.lean` | `norm_eq_one_of_unitInduced_scale`; `pow_q_sub_one_iff` (`U¹ = (𝒪ˣ)^{q−1}`), `logTensor_bijective`, `logEquiv` (`ℚ ⊗ 𝒪ˣ ≅ k`); `unitLogEquiv` (identification induced by `β ∈ Aut(𝒪ˣ)`), **`unitInduced_unitLogEquiv`**, `image_logShell_unitLogEquiv`, `unitLogEquiv_refl`, `unitLogEquiv_inv`, `unitLogEquiv_ne_scale`; `galUnitsEquiv` (P17's `𝒪ˣ ≅ 𝒪ˣ` from `φ ∈ Aut(G_k)`), `coe_galUnitsEquiv` (= `galEquiv_multEquiv`), `galLogEquiv`, **`galLogEquiv_transport`** (= transport of P17's `unitsQEquiv φ` through `log`), **`galLogEquiv_image_logShell`** (via `map_monoLogShell` + `image_logTensor_monoLogShell`), **`unitInduced_galLogEquiv`**, `galLogEquiv_refl`, `galLogEquiv_ne_scale`, `galEquiv_multEquiv_ne_zpow_mul` | done |
 | (7) Kummer data from the reconstruction | `GalKummer.lean` | `CompGal`, `CompUnits`, `compGalLogEquiv`, `compUnitLogEquiv` (completions of `Iut/Concrete`), `unitInduced_compGalLogEquiv`, `compGalLogEquiv_image_logShell`; `FactorGalInduced`, `FactorUnitsAut`, **`FactorUnitsAut.factorUnitInduced`**, `exists_factorGalInduced_of_linear`, `norm_eq_one_of_factorUnitsAut`; `GalInducedScaling`, `AnabelianScaling`, **`AnabelianScaling.unitInduced`**, `.logShellCompat`, `.shift_eq_zero`, `galInducedScaling_one`, `anabelianScaling_negScale`; **`not_anabelianScaling_of_shift_ne_zero`**, `not_anabelianScaling_qScale_zpow`, `not_galInducedScaling_qScale_zpow`; `AnabelianKummer`, `GalKummer`, **`toLatticeKummer`**, `distortion_eq_zero`, `xi_iff_ss`, `kum_ne_qScale_zpow`, `GalKummer.trivial`, `AnabelianKummer.alt` (`= LatticeKummer.trivial`, `.alt`), `classicalABC_of_thm311_anabelian`, `classicalABC_of_thm311_gal`, `classicalABC_of_xi_gal` | done |
+| (8) Splitting monoids and LGP-monoids; Thm 3.11(ii)(b) | `Split.lean` | `norm_ringEquiv_eq_one_iff`; `perpMonoid` (`Ψ⊥ = μ_r·g^ℕ`), `perpMonoid_le_splitMonoid`, `IsStrictGen`, **`perp_unit`** (units of `Ψ⊥` = torsion), `perp_norm_lt_one`, `perp_pow_eq_one_of_mem_domain`, **`LocalLogLink.perp_toFun_eq_zero`**; `piMap`, `restrictAut`; `lgpMonoid` (Prop 3.4(ii)), **`lgpMonoid_eq`**, `lgpEquiv`, `lgpPerp`, `lgpPerp_eq`; `LGPColumn` (Prop 3.5(i)), `perpKummer`, `gaussKummer`, **`lgpKummer`**, **`image_perpKummer`** (vertical coricity: equality), `image_gaussKummer`, `norm_kum_of_mem_splitMonoid`, `avgDeg_kum_of_mem_splitMonoid`, `avgDeg_lgpKummer`, `perpLogKummer`, **`perp_compat`**, `perp_compat_action` (Thm 3.11(ii)(b), Prop 3.5(ii)(c)), `perp_not_mem_domain`, `shift`, `LGPColumn.taut` | done |
+| (9) Archimedean log-links | `Arch.lean` | `norm_ringEquiv`, `image_closedBall`, `norm_log_le_pi`, **`log_mul_sub_mem`** (homomorphism up to `2πiℤ`), `natCast_mul_log_root` (`μ_N` ↦ deck group), `exp_neg_log`, `exp_conj_log`, `neg_conj_mem_closedBall` ((Ind2) at `V^arc`); `ArchLogLink` (Def 1.1(ii)), `toFun_mem_closedBall`, `exp_symm_toFun`, `not_ringHom_eq_toFun`; `ArchColumn`, `iterDom`, `itF`, `back`, `itF_mem_closedBall`, `back_itF`, **`exists_surj`**, **`upperSemiCompat`** (Prop 3.5(ii)(b)), `logKummer`, `logKummer_subset`, `logKummer_shift`; packets: `archAbs_le_pi_of_mem`, **`tprod_mem_archLogShell`**, `tprod_log_mem_archLogShell` | done |
+| (10) Number fields; Prop 3.10(ii), Thm 3.11(ii)(c) | `Global.lean` | `isIntegral_of_forall_finitePlace`, **`nonInterference`** (`K^× ∩ ∏_v Ψ_log = μ_K`), `nonInterference_set`, **`divisor_trivial_iff`** (Prop 3.10(iii)), `padicLog_algebraMap_root`, `natCast_mul_log_root_embedding`, **`globalLogKummer`**; `embFin`, `norm_embFin_le_one_iff`, `sectInf_apply`, `nonInterference_sect`, **`fmodLogKummer`**, `LogThetaLattice.globalLogKummer` | done |
+| (11) Theorem 3.11 with LGP-monoids | `Thm311LGP.lean` | `isBadK_sectFin`, `isStrictGen_gaussGen`; `LGPLattice` (Def 3.8(iii)), `lgpCol`, `LGPLattice.ofData`; **`Thm311LGP`** (`base`, `splitCoric`, `splitCompat`, `splitDeg`, `globalCompat`, `modKernel`, `arcUpperSemi`, `arcSurj`), **`thm311LGP_model`**; **`xi_iff_ss_lgp`**, `classicalABC_of_thm311LGP`, **`answerLGP`** | done |
 
 All theorems use only `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -170,10 +194,44 @@ from Galois isomorphisms or automorphisms of the unit groups are volume neutral,
 statement about the model, conditional on its scope decisions; it neither proves nor refutes
 `SSIneq D`, and it does not decide whether IUT's algorithm contains structure beyond the model.
 
+### (6) LGP-monoids, Theorem 3.11(ii)(b), (c), archimedean places
+
+(`Split.lean`, `Arch.lean`, `Global.lean`, `Thm311LGP.lean`)
+
+* **(ii)(b), splitting monoids.** The Kummer images of `Ψ⊥` of every level are **equal** to the
+  one coric `Ψ⊥` (`image_perpKummer`): the splitting monoids are vertically coric, not only upper
+  semi-compatible. As `m` varies, the only elements of `Ψ⊥` in the domain of a log-link are
+  `2ℓ`-th roots of unity (`perp_unit`, the units of `Ψ⊥` are its torsion), and the log-link sends
+  them to `0` (`perp_compat`): multiplication by them at level `m` corresponds to addition of `0`
+  at level `m + 1`, i.e. no indeterminacy. The Kummer isomorphisms of the Gaussian and LGP-monoids
+  preserve the degrees (`avgDeg_kum_of_mem_splitMonoid`, `avgDeg_lgpKummer`).
+* **(ii)(c), number fields.** `K^× ∩ ∏_v Ψ_log(F_v) = μ_K` (`nonInterference`, Kronecker's
+  theorem via `NumberField.Embeddings.pow_eq_one_of_norm_le_one`); so the elements of `F_mod^×`
+  related by the log-links of a column are roots of unity with vanishing log-link images at every
+  `v ∈ V^non` (`fmodLogKummer`, `LogThetaLattice.globalLogKummer`) and logarithms in the deck group
+  at `v ∈ V^arc`. The kernel of the divisor maps — the only global input of `F^⊛_MOD` besides the
+  multiplicative group — is `μ_K` (`divisor_trivial_iff`), which gives the compatibility of the
+  `MOD`-Frobenioids with the log-links (Proposition 3.10(iii)).
+* **Archimedean (Ind3).** The log-link at `v ∈ V^arc` is a homomorphism up to the deck group
+  `2πiℤ` (`log_mul_sub_mem`); the Kummer images of the units and of the closed balls of radius `π`
+  lie in the coric closed ball of radius `π` (`ArchColumn.upperSemiCompat`), which contains, for
+  every `m' ≥ 1`, a subset surjecting by the inverse of the `m'`-th iterate onto the units on which
+  the iterate is defined (`exists_surj`) — the "`↠`" of (Ind3). For the packets of
+  `Iut.LocalConstruct` the tensor products of such elements lie in `archLogShell`
+  (`tprod_mem_archLogShell`).
+* **(d) Re-check of Step (xi) and the distortion** (`answerLGP`, `xi_iff_ss_lgp`): unchanged. The
+  distortion is `0` along all arrows and **Step (xi) is still the Scholze–Stix inequality**
+  `SSIneq D`. The new structures add no source of distortion: the value-group (splitting) portion
+  is precisely Kummer compatible with preserved degrees, the portions related by the log-links
+  (in `Ψ⊥` and in `F_mod^×`) are roots of unity with logarithm `0`, and the archimedean (Ind3) has
+  the same shape (inclusion into a log-shell, surjection) as the non-archimedean one, already
+  absorbed by the `∃ S` of the wall.
+
 ## Simplifications (documented)
 
-* Only `v ∈ V^non`; the archimedean log-links (Definition 1.1(ii), complex logarithm, angular and
-  radial log-volumes) are not formalised.
+* At `v ∈ V^arc` (scope decision 6): only the log-links, the log-shell (closed disc of radius
+  `π`) and (Ind3); the angular and radial log-volumes and the Aut-holomorphic orbispaces are not
+  formalised.
 * Principal units `1 + 𝔪` instead of `O^×_{k̄}` with its `Π_v`-action; `Iut.logShell` uses the
   factor `(2p)⁻¹` instead of `(p*)⁻¹` and `log(1+𝔪)` instead of `log(O^×)`.
 * The poly-isomorphism `log(†F_v) ≅ ‡F_v` and the holomorphic Kummer isomorphisms are bicontinuous
@@ -182,18 +240,25 @@ statement about the model, conditional on its scope decisions; it neither proves
   layer); the unique lifting of `D`-prime-strip isomorphisms to `F`-prime-strips (IUT I,
   Corollary 5.3(ii)) is anabelian and not formalised. The local vertical lines of a lattice are
   separate data (`loc`), not derived from the Frobenioids of the `F`-prime-strips.
-* The LGP-monoids with log-shell unit portions (IUT III, Propositions 3.4–3.7) are not built; the
-  output of the η-algorithm is P18's `LGP·S` (Theorem 3.11(i)(b) in the model).
-* Thm 3.11(ii)(b), (c) (splitting monoids, number fields `M_mod`, global Frobenioids) and
-  (iii)(b)–(d) (mono-theta environments) are not expressed by the model objects.
+* The local LGP-monoids are the pull-backs of the Gaussian monoids along the ring isomorphism of
+  the log-link (`Split.lean`); the `F_ℓ^{⋊±}`-symmetries and the processions (the capsules
+  `S±_{j+1}`) are not recorded, only the labels `j = 1, …, ℓ*`. The output of the η-algorithm is
+  still P18's `LGP·S` (Theorem 3.11(i)(b) in the model), not built from the LGP-monoids.
+* Thm 3.11(ii)(c): the number fields and the divisor maps of the `F^⊛_MOD`-Frobenioids, not the
+  Frobenioids; the `F^⊛_mod`-Frobenioids and their failure of log-link compatibility (Remark
+  3.10.1) are not formalised. Thm 3.11(iii)(b)–(d) (mono-theta environments) is not expressed by
+  the model objects.
 
 ## What remains
 
 * The anabelian side beyond `Galois.lean` / `GalKummer.lean`: reading the Galois groups off the
   `D`-prime-strips of the Hodge theaters (IUT I, Corollary 5.3(ii)) rather than as data of the
-  Kummer structure; `Ism` at the level of `O^{×μ}_{k̄}`; archimedean log-links.
-* The LGP-monoids of Propositions 3.4–3.7 and Theorem 3.11(ii)(b), (c); the global realified
-  Frobenioids of Theorem 1.5(v).
+  Kummer structure; `Ism` at the level of `O^{×μ}_{k̄}`; the archimedean Kummer theory
+  (Aut-holomorphic orbispaces) and log-volumes.
+* The Frobenioids of Proposition 3.7 (`F^⊛_MOD`, `F^⊛_mod`, the global realified LGP- and
+  lgp-Frobenioids) and of Theorem 1.5(v), beyond the number fields and divisor maps of
+  `Global.lean`; the derivation of `LGPLattice.kum_gen` from the Kummer theory of the theta
+  values (P16).
 * An η-algorithm whose output is not `LGP` acting on an (Ind3)-choice, or a Kummer identification
   that is not unit-induced, with an IUT source — the only routes, in this model, to a wall
   different from `SSIneq D` (P21–P22).
