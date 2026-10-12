@@ -137,8 +137,13 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   of `p`-power roots of unity, `#T = p^m` (`card_logKer`); **`measure_logShell_eq`**:
   `p^{f+m} μ(𝓘_k) = (p*)^d μ(𝒪_k)`, and **`logVolume_logShell_eq`**:
   `log(μ(𝓘_k)/μ(𝒪_k)) / [k : ℚ_p] = (log p / e) · logShellConst p f e m`.
+  `hball_of_continuous`: `hball` holds whenever `ℚ_p → k` is continuous.
+* `Local/LogVolumeCompletion.lean` (M3e) — done: for the completions `K_w` of `Iut/Concrete`
+  (`ℚ_p`-algebra `padicAlgebra`, continuous `padicEmb`): **`measure_logShell_completionAt`**,
+  **`logVolume_logShell_completionAt`** — the normalised log-volume of the log-shell
+  `Iut.logShell K_w p` used by the concrete `LocalTheory` is `(log p / e) · logShellConst`.
 * Not done: the identification of `ℚ ⊗ 𝒪_Kˣ` with `K` through `log` (which would identify
-  `monoLogShell` with `Iut.logShell`); deriving `hball` for the completions of `Iut/Concrete`.
+  `monoLogShell` with `Iut.logShell`).
 
 ### M4 — cuspidalisation skeleta ([AbsTopII], Cor. 3.3; [AbsTopIII], Thm. 1.9)
 * `Cusp/OutSemidirect.lean` (done): `inn`, `Out`, `outSemidirect ρ = Aut(N) ×_{Out(N)} Q`,

@@ -20,7 +20,9 @@ i.e. normalised log-volume `log(μ(𝓘_k)/μ(𝒪_k)) / d = (log p / e) · logS
 `Valued k ℤᵐ⁰` (the framework of `Iut.logShell`, `Iut/Concrete`) and the `ℚ_p`-algebra
 structure of `local-class-field-theory` (with its norm `PadicField.nrm`, used for `e`, `f`, `q`,
 `m`), and the two norms are assumed to have the same unit ball (`hball`; both unit balls are the
-integral closure of `ℤ_p`).
+integral closure of `ℤ_p`). This holds as soon as `ℚ_p → k` is continuous
+(`hball_of_continuous`: `ℤ_p` lands in the valuation ring by density of `ℕ`, integral elements
+then have norm `≤ 1`, and `‖p‖ < 1` excludes larger valuation rings).
 
 From `card_mul_measure_logShell` (`#T · μ(𝓘_k) = [U : D] · μ(𝒪_k)`) it remains to compute:
 
@@ -74,6 +76,100 @@ theorem norm_lt_one_iff' (x : k) : ‖x‖ < 1 ↔ nrm p k x < 1 := by
   rwa [norm_one, nrm_one] at this
 
 end Compare
+
+/-! ### The unit balls agree when `ℚ_p → k` is continuous -/
+
+section Continuous
+
+variable (hc : Continuous (algebraMap ℚ_[p] k))
+include hc
+
+theorem norm_algebraMap_le_one {a : ℚ_[p]} (ha : ‖a‖ ≤ 1) : ‖algebraMap ℚ_[p] k a‖ ≤ 1 := by
+  set S : Set ℤ_[p] := {z | ‖algebraMap ℚ_[p] k (z : ℚ_[p])‖ ≤ 1}
+  have hS : IsClosed S :=
+    isClosed_le ((continuous_norm.comp hc).comp continuous_subtype_val) continuous_const
+  have hN : Set.range (Nat.cast : ℕ → ℤ_[p]) ⊆ S := by
+    rintro _ ⟨n, rfl⟩
+    change ‖algebraMap ℚ_[p] k ((n : ℤ_[p]) : ℚ_[p])‖ ≤ 1
+    rw [PadicInt.coe_natCast, map_natCast]
+    exact IsUltrametricDist.norm_natCast_le_one k n
+  have hall : S = Set.univ := by
+    have h1 := hS.closure_subset_iff.2 hN
+    rw [(PadicInt.denseRange_natCast (p := p)).closure_eq] at h1
+    exact Set.eq_univ_of_univ_subset h1
+  have : (⟨a, ha⟩ : ℤ_[p]) ∈ S := hall ▸ Set.mem_univ _
+  exact this
+
+/-- `‖x‖ ≤ 1` for the elements of `k` that are integral over `ℤ_p`. -/
+theorem norm_le_one_of_nrm_le_one {x : k} (hx : nrm p k x ≤ 1) : ‖x‖ ≤ 1 := by
+  replace hx := (nrm_le_one_iff_coeff (p := p) x).1 hx
+  set f := minpoly ℚ_[p] x
+  have hf : f.Monic := minpoly.monic (Algebra.IsIntegral.isIntegral x)
+  have hroot : Polynomial.aeval x f = 0 := minpoly.aeval _ _
+  by_contra! hx1
+  have hdeg : 0 < f.natDegree := minpoly.natDegree_pos (Algebra.IsIntegral.isIntegral x)
+  have key : x ^ f.natDegree = -∑ i ∈ Finset.range f.natDegree,
+      algebraMap ℚ_[p] k (f.coeff i) * x ^ i := by
+    rw [Polynomial.aeval_eq_sum_range, Finset.sum_range_succ, hf.coeff_natDegree,
+      one_smul] at hroot
+    simp only [Algebra.smul_def] at hroot
+    linear_combination hroot
+  have hlt : ‖∑ i ∈ Finset.range f.natDegree, algebraMap ℚ_[p] k (f.coeff i) * x ^ i‖ <
+      ‖x‖ ^ f.natDegree := by
+    have hpos : 0 ≤ ‖x‖ ^ (f.natDegree - 1) := pow_nonneg (norm_nonneg _) _
+    refine lt_of_le_of_lt (IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hpos
+      fun i hi => ?_) ?_
+    · rw [norm_mul, norm_pow]
+      calc ‖algebraMap ℚ_[p] k (f.coeff i)‖ * ‖x‖ ^ i ≤ 1 * ‖x‖ ^ i := by
+            gcongr; exact norm_algebraMap_le_one hc (hx i)
+        _ ≤ ‖x‖ ^ (f.natDegree - 1) := by
+            rw [one_mul]
+            exact pow_le_pow_right₀ hx1.le (by simp at hi; omega)
+    · exact pow_lt_pow_right₀ hx1 (by omega)
+  rw [← norm_pow, key, norm_neg] at hlt
+  exact hlt.false
+
+theorem norm_p_lt_one_of_continuous : ‖(p : k)‖ < 1 := by
+  have hp1 : ‖(p : ℚ_[p])‖ < 1 := by
+    rw [Padic.norm_p]; exact inv_lt_one_of_one_lt₀ (by exact_mod_cast hp.out.one_lt)
+  have ht := (hc.tendsto 0).comp (tendsto_pow_atTop_nhds_zero_of_norm_lt_one hp1)
+  rw [map_zero] at ht
+  have ht' : Filter.Tendsto (fun n : ℕ => ‖(p : k)‖ ^ n) Filter.atTop (nhds 0) := by
+    have := (continuous_norm.tendsto (0 : k)).comp ht
+    rw [norm_zero] at this
+    refine this.congr fun n => ?_
+    simp [map_pow, norm_pow]
+  by_contra! h
+  have h1 : ∀ n : ℕ, 1 ≤ ‖(p : k)‖ ^ n := fun n => one_le_pow₀ h
+  have := ge_of_tendsto' ht' h1
+  linarith
+
+/-- **The unit balls of the two norms agree** when `ℚ_p → k` is continuous. -/
+theorem hball_of_continuous (x : k) : ‖x‖ ≤ 1 ↔ nrm p k x ≤ 1 := by
+  refine ⟨fun hx => ?_, norm_le_one_of_nrm_le_one hc⟩
+  by_contra! hx1
+  have hx0 : x ≠ 0 := by rintro rfl; rw [map_zero] at hx1; linarith
+  have hy : nrm p k x⁻¹ < 1 := by
+    rw [nrm_inv]; exact inv_lt_one_of_one_lt₀ hx1
+  have hp0 : (0 : ℝ) < nrm p k (p : k) := by
+    haveI : CharZero k := charZero_of_injective_algebraMap (algebraMap ℚ_[p] k).injective
+    exact nrm_pos_iff.2 (Nat.cast_ne_zero.2 hp.out.ne_zero)
+  obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one hp0 hy
+  have h1 : nrm p k (x⁻¹ ^ N / (p : k)) ≤ 1 := by
+    rw [nrm_div, map_pow, div_le_one hp0]
+    exact hN.le
+  have h2 := norm_le_one_of_nrm_le_one hc h1
+  have hpk := norm_p_lt_one_of_continuous hc
+  have hp0' : (0 : ℝ) < ‖(p : k)‖ := by
+    haveI : CharZero k := charZero_of_injective_algebraMap (algebraMap ℚ_[p] k).injective
+    exact norm_pos_iff.2 (Nat.cast_ne_zero.2 hp.out.ne_zero)
+  rw [norm_div, norm_pow, div_le_one hp0'] at h2
+  have h3 : 1 ≤ ‖x⁻¹‖ := by
+    rw [norm_inv]; exact one_le_inv₀ (norm_pos_iff.2 hx0) |>.2 hx
+  have := one_le_pow₀ (n := N) h3
+  linarith
+
+end Continuous
 
 section Units
 

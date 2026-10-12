@@ -176,6 +176,7 @@ import Iut.Reconstruction.Local.Inertia
 import Iut.Reconstruction.Local.Invariants
 import Iut.Reconstruction.Local.LogShell
 import Iut.Reconstruction.Local.LogVolume
+import Iut.Reconstruction.Local.LogVolumeCompletion
 import Iut.Reconstruction.Local.LogVolumeLCFT
 import Iut.Reconstruction.Local.MonoAnalytic
 import Iut.Reconstruction.Local.PowerIndex
