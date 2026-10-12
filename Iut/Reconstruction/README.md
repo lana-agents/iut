@@ -128,13 +128,17 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   and **`card_mul_measure_logShell`**: `#T · μ(𝓘_k) = [U : D] · μ(𝒪_k)` for every
   translation-invariant measure `μ` — the normalisation `μ(𝒪) = 1` of `Iut/Concrete`'s
   `componentVol` gives `μ(𝓘_k) = [U : D]/#T`.
-* For `k/ℚ_p` finite the two numbers are `[U : D] = q^{v(2p) − 1}` (`relIndex_unitFilt`, with
-  `q^{v(2p)} = (p*)^d` by `q_pow_e`) and `#T = p^m` (`muPInf_eq_pow`), so
-  `μ(𝓘_k)/μ(𝒪_k) = p^{−(f+m)} (p*)^d`, the volume encoded by `logShellConst`
-  (`logShellConst_mul`). Not done: the formal transfer of these `local-class-field-theory`
-  computations to the valued fields of `Iut/Concrete` (a comparison of the two norms), and the
-  identification of `ℚ ⊗ 𝒪_Kˣ` with `K` through `log` (which would identify `monoLogShell` with
-  `Iut.logShell`).
+* `Local/LogVolumeLCFT.lean` (M3d, [AbsTopIII], Prop. 5.8 (iii)) — done: for `k` carrying both
+  the valuation of `Iut/Concrete` and the `ℚ_p`-algebra structure of
+  `local-class-field-theory`, with the same unit ball for both norms (`hball`): the principal
+  and deep units are the filtration groups `U^(1)`, `U^(v(2p))` (`toIntUnits`,
+  `range_toIntUnits`, `deepUnits_eq_comap`), so `[U : D] = q^{v(2p)−1}`
+  (`index_deepUnits_eq_pow`) with `q^{v(2p)} = (p*)^d` (`q_pow_vTwoP`); `ker log` is the group
+  of `p`-power roots of unity, `#T = p^m` (`card_logKer`); **`measure_logShell_eq`**:
+  `p^{f+m} μ(𝓘_k) = (p*)^d μ(𝒪_k)`, and **`logVolume_logShell_eq`**:
+  `log(μ(𝓘_k)/μ(𝒪_k)) / [k : ℚ_p] = (log p / e) · logShellConst p f e m`.
+* Not done: the identification of `ℚ ⊗ 𝒪_Kˣ` with `K` through `log` (which would identify
+  `monoLogShell` with `Iut.logShell`); deriving `hball` for the completions of `Iut/Concrete`.
 
 ### M4 — cuspidalisation skeleta ([AbsTopII], Cor. 3.3; [AbsTopIII], Thm. 1.9)
 * `Cusp/OutSemidirect.lean` (done): `inn`, `Out`, `outSemidirect ρ = Aut(N) ×_{Out(N)} Q`,
@@ -151,16 +155,15 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   `filledEquiv`, `filledEquiv_fillMap`. The existence of Belyi maps and the
   Grothendieck-conjecture characterisation of the resulting open immersions into the tripod
   group are deep inputs (the cusp data are given).
-* Not done: [AbsTopI], Lemma 4.5 (the characterisation of cuspidal decomposition groups via
-  weights and quasi-trivial ranks — needs `ℓ`-adic Galois representations of curves); the
-  remaining steps (b)–(e) of [AbsTopIII], Thm. 1.9 (Kummer classes of functions, additive
-  structure on `k_NF`); Cor. 1.10 (ii), (iii).
-
-## Scope decisions
-* `p`-adic fields are those of `local-class-field-theory` (`[Algebra ℚ_[p] K]
-  [FiniteDimensional ℚ_[p] K]`, `Ω` algebraically closed and Galois over `K`), so that P8/P9
-  apply directly; `local-class-field-theory` is pinned in `lakefile.toml` (same Mathlib and
-  `continuous-kummer-theory` revisions as iut).
-* `configuration-spaces` (P10), `generalized-albanese` (P11) and `cm-globalization` (P12) are
-  not added as dependencies: their outputs enter the cuspidalisation statements only through
-  hypotheses on profinite groups (e.g. exactness of Fadell–Neuwirth sequences); see M4.
+* `Cusp/Weights.lean` ([AbsTopI], Lemma 4.5 (ii), (iii), formal parts) — done:
+  `PowEquiv` (power-equivalence, `powEquiv_equivalence`), `IsQCyclotomic c χ w` (`χ^b = c^a`,
+  `w = 2a/b`) with `IsQCyclotomic.weight_eq` (well defined for `c` of infinite order),
+  `IsQCyclotomic.of_powEquiv`, `IsQCyclotomic.mul`, `powEquiv_iff_isQCyclotomic_two` and
+  **`powEquiv_mul_of_weights`** (the class of `χ_cyc` is that of `χ^* · χ_*`, `χ^*`/`χ_*` of
+  maximal/minimal weight `2`/`0`; the occurring weights are a deep input); `IsQuasiTrivial`,
+  `twist`, **`isQuasiTrivial_twist_iff`** (quasi-triviality of `M(χ⁻¹)` depends only on the
+  power-equivalence class of `χ`, the point of Lemma 4.5 (ii)).
+* Not done: the quasi-trivial rank `τ(M)` and Lemma 4.5 (iii) (iv) themselves (they need
+  `ℓ`-adic Galois representations of curves and their weights); the remaining steps (b)–(e) of
+  [AbsTopIII], Thm. 1.9 (Kummer classes of functions, additive structure on `k_NF`);
+  Cor. 1.10 (ii), (iii).
