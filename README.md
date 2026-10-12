@@ -965,9 +965,9 @@ dependencies:
 
 | Package | Revision |
 | --- | --- |
-| [`tempered-fundamental-groups`](https://github.com/lana-agents/tempered-fundamental-groups) | `33b1c27` (Theorem A `andreEquiv'`, Theorem B `TateOrbicurve.nondegenerate_of_normalForm`) |
-| [`oka`](https://github.com/lana-agents/oka) | `31c0576` (needed by `tempered-fundamental-groups`: Zariski connectedness, `Oka.AlgebraicGeometry.ProjectiveSpace.ZariskiConnected`) |
-| [`pi1`](https://github.com/lana-agents/pi1) | `2c1e2f0` |
+| [`tempered-fundamental-groups`](https://github.com/lana-agents/tempered-fundamental-groups) | `a2415c1` (Theorem A `andreEquiv'`, Theorem B `TateOrbicurve.nondegenerate_of_normalForm`, the double covering `Ÿ → Y`: `TateObject.piYddot`) |
+| [`oka`](https://github.com/lana-agents/oka) | `405aadd` (needed by `tempered-fundamental-groups`: Zariski connectedness, `Oka.AlgebraicGeometry.ProjectiveSpace.ZariskiConnected`) |
+| [`pi1`](https://github.com/lana-agents/pi1) | `7647d28` (the revisions required by `tempered-fundamental-groups` main) |
 | [`heights`](https://github.com/lana-agents/heights) | `f4379db` |
 | [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta) | `d1fba94` (Kummer classes of theta values and the theta germ, `TateCurvesTheta.Kummer`) |
 | [`continuous-kummer-theory`](https://github.com/lana-agents/continuous-kummer-theory) | `98b67df` (inherited from `tate-curves-theta`) |

@@ -257,6 +257,16 @@ Files `ModelAut.lean`, `ModelTower.lean`.
   is isomorphic to the natural projective system — `RigidSystems.Tower.discreteRigidity` (9c)
   instantiated with (13b), (13c).
 
+### (15) The double covering `Ÿ → Y` (`TemperedDouble.lean`) — done (under S1')
+
+* In `tempered-fundamental-groups` (`Andre/TateObjectDouble.lean`, pinned at `a2415c1`): the object
+  `Ÿ` with deck group `ℤ × ℤ/2` acting simply transitively on its fibre, the character
+  `Π^tp_X → ℤ × ℤ/2`, `χ_Y = pr₁ ∘ χ_Ÿ`.
+* Here: `piYddot` (**`Π^tp_Ÿ`**, `mem_piYddot_iff`: the stabilizer of the base point of `Ÿ`;
+  open, normal in `Π^tp_X`), `piYddot_le_piY` (`Π^tp_Ÿ ⊆ Π^tp_Y`), `relIndex_piYddot_le_two`
+  (`[Π^tp_Y : Π^tp_Ÿ] ≤ 2`), `relIndex_piYddot_eq_two` (`= 2` if some element of the decomposition
+  group of the valuation of the geometric point moves `√(x − e)`).
+
 ### (14) Tempered Frobenioid refinements (`Iut/Frobenioid/TateTheta.lean`) — done (partial)
 
 * `unitThetaGrp χ U`, `unitThetaDiv`, `unitThetaData`: `B₀ = U × {theta-monomial divisors}`
@@ -286,13 +296,12 @@ Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.
   model group with `Π^tp_Y[μ_N]` is not.
 
 * **S1' (tempered coverings).** `Y → X` is the tempered object `TateObject.X₀` of
-  `tempered-fundamental-groups` and `Π^tp_Y` is its stabilizer (6). `Ÿ → Y` is **not**
-  constructed: as a covering of `X` it is the `ℤ`-covering of the `2`-isogenous Tate curve
-  `E_{√q} ∖ {±1} → E_q ∖ {0}`, a nontrivial finite étale level, while `TateObject` is built
-  over the level `(R, 1)` only; generalizing it to Tate data on a finite étale level `B ⊇ R` (with
-  the isogeny shown finite étale over `R`) is engineering-level work in
-  `tempered-fundamental-groups` that was not done. The model environments use
-  `(Δ_Ÿ)^Θ = Δ_Θ × 2·(Δ_Y)^ell` directly.
+  `tempered-fundamental-groups` and `Π^tp_Y` is its stabilizer (6). `Ÿ → Y` is constructed (15)
+  as `Y ×_X X'` for the Kummer presentation `X' = Spec R[t]/(t² − (x − e))` of the `2`-isogeny
+  covering `E_{√q} → E_q` (`e` the `x`-coordinate of the `2`-torsion point `√q`), which is finite
+  étale over `Spec R` only if `x − e` is a unit, i.e. if `Spec R` avoids the `2`-torsion point
+  `(e, ·)` (e.g. `E ∖ E[2]`); `X = E ∖ {0}` itself would need the coordinate ring of the isogenous
+  curve. The model environments use `(Δ_Ÿ)^Θ = Δ_Θ × 2·(Δ_Y)^ell` directly.
 * **S2' (the étale theta class).** The class `η^Θ ∈ H¹(Π^tp_Ÿ, Δ_Θ)` stays research-level
   here, for a precise reason: `Θ̈` is not a function on any finite level — it lives on the
   rigid-analytic (formal) covering `Ÿ`, while the coverings of `tempered-fundamental-groups`

@@ -54,7 +54,7 @@ rev = "f4379dbccc8cdc4faa894a236d5581a6a635c5b5"
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "2c1e2f06be1e7d383e3318a9846884136866a96c"
+rev = "7647d28f361ba3c9705ed0a179b6a377d461c57a"
 
 # [CanLift], Prop. 2.7 over ℂ (`OrbicurveCores.U2.canLift27C`, branch wp-u2), which together
 # with `AffOrbicurve.canLift27_of_complex` discharges `AffOrbicurve.CanLift27`.
@@ -74,14 +74,14 @@ rev = "1d84db91ffaaa64a869993507194b1b51263af07"
 [[require]]
 name = "oka"
 git = "https://github.com/lana-agents/oka.git"
-rev = "31c057652d601cf5373004673c4e9d49fe8c0721"
+rev = "405aadd70a16b05bd1a179a489b2c1c1299df695"
 # The tempered fundamental group of the model orbicurves (taxis #7): the construction through
 # integral models, `TemperedFundamentalGroups.temperedPi1`, consumed by
 # `Iut.Anabelian.TemperedPi1Theory` in `Iut/Anabelian/Tempered.lean`.
 [[require]]
 name = "tempered-fundamental-groups"
 git = "https://github.com/lana-agents/tempered-fundamental-groups"
-rev = "33b1c273171d8e9f0843175cf3e2305efc84d538"
+rev = "a2415c17fc64329ee6a14008224d2c8767a9841f"
 
 # Local class field theory and the Brauer group of p-adic fields (roadmap P8/P9): the Artin
 # map, local duality and `h2MuEquiv`, consumed by the absolute anabelian reconstruction of

@@ -140,6 +140,7 @@ import Iut.EtaleTheta.ModelTower
 import Iut.EtaleTheta.MonoTheta
 import Iut.EtaleTheta.RigidSystems
 import Iut.EtaleTheta.TemperedCovering
+import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClass
 import Iut.EtaleTheta.ThetaValues
