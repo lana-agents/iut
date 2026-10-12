@@ -49,9 +49,23 @@ challenge or by `Iut/Concrete/*`.
    * (b) `PAdic.lean`: the **`p`-adic Frobenioid** of `K_w` for a finite place `w` of a number
      field (one-morphism base, `Φ = ℤ_{≥0}`, `B = K_w^×` with `div_B = ord_w`); the objects
      `O^▷`, `O^×` and the comparison with `Iut/Concrete/LocalConstruct`.
-   * (c) `Tempered.lean`: the shape of the tempered Frobenioid (base category = connected
-     tempered coverings, divisor monoid of the theta-values) as an explicit interface
-     structure; construction left as documented data.
+   * (c) `TemperedBase.lean`, `Tempered.lean`: the tempered Frobenioid ([EtTh] §3) over the
+     actual base category `B^temp(Π)⁰` (transitive `Π`-sets `Π/H`, `H` open; connected and
+     totally epimorphic), with the theta-divisor instance of the `ℤ`-covering `Y → X` of the
+     Tate curve (wall roadmap step 2, see `Iut/EtaleTheta/README.md`):
+     - (c1) `OrbitObj Π`, `OrbitObj.isConnected`, `OrbitObj.totallyEpimorphic`,
+       `OrbitHom.bijective_of_isFSM` (monomorphisms are injective);
+     - (c2) `TemperedFrobenioidData Π` (`Φ₀`, `B₀`, `div₀` on `B^temp(Π)⁰`) and
+       `TemperedFrobenioidData.isFrobenioid` without further hypotheses;
+     - (c3) for a character `χ : Π → ℤ`: `divMonoid χ` (invariant `ℤ`-valued divisors on
+       `(Π/H) × ℤ`, the special-fibre divisors pulled back from the `ℤ`-chain of components of
+       `Y`), `thetaGrp χ` (divisors `a + b·j + c·j²` of the theta monomials `√q^a Ü^b Θ̈^{-c}`),
+       `thetaData χ`, `thetaData_isFrobenioid`;
+     - (c4) on `Y = Π/ker χ`: `divTheta = -j²`, `divU = j`, and the functional equation
+       `pb_deck_divTheta` (divisor form of [EtTh], Prop. 1.4(ii));
+     - (c5) `tateThetaData`: the instance for `Π = temperedPi1` of the Tate curve and
+       `χ = TateObject.character` (`tempered-fundamental-groups`), with
+       `tateThetaData_isFrobenioid`.
 4. **Category-theoreticity** (`Theoreticity.lean`): precise statements of [FrdI] Theorem
    3.4(iii)/(v) and Corollary 4.11 (`PreservesFrobeniusStructure`, …); proved: within the
    model Frobenioid, the elementary types are characterized category-theoretically
@@ -76,7 +90,7 @@ challenge or by `Iut/Concrete/*`.
 | 3(a') `δ_A` iso | `GlobalPic.lean` | `ker_degArith_le` (Dirichlet + finite class group), `picDeg_injective`, `picDegEquiv` (Thm 6.4(i)), `GlobalRealified.nonempty_iso_iff_degree_eq` |
 | 3(b) `p`-adic | `PAdic.lean` | `PAdic.isFrobenioid`, `PAdic.orhdEquiv` (`O^▷ = 𝒪 \ 0`), `PAdic.ounitsEquiv` (`O^× = 𝒪^×`), `PAdic.nonempty_iso` |
 | 3(d) archimedean | `Arch.lean` | `Arch.isFrobenioid`, `Arch.orhd_iff` (`O^▷ = {0 < |u| ≤ 1}`), `Arch.ounits_iff` (`O^× = {|u| = 1}`) |
-| 3(c) tempered | `Tempered.lean` | interface `TemperedFrobenioidData`, `TemperedFrobenioidData.isFrobenioid` |
+| 3(c) tempered | `TemperedBase.lean`, `Tempered.lean` | `OrbitObj.isConnected`, `OrbitObj.totallyEpimorphic`, `OrbitHom.bijective_of_isFSM`, `TemperedFrobenioidData.isFrobenioid`, `thetaData_isFrobenioid`, `pb_deck_divTheta`, `tateThetaData_isFrobenioid` |
 | 4 category-theoreticity | `Theoreticity.lean` | statements `PreservesFrobeniusStructure`, `PreservesBase`; `scale_preserves`, `endZeroEquiv`, `inducedDegAut` |
 | 5 the wall | `Wall.lean` | `degreeNorm_qPilotObj`, `degreeNorm_thetaPilotObj` (`= s·|log q|`), `logVol_qRegion_eq_neg_degreeNorm`, `logVol_lgp_eq_neg_degreeNorm`, `scale_thetaPilotObj`, `nonempty_iso_scale_iff`, `isEmpty_iso_thetaPilot_qPilot` |
 
@@ -97,9 +111,20 @@ challenge or by `Iut/Concrete/*`.
   "standard", "Frobenius-normalized", "FSMFF", base-Frobenius pairs as a structure (their
   model instance is `Model.zeroSection` and the `ζ(n) = (n, id, 0, 0)` of
   `Model.isFrobeniusTrivial_zero`).
-* **Base categories** of the concrete instances are the one-morphism category `Pt` (trivial
-  Galois extension), as in IUT I, Example 3.5(i) for `C^⊩_mod`. The Galois-category bases
-  `B(G)⁰` of [FrdI], Example 6.3 / [FrdII], Example 1.1 are not formalised.
+* **Base categories** of the global, `p`-adic and archimedean instances are the one-morphism
+  category `Pt` (trivial Galois extension), as in IUT I, Example 3.5(i) for `C^⊩_mod`. The
+  tempered instance uses the category `B^temp(Π)⁰ = OrbitObj Π` of connected objects of a
+  topological group (`TemperedBase.lean`); the same construction gives the Galois-category
+  bases `B(G)⁰` of [FrdI], Example 6.3 / [FrdII], Example 1.1 for profinite `G`, but those
+  instances are not built.
+* **Tempered Frobenioid** (`Tempered.lean`): the base category is the genuine `B^temp(Π)⁰`.
+  The monoids of the theta instance are combinatorial: `Φ₀` consists of the special-fibre
+  divisors pulled back from the components of `Y` (components of `Y_H ×_X Y` over one component
+  of `Y` are not separated; no cusps) and `B₀` of the divisors of theta monomials, so
+  `B₀ → Φ₀^gp` is injective (in [EtTh] its kernel is `O^×`). The log-meromorphic functions on
+  stable models of the universal combinatorial coverings are not available: the dependency
+  `tempered-fundamental-groups` has projective models of finite levels and covering spaces of
+  their special fibres, but no structure sheaf on infinite coverings.
 * **Global realified Frobenioid**: `Φ^gp = (V_fin →₀ ℝ) × (V_∞ → ℝ)` with the coordinates
   `ord_w` (finite) and `−log|·|_v` (archimedean); rational functions the ℝ-span of the principal
   divisors. The non-realified Frobenioid of [FrdI], Example 6.3 (with `ℤ`-coefficients at the
@@ -109,7 +134,8 @@ challenge or by `Iut/Concrete/*`.
 
 * [FrdI], Theorem 3.4 / Corollary 4.11 for arbitrary equivalences (research-level here, see
   `Theoreticity.lean`); Theorem 6.4(ii) for arbitrary equivalences of realified Frobenioids.
-* The tempered Frobenioid construction (connected tempered coverings, log-divisors on universal
-  combinatorial coverings, the theta function), see `Tempered.lean`.
+* The tempered Frobenioid with the genuine monoids (log-divisors on stable models of the
+  universal combinatorial coverings `Z^log_∞`, separated components and cusps; the
+  log-meromorphic functions, including `Θ̈` itself rather than its divisor), see `Tempered.lean`.
 * Poly-Frobenioids and prime-strips ([FrdII] §5; IUT I §5), the Θ-link as a
   poly-isomorphism of `F^{⊩▶×μ}`-prime-strips.

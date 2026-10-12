@@ -129,10 +129,14 @@ import Iut.Cor312.ThetaData.TwoTorsion
 import Iut.Cor312.ThetaData.UltrametricSqrt
 import Iut.Cor312.ThetaData.ValuationTransfer
 import Iut.Cor312.ThetaData.VariableChangePoint
+import Iut.EtaleTheta.CyclotomicEnvelope
+import Iut.EtaleTheta.CyclotomicRigidity
 import Iut.EtaleTheta.DiscreteRigidity
 import Iut.EtaleTheta.Heisenberg
 import Iut.EtaleTheta.KummerClass
 import Iut.EtaleTheta.MonoTheta
+import Iut.EtaleTheta.RigidSystems
+import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
@@ -145,6 +149,7 @@ import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.PAdic
 import Iut.Frobenioid.Tempered
+import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
