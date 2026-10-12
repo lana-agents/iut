@@ -112,10 +112,23 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   ℚ ⊗[ℤ] 𝒪^×(G)` (`𝒪^×(G) = abUnits G`), **`monoLogShell G = (p*)⁻¹ · image(𝒪^×(G))`**
   (`p = recPrime G`), `map_monoLogShell` (group-theoretic), `image_monoLogShell_gal`
   (`𝓘(G_K) = {(p*)⁻¹ ⊗ u | u ∈ 𝒪_Kˣ}` under `ℚ ⊗ 𝒪_Kˣ ≅ ℚ ⊗ 𝒪^×(G_K)`).
-* Not done: the identification of `ℚ ⊗ 𝒪_Kˣ` with `K` through `log` and of `logShellConst` with
-  the normalised Haar log-volume of `Iut.logShell` ([AbsTopIII], Prop. 5.7 (i) (c)); the local
-  fields of `Iut/Concrete` are valued completions, those of this directory the
-  `local-class-field-theory` fields, and no bridge between the two frameworks exists yet.
+* `Local/LogVolume.lean` (M3c, [AbsTopIII], Prop. 5.7 (i) (c), 5.8 (iii)) — done, in the
+  valued-field framework of `Iut.logShell` (`Iut/Concrete/LocalConstruct/LocalLogShell.lean`;
+  `k` complete, discretely valued, characteristic `0`, `‖p‖ < 1`, proper): `principalUnits`
+  (`U = U^(1)`), `deepUnits` (`D = {‖u − 1‖ ≤ ‖2p‖}`), `logHom`, `logKer` (`T = ker log|_U`);
+  `log` is injective on `D` and maps it onto `B = {‖y‖ ≤ ‖2p‖}` (`comap_logHom_ball`:
+  `log⁻¹(B) = D·T`, `disjoint_deepUnits_logKer`), so `[U : D] = [log U : B] · #T`
+  (`index_deepUnits_eq`); `measure_eq_relIndex_mul` (`μ(H) = [H : H'] μ(H')` for open subgroups)
+  and **`card_mul_measure_logShell`**: `#T · μ(𝓘_k) = [U : D] · μ(𝒪_k)` for every
+  translation-invariant measure `μ` — the normalisation `μ(𝒪) = 1` of `Iut/Concrete`'s
+  `componentVol` gives `μ(𝓘_k) = [U : D]/#T`.
+* For `k/ℚ_p` finite the two numbers are `[U : D] = q^{v(2p) − 1}` (`relIndex_unitFilt`, with
+  `q^{v(2p)} = (p*)^d` by `q_pow_e`) and `#T = p^m` (`muPInf_eq_pow`), so
+  `μ(𝓘_k)/μ(𝒪_k) = p^{−(f+m)} (p*)^d`, the volume encoded by `logShellConst`
+  (`logShellConst_mul`). Not done: the formal transfer of these `local-class-field-theory`
+  computations to the valued fields of `Iut/Concrete` (a comparison of the two norms), and the
+  identification of `ℚ ⊗ 𝒪_Kˣ` with `K` through `log` (which would identify `monoLogShell` with
+  `Iut.logShell`).
 
 ### M4 — cuspidalisation skeleta ([AbsTopII], Cor. 3.3; [AbsTopIII], Thm. 1.9)
 * `Cusp/OutSemidirect.lean` (done): `inn`, `Out`, `outSemidirect ρ = Aut(N) ×_{Out(N)} Q`,
