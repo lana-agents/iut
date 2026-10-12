@@ -120,8 +120,10 @@ is proved.
 * The étale-like Gaussian monoids reconstructed from `G_v`-actions (IUT II, Proposition 3.1,
   Corollaries 3.5, 3.6 with cyclotomic rigidity; P16/P17) and the Gaussian monoids at good and
   archimedean places (IUT II, Propositions 4.1–4.4).
-* The `Θ^{×μ}`-link before evaluation, the LGP-monoids with log-shell unit portions (IUT III,
-  Propositions 3.4–3.7) and the log-links (IUT III, §1; P20), hence the log-theta-lattice.
+* The `Θ^{×μ}`-link before evaluation. (The log-links, the log-theta-lattice and the local
+  LGP-monoids of IUT III, Propositions 3.4, 3.5 — the pull-backs of the Gaussian monoids of
+  `Gauss.lean` along the log-links, with their splitting monoids — are in `Iut/LogLink/`,
+  `Split.lean`; the global Frobenioids of Proposition 3.7 are not built.)
 * A derivation of log-shell compatibility from an anabelian reconstruction of the log-shells and
   of the Kummer isomorphisms (P17, P20), and an η-algorithm whose output law is not the
   identified-copies law (P20–P22).
