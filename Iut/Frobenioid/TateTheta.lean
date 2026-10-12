@@ -14,7 +14,7 @@ Two refinements of the tempered Frobenioid of theta divisors (`Tempered.lean`, [
 * **The unit part of `B₀`** ([EtTh], Definition 3.3: the kernel of the divisor map
   `B₀ → Φ₀^gp` of a tempered Frobenioid is the group of units `O^×`). `unitThetaGrp χ U` is
   `B₀ = U × {theta-monomial divisors}` for an abelian group `U` (in [EtTh]: `O_K^×`, the
-  units of the base field, which are constant on every covering, so pull-backs are the identity
+  units of the base field, which are the same on every covering, so pull-backs are the identity
   on `U`), with the divisor map `(u, f) ↦ f` (`unitThetaDiv`). `ker_unitThetaDiv`: **its kernel is
   exactly `U`**; `unitThetaData_isFrobenioid`: the resulting tempered Frobenioid is a Frobenioid.
 * **The object `Y` of the tempered Frobenioid of the Tate curve is the `ℤ`-covering of
