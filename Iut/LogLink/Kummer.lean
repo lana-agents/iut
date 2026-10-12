@@ -49,7 +49,11 @@ and of their iterated logarithms into the log-shell, which holds for every holom
 isomorphism (`LogColumn.upperSemiCompat` is proved for an arbitrary column) and so does not
 constrain the mono-analytic scalings of the containers. Whether the Kummer identifications are
 unit-induced is not a consequence of the model; in IUT it is the content of the construction
-of the mono-analytic log-shells from `F^{⊢×μ}` (Proposition 1.2(vi)).
+of the mono-analytic log-shells from `F^{⊢×μ}` (Proposition 1.2(vi)). **This construction is
+formalised in `Iut/LogLink/Galois.lean` and `Iut/LogLink/GalKummer.lean`**: identifications
+induced by Galois isomorphisms or by automorphisms of the unit groups are unit-induced
+(`unitInduced_galLogEquiv`, `AnabelianScaling.unitInduced`), and Kummer data given by their
+origin (`AnabelianKummer`, `GalKummer`) yield `LatticeKummer` data (`toLatticeKummer`).
 -/
 
 namespace Iut

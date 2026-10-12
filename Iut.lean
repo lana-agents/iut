@@ -163,6 +163,8 @@ import Iut.Implication.LogVolumeBound
 import Iut.Implication.PrimeSelection
 import Iut.Implication.Theorem110
 import Iut.LogLink.Column
+import Iut.LogLink.GalKummer
+import Iut.LogLink.Galois
 import Iut.LogLink.Kummer
 import Iut.LogLink.Lattice
 import Iut.LogLink.Local

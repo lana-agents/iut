@@ -109,7 +109,11 @@ is proved.
 * The degrees of `Gauss.lean` (`avgDeg`, `−log‖·‖` averaged over the labels) are not identified
   with the normalized degrees `finDeg` of the wall's `bpsDegrees`; both carry the factor `s`
   (`avgDeg_gaussGen`, `degTheta_localPilot`).
-* `LogShellCompat` is a hypothesis field of `LinkedChain` (scope decision 5), not derived.
+* `LogShellCompat` is a hypothesis field of `LinkedChain` (scope decision 5), not derived here.
+  It is derived in P20 from unit-inducedness (`LogLink.logShellCompat_of_unitInduced`), and
+  unit-inducedness is in turn derived from the anabelian origin of the Kummer identifications
+  (Galois isomorphisms or automorphisms of the unit groups: `Iut/LogLink/Galois.lean`,
+  `Iut/LogLink/GalKummer.lean`, `AnabelianScaling.logShellCompat`).
 
 ## What remains
 

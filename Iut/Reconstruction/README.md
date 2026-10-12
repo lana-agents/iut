@@ -148,6 +148,9 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   (`(2p)⁻¹ log(1 + 𝔪) = (p*)⁻¹ log 𝒪ˣ`, square roots of principal units for odd `p`),
   `logTensor : ℚ ⊗ 𝒪_kˣ → k`, `image_logTensor` and **`image_logTensor_monoLogShell`**: the
   logarithm maps the group-theoretic `monoLogShell (Gal(Ω/k))` onto `Iut.logShell k p`.
+  *Used by* `Iut/LogLink/Galois.lean` (P20 follow-up): `logTensor` is bijective (`logEquiv`),
+  and the identification `galLogEquiv φ` of `k` induced by `φ ∈ Aut(G_k)` (the transport of
+  `unitsQEquiv φ`) is unit-induced in P20's sense and preserves `Iut.logShell`.
 
 ### M4 — cuspidalisation skeleta ([AbsTopII], Cor. 3.3; [AbsTopIII], Thm. 1.9)
 * `Cusp/OutSemidirect.lean` (done): `inn`, `Out`, `outSemidirect ρ = Aut(N) ×_{Out(N)} Q`,

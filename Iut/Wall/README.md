@@ -368,7 +368,11 @@ is imposed only along directed Θ-links whose Kummer identifications distort the
 log-volume, i.e. when C11 fails. C11 is stated in IUT III (Proposition 3.9(ii), (iv); Step (x)),
 and, for identified-copies log-volumes, C2 and C6 imply it; under `ThetaShift` and C11 the wall
 is the Scholze–Stix inequality (item 2), so no constraint formalized here that is compatible
-with C11 makes the wall differ from it. Neither
+with C11 makes the wall differ from it. (C11 is derived in P20 from unit-inducedness, and
+unit-inducedness from the anabelian origin of the Kummer identifications:
+`Iut/LogLink/GalKummer.lean`, `AnabelianScaling.shift_eq_zero`; the drifting identifications
+`q^{−k·n}` of `chainModel D k`, `k ≠ 0`, cannot arise from Galois isomorphisms or automorphisms
+of the unit groups, `not_anabelianScaling_qScale_zpow`.) Neither
 `SSIneq D` nor its negation is proved, and nothing here decides which model is the one IUT
 intends: these are statements about the multi-container model.
 

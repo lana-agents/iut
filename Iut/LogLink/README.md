@@ -60,6 +60,8 @@ the modelling inputs listed below.
 | (3) The log-theta-lattice | `Lattice.lean` | `LogLinkHT`, `LogLinkHT.dIso`, `logLinkEquiv`, `card_logLinkHT` (= 2), `nonempty_logLinkHT` (Prop 1.3); `LogColumn.taut`; `LogThetaLattice` (Def 1.4); `vertIso`, `vertCoric` (Thm 1.5(i)), `horizCoric`, `horizCoric_full` (Thm 1.5(ii)), `biCoric` (Thm 1.5(iii)), `row` (P19 Frobenius-pictures), `col`, `not_commute`, `ofData` | done |
 | (4) Log-shell compatibility derived | `Kummer.lean` | `tprod_mul_mem_tensorLogShell`, `tprod_image_tensorLogShell`, `FactorUnitInduced`, `factorMk_image_factorLogShell`, `FactorUnitInduced.image_eq`, `factorUnitInduced_one`, `factorUnitInduced_neg_one`, `tprod_image_tensorLogShell_of_unitInduced`; `UnitInducedScaling`, **`logShellCompat_of_unitInduced`**, `shift_eq_zero_of_unitInduced`, `unitInducedScaling_one`, **`unitInducedScaling_negScale`**, `not_unitInducedScaling_qScale_zpow`; `LatticeKummer` (`logShellCompat`, `toLinkedChain`, `model`, `model_kummerVolCompat`, `model_volCompat`, `distortion_eq_zero`, `distortion_horiz`, `distortion_vert`, `trivial`, `alt`) | done |
 | (5) Theorem 3.11 and the chain to ABC | `Thm311.lean` | `logShellCompat_mul`, `logShellCompat_inv`, `act_lgp`, `act_le`, `ind3Map`, `ind3Act`; `horizRel`, `vertRel`; **`Thm311`**; `LatticeKummer.model_multiradial3` (Thm 3.11(i) in the model), `model_thetaShift`; **`thm311_model`**; **`XiPrinciple`**; **`variant_of_thm311`**, **`wall_of_thm311`** (the input of `Iut/Wall`), **`classicalABC_of_thm311`**, `classicalABC_of_xi`, **`xi_iff_ss`**, `xi_iff_xi`; `logVol_transport_out`, **`answer`**, `alt_alien_horiz`, `alt_alien_vert` | done |
+| (6) Galois-induced identifications are unit-induced | `Galois.lean` | `norm_eq_one_of_unitInduced_scale`; `pow_q_sub_one_iff` (`U¹ = (𝒪ˣ)^{q−1}`), `logTensor_bijective`, `logEquiv` (`ℚ ⊗ 𝒪ˣ ≅ k`); `unitLogEquiv` (identification induced by `β ∈ Aut(𝒪ˣ)`), **`unitInduced_unitLogEquiv`**, `image_logShell_unitLogEquiv`, `unitLogEquiv_refl`, `unitLogEquiv_inv`, `unitLogEquiv_ne_scale`; `galUnitsEquiv` (P17's `𝒪ˣ ≅ 𝒪ˣ` from `φ ∈ Aut(G_k)`), `coe_galUnitsEquiv` (= `galEquiv_multEquiv`), `galLogEquiv`, **`galLogEquiv_transport`** (= transport of P17's `unitsQEquiv φ` through `log`), **`galLogEquiv_image_logShell`** (via `map_monoLogShell` + `image_logTensor_monoLogShell`), **`unitInduced_galLogEquiv`**, `galLogEquiv_refl`, `galLogEquiv_ne_scale`, `galEquiv_multEquiv_ne_zpow_mul` | done |
+| (7) Kummer data from the reconstruction | `GalKummer.lean` | `CompGal`, `CompUnits`, `compGalLogEquiv`, `compUnitLogEquiv` (completions of `Iut/Concrete`), `unitInduced_compGalLogEquiv`, `compGalLogEquiv_image_logShell`; `FactorGalInduced`, `FactorUnitsAut`, **`FactorUnitsAut.factorUnitInduced`**, `exists_factorGalInduced_of_linear`, `norm_eq_one_of_factorUnitsAut`; `GalInducedScaling`, `AnabelianScaling`, **`AnabelianScaling.unitInduced`**, `.logShellCompat`, `.shift_eq_zero`, `galInducedScaling_one`, `anabelianScaling_negScale`; **`not_anabelianScaling_of_shift_ne_zero`**, `not_anabelianScaling_qScale_zpow`, `not_galInducedScaling_qScale_zpow`; `AnabelianKummer`, `GalKummer`, **`toLatticeKummer`**, `distortion_eq_zero`, `xi_iff_ss`, `kum_ne_qScale_zpow`, `GalKummer.trivial`, `AnabelianKummer.alt` (`= LatticeKummer.trivial`, `.alt`), `classicalABC_of_thm311_anabelian`, `classicalABC_of_thm311_gal`, `classicalABC_of_xi_gal` | done |
 
 All theorems use only `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -85,9 +87,50 @@ All theorems use only `propext`, `Classical.choice`, `Quot.sound`.
 * **What further input is needed**: exactly the unit-inducedness of the Kummer identifications.
   The upper semi-compatibility of the log-Kummer correspondence does not imply it: it holds for
   every column (holomorphic Kummer isomorphisms), and constrains the images of units, not the
-  mono-analytic scalings of the containers. In the model, unit-inducedness is an input (a field
-  of `LatticeKummer`); in IUT it is the content of the construction of the mono-analytic
-  log-shells from `F^{⊢×μ}`, which is anabelian (P17) and not formalised here.
+  mono-analytic scalings of the containers. In `LatticeKummer`, unit-inducedness is a field; it
+  is **discharged** by the anabelian origin of the identifications (next item).
+
+### (3') Unit-inducedness from the anabelian reconstruction (`Galois.lean`, `GalKummer.lean`)
+
+* **Local theorem.** For a `p`-adic field `k` (both structures, `hball`) every automorphism `β`
+  of the abstract group `𝒪_kˣ` induces, through the logarithm `ℚ ⊗ 𝒪_kˣ ≅ k` (`logEquiv`,
+  P17's `logTensor` shown bijective), an additive automorphism `unitLogEquiv β` of `k` which is
+  **unit-induced** (the principal units are the `(q−1)`-th powers of `𝒪_kˣ`, so `β` restricts
+  to them, `prinOfUnits`) and hence preserves the log-shell. For a topological automorphism `φ`
+  of `G_k`, P17 reconstructs `β = galUnitsEquiv φ` (the restriction of `galEquiv_multEquiv`),
+  and `galLogEquiv φ` is exactly the transport of P17's `unitsQEquiv φ` on the group-theoretic
+  `ℚ ⊗ 𝒪^×(G_k)` (`galLogEquiv_transport`); its log-shell preservation follows also from
+  `map_monoLogShell` and `image_logTensor_monoLogShell` (`galLogEquiv_image_logShell`).
+* **Model.** Kummer identifications given by their origin — elementary tensors of factor
+  scalings that *are* the identifications induced by Galois automorphisms of the completions
+  (`GalInducedScaling`, `D^⊢`-data) or by automorphisms of their unit groups
+  (`AnabelianScaling`, `F^{⊢×μ}`-data / `Ism`) — are unit-induced (theorem), so `GalKummer`
+  and `AnabelianKummer` give `LatticeKummer` data with the field discharged, and
+  `distortion_eq_zero`, `xi_iff_ss` (now unconditional on the Kummer data: Theorem 3.11 holds in
+  the model), `classicalABC_of_thm311` are restated for them. P20's `trivial` data come from the
+  identity of the Galois groups, its `alt` data from the inversion of the units.
+* **(3) What is not of this form.** Proved chain: Galois-induced ⇒ induced by `Aut(𝒪ˣ)` ⇒
+  unit-induced ⇒ log-shell preserving ⇒ volume neutral (`shift = 0`). Hence every Kummer
+  identification with `shift ≠ 0` does not arise from the reconstruction
+  (`not_anabelianScaling_of_shift_ne_zero`), in particular `qScale^m`, `m ≠ 0`
+  (`not_anabelianScaling_qScale_zpow`); at the factor level a scaling `x ↦ b·x` arising from the
+  reconstruction has `‖b‖ = 1` (`norm_eq_one_of_factorUnitsAut`, `galLogEquiv_ne_scale`), and on
+  the multiplicative side a Galois-induced `kˣ ≃* kˣ` never acts on a unit as multiplication by
+  `q^m` (`v(q) ≠ 0`; it preserves `𝒪ˣ` and `v`: `galEquiv_multEquiv_ne_zpow_mul`). The
+  converses (log-shell preserving ⇒ unit-induced; which `β` come from `Aut(G_k)`) are not
+  established.
+* **Remark (not formalised).** The cyclotomic character is group-theoretic ([AbsAnab],
+  Prop. 1.2.1(vii)) and on `𝒪_kˣ ⊆ G_k^ab` it is `N_{k/ℚ_p}⁻¹`; so a Galois-induced
+  identification preserves `Tr_{k/ℚ_p}`, and the only Galois-induced *scaling* is `b = 1`. P19's
+  alien `x ↦ −x` therefore comes from the `F^{⊢×μ}`-data (`Ism`, the inversion of the units), not
+  from an automorphism of `G_v`; the theorems above do not depend on this remark.
+* **What remains an input.** (a) That the model's Kummer identifications are scalings (the
+  equation `compGalLogEquiv φ = scale b` in the data; `exists_factorGalInduced_of_linear` builds
+  `b = ψ(1)` from a `K_v`-linear `ψ`); (b) the archimedean places; (c) the lift of `D`-prime-strip
+  isomorphisms to `F`-prime-strips (IUT I, Corollary 5.3(ii)): the model's Hodge theaters carry
+  no `G_v`, so the Galois automorphisms are data of the Kummer structure, not read off from the
+  strips; (d) the `G_v`-equivariance / `O^{×μ}_{k̄}` level of `Ism` (only the `G_v`-invariants
+  `𝒪_kˣ` are used).
 
 ### (4) Theorem 3.11 and the wall
 
@@ -120,7 +163,10 @@ unit-inducedness. The log-links do act non-trivially on elements — a unit of l
 inclusion into the log-shell ((Ind3), already the `∃ S` of the wall) and through unit-induced
 identifications. A different output law would need a Kummer identification that is not
 unit-induced (like `qScale^k`, moving value-group data into the unit portion) or an output that is
-not `LGP` acting on an (Ind3)-choice; the structures formalised here produce neither. This is a
+not `LGP` acting on an (Ind3)-choice; the structures formalised here produce neither (for the
+Kummer identifications this is a theorem in the reconstruction setting: identifications arising
+from Galois isomorphisms or automorphisms of the unit groups are volume neutral,
+`not_anabelianScaling_of_shift_ne_zero`, `not_anabelianScaling_qScale_zpow`). This is a
 statement about the model, conditional on its scope decisions; it neither proves nor refutes
 `SSIneq D`, and it does not decide whether IUT's algorithm contains structure beyond the model.
 
@@ -143,9 +189,9 @@ statement about the model, conditional on its scope decisions; it neither proves
 
 ## What remains
 
-* The anabelian side: reconstructing the mono-analytic log-shells and the Kummer identifications
-  from `D^⊢` / `F^{⊢×μ}` (P17), which would turn `UnitInducedScaling` from an input into a
-  theorem; archimedean log-links.
+* The anabelian side beyond `Galois.lean` / `GalKummer.lean`: reading the Galois groups off the
+  `D`-prime-strips of the Hodge theaters (IUT I, Corollary 5.3(ii)) rather than as data of the
+  Kummer structure; `Ism` at the level of `O^{×μ}_{k̄}`; archimedean log-links.
 * The LGP-monoids of Propositions 3.4–3.7 and Theorem 3.11(ii)(b), (c); the global realified
   Frobenioids of Theorem 1.5(v).
 * An η-algorithm whose output is not `LGP` acting on an (Ind3)-choice, or a Kummer identification
