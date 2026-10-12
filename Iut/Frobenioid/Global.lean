@@ -30,7 +30,7 @@ image of `λ ∈ 𝒪^▷_w` goes to `log #(𝒪_w/λ)`, of `λ ∈ ℝ_{>0}` to
 on rational functions (the product formula, `degArith_ratFun`), so it descends to
 `Pic_Φ = Φ^gp/Φ^birat` (`picDeg`, surjective; [FrdI], Theorem 6.4(i) asserts that it is an
 isomorphism `δ_A : Pic_Φ(A) ≅ ℝ`, which needs the unit theorem and the finiteness of the class
-group and is not proved here).
+group; proved in `GlobalPic.lean`, `picDegEquiv`).
 
 ## Objects and degrees
 

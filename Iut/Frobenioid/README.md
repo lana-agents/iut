@@ -43,6 +43,9 @@ challenge or by `Iut/Concrete/*`.
      degree `deg^arith` ([FrdI] Example 6.3), its vanishing on rational functions, the degree
      `δ` on objects (an isomorphism invariant, Theorem 6.4(i)); the objects of arithmetic line
      bundles (`ofBundle`) and **`degree_ofBundle : δ(ofBundle L) = deg L`** (and `degNorm`).
+   * (a') `GlobalPic.lean`: **[FrdI], Theorem 6.4(i)**, `δ_A : Pic_Φ(A) ≅ ℝ`: injectivity via
+     the finiteness of the class group (finite part) and Dirichlet's unit theorem
+     (`unitLattice_span_eq_top`, archimedean part); objects are classified by their degree.
    * (b) `PAdic.lean`: the **`p`-adic Frobenioid** of `K_w` for a finite place `w` of a number
      field (one-morphism base, `Φ = ℤ_{≥0}`, `B = K_w^×` with `div_B = ord_w`); the objects
      `O^▷`, `O^×` and the comparison with `Iut/Concrete/LocalConstruct`.
@@ -70,6 +73,7 @@ challenge or by `Iut/Concrete/*`.
 | 1 Definitions | `Basic.lean`, `Defs.lean` | `DivMonoid`, `Elem`, `IsFrobenioid` (Def. 1.3 (i)–(vii)), `isIso_iff_isPullback_isBaseIso` (Rem. 1.2.1), `factorization_unique_of` |
 | 2 Model Frobenioids | `Model.lean`, `ModelFrobenioid.lean` | `Model.isFrobenioid` (Thm 5.2(ii)), `Model.isIso_iff`, `Model.isPullback_iff`, `Model.isIsotropic`, `Model.isCoangular`, `Model.nonempty_iso_iff` (Thm 5.1(i)) |
 | 3(a) global realified | `Global.lean` | `globalRealified_isFrobenioid`, `degArith_toDiv`, `degree_ofBundle`, `degreeNorm_ofBundle`, `degArith_ratFun`, `picDeg_surjective`, `degree_eq_of_iso`, `degree_frobenius`, `ofBundle_iso_of_rel` |
+| 3(a') `δ_A` iso | `GlobalPic.lean` | `ker_degArith_le` (Dirichlet + finite class group), `picDeg_injective`, `picDegEquiv` (Thm 6.4(i)), `GlobalRealified.nonempty_iso_iff_degree_eq` |
 | 3(b) `p`-adic | `PAdic.lean` | `PAdic.isFrobenioid`, `PAdic.orhdEquiv` (`O^▷ = 𝒪 \ 0`), `PAdic.ounitsEquiv` (`O^× = 𝒪^×`), `PAdic.nonempty_iso` |
 | 3(c) tempered | `Tempered.lean` | interface `TemperedFrobenioidData`, `TemperedFrobenioidData.isFrobenioid` |
 | 4 category-theoreticity | `Theoreticity.lean` | statements `PreservesFrobeniusStructure`, `PreservesBase`; `scale_preserves`, `endZeroEquiv`, `inducedDegAut` |
@@ -102,9 +106,6 @@ challenge or by `Iut/Concrete/*`.
 
 ## What remains
 
-* [FrdI], Theorem 6.4(i), injectivity of `δ_A : Pic_Φ(A) → ℝ` for the global realified
-  Frobenioid (needs Dirichlet's unit theorem and the finiteness of the class group; both are in
-  Mathlib, the reduction is not done).
 * [FrdI], Theorem 3.4 / Corollary 4.11 for arbitrary equivalences (research-level here, see
   `Theoreticity.lean`); Theorem 6.4(ii) for arbitrary equivalences of realified Frobenioids.
 * The tempered Frobenioid construction (connected tempered coverings, log-divisors on universal
