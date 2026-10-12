@@ -129,6 +129,13 @@ import Iut.Cor312.ThetaData.TwoTorsion
 import Iut.Cor312.ThetaData.UltrametricSqrt
 import Iut.Cor312.ThetaData.ValuationTransfer
 import Iut.Cor312.ThetaData.VariableChangePoint
+import Iut.EtaleTheta.DiscreteRigidity
+import Iut.EtaleTheta.Heisenberg
+import Iut.EtaleTheta.KummerClass
+import Iut.EtaleTheta.MonoTheta
+import Iut.EtaleTheta.Theta
+import Iut.EtaleTheta.ThetaValues
+import Iut.EtaleTheta.Wall
 import Iut.Frobenioid.Basic
 import Iut.Frobenioid.Defs
 import Iut.Frobenioid.Global

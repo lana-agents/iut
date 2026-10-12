@@ -855,6 +855,31 @@ Not imported by the comparator challenge.
   image `diag x hx`, `logVol_fullScale_mul_diag` (scaling `F_mod`-rational data further by `x`
   does not change the log-volume) and `logVol_fullScale_diag : log-vol(x·O) = log-vol(O) = 0`.
 
+## The étale theta function (`Iut/EtaleTheta`, roadmap P16)
+
+The algebraic and Kummer-theoretic content of [EtTh] (Mochizuki, *The étale theta function and
+its Frobenioid-theoretic manifestations*), §§1–2; see
+[`Iut/EtaleTheta/README.md`](Iut/EtaleTheta/README.md) for milestones, scope decisions and the
+research-level remainder. Not imported by the comparator challenge.
+
+* `Theta.lean`: `Θ̈(Ü) = Ü·θ(-Ü²) = ∑ (-1)ⁿ q^{n(n+1)/2} Ü^{2n+1}` on the theta covering
+  `Ÿ → Y → X` (recorded by its deck actions on `Ü`), its functional equations
+  `etaleTheta_inv`, `etaleTheta_neg`, `etaleTheta_zpow_sqrt_mul` ([EtTh], Prop. 1.4(ii)) and
+  zeros (`etaleTheta_eq_zero_iff`).
+* `KummerClass.lean`: the étale theta class on points and germs — [EtTh], Prop. 1.5(iii) in
+  `H¹_cont(G_K, μ_n)` and `H¹_cont(G_K, Ẑ(1))` (`kummer_etaleTheta_zpow_sqrt_mul`), the
+  `O^×`-indeterminacy, and Prop. 1.4(iii) on decomposition groups
+  (`decomposition_kummer_etaleThetaGerm`).
+* `ThetaValues.lean`: `Θ̈(√-1·q^{j/2}) = q^{-j²/2}·Θ̈(√-1)` (`etaleTheta_sqrtNeg_zpow`), IUT's
+  normalized `Θ_v` and its `ℓ`-th roots (`pow_eq_thetaV_iff`), Kummer classes of theta values,
+  and the algebraic core of the rigidity of scalar multiples.
+* `Heisenberg.lean`, `MonoTheta.lean`, `DiscreteRigidity.lean`: the theta group and its
+  commutator pairing (`commutator_eq_theta`, [EtTh], Prop. 2.12(i); `cyclotomicRigidity`), theta
+  sections of cyclotomic envelopes and mono-theta environments ([EtTh], Def. 2.13;
+  `thetaClassSubgroups_eq_iff`), and discrete rigidity ([EtTh], Prop. 2.15, completely).
+* `Wall.lean`: the LGP theta values `q_v^{j²}` of `Iut/Wall` are the `ℓ`-th roots of the theta
+  values `Θ_v(√-1·q^{j/2})` (`qroot_pow_ell_mul_thetaRatio`, `pow_eq_thetaRatio_inv_iff`).
+
 ## Dependency pins
 
 `lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its
@@ -866,7 +891,8 @@ dependencies:
 | [`oka`](https://github.com/lana-agents/oka) | `31c0576` (needed by `tempered-fundamental-groups`: Zariski connectedness, `Oka.AlgebraicGeometry.ProjectiveSpace.ZariskiConnected`) |
 | [`pi1`](https://github.com/lana-agents/pi1) | `2c1e2f0` |
 | [`heights`](https://github.com/lana-agents/heights) | `f4379db` |
-| [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta) | `ca6c227` |
+| [`tate-curves-theta`](https://github.com/lana-agents/tate-curves-theta) | `d1fba94` (Kummer classes of theta values and the theta germ, `TateCurvesTheta.Kummer`) |
+| [`continuous-kummer-theory`](https://github.com/lana-agents/continuous-kummer-theory) | `98b67df` (inherited from `tate-curves-theta`) |
 | [`genl`](https://github.com/lana-agents/genl) | `179e26f` |
 | [`orbicurve-cores`](https://github.com/lana-agents/orbicurve-cores) | `21ce4b7` |
 | [`belyi`](https://github.com/lana-agents/belyi) | `1d84db9` (also pinned by `heights` and `genl`) |
