@@ -83,6 +83,14 @@ name = "tempered-fundamental-groups"
 git = "https://github.com/lana-agents/tempered-fundamental-groups"
 rev = "33b1c273171d8e9f0843175cf3e2305efc84d538"
 
+# Local class field theory and the Brauer group of p-adic fields (roadmap P8/P9): the Artin
+# map, local duality and `h2MuEquiv`, consumed by the absolute anabelian reconstruction of
+# `Iut/Reconstruction` ([AbsTopI]-[AbsTopIII], roadmap P17).
+[[require]]
+name = "local-class-field-theory"
+git = "https://github.com/lana-agents/local-class-field-theory"
+rev = "639e7648258f13cbd3f13bb6a50006c9d2509faf"
+
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
 name = "Iut"
