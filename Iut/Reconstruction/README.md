@@ -55,26 +55,55 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   **`galEquiv_invariants`**: `Gal(Ω/K) ≃ₜ* Gal(Ω'/K')` (`K/ℚ_p`, `K'/ℚ_{p'}`) forces `p = p'`,
   `[K : ℚ_p] = [K' : ℚ_{p'}]`, `q = q'`, `f = f'`, `e = e'`; `recMu`, `galEquiv_muCard`: the
   numbers `#μ_{p^k}(K)` (hence `p^m = #μ_{p^∞}(K)`) are group-theoretic.
-* (planned) the inertia subgroup and the Frobenius element ([AbsAnab], 1.2.1 (ii), (iv)):
-  `I_K = ⋂ {H open : f(H) = [G_K : H] · f(G_K)}`.
+* `Local/Inertia.lean` ([AbsAnab], Prop. 1.2.1 (ii)) — done: `fixingSubgroupContEquiv`
+  (`Gal(Ω/L) ⊆ Gal(Ω/K)` with the subspace topology `≃ₜ*` `Gal(Ω/L)`), `recF_fixingSubgroup`,
+  `unrOpen_iff` (`recF(Gal(Ω/L)) = [L:K] recF(G_K)` iff `L/K` unramified), `recInertia G =
+  ⋂ {H open | recF(H) = [G:H] recF(G)}`, `map_recInertia` (group-theoretic), `recInertia_gal`
+  (`= PadicField.absInertia p K Ω`, the genuine inertia group) and **`galEquiv_inertia`**:
+  every `Gal(Ω/K) ≃ₜ* Gal(Ω'/K')` maps `I_K` onto `I_{K'}`.
+* Not done: the Frobenius element ([AbsAnab], 1.2.1 (iv); needs the tame inertia character
+  `I/P ≅ Ẑ'(1)`), the image of `𝒪ˣ` and `Kˣ` in `G_K^ab` ([AbsTopIII], Prop. 5.8 (i), via
+  `G_K^ab ≅ Gal(K^ab/K)` and P8's `artinCompletionEquiv`).
 
-### M2 — cyclotomic rigidity ([AbsTopIII], Prop. 3.2 (i), (ii); Cor. 1.10 (i))
-* MLF-Galois pairs `G ↷ M`, their cyclotome `μ_Ẑ(M) = Hom(ℚ/ℤ, M)` and Kummer maps; the
-  natural isomorphism `H²(G, μ_n(M)) ≃ ℤ/n` (P9 `h2MuEquiv`) and its functoriality.
+### M2 — cyclotomic rigidity ([AbsTopIII], Prop. 3.2 (i); Cor. 1.10 (i), (c)) — done
+* `Local/Cyclotome.lean`: every endomorphism of `μ_n` is a power map and `G_K`-equivariant
+  (`exists_pow_eq`, `map_smul_mu`); the induced map `coeffMap α` on `H²(G_K, μ_n)` is
+  `β ↦ β^a` (`coeffMap_zpow`), so it multiplies the invariant `H²(G_K, μ_n) ≃ ℤ/n` (P9
+  `h2MuEquiv`) by `a` (`h2MuEquiv_coeffMap`); **`cyclotomic_rigidity`**: an endomorphism of
+  the cyclotome compatible with `H²(G_K, μ_n) ≃ ℤ/n` is the identity.
+* Not done: the purely group-theoretic cyclotome `μ_{ℚ/ℤ}(G) = lim (H^ab)_tors` (transfer) of
+  Cor. 1.10 (i) (a); the monoid version (Frobenioid-theoretic pairs `G ↷ 𝒪^▷`) of Prop. 3.2.
 
-### M3 — mono-analytic log-shells ([AbsTopIII], Prop. 5.7, 5.8 (ii), (iii))
-* The log-shell `𝓘_K = (2p)⁻¹ log(𝒪_Kˣ)` (`Iut.logShell`) and the normalised log-volume
-  `−1 − m/f + e · log(p*)/log p` (in units of `f log p`) as functions of the reconstructed
-  invariants.
+### M3 — mono-analytic log-shells ([AbsTopIII], Prop. 5.8 (iii)) — normalisation done
+* `Local/LogShell.lean`: `exists_muCard_eq_pow`, `muCard_le` (`#μ_{p^k}(K)` is a power of
+  `p`, `≤ q^{e+1}`), `muPInf`, `mExp` (`#μ_{p^∞}(K) = p^m`, `muPInf_eq_pow`), `recMExp_gal`;
+  `pStar`, `logShellConst p f e m = −1 − m/f + e log(p*)/log p`, `logShellConst_mul` (the
+  volume formula `vol(𝓘_K) = p^{−(f+m)} (p*)^{[K:ℚ_p]}` it encodes) and
+  **`recLogShellConst_gal`** / `isGroupTheoretic_recLogShellConst`.
+* Not done: the identification of `logShellConst` with the Haar log-volume of `Iut.logShell`
+  ([AbsTopIII], Prop. 5.7 (i) (c): `log` is volume preserving on deep `U^(n)`), and the
+  mono-analytic construction of `𝓘(G) ⊆ 𝒪ˣ(G) ⊗ ℚ` from `𝒪ˣ(G) = image of I_K in G_K^ab`
+  (Prop. 5.8 (ii)).
 
-### M4 — cuspidalisation skeleta ([AbsTopI], Lemma 4.5; [AbsTopII], Cor. 3.3;
-[AbsTopIII], Thm. 1.9, Cor. 1.10)
+### M4 — cuspidalisation skeleta ([AbsTopII], Cor. 3.3; [AbsTopIII], Thm. 1.9)
 * `Cusp/OutSemidirect.lean` (done): `inn`, `Out`, `outSemidirect ρ = Aut(N) ×_{Out(N)} Q`,
   `outerAction`, **`extensionEquivOutSemidirect`**: an extension `1 → H → E → E/H → 1` with
-  center-free `H` is recovered from its outer action ([AbsTopII], §0; Cor. 3.3 (b)).
-* The statements of elliptic and Belyi cuspidalisation with the deep inputs (Grothendieck
-  conjecture, Belyi maps, the characterisation of cuspidal decomposition groups) as named
-  hypotheses, and the formal parts of the algorithms proved from them.
+  center-free `H` is recovered from its outer action ([AbsTopII], §0).
+* `Cusp/Elliptic.lean` (done) — [AbsTopII], Cor. 3.3 (iii): `fibreSubgroup` and
+  `fibreSubgroup_surjective` (step (a′): `Π_{U_V} ↠ Π_V` as a fibre product),
+  `quotientComapEquiv` (`Π_{U_X}/Π_{U_V} ≃ Π/Π_V`), **`cuspidalizationEquiv'`** (step (b):
+  `Π_{U_X} ≃ Π_{U_V} ⋊^out (Π/Π_V)` compatibly with the projections, for center-free
+  `Π_{U_V}`). Step (a) (chains and the relative Grothendieck conjecture) is a deep input.
+* `Cusp/Belyi.lean` (done) — [AbsTopIII], Thm. 1.9 (a), step "filling in cusps":
+  `CuspData` (a group with cuspidal inertia subgroups), `CuspData.kernel`, `Filled`,
+  `fillMap` (`Π_U ↠ Π_Y`), `mk_inertia`, and the functoriality `CuspData.Iso`, `map_kernel`,
+  `filledEquiv`, `filledEquiv_fillMap`. The existence of Belyi maps and the
+  Grothendieck-conjecture characterisation of the resulting open immersions into the tripod
+  group are deep inputs (the cusp data are given).
+* Not done: [AbsTopI], Lemma 4.5 (the characterisation of cuspidal decomposition groups via
+  weights and quasi-trivial ranks — needs `ℓ`-adic Galois representations of curves); the
+  remaining steps (b)–(e) of [AbsTopIII], Thm. 1.9 (Kummer classes of functions, additive
+  structure on `k_NF`); Cor. 1.10 (ii), (iii).
 
 ## Scope decisions
 * `p`-adic fields are those of `local-class-field-theory` (`[Algebra ℚ_[p] K]
