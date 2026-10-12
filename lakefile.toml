@@ -15,12 +15,13 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.32.0"
 
-# Tate q-parameters and the classical theta function (taxis #13/#37); consumed by
+# Tate q-parameters, the classical theta function and the Kummer classes of its values
+# (taxis #13/#37; `TateCurvesTheta.Kummer`, consumed by `Iut/EtaleTheta`); consumed by
 # the initial Θ-data and Corollary 3.12 variant strand (taxis #33).
 [[require]]
 name = "tate-curves-theta"
 git = "https://github.com/lana-agents/tate-curves-theta"
-rev = "a951400b7ed4ec97b981623cf2b6e42b45175676"
+rev = "d1fba94861c886b671f4137ab35e24b7474c9e00"
 
 # The p-adic logarithm and the
 # trace-duality lemmas for finite Q_p-algebras (IUT IV, Proposition 1.1).
