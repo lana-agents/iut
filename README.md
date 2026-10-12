@@ -901,6 +901,29 @@ challenge.
 * `Wall.lean`: the multi-container model of the wall with actual Hodge theaters as sides
   (`theaterModel`, `wall3_theaterModel_iff : Wall3 ↔ SSIneq D`).
 
+## The Θ-link (`Iut/ThetaLink`, roadmap P19)
+
+Gaussian and `q`-pilot monoids, `F^{⊩▶×μ}`-prime-strips and the `Θ^{×μ}_gau`-/`Θ^{×μ}_LGP`-link
+between `Θ^{±ell}NF`-Hodge theaters (IUT II, Corollaries 3.5, 4.10, Definition 4.9; IUT III,
+Definition 3.8), with Kummer compatibilities and the place of the Θ-link in the multi-container
+model of the wall; see [`Iut/ThetaLink/README.md`](Iut/ThetaLink/README.md) for milestones, scope
+decisions and simplifications. Not imported by the comparator challenge.
+
+* `Gauss.lean`: splitting monoids `O^×·g^ℕ` and their splittings (`splitEquiv`), the Gaussian
+  monoid of the theta values `q_v^{j²}` and the `q`-pilot monoid at a bad place, the Θ-link on
+  monoids (`gaussLink`, the identity at the label `1` only), value profiles (`isValueProfile_iff`,
+  `gauss_pow_eq`), degrees (`avgDeg_gaussGen`: factor `s`).
+* `PrimeStrip.lean`, `Link.lean`: `RlfMuStrip` (unit portion `F^{⊢×μ}` + realified value-group
+  line); `ThetaLinkIso H₁ H₂`, the full poly-isomorphism `†F^{⊩▶×μ}_gau ≅ ‡F^{⊩▶×μ}_Δ`:
+  nonempty, `unitEquiv` (its indeterminacy is exactly the unit portion), value part unique and
+  rescaling degrees by `1/s` (`val_apply`), compatible with isomorphisms of theaters (`congr`);
+  the pilot objects of `C^⊩` are related only by the scaling `1/s` (`scaling_iff`).
+* `Kummer.lean`: the unit portion is Kummer compatible; the value-group portion is Kummer
+  compatible at a label `j` iff `ζ·q^{j²−1}` is an `n`-th power (`kummer_gauss_compat_iff`).
+* `Wall.lean`: Θ-linked chains with log-shell compatible Kummer identifications
+  (`LinkedChain`): distortion `0` along every Θ-link and wall along the Θ-links `↔ SSIneq D`
+  (`LinkedChain.answer`); the drifting M3 rows are not of this form.
+
 ## Dependency pins
 
 `lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its

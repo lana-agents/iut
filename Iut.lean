@@ -174,6 +174,11 @@ import Iut.Reconstruction.Local.Invariants
 import Iut.Reconstruction.Local.LogShell
 import Iut.Reconstruction.Local.PowerIndex
 import Iut.Reconstruction.Local.UnitIndex
+import Iut.ThetaLink.Gauss
+import Iut.ThetaLink.Kummer
+import Iut.ThetaLink.Link
+import Iut.ThetaLink.PrimeStrip
+import Iut.ThetaLink.Wall
 import Iut.Torsion.Count
 import Iut.Torsion.Divisible
 import Iut.Torsion.EDS
