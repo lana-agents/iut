@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Reconstruction.Local.CharCount
+import Iut.Reconstruction.Local.PowerIndex
 
 /-!
 # Group-theoretic reconstruction of the basic invariants of a `p`-adic field
@@ -36,6 +37,9 @@ All invariants are read off from the function `N(n) = #Hom_cont(G, ℤ/n)`
 * `Iut.Reconstruction.recPrime`, `recQ`, `recDeg`, `recF`, `recE`: the group-theoretic
   algorithms on topological groups, `isGroupTheoretic_recPrime` etc., and
   `recPrime_gal` etc.: their values on `Gal(Ω/K)`;
+* `Iut.Reconstruction.muOf_eq`, `recMu`, `recMu_gal`, `galEquiv_muCard`: the numbers
+  `#μ_{p^k}(K)` (hence the order `p^m` of `μ_{p^∞}(K)`), via
+  `[Kˣ : (Kˣ)^{p^k}] = #μ_{p^k}(K) · p^{k([K:ℚ_p]+1)}` (`powIndex_p_pow`);
 * `Iut.Reconstruction.galEquiv_invariants`: an isomorphism of topological groups
   `Gal(Ω/K) ≃ₜ* Gal(Ω'/K')` (`K/ℚ_p`, `K'/ℚ_{p'}`) forces `p = p'`, `[K : ℚ_p] = [K' : ℚ_{p'}]`,
   `q = q'`, `f = f'`, `e = e'`.
@@ -62,6 +66,9 @@ noncomputable def qOf (N : ℕ → ℕ) (ℓ : ℕ) : ℕ :=
 /-- The reconstructed absolute degree. -/
 noncomputable def degOf (N : ℕ → ℕ) (ℓ : ℕ) : ℕ :=
   sInf {D | ∃ C, ∀ k, N (ℓ ^ k) ≤ C * ℓ ^ (k * (D + 1))}
+
+/-- The reconstructed number of `ℓ^k`-th roots of unity, `N(ℓ^k) / ℓ^{k(D+1)}`. -/
+noncomputable def muOf (N : ℕ → ℕ) (ℓ D k : ℕ) : ℕ := N (ℓ ^ k) / ℓ ^ (k * (D + 1))
 
 /-- The reconstructed residue degree `f = log_p q`. -/
 noncomputable def fOf (N : ℕ → ℕ) : ℕ := Nat.log (primeOf N) (qOf N (primeOf N))
@@ -226,6 +233,12 @@ theorem eOf_eq (hN : IsKummerIndexFun p K N) : eOf N = e p ℚ_[p] K := by
   rw [eOf, primeOf_eq hN, degOf_eq hN, fOf_eq hN, ← e_mul_f (p := p) (K := ℚ_[p]) (L := K),
     Nat.mul_div_cancel _ f_pos]
 
+/-- **The number of `p^k`-th roots of unity is recovered.** -/
+theorem muOf_eq (hN : IsKummerIndexFun p K N) (k : ℕ) :
+    muOf N p (Module.finrank ℚ_[p] K) k = muCard p K k := by
+  rw [muOf, hN _ (pow_pos hp.out.pos k), powIndex_p_pow,
+    Nat.mul_div_cancel _ (pow_pos hp.out.pos _)]
+
 end Correctness
 
 /-! ### The group-theoretic algorithms -/
@@ -256,6 +269,10 @@ noncomputable def recF (G : Type*) [Group G] [TopologicalSpace G] : ℕ := fOf (
 /-- The reconstructed absolute ramification index. -/
 noncomputable def recE (G : Type*) [Group G] [TopologicalSpace G] : ℕ := eOf (charCountFun G)
 
+/-- The reconstructed number of `p^k`-th roots of unity. -/
+noncomputable def recMu (G : Type*) [Group G] [TopologicalSpace G] (k : ℕ) : ℕ :=
+  muOf (charCountFun G) (recPrime G) (recDeg G) k
+
 theorem charCountFun_congr {G H : Type*} [Group G] [TopologicalSpace G] [Group H]
     [TopologicalSpace H] (φ : G ≃ₜ* H) : charCountFun G = charCountFun H :=
   funext fun n => charCount_congr φ n
@@ -274,6 +291,9 @@ theorem isGroupTheoretic_recF : IsGroupTheoretic.{u} fun G _ _ => recF G :=
 
 theorem isGroupTheoretic_recE : IsGroupTheoretic.{u} fun G _ _ => recE G :=
   fun _ _ _ _ _ _ φ => by simp only [recE, charCountFun_congr φ]
+
+theorem isGroupTheoretic_recMu (k : ℕ) : IsGroupTheoretic.{u} fun G _ _ => recMu G k :=
+  fun _ _ _ _ _ _ φ => by simp only [recMu, recDeg, recPrime, charCountFun_congr φ]
 
 variable {p : ℕ} [hp : Fact p.Prime]
 variable {K : Type*} [Field K] [Algebra ℚ_[p] K] [FiniteDimensional ℚ_[p] K]
@@ -308,6 +328,11 @@ variable (p) in
 /-- `recE (G_K) = e`. -/
 theorem recE_gal : recE (Ω ≃ₐ[K] Ω) = e p ℚ_[p] K := eOf_eq (isKummerIndexFun_gal p K Ω)
 
+variable (p) in
+/-- `recMu (G_K) k = #μ_{p^k}(K)`. -/
+theorem recMu_gal (k : ℕ) : recMu (Ω ≃ₐ[K] Ω) k = muCard p K k := by
+  rw [recMu, recPrime_gal p, recDeg_gal p]; exact muOf_eq (isKummerIndexFun_gal p K Ω) k
+
 variable {p' : ℕ} [Fact p'.Prime]
 variable {K' : Type*} [Field K'] [Algebra ℚ_[p'] K'] [FiniteDimensional ℚ_[p'] K']
 variable {Ω' : Type*} [Field Ω'] [Algebra K' Ω'] [Algebra ℚ_[p'] Ω'] [IsScalarTower ℚ_[p'] K' Ω']
@@ -331,6 +356,12 @@ theorem galEquiv_invariants (φ : (Ω ≃ₐ[K] Ω) ≃ₜ* (Ω' ≃ₐ[K'] Ω')
       recPrime, recPrime, h]
   · rw [← recF_gal p (K := K) (Ω := Ω), ← recF_gal p' (K := K') (Ω := Ω'), recF, recF, h]
   · rw [← recE_gal p (K := K) (Ω := Ω), ← recE_gal p' (K := K') (Ω := Ω'), recE, recE, h]
+
+/-- The numbers of `p`-power roots of unity agree (`p = p'` by `galEquiv_invariants`). -/
+theorem galEquiv_muCard (φ : (Ω ≃ₐ[K] Ω) ≃ₜ* (Ω' ≃ₐ[K'] Ω')) (k : ℕ) :
+    muCard p K k = muCard p' K' k := by
+  rw [← recMu_gal p (K := K) (Ω := Ω), ← recMu_gal p' (K := K') (Ω := Ω'), recMu, recMu,
+    recDeg, recDeg, recPrime, recPrime, charCountFun_congr φ]
 
 end GroupTheoretic
 

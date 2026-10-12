@@ -42,15 +42,21 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
     min(e, m(k))` (`(1 + 𝔪^j)^p ⊆ 1 + 𝔪^{j + min(e, j)}`), `e(k+1) ≤ m(k) + e²`;
   * auxiliary: `v_natCast_p_eq` (`v_K(p) = e`), `q_eq_p_pow_f`, `q_pow_e` (`q^e = p^{[K:ℚ_p]}`),
     the filtration `unitFilt` with `q^m ≤ [𝒪ˣ : U^(m)] · q` and `[𝒪ˣ : U^(m)] ≤ q^m`.
+* `Local/PowerIndex.lean`: exact `p`-power indices — `v_one_add_pow_p_sub_one`
+  (`v((1+x)^p − 1) = v(x) + e` for `v(x) ≥ e + 1`), `eq_one_of_pow_p_pow_eq_one` (`U^(e+1)` has
+  no `p`-torsion), `unitFilt_le_map_pow` (`(U^(e+1))^{p^k} = U^(e+1+ke)`), `index_unitFilt_eq`
+  (`[𝒪ˣ : U^(m)] = q^m − q^{m−1}`), **`powIndex_p_pow`**:
+  `[Kˣ : (Kˣ)^{p^k}] = #μ_{p^k}(K) · p^{k([K:ℚ_p]+1)}` (`muCard p K k = #μ_{p^k}(K)`).
 * `Local/CharCount.lean`: `card_locChar`, `charCount_gal` — `#Hom_cont(G_K, ℤ/n) = N(n)` (left
   and right non-degeneracy of the local duality pairing of P9; `card_monoidHom_zmod_le`).
 * `Local/Invariants.lean`: the algorithms `primeOf`, `qOf`, `degOf`, `fOf`, `eOf` on functions
   `ℕ → ℕ` and their correctness (`primeOf_eq`, ...); the group-theoretic algorithms `recPrime`,
   `recQ`, `recDeg`, `recF`, `recE` (`isGroupTheoretic_*`, `*_gal`); and
   **`galEquiv_invariants`**: `Gal(Ω/K) ≃ₜ* Gal(Ω'/K')` (`K/ℚ_p`, `K'/ℚ_{p'}`) forces `p = p'`,
-  `[K : ℚ_p] = [K' : ℚ_{p'}]`, `q = q'`, `f = f'`, `e = e'`.
+  `[K : ℚ_p] = [K' : ℚ_{p'}]`, `q = q'`, `f = f'`, `e = e'`; `recMu`, `galEquiv_muCard`: the
+  numbers `#μ_{p^k}(K)` (hence `p^m = #μ_{p^∞}(K)`) are group-theoretic.
 * (planned) the inertia subgroup and the Frobenius element ([AbsAnab], 1.2.1 (ii), (iv)):
-  `I_K = ⋂ {H open : f(H) = [G_K : H] · f(G_K)}`; the order `p^m` of `μ_{p^∞}(K)`.
+  `I_K = ⋂ {H open : f(H) = [G_K : H] · f(G_K)}`.
 
 ### M2 — cyclotomic rigidity ([AbsTopIII], Prop. 3.2 (i), (ii); Cor. 1.10 (i))
 * MLF-Galois pairs `G ↷ M`, their cyclotome `μ_Ẑ(M) = Hom(ℚ/ℤ, M)` and Kummer maps; the
@@ -63,8 +69,9 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
 
 ### M4 — cuspidalisation skeleta ([AbsTopI], Lemma 4.5; [AbsTopII], Cor. 3.3;
 [AbsTopIII], Thm. 1.9, Cor. 1.10)
-* Out-semidirect products: an extension `1 → N → E → Q → 1` with center-free `N` is recovered
-  from the outer action `Q → Out(N)` ([AbsTopII], §0; Cor. 3.3 (b)).
+* `Cusp/OutSemidirect.lean` (done): `inn`, `Out`, `outSemidirect ρ = Aut(N) ×_{Out(N)} Q`,
+  `outerAction`, **`extensionEquivOutSemidirect`**: an extension `1 → H → E → E/H → 1` with
+  center-free `H` is recovered from its outer action ([AbsTopII], §0; Cor. 3.3 (b)).
 * The statements of elliptic and Belyi cuspidalisation with the deep inputs (Grothendieck
   conjecture, Belyi maps, the characterisation of cuspidal decomposition groups) as named
   hypotheses, and the formal parts of the algorithms proved from them.
