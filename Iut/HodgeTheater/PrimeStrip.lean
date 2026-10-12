@@ -375,18 +375,23 @@ noncomputable def dCircModel : Kind.TGrp.{u} := ⟨D.orb.CKu.genuinePi1⟩
 noncomputable def dCircPmModel : Kind.TGrp.{u} := ⟨D.orb.XKu.genuinePi1⟩
 
 /-- An isomorph of `D^⊚` (recorded by its fundamental group). -/
-def DCirc : Type (u + 1) := {G : Kind.TGrp.{u} // Nonempty (G.carrier ≃ₜ* (dCircModel D).carrier)}
+structure DCirc where
+  /-- The fundamental group. -/
+  G : Kind.TGrp.{u}
+  iso_model : Nonempty (G.carrier ≃ₜ* (dCircModel D).carrier)
 
 /-- An isomorph of `D^⊚±` (recorded by its fundamental group). -/
-def DCircPm : Type (u + 1) :=
-  {G : Kind.TGrp.{u} // Nonempty (G.carrier ≃ₜ* (dCircPmModel D).carrier)}
+structure DCircPm where
+  /-- The fundamental group. -/
+  G : Kind.TGrp.{u}
+  iso_model : Nonempty (G.carrier ≃ₜ* (dCircPmModel D).carrier)
 
 /-- The tautological `D^⊚`. -/
-noncomputable def DCirc.tautological : (DCirc D) := ⟨(dCircModel D), ⟨ContinuousMulEquiv.refl _⟩⟩
+noncomputable def DCirc.tautological : DCirc D := ⟨dCircModel D, ⟨ContinuousMulEquiv.refl _⟩⟩
 
 /-- The tautological `D^⊚±`. -/
-noncomputable def DCircPm.tautological : (DCircPm D) :=
-  ⟨(dCircPmModel D), ⟨ContinuousMulEquiv.refl _⟩⟩
+noncomputable def DCircPm.tautological : DCircPm D :=
+  ⟨dCircPmModel D, ⟨ContinuousMulEquiv.refl _⟩⟩
 
 end Models
 

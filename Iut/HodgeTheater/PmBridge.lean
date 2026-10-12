@@ -44,6 +44,8 @@ namespace HodgeTheater
 
 open PmTorsor
 
+universe u
+
 variable {ℓ : ℕ} [OddPrime ℓ]
 
 /-! ### Signs of isomorphisms -/
@@ -78,9 +80,9 @@ lemma Iso.eq_of_zero {f g : Iso A B} (hf : f.shift = 0) (hg : g.shift = 0)
 end PmTorsor
 
 /-- The `±`-label classes of a `D`-prime-strip (label layer, IUT I, Definition 6.1(iii)). -/
-abbrev LStrip (ℓ : ℕ) (V : Type) : Type 1 := V → PmGroup ℓ
+abbrev LStrip (ℓ : ℕ) (V : Type u) : Type (max u 1) := V → PmGroup ℓ
 
-variable {V : Type}
+variable {V : Type u}
 
 /-! ### `D-Θ^±`-bridges -/
 
