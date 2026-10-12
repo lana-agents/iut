@@ -215,6 +215,48 @@ Input: `TateObject.X₀ T` of `tempered-fundamental-groups` for Tate data `T` ov
   `χ = TateObject.character`; `tateThetaData_isFrobenioid`; `tateY` (its subgroup is `Π^tp_Y`
   of (6a)).
 
+### (11) The model étale theta class in `H¹` (`ThetaClass.lean`) — done (model)
+
+* (11a) On the discrete model `(Π^tp_Ÿ)^Θ = Δ_Θ × 2·(Δ_Y)^ell` acting trivially on `μ`, the
+  cocycle `thetaCocycle red ρ : (c, a') ↦ red c + ρ a'` and its class `thetaClass red ρ` in
+  `ContH1` (`continuous-kummer-theory`).
+* (11b) `thetaSection_eq`: the theta section of the model environment (8d) is the tautological
+  section minus the class; `thetaClass_eq_one_iff` (trivial iff `red = ρ = 0`),
+  `thetaClass_ne_one`; `thetaClass_restrict` (restriction to `Δ_Θ` is `red`) and
+  `model_isCyc_eq_neg_thetaClass` (the cyclotome isomorphism of (8) is minus that restriction).
+* (11c) The `Gal(Y/X)`-conjugates (geometric shadow of [EtTh], Prop. 1.5(iii)): `conjK`,
+  `conj_sub_thetaCocycle` (`η ∘ γ_k − η = 2kl·red(a')`), `gammaK_thetaSection`.
+
+### (12) The arithmetic model and Prop. 2.14(i) (`ArithEnv.lean`) — done (model)
+
+* (12a) `Arith = (μ × Δ_Θ × (Δ_Y)^ell) ⋊ G` with `G` acting through a cyclotomic character
+  `χ : G → ℤˣ` (`cycAct`); the automorphisms `arithAut k κ` (`γ_k` composed with the Kummer twist
+  by a Kummer cocycle `κ : G → μ`, the `K^×`-part of `D`), which are the identity on `G` and `γ_k`
+  on the geometric subgroup (`arithAut_right`, `arithAut_inl`).
+* (12b) **[EtTh], Prop. 2.14(i)** (`prop214`, `prop214_inter`): for center-free `G` (the input of
+  Mochizuki's proof: `G_K` is center-free), the `γ(β)·β⁻¹` with `β` geometric and `γ ∈ Aut(Π)`
+  whose class in `Out(Π)` lies in `D` and which is the identity on `G` form exactly the
+  tautological image of `l·Δ_Θ`.
+
+### (13) Automorphisms of the mod `N` models, discrete rigidity — done (model)
+
+Files `ModelAut.lean`, `ModelTower.lean`.
+
+* (13a) The groupoid of environments (`Env.Iso.refl/trans/symm/ext`, the group `Env.Iso E E`) and
+  the mod `N` model `modelN N l` (`Δ_Θ = (Δ_Y)^ell = ℤ`, `μ = ℤ/N`, `ρ = 0`).
+* (13b) **The analogue of [EtTh], Cor. 2.18(iv)**: `toQuot : Aut(modelN) →* Perm(ℤ²)` (the action on
+  `Π/μ`), with image the upper triangular automorphisms with diagonal `±1`
+  (`toQuot_mem_upper`, `range_toQuot`, `toUpper_surjective`, the lifts `liftAut`), **finite kernel**
+  (`finite_ker`) and, for `l` a unit mod `N`, **kernel `≅ Hom(ℤ/2, ℤ/N)`** (`kerEquiv`, the
+  automorphisms `(m, c, a) ↦ (m + a·x, c, a)`, `2x = 0`).
+* (13c) Reduction of environments `Env.red e` (quotient by `e·μ`, the induced mod `e` environment),
+  functorial (`Env.redIso`, `redFunctor` on `EnvCat`); `redModel`: `(modelN N' l)_N ≅ modelN N l`
+  for `N ∣ N'`; `toQuot_redAut`: compatible with `toQuot`.
+* (13d) **[EtTh], Cor. 2.19(ii), for the geometric theta quotient** (`LevelChain.discreteRigidity`):
+  for a chain `N₀ ∣ N₁ ∣ ⋯` and `l ≠ 0`, every projective system levelwise isomorphic to the models
+  is isomorphic to the natural projective system — `RigidSystems.Tower.discreteRigidity` (9c)
+  instantiated with (13b), (13c).
+
 ## Scope decisions
 
 Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.
@@ -277,7 +319,8 @@ Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.
 * **Discrete rigidity for mono-theta environments** (Cor. 2.19(ii)) for the actual
   environments: (9c) reduces it to Cor. 2.18(iv) (`Aut^μ(M_N) ↠ Aut(Π_X)` with kernel
   `Hom(ℤ/2, ℤ/N)`), which needs Cor. 2.18(iii) (`Π_X = Aut(Π_Y) ×_{Out} Im(D)`, temp-slimness)
-  and the cyclotomic rigidity above.
+  and the cyclotomic rigidity above. For the abelian models of the geometric theta quotient the
+  analogue of Cor. 2.18(iv) and the resulting Cor. 2.19(ii) are proved in (13).
 * **Rigidity of scalar multiples** (Thm. 1.10, Cor. 2.19(iii)): the standard-type classes are
   characterized group-theoretically by their restrictions to the decomposition groups of the
   torsion points labelled `0`. Needs the tempered anabelian rigidity Thm. 1.6 (`Π^tp_X`
