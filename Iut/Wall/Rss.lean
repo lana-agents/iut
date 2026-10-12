@@ -27,11 +27,11 @@ concrete large volume container of the Corollary 3.12 variant (`Iut/Concrete/The
   to the class of the `q`-pilot region `{q_v O_v}`, whose log-volume is `−|log(q)|`
   (`etaQ`, `logVol_etaQ_pilot : log-vol(η_q(φ_C)) = (qPilot D).lhs`).
 
-**Modelling choice (documented).** The region `{q_v O_v}` "embedded diagonally" into the
-container is not constructed: its class in `R_ss` is taken to be the class of log-volume
-`(qPilot D).lhs = −|log(q)|`. That the actual region has this log-volume is IUT III,
-Proposition 3.9(iii), with the product formula (roadmap package P21; uncontested). So the
-lemma `logVol_etaQ_pilot` is a normalization, not a theorem about a region.
+**Modelling choice (documented).** Here `η_q` is defined by sending the pilot to the class of
+log-volume `(qPilot D).lhs = −|log(q)|`, so the lemma `logVol_etaQ_pilot` is a normalization.
+The region `{q_v O_v}` itself is constructed in `Iut/Wall/QPilotRegion.lean` (Milestone 2,
+roadmap package P21): `qRegion D` has log-volume `−|log(q)|` (`logVol_qRegion`), and `η_q` sends
+the pilot to its class (`etaQ_pilot_eq_mk`, `etaQReg_eq_etaQ`).
 
 ## The comparison with the right-hand side
 

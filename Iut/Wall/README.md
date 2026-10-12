@@ -1,4 +1,4 @@
-# The wall, Milestone 1 (`Iut/Wall/`)
+# The wall, Milestones 1–2 (`Iut/Wall/`)
 
 A Lean formulation of **the wall** of the LANA interim report (July 2026; cited **[LANA]**;
 PDF page numbers equal printed page numbers): the equation **(9-1)**
@@ -28,6 +28,10 @@ wall is a `Prop` (`Iut.Wall`) that enters only as a hypothesis. Every theorem be
 * `Checks.lean` (M1d (i), (ii)): shadow lemma, trivial instance, LGP law (T4).
 * `IdentifiedCopies.lean` (M1d (iii)): `lgp`, `idAlg`, `logVol_lgp_integral`,
   `wall_idAlg_iff`.
+* `QPilotRegion.lean` (M2 (a), P21): `pow`, `qRegion`, `logVol_qRegion`, `etaQReg_eq_etaQ`,
+  `etaQ_pilot_eq_mk`.
+* `Constraints.lean` (M2 (b)): candidate constraints (C1)–(C10) and their status on the
+  identified-copies algorithm.
 
 ## M1a: basic prime strips ([LANA], §4.1, pp. 23–24; §4.2(c), p. 26; §7.1, pp. 37–38)
 
@@ -146,9 +150,10 @@ for it.
    `QPilotData`), not by `V ≅ V_mod`; only the pilot (a sum over the bad places) enters.
 3. **`R_ss`** is the quotient of adelic regions of the concrete container by equal
    log-volume, with its line structure transported along `log-vol` (`rssEquiv`).
-4. **`η_q`**: the region `{q_v O_v}` is not constructed; its class is the class of
-   log-volume `−|log(q)|` (IUT III, Proposition 3.9(iii) with the product formula; roadmap
-   P21). `logVol_etaQ_pilot` is therefore a normalization.
+4. **`η_q`**: in M1 the class of `{q_v O_v}` was the class of log-volume `−|log(q)|` (a
+   normalization, `logVol_etaQ_pilot`). Since M2 the region is constructed (`qRegion`, placed as
+   the theta value for `j = 1` at the label `1` of every capsule) and `η_q` provably sends the
+   pilot to its class (`etaQ_pilot_eq_mk`).
 5. **(Ind1)**: [LANA] has `Ind1 = Aut(G_v)`; the concrete container follows IUT III
    (automorphisms of the procession, i.e. label permutations, `Iut/Concrete/Ind1Invariance.lean`).
    (T3) asks for a *single* label image; this is what yields the variant (IUT IV's reading)
@@ -164,3 +169,73 @@ for it.
    the indeterminacies").
 9. **(T4)** is a strengthening introduced here (justified by [LANA], §9.2, "`M = 1·S` …
    represents `LGP·S`"); it is not a field of `EtaAlg` and nothing in M1c depends on it.
+
+## M2 (a): the `q`-pilot region (P21; `QPilotRegion.lean`)
+
+* `Wall.powElt D e lab`, `Wall.pow D e lab S`: `S` scaled, in capsule `i` at each prime `p` and
+  tuple `c`, by `q_v^{e(i)}` in the tensor factor of the label `lab i` (`v = c(lab i)`, `q_v` the
+  `2ℓ`-th root `D.qroot` of the Tate parameter, `= 1` at good places); unchanged at `∞`.
+  `Wall.lgp_eq_pow`: `LGP·S` is the case `e(i) = (i+1)²`, `lab` = distinguished labels (`rfl`).
+* `Wall.logVol_pow_integral : log-vol(pow D e lab O) = −(avg_i e(i))·|log(q)|` for **every**
+  label placement, from `componentVol_prod_incl_smul_integral` and
+  `InitialThetaData.logQAt_eq_sect` (the same machinery as `logVol_lgp_integral`).
+* **Placement decision.** The `q`-pilot is the theta value for `j = 1`, i.e. the `q`-parameter
+  itself (IUT III, Corollary 3.12; [LANA], §5.2(f), §9.2 "embedded diagonally"):
+  `Wall.qRegion D := pow D 1 labOne O` — in every capsule (diagonal), `q_v·O` in the factor of the
+  label `1` (which every capsule `{0, …, j}` contains), integral at `∞`. In the first capsule it
+  *is* `LGP·O` (`Wall.qRegion_first`, `rfl`). The log-volume does not depend on the label,
+  matching the (Ind1) label permutations.
+* **`Wall.logVol_qRegion : logVol D (qRegion D) = (concreteVariantData D).qPilot.lhs`**
+  (`= −|log(q)|`); `Wall.isAdelic_qRegion`.
+* `Wall.etaQReg D` (`η_q` defined from `qRegion`), `Wall.etaQReg_eq_etaQ`, and
+  **`Wall.etaQ_pilot_eq_mk`**: `(rssEquiv D).symm (etaQ D pilot) = Rss.mk D (qRegion D) _`, so
+  `logVol_etaQ_pilot` is now a theorem about a constructed region
+  (`Wall.logVol_etaQ_pilot_eq_qRegion`). The definition `etaQ` is kept (M1 uses it) and shown
+  equal.
+
+## M2 (b): what excludes `idAlg`? (`Constraints.lean`)
+
+Candidate constraints from IUT III (Theorem 3.11, Remark 3.11.1(iii)–(v), Corollary 3.12
+Step (xi)) and [LANA] (§6.2, Remark 6.2.2, §7.1(b)(c), §8.1–§8.3, Remark 8.2.1, §10.3, §10.5),
+stated as `Prop`s on `EtaAlg D` (never assumed), with their status on the identified-copies
+algorithm. `idAlgOn D σ` is `idAlg` with an arbitrary nonempty type `σ` of identified Hodge
+theaters (`idAlg_eq_idAlgOn : idAlg D = idAlgOn D Unit`); its wall is the Scholze–Stix
+inequality `(s − 1)·|log(q)| ≤ log-vol(VC(I))` for every `σ` (`wall_idAlgOn_iff`).
+
+| | constraint | source | excludes idAlg? | Lean |
+|---|---|---|---|---|
+| C1 | IPL: the output Θ-pilot BPS is linked to the input `q`-pilot BPS by a pilot-preserving BPS isomorphism | IUT III Rem 3.11.1(iii), (xi-b)–(xi-e); [LANA] §8.2, Rem 8.2.1 | **No**: holds for every `EtaAlg` | `EtaAlg.IPL`, `EtaAlg.ipl`, `idAlgOn_ipl` |
+| C2 | SHE, two-sided: the output is a function of the domain HT and of the codomain HT | IUT III Rem 3.11.1(iii); [LANA] §8.2 | **No**: with opaque HTs it is *equivalent* to side-independence, the shape of the collapse | `EtaAlg.SHESides`, `EtaAlg.sheSides_iff`, `idAlgOn_sheSides` |
+| C3 | SHE as in (xi-e): some output has the class `[qRegion D]` in `R_ss` | IUT III Cor 3.12 (xi-e), (xi-f); [LANA] §8.3 | **Undecided**: equivalent to the wall; on `idAlg` to the Scholze–Stix inequality | `EtaAlg.SHEq`, `EtaAlg.sheq_iff_wall`, `sheq_idAlg_iff`, `sheq_idAlgOn_iff` |
+| C4 | distinct Hodge theaters (`Nontrivial Side`) | IUT III Thm 3.11 ("distinct" HTs); [LANA] §7.1(b), §8.1 | **Literally yes, the collapse no**: `idAlg` violates it, `idAlgOn σ` (σ nontrivial) satisfies it with the same wall | `EtaAlg.DistinctSides`, `idAlg_not_distinctSides`, `idAlgOn_distinctSides`, `wall_idAlgOn_iff` |
+| C5 | the wall only for Θ-links between distinct sides `h₁ ≠ h₂` | [LANA] §7.1(b) (`†HT → ‡HT`) | **No**: vacuous on `idAlg`; on `idAlgOn σ` (σ nontrivial) the Scholze–Stix inequality; with C4 it still implies the variant | `WallDistinct`, `wallDistinct_idAlg`, `wallDistinct_idAlgOn_iff`, `variant_of_wallDistinct` |
+| C6 | multiradiality: outputs through any two HTs agree up to (Ind3) | IUT III Thm 3.11(i) (étale-picture symmetries); [LANA] §8.1(d) | **No**: satisfied | `EtaAlg.Multiradial`, `idAlgOn_multiradial` |
+| C7 | provenance as side-dependence: the output possibilities depend on the HT used | [LANA] §10.3 | **Yes**, but incompatible with C6 | `EtaAlg.SideDependent`, `EtaAlg.not_sideDependent_of_multiradial`, `idAlgOn_not_sideDependent` |
+| C8 | the input value group influences the output | [LANA] Rem 6.2.2 (the (SHE) reading) | **Yes**, but no `EtaAlg` satisfies it (it contradicts T2) | `EtaAlg.ValDependent`, `EtaAlg.not_valDependent` |
+| C9 | APT: the output is not the image of `S` under one fixed set-theoretic map | IUT III Rem 3.11.1(iv); [LANA] §8.2, §8.3 | **Literally yes, the wall no**: `idAlgOn σ` violates it, but every `EtaAlg` with the identified-copies log-volumes has the Scholze–Stix wall | `EtaAlg.SetTransport`, `EtaAlg.APT`, `idAlgOn_not_apt`, `EtaAlg.wall_iff_ss_of_thetaShift` |
+| C10 | mutually alien ring structures: no ring isomorphism between distinct sides is compatible with a Θ-link | [LANA] §7.1(b)(c), §10.5; IUT III Thm 3.11, (xi-a) | **No**: every `EtaAlg` carries such a structure, since `out` is not coupled to it | `HoloStructure`, `HoloStructure.Alien`, `exists_alien` |
+
+**Outcome.** No candidate that some `EtaAlg` can satisfy excludes the collapse in the sense that
+matters, namely the wall of the identified-copies model (the Scholze–Stix inequality). C1, C2,
+C6 and C10 hold for it, and C3 *is* the wall. C4 and C9 exclude only the literal `idAlg`, not
+algorithms with the same output log-volumes (`wall_idAlgOn_iff`, `wall_iff_ss_of_thetaShift`).
+C7 and C8 exclude it but conflict with C6 and with (T2) respectively. This is a statement about
+the BPS model, not about IUT: the model has one container, one ring structure and one
+log-volume, so the constraints about distinct ring structures (C4, C5, C9, C10) cannot act on
+the output.
+
+**Extra structure needed (input to P15–P20).** For these constraints to bite, the interface
+needs:
+
+* for each Hodge theater `h`, a ring (local fields `K_v^{(h)}`) with its own container `VC_h`
+  and log-volume `μ_h`;
+* Kummer isomorphisms from the coric étale-unit data to the log-shells of each side;
+* outputs through `h₁` as regions of `VC_{h₁}`;
+* the Θ-link transport `VC_{h₁} → VC_{h₂}` as an isomorphism of log-shells that is
+  mono-analytic (additive, topological), not a ring isomorphism;
+* the wall as `μ_{h₂}(transport(out)) = μ_{h₂}(q-pilot region of h₂)`.
+
+The identified-copies model is the case of one container, the identity transport and
+`μ_{h₁} = μ_{h₂}`. In these terms the open question is whether an admissible transport or
+normalization changes the log-volume shift `−s·|log(q)|` of `LGP·O`; C9 shows that only this
+shift matters for the wall.

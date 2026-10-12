@@ -158,7 +158,7 @@ theorem trivialAlg_isTrivial (U : Region D) (hU : IsAdelic D U) (hI : InHullOfIm
   rw [ValBPS.eta_eq_eta_iff]
   exact hvol
 
-/-- **The interface (T1)–(T3) admits a trivial instance iff the variant holds.** -/
+/-- **The interface (T1)–(T3) has a trivial instance iff the variant holds.** -/
 theorem exists_isTrivial_iff :
     (∃ A : EtaAlg D, A.IsTrivial) ↔ Corollary312Variant (concreteVariantData D) := by
   constructor

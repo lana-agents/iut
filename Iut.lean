@@ -197,8 +197,10 @@ import Iut.Tripod.Unramified
 import Iut.Tripod.WildRamIdx
 import Iut.Wall.BPS
 import Iut.Wall.Checks
+import Iut.Wall.Constraints
 import Iut.Wall.EtaAlg
 import Iut.Wall.IdentifiedCopies
 import Iut.Wall.Ind3
 import Iut.Wall.Pilots
+import Iut.Wall.QPilotRegion
 import Iut.Wall.Rss

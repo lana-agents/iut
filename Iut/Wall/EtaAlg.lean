@@ -47,7 +47,7 @@ algorithm is a function `out ι S` (the region `LGP·S` read in the container; [
   concrete container (`IsAdelic`) lying in the holomorphic hull of a **single** (Ind1)-image of
   the concrete theta-pilot region (`InHullOfImage`). [LANA], §6.2(i), puts the possible images
   `LGP·U` in the theta-pilot region itself (`InImage`); asking only for the hull is weaker
-  (`InImage.inHullOfImage`), so `EtaAlg` admits more algorithms and `variant_of_wall` is
+  (`InImage.inHullOfImage`), so `EtaAlg` allows more algorithms and `variant_of_wall` is
   stronger. The single image (rather than the union over (Ind1)) is what makes (9-1) yield
   the variant (IUT IV's reading) and not only the literal reading of Corollary 3.12
   (roadmap v2, §2(b)).
@@ -167,7 +167,7 @@ end Wall
 open Wall in
 /-- **The wall hypothesis (9-1)** ([LANA], §9.2, p. 46; IUT III, proof of Corollary 3.12,
 Step (xi)): for every Θ-link `gl` from the Θ-pilot BPS of `h₁` to the `q`-pilot BPS of `h₂`,
-the η-algorithm, applied to the `q`-pilot BPS of `h₂` through the Θ-pilot BPS of `h₁`, admits a
+the η-algorithm, applied to the `q`-pilot BPS of `h₂` through the Θ-pilot BPS of `h₁`, has a
 choice `ι` and an (Ind3)-choice `S` with `η^anab_{ι,S} = η_q`. A hypothesis, never assumed. -/
 def Wall (D : InitialThetaData.{0}) (A : Wall.EtaAlg D) : Prop :=
   ∀ (h₁ h₂ : A.Side) (_gl : BPS.Iso (A.thetaBPS h₁) (A.qBPS h₂)),
