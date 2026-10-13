@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Reconstruction.Local.Abelianization
+import Iut.Reconstruction.Local.ZHat
 
 /-!
 # The valuation is group-theoretic (roadmap P17, M1g)
@@ -66,28 +67,6 @@ variable {p : ℕ} [hp : Fact p.Prime]
 variable {K : Type*} [Field K] [Algebra ℚ_[p] K] [FiniteDimensional ℚ_[p] K]
 variable {Ω : Type*} [Field Ω] [Algebra K Ω] [Algebra ℚ_[p] Ω] [IsScalarTower ℚ_[p] K Ω]
   [IsAlgClosed Ω] [IsGalois K Ω] [Algebra.IsAlgebraic ℚ_[p] Ω]
-
-/-- `frobUr ^ n = 1` only for `n = 0`. -/
-theorem frobUr_zpow_eq_one_iff (n : ℤ) : frobUr p K Ω ^ n = 1 ↔ n = 0 := by
-  refine ⟨fun h => ?_, fun h => by rw [h, zpow_zero]⟩
-  have h' : frobUr p K Ω ^ n.natAbs = 1 := by
-    rcases Int.natAbs_eq n with hn | hn
-    · rw [hn] at h; exact_mod_cast h
-    · rw [hn, zpow_neg, inv_eq_one] at h; exact_mod_cast h
-  set m := n.natAbs + 1
-  have hm : 0 < m := Nat.succ_pos _
-  have hmu := isUnramified_unramifiedOfDegree p K Ω m
-  have hfrob : frob hmu ^ n.natAbs = 1 := by
-    ext ⟨y, hy⟩
-    have := frobUr_pow_apply hm n.natAbs ⟨y, unramifiedOfDegree_le_maxUnramified p K Ω m hy⟩ hy
-    rw [h', AlgEquiv.one_apply] at this
-    exact this.symm
-  have hdvd := orderOf_dvd_of_pow_eq_one hfrob
-  rw [orderOf_frob, finrank_unramifiedOfDegree p K Ω hm] at hdvd
-  rcases Nat.eq_zero_or_pos n.natAbs with h0 | h0
-  · exact Int.natAbs_eq_zero.1 h0
-  · have := Nat.le_of_dvd h0 hdvd
-    omega
 
 /-- **The Frobenius has infinite order in `G_K / I_K`.** -/
 theorem zpow_arithFrob_eq_one_iff (n : ℤ) : arithFrob p K Ω ^ n = 1 ↔ n = 0 := by

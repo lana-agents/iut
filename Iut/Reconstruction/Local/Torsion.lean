@@ -5,6 +5,7 @@ Authors: LANA Project
 -/
 import Iut.Reconstruction.Local.Abelianization
 import Iut.Reconstruction.Local.Cyclotome
+import Iut.Reconstruction.Local.ZHat
 
 /-!
 # The torsion of `G_K^ab` and Kummer rigidity of the cyclotome (roadmap P17, M2b)
@@ -14,9 +15,9 @@ import Iut.Reconstruction.Local.Cyclotome
 blocks are the torsion subgroups `(H^ab)_tors` of the abelianisations of the open subgroups
 `H = G_L`; here we identify them:
 
-* `Gal(K^ur/K)` is torsion-free (`eq_one_of_pow_eq_one_unr`), so a torsion element of
-  `Gal(K^ab/K)` lies in the inertia subgroup `Gal(K^ab/K^ur) = artin(𝒪ˣ)` and is the image of a
-  root of unity (`exists_artin_eq_of_pow_eq_one`);
+* `Gal(K^ur/K) ≅ Ẑ` is torsion-free (`eq_one_of_pow_eq_one_unr`, `Local/ZHat.lean`), so a
+  torsion element of `Gal(K^ab/K)` lies in the inertia subgroup `Gal(K^ab/K^ur) = artin(𝒪ˣ)`
+  and is the image of a root of unity (`exists_artin_eq_of_pow_eq_one`);
 * hence **`(G_K^ab)_tors ≅ μ(K)`** (`torsAbEquiv`), and for every finite `L/K` inside `Ω`,
   `(G_L^ab)_tors ≅ μ(L)` with `G_L ⊆ G_K` the open subgroup (`torsAbEquivFixing`); the
   torsion subgroup of the abelianisation is evidently group-theoretic (`map_torsion_abEquiv`).
@@ -68,46 +69,6 @@ variable {p : ℕ} [hp : Fact p.Prime]
 variable {K : Type*} [Field K] [Algebra ℚ_[p] K] [FiniteDimensional ℚ_[p] K]
 variable {Ω : Type*} [Field Ω] [Algebra K Ω] [Algebra ℚ_[p] Ω] [IsScalarTower ℚ_[p] K Ω]
   [IsAlgClosed Ω]
-
-/-- **`Gal(K^ur/K) ≅ Ẑ` is torsion-free.** -/
-theorem eq_one_of_pow_eq_one_unr (τ : maxUnramified p K Ω ≃ₐ[K] maxUnramified p K Ω) {n : ℕ}
-    (hn : 0 < n) (h : τ ^ n = 1) : τ = 1 := by
-  ext x
-  obtain ⟨m, hm, hx⟩ := (mem_maxUnramified_iff (p := p)).1 x.2
-  set M := m * n with hMdef
-  have hM : 0 < M := Nat.mul_pos hm hn
-  obtain ⟨k, hk⟩ := exists_eq_frobUr_pow τ hM
-  have hpow : ∀ j : ℕ, ∀ y : maxUnramified p K Ω, (y : Ω) ∈ unramifiedOfDegree p K Ω M →
-      (τ ^ j) y = (frobUr p K Ω ^ (k * j)) y := by
-    intro j
-    induction j with
-    | zero => intro y _; simp
-    | succ j ih =>
-      intro y hy
-      rw [pow_succ', AlgEquiv.mul_apply, ih y hy, hk _ (frobUr_pow_mem hM _ hy),
-        ← AlgEquiv.mul_apply, ← pow_add]
-      congr 2
-      ring
-  have hMu := isUnramified_unramifiedOfDegree p K Ω M
-  have hfrob : frob hMu ^ (k * n) = 1 := by
-    ext ⟨y, hy⟩
-    have h1 := hpow n ⟨y, unramifiedOfDegree_le_maxUnramified p K Ω M hy⟩ hy
-    rw [h, AlgEquiv.one_apply] at h1
-    have h2 := frobUr_pow_apply hM (k * n) ⟨y, unramifiedOfDegree_le_maxUnramified p K Ω M hy⟩ hy
-    rw [← h1] at h2
-    exact h2.symm
-  have hdvd : M ∣ k * n := by
-    have := orderOf_dvd_of_pow_eq_one hfrob
-    rwa [orderOf_frob, finrank_unramifiedOfDegree p K Ω hM] at this
-  have hmk : m ∣ k := Nat.dvd_of_mul_dvd_mul_right hn hdvd
-  have hxM : (x : Ω) ∈ unramifiedOfDegree p K Ω M :=
-    unramifiedOfDegree_le_of_dvd hM.ne' (Dvd.intro n rfl) hx
-  have hmu := isUnramified_unramifiedOfDegree p K Ω m
-  have hfm : frob hmu ^ k = 1 := by
-    rw [← orderOf_dvd_iff_pow_eq_one, orderOf_frob, finrank_unramifiedOfDegree p K Ω hm]
-    exact hmk
-  rw [hk x hxM, frobUr_pow_apply hm k x hx, hfm]
-  rfl
 
 variable [IsGalois K Ω] [Algebra.IsAlgebraic ℚ_[p] Ω]
 

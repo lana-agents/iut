@@ -90,6 +90,40 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   `recInertia G`; group-theoretic: `HasRecVal.map`), `zpow_arithFrob_eq_one_iff` (Frobenius has
   infinite order in `G_K/I_K`), **`hasRecVal_gal_iff`** (`HasRecVal G_K (x ∈ Kˣ) k ↔ k = v(x)`)
   and **`v_galEquiv_multEquiv`**: the induced `Kˣ ≃* K'ˣ` preserves the valuations.
+* `Local/ZHat.lean` (auxiliary): uses `PadicField.galMaxUnramifiedEquiv : Gal(K^ur/K) ≃ₜ* Ẑ`
+  (Frobenius `↦ 1`) of `local-class-field-theory` in place of the earlier finite-level arguments
+  (orders of the Frobenius of the `K_n`): `frobUr_zpow_eq_one_iff` (Frobenius of infinite order),
+  `eq_one_of_pow_eq_one_unr` (`Gal(K^ur/K)` torsion-free, via `zhat_eq_zero_of_nsmul_eq_zero`),
+  `zhat_hom_ext` (continuous homomorphisms out of `Ẑ` agreeing on `1` agree).
+* `Local/UnramifiedZHat.lean` (M1h, [AbsAnab], Prop. 1.2.1 (iv)) — done: **the unramified
+  quotient `G_K/I_K ≅ Ẑ` is group-theoretic.** `recInertia_normal`, `recUnr G = G ⧸ recInertia G`,
+  `unrEquiv ψ : recUnr G ≃ₜ* recUnr G'`; a `Ẑ`-structure `IsUnrZHat G e` is an
+  `e : recUnr G ≃ₜ* Ẑ` sending every Frobenius lift to `1` — unique if a Frobenius lift exists
+  (`IsUnrZHat.eq`) and transported along `≃ₜ*` (`IsUnrZHat.map`, `IsUnrZHat.apply_unrEquiv`);
+  `unrZHat p K Ω : recUnr G_K ≃ₜ* Ẑ` (`σ ↦ σ|_{K^ur}` then `galMaxUnramifiedEquiv`) is one
+  (`isUnrZHat_gal`; `unrZHat_mk_of_isFrobLift`: `φ^k τ ↦ k`), hence **`galEquiv_unrZHat`**:
+  every `Gal(Ω/K) ≃ₜ* Gal(Ω'/K')` induces `G_K/I_K ≃ₜ* G_{K'}/I_{K'}` which is the identity on
+  `Ẑ` (`galEquiv_restrict_maxUnramified`; strengthens `galEquiv_arithFrob`).
+* `Local/AbelianZHat.lean` (M1i, [AbsAnab], Prop. 1.2.1 (iv)–(v); [AbsTopIII], Prop. 5.8 (i))
+  — done: **`G_K^ab ≅ 𝒪_Kˣ × Ẑ` is group-theoretic.** Group-theoretic side: `abContEquiv ψ :
+  G^ab ≃ₜ* G'^ab`, `abUnitsContEquiv ψ : abUnits G ≃ₜ* abUnits G'` and, for `G^ab` profinite and
+  `φ ∈ G`, `recAbHom G φ : abUnits G × Ẑ → G^ab`, `(u, a) ↦ u · [φ]^a` (`Brauer.zhatPow`), natural
+  in `ψ` (`abContEquiv_recAbHom`). Galois side: `abZHatEquiv p K Ω hπ : G_K^ab ≃ₜ* 𝒪_Kˣ × Ẑ`
+  (`galAbEquiv` followed by `PadicField.galAbEquiv` of `local-class-field-theory`), with
+  `x ∈ Kˣ ↦ (xπ^{-v(x)}, v(x))` (`abZHatEquiv_multAbEquiv`), inertia `abUnits G_K = 𝒪ˣ × 1`
+  (`abZHatEquiv_snd_eq_one_iff`), `Ẑ`-component `= unrZHat` (`abZHatEquiv_snd_mk`; Frobenius
+  lifts `↦ 1`, reconstructed valuation `k ↦ k`: `abZHatEquiv_snd_of_isFrobLift`,
+  `abZHatEquiv_snd_of_hasRecVal`); `unitsAbContEquiv : 𝒪_Kˣ ≃ₜ* abUnits G_K`; uniformisers =
+  images of Frobenius lifts in `G_K^ab` (`exists_uniformizer_of_isFrobLift`,
+  `exists_isFrobLift_of_uniformizer`); `abZHatEquiv_recAbHom` and **`recAbEquiv φ hφ :
+  abUnits G_K × Ẑ ≃ₜ* G_K^ab`** for every Frobenius lift `φ` (the group-theoretic map is an
+  isomorphism of topological groups). Transport: **`galEquiv_unitsEquiv ψ : 𝒪_Kˣ ≃ₜ* 𝒪_{K'}ˣ`**
+  (= `galEquiv_multEquiv` on units, so the latter is a homeomorphism on units) and
+  **`abZHatEquiv_abContEquiv`**: with uniformisers `π`, `π' = ψ(π)`, the induced
+  `G_K^ab ≃ₜ* G_{K'}^ab` is `(u, a) ↦ (ψ(u), a)` on `𝒪ˣ × Ẑ` (`abZHatEquiv_snd_abContEquiv`:
+  the `Ẑ`-components agree for any uniformisers). The instance `TotallyDisconnectedSpace G_K^ab`
+  needed for `zhatPow` is an instance argument of `recAbHom`-statements, discharged by
+  `totallyDisconnectedSpace_abGal` (it depends on `p`, so it is not a global instance).
 
 ### M2 — cyclotomic rigidity ([AbsTopIII], Prop. 3.2 (i); Cor. 1.10 (i), (c)) — done
 * `Local/Cyclotome.lean`: every endomorphism of `μ_n` is a power map and `G_K`-equivariant
@@ -97,8 +131,9 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   `β ↦ β^a` (`coeffMap_zpow`), so it multiplies the invariant `H²(G_K, μ_n) ≃ ℤ/n` (P9
   `h2MuEquiv`) by `a` (`h2MuEquiv_coeffMap`); **`cyclotomic_rigidity`**: an endomorphism of
   the cyclotome compatible with `H²(G_K, μ_n) ≃ ℤ/n` is the identity.
-* `Local/Torsion.lean` (M2b) — done: `eq_one_of_pow_eq_one_unr` (`Gal(K^ur/K)` is
-  torsion-free), `exists_artin_eq_of_pow_eq_one`, **`torsAbEquiv : μ(K) ≃* (G_K^ab)_tors`** and
+* `Local/Torsion.lean` (M2b) — done: `eq_one_of_pow_eq_one_unr` (`Gal(K^ur/K) ≅ Ẑ` is
+  torsion-free, `Local/ZHat.lean`), `exists_artin_eq_of_pow_eq_one`,
+  **`torsAbEquiv : μ(K) ≃* (G_K^ab)_tors`** and
   `torsAbEquivFixing : μ(L) ≃* (H^ab)_tors` for the open subgroups `H = Gal(Ω/L) ⊆ G_K`
   (the building blocks of `μ_{ℚ/ℤ}(G) = lim_→ (H^ab)_tors`), `map_torsion_abEquiv`; **Kummer
   rigidity** (monoid form of Prop. 3.2): `kummer_rigidity` — a power automorphism `ζ ↦ ζ^a` of
