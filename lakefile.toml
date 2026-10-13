@@ -89,7 +89,7 @@ rev = "d5719ce4cf0a549b954565052cc0a7fb5c1e8bb7"
 [[require]]
 name = "local-class-field-theory"
 git = "https://github.com/lana-agents/local-class-field-theory"
-rev = "7a9b9362bc53a395b679f44a3dd5f81e98d674a4"
+rev = "038687127894ebf294e548a626aafea703a3c72c"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
