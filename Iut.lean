@@ -189,6 +189,7 @@ import Iut.LogLink.Split
 import Iut.LogLink.StripKummer
 import Iut.LogLink.Thm311
 import Iut.LogLink.Thm311LGP
+import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
 import Iut.Reconstruction.Cusp.Belyi
 import Iut.Reconstruction.Cusp.Elliptic

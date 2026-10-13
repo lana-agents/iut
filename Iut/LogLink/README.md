@@ -3,8 +3,8 @@
 A Lean formulation of IUT III, §1 (Definition 1.1, Propositions 1.2, 1.3, Definition 1.4,
 Theorem 1.5) and of the parts of §3 that the wall needs (Propositions 3.4(ii), 3.5, 3.10(ii), the
 LGP-monoids, the log-Kummer correspondence and (Ind3), also at the archimedean places; Theorem
-3.11 as a statement, including (ii)(b), (c)), on top of P15–P19, and the connection of Theorem
-3.11 to the wall (`Iut/Wall/`).
+3.11 as a statement, including (ii)(b), (c) and (iii)(a)–(d), and Theorem 1.5(v)), on top of
+P15–P19, and the connection of Theorem 3.11 to the wall (`Iut/Wall/`).
 
 Inputs: the `p`-adic logarithm `PadicLogVolume.padicLog` and the log-shell `Iut.logShell`
 (`Iut/Concrete/LocalConstruct/LocalLogShell.lean`, `LogShell.lean`: `map_padicLog`,
@@ -89,6 +89,7 @@ the modelling inputs listed below.
 | (9) Archimedean log-links | `Arch.lean` | `norm_ringEquiv`, `image_closedBall`, `norm_log_le_pi`, **`log_mul_sub_mem`** (homomorphism up to `2πiℤ`), `natCast_mul_log_root` (`μ_N` ↦ deck group), `exp_neg_log`, `exp_conj_log`, `neg_conj_mem_closedBall` ((Ind2) at `V^arc`); `ArchLogLink` (Def 1.1(ii)), `toFun_mem_closedBall`, `exp_symm_toFun`, `not_ringHom_eq_toFun`; `ArchColumn`, `iterDom`, `itF`, `back`, `itF_mem_closedBall`, `back_itF`, **`exists_surj`**, **`upperSemiCompat`** (Prop 3.5(ii)(b)), `logKummer`, `logKummer_subset`, `logKummer_shift`; packets: `archAbs_le_pi_of_mem`, **`tprod_mem_archLogShell`**, `tprod_log_mem_archLogShell` | done |
 | (10) Number fields; Prop 3.10(ii), Thm 3.11(ii)(c) | `Global.lean` | `isIntegral_of_forall_finitePlace`, **`nonInterference`** (`K^× ∩ ∏_v Ψ_log = μ_K`), `nonInterference_set`, **`divisor_trivial_iff`** (Prop 3.10(iii)), `padicLog_algebraMap_root`, `natCast_mul_log_root_embedding`, **`globalLogKummer`**; `embFin`, `norm_embFin_le_one_iff`, `sectInf_apply`, `nonInterference_sect`, **`fmodLogKummer`**, `LogThetaLattice.globalLogKummer` | done |
 | (11) Theorem 3.11 with LGP-monoids | `Thm311LGP.lean` | `isBadK_sectFin`, `isStrictGen_gaussGen`; `LGPLattice` (Def 3.8(iii)), `lgpCol`, `LGPLattice.ofData`; **`Thm311LGP`** (`base`, `splitCoric`, `splitCompat`, `splitDeg`, `globalCompat`, `modKernel`, `arcUpperSemi`, `arcSurj`), **`thm311LGP_model`**; **`xi_iff_ss_lgp`**, `classicalABC_of_thm311LGP`, **`answerLGP`** | done |
+| (12) Theorem 3.11(iii), Theorem 1.5(v) | `Thm311Rest.lean` | `fmuConj`, `fmuConj_trans`, `fmuConj_comp`; `BiCoricKummer` (`cor`, `kum`, `env`, `envIso`; `ofLattice`, `horizCor`, **`horizCor_bijective`** (iii)(a), `kum_comm`, `horizEnv`, **`horizEnv_eq`** (iii)(b), `vertCor`, **`biCoric_square`** (Thm 1.5(iii))); `envIsoRefl`, `MonoThetaKummer` (`const`, `horizMap`, `vertMap`, **`isCyc_horizMap`**, **`isCyc_horizMap_aut`** (iii)(c), `isCyc_vertMap`, **`isCyc_of_rigid`**); `thetaLink_congr_bijective`, `labels_realized`; `fmodUnit`, `fmodOxMu`, **`fmodOxMu_eq_one`** (iii)(d); `rlf_unique`, `rlf_cocycle`, `RposOrbit`, `mem_rposOrbit_iff`, **`rposOrbit_compat`**, `rlfData`, **`Thm15v`**, **`thm15v_model`**; **`Thm311iii`**, **`thm311iii_model`**, **`thm311_full_model`** | done |
 
 All theorems use only `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -288,6 +289,59 @@ statement about the model, conditional on its scope decisions; it neither proves
   the same shape (inclusion into a log-shell, surjection) as the non-archimedean one, already
   absorbed by the `∃ S` of the wall.
 
+### (7) Theorem 3.11(iii) and Theorem 1.5(v) (`Thm311Rest.lean`)
+
+IUT III's Theorem 3.11(iii) states compatibilities of the Kummer isomorphisms with the horizontal
+arrows: (a) for the bi-coric `F^{⊢×μ}`-prime-strips `F^{⊢×μ}_△(n,◦D^⊢_△)` of Theorem 1.5(iii);
+(b) for the `F^{⊢×μ}`-prime-strips of the mono-theta environments; (c) for the data `n,◦R` built
+from the mono-theta environments (splitting monoids, cyclotomic rigidity, theta values); (d) for
+the `κ`-coric data of `F_mod`; in (c), (d) "in the sense that these constructions are
+stabilized/equivariant/functorial with respect to arbitrary automorphisms of the domain and
+codomain of these horizontal arrows". Theorem 1.5(v) states that the poly-isomorphisms of
+`D^⊢`-prime-strips induce *an* isomorphism of the collections `(D^⊩, Prime(D^⊩) ≅ V, {ρ_v})`,
+compatible with the `ℝ_{>0}`-orbits of the identifications `n,mC^⊩_△ ≅ D^⊩`. (These are the
+statements in the IUT III text; Theorem 1.5(v) is about the global realified Frobenioids, the
+log-volume compatibility being Proposition 3.9(iv), `Thm311.volCompat`.)
+
+* **(a), (b), Theorem 1.5(iii).** With coric strips and Kummer isomorphisms as data
+  (`BiCoricKummer`; every lattice carries such data, `ofLattice`), conjugation by the Kummer
+  isomorphisms is a bijection from the Θ-links `(n, m) → (n + 1, m)` onto the full
+  poly-isomorphism of the coric strips (`horizCor_bijective`), the Kummer square commutes
+  (`kum_comm`), the same holds relative to the natural isomorphisms `F^{⊢×μ}_△ ≅ F^{⊢×μ}_env`
+  (`horizEnv_eq`), and Θ-links of different rows inducing the same coric isomorphism commute with
+  the vertical isomorphisms (`biCoric_square`).
+* **(c).** With P16's abelian mono-theta environments (`EtaleTheta.Env`, whose cyclotomic
+  rigidity algorithm is functorial, `Env.Iso.isCyc_iff`) as data (`MonoThetaKummer`), the
+  transport along a horizontal arrow (Kummer isomorphism, permutation symmetry of the
+  étale-picture, inverse Kummer isomorphism) carries the cyclotomic rigidity isomorphism of
+  `n,mHT` onto that of `n+1,mHT`, also after composing with arbitrary automorphisms of domain and
+  codomain (`isCyc_horizMap_aut`); for a rigidified étale-like environment the output at every
+  vertex is the natural `l·c ↦ −red(l·c)`, independent of the Kummer class `ρ` of the coordinate
+  (`isCyc_of_rigid`). The theta values are fixed by the Kummer isomorphisms of an LGP-lattice
+  (`LGPLattice.kum_gen`).
+* **(c), (d), stabilization.** The Θ-links are permuted by arbitrary automorphisms of domain and
+  codomain theaters (`thetaLink_congr_bijective`), and every automorphism of the étale-like
+  `D-Θ^{±ell}NF`-Hodge theater is realized (`labels_realized`).
+* **(d).** An element of `F_mod^×` integral at every place of `V` maps to `1` in `O^{×μ}(K_v)` at
+  every `v ∈ V^non` (`fmodOxMu_eq_one`, from Proposition 3.10(ii)): the unit portions, the only
+  data the horizontal arrows transport, do not see the global units of `F_mod`.
+* **Theorem 1.5(v).** Value-group BPSs with equal product formulas have exactly one isomorphism
+  (`rlf_unique`, a cocycle `rlf_cocycle`): the induced isomorphism of collections does not depend
+  on the member of the poly-isomorphism. The `ℝ_{>0}`-orbits are the positive multiples of it
+  (`mem_rposOrbit_iff`) and the two routes `C_a → D_b` differ by a positive scalar
+  (`rposOrbit_compat`); the Θ-links act on value groups by the positive scaling `1/s` in degree
+  coordinates and on the global realified Frobenioid exactly the scaling `1/s` carries the
+  Θ-pilot object to the `q`-pilot object (`Thm15v.horizScale`, `frobScale`).
+* **All of Theorem 3.11 holds in the model** (`thm311_full_model`: `Thm311LGP`, `Thm311iii`,
+  `Thm15v`), and Step (xi) is still `SSIneq D`: these parts do not touch the multi-container
+  model.
+* **Not formalised.** The coric strips, environment strips and mono-theta environments are data,
+  not constructed from the `D^⊢`-prime-strips or tempered Frobenioids of the theaters; the
+  environments are the abelian ones (geometric theta quotient), without projective systems and
+  evaluation maps; the `κ`-coric functions, `π_1^{κ-sol}(D^⊛)` and the cyclotomic rigidity of
+  IUT I, Example 5.1(v); `D^⊩(D^⊢)` itself (modelled by value-group BPSs indexed by the places of
+  `F`, with `ρ_v` the local pilots).
+
 ## Simplifications (documented)
 
 * At `v ∈ V^arc` (scope decision 6): only the log-links, the log-shell (closed disc of radius
@@ -308,8 +362,8 @@ statement about the model, conditional on its scope decisions; it neither proves
   still P18's `LGP·S` (Theorem 3.11(i)(b) in the model), not built from the LGP-monoids.
 * Thm 3.11(ii)(c): the number fields and the divisor maps of the `F^⊛_MOD`-Frobenioids, not the
   Frobenioids; the `F^⊛_mod`-Frobenioids and their failure of log-link compatibility (Remark
-  3.10.1) are not formalised. Thm 3.11(iii)(b)–(d) (mono-theta environments) is not expressed by
-  the model objects.
+  3.10.1) are not formalised. Thm 3.11(iii)(b)–(d) and Thm 1.5(v) (`Thm311Rest.lean`) take the
+  coric strips, mono-theta environments and Kummer isomorphisms as data (see answer (7)).
 
 ## What remains
 
@@ -321,9 +375,13 @@ statement about the model, conditional on its scope decisions; it neither proves
   log-volumes, the derivation of the radial normalization of the Kummer identifications and
   reading the archimedean Kummer data off the strips.
 * The Frobenioids of Proposition 3.7 (`F^⊛_MOD`, `F^⊛_mod`, the global realified LGP- and
-  lgp-Frobenioids) and of Theorem 1.5(v), beyond the number fields and divisor maps of
-  `Global.lean`; the derivation of `LGPLattice.kum_gen` from the Kummer theory of the theta
-  values (P16).
+  lgp-Frobenioids) and the Frobenioid `D^⊩(D^⊢)` of Theorem 1.5(v) (modelled by value-group BPSs
+  in `Thm311Rest.lean`), beyond the number fields and divisor maps of `Global.lean`; the
+  derivation of `LGPLattice.kum_gen` from the Kummer theory of the theta values (P16).
+* For Theorem 3.11(iii)(b)–(d): constructing the coric strips, the environment strips and the
+  mono-theta environments (with their projective systems and evaluation maps) from the
+  `D^⊢`-prime-strips and the tempered Frobenioids of the theaters, instead of taking them as data
+  of `BiCoricKummer` / `MonoThetaKummer`; the `κ`-coric data of `F_mod` (IUT I, Example 5.1(v)).
 * An η-algorithm whose output is not `LGP` acting on an (Ind3)-choice, or a Kummer identification
   that is not unit-induced, with an IUT source — the only routes, in this model, to a wall
   different from `SSIneq D` (P21–P22).
