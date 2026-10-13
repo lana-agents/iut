@@ -287,3 +287,4 @@ import Iut.Wall.QPilotRegion
 import Iut.Wall.Rss
 import Iut.Wall.Scaling
 import Iut.WallEquiv.Basic
+import Iut.WallEquiv.Forms

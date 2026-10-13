@@ -3,7 +3,7 @@
 The *wall* is the step of IUT III from Theorem 3.11 to Corollary 3.12 that the LANA report could
 not reconstruct ([LANA], §9.2). This directory collects its formulations — in the sources and in
 this repository — and the equivalences between them that hold in the models built here
-(`Basic.lean`). Nothing here proves or refutes any formulation: the Scholze–Stix inequality
+(`Basic.lean`, `Forms.lean`). Nothing here proves or refutes any formulation: the Scholze–Stix inequality
 `SSIneq D` and its negation are both open in the repository.
 
 Notation: `D` initial Θ-data, `s = sFactor ℓ*` (`s > 1`, `one_lt_wallS`), `|log q|` the `q`-pilot
@@ -29,6 +29,10 @@ P20 with unit-induced Kummer data (`LatticeKummer`, `LGPLattice`).
 | 10 | **multi-container walls** `Wall3`, `WallOn L` | wall milestone M3 | `MultiContainer.Wall3`, `WallOn` | ⇔ 1 for `idModel`, `theaterModel`: `wall3_idModel_iff`, `wall3_theaterModel_iff`; in general `WallOn L ↔ ∀ L h₁ h₂, (s − 1)·\|log q\| − distortion ≤ log-vol(VC(I))` (`wallOn_iff_of_thetaShift`) | models with the identified-copies law |
 | 11 | **`R_ss` form**: the classes of the transported output and of the `q`-pilot region agree | [LANA] §9.2 | `MultiContainer.wallOn_iff_rss` | ⇔ 10 | general |
 | 12 | **Corollary 3.12 literal** (union over label permutations) | IUT III, Cor. 3.12 | `Cor312LiteralHolds` | `Cor312VariantHolds ⇒ Cor312LiteralHolds` (`cor312Literal_of_variant`) | global |
+| 14 | **volume of `LGP·VC(I)`**: `−\|log q\| ≤ log-vol(LGP·VC(I))` | [LANA] §9.1(i), §10 | `WallEquiv.ss_iff_lgp_vcI` | ⇔ 1 | always (uses the volume of `LGP`, `logVol_lgp`) |
+| 15 | **(Ind3)-choice of volume `(s − 1)·\|log q\|`**: `∃ S ⊆ VC(I)` with `log-vol(S) = (s − 1)·\|log q\|` | [LANA] §9.3 | `WallEquiv.ss_iff_exists_ind3` | ⇔ 1 | always |
+| 16 | **pilot degrees**: `deg_Θ(Θ-pilot) − deg(q-pilot) ≤ log-vol(VC(I))` | [LANA] §7.1(a), §10.2 | `WallEquiv.ss_iff_pilot_degrees` (`pilot_degrees_sub`: the difference is `(s − 1)·\|log q\|`) | ⇔ 1 | always |
+| 17 | **through the Θ-link**: `s·deg(Θ-link(Θ-pilot)) − deg(q-pilot) ≤ log-vol(VC(I))` | [LANA] §10.2; IUT II Cor. 4.10 | `WallEquiv.ss_iff_theta_link_degrees` | ⇔ 1 | always |
 | 13 | **ABC** | — | `ClassicalABC` | `(∀ D, SSIneq D) ⇒ Cor312VariantHolds ⇒ ClassicalABC` (`classicalABC_of_ss`) | global |
 | — | **hexagon** (`deg_Θ = s·(Θ-link)`): commutes iff `s = 1` | [LANA] §10.2, §10.5; Scholze–Stix | `hexagon_commutes_iff`, `InitialThetaData.hexagon_not_commutes` | proved fact (`s > 1`), the source of the factor `s` in 1 | — |
 | — | **Frobenioid form**: the Θ-pilot and `q`-pilot objects of the global realified Frobenioid are not isomorphic | IUT II Cor. 4.10(v); P15 | `Frobenioid.isEmpty_iso_thetaPilot_qPilot` | proved fact | — |
