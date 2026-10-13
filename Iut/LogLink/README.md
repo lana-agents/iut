@@ -82,6 +82,7 @@ the modelling inputs listed below.
 | (5) Theorem 3.11 and the chain to ABC | `Thm311.lean` | `logShellCompat_mul`, `logShellCompat_inv`, `act_lgp`, `act_le`, `ind3Map`, `ind3Act`; `horizRel`, `vertRel`; **`Thm311`**; `LatticeKummer.model_multiradial3` (Thm 3.11(i) in the model), `model_thetaShift`; **`thm311_model`**; **`XiPrinciple`**; **`variant_of_thm311`**, **`wall_of_thm311`** (the input of `Iut/Wall`), **`classicalABC_of_thm311`**, `classicalABC_of_xi`, **`xi_iff_ss`**, `xi_iff_xi`; `logVol_transport_out`, **`answer`**, `alt_alien_horiz`, `alt_alien_vert` | done |
 | (6) Galois-induced identifications are unit-induced | `Galois.lean` | `norm_eq_one_of_unitInduced_scale`; `pow_q_sub_one_iff` (`U¹ = (𝒪ˣ)^{q−1}`), `logTensor_bijective`, `logEquiv` (`ℚ ⊗ 𝒪ˣ ≅ k`); `unitLogEquiv` (identification induced by `β ∈ Aut(𝒪ˣ)`), **`unitInduced_unitLogEquiv`**, `image_logShell_unitLogEquiv`, `unitLogEquiv_refl`, `unitLogEquiv_inv`, `unitLogEquiv_ne_scale`; `galUnitsEquiv` (P17's `𝒪ˣ ≅ 𝒪ˣ` from `φ ∈ Aut(G_k)`), `coe_galUnitsEquiv` (= `galEquiv_multEquiv`), `galLogEquiv`, **`galLogEquiv_transport`** (= transport of P17's `unitsQEquiv φ` through `log`), **`galLogEquiv_image_logShell`** (via `map_monoLogShell` + `image_logTensor_monoLogShell`), **`unitInduced_galLogEquiv`**, `galLogEquiv_refl`, `galLogEquiv_ne_scale`, `galEquiv_multEquiv_ne_zpow_mul` | done |
 | (7) Kummer data from the reconstruction | `GalKummer.lean` | `CompGal`, `CompUnits`, `compGalLogEquiv`, `compUnitLogEquiv` (completions of `Iut/Concrete`), `unitInduced_compGalLogEquiv`, `compGalLogEquiv_image_logShell`; `FactorGalInduced`, `FactorUnitsAut`, **`FactorUnitsAut.factorUnitInduced`**, `exists_factorGalInduced_of_linear`, `norm_eq_one_of_factorUnitsAut`; `GalInducedScaling`, `AnabelianScaling`, **`AnabelianScaling.unitInduced`**, `.logShellCompat`, `.shift_eq_zero`, `galInducedScaling_one`, `anabelianScaling_negScale`; **`not_anabelianScaling_of_shift_ne_zero`**, `not_anabelianScaling_qScale_zpow`, `not_galInducedScaling_qScale_zpow`; `AnabelianKummer`, `GalKummer`, **`toLatticeKummer`**, `distortion_eq_zero`, `xi_iff_ss`, `kum_ne_qScale_zpow`, `GalKummer.trivial`, `AnabelianKummer.alt` (`= LatticeKummer.trivial`, `.alt`), `classicalABC_of_thm311_anabelian`, `classicalABC_of_thm311_gal`, `classicalABC_of_xi_gal` | done |
+| (7') Galois automorphisms read off the strips (IUT I, Cor. 5.3(ii)) | `StripKummer.lean` (with `../HodgeTheater/StripLift.lean`) | `galMult_coe_units`, `compGalLogEquiv_eq_units` (the lifted Frobenioid equivalence acts on `𝒪ˣ` by `compGalUnits`, whose log-transport is `compGalLogEquiv`); `factorGal`, `factorGal_refl`; `StripScaling`, **`StripScaling.galInduced`**, `.unitInduced`, `.shift_eq_zero`, `stripScaling_one`; `StripKummer` (`gal`, **`toGalKummer`**, `toLatticeKummer`, `distortion_eq_zero`, **`xi_iff_ss`**, `kum_ne_qScale_zpow`, `liftIso`, `forget_liftIso`, `liftIso_functor`, `trivial`, `trivial_toLatticeKummer`); `classicalABC_of_thm311_strip`, `classicalABC_of_xi_strip` | done |
 | (8) Splitting monoids and LGP-monoids; Thm 3.11(ii)(b) | `Split.lean` | `norm_ringEquiv_eq_one_iff`; `perpMonoid` (`Ψ⊥ = μ_r·g^ℕ`), `perpMonoid_le_splitMonoid`, `IsStrictGen`, **`perp_unit`** (units of `Ψ⊥` = torsion), `perp_norm_lt_one`, `perp_pow_eq_one_of_mem_domain`, **`LocalLogLink.perp_toFun_eq_zero`**; `piMap`, `restrictAut`; `lgpMonoid` (Prop 3.4(ii)), **`lgpMonoid_eq`**, `lgpEquiv`, `lgpPerp`, `lgpPerp_eq`; `LGPColumn` (Prop 3.5(i)), `perpKummer`, `gaussKummer`, **`lgpKummer`**, **`image_perpKummer`** (vertical coricity: equality), `image_gaussKummer`, `norm_kum_of_mem_splitMonoid`, `avgDeg_kum_of_mem_splitMonoid`, `avgDeg_lgpKummer`, `perpLogKummer`, **`perp_compat`**, `perp_compat_action` (Thm 3.11(ii)(b), Prop 3.5(ii)(c)), `perp_not_mem_domain`, `shift`, `LGPColumn.taut` | done |
 | (9) Archimedean log-links | `Arch.lean` | `norm_ringEquiv`, `image_closedBall`, `norm_log_le_pi`, **`log_mul_sub_mem`** (homomorphism up to `2πiℤ`), `natCast_mul_log_root` (`μ_N` ↦ deck group), `exp_neg_log`, `exp_conj_log`, `neg_conj_mem_closedBall` ((Ind2) at `V^arc`); `ArchLogLink` (Def 1.1(ii)), `toFun_mem_closedBall`, `exp_symm_toFun`, `not_ringHom_eq_toFun`; `ArchColumn`, `iterDom`, `itF`, `back`, `itF_mem_closedBall`, `back_itF`, **`exists_surj`**, **`upperSemiCompat`** (Prop 3.5(ii)(b)), `logKummer`, `logKummer_subset`, `logKummer_shift`; packets: `archAbs_le_pi_of_mem`, **`tprod_mem_archLogShell`**, `tprod_log_mem_archLogShell` | done |
 | (10) Number fields; Prop 3.10(ii), Thm 3.11(ii)(c) | `Global.lean` | `isIntegral_of_forall_finitePlace`, **`nonInterference`** (`K^× ∩ ∏_v Ψ_log = μ_K`), `nonInterference_set`, **`divisor_trivial_iff`** (Prop 3.10(iii)), `padicLog_algebraMap_root`, `natCast_mul_log_root_embedding`, **`globalLogKummer`**; `embFin`, `norm_embFin_le_one_iff`, `sectInf_apply`, `nonInterference_sect`, **`fmodLogKummer`**, `LogThetaLattice.globalLogKummer` | done |
@@ -148,13 +149,32 @@ All theorems use only `propext`, `Classical.choice`, `Quot.sound`.
   identification preserves `Tr_{k/ℚ_p}`, and the only Galois-induced *scaling* is `b = 1`. P19's
   alien `x ↦ −x` therefore comes from the `F^{⊢×μ}`-data (`Ism`, the inversion of the units), not
   from an automorphism of `G_v`; the theorems above do not depend on this remark.
+* **Galois automorphisms read off the strips (`StripKummer.lean`, `../HodgeTheater/StripLift.lean`;
+  IUT I, Corollary 5.3(ii) in the model).** An automorphism `φ` of `G_v = Gal(K̄_v/K_v)` induces,
+  through P17's `galEquiv_multEquiv` (which preserves `ord_v`, `ordPres_of_norm_le_one`), an
+  autoequivalence `galFrob φ` of the `p`-adic Frobenioid of `K_v` (functorial in `φ`). For
+  rigidified non-archimedean `D^⊢`-prime-strips with the groups `Gal(K̄_v/K_v)`
+  (`RigidDGalStrip`), every isomorphism `f` lifts to the reconstructed `F^⊢`-prime-strips, with
+  Frobenioid portion `galFrob (gal f v)` (`RigidDGalStrip.exists_lift`, `liftIso`, functorial);
+  for unrigidified `F^⊢`-strips the lifts exist but are parametrised by arbitrary equivalences of
+  the Frobenioid components (`FGalStrip.liftsEquiv`). `StripKummer L` carries rigidified
+  `D^⊢`-strips at the vertices, isomorphisms `link a` to a coric strip, and Kummer
+  identifications whose factor scalings are `compGalLogEquiv` of **the** automorphisms
+  `gal (link a) v` read off these isomorphisms (`StripScaling`; no existential over `φ`);
+  `toGalKummer`, and `distortion_eq_zero`, `xi_iff_ss`, `classicalABC_of_xi_strip` are restated.
+  The lifted Frobenioid equivalence acts on `𝒪_vˣ` by `compGalUnits φ_v`, whose log-transport is
+  the factor identification (`galMult_coe_units`, `compGalLogEquiv_eq_units`).
 * **What remains an input.** (a) That the model's Kummer identifications are scalings (the
   equation `compGalLogEquiv φ = scale b` in the data; `exists_factorGalInduced_of_linear` builds
-  `b = ψ(1)` from a `K_v`-linear `ψ`); (b) the archimedean places; (c) the lift of `D`-prime-strip
-  isomorphisms to `F`-prime-strips (IUT I, Corollary 5.3(ii)): the model's Hodge theaters carry
-  no `G_v`, so the Galois automorphisms are data of the Kummer structure, not read off from the
-  strips; (d) the `G_v`-equivariance / `O^{×μ}_{k̄}` level of `Ism` (only the `G_v`-invariants
-  `𝒪_kˣ` are used).
+  `b = ψ(1)` from a `K_v`-linear `ψ`); (b) the archimedean places; (c) for Corollary 5.3(ii):
+  the Galois automorphisms are now read off isomorphisms of rigidified `D^⊢`-prime-strips
+  (`StripKummer`), but these strips, their rigidifications `κ_v` (the Kummer structures) and the
+  isomorphisms `link a` are data of `StripKummer`, not extracted from the Hodge theaters of the
+  lattice (the theaters' `F`-prime-strips are categories up to equivalence without base `G_v`);
+  `Gal(K̄_v/K_v)` is used instead of the decomposition group `galModel` of P18; the uniqueness
+  of the lift (the Frobenioid-theoretic part of Corollary 5.3) is not claimed; (d) the
+  `G_v`-equivariance / `O^{×μ}_{k̄}` level of `Ism` (only the `G_v`-invariants `𝒪_kˣ` are used);
+  P19's alien `x ↦ −x` is `F^{⊢×μ}`-data and is not strip-induced in this sense.
 
 ### (4) Theorem 3.11 and the wall
 
@@ -237,8 +257,9 @@ statement about the model, conditional on its scope decisions; it neither proves
 * The poly-isomorphism `log(†F_v) ≅ ‡F_v` and the holomorphic Kummer isomorphisms are bicontinuous
   ring automorphisms of copies of one field; the `Π_v`-equivariance is not recorded.
 * `LogLinkHT` records only the isomorphism `Ξ` of the `D-Θ^{±ell}NF`-Hodge theaters (P18's label
-  layer); the unique lifting of `D`-prime-strip isomorphisms to `F`-prime-strips (IUT I,
-  Corollary 5.3(ii)) is anabelian and not formalised. The local vertical lines of a lattice are
+  layer); the lifting of `D^⊢`-prime-strip isomorphisms to `F^⊢`-prime-strips (IUT I,
+  Corollary 5.3(ii)) is formalised only for separate rigidified non-archimedean strips
+  (`../HodgeTheater/StripLift.lean`), not on the theaters, and without uniqueness. The local vertical lines of a lattice are
   separate data (`loc`), not derived from the Frobenioids of the `F`-prime-strips.
 * The local LGP-monoids are the pull-backs of the Gaussian monoids along the ring isomorphism of
   the log-link (`Split.lean`); the `F_ℓ^{⋊±}`-symmetries and the processions (the capsules
@@ -251,9 +272,10 @@ statement about the model, conditional on its scope decisions; it neither proves
 
 ## What remains
 
-* The anabelian side beyond `Galois.lean` / `GalKummer.lean`: reading the Galois groups off the
-  `D`-prime-strips of the Hodge theaters (IUT I, Corollary 5.3(ii)) rather than as data of the
-  Kummer structure; `Ism` at the level of `O^{×μ}_{k̄}`; the archimedean Kummer theory
+* The anabelian side beyond `Galois.lean` / `GalKummer.lean` / `StripKummer.lean`: extracting
+  the rigidified `D^⊢`-prime-strips and their isomorphisms from the Hodge theaters of a lattice
+  (the Galois automorphisms are read off strips that are data of `StripKummer`, IUT I,
+  Corollary 5.3(ii) in the model); `Ism` at the level of `O^{×μ}_{k̄}`; the archimedean Kummer theory
   (Aut-holomorphic orbispaces) and log-volumes.
 * The Frobenioids of Proposition 3.7 (`F^⊛_MOD`, `F^⊛_mod`, the global realified LGP- and
   lgp-Frobenioids) and of Theorem 1.5(v), beyond the number fields and divisor maps of

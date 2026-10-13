@@ -165,6 +165,7 @@ import Iut.HodgeTheater.Labels
 import Iut.HodgeTheater.PmBridge
 import Iut.HodgeTheater.PrimeStrip
 import Iut.HodgeTheater.Procession
+import Iut.HodgeTheater.StripLift
 import Iut.HodgeTheater.Wall
 import Iut.Implication.ChebyshevExplicit
 import Iut.Implication.Corollary22
@@ -182,6 +183,7 @@ import Iut.LogLink.Kummer
 import Iut.LogLink.Lattice
 import Iut.LogLink.Local
 import Iut.LogLink.Split
+import Iut.LogLink.StripKummer
 import Iut.LogLink.Thm311
 import Iut.LogLink.Thm311LGP
 import Iut.MainTheorem
