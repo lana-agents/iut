@@ -958,6 +958,16 @@ log-shell compatibility and the formal chain "Theorem 3.11 + Step (xi) ⇒ ABC";
   (ii)(c) and the archimedean (Ind3)), `thm311LGP_model`; re-check: `xi_iff_ss_lgp`, `answerLGP`
   (Step (xi) is still `SSIneq D`, no new distortion).
 
+## Equivalent formulations of the wall (`Iut/WallEquiv`, next-step 6)
+
+The formulations of the wall — the Scholze–Stix inequality `SSIneq D`, the LANA report's (9-1)
+`∃ S, η_q = η^anab_S` (literally on P18 Hodge theaters and P19 Θ-links: `WallEquiv.Lana91`, and on
+the BPS layer: `Wall`), its numerical forms, the (xi)-principle, the multi-container walls, the
+Corollary 3.12 variant/literal and ABC — with the equivalences proved in the models
+(`WallEquiv.wallEquiv`, `wall_iff_ss_of_thetaShift`) and the implications that hold in general
+(`variant_of_ss`, `variant_iff`, `classicalABC_of_ss`); table in
+[`Iut/WallEquiv/README.md`](Iut/WallEquiv/README.md). Not imported by the comparator challenge.
+
 ## Dependency pins
 
 `lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its
