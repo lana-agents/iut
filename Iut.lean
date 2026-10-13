@@ -139,6 +139,7 @@ import Iut.EtaleTheta.ModelAut
 import Iut.EtaleTheta.ModelTower
 import Iut.EtaleTheta.MonoTheta
 import Iut.EtaleTheta.RigidSystems
+import Iut.EtaleTheta.TempSlimPiY
 import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.Theta

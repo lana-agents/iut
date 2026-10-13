@@ -170,6 +170,11 @@ Input: `TateObject.X₀ T` of `tempered-fundamental-groups` for Tate data `T` ov
 * (7d) **[EtTh], Prop. 2.11(i)**: `Envelope.center_eq_range_inl`.
 * (7e) **[EtTh], Prop. 2.12(ii) from (i)**: `commutator_prod_inf`,
   `ThetaGroup.commutator_envelope_inf` (with `ThetaGroup.commutator_eq_theta` = Prop. 2.12(i)).
+* (7f) **For the actual `Π^tp_Y`** (`TempSlimPiY.lean`): `TateObject.tempSlim_piY`
+  (`VerticialTempSlim → TempSlim Π^tp_Y`, from `tempered-fundamental-groups`'
+  `tempSlim_ker_character`, [Mzk14] Example 3.10), hence `mem_range_inl_iff_piY` (Prop. 2.11(ii))
+  and `apply_mem_range_inl_iff_piY` (Cor. 2.19(i), first step) for `Π^tp_Y[μ]`, with
+  `VerticialTempSlim` as the only hypothesis.
 
 ### (8) Cyclotomic rigidity (`CyclotomicRigidity.lean`) — done for the theta quotient
 
@@ -323,7 +328,12 @@ Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.
   (commensurable terminality of verticial subgroups when edge stabilizers have infinite index,
   Blueprint §12) but neither the comparison of verticial subgroups with fundamental groups of
   components nor estrangement for any curve. All statements needing it take `TempSlim` as a
-  hypothesis.
+  hypothesis. **Update:** `tempered-fundamental-groups` now proves the argument of [Mzk14],
+  Example 3.10 (`TempSlim.of_commensurator_eq`, `tempSlim_temperedPi1`), so for `Π^tp_X`,
+  `Π^tp_Y`, `Π^tp_Ÿ` the remaining input is **`VerticialTempSlim`**: some verticial subgroup of
+  André's tower satisfies `HI` (the specialization theorem M2, Blueprint §12.8) and is temp-slim
+  (slimness of the decomposition group of a component: comparison with the profinite `π₁` of
+  the component, slimness of `G_K` and of profinite surface groups). See (7f).
 * **S5 (tempered Frobenioid monoids).** See `Iut/Frobenioid/README.md`: the base category is
   genuine; the monoids are the combinatorial theta divisors.
 

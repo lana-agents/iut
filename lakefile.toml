@@ -81,7 +81,7 @@ rev = "405aadd70a16b05bd1a179a489b2c1c1299df695"
 [[require]]
 name = "tempered-fundamental-groups"
 git = "https://github.com/lana-agents/tempered-fundamental-groups"
-rev = "a2415c17fc64329ee6a14008224d2c8767a9841f"
+rev = "d5719ce4cf0a549b954565052cc0a7fb5c1e8bb7"
 
 # Local class field theory and the Brauer group of p-adic fields (roadmap P8/P9): the Artin
 # map, local duality and `h2MuEquiv`, consumed by the absolute anabelian reconstruction of
