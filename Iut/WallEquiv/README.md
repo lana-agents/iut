@@ -33,6 +33,7 @@ P20 with unit-induced Kummer data (`LatticeKummer`, `LGPLattice`).
 | 15 | **(Ind3)-choice of volume `(s − 1)·\|log q\|`**: `∃ S ⊆ VC(I)` with `log-vol(S) = (s − 1)·\|log q\|` | [LANA] §9.3 | `WallEquiv.ss_iff_exists_ind3` | ⇔ 1 | always |
 | 16 | **pilot degrees**: `deg_Θ(Θ-pilot) − deg(q-pilot) ≤ log-vol(VC(I))` | [LANA] §7.1(a), §10.2 | `WallEquiv.ss_iff_pilot_degrees` (`pilot_degrees_sub`: the difference is `(s − 1)·\|log q\|`) | ⇔ 1 | always |
 | 17 | **through the Θ-link**: `s·deg(Θ-link(Θ-pilot)) − deg(q-pilot) ≤ log-vol(VC(I))` | [LANA] §10.2; IUT II Cor. 4.10 | `WallEquiv.ss_iff_theta_link_degrees` | ⇔ 1 | always |
+| 18 | **the gap** `Δ(D) = −\|log Θ\| − log-vol(LGP·VC(I))`: (SS) ⇔ `−\|log q\| ≤ −\|log Θ\| − Δ(D)`, (Var) ⇔ `−\|log q\| ≤ −\|log Θ\|` | — | `WallEquiv.gap D` (`Gap.lean`) | `ss_iff_le_rhs_sub_gap`, `variant_iff_le_rhs`; **`gap_pos : 0 < Δ(D)`** for every `D` | always |
 | 13 | **ABC** | — | `ClassicalABC` | `(∀ D, SSIneq D) ⇒ Cor312VariantHolds ⇒ ClassicalABC` (`classicalABC_of_ss`) | global |
 | — | **hexagon** (`deg_Θ = s·(Θ-link)`): commutes iff `s = 1` | [LANA] §10.2, §10.5; Scholze–Stix | `hexagon_commutes_iff`, `InitialThetaData.hexagon_not_commutes` | proved fact (`s > 1`), the source of the factor `s` in 1 | — |
 | — | **Frobenioid form**: the Θ-pilot and `q`-pilot objects of the global realified Frobenioid are not isomorphic | IUT II Cor. 4.10(v); P15 | `Frobenioid.isEmpty_iso_thetaPilot_qPilot` | proved fact | — |
@@ -50,6 +51,82 @@ in **`WallEquiv.wallEquiv`**, with `wall_facts` for the last two rows.
   with nonzero distortion (a Kummer identification that is not unit-induced).
 * 7 does **not** imply 1 in general: 9 (an η-algorithm with (9-1)) holds whenever 7 holds, through
   the trivial instance, while 1 is (9-1) for the algorithms of the models.
+
+## The gap between (Var) and (SS) (`Gap.lean`)
+
+Christian's question: *is the LANA wall any weaker than the Scholze–Stix wall?* **Yes, strictly,
+for every initial Θ-datum `D`, by an explicit local amount `Δ(D) > 0`.**
+
+Both walls compare `−|log q|` with a log-volume:
+
+* **(Var)** (the LANA/variant wall, row 7): `−|log q| ≤ R`, `R = −|log Θ| = log-vol(hull(Θ))`,
+  the log-volume of the holomorphic hull of one (Ind1)-image of the theta-pilot region
+  (`rhs_eq_logVol_image`);
+* **(SS)** (row 14): `−|log q| ≤ log-vol(LGP·VC(I))`.
+
+`LGP·VC(I)` lies in that (Ind1)-image, so `log-vol(LGP·VC(I)) ≤ R`
+(`logVol_lgp_vcI_le_rhs`). The **gap** is
+
+`Δ(D) := R − log-vol(LGP·VC(I)) = −|log Θ| + s·|log q| − log-vol(VC(I))` (`WallEquiv.gap`, `gap_eq_rhs_add`),
+
+and (`ss_iff_le_rhs_sub_gap`, `variant_iff_le_rhs`)
+
+* (SS) ⇔ `−|log q| ≤ R − Δ(D)`, (Var) ⇔ `−|log q| ≤ R`;
+* `Δ(D) = 0` would make them the same inequality (`ss_iff_variant_of_gap_eq_zero`);
+* (Var) holds and (SS) fails exactly when `−|log q| ∈ (R − Δ(D), R]`, a window of length `Δ(D)`
+  (`variant_and_not_ss_iff`).
+
+**Formula** (`gap_eq`): with the tuple weights `w_c` of IUT III, Remark 3.1.1(ii),
+
+`Δ(D) = (1/ℓ*) · ∑_{capsules i} ∑_{v_ℚ} ∑_{tuples c} w_c · δ_{i,v_ℚ,c}`,
+`δ_{i,v_ℚ,c} = μ^log(hull(Θ_{i,v_ℚ,c})) − μ^log((LGP·VC(I))_{i,v_ℚ,c}) ≥ 0` (`gapTerm`,
+`gapTerm_nonneg`),
+
+where `hull(U)` is the least region `a·O` (`a` a unit) containing `U` (`LocalTheory.leastHull`;
+the packet hull of a product region is componentwise this, `proj_hull_productRegion`). The local
+terms are identified:
+
+| place | local term `δ` | sign | Lean |
+|---|---|---|---|
+| `∞` | `archDefect`: the log-shell (the ball of radius `π^N` of the tensor-product metric) against its least polydisc `a·B_I`; the (Ind1)/(Ind2) automorphisms preserve the ball, so they contribute nothing (`thetaComponent_infinite`) | **`> 0`** for every tuple (`gapTerm_infinite_pos`) | `gapTerm_infinite`, `archDefect_pos` |
+| prime `p` | `shellDefect + ind2Term`: the hull defect of `⊗_j 𝓘_{v_j}` (a discriminant/different-type term, independent of theta values and indeterminacies), plus the enlargement of the hull by the (Ind2)-union of the images of `q^{j²}·⊗𝓘` | both `≥ 0` | `gapTerm_finite`, `shellDefect_nonneg`, `ind2Term_nonneg` |
+| `p` not a bad residue characteristic | `shellDefect` only (`ind2Term = 0`, theta values `1`) | `≥ 0` | `ind2Term_eq_zero` |
+| `p` odd, unramified in `K`, not bad | `0` (the shell is `O`) | `= 0` | `gapTerm_eq_zero`, `shellDefect_eq_zero` |
+
+So `Δ(D)` is a finite sum over `∞`, `2`, the bad residue characteristics and the primes ramified
+in `K` (`support_gapAt_subset`).
+
+**Sign: `Δ(D) > 0` for every `D`** (`gap_pos`). The ℓ-torsion field `K` contains `F ∋ √−1`
+(IUT I, Definition 3.1(a)), so it is totally complex (`InitialThetaData.isComplex_Kt`); every
+capsule `S_{j+1}` has at least two labels, so every archimedean packet `⊗_{l} K_{v_l}` is a
+product of at least two copies of `ℂ` (`exists_ne_maximalSpectrum`, by dimension); in it the
+log-shell ball is strictly smaller than its least polydisc (it is strictly convex: the midpoint
+of the corners `(r₁, ±r₂, 0, …)` of the polydisc is on the polydisc's boundary but in the
+interior of the ball; `exists_mem_smul_archIntegral_not_mem_archLogShell`,
+`haar_archLogShell_lt`, `componentVol_archLogShell_lt_leastHull`). The archimedean part alone
+bounds the gap from below (`archPart_le_gap`); the finite terms only add to it.
+
+**Meaning.** The variant wall (Var) is **strictly weaker** than the Scholze–Stix wall (SS) by
+`Δ(D)`: (SS) gives `−|log q| ≤ R − Δ(D) < R` (`ss_imp_lt_rhs`), so (SS) ⇒ (Var) is never an
+equivalence of the two inequalities, and a datum with `−|log q|` in the window
+`(R − Δ(D), R]` would satisfy (Var) but not (SS). Neither inequality is decided here; the
+statement is about their difference. The gap comes from taking the *holomorphic hull* on the
+(Var) side only (and, at the bad primes, the (Ind2)-union), i.e. exactly from the steps of
+IUT III, Corollary 3.12 between "the possible images of the Θ-pilot" and "their hull".
+The positivity is a statement about the hull as modelled here (the least region `a·O`, `a` a
+unit, with `O` the product of the unit balls at `∞`: IUT III, Remark 3.9.5(i); IUT IV,
+Proposition 1.5(iii)) and uses IUT I, Definition 3.1(a) (`√−1 ∈ F`); it does not depend on any
+unproved estimate.
+
+**Not formalized.** The explicit value of the archimedean defect: by the orthogonality of the
+components for the tensor-product metric (`∑_m |χ_m(x)|² = M·‖x‖_T²`, `M = 2^{N−1}` copies of
+`ℂ` for `N` complex factors), the ball is a round ball of radius `√M·π^N` in the coordinates
+`χ_m`, its least polydisc has all radii `√M·π^N`, and the volume ratio is `M!`, so
+`δ_∞ = log((2^{N−1})!)/2^N` with `N = i + 2` labels, giving the archimedean part
+`(1/ℓ*)·∑_{i<ℓ*} log((2^{i+1})!)/2^{i+2}` (≈ `ℓ*·log 2/4` for large `ℓ*`) — a computation on
+paper, not checked in Lean. Also open: the exact
+value (or strict positivity) of the shell defect at `2` and at ramified primes, and of the
+(Ind2)-term at the bad primes; only `≥ 0` is proved for these.
 
 ## Non-derivability (`NonDerivable.lean`)
 
