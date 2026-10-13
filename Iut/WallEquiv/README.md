@@ -187,3 +187,28 @@ log-volume calculus in place of Frobenioids, Hodge theaters with data strips (`S
 normalization as an input; see `Iut/LogLink/README.md`). A different formalisation of
 Theorem 3.11 (e.g. with an output law other than `LGP` acting on an (Ind3)-choice, or Kummer
 identifications that are not unit-induced) is not covered.
+
+## The log-volume of `VC(I)` and of its hull (`VcI.lean`, `VcI.md`)
+
+Task VCI-CHECK. `logVol_vcI_eq` and `logVol_hull_vcI_eq` write `log-vol(VC(I))` and
+`log-vol(hull(VC(I)))` as procession averages of weighted local terms. `logVol_hull_vcI_sub_eq`
+writes their difference as the average of the shell defects and archimedean defects.
+
+At a prime, `μ^log(⊗𝓘) = shellExcess + μ^log(R_I)` (`componentVol_tensorLogShell_eq`).
+`μ^log(R_I) = −log[(R_I)^∼ : R_I]/n ∈ [−d_I·log p, 0]` is the packet index term. The hull is
+exact at every prime: `μ^log(hull(⊗𝓘)) = ∑_j ρ_j·log p`
+(`componentVol_leastHull_tensorLogShell_eq`).
+
+At tame primes, `μ^log(hull(⊗𝓘)) = ∑_j (1 − 1/e_j)·log p` (`= d_I·log p`, IUT IV's container).
+There the shell defect is exactly `−μ^log(R_I)` (`shellDefect_eq_neg_orderVol_tame`).
+
+The verdict (`VcI.md`):
+
+* IUT's container volume (Cor. 3.12, IUT IV Thm. 1.10) is the **hull**.
+* The maximal-order normalization of `vcI` is faithful to IUT (IUT III Prop. 3.9(i), IUT IV
+  Prop. 1.4(i),(iii)).
+* `log-vol(VC(I))` drops the packet index term. On paper that term is `½·(d_I − d_T)·log p`,
+  about ½·log-different per tensor factor beyond the first. IUT bounds this term by `0` and
+  never uses it.
+* Not formalized: the value of `μ^log(R_I)` (`PacketIndexFormulaGalois`), the additivity
+  `shellExcess = ∑_j λ_j` (`ShellExcessAdditive`), and the exact archimedean values.

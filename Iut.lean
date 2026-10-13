@@ -299,3 +299,4 @@ import Iut.WallEquiv.Basic
 import Iut.WallEquiv.Forms
 import Iut.WallEquiv.Gap
 import Iut.WallEquiv.NonDerivable
+import Iut.WallEquiv.VcI
