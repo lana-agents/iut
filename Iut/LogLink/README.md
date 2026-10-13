@@ -83,6 +83,8 @@ the modelling inputs listed below.
 | (6) Galois-induced identifications are unit-induced | `Galois.lean` | `norm_eq_one_of_unitInduced_scale`; `pow_q_sub_one_iff` (`U¹ = (𝒪ˣ)^{q−1}`), `logTensor_bijective`, `logEquiv` (`ℚ ⊗ 𝒪ˣ ≅ k`); `unitLogEquiv` (identification induced by `β ∈ Aut(𝒪ˣ)`), **`unitInduced_unitLogEquiv`**, `image_logShell_unitLogEquiv`, `unitLogEquiv_refl`, `unitLogEquiv_inv`, `unitLogEquiv_ne_scale`; `galUnitsEquiv` (P17's `𝒪ˣ ≅ 𝒪ˣ` from `φ ∈ Aut(G_k)`), `coe_galUnitsEquiv` (= `galEquiv_multEquiv`), `galLogEquiv`, **`galLogEquiv_transport`** (= transport of P17's `unitsQEquiv φ` through `log`), **`galLogEquiv_image_logShell`** (via `map_monoLogShell` + `image_logTensor_monoLogShell`), **`unitInduced_galLogEquiv`**, `galLogEquiv_refl`, `galLogEquiv_ne_scale`, `galEquiv_multEquiv_ne_zpow_mul` | done |
 | (7) Kummer data from the reconstruction | `GalKummer.lean` | `CompGal`, `CompUnits`, `compGalLogEquiv`, `compUnitLogEquiv` (completions of `Iut/Concrete`), `unitInduced_compGalLogEquiv`, `compGalLogEquiv_image_logShell`; `FactorGalInduced`, `FactorUnitsAut`, **`FactorUnitsAut.factorUnitInduced`**, `exists_factorGalInduced_of_linear`, `norm_eq_one_of_factorUnitsAut`; `GalInducedScaling`, `AnabelianScaling`, **`AnabelianScaling.unitInduced`**, `.logShellCompat`, `.shift_eq_zero`, `galInducedScaling_one`, `anabelianScaling_negScale`; **`not_anabelianScaling_of_shift_ne_zero`**, `not_anabelianScaling_qScale_zpow`, `not_galInducedScaling_qScale_zpow`; `AnabelianKummer`, `GalKummer`, **`toLatticeKummer`**, `distortion_eq_zero`, `xi_iff_ss`, `kum_ne_qScale_zpow`, `GalKummer.trivial`, `AnabelianKummer.alt` (`= LatticeKummer.trivial`, `.alt`), `classicalABC_of_thm311_anabelian`, `classicalABC_of_thm311_gal`, `classicalABC_of_xi_gal` | done |
 | (7') Galois automorphisms read off the strips (IUT I, Cor. 5.3(ii)) | `StripKummer.lean` (with `../HodgeTheater/StripLift.lean`) | `galMult_coe_units`, `compGalLogEquiv_eq_units` (the lifted Frobenioid equivalence acts on `𝒪ˣ` by `compGalUnits`, whose log-transport is `compGalLogEquiv`); `factorGal`, `factorGal_refl`; `StripScaling`, **`StripScaling.galInduced`**, `.unitInduced`, `.shift_eq_zero`, `stripScaling_one`; `StripKummer` (`gal`, **`toGalKummer`**, `toLatticeKummer`, `distortion_eq_zero`, **`xi_iff_ss`**, `kum_ne_qScale_zpow`, `liftIso`, `forget_liftIso`, `liftIso_functor`, `trivial`, `trivial_toLatticeKummer`); `classicalABC_of_thm311_strip`, `classicalABC_of_xi_strip` | done |
+| (6') Archimedean unit-inducedness | `GaloisArch.lean` | `log_circle`, `linear_apply`; `ArchUnitInduced` (angular datum `α ∈ Aut(S¹)` mod `2πiℤ`, radial datum `ρ` on `ℝ_{>0}`), `coe_apply_eq_zpow` (`α u = u^n`), `apply_I_eq_or`, **`archUnitInduced_iff`** (`ψ(1) ∈ ℝ`, `ψ(i) = ±i`), `archUnitInduced_neg`, `archUnitInduced_conj`; `radialScale`, `archUnitInduced_radialScale`, **`radialScale_image_closedBall`** (log-shell preserved iff `\|λ\| = 1`), `not_archPolyIso_radialScale`; `ArchPolyIso` (Prop 1.2(vii)), **`archPolyIso_iff_logShell`**, **`archPolyIso_iff_isometry`**, **`archPolyIso_iff_sign_algEquiv`** (`= {±1} × Gal(ℂ/ℝ)`), `signAlgEquiv`, `archPolyIso_of_ringEquiv`, `archPolyIso_neg`, `ArchPolyIso.toFun_mem_closedBall` | done |
+| (7'') Kummer data at all places | `GalKummerAll.lean` | `subalgebra_algHom_eq_or_conj`, `factorEmb`, `FactorArchUnitInduced`, `factorArchLogShell`, **`factorArchUnitInduced_iff`** (unit-induced + log-shell ⇔ `ε·σ`), **`mem_archIndAut_iff`**; `archIndMap_injective`, `archIndEquiv`, `image_archLogShell_archIndMap`, `abs_det_archIndMap`, **`haar_image_archIndMap`**, **`componentVol_image_archIndMap`**, `image_mem_admissible_archIndMap`, `archIndMap_mul`, `archIndMap_one`; `ArcScaling`, `FullScaling`, `fullAct`, `fullAct_mul`, `fullAct_one`, `isAdelic_fullAct`, **`logVol_fullAct`**, `logVol_fullAct_adelic`; `FullKummer` (`kum`, `arc_factor`, `arc_image_archLogShell`, `transport`, **`logVol_transport`**, `distortion_eq_zero`, `xi_iff_ss`, `trivial`, `alt`), `FullGalKummer` (`arc_mem_galAut`, `xi_iff_ss`, `trivial`), `classicalABC_of_thm311_full`, `classicalABC_of_xi_full` | done |
 | (8) Splitting monoids and LGP-monoids; Thm 3.11(ii)(b) | `Split.lean` | `norm_ringEquiv_eq_one_iff`; `perpMonoid` (`Ψ⊥ = μ_r·g^ℕ`), `perpMonoid_le_splitMonoid`, `IsStrictGen`, **`perp_unit`** (units of `Ψ⊥` = torsion), `perp_norm_lt_one`, `perp_pow_eq_one_of_mem_domain`, **`LocalLogLink.perp_toFun_eq_zero`**; `piMap`, `restrictAut`; `lgpMonoid` (Prop 3.4(ii)), **`lgpMonoid_eq`**, `lgpEquiv`, `lgpPerp`, `lgpPerp_eq`; `LGPColumn` (Prop 3.5(i)), `perpKummer`, `gaussKummer`, **`lgpKummer`**, **`image_perpKummer`** (vertical coricity: equality), `image_gaussKummer`, `norm_kum_of_mem_splitMonoid`, `avgDeg_kum_of_mem_splitMonoid`, `avgDeg_lgpKummer`, `perpLogKummer`, **`perp_compat`**, `perp_compat_action` (Thm 3.11(ii)(b), Prop 3.5(ii)(c)), `perp_not_mem_domain`, `shift`, `LGPColumn.taut` | done |
 | (9) Archimedean log-links | `Arch.lean` | `norm_ringEquiv`, `image_closedBall`, `norm_log_le_pi`, **`log_mul_sub_mem`** (homomorphism up to `2πiℤ`), `natCast_mul_log_root` (`μ_N` ↦ deck group), `exp_neg_log`, `exp_conj_log`, `neg_conj_mem_closedBall` ((Ind2) at `V^arc`); `ArchLogLink` (Def 1.1(ii)), `toFun_mem_closedBall`, `exp_symm_toFun`, `not_ringHom_eq_toFun`; `ArchColumn`, `iterDom`, `itF`, `back`, `itF_mem_closedBall`, `back_itF`, **`exists_surj`**, **`upperSemiCompat`** (Prop 3.5(ii)(b)), `logKummer`, `logKummer_subset`, `logKummer_shift`; packets: `archAbs_le_pi_of_mem`, **`tprod_mem_archLogShell`**, `tprod_log_mem_archLogShell` | done |
 | (10) Number fields; Prop 3.10(ii), Thm 3.11(ii)(c) | `Global.lean` | `isIntegral_of_forall_finitePlace`, **`nonInterference`** (`K^× ∩ ∏_v Ψ_log = μ_K`), `nonInterference_set`, **`divisor_trivial_iff`** (Prop 3.10(iii)), `padicLog_algebraMap_root`, `natCast_mul_log_root_embedding`, **`globalLogKummer`**; `embFin`, `norm_embFin_le_one_iff`, `sectInf_apply`, `nonInterference_sect`, **`fmodLogKummer`**, `LogThetaLattice.globalLogKummer` | done |
@@ -166,7 +168,8 @@ All theorems use only `propext`, `Classical.choice`, `Quot.sound`.
   the factor identification (`galMult_coe_units`, `compGalLogEquiv_eq_units`).
 * **What remains an input.** (a) That the model's Kummer identifications are scalings (the
   equation `compGalLogEquiv φ = scale b` in the data; `exists_factorGalInduced_of_linear` builds
-  `b = ψ(1)` from a `K_v`-linear `ψ`); (b) the archimedean places; (c) for Corollary 5.3(ii):
+  `b = ψ(1)` from a `K_v`-linear `ψ`); (b) at the archimedean places (next item), the radial
+  normalization; (c) for Corollary 5.3(ii):
   the Galois automorphisms are now read off isomorphisms of rigidified `D^⊢`-prime-strips
   (`StripKummer`), but these strips, their rigidifications `κ_v` (the Kummer structures) and the
   isomorphisms `link a` are data of `StripKummer`, not extracted from the Hodge theaters of the
@@ -175,6 +178,44 @@ All theorems use only `propext`, `Classical.choice`, `Quot.sound`.
   of the lift (the Frobenioid-theoretic part of Corollary 5.3) is not claimed; (d) the
   `G_v`-equivariance / `O^{×μ}_{k̄}` level of `Ism` (only the `G_v`-invariants `𝒪_kˣ` are used);
   P19's alien `x ↦ −x` is `F^{⊢×μ}`-data and is not strip-induced in this sense.
+
+### (3'') Archimedean unit-inducedness (`GaloisArch.lean`, `GalKummerAll.lean`)
+
+* **Local theorem at `V^arc`.** On `ℂ = log(ℂˣ)`, the units `S¹` only see the imaginary axis
+  (`log u = i·arg u`, modulo `2πiℤ`), so an identification induced by the multiplicative
+  structure needs an angular datum (an automorphism `α` of the abstract group `S¹`) and a radial
+  datum (a map of `ℝ_{>0}`): `ArchUnitInduced ψ`. **`archUnitInduced_iff`**: an `ℝ`-linear `ψ`
+  is unit-induced iff `ψ(1) ∈ ℝ` and `ψ(i) = ±i`; the angular datum alone forces `α = u ↦ u^{±1}`
+  (no continuity assumption: `α u = u^n` with `n ∈ ℤ`, and injectivity gives `n = ±1`).
+* **Precise characterization.** Unlike at `V^non` (`image_logShell_of_unitInduced`),
+  unit-inducedness does **not** imply log-shell compatibility at `V^arc`: the radial scalings
+  `z ↦ λ·Re z + i·Im z` are unit-induced for every `λ ≠ 0` and preserve the disc of radius `π`
+  iff `|λ| = 1` (`radialScale_image_closedBall`). A unit-induced `ψ` preserves the log-shell iff
+  it is an isometry iff it lies in the poly-isomorphism of Proposition 1.2(vii) (`ArchPolyIso`,
+  `z ↦ ε₁·Re z + ε₂·i·Im z`) iff `ψ = ε·τ` with `ε = ±1`, `τ ∈ Gal(ℂ/ℝ)`
+  (`archPolyIso_iff_logShell`, `archPolyIso_iff_isometry`, `archPolyIso_iff_sign_algEquiv`).
+  The radial normalization is the extra input, as in IUT III, Remark 1.2.1(ii) (a metric on `ℂ`
+  is determined by its restriction to `S¹`). Galois-induced identifications (continuous ring
+  automorphisms) and the inversion of the units (`z ↦ −z`) lie in the poly-isomorphism.
+* **Factors and packets.** For an archimedean factor `K_v` (`ℝ` or `ℂ`), a map is unit-induced
+  and log-shell preserving iff it is a factor indeterminacy `ε·σ` (`factorArchUnitInduced_iff`);
+  so `LocalConstruct.archIndAut` (the (Ind2)-class at `V^arc`) is exactly the class of tensor
+  products of such maps (`mem_archIndAut_iff`). They map `archLogShell` onto itself, have
+  determinant `±1`, and preserve Haar measure, log-volumes and admissibility
+  (`haar_image_archIndMap`, `componentVol_image_archIndMap`, `image_mem_admissible_archIndMap`).
+* **All places.** `FullScaling D = Scaling D × ArcScaling D` acts at `V^non ∪ V^arc`
+  (`fullAct`); the archimedean components change no log-volume (`logVol_fullAct`). For Kummer
+  data at all places (`FullKummer`: anabelian at `V^non`, factor indeterminacies at `V^arc`;
+  `FullGalKummer`: Galois at both, the archimedean components lying in `galAut`) the transport
+  between any two vertices preserves log-volumes (`FullKummer.logVol_transport`), and Step (xi)
+  is still `SSIneq D` (`FullKummer.xi_iff_ss`; `classicalABC_of_thm311_full`,
+  `classicalABC_of_xi_full`). The model's `XiPrinciple` is formulated with the `V^non` data
+  (`FullKummer.toLatticeKummer`); these restatements are justified by `logVol_fullAct`, not by a
+  reformulation of the wall at `V^arc`.
+* **Not formalised.** Angular and radial log-volumes and the Aut-holomorphic orbispaces at
+  `V^arc`; that the archimedean Kummer identifications are factor indeterminacies is a datum of
+  `FullKummer` (equivalently, by `factorArchUnitInduced_iff`, that they are unit-induced and
+  log-shell compatible).
 
 ### (4) Theorem 3.11 and the wall
 
@@ -275,8 +316,10 @@ statement about the model, conditional on its scope decisions; it neither proves
 * The anabelian side beyond `Galois.lean` / `GalKummer.lean` / `StripKummer.lean`: extracting
   the rigidified `D^⊢`-prime-strips and their isomorphisms from the Hodge theaters of a lattice
   (the Galois automorphisms are read off strips that are data of `StripKummer`, IUT I,
-  Corollary 5.3(ii) in the model); `Ism` at the level of `O^{×μ}_{k̄}`; the archimedean Kummer theory
-  (Aut-holomorphic orbispaces) and log-volumes.
+  Corollary 5.3(ii) in the model); `Ism` at the level of `O^{×μ}_{k̄}`; at `V^arc`, beyond
+  `GaloisArch.lean` / `GalKummerAll.lean`, the Aut-holomorphic orbispaces, the angular/radial
+  log-volumes, the derivation of the radial normalization of the Kummer identifications and
+  reading the archimedean Kummer data off the strips.
 * The Frobenioids of Proposition 3.7 (`F^⊛_MOD`, `F^⊛_mod`, the global realified LGP- and
   lgp-Frobenioids) and of Theorem 1.5(v), beyond the number fields and divisor maps of
   `Global.lean`; the derivation of `LGPLattice.kum_gen` from the Kummer theory of the theta

@@ -59,7 +59,8 @@ volume neutrality are then theorems.
 ## What remains an input
 
 * that the Kummer identifications of the model are scalings (the equation in the data);
-* the archimedean places (not in the model);
+* the archimedean places: treated in `Iut/LogLink/GaloisArch.lean` and
+  `Iut/LogLink/GalKummerAll.lean` (Kummer data at all places, `FullKummer`);
 * the lift of isomorphisms of `D`-prime-strips to `F`-prime-strips (IUT I, Corollary 5.3(ii)),
   i.e. that the identifications of the containers are those induced by the `D^⊢`/`F^{⊢×μ}`-data
   of the strips: the Hodge theaters of the model carry no `G_v` (P18's `F`-prime-strips record

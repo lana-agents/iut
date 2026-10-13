@@ -177,7 +177,9 @@ import Iut.Implication.Theorem110
 import Iut.LogLink.Arch
 import Iut.LogLink.Column
 import Iut.LogLink.GalKummer
+import Iut.LogLink.GalKummerAll
 import Iut.LogLink.Galois
+import Iut.LogLink.GaloisArch
 import Iut.LogLink.Global
 import Iut.LogLink.Kummer
 import Iut.LogLink.Lattice
