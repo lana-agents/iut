@@ -297,3 +297,4 @@ import Iut.Wall.Rss
 import Iut.Wall.Scaling
 import Iut.WallEquiv.Basic
 import Iut.WallEquiv.Forms
+import Iut.WallEquiv.NonDerivable

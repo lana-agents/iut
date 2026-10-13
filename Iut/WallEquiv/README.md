@@ -50,3 +50,63 @@ in **`WallEquiv.wallEquiv`**, with `wall_facts` for the last two rows.
   with nonzero distortion (a Kummer identification that is not unit-induced).
 * 7 does **not** imply 1 in general: 9 (an η-algorithm with (9-1)) holds whenever 7 holds, through
   the trivial instance, while 1 is (9-1) for the algorithms of the models.
+
+## Non-derivability (`NonDerivable.lean`)
+
+**Theorem 3.11 of IUT III, as formalised here, does not imply Step (xi).** Lean-checked: no
+argument that uses only the fields of `Thm311Package` proves Step (xi) (nor refutes it). That these
+fields exhaust what the repository proves at the level of Theorem 3.11 is an audit (below), not a
+theorem. Since Theorem 3.11 is a theorem of the model for every genuine `D`, non-derivability can
+only be stated relative to such an abstraction.
+
+* `Thm311Package`: everything the repository proves at the level of Theorem 3.11 about genuine
+  initial Θ-data, with the arithmetic decoupled. Its numbers are the prime `ℓ` (prime, `≥ 5`),
+  `ℓ* = (ℓ − 1)/2`, `s = sFactor ℓ*`, `log q`, `a = |log q| = log q/(2ℓ) > 0`,
+  `V = log-vol(VC(I))`, `R = −|log Θ|` and `R_lit`. Its structure is the log-volume calculus
+  (integral region, archimedean scalings, mono-analytic scalings with their shift, the scaling by
+  `q`), the (Ind3)-choices with volumes `(−∞, V]`, the identified-copies output law
+  `vol(LGP·S) = −s·a + vol(S)` with outputs in the hull of the Θ-pilot region (volumes
+  `(−∞, R]`), the `q`-pilot region (`−a`), and the log-theta-lattice `ℤ × ℤ` with log-shell
+  compatible, volume-preserving (unit-induced) Kummer identifications, Θ-links, choices and
+  multiradiality. The remaining conclusions of Theorem 3.11 and Theorem 1.5(v) proved in the
+  model (`LogLink.thm311_full_model`) hold for every `D` and every Kummer data and do not involve
+  the package's numbers; the package carries them as the field `structural`, a closed
+  proposition provable outright that constrains nothing else (its numeric parts, the factor `1/s`
+  of `Thm15v` and the degrees of `Thm311LGP.splitDeg`, concern the quantified `D`; their package
+  counterparts are `vol_lgp`, `vol_qRegion`, `one_lt_s`, `hexagon`, `pilots_ne`).
+* **Faithfulness**: `ofThetaData D K` builds the package of any lattice `K` over genuine `D`, every
+  field a theorem of `main`; `xi_ofThetaData_iff : (ofThetaData D K).Xi ↔ XiPrinciple K`.
+* **Sharp form**: `Thm311Package.xi_iff : P.Xi ↔ (s − 1)·a ≤ V` — over the package, Step (xi) is
+  exactly the Scholze–Stix inequality.
+* **Non-derivability**: `family` realises every `ℓ`, `log q > 0`, `V`, `R` with `V − s·a ≤ R` (the
+  only proved relation coupling `V` with `a` and `R`; for genuine data it comes from
+  `logVol_lgp`, `logVol_lgp_integral`, `inImage_lgp`, `logVol_le_rhs`; in the package it is
+  `V_sub_le_R`);
+  `not_xi_family`: Step (xi) fails there whenever `V < (s − 1)·a`; `exists_package_not_xi` (an
+  explicit package: `ℓ = 7`, `a = 1`, `V = R = 1`), `exists_package_not_xi_nonneg` (failure with
+  `0 ≤ V` for every `ℓ`, `log q`), `not_forall_xi : ¬ ∀ P, P.Xi`; and `exists_package_xi`
+  (Step (xi) is not refutable either). `nonDerivability` collects faithfulness, the sharp form,
+  `¬ ∀ P, P.Xi` and `¬ ∀ P, ¬ P.Xi`.
+* **The missing input is ABC-strength**: `classicalABC_of_forall_xi` (Step (xi) for all genuine
+  data gives `ClassicalABC`, via `classicalABC_of_thm311`).
+
+**Audit.** The facts the repository proves about these numbers for all genuine `D` were audited
+over `Iut/` (list in the module docstring). There is no lower bound on `V` and no relation
+coupling `V` with `a` other than `V − s·a ≤ R`. The IUT IV estimate `R ≤ C'(D) − s'·a` with
+`s' < s` (`LocalEstimate.rhs_le`) holds only under the hypothesis `LocalEstimate` /
+`TowerArithmetic D` and bounds `V` from above, so it is compatible with the failure of Step (xi)
+(`family` with `V` small). The bound `0 ≤ V` (mathematically `O ⊆ I`; its global form
+`integralRegion ≤ vcI` is not formalised) is also compatible (`exists_package_not_xi_nonneg`).
+
+**What is shown, and what is not.** Shown: the formalised content of Theorem 3.11 (with
+unit-induced Kummer identifications) is consistent with the failure of Step (xi), and over it
+Step (xi) is equivalent to the Scholze–Stix inequality; a proof of Step (xi) must use facts about
+`D` beyond this content, and Step (xi) for all genuine `D` implies ABC
+(`classicalABC_of_forall_xi`). **Not shown**: that Step (xi) fails for some
+genuine `D`, or that the Scholze–Stix inequality or ABC fails. The statement is about the
+formalisation: the modelling inputs of the repository apply (local fields and the
+log-volume calculus in place of Frobenioids, Hodge theaters with data strips (`StripKummer`,
+`BiCoricKummer`, `MonoThetaKummer`), the identified-copies output law, the archimedean radial
+normalization as an input; see `Iut/LogLink/README.md`). A different formalisation of
+Theorem 3.11 (e.g. with an output law other than `LGP` acting on an (Ind3)-choice, or Kummer
+identifications that are not unit-induced) is not covered.
