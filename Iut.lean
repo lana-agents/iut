@@ -12,6 +12,7 @@ import Iut.Abc.Counting.Split
 import Iut.Abc.Counting.V6
 import Iut.Abc.FormalConjectures
 import Iut.Abc.FunctionFieldSzpiro
+import Iut.Abc.P24Table
 import Iut.Abc.Target
 import Iut.Anabelian.AdicCompletion
 import Iut.Anabelian.CanLift
