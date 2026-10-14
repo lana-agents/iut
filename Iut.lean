@@ -5,6 +5,11 @@ Authors: LANA Project
 -/
 
 import Iut.Abc.Classical
+import Iut.Abc.Counting.Basic
+import Iut.Abc.Counting.E1
+import Iut.Abc.Counting.Exponents
+import Iut.Abc.Counting.Split
+import Iut.Abc.Counting.V6
 import Iut.Abc.FormalConjectures
 import Iut.Abc.FunctionFieldSzpiro
 import Iut.Abc.Target
