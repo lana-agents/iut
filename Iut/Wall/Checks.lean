@@ -38,9 +38,9 @@ restatement of Corollary 3.12.
   choice `ι` ([LANA], §9.2: "`M = 1·S` … represents `LGP·S`"). Under (T4) the trivial
   instance is excluded (`not_isTrivial_of_lgpLaw`), since `S ↦ log-vol(S)` takes several values on
   the (Ind3)-choices; but the wall is then the numerical condition
-  `−|log(q)| − κ_ι ≤ log-vol(VC(I))` for some `ι` (`wall_iff_of_lgpLaw`), again a statement about
-  real numbers, whose content is the value of `κ_ι`. For the identified-copies model `κ` is
-  computed in `Iut/Wall/IdentifiedCopies.lean`.
+  `−|log(q)| − κ_ι ≤ log-vol(hull(VC(I)))` for some `ι` (`wall_iff_of_lgpLaw`), again a
+  statement about real numbers, whose content is the value of `κ_ι`. For the identified-copies
+  model `κ` is computed in `Iut/Wall/IdentifiedCopies.lean`.
 -/
 
 namespace Iut
@@ -99,21 +99,21 @@ theorem not_isTrivial_of_lgpLaw (hL : A.LGPLaw) : ¬ A.IsTrivial := by
   intro hT
   obtain ⟨h⟩ := A.side_nonempty
   obtain ⟨κ, hκ⟩ := hL (BPS.Iso.refl (A.thetaBPS h))
-  obtain ⟨S, hS⟩ := (exists_ind3_logVol_iff D (logVol D (vcI D) - 1)).mpr (by linarith)
+  obtain ⟨S, hS⟩ := (exists_ind3_logVol_iff D (logVol D (hullOf D (vcI D)) - 1)).mpr (by linarith)
   have h1 := (ValBPS.eta_eq_eta_iff _ _ _).mp (hT (BPS.Iso.refl (A.thetaBPS h)) (Ind3.top D))
   have h2 := (ValBPS.eta_eq_eta_iff _ _ _).mp (hT (BPS.Iso.refl (A.thetaBPS h)) S)
   rw [hκ] at h1 h2
-  change κ + logVol D (vcI D) = _ at h1
+  change κ + logVol D (hullOf D (vcI D)) = _ at h1
   rw [hS] at h2
   linarith
 
 /-- **Under the LGP law the wall is a numerical condition on the shifts `κ_ι`**:
-`−|log(q)| − κ_ι ≤ log-vol(VC(I))` for some choice `ι`. -/
+`−|log(q)| − κ_ι ≤ log-vol(hull(VC(I)))` for some choice `ι`. -/
 theorem wall_iff_of_lgpLaw (κ : ∀ {B : A.BPSA} {h : A.Side}, A.Choice B h → ℝ)
     (hκ : ∀ {B : A.BPSA} {h : A.Side} (ι : A.Choice B h) (S : Ind3 D),
       logVol D (A.out ι S) = κ ι + logVol D S.1) :
     Wall D A ↔ ∀ h₁ h₂ : A.Side, ∃ ι : A.Choice (A.qBPS h₂) h₁,
-      (concreteVariantData D).qPilot.lhs - κ ι ≤ logVol D (vcI D) := by
+      (concreteVariantData D).qPilot.lhs - κ ι ≤ logVol D (hullOf D (vcI D)) := by
   rw [wall_iff_forall]
   refine forall₂_congr fun h₁ h₂ => exists_congr fun ι => ?_
   simp only [etaAnab_eq_etaQ_iff, hκ]

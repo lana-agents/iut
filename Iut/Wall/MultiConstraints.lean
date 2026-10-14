@@ -42,7 +42,7 @@ the others now refer to the transport. A further constraint is added:
   3.8), Kummer isomorphisms `q^{−k·n}` (multiplication by a power of `q_v` in the factor of the
   label `1`). The transport `n → n + 1` distorts volume by `k·|log(q)|`
   (`distortion_chain`), and along the Θ-links the wall is
-  **`(s − 1 − k)·|log(q)| ≤ log-vol(VC(I))`** (`wallOn_chain_iff`). For `k ≠ 0` this model
+  **`(s − 1 − k)·|log(q)| ≤ log-vol(hull(VC(I)))`** (`wallOn_chain_iff`). For `k ≠ 0` this model
   violates (C11), (C2) and (C6) (`not_volCompat_chain`, `not_she3_chain`,
   `not_multiradial3_chain`), satisfies (C4) and (C10) (`alien3_chain`), and its wall for all
   pairs is false (`not_wall3_chain`). For suitable `k` the wall along the Θ-links holds, for
@@ -113,7 +113,7 @@ theorem volCompat_of_multiradial3 (hS : M.alg.ThetaShift) (hM : M.Multiradial3) 
     rw [a, b, hS, hS] at e
     unfold distortion at e
     have := logVol_le_vcI D (τ (Ind3.top D))
-    change _ + logVol D (vcI D) + _ = _ at e
+    change _ + logVol D (hullOf D (vcI D)) + _ = _ at e
     linarith
   exact fun h₁ h₁' => le_antisymm (key h₁' h₁) (key h₁ h₁')
 
@@ -240,10 +240,10 @@ theorem distortion_chain (n m : ℤ) :
   push_cast
   ring
 
-/-- **The wall along the Θ-links of the row**: `(s − 1 − k)·|log(q)| ≤ log-vol(VC(I))`. -/
+/-- **The wall along the Θ-links of the row**: `(s − 1 − k)·|log(q)| ≤ log-vol(hull(VC(I)))`. -/
 theorem wallOn_chain_iff :
     (chainModel D k).WallOn thetaRow ↔
-      (sFactor (nC D) - 1 - k) * D.qPilot.absLogQ ≤ logVol D (vcI D) := by
+      (sFactor (nC D) - 1 - k) * D.qPilot.absLogQ ≤ logVol D (hullOf D (vcI D)) := by
   rw [(chainModel D k).wallOn_iff_of_thetaShift (idAlgOn_thetaShift D ℤ)]
   constructor
   · intro h
@@ -265,16 +265,16 @@ theorem wallOn_chain_zero_iff : (chainModel D 0).WallOn thetaRow ↔ SSIneq D :=
   rw [sub_zero]
 
 /-- **The directed wall can always be met by drift**: for every `D` some row satisfies the wall
-along its Θ-links (take `k ≥ s − 1 − log-vol(VC(I))/|log(q)|`). Such a wall alone carries no
+along its Θ-links (take `k ≥ s − 1 − log-vol(hull(VC(I)))/|log(q)|`). Such a wall alone carries no
 information on the Corollary 3.12 variant; with distortion, `variant_of_wallOn` needs the
 realisation of the transported outputs in the target container. -/
 theorem exists_wallOn_chain : ∃ k : ℤ, (chainModel D k).WallOn thetaRow := by
   have ha := absLogQ_pos D
-  refine ⟨⌈sFactor (nC D) - 1 - logVol D (vcI D) / D.qPilot.absLogQ⌉, ?_⟩
+  refine ⟨⌈sFactor (nC D) - 1 - logVol D (hullOf D (vcI D)) / D.qPilot.absLogQ⌉, ?_⟩
   rw [wallOn_chain_iff]
-  have h1 := Int.le_ceil (sFactor (nC D) - 1 - logVol D (vcI D) / D.qPilot.absLogQ)
-  have h2 : sFactor (nC D) - 1 - (⌈sFactor (nC D) - 1 - logVol D (vcI D) /
-      D.qPilot.absLogQ⌉ : ℝ) ≤ logVol D (vcI D) / D.qPilot.absLogQ := by linarith
+  have h1 := Int.le_ceil (sFactor (nC D) - 1 - logVol D (hullOf D (vcI D)) / D.qPilot.absLogQ)
+  have h2 : sFactor (nC D) - 1 - (⌈sFactor (nC D) - 1 - logVol D (hullOf D (vcI D)) /
+      D.qPilot.absLogQ⌉ : ℝ) ≤ logVol D (hullOf D (vcI D)) / D.qPilot.absLogQ := by linarith
   have h3 := mul_le_mul_of_nonneg_right h2 ha.le
   rwa [div_mul_cancel₀ _ ha.ne'] at h3
 
@@ -312,8 +312,9 @@ theorem not_wall3_chain (hk : k ≠ 0) : ¬ (chainModel D k).Wall3 := by
   have hw := ((chainModel D k).wall3_iff_of_thetaShift (idAlgOn_thetaShift D ℤ)).mp hW
   have ha := absLogQ_pos D
   have hs : 0 ≤ sFactor (nC D) := (sFactor_pos (nC_pos D)).le
-  obtain ⟨N, hN⟩ := exists_nat_gt ((logVol D (vcI D) + D.qPilot.absLogQ) / D.qPilot.absLogQ)
-  have hN' : logVol D (vcI D) + D.qPilot.absLogQ < N * D.qPilot.absLogQ :=
+  obtain ⟨N, hN⟩ :=
+    exists_nat_gt ((logVol D (hullOf D (vcI D)) + D.qPilot.absLogQ) / D.qPilot.absLogQ)
+  have hN' : logVol D (hullOf D (vcI D)) + D.qPilot.absLogQ < N * D.qPilot.absLogQ :=
     (div_lt_iff₀ ha).mp hN
   have h := hw (0 : ℤ) (N : ℤ)
   rw [distortion_chain] at h

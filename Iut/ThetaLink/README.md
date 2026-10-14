@@ -78,7 +78,7 @@ transports determined by Θ-links (`LinkedChain`):
   Kummer identifications, **the volume compatibility C11 holds** (`kummerVolCompat`,
   `volCompat`), **the distortion along every Θ-link is `0`** (`distortion_eq_zero`), and the
   M3 analysis gives: **the wall along the Θ-links is exactly the Scholze–Stix inequality**
-  `(s − 1)·|log q| ≤ log-vol(VC(I))` (`wallOn_thetaRow_iff`; also for all pairs, `wall3_iff`).
+  `(s − 1)·|log q| ≤ log-vol(hull(VC(I)))` (`wallOn_thetaRow_iff`; also for all pairs, `wall3_iff`).
   This holds also with alien (non-ring) transports along every Θ-link (`negChain`,
   `negChain_alien`). The factor `s` enters the wall only through the output law
   (`ThetaShift`: `LGP·S` has log-volume `−s·|log q| + log-vol(S)`), not through the transport.

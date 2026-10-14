@@ -96,7 +96,7 @@ noncomputable def theaterAlg (H : σ → ThetaPmEllNFHT D) : EtaAlg D where
   out _ S := lgp D S.1
   ind12_acts_on_S _ _ := ⟨Equiv.refl _, fun _ => rfl⟩
   etUnitOnly := ⟨fun _ S => lgp D S.1, fun _ _ => rfl⟩
-  realisation _ S := ⟨isAdelic_lgp D S.2.1, (inImage_lgp D S).inHullOfImage⟩
+  realisation _ S := ⟨isAdelic_lgp D S.2.1, inHullOfImage_lgp D S⟩
 
 /-- **Isomorphisms of Hodge theaters induce isomorphisms of their étale-unit BPSs** (the étale-unit
 portion of the BPS-level Θ-link comes from the theaters). -/

@@ -11,7 +11,7 @@ import Iut.Wall.MultiConstraints
 
 The multi-container model (`Iut/Wall/MultiContainer.lean`, M3) found that, for outputs with the
 identified-copies log-volumes, the wall along a relation `L` of Hodge theaters is
-`(s − 1)·|log q| − distortion(h₁, h₂) ≤ log-vol(VC(I))` for `L h₁ h₂`
+`(s − 1)·|log q| − distortion(h₁, h₂) ≤ log-vol(hull(VC(I)))` for `L h₁ h₂`
 (`MultiContainer.wallOn_iff_of_thetaShift`), where the **distortion** is the log-volume shift of
 the transport `κ_{h₂} ∘ κ_{h₁}⁻¹` between the containers of the two theaters. The open point was
 what the transport *along a Θ-link* is.
@@ -47,7 +47,7 @@ The examples: the chain built from `D` with identity Kummer identifications (`of
 `1`, `x ↦ −x` (`negChain`) has **non-ring (alien) transports along every Θ-link**
 (`negChain_alien`) and still distortion `0` and wall `SSIneq D`. The M3 example with drift,
 `Wall.chainModel D k` (Kummer identifications `q^{−k·n}`, distortion `k·|log q|` per link, wall
-`(s − 1 − k)·|log q| ≤ log-vol(VC(I))`), is **not** log-shell compatible for `k ≠ 0`
+`(s − 1 − k)·|log q| ≤ log-vol(hull(VC(I)))`), is **not** log-shell compatible for `k ≠ 0`
 (`not_logShellCompat_chainModel`): its Kummer identifications move value-group (`q`-power) data
 into the unit portion, which a Θ-link does not do in this model.
 
@@ -151,6 +151,44 @@ theorem not_logShellCompat_qScale_zpow {m : ℤ} (hm : m ≠ 0) :
   have hm' : (m : ℝ) ≠ 0 := by exact_mod_cast hm
   simp only [mul_neg, neg_eq_zero, mul_eq_zero] at h0
   tauto
+
+/-- **A log-shell compatible scaling maps `hull(VC(I))` into itself**: at a prime the hull
+commutes with multiplication by the units of the scaling (`mul_mem_of_mem_hull`), at `∞` the
+scaling is the identity. -/
+theorem act_hull_vcI_le {w : Scaling D} (hw : LogShellCompat D w) (i : Fin (nC D)) :
+    act D w (hullOf D (vcI D)) i ≤ hullOf D (vcI D) i := by
+  intro vQ
+  rcases vQ with p | _
+  · rintro _ ⟨x, hx, rfl⟩
+    set H := (LocalTheory.hull D.placeSect (nC D)).system i (.finite p)
+    have hv := isAdelic_vcI D i (.finite p)
+    refine mul_mem_of_mem_hull D i p hv (fun c => ((w.u i p c : (Comp D i p c)ˣ) : Comp D i p c))
+      (fun c => (w.u i p c).isUnit) (H.hull_mem_hullRegions hv) (fun y hy => ?_) hx
+    refine H.subset_hull hv ?_
+    have hy' : actMap D w i p y ∈ (act D w (vcI D) i).region (.finite p) := ⟨y, hy, rfl⟩
+    rw [hw] at hy'
+    exact hy'
+  · exact subset_rfl
+
+/-- **A log-shell compatible scaling preserves `hull(VC(I))`.** -/
+theorem act_hull_vcI {w : Scaling D} (hw : LogShellCompat D w) :
+    act D w (hullOf D (vcI D)) = hullOf D (vcI D) := by
+  have hw' : LogShellCompat D w⁻¹ := by
+    unfold LogShellCompat at *
+    conv_lhs => rw [← hw]
+    exact act_inv_act D w _
+  funext i
+  refine admissibleRegion_ext D (funext fun vQ => Set.Subset.antisymm
+    (act_hull_vcI_le D hw i vQ) ?_)
+  have h1 := act_hull_vcI_le D hw' i
+  intro x hx
+  have h2 : x ∈ (act D w (act D w⁻¹ (hullOf D (vcI D))) i).region vQ := by
+    rw [← act_mul, mul_inv_cancel, act_one]
+    exact hx
+  rcases vQ with p | _
+  · obtain ⟨y, hy, rfl⟩ := h2
+    exact ⟨y, h1 (.finite p) hy, rfl⟩
+  · exact h1 .infinite h2
 
 /-! ### Θ-linked chains of Hodge theaters -/
 

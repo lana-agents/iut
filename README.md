@@ -810,7 +810,10 @@ The modules are not imported by the comparator challenge. The wall is a `Prop`
   (`Iut.Wall.numericalWall_iff`); an interface instance with `η^anab = η_q` exists iff the
   variant holds (`Iut.Wall.exists_isTrivial_iff`, `Iut.Wall.exists_wall_iff`), so the interface
   does not exclude the trivial solution; on the identified-copies model the wall is exactly
-  `(s − 1)·|log(q)| ≤ log-vol(VC(I))`, `s = (1² + ⋯ + ℓ*²)/ℓ*` (`Iut.Wall.wall_idAlg_iff`).
+  `(s − 1)·|log(q)| ≤ log-vol(hull(VC(I)))`, `s = (1² + ⋯ + ℓ*²)/ℓ*` (`Iut.Wall.wall_idAlg_iff`;
+  the (Ind3)-choices range over the holomorphic hull `hull(VC(I))`, IUT's container, IUT III,
+  Corollary 3.12, Step (xi-d)–(xi-f); the no-hull wall `Iut.Wall.SSIneqNoHull` is kept,
+  `Iut/WallEquiv/VcI.md`).
 
 ## Arakelov degrees and log-volumes (`Iut/Arakelov`, roadmap P14)
 

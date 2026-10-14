@@ -11,7 +11,7 @@ import Iut.Wall.QPilotRegion
 Milestone 1 showed that the identified-copies algorithm `idAlg D` (Scholze–Stix; `out ι S =
 LGP·S` computed in the one ring structure of `D`) satisfies every field (T1)–(T3) of `EtaAlg D`
 and the LGP law (T4), and that on it the wall is exactly the Scholze–Stix inequality
-`(s − 1)·|log(q)| ≤ log-vol(VC(I))` (`wall_idAlg_iff`). Here the conditions that IUT III and
+`(s − 1)·|log(q)| ≤ log-vol(hull(VC(I)))` (`wall_idAlg_iff`). Here the conditions that IUT III and
 the LANA interim report ([LANA]) put forward as distinguishing Mochizuki's algorithm from the
 identified-copies one are formalized as **candidate** constraints on an `EtaAlg D` (each a `Prop`,
 never assumed), and for each it is proved whether `idAlg` (or its variant `idAlgOn σ` with an
@@ -201,7 +201,7 @@ inequality as its wall, whether or not it satisfies APT. -/
 theorem wall_iff_ss_of_thetaShift
     (hκ : ∀ {B : A.BPSA} {h : A.Side} (ι : A.Choice B h) (S : Ind3 D),
       logVol D (A.out ι S) = -(sFactor (nC D) * D.qPilot.absLogQ) + logVol D S.1) :
-    Wall D A ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (vcI D) := by
+    Wall D A ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (hullOf D (vcI D)) := by
   rw [A.wall_iff_of_lgpLaw (fun _ => -(sFactor (nC D) * D.qPilot.absLogQ)) hκ]
   have hlhs : (concreteVariantData D).qPilot.lhs = -D.qPilot.absLogQ := rfl
   rw [hlhs]
@@ -277,7 +277,7 @@ noncomputable def idAlgOn (σ : Type) [Nonempty σ] : EtaAlg D where
   out _ S := lgp D S.1
   ind12_acts_on_S _ _ := ⟨Equiv.refl _, fun _ => rfl⟩
   etUnitOnly := ⟨fun _ S => lgp D S.1, fun _ _ => rfl⟩
-  realisation _ S := ⟨isAdelic_lgp D S.2.1, (inImage_lgp D S).inHullOfImage⟩
+  realisation _ S := ⟨isAdelic_lgp D S.2.1, inHullOfImage_lgp D S⟩
 
 theorem idAlg_eq_idAlgOn : idAlg D = idAlgOn D Unit := rfl
 
@@ -302,18 +302,18 @@ theorem idAlgOn_distinctSides [Nontrivial σ] : (idAlgOn D σ).DistinctSides :=
 
 /-- **The wall on `idAlgOn σ` is the Scholze–Stix inequality**, for every `σ`. -/
 theorem wall_idAlgOn_iff :
-    Wall D (idAlgOn D σ) ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (vcI D) :=
+    Wall D (idAlgOn D σ) ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (hullOf D (vcI D)) :=
   (idAlgOn D σ).wall_iff_ss_of_thetaShift fun _ S => by
     change logVol D (lgp D S.1) = _
     rw [logVol_lgp D S.2.1, logVol_lgp_integral]
 
 /-- (C3) on the identified-copies model is the Scholze–Stix inequality. -/
 theorem sheq_idAlgOn_iff :
-    (idAlgOn D σ).SHEq ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (vcI D) :=
+    (idAlgOn D σ).SHEq ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (hullOf D (vcI D)) :=
   ((idAlgOn D σ).sheq_iff_wall).trans (wall_idAlgOn_iff D σ)
 
 theorem sheq_idAlg_iff :
-    (idAlg D).SHEq ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (vcI D) :=
+    (idAlg D).SHEq ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (hullOf D (vcI D)) :=
   sheq_idAlgOn_iff D Unit
 
 /-- **`idAlg` violates (C4)**: it has one Hodge theater. -/
@@ -327,7 +327,7 @@ theorem wallDistinct_idAlg : WallDistinct D (idAlg D) := fun _ _ hab => absurd r
 /-- **On `idAlgOn σ` with distinct Hodge theaters, (C5) is the Scholze–Stix inequality.** -/
 theorem wallDistinct_idAlgOn_iff [Nontrivial σ] :
     WallDistinct D (idAlgOn D σ) ↔
-      (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (vcI D) := by
+      (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (hullOf D (vcI D)) := by
   refine ⟨fun h => ?_, fun h => wallDistinct_of_wall _ ((wall_idAlgOn_iff D σ).mpr h)⟩
   rw [← wall_idAlgOn_iff D σ, wall_iff_forall]
   obtain ⟨a, b, hab⟩ := exists_pair_ne σ

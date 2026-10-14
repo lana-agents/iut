@@ -17,8 +17,10 @@ that hold, in the models built in `Iut/Wall`, `Iut/HodgeTheater`, `Iut/ThetaLink
 
 ## The formulations (for fixed `D`)
 
-* **(SS)** the **Scholze–Stix inequality** `SSIneq D : (s − 1)·|log q| ≤ log-vol(VC(I))`
-  (`Iut/Wall/MultiContainer.lean`).
+* **(SS)** the **Scholze–Stix inequality** `SSIneq D : (s − 1)·|log q| ≤ log-vol(hull(VC(I)))`
+  (`Iut/Wall/MultiContainer.lean`), with IUT's container volume, the log-volume of the
+  holomorphic hull of the log-shell container (`Iut/WallEquiv/VcI.md`); the no-hull wall
+  `SSIneqNoHull D` (`≤ log-vol(VC(I))`) implies it (`ssIneq_of_noHull`).
 * **(9-1) literal, on Hodge theaters** (`Lana91 H`): for every P19 Θ-link
   `ThetaLinkIso D (H h₁) (H h₂)` between P18 Hodge theaters `H h₁`, `H h₂`, there are a choice
   `ι` and an (Ind3)-choice `S` with **`η^anab_{ι,S} = η_q`** as pointed linear maps
@@ -48,7 +50,8 @@ that hold, in the models built in `Iut/Wall`, `Iut/HodgeTheater`, `Iut/ThetaLink
 * **`wall_iff_ss_of_thetaShift`**: for *every* η-algorithm whose outputs obey the
   identified-copies law (`ThetaShift`: `log-vol(LGP·S) = −s·|log q| + log-vol(S)`), (9-1) is (SS);
   a different wall needs a different output law or a nonzero distortion of the transport
-  (`MultiContainer.wallOn_iff_of_thetaShift`: `(s − 1)·|log q| − distortion ≤ log-vol(VC(I))`).
+  (`MultiContainer.wallOn_iff_of_thetaShift`:
+  `(s − 1)·|log q| − distortion ≤ log-vol(hull(VC(I)))`).
 * **`variant_of_ss`**: (SS) ⇒ (Var). The converse fails in general: (Var) is equivalent to the
   existence of *some* η-algorithm satisfying (9-1) (`exists_wall_iff`, the trivial instance),
   while (SS) is (9-1) for the identified-copies algorithms of the models.

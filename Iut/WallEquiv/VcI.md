@@ -1,16 +1,23 @@
 # VCI-CHECK: the log-volume of `VC(I)` and of `hull(VC(I))` (`VcI.lean`)
 
-Question: what is `log-vol(VC(I))`, the right-hand side of the Scholze–Stix inequality
-`Wall.SSIneq D : (s − 1)·|log q| ≤ logVol D (vcI D)`, in terms of local data? What is
+Question: what is `log-vol(VC(I))`, the right-hand side of the (former) Scholze–Stix inequality
+`(s − 1)·|log q| ≤ logVol D (vcI D)` (now `Wall.SSIneqNoHull D`), in terms of local data? What is
 `log-vol(hull(VC(I)))`? Which of the two is the container volume of IUT, and is the Lean
 normalization faithful to IUT III, Proposition 3.9 and IUT IV, Proposition 1.2?
 
-Labels: **[Lean]** proved in `Iut/WallEquiv/VcI.lean` (no definitions changed);
+Labels: **[Lean]** proved in `Iut/WallEquiv/VcI.lean`;
 **[paper]** computed here, not formalized; **[lit]** read in the IUT texts (IUT III:
 `review-iut3/iut3.txt`, the RIMS preprint with printed page numbers; IUT IV:
 `iut-scratch/proofmap/iut4.txt`, version of April 2020, printed page numbers).
 
 ## 0. Verdict
+
+**Switched (Christian's decision).** `Wall.SSIneq D` is now
+`(s − 1)·|log q| ≤ logVol D (hullOf D (vcI D))`, and the (Ind3)-choices are the adelic regions
+`S ⊆ hull(VC(I))` (`Iut/Wall/Ind3.lean`, a documented deviation from [LANA], §6). The former
+wall is `Wall.SSIneqNoHull D` (`(s − 1)·|log q| ≤ logVol D (vcI D)`; numerically false on many
+Szpiro-record curves, not IUT's container), with `ssIneq_of_noHull : SSIneqNoHull D → SSIneq D`.
+The archimedean container is **not** changed (see §2(e)).
 
 * **IUT's container volume is the hull.** `−|log(Θ)|` in IUT III, Corollary 3.12 is the
   log-volume of the *holomorphic hull* of the union of possible images (proof of Cor. 3.12,
@@ -49,7 +56,8 @@ Notation: a packet `T = ⊗_j K_{c j}` over `ℚ_p`, all places over `p`, with `
 | Lean name | statement |
 |---|---|
 | `logVol_vcI_eq` | `logVol D (vcI D) = (∑_i ∑ᶠ_{v_ℚ} vcIPacket D i v_ℚ)/ℓ*`, `vcIPacket = ∑_c w_c·μ^log(vcIComp)` |
-| `ssIneq_iff_packets` | `SSIneq D ↔ (s−1)·|log q| ≤ (∑_i ∑ᶠ vcIPacket)/ℓ*` |
+| `ssIneqNoHull_iff_packets` | `SSIneqNoHull D ↔ (s−1)·|log q| ≤ (∑_i ∑ᶠ vcIPacket)/ℓ*` |
+| `ssIneq_iff_packets` | `SSIneq D ↔ (s−1)·|log q| ≤ (∑_i ∑ᶠ hullPacket)/ℓ*` (after the switch) |
 | `logVol_hull_vcI_eq` | `logVol D (hullOf D (vcI D)) = (∑_i ∑ᶠ hullPacket)/ℓ*`, `hullPacket = ∑_c w_c·μ^log(hull(vcIComp))` |
 | `logVol_hull_vcI_sub_eq` | `logVol(hull VC(I)) − logVol(VC(I)) = (∑_i ∑ᶠ defectPacket)/ℓ*`, with `shellDefect` at primes and `archDefect` at `∞` |
 | `logVol_vcI_le_hull`, `defectPacket_nonneg` | `logVol(VC(I)) ≤ logVol(hull VC(I))` |
@@ -162,6 +170,13 @@ hull exceeds IUT's bound by `½·log N = ((m−1)/2)·log 2` per packet; after p
 this is about `((ℓ+1)/8)·log 2`. The deviation makes the right-hand side larger, i.e. it favours
 `SSIneq`. Its size is `O(ℓ)`, against `Θ(ℓ·log q)` for the main terms.
 
+**Decision (kept).** The repository keeps the archimedean log-shell of IUT III, Prop. 3.2(ii)
+(the unit ball of the tensor-product metric) and does not switch to IUT IV's `π^{j+1}·B_I`. This
+is conservative: the larger container only enlarges the right-hand side of `SSIneq`, so it can
+only weaken the inequality (make it easier to satisfy), by `((m−1)/2)·log 2` per packet of `m`
+factors, i.e. about `((ℓ+1)/8)·log 2` after procession averaging; a refutation of `SSIneq`
+with this container would a fortiori refute it with IUT IV's.
+
 ## 3. Faithfulness: the discrepancy as a formula
 
 Write `Δ_hull(D) := log-vol(hull VC(I)) − log-vol(VC(I)) ≥ 0` (`logVol_hull_vcI_sub_eq`). Then
@@ -204,15 +219,14 @@ volume of the hull.
   exact value by `≈ (m/2)·log 2 − ½` per packet, which `idea6`'s margins `1.13–1.33` should
   absorb for large `ℓ`, but this is not checked here); and the existence of `D` (`orb`,
   `localData`), as `idea6` says.
-* **The hull variant.** `logVol_vcI_le_hull` gives `SSIneq D ⇒ (s−1)·|log q| ≤
-  logVol(hull(VC(I)))`. The hull form is the one whose normal form matches IUT IV, Theorem 1.10.
-  By `idea6` §0/§8 it is ABC-strength and not refuted by the `idea6` families. Whether the
-  intended wall should use `hullOf D (vcI D)` is **left to Christian**. No definition was
-  changed.
-* Relation to `Gap.lean`: `gapTerm = shellDefect + ind2Term` at primes and `= archDefect` at `∞`,
-  so `gap D = Δ_hull(D) + (1/ℓ*)·∑_i ∑_p ∑_c w_c·ind2Term` [paper; immediate from
-  `gapTerm_finite`, `gapTerm_infinite` and `logVol_hull_vcI_sub_eq`, not stated in Lean]. The
-  "window" between (Var) and (SS) therefore contains the whole packet-index loss.
+* **The hull variant.** `logVol_vcI_le_hull` gives `SSIneqNoHull D ⇒ SSIneq D`
+  (`ssIneq_of_noHull`). The hull form is the one whose normal form matches IUT IV, Theorem 1.10.
+  By `idea6` §0/§8 it is ABC-strength and not refuted by the `idea6` families. **Decided
+  (Christian): `Wall.SSIneq` uses `hullOf D (vcI D)`.**
+* Relation to `Gap.lean` (now in Lean): `gapTerm = shellDefect + ind2Term` at primes and
+  `= archDefect` at `∞`; `gapNoHull_eq_gap_add : gapNoHull D = gap D + Δ_hull(D)`, and
+  `gap_eq : gap D = (1/ℓ*)·∑_i ∑_p ∑_c w_c·ind2Term`. The window between (Var) and the no-hull
+  wall contains the whole packet-index loss; after the switch only the (Ind2)-terms remain.
 
 ## 5. Open points
 
@@ -226,4 +240,6 @@ volume of the hull.
 4. The exact archimedean values (`μ^log` of a Euclidean ball against a polydisc, with the `√N`
    similarity) in Lean; only the upper bound `|I|·log(√2π)` and `archDefect > 0`
    (`Gap.lean`) are formalized.
-5. Whether `Wall.SSIneq` should be restated with `hullOf D (vcI D)` (Christian's decision).
+5. ~~Whether `Wall.SSIneq` should be restated with `hullOf D (vcI D)`~~: done (switched).
+   After the switch the gap between (Var) and `SSIneq` is the average of the (Ind2)-terms at
+   the bad primes only (`Gap.lean`, `gap_eq`); their value is open.

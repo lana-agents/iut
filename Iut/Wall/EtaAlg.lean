@@ -21,7 +21,8 @@ where `η_q, η^anab_S : R_val → R_ss` are two isomorphisms of pointed real li
 the class of `M = 1·S`, "`LGP·S`", the output of the anabelian **η-algorithm** ([LANA], §9.1,
 Steps 1–9; the Θ-value-action part of IUT III, Theorem 3.11, [LANA], §6.2) run on the input
 BPS after a choice of an isomorphism `ι` of it with the Θ-pilot BPS of a Hodge theater
-(Step 1, which introduces (Ind1), (Ind2)), and a choice of `S ⊆ VC(I)` ((Ind3)). [LANA], p. 44:
+(Step 1, which introduces (Ind1), (Ind2)), and a choice of `S ⊆ hull(VC(I))` ((Ind3);
+`Iut/Wall/Ind3.lean`). [LANA], p. 44:
 "if the problem described in the 'main goal' … is solved, then Corollary 3.12 (and thus …
 abc) will follow".
 

@@ -46,7 +46,7 @@ explicit hypothesis and never assumed.
   `Thm311`) and Step (xi) (as `XiPrinciple`) imply `ClassicalABC`, through
   `Wall.classicalABC_of_wall`;
 * **`xi_iff_ss`**: in the lattice model, Step (xi) *is* the Scholze–Stix inequality
-  `SSIneq D : (s − 1)·|log q| ≤ log-vol(VC(I))`.
+  `SSIneq D : (s − 1)·|log q| ≤ log-vol(hull(VC(I)))`.
 
 ## The answer to the question (5) of the work package
 
@@ -115,11 +115,11 @@ theorem act_le {w : Scaling D} {S T : Region D} (h : ∀ i, S i ≤ T i) (i : Fi
   · exact Set.image_mono (h i (.finite p))
   · exact h i .infinite
 
-/-- A log-shell compatible scaling maps (Ind3)-choices to (Ind3)-choices. -/
+/-- A log-shell compatible scaling maps (Ind3)-choices to (Ind3)-choices (it preserves
+`hull(VC(I))`, `act_hull_vcI_le`). -/
 def ind3Map {w : Scaling D} (hw : LogShellCompat D w) (S : Ind3 D) : Ind3 D :=
-  ⟨act D w S.1, isAdelic_act D w S.2.1, fun i => by
-    have := act_le (w := w) S.2.2 i
-    rwa [show act D w (vcI D) i = vcI D i from congrFun hw i] at this⟩
+  ⟨act D w S.1, isAdelic_act D w S.2.1, fun i vQ =>
+    (act_le (w := w) S.2.2 i vQ).trans (act_hull_vcI_le D hw i vQ)⟩
 
 /-- **A log-shell compatible scaling permutes the (Ind3)-choices.** -/
 def ind3Act {w : Scaling D} (hw : LogShellCompat D w) : Ind3 D ≃ Ind3 D where

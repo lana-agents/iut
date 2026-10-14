@@ -13,17 +13,36 @@ Christian's question: *is the LANA wall any weaker than the Scholze–Stix wall?
 
 * **(Var)** `−|log(q)| ≤ −|log(Θ)| = R := log-vol(hull(Θ-pilot region))` (`rhs_eq_logVol`,
   `rhs_eq_logVol_image`), the Corollary 3.12 variant, equivalently (9-1) for *some* η-algorithm;
-* **(SS)** `−|log(q)| ≤ log-vol(LGP·VC(I))` (`ss_iff_lgp_vcI`), the Scholze–Stix inequality.
+* **(SS)** `−|log(q)| ≤ log-vol(LGP·hull(VC(I)))` (`ss_iff_lgp_vcI`), the Scholze–Stix
+  inequality with IUT's container `hull(VC(I))`;
+* (no-hull) `−|log(q)| ≤ log-vol(LGP·VC(I))` (`ssNoHull_iff_lgp_vcI`), the no-hull wall
+  `SSIneqNoHull`, which implies (SS).
 
-## Results
+## Results: the gap `Δ(D)` between (Var) and (SS)
 
-* `logVol_lgp_vcI_le_rhs : log-vol(LGP·VC(I)) ≤ R`; **`gap D := R − log-vol(LGP·VC(I))`**,
-  `gap_nonneg`, `gap_eq_rhs_add`; `ss_iff_le_rhs_sub_gap : SSIneq D ↔ −|log q| ≤ R − gap D`,
+* `logVol_lgp_vcI_le_rhs : log-vol(LGP·hull(VC(I))) ≤ R`;
+  **`gap D := R − log-vol(LGP·hull(VC(I)))`**, `gap_nonneg`, `gap_eq_rhs_add`;
+  `ss_iff_le_rhs_sub_gap : SSIneq D ↔ −|log q| ≤ R − gap D`,
   `variant_iff_le_rhs : (Var) ↔ −|log q| ≤ R`, `variant_of_ss_gap`,
   `ss_iff_variant_of_gap_eq_zero`, and `variant_and_not_ss_iff`: (Var) holds and (SS) fails iff
   `−|log q| ∈ (R − gap D, R]`.
-* **Local formula** (`gap_eq`): `gap D = (1/ℓ*)·∑_i ∑ᶠ_{v_ℚ} ∑_c w_c·δ_{i,v_ℚ,c}` with
-  `δ = μ^log(hull(Θ_{i,v_ℚ,c})) − μ^log((LGP·VC(I))_{i,v_ℚ,c}) ≥ 0` (`gapTerm`,
+* **Local formula** (`gap_eq`): `gap D = (1/ℓ*)·∑_i ∑ᶠ_{v_ℚ} gapHullAt D i v_ℚ`, where
+  `gapHullAt` is `∑_c w_c·ind2Term` at a prime and `0` at `∞` (`gapHullAt_eq`): with the hull on
+  both sides only the enlargement of the hull by the (Ind2)-union of the images of
+  `q^{j²}·⊗𝓘` remains (`ind2Term_nonneg`). It vanishes away from the bad residue characteristics
+  (`gapHullAt_eq_zero`), and if it vanishes there too, (SS) is (Var)
+  (`gap_eq_zero_of_ind2Term`, `ss_iff_variant_of_ind2Term`). **Open**: whether the (Ind2)-terms
+  at the bad primes are `0` or `> 0` (the indeterminacy automorphisms at a prime are all
+  `ℤ_p`-lattice automorphisms of the factor log-shells, `tensorAut`, which need not commute
+  with the theta values); so the sign `Δ(D) ≥ 0` is all that is proved.
+
+## The no-hull gap `Δ_noHull(D)`
+
+* `gapNoHull D := R − log-vol(LGP·VC(I))`; `gapNoHull_eq_gap_add`:
+  `Δ_noHull(D) = Δ(D) + (log-vol(hull(VC(I))) − log-vol(VC(I)))`, `gap_le_gapNoHull`,
+  `ssNoHull_iff_le_rhs_sub_gapNoHull`.
+* **Local formula** (`gapNoHull_eq`): `gapNoHull D = (1/ℓ*)·∑_i ∑ᶠ_{v_ℚ} ∑_c w_c·δ_{i,v_ℚ,c}`
+  with `δ = μ^log(hull(Θ_{i,v_ℚ,c})) − μ^log((LGP·VC(I))_{i,v_ℚ,c}) ≥ 0` (`gapTerm`,
   `gapTerm_nonneg`), where `hull` is the least region `a·O` containing a component
   (`LocalTheory.leastHull`; the packet hull is componentwise this, `proj_hull_productRegion`).
   - at `∞`: the theta-pilot component *is* the log-shell (`thetaComponent_infinite`: the
@@ -31,18 +50,18 @@ Christian's question: *is the LANA wall any weaker than the Scholze–Stix wall?
     Euclidean ball) against its least polydisc `a·B_I` (`gapTerm_infinite`);
   - at a prime: `δ = shellDefect + ind2Term` (`gapTerm_finite`): the defect of the tensor product
     of the log-shells against its hull (independent of theta values and indeterminacies), plus
-    the enlargement of the hull by the (Ind2)-union of the images of `q^{j²}·⊗𝓘`
-    (`ind2Term_nonneg`), which vanishes away from the bad residue characteristics
+    the (Ind2)-term, which vanishes away from the bad residue characteristics
     (`ind2Term_eq_zero`); the shell defect vanishes at odd primes unramified in `K`
     (`shellDefect_eq_zero`). So `δ = 0` at odd unramified primes that are not bad
     (`gapTerm_eq_zero`), and `gapAt D i` is supported on `∞`, `2`, the bad residue
     characteristics and the ramified primes (`support_gapAt_subset`).
-* **Strictness** (`gap_pos : 0 < gap D` for every `D`): `K` is totally complex since `√−1 ∈ F`
-  (`InitialThetaData.isComplex_Kt`), every capsule has at least two labels, so every archimedean
-  packet is a product of at least two copies of `ℂ` (`exists_ne_maximalSpectrum`), and there the
-  log-shell ball is strictly smaller than its least polydisc
+* **Strictness** (`gapNoHull_pos : 0 < gapNoHull D` for every `D`): `K` is totally complex since
+  `√−1 ∈ F` (`InitialThetaData.isComplex_Kt`), every capsule has at least two labels, so every
+  archimedean packet is a product of at least two copies of `ℂ` (`exists_ne_maximalSpectrum`),
+  and there the log-shell ball is strictly smaller than its least polydisc
   (`componentVol_archLogShell_lt_leastHull`): `δ_∞ > 0` for every tuple (`gapTerm_infinite_pos`).
-  `archPart_le_gap` bounds `gap D` below by its archimedean part; `ss_imp_lt_rhs`.
+  `archPart_le_gapNoHull` bounds `gapNoHull D` below by its archimedean part;
+  `ssNoHull_imp_lt_rhs`. The shell and archimedean defects are exactly what the hull removes.
 
 The value of `archDefect` (by the orthogonality of the components for the tensor-product metric,
 `log((2^{N−1})!)/2^N` for a packet of `N` complex factors) and the sign of the shell defect at `2`
@@ -480,29 +499,31 @@ variable (D : InitialThetaData.{0})
 
 /-! ### The gap `Δ(D)` -/
 
-/-- **The gap** `Δ(D) = −|log(Θ)| − log-vol(LGP·VC(I))` between the right-hand sides of the
+/-- **The gap** `Δ(D) = −|log(Θ)| − log-vol(LGP·hull(VC(I)))` between the right-hand sides of the
 Corollary 3.12 variant (Var) and of the Scholze–Stix inequality in its form
-`−|log(q)| ≤ log-vol(LGP·VC(I))` (`ss_iff_lgp_vcI`). -/
-def gap : ℝ := (concreteVariantData D).rhsData.rhs - logVol D (lgp D (vcI D))
+`−|log(q)| ≤ log-vol(LGP·hull(VC(I)))` (`ss_iff_lgp_vcI`). -/
+def gap : ℝ := (concreteVariantData D).rhsData.rhs - logVol D (lgp D (hullOf D (vcI D)))
 
-/-- **`log-vol(LGP·VC(I)) ≤ −|log(Θ)|`**: `LGP·VC(I)` lies in the (Ind1)-image of the
-theta-pilot region with the theta values at the labels `j` (`inImage_lgp`), hence in its hull. -/
+/-- **`log-vol(LGP·hull(VC(I))) ≤ −|log(Θ)|`**: `LGP·hull(VC(I))` lies in the hull of the
+(Ind1)-image of the theta-pilot region with the theta values at the labels `j`
+(`inHullOfImage_lgp`). -/
 theorem logVol_lgp_vcI_le_rhs :
-    logVol D (lgp D (vcI D)) ≤ (concreteVariantData D).rhsData.rhs :=
-  logVol_le_rhs D (isAdelic_lgp D (isAdelic_vcI D)) (inImage_lgp D (Ind3.top D)).inHullOfImage
+    logVol D (lgp D (hullOf D (vcI D))) ≤ (concreteVariantData D).rhsData.rhs :=
+  logVol_le_rhs D (isAdelic_lgp D (isAdelic_hullOf_vcI D)) (inHullOfImage_lgp D (Ind3.top D))
 
 theorem gap_nonneg : 0 ≤ gap D := sub_nonneg.mpr (logVol_lgp_vcI_le_rhs D)
 
 lemma logVol_lgp_vcI_eq :
-    logVol D (lgp D (vcI D)) = (concreteVariantData D).rhsData.rhs - gap D := by
+    logVol D (lgp D (hullOf D (vcI D))) = (concreteVariantData D).rhsData.rhs - gap D := by
   unfold gap
   ring
 
-/-- `Δ(D) = −|log(Θ)| + s·|log(q)| − log-vol(VC(I))` (`logVol_lgp`, `logVol_lgp_integral`). -/
+/-- `Δ(D) = −|log(Θ)| + s·|log(q)| − log-vol(hull(VC(I)))` (`logVol_lgp`,
+`logVol_lgp_integral`). -/
 lemma gap_eq_rhs_add : gap D = (concreteVariantData D).rhsData.rhs +
-    sFactor (nC D) * D.qPilot.absLogQ - logVol D (vcI D) := by
+    sFactor (nC D) * D.qPilot.absLogQ - logVol D (hullOf D (vcI D)) := by
   unfold gap
-  rw [logVol_lgp D (isAdelic_vcI D), logVol_lgp_integral]
+  rw [logVol_lgp D (isAdelic_hullOf_vcI D), logVol_lgp_integral]
   ring
 
 /-- **(SS) is (Var) with the right-hand side lowered by the gap**:
@@ -537,7 +558,36 @@ theorem variant_and_not_ss_iff :
   rw [ss_iff_le_rhs_sub_gap, variant_iff_le_rhs, not_le]
   exact and_comm
 
-/-! ### The gap as a sum of local terms -/
+/-! ### The no-hull gap -/
+
+/-- **The no-hull gap** `Δ_noHull(D) = −|log(Θ)| − log-vol(LGP·VC(I))`, the gap between (Var) and
+the no-hull wall `SSIneqNoHull` (`ssNoHull_iff_lgp_vcI`). -/
+def gapNoHull : ℝ := (concreteVariantData D).rhsData.rhs - logVol D (lgp D (vcI D))
+
+/-- **The no-hull gap is the gap plus the hull–container difference**:
+`Δ_noHull(D) = Δ(D) + (log-vol(hull(VC(I))) − log-vol(VC(I)))`. -/
+theorem gapNoHull_eq_gap_add : gapNoHull D =
+    gap D + (logVol D (hullOf D (vcI D)) - logVol D (vcI D)) := by
+  unfold gapNoHull gap
+  rw [logVol_lgp D (isAdelic_vcI D), logVol_lgp D (isAdelic_hullOf_vcI D)]
+  ring
+
+theorem gap_le_gapNoHull : gap D ≤ gapNoHull D := by
+  rw [gapNoHull_eq_gap_add]
+  linarith [logVol_vcI_le_logVol_hullOf D]
+
+theorem gapNoHull_nonneg : 0 ≤ gapNoHull D := (gap_nonneg D).trans (gap_le_gapNoHull D)
+
+/-- **The no-hull wall is (Var) with the right-hand side lowered by the no-hull gap.** -/
+theorem ssNoHull_iff_le_rhs_sub_gapNoHull :
+    SSIneqNoHull D ↔ -D.qPilot.absLogQ ≤ (concreteVariantData D).rhsData.rhs - gapNoHull D := by
+  rw [ssNoHull_iff_lgp_vcI]
+  have hlhs : (concreteVariantData D).qPilot.lhs = -D.qPilot.absLogQ := rfl
+  unfold gapNoHull
+  rw [hlhs]
+  constructor <;> intro h <;> linarith
+
+/-! ### The no-hull gap as a sum of local terms -/
 
 /-- **The component of `LGP·VC(I)`** at a tuple `c`: `q_{v_j}^{j²}·⊗_l 𝓘_{v_l}` at a prime,
 the archimedean log-shell at `∞`. -/
@@ -638,10 +688,10 @@ lemma finite_support_gapAt (i : Fin (nC D)) : (Function.support (gapAt D i)).Fin
   rw [this]
   exact Function.support_sub _ _
 
-/-- **The gap is an average of sums of local terms**:
-`Δ(D) = (1/ℓ*)·∑_i ∑_{v_ℚ} ∑_c w_c·δ_{i,v_ℚ,c}`. -/
-theorem gap_eq : gap D = (∑ i : Fin (nC D), ∑ᶠ vQ, gapAt D i vQ) / nC D := by
-  unfold gap
+/-- **The no-hull gap is an average of sums of local terms**:
+`Δ_noHull(D) = (1/ℓ*)·∑_i ∑_{v_ℚ} ∑_c w_c·δ_{i,v_ℚ,c}`. -/
+theorem gapNoHull_eq : gapNoHull D = (∑ i : Fin (nC D), ∑ᶠ vQ, gapAt D i vQ) / nC D := by
+  unfold gapNoHull
   rw [rhs_eq_logVol]
   unfold logVol LogVolumeData.processionVol
   rw [← sub_div, ← Finset.sum_sub_distrib]
@@ -787,7 +837,7 @@ theorem support_gapAt_subset (i : Fin (nC D)) :
       fun w hw => by_contra fun hne => hr ⟨w, hw, hne⟩)
   · exact Or.inl rfl
 
-/-! ### Strictness: `Δ(D) > 0` -/
+/-! ### Strictness of the no-hull gap: `Δ_noHull(D) > 0` -/
 
 /-- Every capsule `S_{j+1} = {0, …, j}` (`j = i + 1 ≥ 1`) has the two labels `0 ≠ j`. -/
 lemma zero_ne_distinguished (i : Fin (nC D)) :
@@ -816,27 +866,135 @@ theorem gapAt_infinite_pos (i : Fin (nC D)) : 0 < gapAt D i .infinite := by
   exact Finset.sum_pos (fun c _ => mul_pos (Finset.prod_pos fun _ _ => weight_pos _ _ _)
     (gapTerm_infinite_pos D i c)) hne
 
-/-- **The gap is positive for every initial Θ-datum**: the (Var)-wall is strictly weaker than
-the (SS)-wall. -/
-theorem gap_pos : 0 < gap D := by
-  rw [gap_eq]
+/-- **The no-hull gap is positive for every initial Θ-datum**: the (Var)-wall is strictly
+weaker than the no-hull wall. -/
+theorem gapNoHull_pos : 0 < gapNoHull D := by
+  rw [gapNoHull_eq]
   refine div_pos (Finset.sum_pos (fun i _ => ?_) ⟨⟨0, nC_pos D⟩, Finset.mem_univ _⟩)
     (by exact_mod_cast nC_pos D)
   exact (gapAt_infinite_pos D i).trans_le
     (single_le_finsum _ (finite_support_gapAt D i) (gapAt_nonneg D i))
 
-/-- **The archimedean lower bound**: `Δ(D) ≥ (1/ℓ*)·∑_i ∑_c w_c·δ_∞(c) > 0`. -/
-theorem archPart_le_gap :
-    (∑ i : Fin (nC D), gapAt D i .infinite) / nC D ≤ gap D := by
-  rw [gap_eq]
+/-- **The archimedean lower bound**: `Δ_noHull(D) ≥ (1/ℓ*)·∑_i ∑_c w_c·δ_∞(c) > 0`. -/
+theorem archPart_le_gapNoHull :
+    (∑ i : Fin (nC D), gapAt D i .infinite) / nC D ≤ gapNoHull D := by
+  rw [gapNoHull_eq]
   refine div_le_div_of_nonneg_right (Finset.sum_le_sum fun i _ => ?_) (Nat.cast_nonneg _)
   exact single_le_finsum _ (finite_support_gapAt D i) (gapAt_nonneg D i)
 
-/-- With `Δ(D) > 0`, (SS) is strictly stronger than (Var) as an inequality: (SS) gives
-`−|log(q)| ≤ −|log(Θ)| − Δ(D) < −|log(Θ)|`. -/
-theorem ss_imp_lt_rhs (h : SSIneq D) :
+/-- With `Δ_noHull(D) > 0`, the no-hull wall is strictly stronger than (Var) as an inequality:
+it gives `−|log(q)| ≤ −|log(Θ)| − Δ_noHull(D) < −|log(Θ)|`. -/
+theorem ssNoHull_imp_lt_rhs (h : SSIneqNoHull D) :
     -D.qPilot.absLogQ < (concreteVariantData D).rhsData.rhs :=
-  ((ss_iff_le_rhs_sub_gap D).mp h).trans_lt (sub_lt_self _ (gap_pos D))
+  ((ssNoHull_iff_le_rhs_sub_gapNoHull D).mp h).trans_lt (sub_lt_self _ (gapNoHull_pos D))
+
+
+/-! ### The gap as a sum of local terms: only the (Ind2)-terms remain -/
+
+/-- **The local term of the gap** at capsule `i`: `∑_c w_c·ind2Term` at a prime, `0` at `∞`. -/
+def gapHullAt (i : Fin (nC D)) : RationalPlace → ℝ
+  | .finite p => ∑ c : InitialThetaData.Lab (nC D) i → LocalTheory.Fiber D.Fmod (.finite p),
+      tupleWeight (.finite p) c * ind2Term D i p c
+  | .infinite => 0
+
+/-- The components of `hull(VC(I))` are the least hulls of the components of `VC(I)`. -/
+lemma proj_hull_vcI (i : Fin (nC D)) (vQ : RationalPlace)
+    (c : InitialThetaData.Lab (nC D) i → LocalTheory.Fiber D.Fmod vQ) :
+    LocalTheory.proj D.placeSect vQ c ((hullOf D (vcI D) i).region vQ) =
+      leastHull vQ (LocalTheory.tuple D.placeSect vQ c) (vcIComp D i vQ c) :=
+  proj_hull_productRegion D.placeSect (nC D) i vQ (fun c => vcIComp D i vQ c)
+    (fun c => vcIComp_admissible D i vQ c) c
+
+/-- The components of the hull of the theta-pilot region. -/
+lemma proj_hull_thetaPilot (i : Fin (nC D)) (vQ : RationalPlace)
+    (c : InitialThetaData.Lab (nC D) i → LocalTheory.Fiber D.Fmod vQ) :
+    LocalTheory.proj D.placeSect vQ c ((hullOf D (D.thetaPilot (nC D)) i).region vQ) =
+      leastHull vQ (LocalTheory.tuple D.placeSect vQ c) (D.thetaComponent (nC D) i vQ c) :=
+  proj_hull_productRegion D.placeSect (nC D) i vQ _
+    (fun c => D.thetaComponentOn_admissible _ i _ (InitialThetaData.ivLabels_nonempty _ i) vQ c) c
+
+/-- **The packet term of the gap** is the difference of the packet log-volumes of the hull of
+the theta-pilot region and of `LGP·hull(VC(I))`: at `∞` both components are the least polydisc
+of the log-shell (`thetaComponent_infinite`), at a prime the difference is the (Ind2)-term. -/
+lemma gapHullAt_eq (i : Fin (nC D)) (vQ : RationalPlace) :
+    gapHullAt D i vQ =
+      (LocalTheory.vol D.placeSect (nC D)).packetVol i vQ
+          ((hullOf D (D.thetaPilot (nC D)) i).region vQ) -
+        (LocalTheory.vol D.placeSect (nC D)).packetVol i vQ
+          ((lgp D (hullOf D (vcI D)) i).region vQ) := by
+  rw [LocalTheory.packetVol_eq, LocalTheory.packetVol_eq, ← Finset.sum_sub_distrib]
+  rcases vQ with p | _
+  · refine Finset.sum_congr rfl fun c _ => ?_
+    rw [← mul_sub, proj_lgp, proj_hull_vcI, proj_hull_thetaPilot]
+    rfl
+  · refine (Finset.sum_eq_zero fun c _ => ?_).symm
+    have h : LocalTheory.proj D.placeSect .infinite c
+        ((lgp D (hullOf D (vcI D)) i).region .infinite) =
+        LocalTheory.proj D.placeSect .infinite c ((hullOf D (vcI D) i).region .infinite) := rfl
+    rw [h, proj_hull_vcI, proj_hull_thetaPilot, thetaComponent_infinite]
+    exact sub_self _
+
+lemma gapHullAt_nonneg (i : Fin (nC D)) (vQ : RationalPlace) : 0 ≤ gapHullAt D i vQ := by
+  rcases vQ with p | _
+  · exact Finset.sum_nonneg fun c _ => mul_nonneg
+      (Finset.prod_nonneg fun _ _ => (weight_pos _ _ _).le) (ind2Term_nonneg D i p c)
+  · exact le_rfl
+
+/-- **The gap is carried by the bad residue characteristics**: the local term vanishes at `∞`
+and at every prime that is not a bad residue characteristic. -/
+theorem gapHullAt_eq_zero (i : Fin (nC D)) (p : Nat.Primes) (hbad : (p : ℕ) ∉ D.badChars) :
+    gapHullAt D i (.finite p) = 0 :=
+  Finset.sum_eq_zero fun c _ => by rw [ind2Term_eq_zero D i p c hbad, mul_zero]
+
+lemma finite_support_gapHullAt (i : Fin (nC D)) : (Function.support (gapHullAt D i)).Finite := by
+  refine (((LocalTheory.vol D.placeSect (nC D)).finite_support_packetVol
+    (hullOf D (D.thetaPilot (nC D)) i)).union
+    ((LocalTheory.vol D.placeSect (nC D)).finite_support_packetVol
+      (lgp D (hullOf D (vcI D)) i))).subset ?_
+  rw [show gapHullAt D i = _ from funext (gapHullAt_eq D i)]
+  exact Function.support_sub _ _
+
+/-- **The gap is the average of the (Ind2)-terms**:
+`Δ(D) = (1/ℓ*)·∑_i ∑_p ∑_c w_c·ind2Term(i, p, c)`. With the hull on both sides, the shell
+defects and the archimedean defects (which make up the no-hull gap together with the
+(Ind2)-terms) cancel. -/
+theorem gap_eq : gap D = (∑ i : Fin (nC D), ∑ᶠ vQ, gapHullAt D i vQ) / nC D := by
+  unfold gap
+  rw [rhs_eq_logVol]
+  unfold logVol LogVolumeData.processionVol
+  rw [← sub_div, ← Finset.sum_sub_distrib]
+  refine congrArg₂ (· / ·) (Finset.sum_congr rfl fun i _ => ?_) rfl
+  unfold LogVolumeData.globalVol
+  rw [← finsum_sub_distrib ((LocalTheory.vol D.placeSect (nC D)).finite_support_packetVol _)
+    ((LocalTheory.vol D.placeSect (nC D)).finite_support_packetVol _)]
+  exact finsum_congr fun vQ => (gapHullAt_eq D i vQ).symm
+
+/-- **If the (Ind2)-terms vanish at the bad residue characteristics, the gap vanishes**, and the
+Scholze–Stix inequality (with the hull) is the Corollary 3.12 variant. -/
+theorem gap_eq_zero_of_ind2Term
+    (h : ∀ (i : Fin (nC D)) (p : Nat.Primes) c, (p : ℕ) ∈ D.badChars → ind2Term D i p c = 0) :
+    gap D = 0 := by
+  rw [gap_eq]
+  refine div_eq_zero_iff.mpr (Or.inl (Finset.sum_eq_zero fun i _ => ?_))
+  refine finsum_eq_zero_of_forall_eq_zero fun vQ => ?_
+  rcases vQ with p | _
+  · by_cases hb : (p : ℕ) ∈ D.badChars
+    · exact Finset.sum_eq_zero fun c _ => by rw [h i p c hb, mul_zero]
+    · exact gapHullAt_eq_zero D i p hb
+  · rfl
+
+theorem ss_iff_variant_of_ind2Term
+    (h : ∀ (i : Fin (nC D)) (p : Nat.Primes) c, (p : ℕ) ∈ D.badChars → ind2Term D i p c = 0) :
+    SSIneq D ↔ Corollary312Variant (concreteVariantData D) :=
+  ss_iff_variant_of_gap_eq_zero D (gap_eq_zero_of_ind2Term D h)
+
+/-- **The two gaps, locally**: `Δ_noHull(D) − Δ(D) = log-vol(hull(VC(I))) − log-vol(VC(I))`, the
+average of the shell defects and of the archimedean defects (`gapNoHull_eq_gap_add`; the local
+form is `logVol_hull_vcI_sub_eq` in `VcI.lean`). In particular `Δ_noHull(D) > 0` for every `D`
+(`gapNoHull_pos`), while `Δ(D)` is the average of the (Ind2)-terms only (`gap_eq`). -/
+theorem gap_le_gapNoHull_summary :
+    0 ≤ gap D ∧ gap D ≤ gapNoHull D ∧ 0 < gapNoHull D :=
+  ⟨gap_nonneg D, gap_le_gapNoHull D, gapNoHull_pos D⟩
 
 end
 

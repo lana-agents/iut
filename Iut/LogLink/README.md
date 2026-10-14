@@ -239,7 +239,12 @@ holds in the model). As in M1d, this chain is bookkeeping: its content is Step (
 arrow the distortion is `0` (unit-induced Kummer identifications are volume neutral); the
 η-algorithm through any vertex has the identified-copies law `ThetaShift`, also after transport
 to any vertex (`logVol_transport_out`); and **Step (xi) is the Scholze–Stix inequality**
-`SSIneq D` (`xi_iff_ss`; independent of the lattice and the Kummer data, `xi_iff_xi`). This holds
+`SSIneq D` (`xi_iff_ss`; independent of the lattice and the Kummer data, `xi_iff_xi`). Here
+`SSIneq D` is `(s − 1)·|log q| ≤ log-vol(hull(VC(I)))`: the (Ind3)-choices range over the
+holomorphic hull of the log-shell container (IUT III, Corollary 3.12, Step (xi-d)–(xi-f);
+`Iut/Wall/Ind3.lean`), and log-shell compatible Kummer identifications preserve that hull
+(`ThetaLink.act_hull_vcI`), so `ind3Act` still permutes the (Ind3)-choices. The no-hull wall
+`SSIneqNoHull D` (`≤ log-vol(VC(I))`) implies it (`ssIneq_of_noHull`). This holds
 for alien Kummer data, whose transports along all arrows are not ring isomorphisms
 (`LatticeKummer.alt`, `alt_alien_horiz`, `alt_alien_vert`). In M3 terms: the only mechanism by
 which the wall differs from SS (volume distortion of the transport) is excluded by

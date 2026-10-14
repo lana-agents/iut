@@ -13,7 +13,8 @@ import Iut.Concrete.Literal
 **Theorem 3.11 of IUT III, as formalised here, does not imply Step (xi) of the proof of
 Corollary 3.12.** We isolate everything the repository proves about genuine initial Θ-data at
 the level of Theorem 3.11 into an abstract structure `Thm311Package`, in which the arithmetic
-(the numbers `|log q|` and `log-vol(VC(I))`) is decoupled from the data, and show the following.
+(the numbers `|log q|` and `log-vol(hull(VC(I)))`) is decoupled from the data, and show the
+following.
 Since Theorem 3.11 is a theorem of the model for every genuine `D` (`thm311_full_model`),
 "Theorem 3.11 implies Step (xi)" for one fixed `D` is just `SSIneq D`; non-derivability is a
 statement relative to such an abstraction. **Lean-checked**: no argument that uses only the
@@ -36,10 +37,11 @@ what the repository proves at the level of Theorem 3.11 (see below).
 ## The package
 
 The numbers: the prime `ℓ` (prime, `ℓ ≥ 5`), `ℓ* = (ℓ − 1)/2`, `s = sFactor ℓ*`, the `q`-parameter
-`log q > 0`, `a = |log q| = log q / (2ℓ)`, `V = log-vol(VC(I))`, `R = −|log Θ|` (the log-volume
-of the hull of the Θ-pilot region). The structure: an abstract region type with log-volume,
-adelic regions, the container `VC(I)`, the (Ind3)-choices (adelic subregions of `VC(I)`; their
-log-volumes are exactly `(−∞, V]`), the LGP-action of the identified-copies output law
+`log q > 0`, `a = |log q| = log q / (2ℓ)`, `V = log-vol(hull(VC(I)))` (IUT's container volume,
+`Iut/Wall/Ind3.lean`), `R = −|log Θ|` (the log-volume of the hull of the Θ-pilot region). The
+structure: an abstract region type with log-volume, adelic regions, the container `hull(VC(I))`
+(field `cont`), the (Ind3)-choices (adelic subregions of `hull(VC(I))`; their log-volumes are
+exactly `(−∞, V]`), the LGP-action of the identified-copies output law
 (`vol(LGP·S) = −s·a + vol(S)`, outputs in the hull of the Θ-pilot region: `vol(LGP·S) ≤ R`), the
 `q`-pilot region (`vol = −a`), the mono-analytic scalings with their volume shift, and the
 log-theta-lattice `ℤ × ℤ` with Kummer identifications that are log-shell compatible and
@@ -58,15 +60,24 @@ the realified Frobenioid) are functions of `s` and `a` and are derived (`hexagon
 
 ## Every relation between `a`, `V` and `R` is a field
 
-The facts the repository proves about `ℓ`, `log q`, `|log q|`, `log-vol(VC(I))` and
+The facts the repository proves about `ℓ`, `log q`, `|log q|`, `log-vol(hull(VC(I)))` and
 `−|log Θ|` for all genuine `D` (audited over `Iut/`): `ℓ` prime, `ℓ ≥ 5`; `a = log q/(2ℓ) > 0`
 (`absLogQ_pos`); the log-volume calculus (`logVol_integralRegion`, `logVol_archScale`,
 `logVol_act`, `shift_mul`, `shift_qScale`); the (Ind3) volumes `(−∞, V]`
 (`exists_ind3_logVol_iff`); the output law (`logVol_lgp`, `logVol_lgp_integral`); the hull
 volumes `(−∞, R]` (`exists_adelic_iff`) and the realisation of the outputs in the hull
-(`inImage_lgp`), which give `V − s·a ≤ R` (`V_sub_le_R`); `R ≤ R_lit` (`rhs_le_rhsLit`);
-`vol(q-pilot region) = −a` (`logVol_qRegion`). All are fields or consequences of fields. The
-repository proves **no lower bound on `V`** and no other relation coupling `V` with `a`. Every other
+(`inHullOfImage_lgp`), which give `V − s·a ≤ R` (`V_sub_le_R`); the preservation of the
+container by log-shell compatible scalings (`ThetaLink.act_hull_vcI`, field `logShell`);
+`R ≤ R_lit` (`rhs_le_rhsLit`);
+`vol(q-pilot region) = −a` (`logVol_qRegion`). All are fields or consequences of fields.
+**Relations proved for the hull only through other numbers, argued harmless**:
+`log-vol(VC(I)) ≤ V` (`logVol_vcI_le_logVol_hullOf`; `log-vol(VC(I))` is not a package number,
+and the bound is an upper bound on it); the local formulas of `Iut/WallEquiv/VcI.lean` (the exact
+prime packet terms `∑_c w_c·∑_j ρ_{c j}·log p` of `hull(VC(I))`, their tame values
+`∑_c w_c·d_{I,c}·log p ≥ 0`, the lattice-sandwich bounds at the wild primes, the upper bound
+`|I|·log(√2π)` at `∞`). These are bounds on `V` in terms of the ramification of `K` at the primes
+of the container; none of them involves `ord_v(q)`, so none grows with `a`. The repository proves
+no other relation coupling `V` with `a`. Every other
 statement about these numbers is an equivalence with a hypothesis (the forms of the wall,
 `Iut/WallEquiv`), the Corollary 3.12 variant `−a ≤ R` (a hypothesis, `Cor312VariantHolds`), a
 computation of `a` and of the pilot degrees from the arithmetic of `D`
@@ -76,9 +87,10 @@ under the hypothesis `LocalEstimate` (from `TowerArithmetic D`) and gives an upp
 `V ≤ (s − s')·a + C'(D)`. Upper bounds on `V` cannot force Step (xi): `family` realises **every**
 `ℓ`, `log q > 0`, `V` and `R` with `V − s·a ≤ R`, and `not_xi_family` shows Step (xi) fails in it
 whenever `V < (s − 1)·a`. Lower bounds on `V` that do not grow with `a` do not change this either:
-`0 ≤ V` (which follows mathematically from `O ⊆ I`, IUT III Proposition 1.2, but whose global
-form `integralRegion ≤ vcI` is not formalised) is compatible with the failure of Step (xi) for
-every `ℓ` and `log q` (`exists_package_not_xi_nonneg`).
+`0 ≤ V` (mathematically from `O ⊆ I`, IUT III Proposition 1.2; not formalised globally) is
+compatible with the failure of Step (xi) for every `ℓ` and `log q`
+(`exists_package_not_xi_nonneg`), and so is every lower bound `L ≤ V` with `L` independent of
+`a` (`exists_package_not_xi_ge`: the package with `V = L` and `a > L/(s − 1)`).
 
 ## What is and is not shown
 
@@ -114,7 +126,7 @@ structure Thm311Package where
   a : ℝ
   a_eq : a = logQ / (2 * ell)
   a_pos : 0 < a
-  /-- `V = log-vol(VC(I))`. -/
+  /-- `V = log-vol(hull(VC(I)))`, the log-volume of IUT's container. -/
   V : ℝ
   /-- `R = −|log Θ|`, the log-volume of the hull of the Θ-pilot region. -/
   R : ℝ
@@ -124,14 +136,14 @@ structure Thm311Package where
   Adelic : Reg → Prop
   /-- Inclusion of regions. -/
   Sub : Reg → Reg → Prop
-  /-- The container `VC(I)`. -/
-  vcI : Reg
-  adelic_vcI : Adelic vcI
-  vol_vcI : vol vcI = V
-  /-- The (Ind3)-choices are the adelic subregions of `VC(I)`; their log-volumes are exactly
-  `(−∞, V]`. -/
-  ind3_le : ∀ S, Adelic S → Sub S vcI → vol S ≤ V
-  ind3_exists : ∀ x ≤ V, ∃ S, Adelic S ∧ Sub S vcI ∧ vol S = x
+  /-- The container `hull(VC(I))` (the holomorphic hull of the log-shell container). -/
+  cont : Reg
+  adelic_cont : Adelic cont
+  vol_cont : vol cont = V
+  /-- The (Ind3)-choices are the adelic subregions of `hull(VC(I))`; their log-volumes are
+  exactly `(−∞, V]`. -/
+  ind3_le : ∀ S, Adelic S → Sub S cont → vol S ≤ V
+  ind3_exists : ∀ x ≤ V, ∃ S, Adelic S ∧ Sub S cont ∧ vol S = x
   /-- The identified-copies output law `LGP·S`. -/
   lgp : Reg → Reg
   adelic_lgp : ∀ S, Adelic S → Adelic (lgp S)
@@ -149,7 +161,7 @@ structure Thm311Package where
   hull_le : ∀ U, Adelic U → InHull U → vol U ≤ R
   hull_exists : ∀ x ≤ R, ∃ U, Adelic U ∧ InHull U ∧ vol U = x
   /-- (T3) realisation: the outputs `LGP·S` lie in such a hull. -/
-  lgp_inHull : ∀ S, Adelic S → Sub S vcI → InHull (lgp S)
+  lgp_inHull : ∀ S, Adelic S → Sub S cont → InHull (lgp S)
   /-- The right-hand side in the literal reading of Corollary 3.12 dominates `R`. -/
   Rlit : ℝ
   R_le_Rlit : R ≤ Rlit
@@ -173,8 +185,9 @@ structure Thm311Package where
   shift_qScale : shift qScale = -a
   /-- The Kummer identifications of the vertices of the log-theta-lattice. -/
   kum : ℤ × ℤ → Scal
-  /-- They are log-shell compatible (Theorem 3.11(ii)). -/
-  logShell : ∀ v, act (kum v) vcI = vcI
+  /-- They are log-shell compatible (Theorem 3.11(ii)), hence preserve the container
+  (`ThetaLink.act_hull_vcI`). -/
+  logShell : ∀ v, act (kum v) cont = cont
   /-- They preserve log-volume (unit-induced: Proposition 3.9(iv), Theorem 3.11(ii)). -/
   volCompat : ∀ v, shift (kum v) = 0
   /-- The Θ-links (from the Θ-pilot of `v` to the `q`-pilot of `w`) and the choices of Step 1;
@@ -185,7 +198,7 @@ structure Thm311Package where
   choice_nonempty : ∀ v w, Nonempty (Choice v w)
   /-- Theorem 3.11(i), multiradiality: outputs through any two vertices, transported to a third,
   agree up to a bijection of the (Ind3)-choices (as regions). -/
-  multiradial : ∀ v v' w S, Adelic S → Sub S vcI → ∃ S', Adelic S' ∧ Sub S' vcI ∧
+  multiradial : ∀ v v' w S, Adelic S → Sub S cont → ∃ S', Adelic S' ∧ Sub S' cont ∧
     act (kum w * (kum v')⁻¹) (lgp S') = act (kum w * (kum v)⁻¹) (lgp S)
   /-- **The remaining conclusions of Theorem 3.11 and Theorem 1.5(v) in the model**: a closed
   proposition, provable outright (`thm311_full_model`), constraining nothing else in the package;
@@ -217,7 +230,7 @@ has the log-volume of the `q`-pilot region (as `XiPrinciple`, i.e. `WallOn horiz
 identified-copies output law. -/
 def Xi : Prop :=
   ∀ v w : ℤ × ℤ, horizRel v w → ∀ _gl : P.ThetaLink v w, ∃ (_ι : P.Choice w v) (S : P.Reg),
-    P.Adelic S ∧ P.Sub S P.vcI ∧ P.vol (P.transport v w (P.lgp S)) = P.vol P.qRegion
+    P.Adelic S ∧ P.Sub S P.cont ∧ P.vol (P.transport v w (P.lgp S)) = P.vol P.qRegion
 
 /-- **The Scholze–Stix inequality for a package**: `(s − 1)·a ≤ V`. -/
 def SS : Prop := (P.s - 1) * P.a ≤ P.V
@@ -229,8 +242,9 @@ lemma two_le_ellStar : 2 ≤ P.ellStar := by
 
 lemma one_lt_s : 1 < P.s := one_lt_sFactor P.two_le_ellStar
 
-/-- Outputs have log-volume at most `R`; with `S = VC(I)`: `V − s·a ≤ R`. -/
-theorem vol_lgp_le (S : P.Reg) (hS : P.Adelic S) (hsub : P.Sub S P.vcI) : P.vol (P.lgp S) ≤ P.R :=
+/-- Outputs have log-volume at most `R`; with `S = hull(VC(I))`: `V − s·a ≤ R`. -/
+theorem vol_lgp_le (S : P.Reg) (hS : P.Adelic S) (hsub : P.Sub S P.cont) :
+    P.vol (P.lgp S) ≤ P.R :=
   P.hull_le _ (P.adelic_lgp S hS) (P.lgp_inHull S hS hsub)
 
 theorem V_sub_le_R : P.V - P.s * P.a ≤ P.R := by
@@ -303,9 +317,9 @@ end Thm311Package
 
 open Thm311Package
 
-/-- The (Ind3)-choice given by an adelic subregion of the container. -/
+/-- The (Ind3)-choice given by an adelic subregion of the container `hull(VC(I))`. -/
 def toInd3 (D : InitialThetaData.{0}) (S : Region D) (hS : IsAdelic D S)
-    (hsub : ∀ i, S i ≤ vcI D i) : Ind3 D :=
+    (hsub : ∀ i, S i ≤ hullOf D (vcI D) i) : Ind3 D :=
   ⟨S, hS, hsub⟩
 
 /-- **The package of a log-theta-lattice with unit-induced Kummer data over genuine initial
@@ -319,15 +333,15 @@ def ofThetaData (D : InitialThetaData.{0}) {L : LogThetaLattice D} (K : LatticeK
   a := D.qPilot.absLogQ
   a_eq := rfl
   a_pos := absLogQ_pos D
-  V := logVol D (vcI D)
+  V := logVol D (hullOf D (vcI D))
   R := (concreteVariantData D).rhsData.rhs
   Reg := Region D
   vol := logVol D
   Adelic := IsAdelic D
   Sub S T := ∀ i, S i ≤ T i
-  vcI := vcI D
-  adelic_vcI := isAdelic_vcI D
-  vol_vcI := rfl
+  cont := hullOf D (vcI D)
+  adelic_cont := isAdelic_hullOf_vcI D
+  vol_cont := rfl
   ind3_le S hS hsub := logVol_le_vcI D ⟨S, hS, hsub⟩
   ind3_exists x hx := by
     obtain ⟨S, hS⟩ := (exists_ind3_logVol_iff D x).mpr hx
@@ -344,7 +358,7 @@ def ofThetaData (D : InitialThetaData.{0}) {L : LogThetaLattice D} (K : LatticeK
   InHull := InHullOfImage D
   hull_le _ hU hI := logVol_le_rhs D hU hI
   hull_exists x hx := (exists_adelic_iff D x).mpr hx
-  lgp_inHull S hS hsub := (inImage_lgp D ⟨S, hS, hsub⟩).inHullOfImage
+  lgp_inHull S hS hsub := inHullOfImage_lgp D ⟨S, hS, hsub⟩
   Rlit := D.rhsDataLit.rhs
   R_le_Rlit := D.rhs_le_rhsLit
   qRegion := qRegion D
@@ -362,7 +376,7 @@ def ofThetaData (D : InitialThetaData.{0}) {L : LogThetaLattice D} (K : LatticeK
   qScale := qScale D
   shift_qScale := shift_qScale D
   kum := K.kum
-  logShell := K.logShellCompat
+  logShell v := ThetaLink.act_hull_vcI D (K.logShellCompat v)
   volCompat := K.model_kummerVolCompat
   ThetaLink v w := BPS.Iso (K.model.alg.thetaBPS v) (K.model.alg.qBPS w)
   thetaLink_nonempty := K.model.alg.nonempty_thetaLink
@@ -407,9 +421,9 @@ def family (ell : ℕ) (hp : ell.Prime) (h5 : 5 ≤ ell) (logQ : ℝ) (hq : 0 < 
   vol := id
   Adelic _ := True
   Sub x y := x ≤ y
-  vcI := V
-  adelic_vcI := trivial
-  vol_vcI := rfl
+  cont := V
+  adelic_cont := trivial
+  vol_cont := rfl
   ind3_le _ _ h := h
   ind3_exists x hx := ⟨x, trivial, hx, rfl⟩
   lgp x := -(sFactor ((ell - 1) / 2) * (logQ / (2 * ell))) + x
@@ -500,6 +514,29 @@ theorem exists_package_not_xi_nonneg (ell : ℕ) (hp : ell.Prime) (h5 : 5 ≤ el
   have hVR : (0 : ℝ) - sFactor ((ell - 1) / 2) * (logQ / (2 * ell)) ≤ 0 := by nlinarith
   refine ⟨family ell hp h5 logQ hq 0 0 hVR, rfl, rfl, le_rfl,
     not_xi_family ell hp h5 logQ hq 0 0 hVR (by nlinarith)⟩
+
+/-- **Step (xi) fails above every lower bound on `V`**: for every `ℓ` and every `L` there is a
+package with `V = L` (and `log q` large) in which Step (xi) fails. So a lower bound on
+`V = log-vol(hull(VC(I)))` that does not grow with `a = |log q|` cannot force Step (xi). -/
+theorem exists_package_not_xi_ge (ell : ℕ) (hp : ell.Prime) (h5 : 5 ≤ ell) (L : ℝ) :
+    ∃ P : Thm311Package, P.ell = ell ∧ L ≤ P.V ∧ ¬ P.Xi := by
+  have hs : 1 < sFactor ((ell - 1) / 2) := one_lt_sFactor (by omega)
+  have hl : (0 : ℝ) < ell := by exact_mod_cast hp.pos
+  set a : ℝ := (|L| + 1) / (sFactor ((ell - 1) / 2) - 1) with ha_def
+  have ha : 0 < a := div_pos (by positivity) (by linarith)
+  have hq : 0 < 2 * ell * a := by positivity
+  have hqa : 2 * ell * a / (2 * ell) = a := by field_simp
+  have hsa : (sFactor ((ell - 1) / 2) - 1) * a = |L| + 1 := by
+    rw [ha_def]
+    have : sFactor ((ell - 1) / 2) - 1 ≠ 0 := by linarith
+    field_simp
+  have hVR : L - sFactor ((ell - 1) / 2) * (2 * ell * a / (2 * ell)) ≤ L := by
+    rw [hqa]
+    nlinarith
+  refine ⟨family ell hp h5 (2 * ell * a) hq L L hVR, rfl, le_rfl,
+    not_xi_family ell hp h5 _ hq L L hVR ?_⟩
+  rw [hqa, hsa]
+  linarith [le_abs_self L]
 
 /-- **Non-derivability**: Step (xi) does not follow from the formalised content of Theorem 3.11
 (the fields of `Thm311Package`). -/

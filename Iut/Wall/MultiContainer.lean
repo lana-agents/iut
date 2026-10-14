@@ -54,7 +54,7 @@ log-volume of the `q`-pilot region of `h₂`:
   `distortion_self`, `distortion_swap`, `distortion_trans`).
 * `wallOn_iff_of_shift`, **`wallOn_iff_of_thetaShift`**: if the outputs have the
   identified-copies log-volumes `−s·|log(q)| + log-vol(S)` (`ThetaShift`), then
-  `WallOn L ↔ ∀ L h₁ h₂, (s − 1)·|log(q)| − distortion h₁ h₂ ≤ log-vol(VC(I))`.
+  `WallOn L ↔ ∀ L h₁ h₂, (s − 1)·|log(q)| − distortion h₁ h₂ ≤ log-vol(hull(VC(I)))`.
 * `VolCompat` (all Kummer isomorphisms shift log-volume equally, i.e. every transport preserves
   log-volume; IUT III, Proposition 3.9(ii), (iv)): then `Wall3 ↔ Wall D alg`
   (`wall3_iff_wall_of_volCompat`), and with `ThetaShift` the wall is the Scholze–Stix inequality
@@ -63,7 +63,7 @@ log-volume of the `q`-pilot region of `h₂`:
 * Whenever the wall is required for a pair in both directions (in particular for `Wall3`, which
   contains the diagonal pairs with identity transport), `ThetaShift` gives `SSIneq D`
   (`ss_of_wallOn_pair`, `ss_of_wall3`); precisely,
-  `Wall3 ↔ ∀ h₁ h₂, (s − 1)·|log(q)| + |distortion h₁ h₂| ≤ log-vol(VC(I))`
+  `Wall3 ↔ ∀ h₁ h₂, (s − 1)·|log(q)| + |distortion h₁ h₂| ≤ log-vol(hull(VC(I)))`
   (`wall3_iff_of_thetaShift`).
 * **`variant_of_wall` lifts**: `variant_of_wall3 : Wall3 → Corollary312Variant` for every model;
   for a relation `L`, `variant_of_wallOn` (with `TransportRealisation`: the transported outputs
@@ -80,10 +80,24 @@ namespace Iut
 
 namespace Wall
 
-/-- **The Scholze–Stix inequality** `(s − 1)·|log(q)| ≤ log-vol(VC(I))` (Milestone 1,
-`wall_idAlg_iff`). Neither it nor its negation is proved in this repository. -/
+/-- **The Scholze–Stix inequality** `(s − 1)·|log(q)| ≤ log-vol(hull(VC(I)))` (Milestone 1,
+`wall_idAlg_iff`). The right-hand side is the log-volume of the holomorphic hull of the log-shell
+container, IUT's container volume (IUT III, proof of Corollary 3.12, Step (xi-d)–(xi-f); IUT IV,
+Theorem 1.10; `Iut/WallEquiv/VcI.md`). Neither it nor its negation is proved in this
+repository. -/
 def SSIneq (D : InitialThetaData.{0}) : Prop :=
+  (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (hullOf D (vcI D))
+
+/-- **The no-hull wall** `(s − 1)·|log(q)| ≤ log-vol(VC(I))`: the no-hull wall; numerically false
+on many Szpiro-record curves (T1); not IUT's container. It implies `SSIneq`
+(`ssIneq_of_noHull`). -/
+def SSIneqNoHull (D : InitialThetaData.{0}) : Prop :=
   (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (vcI D)
+
+/-- **The no-hull wall implies the Scholze–Stix inequality**:
+`log-vol(VC(I)) ≤ log-vol(hull(VC(I)))`. -/
+theorem ssIneq_of_noHull {D : InitialThetaData.{0}} (h : SSIneqNoHull D) : SSIneq D :=
+  h.trans (logVol_vcI_le_logVol_hullOf D)
 
 /-- **The identified-copies log-volumes** (Milestone 2, (C9)): every output has log-volume
 `−s·|log(q)| + log-vol(S)`, the log-volume of `LGP·S` computed in the ring structure of the
@@ -305,7 +319,8 @@ theorem wallOn_iff_of_shift (L : M.HT → M.HT → Prop)
     (hκ : ∀ {B : M.alg.BPSA} {h : M.HT} (ι : M.alg.Choice B h) (S : Ind3 D),
       logVol D (M.alg.out ι S) = κ ι + logVol D S.1) :
     M.WallOn L ↔ ∀ h₁ h₂ : M.HT, L h₁ h₂ → ∃ ι : M.alg.Choice (M.alg.qBPS h₂) h₁,
-      (concreteVariantData D).qPilot.lhs - κ ι - M.distortion h₁ h₂ ≤ logVol D (vcI D) := by
+      (concreteVariantData D).qPilot.lhs - κ ι - M.distortion h₁ h₂ ≤
+        logVol D (hullOf D (vcI D)) := by
   constructor
   · intro hW h₁ h₂ hL
     obtain ⟨ι, S, hS⟩ := hW h₁ h₂ hL (M.alg.nonempty_thetaLink h₁ h₂).some
@@ -322,10 +337,11 @@ theorem wallOn_iff_of_shift (L : M.HT → M.HT → Prop)
     ring
 
 /-- **The wall for identified-copies log-volumes**:
-`WallOn L ↔ ∀ L h₁ h₂, (s − 1)·|log(q)| − distortion h₁ h₂ ≤ log-vol(VC(I))`. -/
+`WallOn L ↔ ∀ L h₁ h₂, (s − 1)·|log(q)| − distortion h₁ h₂ ≤ log-vol(hull(VC(I)))`. -/
 theorem wallOn_iff_of_thetaShift (hS : M.alg.ThetaShift) (L : M.HT → M.HT → Prop) :
     M.WallOn L ↔ ∀ h₁ h₂ : M.HT, L h₁ h₂ →
-      (sFactor (nC D) - 1) * D.qPilot.absLogQ - M.distortion h₁ h₂ ≤ logVol D (vcI D) := by
+      (sFactor (nC D) - 1) * D.qPilot.absLogQ - M.distortion h₁ h₂ ≤
+        logVol D (hullOf D (vcI D)) := by
   rw [M.wallOn_iff_of_shift L (fun _ => -(sFactor (nC D) * D.qPilot.absLogQ)) hS]
   have hlhs : (concreteVariantData D).qPilot.lhs = -D.qPilot.absLogQ := rfl
   refine forall₂_congr fun h₁ h₂ => forall_congr' fun _ => ?_
@@ -353,10 +369,11 @@ theorem ss_of_wall3 (hS : M.alg.ThetaShift) (hW : M.Wall3) : SSIneq D := by
   exact M.ss_of_wallOn_pair hS hW (h₁ := h) (h₂ := h) trivial trivial
 
 /-- **`Wall3` for identified-copies log-volumes**:
-`∀ h₁ h₂, (s − 1)·|log(q)| + |distortion h₁ h₂| ≤ log-vol(VC(I))`. -/
+`∀ h₁ h₂, (s − 1)·|log(q)| + |distortion h₁ h₂| ≤ log-vol(hull(VC(I)))`. -/
 theorem wall3_iff_of_thetaShift (hS : M.alg.ThetaShift) :
     M.Wall3 ↔ ∀ h₁ h₂ : M.HT,
-      (sFactor (nC D) - 1) * D.qPilot.absLogQ + |M.distortion h₁ h₂| ≤ logVol D (vcI D) := by
+      (sFactor (nC D) - 1) * D.qPilot.absLogQ + |M.distortion h₁ h₂| ≤
+        logVol D (hullOf D (vcI D)) := by
   rw [Wall3, M.wallOn_iff_of_thetaShift hS]
   constructor
   · intro h h₁ h₂

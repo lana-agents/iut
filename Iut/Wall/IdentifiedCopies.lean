@@ -11,14 +11,15 @@ import Iut.Wall.Checks
 The **identified-copies model** (Scholze–Stix, as described in [LANA], §10.2–§10.3, and
 roadmap v1, §3, step 3): all Hodge theaters are identified with one, and the η-algorithm is
 computed in the single ring structure of `D` — the output `LGP·S` is the image of the
-(Ind3)-choice `S ⊆ VC(I)` under multiplication by the theta values `q_{v_j}^{j²}` placed in the
-`j`-th tensor factor of the capsule `S_{j+1}` ([LANA], §5.2(f), §6.2(h), (i); IUT IV,
+(Ind3)-choice `S ⊆ hull(VC(I))` under multiplication by the theta values `q_{v_j}^{j²}` placed in
+the `j`-th tensor factor of the capsule `S_{j+1}` ([LANA], §5.2(f), §6.2(h), (i); IUT IV,
 proof of Theorem 1.10, Steps (iv)–(v)).
 
 * `lgp D S`: the region `LGP·S` (theta value at the label `j`, IUT IV's reading);
 * `idAlg D`: the η-algorithm of the model, `out ι S = LGP·S` for every choice `ι`. It is an
-  admissible `EtaAlg D` — (T1), (T2) trivially, (T3) because `LGP·S` lies in the theta-pilot
-  region with the theta values at the labels `j` (`inImage_lgp`) — and it satisfies the LGP
+  admissible `EtaAlg D` — (T1), (T2) trivially, (T3) because `LGP·S` lies in the hull of the
+  theta-pilot region with the theta values at the labels `j` (`inHullOfImage_lgp`; for
+  `S ⊆ VC(I)` even in the region itself, `inImage_lgp`) — and it satisfies the LGP
   law (T4) (`idAlg_lgpLaw`), so it is **not** the trivial instance (`idAlg_not_isTrivial`).
 
 **What is proved.**
@@ -31,15 +32,15 @@ proof of Theorem 1.10, Steps (iv)–(v)).
   the computation of `μ^log` of elementary scalings (IUT IV, Proposition 1.4,
   `componentVol_prod_incl_smul_integral`) and the comparison of the `V`-indexed sum of
   `ord_p(q_v)` with `log(q)` (`InitialThetaData.logQAt_eq_sect`);
-* **`wall_idAlg_iff`: `Wall D (idAlg D) ↔ (s − 1)·|log(q)| ≤ log-vol(VC(I))`.** The wall on the
-  identified-copies model is *exactly* the numerical inequality of the Scholze–Stix hexagon
+* **`wall_idAlg_iff`: `Wall D (idAlg D) ↔ (s − 1)·|log(q)| ≤ log-vol(hull(VC(I)))`.** The wall
+  on the identified-copies model is *exactly* the numerical inequality of the Scholze–Stix hexagon
   ([LANA], §10.2: "the composition `R_{⊙,Θ} → R_Θ` scales by a factor of `s`"): the left-hand
-  side grows like `(ℓ*²/3)·|log(q)|`, the right-hand side is the log-volume of the log-shell
-  container. That this inequality fails in the situations needed for ABC is the Scholze–Stix
-  claim; it is **not** proved here (neither the inequality nor its negation is a theorem of
-  this repository). What is proved is that, in this model, the wall *is* that inequality.
+  side grows like `(ℓ*²/3)·|log(q)|`, the right-hand side is the log-volume of the hull of the
+  log-shell container. That this inequality fails in the situations needed for ABC is the
+  Scholze–Stix claim; it is **not** proved here (neither the inequality nor its negation is a
+  theorem of this repository). What is proved is that, in this model, the wall *is* that inequality.
 * `idAlg_wall_imp`: in this model the wall still implies the variant (as for every
-  `EtaAlg`), through `−|log(q)| ≤ log-vol(LGP·VC(I)) ≤ −|log(Θ)|`.
+  `EtaAlg`), through `−|log(q)| ≤ log-vol(LGP·hull(VC(I))) ≤ −|log(Θ)|`.
 
 **Which field forbids the collapse?** None. The identified-copies algorithm satisfies every
 field of `EtaAlg` and (T4); (T2) (dependence only on the étale-unit portion) is satisfied
@@ -200,20 +201,46 @@ theorem isAdelic_lgp {S : Region D} (hS : IsAdelic D S) : IsAdelic D (lgp D S) :
 /-- **`LGP·S` lies in the theta-pilot region with the theta values at the labels `j`** (IUT IV's
 (Ind1)-image) when `S ⊆ VC(I)`: at a prime, `q^{j²}·S_c ⊆ q^{j²}·⊗𝓘` (the image under the
 identity indeterminacy automorphism); at `∞`, `S_c ⊆ 𝓘_∞`. -/
-theorem inImage_lgp (S : Ind3 D) : InImage D (lgp D S.1) := by
-  refine ⟨InitialThetaData.distinguished _, fun i vQ => ?_⟩
+theorem lgp_le_thetaImage {S : Region D} (hS : ∀ i, S i ≤ vcI D i) (i : Fin (nC D)) :
+    lgp D S i ≤ thetaImage D (InitialThetaData.distinguished _) i := by
+  intro vQ
   rcases vQ with p | _
   · rintro _ ⟨y, hy, rfl⟩ c
     have hyc : y c ∈ LocalTheory.shell D.Kt p (LocalTheory.tuple D.placeSect _ c) :=
-      S.2.2 i (.finite p) hy c
+      hS i (.finite p) hy c
     refine Set.mem_iUnion₂.mpr ⟨id, LocalTheory.id_mem_indAut D.Kt _ _, ?_⟩
     rw [Set.image_id]
     exact Set.mem_iUnion₂.mpr ⟨_, rfl, ⟨y c, hyc, rfl⟩⟩
   · intro y hy c
     have hyc : y c ∈ LocalTheory.logShell D.Kt .infinite (LocalTheory.tuple D.placeSect _ c) :=
-      S.2.2 i .infinite hy c
+      hS i .infinite hy c
     change y c ∈ LocalTheory.thetaInfinite D.placeSect (nC D) i c
     exact Set.mem_iUnion₂.mpr ⟨id, LocalTheory.id_mem_indAut D.Kt _ _, by rwa [Set.image_id]⟩
+
+/-- `LGP·S ⊆` an (Ind1)-image of the theta-pilot region for `S ⊆ VC(I)`
+(`lgp_le_thetaImage`). -/
+theorem inImage_lgp {S : Region D} (hS : ∀ i, S i ≤ vcI D i) : InImage D (lgp D S) :=
+  ⟨_, lgp_le_thetaImage D hS⟩
+
+/-- **`LGP·S` lies in the hull of a single (Ind1)-image of the theta-pilot region** for every
+(Ind3)-choice `S ⊆ hull(VC(I))`: the hull commutes with the unit scaling `LGP` at a prime
+(`mul_mem_of_mem_hull`; `LGP·VC(I)` lies in the image, `inImage_lgp`), and `LGP` is the
+identity at `∞` (monotonicity of the hull). -/
+theorem inHullOfImage_lgp (S : Ind3 D) : InHullOfImage D (lgp D S.1) := by
+  refine ⟨InitialThetaData.distinguished _, fun i vQ => ?_⟩
+  have hθ := thetaImage_isAdmissible D (InitialThetaData.distinguished _) i
+  have hl := lgp_le_thetaImage D (S := vcI D) (fun _ _ => subset_rfl) i
+  rcases vQ with p | _
+  · rintro _ ⟨y, hy, rfl⟩
+    set H := (LocalTheory.hull D.placeSect (nC D)).system i (.finite p)
+    exact mul_mem_of_mem_hull D i p (isAdelic_vcI D i (.finite p))
+      (fun c => D.scaleElt (nC D) i p c) (fun c => D.isUnit_scaleElt _ i p c)
+      (H.hull_mem_hullRegions (hθ (.finite p)))
+      (fun z hz => H.subset_hull (hθ (.finite p)) (hl (.finite p) ⟨z, hz, rfl⟩))
+      (S.2.2 i (.finite p) hy)
+  · intro y hy
+    exact ((LocalTheory.hull D.placeSect (nC D)).system i .infinite).hull_mono
+      (isAdelic_vcI D i .infinite) (hθ .infinite) (hl .infinite) (S.2.2 i .infinite hy)
 
 /-! ### The log-volume of `LGP·S` -/
 
@@ -446,7 +473,7 @@ noncomputable def idAlg : EtaAlg D where
   out _ S := lgp D S.1
   ind12_acts_on_S _ _ := ⟨Equiv.refl _, fun _ => rfl⟩
   etUnitOnly := ⟨fun _ S => lgp D S.1, fun _ _ => rfl⟩
-  realisation _ S := ⟨isAdelic_lgp D S.2.1, (inImage_lgp D S).inHullOfImage⟩
+  realisation _ S := ⟨isAdelic_lgp D S.2.1, inHullOfImage_lgp D S⟩
 
 /-- The identified-copies algorithm satisfies the LGP law (T4), with shift `−s·|log(q)|`. -/
 theorem idAlg_lgpLaw : (idAlg D).LGPLaw := fun _ =>
@@ -457,9 +484,10 @@ theorem idAlg_not_isTrivial : ¬ (idAlg D).IsTrivial :=
   (idAlg D).not_isTrivial_of_lgpLaw (idAlg_lgpLaw D)
 
 /-- **The wall on the identified-copies model is the Scholze–Stix inequality**:
-`Wall D (idAlg D) ↔ (s − 1)·|log(q)| ≤ log-vol(VC(I))`. -/
+`Wall D (idAlg D) ↔ (s − 1)·|log(q)| ≤ log-vol(hull(VC(I)))`. -/
 theorem wall_idAlg_iff :
-    Wall D (idAlg D) ↔ (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (vcI D) := by
+    Wall D (idAlg D) ↔
+      (sFactor (nC D) - 1) * D.qPilot.absLogQ ≤ logVol D (hullOf D (vcI D)) := by
   rw [(idAlg D).wall_iff_of_lgpLaw (fun _ => logVol D (lgp D (integralRegion D)))
     (fun _ S => logVol_lgp D S.2.1), logVol_lgp_integral]
   have hlhs : (concreteVariantData D).qPilot.lhs = -D.qPilot.absLogQ := rfl
@@ -472,13 +500,13 @@ theorem wall_idAlg_iff :
     exact ⟨((idAlg D).nonempty_choice () ()).some, by linarith⟩
 
 /-- In the identified-copies model the wall implies the variant, through
-`−|log(q)| ≤ log-vol(LGP·VC(I)) ≤ −|log(Θ)|`. -/
+`−|log(q)| ≤ log-vol(LGP·hull(VC(I))) ≤ −|log(Θ)|`. -/
 theorem idAlg_wall_imp (h : Wall D (idAlg D)) :
-    (concreteVariantData D).qPilot.lhs ≤ logVol D (lgp D (vcI D)) ∧
-      logVol D (lgp D (vcI D)) ≤ (concreteVariantData D).rhsData.rhs := by
-  refine ⟨?_, logVol_le_rhs D (isAdelic_lgp D (isAdelic_vcI D))
-    (inImage_lgp D (Ind3.top D)).inHullOfImage⟩
-  rw [logVol_lgp D (isAdelic_vcI D), logVol_lgp_integral]
+    (concreteVariantData D).qPilot.lhs ≤ logVol D (lgp D (hullOf D (vcI D))) ∧
+      logVol D (lgp D (hullOf D (vcI D))) ≤ (concreteVariantData D).rhsData.rhs := by
+  refine ⟨?_, logVol_le_rhs D (isAdelic_lgp D (isAdelic_hullOf_vcI D))
+    (inHullOfImage_lgp D (Ind3.top D))⟩
+  rw [logVol_lgp D (isAdelic_hullOf_vcI D), logVol_lgp_integral]
   have := (wall_idAlg_iff D).mp h
   change -D.qPilot.absLogQ ≤ _
   linarith

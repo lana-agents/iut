@@ -8,8 +8,9 @@ import Iut.WallEquiv.Gap
 /-!
 # The log-volume of the log-shell container `VC(I)` and of its hull
 
-Task VCI-CHECK: formulas for `log-vol(VC(I))` (`Wall.vcI`, the right-hand side of the
-Scholze–Stix inequality `Wall.SSIneq`) and for `log-vol(hull(VC(I)))` in terms of local data, for
+Task VCI-CHECK: formulas for `log-vol(VC(I))` (`Wall.vcI`, the right-hand side of the no-hull
+wall `Wall.SSIneqNoHull`) and for `log-vol(hull(VC(I)))` (the right-hand side of the Scholze–Stix
+inequality `Wall.SSIneq`, after the hull switch) in terms of local data, for
 the comparison with IUT III, Proposition 3.9, Corollary 3.12 and IUT IV, Propositions 1.2, 1.4,
 Theorem 1.10. The discussion (and what is computed only on paper) is in `VcI.md`.
 
@@ -17,10 +18,11 @@ Theorem 1.10. The discussion (and what is computed only on paper) is in `VcI.md`
 
 * `logVol_vcI_eq`: `log-vol(VC(I)) = (1/ℓ*)·∑_i ∑ᶠ_{v_ℚ} ∑_c w_c·μ^log(VC(I)_{i,v_ℚ,c})`
   (`vcIPacket`); the component is `⊗_j 𝓘_{c j}` (the `ℤ_p`-span of the tensor product of the factor
-  log-shells) at a prime, the archimedean log-shell at `∞`. `ssIneq_iff_packets` restates
-  `SSIneq D` with this right-hand side.
+  log-shells) at a prime, the archimedean log-shell at `∞`. `ssIneqNoHull_iff_packets` restates
+  `SSIneqNoHull D` with this right-hand side.
 * `logVol_hull_vcI_eq`: the same for `hull(VC(I))` with the components replaced by their least
-  hulls `a·O` (`hullPacket`).
+  hulls `a·O` (`hullPacket`); `ssIneq_iff_packets` restates `SSIneq D` with this right-hand
+  side.
 * `logVol_hull_vcI_sub_eq`: `log-vol(hull(VC(I))) − log-vol(VC(I))` is the average of the weighted
   sums of the shell defects (`shellDefect`) at the primes and of the archimedean defects
   (`archDefect`) at `∞` (`defectPacket`); `logVol_vcI_le_hull`.
@@ -883,10 +885,17 @@ end
 end WallEquiv
 
 /-- **`SSIneq` in terms of local terms**:
-`(s − 1)·|log q| ≤ (1/ℓ*)·∑_i ∑ᶠ_{v_ℚ} ∑_c w_c·μ^log(VC(I)_{i,v_ℚ,c})`. -/
+`(s − 1)·|log q| ≤ (1/ℓ*)·∑_i ∑ᶠ_{v_ℚ} ∑_c w_c·μ^log(hull(VC(I)_{i,v_ℚ,c}))`. -/
 theorem WallEquiv.ssIneq_iff_packets (D : InitialThetaData.{0}) :
     Wall.SSIneq D ↔ (Wall.sFactor (Wall.nC D) - 1) * D.qPilot.absLogQ ≤
+      (∑ i : Fin (Wall.nC D), ∑ᶠ vQ, WallEquiv.hullPacket D i vQ) / Wall.nC D := by
+  rw [Wall.SSIneq, WallEquiv.logVol_hull_vcI_eq]
+
+/-- **The no-hull wall in terms of local terms**:
+`(s − 1)·|log q| ≤ (1/ℓ*)·∑_i ∑ᶠ_{v_ℚ} ∑_c w_c·μ^log(VC(I)_{i,v_ℚ,c})`. -/
+theorem WallEquiv.ssIneqNoHull_iff_packets (D : InitialThetaData.{0}) :
+    Wall.SSIneqNoHull D ↔ (Wall.sFactor (Wall.nC D) - 1) * D.qPilot.absLogQ ≤
       (∑ i : Fin (Wall.nC D), ∑ᶠ vQ, WallEquiv.vcIPacket D i vQ) / Wall.nC D := by
-  rw [Wall.SSIneq, WallEquiv.logVol_vcI_eq]
+  rw [Wall.SSIneqNoHull, WallEquiv.logVol_vcI_eq]
 
 end Iut
