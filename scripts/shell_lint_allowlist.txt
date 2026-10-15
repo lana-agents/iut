@@ -920,3 +920,8 @@ WeierstrassCurve.IsSplitMultiplicative.hasSplitNodeAtOrigin	baseline
 WeierstrassCurve.IsSplitMultiplicative.Δ_eq_zero	baseline
 # MR0 additions
 Iut.Multiradial.RawOutput.natural	def
+Iut.AutHol.CAFIso.continuous_invFun	def
+Iut.AutHol.CAFIso.continuous_toFun	def
+Iut.AutHol.LocalStructure.isBasis	def
+Iut.AutHol.LocalStructure.isConnected	def
+Iut.AutHol.LocalStructure.mem_of_le	def
