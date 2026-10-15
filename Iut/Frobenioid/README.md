@@ -163,7 +163,8 @@ Results (`F : C₁ ⥤ C₂` an equivalence):
   slimness argument replacing the 2-categorical construction of [FrdI].
 * `Thm34iv.lean`: `O^▷`, `O^×` are preserved (Theorem 3.4(iv)); `degFr_map_eq`: `σ = id`.
 * `GaloisBase.lean`, `GaloisSlim.lean`: the hypotheses for `B(G)⁰`; `Model.thm34_galois`,
-  `Model.thm34_galois_preservesBase`.
+  `Model.thm34_galois_preservesBase`; `GaloisExample.lean`: a model Frobenioid over `B(G)⁰`
+  satisfying all hypotheses (`GaloisExample.thm34`, `GaloisExample.thm34_base`).
 * `DivOrder.lean`: Corollary 4.11(iii) as ordered sets: an equivalence matching pre-steps induces
   order isomorphisms `Model.divEquiv : Φ₁(A_X) ≃ Φ₂(A_{F X})` with `Div(F φ) = τ_X(Div φ)` for
   every pre-step `φ` out of `X` (`Model.div_map_preStep`).
