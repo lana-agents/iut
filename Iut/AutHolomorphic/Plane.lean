@@ -31,8 +31,12 @@ noncomputable def plane : AutHolStr ℂ := ofEmbedding id
 noncomputable def affine (a b : ℂ) (ha : a ≠ 0) : ℂ ≃ₜ ℂ where
   toFun z := a * z + b
   invFun z := (z - b) / a
-  left_inv z := by field_simp; ring
-  right_inv z := by field_simp; ring
+  left_inv z := by
+    change (a * z + b - b) / a = z
+    rw [add_sub_cancel_right, mul_div_cancel_left₀ _ ha]
+  right_inv z := by
+    change a * ((z - b) / a) + b = z
+    rw [mul_div_cancel₀ _ ha, sub_add_cancel]
   continuous_toFun := by fun_prop
   continuous_invFun := by fun_prop
 
