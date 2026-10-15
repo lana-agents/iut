@@ -170,6 +170,7 @@ import Iut.Frobenioid.Basic
 import Iut.Frobenioid.Counterexample
 import Iut.Frobenioid.Defs
 import Iut.Frobenioid.GaloisBase
+import Iut.Frobenioid.GaloisSlim
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalPic
 import Iut.Frobenioid.Invariance
