@@ -19,7 +19,8 @@ import Iut.AutHolomorphic.RecField
 * `recEquiv_trans_eq`: **two isomorphisms `ψ, ψ' : (X, A) ≅ ℂ` ("Kummer structures") induce
   identifications `RecField A p ≅ ℂ` which differ by an element of `Gal(ℂ/ℝ)`** — the archimedean
   Kummer indeterminacy is exactly `{id, conj}` (cf. [AbsTopIII], Corollary 2.3(i): precisely two
-  co-holomorphicizations; Definition 4.1(iv); `FullGalKummer.gal` of `Iut/LogLink/GalKummerAll.lean`).
+  co-holomorphicizations; Definition 4.1(iv); `FullGalKummer.gal` of
+  `Iut/LogLink/GalKummerAll.lean`).
 -/
 
 namespace Iut
