@@ -130,7 +130,8 @@ theorem isIso_plane_of_preservesHol {ψ : ℂ ≃ₜ ℂ} (h1 : PreservesHol ψ)
   rw [mem_map_conj]
   change g ∈ (ofEmbedding id).aut V ↔ AutHol.conj e.symm g ∈ (ofEmbedding id).aut U
   rw [mem_ofEmbedding_aut, mem_ofEmbedding_aut]
-  have hinv : (AutHol.conj e.symm g).symm = AutHol.conj e.symm g.symm := (map_inv (AutHol.conj e.symm) g).symm
+  have hinv : (AutHol.conj e.symm g).symm = AutHol.conj e.symm g.symm :=
+    (map_inv (AutHol.conj e.symm) g).symm
   rw [hinv]
   exact and_congr (holIn_conj_iff h1 h2 e he g) (holIn_conj_iff h1 h2 e he g.symm)
 
