@@ -170,13 +170,16 @@ import Iut.Frobenioid.Basic
 import Iut.Frobenioid.Defs
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalPic
+import Iut.Frobenioid.Invariance
 import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
+import Iut.Frobenioid.ModelTypes
 import Iut.Frobenioid.PAdic
 import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered
 import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
+import Iut.Frobenioid.Thm34
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
 import Iut.HodgeTheater.Gluing
