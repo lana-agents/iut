@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Tripod.CurveFacts
-import Iut.Anabelian.CanLift
+import Iut.Anabelian.CoreOfJ
 
 /-!
 # The core finiteness for the tripod ([CanLift], Proposition 2.7)
@@ -72,20 +72,8 @@ variable (x : Pt) (h3 : TorsionFinite x.1 3)
 ([CanLift], Proposition 2.7). -/
 theorem exists_excJ_of_not_hasCore
     (h : ¬ OrbicurveDataSection.HasCoreUniversally (curveOf x h3 h5).F (curveOf x h3 h5).E) :
-    ∃ c ∈ AffOrbicurve.excJ, (curveOf x h3 h5).E.j = (c : (curveOf x h3 h5).F) := by
-  by_contra hc
-  push Not at hc
-  apply h
-  intro K _ _ f
-  have hcK : ∀ c ∈ AffOrbicurve.excJ, ((curveOf x h3 h5).E.map f).j ≠ (c : K) := by
-    intro c hc' hj
-    rw [WeierstrassCurve.map_j, ← map_ratCast f] at hj
-    exact hc c hc' (f.injective hj)
-  have := hasCore_oncePunctured ((curveOf x h3 h5).E.map f) hcK
-  change genuineHasCore ((Orbicurve.oncePunctured (curveOf x h3 h5).E).baseChange f)
-    ((Orbicurve.pmQuotient (Orbicurve.oncePunctured (curveOf x h3 h5).E)).baseChange f)
-  rw [Orbicurve.baseChange_pmQuotient, Orbicurve.baseChange_oncePunctured]
-  exact this
+    ∃ c ∈ AffOrbicurve.excJ, (curveOf x h3 h5).E.j = (c : (curveOf x h3 h5).F) :=
+  exists_excJ_of_not_hasCoreUniversally _ h
 
 /-- If `j(E_λ) = c` then `λ` is a root of `jPolyRat c`. -/
 theorem isRoot_jPoly_of_j_eq {c : ℚ}

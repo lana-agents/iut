@@ -81,3 +81,35 @@ exists yet in genuine form; they are the content of MR16–MR29.
 
 Baseline at MR0 (closure of `Iut`, origin/main `cdc9602` plus `Spec.lean`): 917 entries, of which 128 `def`,
 35 `shell`, 60 `statement`, 694 `baseline`.
+
+## 4. MR1 (genuine initial Θ-data): done outside the trusted closure, and what is left
+
+The structures `InitialThetaData`, `LocalThetaData` and the predicate `IsThetaRootModel` lie in the
+trusted import closure of the comparator challenge (`Comparator/Challenge.lean` imports
+`Iut.Concrete.ThetaRegion`). MR1 therefore changes none of them. Done:
+
+* `Iut/Anabelian/CoreOfJ.lean`: the core condition `HasCoreUniversally F E` of IUT I,
+  Definition 3.1(d) is derived from [CanLift], Proposition 2.7 (`canLift27`) for non-exceptional
+  `j(E)` (`hasCoreUniversally_of_j`); `EllipticCurveData.thetaDataOfJ` is the existence
+  construction with this built in (shell #39 reduced to the elementary condition on `j`).
+* `Iut/Multiradial/ThetaData.lean`: decomposition groups as stabilizers of primes of the integral
+  closure (`IsDecompositionGroup`, closed: `IsDecompositionGroup.isClosed`); genuine Θ-data
+  (`HasGenuineDecomp`) and the genuinization `D.withGenuineDecomp` with
+  `InitialThetaData.decomp_eq`; the existence construction is genuine
+  (`EllipticCurveData.thetaData_hasGenuineDecomp`); the comparator hypothesis is equivalent to its
+  restriction to genuine Θ-data (`cor312VariantHolds_iff_genuine`,
+  `cor312LiteralHolds_iff_genuine`).
+
+Left (needs a decision, because it changes the trusted closure):
+
+1. Shells #6, #38: replace the field `LocalThetaData.decomp` (and `decomp_isClosed`) by the
+   definition `decompGroup`. By `cor312VariantHolds_iff_genuine` the challenge hypothesis keeps
+   its meaning, but the text of `Cor312/ThetaData/LocalConditions.lean` (trusted) changes.
+2. Shell #37: `IsThetaRootModel` as [EtTh] Definition 2.5 / 2.1 on the genuine objects: a quotient
+   `Π^ell_X ↠ Q` of the genuine fundamental group of rank one over `ℤ/ℓ`, surjective on
+   `Δ^ell_X`, trivial on the cuspidal decomposition group, factoring through the tempered graph
+   quotient `Π^tp_X ↠ ℤ`, with the splitting compatible with the `{±1}`-structure of [EtTh],
+   Theorem 1.10(iii). This needs the identification `Δ^ell_X ≅ E[ℓ]` for the genuine π₁ of the
+   model orbicurves, the graph quotient of the tempered π₁ of the Tate curve restricted to
+   `E[ℓ]` (kernel `μ_ℓ`), and [EtTh] Theorem 1.10(iii) — milestones MR13/MR14 — and it also
+   changes `Anabelian/Local.lean` (trusted).

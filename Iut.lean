@@ -16,6 +16,7 @@ import Iut.Abc.P24Table
 import Iut.Abc.Target
 import Iut.Anabelian.AdicCompletion
 import Iut.Anabelian.CanLift
+import Iut.Anabelian.CoreOfJ
 import Iut.Anabelian.Existence
 import Iut.Anabelian.Genuine.Basic
 import Iut.Anabelian.Genuine.Core
@@ -199,6 +200,7 @@ import Iut.LogLink.Thm311LGP
 import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
 import Iut.Multiradial.Spec
+import Iut.Multiradial.ThetaData
 import Iut.Reconstruction.Cusp.Belyi
 import Iut.Reconstruction.Cusp.Elliptic
 import Iut.Reconstruction.Cusp.OutSemidirect
