@@ -19,12 +19,13 @@ isometries and LB-invertible morphisms, and there is an automorphism `Ψ_{ℕ≥
 
 * **Statements.** `PreservesFrobeniusStructure P₁ P₂ F` is the conclusion of Theorem 3.4(iii) for
   a functor `F : C₁ ⥤ C₂` (applied to `Ψ.functor`), `PreservesBase P₁ P₂ F` that of (v)
-  (a functor `D₁ ⥤ D₂` with `F ⋙ Base₂ ≅ Base₁ ⋙ Ψ_Base`). The *theorem* that every equivalence
-  between Frobenioids of standard type satisfies them is **research-level** for this
-  formalisation: its proof in [FrdI] uses Propositions 1.4–1.14, 3.2, 3.3 (characterizations of
-  isotropic objects via iso-subanchors, of pre-steps via FSMFF-type base categories, of
-  Frobenius-type morphisms via Frobenius-compact objects, …) and is not attempted. The notions
-  "standard type", "FSMFF-type", "slim", "non-dilating", "iso-subanchor" are not formalised.
+  (a functor `D₁ ⥤ D₂` with `F ⋙ Base₂ ≅ Base₁ ⋙ Ψ_Base`). They are **proved** for every
+  equivalence of model Frobenioids over base categories of FSM- and Aut-type with rational
+  functions having torsion of every order (the Frobenioids of IUT) in
+  `Iut/Frobenioid/Thm34.lean` (`Model.thm34_preservesFrobeniusStructure`) and, for slim bases,
+  `Iut/Frobenioid/Thm34Base.lean` (`Model.thm34_preservesBase`); see also `Thm34iv.lean`,
+  `GaloisBase.lean`, `GaloisSlim.lean`. The route differs from [FrdI]: [FrdI], Proposition
+  1.14(iii) fails for such Frobenioids (`Iut/Frobenioid/Counterexample.lean`).
 * **Proved.**
   * `scale_preserves`: the `ℝ_{>0}`-scalings of the global realified Frobenioid satisfy the
     conclusion of Theorem 3.4(iii) (with `Ψ_{ℕ≥1} = id`) and (v) (with `Ψ_Base = id`); by
