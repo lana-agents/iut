@@ -55,6 +55,11 @@ lake exe cache get
 # Verify everything builds, with warnings as errors (as in CI).
 lake build --wfail
 
+# Shell lint (multiradial roadmap, MR0, criterion (L1)): the Prop fields of structures in the
+# import closure of `Iut`, compared with scripts/shell_lint_allowlist.txt. A ratchet: it reports
+# the recorded baseline and fails only on a Prop field that is not in the allowlist.
+./scripts/shell_lint.sh --ratchet
+
 # Comparator pair (the main theorem): the public declarations of Challenge and Solution
 # must match, and the config must list exactly the shared theorem.
 ./scripts/check_comparator_signature.sh

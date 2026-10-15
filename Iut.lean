@@ -198,6 +198,7 @@ import Iut.LogLink.Thm311
 import Iut.LogLink.Thm311LGP
 import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
+import Iut.Multiradial.Spec
 import Iut.Reconstruction.Cusp.Belyi
 import Iut.Reconstruction.Cusp.Elliptic
 import Iut.Reconstruction.Cusp.OutSemidirect
