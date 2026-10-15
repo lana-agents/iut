@@ -72,7 +72,7 @@ section Field
 
 variable (A : AutHolStr X) [hA : Fact (IsPlane A)] (p : X)
 
-/-- A chosen isomorphism `(X, A) ≅ ℂ` (used only to verify the field axioms). -/
+/-- A chosen isomorphism `(X, A) ≅ ℂ` (used only to verify the field laws). -/
 noncomputable def chosenIso : X ≃ₜ ℂ := hA.out.choose
 
 theorem chosenIso_spec : IsIso A plane (chosenIso A) := hA.out.choose_spec

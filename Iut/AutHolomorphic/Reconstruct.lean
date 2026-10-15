@@ -16,10 +16,10 @@ alone, with no reference to a model of `ℂ` ([AbsTopIII], Remark 2.7.4: "model-
 * `transl G p a`: a translation sending `p` to `a` (unique in the cases of interest);
 * `addAt G p a b = transl G p a b`, `negAt G p a`: the **local additive structure at `p`** (the
   sum `a +_p b` relative to the origin `p`, [AbsTopIII], Proposition 2.5(e));
-* `Kset G p ⊆ (X → X)`: the elements of the stabiliser `A_p = Stab_G(p)` together with the constant
-  map `p` ("`A_p ∪ {0}`", [AbsTopIII], Proposition 2.6(a), Corollary 2.7(e));
+* `Kset G p ⊆ (X → X)`: the elements of the stabiliser `A_p = Stab_G(p)` together with the map
+  `x ↦ p` ("`A_p ∪ {0}`", [AbsTopIII], Proposition 2.6(a), Corollary 2.7(e));
 * the operations on `X → X`: `kAdd` (pointwise `+_p`), `kNeg`, `kMul` (composition), `kInv`
-  (inverse in `G`), `kZero` (the constant `p`), `kOne` (the identity).
+  (inverse in `G`), `kZero` (the map with the single value `p`), `kOne` (the identity).
 
 For the Aut-holomorphic plane these make `Kset G p` a topological field isomorphic to `ℂ`
 (`Iut/AutHolomorphic/PlaneField.lean`).
@@ -70,7 +70,7 @@ noncomputable def negAt (G : Subgroup (X ≃ₜ X)) (p a : X) : X := (transl G p
 
 /-! ### The set `A_p ∪ {0}` and its operations -/
 
-/-- **`A_p ∪ {0}`**: the maps underlying elements of `G` fixing `p`, and the constant map `p`. -/
+/-- **`A_p ∪ {0}`**: the maps underlying elements of `G` fixing `p`, and the map `x ↦ p`. -/
 def Kset (G : Subgroup (X ≃ₜ X)) (p : X) : Set (X → X) :=
   {f | (∃ g ∈ G, g p = p ∧ ⇑g = f) ∨ f = fun _ => p}
 
@@ -85,14 +85,14 @@ noncomputable def kNeg (G : Subgroup (X ≃ₜ X)) (p : X) (f : X → X) : X →
 /-- Multiplication: composition. -/
 def kMul (f f' : X → X) : X → X := f ∘ f'
 
-/-- Zero: the constant map `p`. -/
+/-- Zero: the map `x ↦ p`. -/
 def kZero (p : X) : X → X := fun _ => p
 
 /-- One: the identity. -/
 def kOne : X → X := id
 
 open Classical in
-/-- Inversion: the inverse in `G` (the constant map is sent to itself). -/
+/-- Inversion: the inverse in `G` (the map `x ↦ p` is sent to itself). -/
 noncomputable def kInv (G : Subgroup (X ≃ₜ X)) (p : X) (f : X → X) : X → X :=
   if h : ∃ g ∈ G, g p = p ∧ ⇑g = f then ⇑(h.choose.symm) else f
 

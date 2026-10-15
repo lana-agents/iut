@@ -42,6 +42,17 @@ import Iut.Arakelov.Container
 import Iut.Arakelov.FractionalIdeal
 import Iut.Arakelov.LineBundle
 import Iut.Arakelov.QPilot
+import Iut.AutHolomorphic.Basic
+import Iut.AutHolomorphic.CAF
+import Iut.AutHolomorphic.EntireAut
+import Iut.AutHolomorphic.HalfPlane
+import Iut.AutHolomorphic.Plane
+import Iut.AutHolomorphic.PlaneAut
+import Iut.AutHolomorphic.PlaneField
+import Iut.AutHolomorphic.Punctured
+import Iut.AutHolomorphic.RecField
+import Iut.AutHolomorphic.Reconstruct
+import Iut.AutHolomorphic.Transport
 import Iut.Basic
 import Iut.Concrete.Container
 import Iut.Concrete.CurveArithmeticProved

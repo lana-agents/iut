@@ -19,7 +19,7 @@ Proof. Normalise `f(0) = 0`. Since `f` is a homeomorphism it is proper, so `‖f
 `ℂ ∖ {0}`; by Riemann's removable singularity theorem it is entire. It is injective, hence
 `G′(0) ≠ 0` (`Uniformization.deriv_ne_zero_of_injOn`), so `‖G w‖ ≥ (‖G′(0)‖ / 2) ‖w‖` near `0`,
 i.e. `‖f z‖ ≤ C ‖z‖` near `∞`. Then `f(z) / z` (`dslope f 0`) is a bounded entire function,
-constant by Liouville's theorem.
+independent of `z` by Liouville's theorem.
 -/
 
 namespace Iut
