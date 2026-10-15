@@ -164,6 +164,9 @@ Results (`F : C₁ ⥤ C₂` an equivalence):
 * `Thm34iv.lean`: `O^▷`, `O^×` are preserved (Theorem 3.4(iv)); `degFr_map_eq`: `σ = id`.
 * `GaloisBase.lean`, `GaloisSlim.lean`: the hypotheses for `B(G)⁰`; `Model.thm34_galois`,
   `Model.thm34_galois_preservesBase`.
+* `DivOrder.lean`: Corollary 4.11(iii) as ordered sets: an equivalence matching pre-steps induces
+  order isomorphisms `Model.divEquiv : Φ₁(A_X) ≃ Φ₂(A_{F X})` with `Div(F φ) = τ_X(Div φ)` for
+  every pre-step `φ` out of `X` (`Model.div_map_preStep`).
 * `Thm34Rlf.lean`: a second route for realified Frobenioids (torsion-free `B`) over groupoid
   bases whose divisor monoids have no irreducible elements: irreducible morphisms are the
   isometries of prime Frobenius degree (`Model.isIrreducible_of_prime`,
