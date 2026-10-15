@@ -206,6 +206,39 @@ variable {Φ₂ : DivMonoid.{w₂} D₂} {B₂ : GrpOn.{w₂} D₂} {divB₂ : D
 local notation "𝐏₁" => toElem Φ₁ B₁ divB₁
 local notation "𝐏₂" => toElem Φ₂ B₂ divB₂
 
+omit [TotallyEpimorphic D₁] [TotallyEpimorphic D₂] in
+/-- **The automorphism `Ψ_{ℕ≥1}`**: an equivalence such that it and its quasi-inverse preserve
+linear morphisms multiplies Frobenius degrees by an automorphism `σ` of the monoid `ℕ_{≥1}`. -/
+theorem exists_degEquiv (F : Model Φ₁ B₁ divB₁ ⥤ Model Φ₂ B₂ divB₂) [F.IsEquivalence]
+    (hlin : ∀ ⦃X Y : Model Φ₁ B₁ divB₁⦄ (φ : X ⟶ Y), IsLinear 𝐏₁ φ → IsLinear 𝐏₂ (F.map φ))
+    (hlin' : ∀ ⦃X Y : Model Φ₂ B₂ divB₂⦄ (φ : X ⟶ Y), IsLinear 𝐏₂ φ →
+      IsLinear 𝐏₁ (F.inv.map φ)) :
+    ∃ σ : ℕ+ ≃* ℕ+, ∀ ⦃X Y : Model Φ₁ B₁ divB₁⦄ (φ : X ⟶ Y),
+      degFr 𝐏₂ (F.map φ) = σ (degFr 𝐏₁ φ) := by
+  obtain ⟨σ, hσ⟩ := exists_degHom F hlin
+  obtain ⟨τ, hτ⟩ := exists_degHom F.inv hlin'
+  have hτσ : ∀ n, τ (σ n) = n := by
+    intro n
+    let X₀ : Model Φ₁ B₁ divB₁ := zeroObj Φ₁ B₁ divB₁ (Classical.arbitrary D₁)
+    have h := congrArg (degFr 𝐏₁) (F.asEquivalence.unitIso.hom.naturality (frob X₀ n))
+    simp only [degFr_comp, degFr_of_isIso, Functor.id_map, Functor.comp_map, one_mul,
+      mul_one] at h
+    have h' := hτ (F.map (frob X₀ n))
+    rw [hσ] at h'
+    exact h'.symm.trans h.symm
+  have hστ : ∀ n, σ (τ n) = n := by
+    intro n
+    let Y₀ : Model Φ₂ B₂ divB₂ := zeroObj Φ₂ B₂ divB₂ (Classical.arbitrary D₂)
+    have h := congrArg (degFr 𝐏₂) (F.asEquivalence.counitIso.hom.naturality (frob Y₀ n))
+    simp only [degFr_comp, degFr_of_isIso, Functor.id_map, Functor.comp_map, one_mul,
+      mul_one] at h
+    have h' := hσ (F.inv.map (frob Y₀ n))
+    rw [hτ] at h'
+    exact h'.symm.trans h
+  let e : ℕ+ ≃* ℕ+ :=
+    { toFun := σ, invFun := τ, left_inv := hτσ, right_inv := hστ, map_mul' := σ.map_mul }
+  exact ⟨e, hσ⟩
+
 /-- The correspondences of morphism types under an equivalence of model Frobenioids. -/
 structure TypeCorresp (F : Model Φ₁ B₁ divB₁ ⥤ Model Φ₂ B₂ divB₂) : Prop where
   preStep : Corresp F (fun _ _ φ => IsPreStep 𝐏₁ φ) (fun _ _ φ => IsPreStep 𝐏₂ φ)
@@ -253,34 +286,14 @@ theorem thm34_preservesFrobeniusStructure (hD₁ : BaseHyp D₁) (hB₁ : HasAll
     [F.IsEquivalence] : PreservesFrobeniusStructure 𝐏₁ 𝐏₂ F := by
   have c := typeCorresp hD₁ hB₁ hD₂ hB₂ F
   have c' := typeCorresp hD₂ hB₂ hD₁ hB₁ F.inv
-  obtain ⟨σ, hσ⟩ := exists_degHom F (fun _ _ φ h => (c.linear φ).1 h)
-  obtain ⟨τ, hτ⟩ := exists_degHom F.inv (fun _ _ φ h => (c'.linear φ).1 h)
-  have hτσ : ∀ n, τ (σ n) = n := by
-    intro n
-    let X₀ : Model Φ₁ B₁ divB₁ := zeroObj Φ₁ B₁ divB₁ (Classical.arbitrary D₁)
-    have h := congrArg (degFr 𝐏₁) (F.asEquivalence.unitIso.hom.naturality (frob X₀ n))
-    simp only [degFr_comp, degFr_of_isIso, Functor.id_map, Functor.comp_map, one_mul,
-      mul_one] at h
-    have h' := hτ (F.map (frob X₀ n))
-    rw [hσ] at h'
-    exact h'.symm.trans h.symm
-  have hστ : ∀ n, σ (τ n) = n := by
-    intro n
-    let Y₀ : Model Φ₂ B₂ divB₂ := zeroObj Φ₂ B₂ divB₂ (Classical.arbitrary D₂)
-    have h := congrArg (degFr 𝐏₂) (F.asEquivalence.counitIso.hom.naturality (frob Y₀ n))
-    simp only [degFr_comp, degFr_of_isIso, Functor.id_map, Functor.comp_map, one_mul,
-      mul_one] at h
-    have h' := hσ (F.inv.map (frob Y₀ n))
-    rw [hτ] at h'
-    exact h'.symm.trans h
-  let e : ℕ+ ≃* ℕ+ :=
-    { toFun := σ, invFun := τ, left_inv := hτσ, right_inv := hστ, map_mul' := σ.map_mul }
+  obtain ⟨e, he⟩ := exists_degEquiv F (fun _ _ φ h => (c.linear φ).1 h)
+    (fun _ _ φ h => (c'.linear φ).1 h)
   have cCoa : ∀ {A B : Model Φ₁ B₁ divB₁} (φ : A ⟶ B),
       IsCoangular 𝐏₁ φ ↔ IsCoangular 𝐏₂ (F.map φ) :=
     fun φ => ⟨fun _ => isCoangular _, fun _ => isCoangular _⟩
   refine ⟨fun φ => c.frobType φ, fun φ => c.linear φ, fun φ => c.baseIso φ, cCoa,
     fun φ => c.pullback φ, fun φ => c.isometric φ, fun φ => and_congr (cCoa φ) (c.isometric φ),
-    e, fun φ => hσ φ⟩
+    e, fun φ => he φ⟩
 
 end Main
 

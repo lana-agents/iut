@@ -91,7 +91,7 @@ challenge or by `Iut/Concrete/*`.
 | 3(d) archimedean | `Arch.lean` | `Arch.isFrobenioid`, `Arch.orhd_iff` (`O^▷ = {0 < |u| ≤ 1}`), `Arch.ounits_iff` (`O^× = {|u| = 1}`) |
 | 3(c) tempered | `TemperedBase.lean`, `Tempered.lean`, `TateTheta.lean` | `OrbitObj.isConnected`, `OrbitObj.totallyEpimorphic`, `OrbitHom.bijective_of_isFSM`, `TemperedFrobenioidData.isFrobenioid`, `thetaData_isFrobenioid`, `pb_deck_divTheta`, `tateThetaData_isFrobenioid`; units in `B₀`: `unitThetaData_isFrobenioid`, `ker_unitThetaDiv` (kernel of the divisor map = units); `tateY_H` (`Y` has subgroup `Π^tp_Y = TateObject.piY`), `mem_tateY_H_iff` |
 | 4 category-theoreticity | `Theoreticity.lean` | statements `PreservesFrobeniusStructure`, `PreservesBase`; `scale_preserves`, `endZeroEquiv`, `inducedDegAut` |
-| 6 Thm 3.4 (MR16) | `Invariance.lean`, `ModelTypes.lean`, `Thm34.lean`, `Thm34Base.lean`, `Thm34iv.lean`, `GaloisBase.lean`, `GaloisSlim.lean` | see "Category-theoreticity (MR16)" below: `Model.thm34_preservesFrobeniusStructure`, `Model.thm34_preservesBase`, `Model.degFr_map_eq`, `Model.mem_orhd_iff`, `OrbitObj.baseHyp`, `OrbitObj.isSlim`, `Model.thm34_galois`, `Model.thm34_galois_preservesBase` |
+| 6 Thm 3.4 (MR16) | `Invariance.lean`, `ModelTypes.lean`, `Thm34.lean`, `Thm34Base.lean`, `Thm34iv.lean`, `Thm34Rlf.lean`, `GaloisBase.lean`, `GaloisSlim.lean` | see "Category-theoreticity (MR16)" below: `Model.thm34_preservesFrobeniusStructure`, `Model.thm34_preservesBase`, `Model.degFr_map_eq`, `Model.mem_orhd_iff`, `OrbitObj.baseHyp`, `OrbitObj.isSlim`, `Model.thm34_galois`, `Model.thm34_galois_preservesBase`, `GlobalRealified.thm34` |
 | 7 FrdI §1 | `Props.lean` | Prop. 1.4(i)–(iii) (`coangular_of_isotropic`, `isPullback_iff`, `isIso_of_lbInvertible_preStep`), 1.7(i), (v), 1.8(iii), 1.9(iv), 1.11(iii), 1.12(i) |
 | 8 FrdI Prop. 1.14(iii) | `Counterexample.lean` | `Counterexample.not_prop114iii` (fails when `B` has torsion of every order), `frob_not_mono` |
 | 5 the wall | `Wall.lean` | `degreeNorm_qPilotObj`, `degreeNorm_thetaPilotObj` (`= s·|log q|`), `logVol_qRegion_eq_neg_degreeNorm`, `logVol_lgp_eq_neg_degreeNorm`, `scale_thetaPilotObj`, `nonempty_iso_scale_iff`, `isEmpty_iso_thetaPilot_qPilot` |
@@ -136,12 +136,14 @@ challenge or by `Iut/Concrete/*`.
 
 [FrdI], Theorem 3.4 is proved for **model Frobenioids** (every Frobenioid of IUT is built as a
 model, [FrdI], Theorem 5.2) under the following hypotheses, which hold for the `p`-adic,
-archimedean and tempered Frobenioids of IUT (`B(A) ⊇ μ(K̄)`) over the Galois base categories
+archimedean and tempered Frobenioids of IUT (`B(G/H) = (K̄^H)^× ⊇ μ_n` for `H` small) over the
+Galois base categories
 `B(G)⁰`:
 
 * `BaseHyp D`: `D` is of FSM-type and of Aut-type (`OrbitObj.baseHyp`: true for `B(G)⁰`,
   `G` compact);
-* `HasAllTorsion B`: every `B(A)` has torsion of every order;
+* `HasAllTorsion B`: torsion of every order occurs cofinally in `B` (for every `A`, `n ≥ 2`
+  there are `A' → A` and `1 ≠ b ∈ B(A')` with `bⁿ = 1`);
 * for (iv)/(v): `IsSlim D₂` ([FrdI] §0), true for `B(G)⁰` with `G` slim profinite
   (`OrbitObj.isSlim`), and for the Frobenius degree a unit of infinite order
   (`HasNonTorsionUnit`).
@@ -162,6 +164,13 @@ Results (`F : C₁ ⥤ C₂` an equivalence):
 * `Thm34iv.lean`: `O^▷`, `O^×` are preserved (Theorem 3.4(iv)); `degFr_map_eq`: `σ = id`.
 * `GaloisBase.lean`, `GaloisSlim.lean`: the hypotheses for `B(G)⁰`; `Model.thm34_galois`,
   `Model.thm34_galois_preservesBase`.
+* `Thm34Rlf.lean`: a second route for realified Frobenioids (torsion-free `B`) over groupoid
+  bases whose divisor monoids have no irreducible elements: irreducible morphisms are the
+  isometries of prime Frobenius degree (`Model.isIrreducible_of_prime`,
+  `Model.not_linear_of_irreducible`), linear morphisms are those mid-adjoint to the irreducible
+  ones (`Model.isLinear_iff_midAdj`); `Model.thm34_groupoid` and
+  **`GlobalRealified.thm34`** (every equivalence `C^⊩(K) ≌ C^⊩(L)` of global realified
+  Frobenioids, IUT I, Example 3.5, preserves the Frobenius structure).
 
 **Erratum found on the way** (`Counterexample.lean`): [FrdI], Proposition 1.14(iii), on which
 the published proof of Theorem 3.4(ii) relies, fails for Frobenioids whose rational functions
@@ -170,8 +179,10 @@ FSMI-morphisms). The statement of Theorem 3.4(ii) itself holds in that case (abo
 
 ## What remains
 
-* Theorem 3.4 for Frobenioids that are not models, or whose `B(A)` lacks torsion of some order
-  (the non-realified global Frobenioid of `F_mod`, with finite `μ(F)`; realified Frobenioids);
+* Theorem 3.4 for Frobenioids that are not models, or (outside the realified case of
+  `Thm34Rlf.lean`) whose rational functions lack torsion of some order cofinally (e.g. a
+  non-realified global Frobenioid over `Pt` with finite `μ(F)`); (iv)/(v) for the realified
+  case;
   Corollary 4.10, 4.11 (birationalization, `Ψ_Φ`); Theorem 6.4(ii) for arbitrary equivalences of
   realified Frobenioids (only scalings, `scale_preserves`).
 * Propositions 1.9(v)–(vii), 1.10, 1.11(iv)–(vii), 1.13, 1.14 for general Frobenioids (the

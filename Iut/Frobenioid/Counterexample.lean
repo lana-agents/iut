@@ -22,7 +22,9 @@ The proof of "irreducible pre-step ⇒ the condition fails" takes `ψ` to be a p
 morphism of large degree and uses that such morphisms are FSMI-morphisms. A morphism of Frobenius
 type of degree `n` in a model Frobenioid is, however, *not* a monomorphism as soon as the group
 `B(A)` of rational functions contains an element of order `n` (`Model.deg_eq_one_of_mono`). This
-is the case for the Frobenioids of IUT (`B(A) ⊇ μ(K̄)`).
+is the case for the Frobenioids of IUT over `B(G)⁰`, whose rational functions over `G/H` are
+`(K̄^H)^×`: for every `n`, `μ_n ⊆ K̄^{H'}` for `H'` small, so the lifts of `G/H' → G/H` with
+rational functions `1` and `ζ_n` have the same composite with a Frobenius morphism of degree `n`.
 
 **Counterexample** (`not_prop114iii`). `D = Pt` (one object, one morphism; of FSM-type, hence of
 FSMFF-type), `Φ = ℤ_{≥0}`, `B = ∏_{n} ℤ/n` (torsion of every order), `Div_B = 0`. The model
@@ -119,7 +121,8 @@ lemma tors_spec (n : ℕ) (hn : 2 ≤ n) :
       rw [Pi.single_eq_same, nsmul_eq_mul, mul_one, ZMod.natCast_self]
     · rw [Pi.single_eq_of_ne hm, smul_zero]
 
-lemma hasAllTorsion : HasAllTorsion bTors := fun _ n hn => ⟨Pi.single n 1, tors_spec n hn⟩
+lemma hasAllTorsion : HasAllTorsion bTors :=
+  fun A n hn => ⟨A, 𝟙 A, Pi.single n 1, tors_spec n hn⟩
 
 lemma baseHyp : BaseHyp Pt := ⟨fun _ _ f _ => isIso_pt f, fun _ f => isIso_pt f⟩
 

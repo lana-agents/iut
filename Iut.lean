@@ -185,6 +185,7 @@ import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
 import Iut.Frobenioid.Thm34
 import Iut.Frobenioid.Thm34Base
+import Iut.Frobenioid.Thm34Rlf
 import Iut.Frobenioid.Thm34iv
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge

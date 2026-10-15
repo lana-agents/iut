@@ -232,6 +232,30 @@ lemma Corresp.minCoadj {P : MorClass C₁} {Q : MorClass C₂} (h : Corresp F P 
     exact (corresp_isIso F b).2 (hm (F.map a) (F.map b) (by rw [← F.map_comp, hab])
       ((h b).1 hb))
 
+lemma Corresp.midAdj {P : MorClass C₁} {Q : MorClass C₂} (h : Corresp F P Q)
+    (hQ : RespIso Q) : Corresp F (fun _ _ φ => MidAdj P φ) (fun _ _ φ => MidAdj Q φ) := by
+  intro X Y φ
+  constructor
+  · intro hm V' W' a' b' c' habc hb'
+    let eV := F.objObjPreimageIso V'
+    let eW := F.objObjPreimageIso W'
+    let b : F.objPreimage V' ⟶ F.objPreimage W' := F.preimage (eV.hom ≫ b' ≫ eW.inv)
+    have hFb : F.map b = eV.hom ≫ b' ≫ eW.inv := by simp [b]
+    have hP : P b := by
+      rw [h, hFb]
+      exact hQ.left eV _ (hQ.right b' eW.symm hb')
+    have hi := hm (preimageR F a') b (preimageL F c')
+      (F.map_injective (by simp [map_preimageR, map_preimageL, hFb, eV, eW, habc])) hP
+    have := (corresp_isIso F b).1 hi
+    rw [hFb] at this
+    have e : b' = eV.inv ≫ (eV.hom ≫ b' ≫ eW.inv) ≫ eW.hom := by simp
+    rw [e]
+    haveI := this
+    infer_instance
+  · intro hm V W a b c habc hb
+    exact (corresp_isIso F b).2 (hm (F.map a) (F.map b) (F.map c)
+      (by rw [← F.map_comp, ← F.map_comp, habc]) ((h b).1 hb))
+
 lemma Corresp.compOf {P P' : MorClass C₁} {Q Q' : MorClass C₂} (h : Corresp F P Q)
     (h' : Corresp F P' Q') (hQ : RespIso Q) (hQ' : RespIso Q') :
     Corresp F (fun _ _ φ => CompOf P P' φ) (fun _ _ φ => CompOf Q Q' φ) := by

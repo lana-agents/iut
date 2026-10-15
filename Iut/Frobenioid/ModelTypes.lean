@@ -22,9 +22,10 @@ structure and to types already characterized, in the order
 * `BaseHyp D`: the base category `D` is of **FSM-type** (every FSM-morphism is an isomorphism)
   and of **Aut-type** (every endomorphism is an automorphism), [FrdI] §0, p. 14. Both hold for
   the categories `B(G)⁰` of connected objects of a Galois category (`GaloisBase.lean`).
-* `HasAllTorsion B`: every group `B(A)` of rational functions contains a nonzero element of
-  order dividing `n`, for every `n ≥ 2`. For the Frobenioids of IUT, `B(A)` contains the roots of
-  unity `μ(K̄)` (the `p`-adic, archimedean and tempered Frobenioids of [FrdII] and [EtTh] §3).
+* `HasAllTorsion B`: for every object `A` and `n ≥ 2` some `B(A')`, `A' → A`, contains a nonzero
+  element killed by `n`. For the Frobenioids of IUT over `B(G)⁰` the rational functions over
+  `G/H` are `(K̄^H)^×`, which contain `μ_n` for `H` small enough (the `p`-adic, archimedean and
+  tempered Frobenioids of [FrdII] and [EtTh] §3).
 
 ## Results
 
@@ -142,10 +143,11 @@ structure BaseHyp (D : Type u) [Category.{v} D] : Prop where
   /-- Aut-type: every endomorphism is an automorphism. -/
   aut : ∀ ⦃A : D⦄ (f : A ⟶ A), IsIso f
 
-/-- Every `B(A)` contains a nonzero element killed by `n`, for every `n ≥ 2` (e.g. a primitive
-`n`-th root of unity). -/
+/-- **Torsion of every order, cofinally**: for every object `A` and every `n ≥ 2` there are a
+morphism `f : A' → A` of `D` and a nonzero `b ∈ B(A')` killed by `n`. For the Frobenioids of IUT
+over `B(G)⁰`, `B(G/H) = (K̄^H)^×` and `A' = G/H'` for `H' ⊆ H` with `μ_n ⊆ K̄^{H'}`. -/
 def HasAllTorsion {D : Type u} [Category.{v} D] (B : GrpOn.{w} D) : Prop :=
-  ∀ (A : D) (n : ℕ), 2 ≤ n → ∃ b : B.obj A, b ≠ 0 ∧ n • b = 0
+  ∀ (A : D) (n : ℕ), 2 ≤ n → ∃ (A' : D) (_ : A' ⟶ A) (b : B.obj A'), b ≠ 0 ∧ n • b = 0
 
 namespace Model
 
@@ -225,9 +227,9 @@ theorem isFSM_of_isPreStep {X₀ A : Model Φ B divB} (φ : X₀ ⟶ A) (hφ : I
 
 /-! ### FSM-morphisms are pre-steps -/
 
-/-- **A monomorphism of the model has Frobenius degree `1`** when `B` has all torsion: if
-`deg φ = n ≥ 2` and `b ∈ B(X)` is nonzero with `n·b = 0`, the automorphism `(1, id, 0, b)` of `X`
-is killed by `φ`. -/
+/-- **A monomorphism of the model has Frobenius degree `1`** when `B` has torsion of every order
+(cofinally): if `deg φ = n ≥ 2`, `f : A' → A_X` and `b ∈ B(A')` is nonzero with `n·b = 0`, the two
+lifts `(1, f, 0, 0)` and `(1, f, 0, b)` of `f` to `X` have the same composite with `φ`. -/
 theorem deg_eq_one_of_mono (hB : HasAllTorsion B) {X Y : Model Φ B divB} (φ : X ⟶ Y)
     [Mono φ] : φ.deg = 1 := by
   by_contra hne
@@ -235,18 +237,20 @@ theorem deg_eq_one_of_mono (hB : HasAllTorsion B) {X Y : Model Φ B divB} (φ : 
     rcases Nat.lt_or_ge (φ.deg : ℕ) 2 with h | h
     · exact absurd (PNat.coe_eq_one_iff.mp (by have := φ.deg.pos; omega)) hne
     · exact h
-  obtain ⟨b, hb0, hb⟩ := hB X.base φ.deg h2
-  have hdb : divB.app X.base b = 0 :=
+  obtain ⟨A', f, b, hb0, hb⟩ := hB X.base φ.deg h2
+  have hdb : divB.app A' b = 0 :=
     Φ.eq_zero_of_nsmul_eq_zero φ.deg.pos (by rw [← map_nsmul, hb, map_zero])
-  let a : X ⟶ X := mk1 (𝟙 _) 0 (Φ.pos _).zero_mem b (by simp [hdb])
-  have h : a ≫ φ = 𝟙 X ≫ φ := by
+  let W : Model Φ B divB := ⟨A', Φ.pb f X.α⟩
+  let g : W ⟶ X := mk1 f 0 (Φ.pos _).zero_mem 0 (by simp [W])
+  let h : W ⟶ X := mk1 f 0 (Φ.pos _).zero_mem b (by simp [W, hdb])
+  have hc : g ≫ φ = h ≫ φ := by
     ext
-    · simp [a]
-    · simp [a]
-    · simp [a]
-    · simp [a, hb]
-  have := congrArg Hom.u ((cancel_mono φ).mp h)
-  exact hb0 (by simpa [a] using this)
+    · simp [g, h]
+    · simp [g, h]
+    · simp [g, h]
+    · simp [g, h, hb]
+  have := congrArg Hom.u ((cancel_mono φ).mp hc)
+  exact hb0 (by simpa [g, h] using this.symm)
 
 /-- **A linear monomorphism of the model has a monomorphic base**: two morphisms
 `g, h : T → X_D` with `g ≫ Base φ = h ≫ Base φ` lift to morphisms into `X` with the same
