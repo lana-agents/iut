@@ -132,7 +132,10 @@ theorem mem_ker_mobiusHom (g : SL(2, ℝ)) : g ∈ mobiusHom.ker ↔ g = 1 ∨ g
     have hI_im := congrArg Complex.im hI
     have h2_re := congrArg Complex.re h2I
     have h2_im := congrArg Complex.im h2I
-    simp [Complex.mul_re, Complex.mul_im] at hI_re hI_im h2_re h2_im
+    simp only [Fin.isValue, Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.I_re,
+      mul_zero, Complex.ofReal_im, Complex.I_im, mul_one, sub_self, zero_add, zero_mul,
+      Complex.add_im, Complex.mul_im, add_zero, one_mul, zero_sub, Complex.re_ofNat,
+      Complex.im_ofNat] at hI_re hI_im h2_re h2_im
     have hdet := g.2
     rw [Matrix.det_fin_two] at hdet
     have hc : g 1 0 = 0 := by nlinarith
