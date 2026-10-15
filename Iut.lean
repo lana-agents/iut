@@ -167,7 +167,9 @@ import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
 import Iut.Frobenioid.Arch
 import Iut.Frobenioid.Basic
+import Iut.Frobenioid.Counterexample
 import Iut.Frobenioid.Defs
+import Iut.Frobenioid.GaloisBase
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalPic
 import Iut.Frobenioid.Invariance
@@ -180,6 +182,7 @@ import Iut.Frobenioid.Tempered
 import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
 import Iut.Frobenioid.Thm34
+import Iut.Frobenioid.Thm34Base
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
 import Iut.HodgeTheater.Gluing
