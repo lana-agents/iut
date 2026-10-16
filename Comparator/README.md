@@ -47,7 +47,9 @@ theorem Iut.abc_of_cor312Variant : Iut.Cor312VariantHolds → ABC := by
   (`Iut/Concrete/ThetaRegion.lean`). Its vocabulary is a project definition and cannot be
   inlined: it covers the initial Θ-data of IUT I, Definition 3.1 (stated about the model
   orbicurves with their genuine cores; the étale and tempered fundamental groups of `pi1`,
-  `tempered-fundamental-groups` are derived definitions), the tensor packets at the places of
+  `tempered-fundamental-groups` are derived definitions; the decomposition groups `G_v` are
+  defined as the stabilizers of chosen primes over `v`, `Iut.decompGroup`, not supplied as
+  data), the tensor packets at the places of
   the valuation section `V ≅ V_mod` with their log-shells, log-volumes and hulls (IUT III,
   Remark 3.1.1), the theta-pilot region, and the variant inequality. The theta-pilot region
   models the indeterminacies of IUT III, Theorem 3.11: at a prime, the union of the images of

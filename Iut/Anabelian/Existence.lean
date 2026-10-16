@@ -587,8 +587,6 @@ def localThetaData (hcore : OrbicurveDataSection.HasCoreUniversally F E) :
     LocalThetaData F E Fbar VBad P (P.orbicurveData hcore) where
   sect := P.sect TF
   local_diagram_cartesian _ := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
-  decomp w := decompGroup ↥P.torsionField Fbar w
-  decomp_isClosed w := decompGroup_isClosed ↥P.torsionField Fbar w
   tateX v hv := TF.S _ (P.sectFin_isBad TF hv)
   tateC v hv := TF.S _ (P.sectFin_isBad TF hv)
   bad_type v hv := localType hv false

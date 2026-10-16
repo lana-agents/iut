@@ -6,32 +6,23 @@ Authors: LANA Project
 import Iut.Anabelian.CoreOfJ
 import Iut.Anabelian.Existence
 import Iut.Concrete.Existence
-import Iut.Concrete.ThetaRegion
 
 /-!
 # Genuine decomposition groups in initial Θ-data (multiradial roadmap, MR1)
 
-IUT I, Definition 3.1(e) fixes, at every place of the valuation section, a decomposition group
-`G_v ⊆ Gal(F̄/K)`. The structure `Iut.LocalThetaData` records it as a field `decomp` that is only
-required to be a closed subgroup (ROADMAP §5, shells #6, #38). That structure lies in the trusted
-import closure of the comparator challenge (`Comparator/Challenge.lean` imports
-`Iut.Concrete.ThetaRegion`, which imports `Iut.Cor312.ThetaData.Basic`), so it is not changed here.
-Instead this file
+IUT I, Definition 3.1(e) uses, at every place `v` of the valuation section, "the decomposition
+group `G_v ⊆ G_K` determined, up to `G_K`-conjugacy, by `v`". In `Iut.LocalThetaData` this group is
+the **definition** `LocalThetaData.decomp v := Iut.decompGroup v` (the stabilizer of the chosen
+prime of the integral closure of `𝓞_K` in `F̄` over `𝔓_v`), no longer a datum (shells #6, #38;
+before MR1 it was an arbitrary closed subgroup given as a structure field). This file
 
 * defines what it means for a subgroup to be **a decomposition group** of a finite place `w` of
-  `K`: the stabilizer of a prime of the integral closure of `𝓞_K` in `F̄` over `𝔓_w`
-  (`Iut.IsDecompositionGroup`); every such subgroup is closed (`IsDecompositionGroup.isClosed`), so
-  the field `decomp_isClosed` is a consequence of genuineness;
-* defines **genuine** local Θ-data and initial Θ-data (`LocalThetaData.HasGenuineDecomp`,
-  `InitialThetaData.HasGenuineDecomp`) and the **genuinization** `D.withGenuineDecomp`, which
-  replaces `decomp` by the decomposition groups `Iut.decompGroup` and keeps all other data, with
-  `InitialThetaData.decomp_eq : D.withGenuineDecomp.localData.decomp v = decompGroup D.Kt D.Fbar v`;
-* proves that the **existence construction** already produces genuine data
-  (`AdmissiblePrimeData.localThetaData_hasGenuineDecomp`,
-  `EllipticCurveData.thetaData_hasGenuineDecomp`);
-* proves that the **comparator hypothesis is unchanged** by the restriction to genuine Θ-data
-  (`Iut.cor312VariantHolds_iff_genuine`, `Iut.cor312LiteralHolds_iff_genuine`): the concrete
-  Corollary 3.12 data do not read `decomp`.
+  `K`: the stabilizer of *some* prime of the integral closure of `𝓞_K` in `F̄` over `𝔓_w`
+  (`Iut.IsDecompositionGroup`); every such subgroup is closed (`IsDecompositionGroup.isClosed`);
+* proves that the groups `G_v` of local and initial Θ-data are decomposition groups in this
+  sense (`LocalThetaData.isDecompositionGroup_decomp`,
+  `InitialThetaData.isDecompositionGroup_decomp`) and records
+  `InitialThetaData.decomp_eq : D.localData.decomp v = decompGroup D.Kt D.Fbar v`.
 
 The core condition of Definition 3.1(d) is derived from [CanLift], Proposition 2.7 in
 `Iut.Anabelian.CoreOfJ`; `EllipticCurveData.thetaDataOfJ` is the existence construction with that
@@ -119,146 +110,37 @@ theorem IsDecompositionGroup.isClosed [Algebra.IsIntegral K Fbar] {w : FinitePla
 
 end Stabilizer
 
-/-! ### Genuine local and initial Θ-data -/
+/-! ### The groups `G_v` of Θ-data are decomposition groups -/
 
 namespace LocalThetaData
 
 variable {F : Type u} [Field F] [NumberField F] {E : WeierstrassCurve F} [E.IsElliptic]
-  {Fbar : Type u} [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
+  {Fbar : Type u} [Field Fbar] [Algebra F Fbar]
   {VBad : Set (FinitePlace ↥(fieldOfModuli F E))} {P : AdmissiblePrimeData F E Fbar VBad}
   [NumberField ↥P.torsionField] {O : OrbicurveDataSection.OrbicurveData F E Fbar VBad P}
 
-/-- **Genuine local Θ-data**: every chosen group `G_v` is a decomposition group of `v` (IUT I,
+/-- **The groups `G_v` of local Θ-data are decomposition groups** of the places `v` (IUT I,
 Definition 3.1(e)). -/
-def HasGenuineDecomp (L : LocalThetaData F E Fbar VBad P O) : Prop :=
-  ∀ v, IsDecompositionGroup (↥P.torsionField) Fbar v (L.decomp v)
-
-/-- The closedness of the chosen groups is a consequence of genuineness. -/
-theorem HasGenuineDecomp.decomp_isClosed {L : LocalThetaData F E Fbar VBad P O}
-    (h : L.HasGenuineDecomp) (v : FinitePlace ↥P.torsionField) :
-    IsClosed ((L.decomp v : Subgroup _) : Set (Fbar ≃ₐ[↥P.torsionField] Fbar)) :=
-  (h v).isClosed
-
-/-- **The genuinization** of local Θ-data: the groups `G_v` replaced by the decomposition groups
-`Iut.decompGroup v`, all other data unchanged. -/
-noncomputable def withGenuineDecomp (L : LocalThetaData F E Fbar VBad P O) :
-    LocalThetaData F E Fbar VBad P O :=
-  { L with
-    decomp := fun w => decompGroup ↥P.torsionField Fbar w
-    decomp_isClosed := fun w => decompGroup_isClosed ↥P.torsionField Fbar w }
-
-@[simp]
-theorem withGenuineDecomp_decomp (L : LocalThetaData F E Fbar VBad P O)
+theorem isDecompositionGroup_decomp (L : LocalThetaData F E Fbar VBad P O)
     (v : FinitePlace ↥P.torsionField) :
-    L.withGenuineDecomp.decomp v = decompGroup ↥P.torsionField Fbar v := rfl
-
-@[simp]
-theorem withGenuineDecomp_sect (L : LocalThetaData F E Fbar VBad P O) :
-    L.withGenuineDecomp.sect = L.sect := rfl
-
-theorem hasGenuineDecomp_withGenuineDecomp (L : LocalThetaData F E Fbar VBad P O) :
-    L.withGenuineDecomp.HasGenuineDecomp :=
-  fun v => isDecompositionGroup_decompGroup _ Fbar v
+    IsDecompositionGroup (↥P.torsionField) Fbar v (L.decomp v) :=
+  isDecompositionGroup_decompGroup _ Fbar v
 
 end LocalThetaData
 
 namespace InitialThetaData
 
-/-- **Genuine initial Θ-data**: the groups `G_v` of the local data are decomposition groups. -/
-def HasGenuineDecomp (D : InitialThetaData.{u}) : Prop := D.localData.HasGenuineDecomp
-
-/-- **The genuinization** of initial Θ-data (`LocalThetaData.withGenuineDecomp`). -/
-noncomputable def withGenuineDecomp (D : InitialThetaData.{u}) : InitialThetaData.{u} :=
-  { D with localData := D.localData.withGenuineDecomp }
-
-/-- **The groups `G_v` of the genuinized data are the decomposition groups** (roadmap MR1,
-`decomp_eq`). -/
+/-- **The groups `G_v` of initial Θ-data are the decomposition groups** `Iut.decompGroup v`
+(roadmap MR1, `decomp_eq`; no hypothesis beyond `D`). -/
 theorem decomp_eq (D : InitialThetaData.{u}) (v : FinitePlace D.Kt) :
-    D.withGenuineDecomp.localData.decomp v = decompGroup D.Kt D.Fbar v := rfl
+    D.localData.decomp v = decompGroup D.Kt D.Fbar v := rfl
 
-theorem hasGenuineDecomp_withGenuineDecomp (D : InitialThetaData.{u}) :
-    D.withGenuineDecomp.HasGenuineDecomp :=
-  D.localData.hasGenuineDecomp_withGenuineDecomp
+/-- **The groups `G_v` of initial Θ-data are decomposition groups** of the places `v`. -/
+theorem isDecompositionGroup_decomp (D : InitialThetaData.{u}) (v : FinitePlace D.Kt) :
+    IsDecompositionGroup D.Kt D.Fbar v (D.localData.decomp v) :=
+  isDecompositionGroup_decompGroup _ _ v
 
 end InitialThetaData
-
-/-! ### The existence construction is genuine -/
-
-namespace AdmissiblePrimeData
-
-variable {F : Type u} [Field F] [NumberField F] {E : WeierstrassCurve F} [E.IsElliptic]
-  {Fbar : Type u} [Field Fbar] [Algebra F Fbar] [IsAlgClosure F Fbar]
-  {VBad : Set (FinitePlace ↥(fieldOfModuli F E))} (P : AdmissiblePrimeData F E Fbar VBad)
-  [NumberField ↥P.torsionField] (TF : TateFamily E P.torsionField P.ℓ VBad)
-
-/-- **The constructed local Θ-data use the decomposition groups.** -/
-theorem localThetaData_hasGenuineDecomp (hcore : OrbicurveDataSection.HasCoreUniversally F E) :
-    (P.localThetaData TF hcore).HasGenuineDecomp :=
-  fun v => isDecompositionGroup_decompGroup _ Fbar v
-
-end AdmissiblePrimeData
-
-/-! ### The comparator hypothesis does not see `decomp` -/
-
-open Lean Elab Tactic Meta in
-/-- Close a goal `a = b` by `Eq.refl a`, leaving the definitional check to the kernel (the
-elaborator's unifier does not finish on the concrete right-hand side; the kernel checks the
-declaration as usual). -/
-elab "kernel_rfl" : tactic => do
-  let g ← getMainGoal
-  let some (_, a, _) := (← g.getType').eq? | throwError "kernel_rfl: not an equality"
-  g.assign (← mkEqRefl a)
-
-/-- The `q`-pilot side does not read the groups `G_v`. -/
-theorem lhs_withGenuineDecomp (D : InitialThetaData.{u}) :
-    D.withGenuineDecomp.qPilot.lhs = D.qPilot.lhs := by
-  kernel_rfl
-
-/-- The right-hand side (IUT IV's reading) does not read the groups `G_v`. -/
-theorem rhs_withGenuineDecomp (D : InitialThetaData.{u}) :
-    D.withGenuineDecomp.rhsData.rhs = D.rhsData.rhs := by
-  kernel_rfl
-
-/-- The right-hand side (literal reading) does not read the groups `G_v`. -/
-theorem rhsLit_withGenuineDecomp (D : InitialThetaData.{u}) :
-    D.withGenuineDecomp.rhsDataLit.rhs = D.rhsDataLit.rhs := by
-  kernel_rfl
-
-/-- The concrete Corollary 3.12 variant of initial Θ-data and of their genuinization agree. -/
-theorem corollary312Variant_withGenuineDecomp_iff (D : InitialThetaData.{u}) :
-    Corollary312Variant (concreteVariantData D.withGenuineDecomp) ↔
-      Corollary312Variant (concreteVariantData D) := by
-  change D.withGenuineDecomp.qPilot.lhs ≤ D.withGenuineDecomp.rhsData.rhs ↔
-    D.qPilot.lhs ≤ D.rhsData.rhs
-  rw [lhs_withGenuineDecomp, rhs_withGenuineDecomp]
-
-/-- As `corollary312Variant_withGenuineDecomp_iff`, literal reading. -/
-theorem corollary312VariantLit_withGenuineDecomp_iff (D : InitialThetaData.{u}) :
-    Corollary312Variant (concreteVariantDataLit D.withGenuineDecomp) ↔
-      Corollary312Variant (concreteVariantDataLit D) := by
-  change D.withGenuineDecomp.qPilot.lhs ≤ D.withGenuineDecomp.rhsDataLit.rhs ↔
-    D.qPilot.lhs ≤ D.rhsDataLit.rhs
-  rw [lhs_withGenuineDecomp, rhsLit_withGenuineDecomp]
-
-/-- **The hypothesis of the comparator challenge, restricted to genuine Θ-data**: the Corollary
-3.12 variant for all initial Θ-data is equivalent to the variant for all initial Θ-data whose
-groups `G_v` are genuine decomposition groups. -/
-theorem cor312VariantHolds_iff_genuine :
-    Cor312VariantHolds ↔
-      ∀ D : InitialThetaData.{0}, D.HasGenuineDecomp →
-        Corollary312Variant (concreteVariantData D) :=
-  ⟨fun h D _ => h D, fun h D =>
-    (corollary312Variant_withGenuineDecomp_iff D).1
-      (h D.withGenuineDecomp D.hasGenuineDecomp_withGenuineDecomp)⟩
-
-/-- As `cor312VariantHolds_iff_genuine`, literal reading. -/
-theorem cor312LiteralHolds_iff_genuine :
-    Cor312LiteralHolds ↔
-      ∀ D : InitialThetaData.{0}, D.HasGenuineDecomp →
-        Corollary312Variant (concreteVariantDataLit D) :=
-  ⟨fun h D _ => h D, fun h D =>
-    (corollary312VariantLit_withGenuineDecomp_iff D).1
-      (h D.withGenuineDecomp D.hasGenuineDecomp_withGenuineDecomp)⟩
 
 /-! ### The existence construction for elliptic curves -/
 
@@ -276,12 +158,6 @@ arithmetic of `E` is that `j(E)` is not exceptional. -/
 noncomputable def thetaDataOfJ (hj : ∀ c ∈ AffOrbicurve.excJ, C.E.j ≠ (c : C.F)) :
     InitialThetaData.{0} :=
   C.thetaData CA TI hℓ h7 R hsl hP2 hP5 (Anabelian.hasCoreUniversally_of_j C.E hj)
-
-/-- **The constructed initial Θ-data are genuine**: their groups `G_v` are the decomposition
-groups. -/
-theorem thetaData_hasGenuineDecomp (hcore : OrbicurveDataSection.HasCoreUniversally C.F C.E) :
-    (C.thetaData CA TI hℓ h7 R hsl hP2 hP5 hcore).HasGenuineDecomp :=
-  fun v => isDecompositionGroup_decompGroup _ _ v
 
 end EllipticCurveData
 

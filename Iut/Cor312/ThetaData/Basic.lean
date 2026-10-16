@@ -228,9 +228,6 @@ noncomputable def ofExistence (F : Type u) [Field F] [NumberField F] (Fbar : Typ
         (orb.XK_to_CK.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal))
         (orb.XKu_to_CKu.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal))
         (orb.CKu_to_CK.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal)))
-    (decomp : ∀ _ : FinitePlace ↥prime.torsionField,
-      Subgroup (Fbar ≃ₐ[↥prime.torsionField] Fbar))
-    (decomp_isClosed : ∀ v, IsClosed ((decomp v) : Set (Fbar ≃ₐ[↥prime.torsionField] Fbar)))
     (bad_type : ∀ v (hv : v ∈ VBad),
       (localize (sect.sectFin v) orb.XKu).IsTypeOneZModPM prime.ℓ
         (global.canonicalTateX orb sect v hv))
@@ -252,8 +249,6 @@ noncomputable def ofExistence (F : Type u) [Field F] [NumberField F] (Fbar : Typ
   localData :=
     { sect := sect
       local_diagram_cartesian := local_diagram_cartesian
-      decomp := decomp
-      decomp_isClosed := decomp_isClosed
       tateX := global.canonicalTateX orb sect
       tateC := global.canonicalTateC orb sect
       bad_type := bad_type
@@ -267,28 +262,28 @@ variable {F : Type u} [Field F] [NumberField F] {Fbar : Type u} [Field Fbar] [Al
   {VBad : Set (FinitePlace ↥(fieldOfModuli F E))}
   {global : IsInitialThetaGlobalData F E Fbar VBad} {prime : AdmissiblePrimeData F E Fbar VBad}
   {orb : OrbicurveData F E Fbar VBad prime} {sect : ValuationSection F E Fbar VBad prime}
-  {hcart decomp hclosed htype htheta heps}
+  {hcart htype htheta heps}
 
 @[simp]
 lemma ofExistence_localData_sect :
-    (ofExistence F Fbar E VBad global prime orb sect hcart decomp hclosed htype htheta
+    (ofExistence F Fbar E VBad global prime orb sect hcart htype htheta
       heps).localData.sect = sect := rfl
 
 @[simp]
 lemma ofExistence_localData_tateX :
-    (ofExistence F Fbar E VBad global prime orb sect hcart decomp hclosed htype htheta
+    (ofExistence F Fbar E VBad global prime orb sect hcart htype htheta
       heps).localData.tateX = global.canonicalTateX orb sect := rfl
 
 @[simp]
 lemma ofExistence_localData_tateC :
-    (ofExistence F Fbar E VBad global prime orb sect hcart decomp hclosed htype htheta
+    (ofExistence F Fbar E VBad global prime orb sect hcart htype htheta
       heps).localData.tateC = global.canonicalTateC orb sect := rfl
 
 /-- The Tate family of initial Θ-data built by `ofExistence` is `global.tateFamily prime`, the
 family from which its local Tate structures are taken. -/
 @[simp]
 lemma ofExistence_tate :
-    (ofExistence F Fbar E VBad global prime orb sect hcart decomp hclosed htype htheta
+    (ofExistence F Fbar E VBad global prime orb sect hcart htype htheta
       heps).tate = global.tateFamily prime := rfl
 
 end OfExistence

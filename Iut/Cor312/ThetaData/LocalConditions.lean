@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Cor312.ThetaData.Orbicurve
+import Iut.Cor312.ThetaData.PlacesOver
 import Iut.Anabelian.Local
 
 /-!
@@ -28,10 +29,14 @@ local part of (f), for the Corollary 3.12 variant statement (taxis #33).
 * `Iut.LocalThetaData`: the packaged local data and conditions: completions and base
   changes at `v ∈ V`, the cartesian local covering diagrams with their injections of
   fundamental groups (`genuinePi1Cover` of the base-changed covers, open embeddings),
-  decomposition groups up to conjugacy, the type `(1, ℤ/ℓℤ)^±`
+  the type `(1, ℤ/ℓℤ)^±`
   and theta-root-model conditions at bad places, the cusp condition for `ε_v`, and the
   `Π_v` convention (tempered at bad places, étale at good places), with the
   tempered-to-étale comparison at the bad places.
+* `Iut.LocalThetaData.decomp`: the decomposition group `G_v ⊆ Gal(F̄/K)` at a place of the
+  section — a **definition** (`Iut.decompGroup`, the stabilizer of a prime of the integral
+  closure of `𝓞_K` in `F̄` over `𝔓_v`), not a datum (`LocalThetaData.decomp_eq`), closed in the
+  Krull topology (`LocalThetaData.decomp_isClosed`).
 
 ## Honesty boundary
 
@@ -197,12 +202,6 @@ structure LocalThetaData (O : OrbicurveData F E Fbar VBad P) : Type u where
       (O.XK_to_CK.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal))
       (O.XKu_to_CKu.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal))
       (O.CKu_to_CK.baseChange (FinitePlace.embedding (sect.sectFin v).maximalIdeal))
-  /-- A choice of **decomposition group** `G_v ⊆ Gal(F̄/K)` at every finite place of
-  the section (IUT I, Definition 3.1(e); the group is well-defined up to conjugacy,
-  and this field is a choice of representative). -/
-  decomp : ∀ _ : FinitePlace ↥P.torsionField, Subgroup (Fbar ≃ₐ[↥P.torsionField] Fbar)
-  /-- Decomposition groups are closed in the Krull topology. -/
-  decomp_isClosed : ∀ v, IsClosed ((decomp v) : Set (Fbar ≃ₐ[↥P.torsionField] Fbar))
   /-- The Tate structure (Tate uniformization of `E` over `K_v`) on the local model `X̲_v`
   at each place of the section over `V_mod^bad` (IUT I, Definition 3.1(f) refers to the
   Tate uniformization; pinned by the coordinates of the Tate parametrization in
@@ -264,6 +263,26 @@ noncomputable def pi1Local (v : FinitePlace ↥(fieldOfModuli F E)) :
 lemma pi1Local_isOpenEmbedding (v : FinitePlace ↥(fieldOfModuli F E)) :
     Topology.IsOpenEmbedding (L.pi1Local v) :=
   genuinePi1Cover_isOpenEmbedding _
+
+/-- **The decomposition group `G_v ⊆ G_K = Gal(F̄/K)`** at a finite place `v` of `K` (IUT I,
+Definition 3.1(e): "the decomposition group `G_v ⊆ G_K` determined, up to `G_K`-conjugacy, by
+`v`"): the stabilizer `Iut.decompGroup v` of the chosen prime of the integral closure of `𝓞_K` in
+`F̄` over `𝔓_v`. The choice of that prime fixes the representative of the conjugacy class. This
+is a definition, not a datum of `LocalThetaData` (multiradial roadmap MR1, shells #6, #38). -/
+@[nolint unusedArguments]
+noncomputable def decomp (_L : LocalThetaData F E Fbar VBad P O)
+    (v : FinitePlace ↥P.torsionField) : Subgroup (Fbar ≃ₐ[↥P.torsionField] Fbar) :=
+  decompGroup ↥P.torsionField Fbar v
+
+/-- **The groups `G_v` are the decomposition groups** (multiradial roadmap MR1). -/
+theorem decomp_eq (v : FinitePlace ↥P.torsionField) :
+    L.decomp v = decompGroup ↥P.torsionField Fbar v := rfl
+
+/-- The decomposition groups are closed in the Krull topology. -/
+theorem decomp_isClosed [Algebra.IsIntegral ↥P.torsionField Fbar]
+    (v : FinitePlace ↥P.torsionField) :
+    IsClosed ((L.decomp v : Subgroup _) : Set (Fbar ≃ₐ[↥P.torsionField] Fbar)) :=
+  decompGroup_isClosed ↥P.torsionField Fbar v
 
 end LocalThetaData
 

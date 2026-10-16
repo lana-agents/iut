@@ -258,7 +258,6 @@ Iut.LocalHeightData.sum_f_le	baseline
 Iut.LocalTheory.PlaceSection.residueChar_fin	baseline
 Iut.LocalThetaData.bad_theta_model	shell
 Iut.LocalThetaData.bad_type	def
-Iut.LocalThetaData.decomp_isClosed	shell
 Iut.LocalThetaData.epsilon_graph	def
 Iut.LocalThetaData.local_diagram_cartesian	def
 Iut.LogLink.AnabelianKummer.anab	shell

@@ -82,30 +82,31 @@ exists yet in genuine form; they are the content of MR16–MR29.
 Baseline at MR0 (closure of `Iut`, origin/main `cdc9602` plus `Spec.lean`): 917 entries, of which 128 `def`,
 35 `shell`, 60 `statement`, 694 `baseline`.
 
-## 4. MR1 (genuine initial Θ-data): done outside the trusted closure, and what is left
+## 4. MR1 (genuine initial Θ-data): done, and what is left
 
 The structures `InitialThetaData`, `LocalThetaData` and the predicate `IsThetaRootModel` lie in the
 trusted import closure of the comparator challenge (`Comparator/Challenge.lean` imports
-`Iut.Concrete.ThetaRegion`). MR1 therefore changes none of them. Done:
+`Iut.Concrete.ThetaRegion`). Christian approved changing that closure for MR1 (Zulip #634). Done:
 
 * `Iut/Anabelian/CoreOfJ.lean`: the core condition `HasCoreUniversally F E` of IUT I,
   Definition 3.1(d) is derived from [CanLift], Proposition 2.7 (`canLift27`) for non-exceptional
   `j(E)` (`hasCoreUniversally_of_j`); `EllipticCurveData.thetaDataOfJ` is the existence
   construction with this built in (shell #39 reduced to the elementary condition on `j`).
+* Shells #6, #38 (trusted closure, `Cor312/ThetaData/LocalConditions.lean`): the fields
+  `LocalThetaData.decomp`, `decomp_isClosed` are gone; `LocalThetaData.decomp v` is the
+  definition `Iut.decompGroup v` (the stabilizer of the chosen prime of the integral closure of
+  `𝓞_K` in `F̄` over `𝔓_v`; IUT I, Definition 3.1(e): "the decomposition group `G_v ⊆ G_K`
+  determined, up to `G_K`-conjugacy, by `v`"), with `LocalThetaData.decomp_eq` and the theorem
+  `LocalThetaData.decomp_isClosed`. The challenge hypothesis keeps its meaning: before the change,
+  the concrete Corollary 3.12 data did not read `decomp` (this was proved by the former
+  `cor312VariantHolds_iff_genuine`, commit `3d1f3f8`).
 * `Iut/Multiradial/ThetaData.lean`: decomposition groups as stabilizers of primes of the integral
-  closure (`IsDecompositionGroup`, closed: `IsDecompositionGroup.isClosed`); genuine Θ-data
-  (`HasGenuineDecomp`) and the genuinization `D.withGenuineDecomp` with
-  `InitialThetaData.decomp_eq`; the existence construction is genuine
-  (`EllipticCurveData.thetaData_hasGenuineDecomp`); the comparator hypothesis is equivalent to its
-  restriction to genuine Θ-data (`cor312VariantHolds_iff_genuine`,
-  `cor312LiteralHolds_iff_genuine`).
+  closure (`IsDecompositionGroup`, closed: `IsDecompositionGroup.isClosed`) and
+  `LocalThetaData.isDecompositionGroup_decomp`, `InitialThetaData.decomp_eq`.
 
-Left (needs a decision, because it changes the trusted closure):
+Left:
 
-1. Shells #6, #38: replace the field `LocalThetaData.decomp` (and `decomp_isClosed`) by the
-   definition `decompGroup`. By `cor312VariantHolds_iff_genuine` the challenge hypothesis keeps
-   its meaning, but the text of `Cor312/ThetaData/LocalConditions.lean` (trusted) changes.
-2. Shell #37: `IsThetaRootModel` as [EtTh] Definition 2.5 / 2.1 on the genuine objects: a quotient
+1. Shell #37: `IsThetaRootModel` as [EtTh] Definition 2.5 / 2.1 on the genuine objects: a quotient
    `Π^ell_X ↠ Q` of the genuine fundamental group of rank one over `ℤ/ℓ`, surjective on
    `Δ^ell_X`, trivial on the cuspidal decomposition group, factoring through the tempered graph
    quotient `Π^tp_X ↠ ℤ`, with the splitting compatible with the `{±1}`-structure of [EtTh],
