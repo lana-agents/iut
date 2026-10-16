@@ -924,3 +924,14 @@ Iut.AutHol.CAFIso.continuous_toFun	def
 Iut.AutHol.LocalStructure.isBasis	def
 Iut.AutHol.LocalStructure.isConnected	def
 Iut.AutHol.LocalStructure.mem_of_le	def
+# MR16 (Frobenioid theory): defining conditions of notions (FrdI §0 base types; transport classes).
+Iut.Frobenioid.BaseHyp.aut	def
+Iut.Frobenioid.BaseHyp.fsm	def
+Iut.Frobenioid.Model.TypeCorresp.baseIso	def
+Iut.Frobenioid.Model.TypeCorresp.frobType	def
+Iut.Frobenioid.Model.TypeCorresp.isometric	def
+Iut.Frobenioid.Model.TypeCorresp.linear	def
+Iut.Frobenioid.Model.TypeCorresp.preStep	def
+Iut.Frobenioid.Model.TypeCorresp.pullback	def
+Iut.Frobenioid.RespIso.left	def
+Iut.Frobenioid.RespIso.right	def
