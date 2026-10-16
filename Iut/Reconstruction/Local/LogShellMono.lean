@@ -195,7 +195,8 @@ theorem monoLogEquiv_unitsQEquiv (ψ : G ≃ₜ* (Ω ≃ₐ[k] Ω)) (φ : G ≃�
 theorem monoLogShellEquiv_unitsQEquiv (ψ : G ≃ₜ* (Ω ≃ₐ[k] Ω)) (φ : G ≃ₜ* G)
     (x : monoLogShell G) (hx : unitsQEquiv φ (x : unitsQ G) ∈ monoLogShell G) :
     (monoLogShellEquiv (p := p) ψ ⟨_, hx⟩ : k) =
-      galLogEquiv (hball_auto (p := p)) ((ψ.symm.trans φ).trans ψ) (monoLogShellEquiv (p := p) ψ x) :=
+      galLogEquiv (hball_auto (p := p)) ((ψ.symm.trans φ).trans ψ)
+        (monoLogShellEquiv (p := p) ψ x) :=
   monoLogEquiv_unitsQEquiv ψ φ x
 
 theorem unitsQEquiv_mem_monoLogShell (φ : G ≃ₜ* G) {x : unitsQ G} (hx : x ∈ monoLogShell G) :

@@ -231,7 +231,8 @@ theorem norm_p_lt_one_auto : ‖(p : k)‖ < 1 := by
       rw [map_mul, map_pow, norm_mul, norm_pow, map_natCast, h1, one_pow, one_mul] at hb
       exact hb
   have hall : ∀ x : k, ‖x‖ ≤ 1 := fun x => norm_le_one_of_minpoly_coeff fun i => hQ _
-  obtain ⟨x, hx0, hx1⟩ := Valuation.RankOne.nontrivial (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))
+  obtain ⟨x, hx0, hx1⟩ :=
+    Valuation.RankOne.nontrivial (Valued.v : Valuation k (WithZero (Multiplicative ℤ)))
   have hx : x ≠ 0 := by rintro rfl; exact hx0 (map_zero _)
   apply hx1
   rw [← norm_eq_one_iff_v]

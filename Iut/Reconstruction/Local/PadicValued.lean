@@ -106,7 +106,8 @@ def padicRankOne :
         rw [vZ_apply (uniformizer_spec (p := p) (K := K)).ne_zero]
         exact WithZero.coe_ne_zero
       · change vZ p K _ ≠ 1
-        rw [vZ_apply (uniformizer_spec (p := p) (K := K)).ne_zero, uniformizer_spec, ← WithZero.coe_one,
+        rw [vZ_apply (uniformizer_spec (p := p) (K := K)).ne_zero, uniformizer_spec,
+          ← WithZero.coe_one,
           Ne, WithZero.coe_inj]
         decide }
 
