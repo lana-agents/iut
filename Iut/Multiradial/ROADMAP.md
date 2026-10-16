@@ -258,7 +258,7 @@ Line numbers refer to the text files of Appendix A.
 | FrdI Thm 5.1, 5.2 | P (5.2(ii) and 5.1(i) for models; 5.2(iv) missing) → **MR16** |
 | FrdI Thm 6.4(i) | **E** (`GlobalPic.lean`) |
 | FrdI Thm 6.4(ii) | **E** for `C^⊩(K)` over `Pt`, every equivalence (`Frobenioid/Thm64.lean`, `GlobalRealified.thm64ii`); over `B(G)⁰`: MR16/MR19 |
-| FrdI Prop 2.1 (naive Frobenius functor), Cor 4.10, 4.11 (l.4860, 4903), Thm 3.4, Prop 5.3, 5.6, Cor 5.7, Ex 6.3 | M (Thm 3.4 / Cor 4.11 *stated*) → **MR16** |
+| FrdI Prop 2.1 (naive Frobenius functor), Cor 4.10, 4.11 (l.4860, 4903), Thm 3.4, Prop 5.3, 5.6, Cor 5.7, Ex 6.3 | P: Thm 3.4(ii)–(v) **E** for model Frobenioids over `B(G)⁰` with torsion of every order (`Model.thm34_galois`, `thm34_galois_preservesBase`) and for `C^⊩`, archimedean over `Pt` (`GlobalRealified.thm34_full`, `Arch.thm34`); Cor 4.11(iii),(iv) **E** for `C^⊩` (`Cor411Rlf.lean`), as ordered sets for models (`DivOrder.lean`); Prop 2.1(i),(ii) **E** for models, (iii) for `C^⊩` (`NaiveFrob.lean`); Cor 4.10, Prop 5.3, 5.6, Cor 5.7, Ex 6.3 (non-realified), Thm 3.4 for non-models / finite torsion: M → **MR16** |
 | FrdII Thm 1.2, Ex 1.1/1.3 (p-adic Frobenioids over Galois bases), Def 2.1, Thm 2.4 (Kummer and reciprocity maps category-theoretic), Ex 3.3 (archimedean Frobenioids) | P (`PAdic` over `Pt`) → **MR17** |
 | FrdII §5 poly-Frobenioids | M → **MR17** (only as much as IUT uses) |
 

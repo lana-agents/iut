@@ -167,6 +167,7 @@ import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
 import Iut.Frobenioid.Arch
 import Iut.Frobenioid.Basic
+import Iut.Frobenioid.Cor411Rlf
 import Iut.Frobenioid.Counterexample
 import Iut.Frobenioid.Defs
 import Iut.Frobenioid.DivOrder
@@ -179,6 +180,7 @@ import Iut.Frobenioid.Invariance
 import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.ModelTypes
+import Iut.Frobenioid.NaiveFrob
 import Iut.Frobenioid.PAdic
 import Iut.Frobenioid.Props
 import Iut.Frobenioid.TateTheta

@@ -93,6 +93,8 @@ challenge or by `Iut/Concrete/*`.
 | 4 category-theoreticity | `Theoreticity.lean` | statements `PreservesFrobeniusStructure`, `PreservesBase`; `scale_preserves`, `endZeroEquiv`, `inducedDegAut` |
 | 6 Thm 3.4 (MR16) | `Invariance.lean`, `ModelTypes.lean`, `Thm34.lean`, `Thm34Base.lean`, `Thm34iv.lean`, `Thm34Rlf.lean`, `GaloisBase.lean`, `GaloisSlim.lean` | see "Category-theoreticity (MR16)" below: `Model.thm34_preservesFrobeniusStructure`, `Model.thm34_preservesBase`, `Model.degFr_map_eq`, `Model.mem_orhd_iff`, `OrbitObj.baseHyp`, `OrbitObj.isSlim`, `Model.thm34_galois`, `Model.thm34_galois_preservesBase`, `GlobalRealified.thm34` |
 | 9 Thm 6.4(ii) (MR16) | `Thm64.lean` | `GlobalRealified.thm64ii` (`δ_{F X}([τ_X z]) = deg(Ψ)·δ_X([z])` on Frobenius-trivial `X`), `degOf_pos`, `picMap_mk`, `picDeg_picMap`, `degOf_unique`, `degree_map` (`deg(F X) = deg(Ψ)·deg X` for `deg X ≥ 0`), `isFrobeniusTrivial_iff` (Frobenius-trivial = degree `0`), `isFrobeniusTrivial_map`, `thm34_deg_id` (`Ψ_{ℕ≥1} = id`) |
+| 10 Cor 4.11(iii),(iv) for `C^⊩` (MR16) | `Cor411Rlf.lean` | `GlobalRealified.psiPhi` (`Ψ_Φ`), `psiPhi_add`, `psiPhi_le_iff`, `psiPhi_surjective`, `psiPhi_injective`, `div_map` (`Div(F φ) = Ψ_Φ(Div φ)` for every `φ`), `divMap_indep`, `degree_map_eq` (`deg(F X) = deg(Ψ)·deg X` for every `X`), `degArith_psiPhi`; Thm 3.4(iii),(v): `GlobalRealified.thm34_full`, `Arch.thm34`, `preservesBase_pt` |
+| 11 Prop 2.1 (MR16) | `NaiveFrob.lean` | `Model.naiveFrob` (naive Frobenius functor), `frob_comp_naiveFrob`, `naiveFrob_unique`, `naiveFrobCompIso`, `naiveFrob_map_div`/`_u`; `GlobalRealified.naiveFrobIsoScale`, `scaleEquiv`, `naiveFrob_isEquivalence` (`C^⊩` is perfect) |
 | 7 FrdI §1 | `Props.lean` | Prop. 1.4(i)–(iii) (`coangular_of_isotropic`, `isPullback_iff`, `isIso_of_lbInvertible_preStep`), 1.7(i), (v), 1.8(iii), 1.9(iv), 1.11(iii), 1.12(i) |
 | 8 FrdI Prop. 1.14(iii) | `Counterexample.lean` | `Counterexample.not_prop114iii` (fails when `B` has torsion of every order), `frob_not_mono` |
 | 5 the wall | `Wall.lean` | `degreeNorm_qPilotObj`, `degreeNorm_thetaPilotObj` (`= s·|log q|`), `logVol_qRegion_eq_neg_degreeNorm`, `logVol_lgp_eq_neg_degreeNorm`, `scale_thetaPilotObj`, `nonempty_iso_scale_iff`, `isEmpty_iso_thetaPilot_qPilot` |
@@ -188,7 +190,8 @@ FSMI-morphisms). The statement of Theorem 3.4(ii) itself holds in that case (abo
   `Thm34Rlf.lean`) whose rational functions lack torsion of some order cofinally (e.g. a
   non-realified global Frobenioid over `Pt` with finite `μ(F)`); (iv)/(v) for the realified
   case;
-  Corollary 4.10, 4.11 (birationalization, `Ψ_Φ`); Theorem 6.4(ii) for realified Frobenioids
+  Corollary 4.10, 4.11 for general Frobenioids (birationalization; `Ψ_Φ` is built for `C^⊩` in
+  `Cor411Rlf.lean`); Theorem 6.4(ii) for realified Frobenioids
   over Galois bases `B(G)⁰` other than `Pt` (for `C^⊩(K)` over `Pt` it is `Thm64.lean`).
 * Propositions 1.9(v)–(vii), 1.10, 1.11(iv)–(vii), 1.13, 1.14 for general Frobenioids (the
   model-level versions needed for Theorem 3.4 are in `ModelTypes.lean`, `Thm34.lean`).
