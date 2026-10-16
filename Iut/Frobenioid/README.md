@@ -95,6 +95,8 @@ challenge or by `Iut/Concrete/*`.
 | 9 Thm 6.4(ii) (MR16) | `Thm64.lean` | `GlobalRealified.thm64ii` (`δ_{F X}([τ_X z]) = deg(Ψ)·δ_X([z])` on Frobenius-trivial `X`), `degOf_pos`, `picMap_mk`, `picDeg_picMap`, `degOf_unique`, `degree_map` (`deg(F X) = deg(Ψ)·deg X` for `deg X ≥ 0`), `isFrobeniusTrivial_iff` (Frobenius-trivial = degree `0`), `isFrobeniusTrivial_map`, `thm34_deg_id` (`Ψ_{ℕ≥1} = id`) |
 | 10 Cor 4.11(iii),(iv) for `C^⊩` (MR16) | `Cor411Rlf.lean` | `GlobalRealified.psiPhi` (`Ψ_Φ`), `psiPhi_add`, `psiPhi_le_iff`, `psiPhi_surjective`, `psiPhi_injective`, `div_map` (`Div(F φ) = Ψ_Φ(Div φ)` for every `φ`), `divMap_indep`, `degree_map_eq` (`deg(F X) = deg(Ψ)·deg X` for every `X`), `degArith_psiPhi`; Thm 3.4(iii),(v): `GlobalRealified.thm34_full`, `Arch.thm34`, `preservesBase_pt` |
 | 11 Prop 2.1 (MR16) | `NaiveFrob.lean` | `Model.naiveFrob` (naive Frobenius functor), `frob_comp_naiveFrob`, `naiveFrob_unique`, `naiveFrobCompIso`, `naiveFrob_map_div`/`_u`; `GlobalRealified.naiveFrobIsoScale`, `scaleEquiv`, `naiveFrob_isEquivalence` (`C^⊩` is perfect) |
+| 12 Ex 6.3, Prop 5.3 (MR16) | `GlobalNonRlf.lean` | `GlobalFrobenioid K` (Ex 6.3: `Φ = ℤ_{≥0}^{(V_fin)} × ℝ_{≥0}^{V_∞}`, `B = K^×`), `globalFrobenioid_isFrobenioid`, `divZ_mem_effConeZ_iff` (effective principal divisors = roots of unity), `orhdEquiv`/`ounitsEquiv` (`O^▷ = O^× = μ(K)`), `realify` (`C → C^⊩`, Prop 5.3), `realify_essSurj` |
+| 13 `Prime(C^⊩) ≅ V` (MR16) | `GlobalPrime.lean` | `preceq_iff`, `isPrimary_iff` (primary = supported at one place), `primeEquiv`, `psiPhi_isPrimary_iff`, `placeEquiv` (`Ψ_Prime`), `supp_psiPhi` |
 | 7 FrdI §1 | `Props.lean` | Prop. 1.4(i)–(iii) (`coangular_of_isotropic`, `isPullback_iff`, `isIso_of_lbInvertible_preStep`), 1.7(i), (v), 1.8(iii), 1.9(iv), 1.11(iii), 1.12(i) |
 | 8 FrdI Prop. 1.14(iii) | `Counterexample.lean` | `Counterexample.not_prop114iii` (fails when `B` has torsion of every order), `frob_not_mono` |
 | 5 the wall | `Wall.lean` | `degreeNorm_qPilotObj`, `degreeNorm_thetaPilotObj` (`= s·|log q|`), `logVol_qRegion_eq_neg_degreeNorm`, `logVol_lgp_eq_neg_degreeNorm`, `scale_thetaPilotObj`, `nonempty_iso_scale_iff`, `isEmpty_iso_thetaPilot_qPilot` |
@@ -186,6 +188,11 @@ FSMI-morphisms). The statement of Theorem 3.4(ii) itself holds in that case (abo
 
 ## What remains
 
+* [FrdI], Theorem 6.4(iii), (iv): their proofs use Lang's six exponentials theorem
+  (Lemma 6.5(ii)) and the Chebotarev density theorem, neither of which is in Mathlib; (iv) also
+  needs Theorem 3.4 for the non-realified `GlobalFrobenioid` over `Pt`, whose `μ(K)` is finite
+  (Frobenius morphisms are not monomorphisms; neither route of `Thm34.lean`, `Thm34Rlf.lean`
+  applies).
 * Theorem 3.4 for Frobenioids that are not models, or (outside the realified case of
   `Thm34Rlf.lean`) whose rational functions lack torsion of some order cofinally (e.g. a
   non-realified global Frobenioid over `Pt` with finite `μ(F)`); (iv)/(v) for the realified
