@@ -255,9 +255,12 @@ import Iut.Reconstruction.Local.PowerIndex
 import Iut.Reconstruction.Local.Torsion
 import Iut.Reconstruction.Local.UnitBall
 import Iut.Reconstruction.Local.UnitIndex
+import Iut.Reconstruction.Local.UnitsColimit
+import Iut.Reconstruction.Local.UnitsColimitGalois
 import Iut.Reconstruction.Local.UnramifiedZHat
 import Iut.Reconstruction.Local.Valuation
 import Iut.Reconstruction.Local.ZHat
+import Iut.Reconstruction.Transfer
 import Iut.ThetaLink.Gauss
 import Iut.ThetaLink.Kummer
 import Iut.ThetaLink.Link
