@@ -97,6 +97,7 @@ theorem coe_abUnitsEquiv {G G' : Type*} [Group G] [TopologicalSpace G] [IsTopolo
     ((abUnitsEquiv ψ u : abUnits G') : TopologicalAbelianization G') = abEquiv ψ u := rfl
 
 set_option maxHeartbeats 2000000 in
+-- unifying `Gal(Ω/E_V)` with `Gal(Ω/F)` for `F = extendScalars` (definitionally equal) is slow
 /-- **Compatibility of the transfer with inertia** ([AbsTopIII], Proposition 5.8 (i)): for open
 `V ⊆ U` the transfer `U^ab → V^ab` maps `𝒪^×(U)` into `𝒪^×(V)`, compatibly with the inclusion
 `𝒪^×_{E_U} ⊆ 𝒪^×_{E_V}` — from the transfer property of the Artin map. -/
