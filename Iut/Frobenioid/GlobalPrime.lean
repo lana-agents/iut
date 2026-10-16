@@ -36,7 +36,7 @@ universe u
 
 namespace GlobalRealified
 
-open scoped Classical
+attribute [local instance] Classical.propDecidable
 
 variable {K : Type u} [Field K] [NumberField K]
 
