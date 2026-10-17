@@ -1,6 +1,6 @@
 # MR17 hand-off: angular archimedean Frobenioids and the rest of [FrdII] Thm 2.4
 
-State at iut main `d02df5d` (2026-10-17); Task B status updated at the MR17 Thm 2.4(i) merge. Texts: `~/iut-scratch/frd/FrdII.txt` (line numbers below),
+State at iut main `d02df5d` (2026-10-17); Task B status updated through the MR17 Thm 2.4(i) reciprocity / `C_v` merges (main `fa4b67f` and the commit adding `InvCompat.lean`). Texts: `~/iut-scratch/frd/FrdII.txt` (line numbers below),
 `~/iut-scratch/papers/txt/Inter-universal Teichmuller Theory I.txt` (IUT I Ex 3.4). Look up every
 statement there; do not cite from memory.
 
@@ -132,23 +132,78 @@ prove a generic lemma over abstract `G M M'` (e.g. `DualityAux.eq_of_forall_cupH
 `Saturation.cocycle_eq_one_of_reps`, `ContH2Aux.exists_cocycle_of_reps`) and apply it; use `.elim`
 instead of `obtain` on concrete existentials; `Pull φ M` terms need `@id M m` to use the `Q`-action.
 
-**Next steps (precise):**
-1. *Reciprocity under `Ψ`* (Thm 2.4(i) "compatible with … reciprocity maps"): `recip` is defined over `L`;
-   define a generic cup product `H¹(G, ℤ/N) × H¹(G, M) → H²(G, M)` for `N`-torsion `M` (formula of
-   LCFT `Brauer.cupKummerFun`: `(g, h) ↦ (g•ζ(h))^{χ(g)}`, see `Brauer/DualityH1.lean`), show it is
-   natural under `ContH2Aux.mapEquiv2`/inflation and agrees with `Brauer.cupH1` after `toL`/`h2HEquiv`;
-   then `fngEquiv (recip κ χ) = recip' (h1Equiv κ) (χ ∘ subAEquiv⁻¹)` is formal.
-2. *Thm 2.4(ii)* (l.1029–1171): for `FrobPf` (fieldwise saturated) the isomorphism `F_N(X) ≅ F_N(ΨX)`
-   is compatible with `fnEquiv`. Mochizuki's proof: `Ψ` induces `K̄₁^× ≅ K̄₂^×` compatible with
-   `G₁ ≅ G₂`, and `G₁ ≅ G₂` preserves the unramified quotient and Frobenius ([Mzk1] Prop 1.2.1), so
-   the invariant maps `H²(G_i, μ(K̄_i^×)) ≅ ℚ/ℤ` agree. Needs: `FrobPf` versions of the files above
-   (they hard-code `gammaZ`), the field reconstruction from `O^▷` (`GaloisModel.orhdEquiv`), LCFT
-   `invEquiv` naturality under such pairs (cf. `Iut/Reconstruction/Local/Abelianization.lean`
-   `galEquiv_multEquiv`, LCFT `artin_naturality`). Remark 2.4.2: false for `Frob` (cyclotomic twist).
-3. `Ψ` and Kummer classes on the Galois side: combine `thm24_kummerClass` (Frobenioid level),
-   `h1Equiv`, `exists_galHom_compat` and `kummerClass_eq_kummer` to state: the Kummer class of `Ψ g`
-   over `L' = K̄^{α(H)}` is the transport of that of `g` (with `μ_N(X) ≅ μ_N(ΨX)` from `Ψ`).
-4. Optional: `O^□(A)^H ≅ O^□(LH)` (Rem 2.2.1) and the `(G_A/H_A)`-equivariance statements.
+**Status (2026-10-17, night): Thm 2.4(i) is done for `C^⊢_v` and `C_v`** (previous next steps 1, 3 and the
+`FrobPf` part of 2):
+
+* `CupGeneric.lean`: generic cup product `CupAux.cupH1G n hM hact χ hχ : H¹(G, M) →* H²(G, M)` for an
+  `n`-torsion discrete `G`-module (`(χ ∪ ζ)(g, h) = (g • ζ(h))^{χ̃(g)}`), **`map_cupH1G`** (naturality under
+  `ContH2.map`/`ContH1.map`), **`cupH1_eq_cupH1G`** (= LCFT `Brauer.cupH1`). Kept in iut (not LCFT) to avoid a
+  pin bump racing the KroneckerDensity move; it has no iut dependency and can be moved to
+  `LocalClassFieldTheory/Brauer/` verbatim.
+* `ReciprocityTransport.lean`: `Saturation.recipG` (`η(κ)(χ) = [χ ∪ κ] ∈ FNG`, cup over `H_A`),
+  **`fngEquiv_recipG`**, **`PAdicGalois.recip_eq_recipG`** (`recip` over `L` = `recipG`), **`thm24_recip`**
+  (for every `α`, `fngEquiv (recip κ χ) = recipG (h1Equiv κ) (χ ∘ subATEquiv⁻¹)`).
+* `KummerTransportGalois.lean`: generic `toLG U j hj H hH ρ hρ n` (`H¹(j(H), μ_N(U)) → H¹(K̄^H, μ_N)` for a
+  `j`-equivariant `ρ : U →* K̄ˣ`), **`toLG_kummerClass`**, `Saturation.h1Equiv_kummerClass`, `ratFunTw τ`
+  (`τ⁻¹ • ratFunY`), **`thm24_kummer_galois`** (`h1Equiv κ_g` = `KummerTheory.kummer N L' y` with
+  `ρ(Ψ g)^N = y`, `L' = K̄^{α(H)}`).
+* All p-adic files from `KummerGalois.lean` on take `{Γ : AddSubgroup ℝ}` (`GFrob p E Γ`, new abbrev in
+  `PAdicGalois.lean`; `Frob`/`FrobPf` are `Γ = gammaZ/gammaQ`). `Thm24Pf.lean`: `exists_isSaturatedPf`,
+  **`thm24Pf`**, `thm24Pf_recip`.
+* `InvCompat.lean` (first step of Thm 2.4(ii)): for `α : Gal(Ω/K) ≃ₜ* Gal(Ω'/K')` and an `α`-equivariant
+  `β : μ_n(Ω) ≃* μ_n(Ω')`: `PairCompat.h1PairEquiv` (`Φ₁`), `h2PairEquiv` (`Φ₂`), `h2PairEquiv_cupH1`
+  (`Φ₂(χ ∪ ζ) = (χ ∘ α⁻¹) ∪ Φ₁ ζ`), **`h2MuEquiv_mapEquiv2`**: if `⟨χ ∘ α⁻¹, Φ₁ ζ⟩ = ⟨χ, ζ⟩` for one pair with
+  `⟨χ, ζ⟩ ∈ (ℤ/n)^×`, then `h2MuEquiv ∘ Φ₂ = h2MuEquiv`. This replaces Mochizuki's Brauer-group /
+  unramified-`H²` argument ([Mzk1] Prop 1.2.1(vii)) by reciprocity.
+
+[Mzk1] = "The Absolute Anabelian Geometry of Hyperbolic Curves", local copy
+`~/iut-scratch/papers/txt/Absolute Anabelian Geometry.txt` (use `grep -a`: the file contains NUL bytes),
+Prop 1.2.1 at l.426–551: for `α : G_{K₁} ≅ G_{K₂}`: (i) `p₁ = p₂`; (ii) `α(I_{K₁}) = I_{K₂}`; (iii) `α^ab`
+preserves the images of `O^×`, `k^×`, `K^×`; (iv) it preserves Frobenius elements of `G^ab/Im(O^×)`;
+(v) equal degrees and residue degrees; (vi) a Galois-equivariant `μ_{ℚ/ℤ}(K₁) ≅ μ_{ℚ/ℤ}(K₂)` (from the
+abelianizations of open subgroups), so `α` preserves the cyclotomic character; (vii) the induced
+`H²(K₁, μ_{ℚ/ℤ}) ≅ H²(K₂, μ_{ℚ/ℤ})` preserves the residue map `H² ≅ ℚ/ℤ`. iut already has (ii), (iv), (v),
+the unramified part: `Iut/Reconstruction/Local/{Frobenius,UnramifiedZHat,Valuation,Abelianization,
+Invariants,Cyclotome}.lean` (`galEquiv_unrZHat`, `galEquiv_restrict_maxUnramified`, `galEquiv_multEquiv`
+(`Kˣ ≃* K'ˣ` from `α` via `G^ab`), `multAbEquiv_galEquiv_multEquiv`, `v_galEquiv_multEquiv`,
+`Cyclotome.cyclotomic_rigidity`, `h2MuEquiv_coeffMap`). NB (vii) is *not* true for an arbitrary
+`α`-equivariant `β` on `μ_n` (`β = ζ ↦ ζ^a` multiplies the invariant by `a`, `h2MuEquiv_coeffMap`); it holds
+for the `β` coming from `α` itself (vi), resp. from `Ψ` on `C_v` (Thm 2.4(ii)), and fails for `C^⊢_v`
+(Remark 2.4.2: cyclotomic twist).
+
+**Next steps (precise), Thm 2.4(ii) for `C_v` (`Γ = gammaQ`, fieldwise saturated):**
+1. *`β` from `Ψ`.* For `X = XN N a`, `Ψ X` and `α, τ` (`exists_galHom_compat`), define
+   `βΨ : μ_N(K̄) ≃* μ_N(K̄)` as `muRho (ratFunTw τ) ∘ muEquiv (autEquiv) ∘ uMuEquiv⁻¹` (all exist;
+   `uMuEquiv` needs `μ_N`-saturation of `X`, its analogue for `Ψ X` follows from `IsSat.transport.muSat` plus
+   injectivity of `ratFunY`). It is equivariant for `α|_H : Gal(K̄/L) ≅ Gal(K̄/L')` (`muRho_smul`,
+   `muEquiv_smul`, `uMu_smul_L`).
+2. *`fnEquiv` for `Ψ X`.* `fnEquivPsi : FNG (ouAut (Ψ X)) jΨ … (α(H)) N ≃* ℤ/N` via `muRho (ratFunTw τ)` and
+   `h2MuEquiv p L' K̄` (copy of `fnEquivH2L`/`fnEquiv` with `toLG`'s `galLAG`). Prove
+   `fnEquivPsi (fngEquiv x) = h2MuEquiv' (h2PairEquiv (α|_H) βΨ (fnEquivH2L x))` (cocycle level: all maps are
+   `ContH2.map`; use `ContH2.induction_on` + `rfl`, as `fnEquivH2L_mk`). Note `galFixEquiv` turns `α|_H` into
+   `Gal(K̄/L) ≃ₜ* Gal(K̄/L')` (`subKEquiv` composed with `galFixEquiv` on both sides).
+3. *The arithmetic input (`hpair` of `h2MuEquiv_mapEquiv2`).* Take `χ` unramified of order `N` over `L`
+   and `ζ = κ(π)`, `π` a uniformiser of `L`; `⟨χ, κ(π)⟩ = χ(artin π) = χ(Frob)` is a unit
+   (`pairingH1_kummer`; LCFT: `artin π` restricts to Frobenius on `L^ur`, see `Valuation.lean`
+   `exists_restrict_eq_artin`, `hasRecVal_gal_iff`). Need: (a) `Φ₁(κ(π)) = κ(π')` for some `π' ∈ L'ˣ` with
+   `v(π') = v(π)`; (b) `χ ∘ α⁻¹` is unramified with `(χ ∘ α⁻¹)(Frob') = χ(Frob)` (from `galEquiv_unrZHat`
+   applied to `galFixEquiv`-transported `α|_H`). (a) is the field reconstruction of [FrdII] Thm 2.4(ii):
+   for `C_v`, `O^▷(X)` (`GaloisModel.orhdEquiv`: `O^▷(X) ≅ {x ∈ (K̄^N)ˣ : ord x ∈ ℚ_{≥0}}`) is preserved by
+   `Ψ` (`Thm34iv.lean`: `Model.map_mem_orhd`, `mem_orhd_iff`), with `Div` preserved up to the Frobenius
+   degree (FrdI Thm 3.4 / `thm34Pf`); its groupification gives `β_N : (K̄^N)ˣ ≅ (K̄^{N'})ˣ` extending `βΨ`,
+   `α`-equivariant and `ord`-preserving. Kummer classes of non-units: extend `frobKummerClass` /
+   `toL_kummerClass` from `O^×` to `O^▷`-elements with an `N`-th root in a deeper object `XN N'' a`
+   (`N'' ⊆ N` with `K̄^{N''} ∋ π^{1/N}`), or use instead of `κ(π)` the class `κ(u)` of a *unit* with `χ`
+   *ramified* such that `⟨χ, κ(u)⟩ = χ(artin u)` is a unit (exists by perfectness of the pairing on the
+   units part only when `μ_N(L) ` and the unit group allow it — check case by case); the unit route stays inside `thm24_kummer_galois` (only `O^×`) but needs the
+   inertia part of `artin` to be preserved, i.e. `β` on `O_L^×` vs `α^ab` on `I^ab` (`unitsAbEquiv`,
+   `galEquiv_multEquiv_units`).
+4. Then `thm24Pf_ii : fnEquivPsi (fngEquiv x) = fnEquiv x` is `h2MuEquiv_mapEquiv2` + step 2.
+5. Optional (unchanged): `O^□(A)^H ≅ O^□(LH)` (Rem 2.2.1); `(G_A/H_A)`-equivariance statements.
+
+Practical: `lake build <targets>` inside the slot is the fastest way to check a chain after editing an
+upstream file (rebuilding from `PAdicGalois.lean` down to `Thm24Pf.lean` is a long queue); `lake env lean` on
+a single file needs up-to-date upstream oleans.
 
 Older notes (superseded where the status above says so):
 

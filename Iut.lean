@@ -190,6 +190,7 @@ import Iut.Frobenioid.GlobalNonRlf
 import Iut.Frobenioid.GlobalPf
 import Iut.Frobenioid.GlobalPic
 import Iut.Frobenioid.GlobalPrime
+import Iut.Frobenioid.InvCompat
 import Iut.Frobenioid.Invariance
 import Iut.Frobenioid.KummerClass
 import Iut.Frobenioid.KummerClassFrob
