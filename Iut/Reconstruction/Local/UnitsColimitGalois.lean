@@ -7,6 +7,7 @@ import Iut.Reconstruction.Local.UnitsColimit
 import Iut.Reconstruction.Local.LogShellGalois
 import Iut.Reconstruction.Local.AbelianZHat
 import LocalClassFieldTheory.Brauer.ArtinTransfer
+import LocalClassFieldTheory.Reciprocity.ArtinNaturality
 
 /-!
 # `𝒪^×_{k̄}(G_k)` is `𝒪^×_{k̄}` (roadmap MR11)
@@ -21,7 +22,9 @@ colimit of the images of inertia in `U^ab` along the transfer) with the units `�
   `Ver : U^ab → V^ab` maps `abUnits U` into `abUnits V`, and corresponds to the inclusion
   `𝒪^×_{E_U} ⊆ 𝒪^×_{E_V}` — this is the transfer property of the Artin map
   (`PadicField.artin_transfer`, [AbsTopIII], Proposition 5.8 (i));
-* **`unitsBarEquiv : unitsBar G_k ≃* 𝒪^×_Ω`**.
+* **`unitsBarEquiv : unitsBar G_k ≃* 𝒪^×_Ω`**, which is **`G_k`-equivariant**
+  (`unitsBarEquiv_barConj`, from the Galois naturality of the Artin map
+  `PadicField.artin_naturality`).
 -/
 
 namespace Iut.Reconstruction
@@ -309,6 +312,134 @@ theorem unitsBarEquiv_toBar (i : OpenIdx (Ω ≃ₐ[k] Ω)) (x : abUnits (sg i))
     unitsBarEquiv p k Ω ⟨toBar _ i (x : AbFam _ i),
       (mem_unitsBar_iff (p := p) _).2 ⟨i, x, x.2, rfl⟩⟩ = unitsMap p i x :=
   unitsBarHom_toBar i x
+
+/-! ### `G_k`-equivariance -/
+
+section Equivariance
+
+variable (σ : Ω ≃ₐ[k] Ω) (i : OpenIdx (Ω ≃ₐ[k] Ω))
+
+theorem mem_sg_conj_iff (g : Ω ≃ₐ[k] Ω) :
+    g ∈ sg (idxMap (conjCont σ) i) ↔ σ⁻¹ * g * σ ∈ sg i := by
+  rw [sg_idxMap, Subgroup.mem_comap]
+  have : (conjCont σ).symm g = σ⁻¹ * g * σ := by
+    rw [ContinuousMulEquiv.symm_apply_eq]
+    simp [conjCont_apply, mul_assoc]
+  change (conjCont σ).symm g ∈ sg i ↔ _
+  rw [this]
+
+theorem map_mem_fld_conj {x : Ω} (hx : x ∈ fld i) : σ x ∈ fld (idxMap (conjCont σ) i) := by
+  rw [fld, IntermediateField.mem_fixedField_iff] at hx ⊢
+  intro g hg
+  have h := hx _ ((mem_sg_conj_iff σ i g).1 hg)
+  have h2 : σ.symm (g (σ x)) = x := h
+  calc g (σ x) = σ (σ.symm (g (σ x))) := (σ.apply_symm_apply _).symm
+    _ = σ x := by rw [h2]
+
+theorem symm_mem_fld_conj {y : Ω} (hy : y ∈ fld (idxMap (conjCont σ) i)) :
+    σ.symm y ∈ fld i := by
+  rw [fld, IntermediateField.mem_fixedField_iff] at hy ⊢
+  intro g hg
+  have hg' : σ * g * σ⁻¹ ∈ sg (idxMap (conjCont σ) i) := by
+    rw [mem_sg_conj_iff]
+    simpa [mul_assoc] using hg
+  have h := hy _ hg'
+  change σ (g (σ⁻¹ y)) = y at h
+  apply σ.injective
+  rw [AlgEquiv.apply_symm_apply]
+  exact h
+
+/-- `σ : E_U ≃ E_{σUσ⁻¹}`. -/
+def fldConj : fld i ≃ₐ[ℚ_[p]] fld (idxMap (conjCont σ) i) where
+  toFun x := ⟨σ x, map_mem_fld_conj σ i x.2⟩
+  invFun y := ⟨σ.symm y, symm_mem_fld_conj σ i y.2⟩
+  left_inv x := Subtype.ext (σ.symm_apply_apply (x : Ω))
+  right_inv y := Subtype.ext (σ.apply_symm_apply (y : Ω))
+  map_mul' x y := Subtype.ext (map_mul σ (x : Ω) y)
+  map_add' x y := Subtype.ext (map_add σ (x : Ω) y)
+  commutes' c := Subtype.ext ((σ.restrictScalars ℚ_[p]).commutes c)
+
+theorem fldConj_compat (c : fld i) :
+    σ.toRingEquiv (algebraMap (fld i) Ω c) =
+      algebraMap (fld (idxMap (conjCont σ) i)) Ω (fldConj (p := p) σ i c) := rfl
+
+/-- **`G_k`-equivariance on generators**: conjugation by `σ` on `𝒪^×(U)` corresponds to `σ` on
+`𝒪^×_{E_U} → 𝒪^×_{E_{σUσ⁻¹}}` (the Galois naturality of the Artin map,
+`PadicField.artin_naturality`). -/
+theorem unitsMap_conj (x : abUnits (sg i)) :
+    ((unitsMap p (idxMap (conjCont σ) i)
+        ⟨abFamEquiv (conjCont σ) i x, (abEquiv_mem_abUnits_iff _ _).2 x.2⟩ : Ωˣ) : Ω) =
+      σ ((unitsMap p i x : Ωˣ) : Ω) := by
+  set j := idxMap (conjCont σ) i
+  set τ := fldConj (p := p) σ i
+  obtain ⟨g0, hg0⟩ := QuotientGroup.mk'_surjective _ (x : TopologicalAbelianization (sg i))
+  set a : unitGroup p (fld i) := (unitsAbEquiv p (fld i) Ω).symm (abUnitsEquiv (galEquiv i) x)
+  have hg : AlgEquiv.restrictNormalHom (maxAbelian (fld i) Ω) (galEquiv i g0) =
+      artin p (fld i) Ω (a : (fld i)ˣ) := by
+    rw [← galAbEquiv_unitsAbEquiv, MulEquiv.apply_symm_apply, coe_abUnitsEquiv, ← hg0]
+    rfl
+  -- the conjugate unit in `𝒪_{E_j}`
+  set b : unitGroup p (fld j) := ⟨Units.map (τ : fld i →* fld j) (a : (fld i)ˣ), by
+    rw [mem_unitGroup, Units.coe_map]
+    change nrm p (fld j) (τ _) = 1
+    rw [nrm_algEquiv']
+    exact a.2⟩
+  set x' : abUnits (sg j) := ⟨abFamEquiv (conjCont σ) i x, (abEquiv_mem_abUnits_iff _ _).2 x.2⟩
+  have hx' : abUnitsEquiv (galEquiv j) x' = unitsAbEquiv p (fld j) Ω b := by
+    apply Subtype.ext
+    apply (galAbEquiv p (fld j) Ω).injective
+    rw [galAbEquiv_unitsAbEquiv, coe_abUnitsEquiv]
+    change galAbEquiv p (fld j) Ω (abEquiv (galEquiv j) (abFamEquiv (conjCont σ) i
+      (x : TopologicalAbelianization (sg i)))) = _
+    rw [← hg0]
+    change galAbEquiv p (fld j) Ω (abEquiv (galEquiv j)
+      (QuotientGroup.mk (sgEquiv (conjCont σ) i g0))) = _
+    rw [abEquiv_mk, galAbEquiv_mk]
+    ext y'
+    obtain ⟨y, rfl⟩ := (maxAbelianRingEquiv τ σ.toRingEquiv (fldConj_compat σ i)).surjective y'
+    have hN := artin_naturality τ σ.toRingEquiv (fldConj_compat σ i) (a : (fld i)ˣ) y
+    change _ = (artin p (fld j) Ω (Units.map (τ : fld i →* fld j) (a : (fld i)ˣ))
+      (maxAbelianRingEquiv τ σ.toRingEquiv (fldConj_compat σ i) y) : Ω)
+    rw [hN, ← hg]
+    have hc := AlgEquiv.restrictNormal_commutes (galEquiv i g0) (maxAbelian (fld i) Ω) y
+    change _ = σ (algebraMap (maxAbelian (fld i) Ω) Ω ((galEquiv i g0).restrictNormal _ y))
+    rw [hc]
+    have hc' := AlgEquiv.restrictNormal_commutes (galEquiv j (sgEquiv (conjCont σ) i g0))
+      (maxAbelian (fld j) Ω) (maxAbelianRingEquiv τ σ.toRingEquiv (fldConj_compat σ i) y)
+    change algebraMap (maxAbelian (fld j) Ω) Ω
+      ((galEquiv j (sgEquiv (conjCont σ) i g0)).restrictNormal _
+        (maxAbelianRingEquiv τ σ.toRingEquiv (fldConj_compat σ i) y)) = _
+    rw [hc']
+    change (galEquiv j (sgEquiv (conjCont σ) i g0)) (σ (y : Ω)) = σ (galEquiv i g0 (y : Ω))
+    rw [galEquiv_apply, galEquiv_apply, coe_sgEquiv, conjCont_apply]
+    change σ ((g0 : Ω ≃ₐ[k] Ω) (σ⁻¹ (σ (y : Ω)))) = _
+    rw [show σ⁻¹ (σ (y : Ω)) = (y : Ω) from σ.symm_apply_apply _]
+  change (((((unitsAbEquiv p (fld j) Ω).symm (abUnitsEquiv (galEquiv j) x')) :
+    unitGroup p (fld j)) : (fld j)ˣ) : fld j) = σ ((((a : unitGroup p (fld i)) : (fld i)ˣ) :
+      fld i) : Ω)
+  rw [hx', MulEquiv.symm_apply_apply]
+  rfl
+
+/-- **`unitsBarEquiv` is `G_k`-equivariant**: the action `barConj σ` of `σ ∈ G_k` on the
+group-theoretic `𝒪^×_{k̄}(G_k)` corresponds to the Galois action of `σ` on `𝒪^×_Ω`. -/
+theorem unitsBarEquiv_barConj (z : unitsBar (Ω ≃ₐ[k] Ω)) :
+    unitsBarEquiv p k Ω ⟨barConj _ σ z, (map_barConj_unitsBar σ).le ⟨z, z.2, rfl⟩⟩ =
+      unitsΩMap (σ.restrictScalars ℚ_[p]).toAlgHom (unitsBarEquiv p k Ω z) := by
+  obtain ⟨i, x, hx, hz⟩ := (mem_unitsBar_iff (p := p) z.1).1 z.2
+  have hz' : z = ⟨toBar _ i x, (mem_unitsBar_iff (p := p) _).2 ⟨i, x, hx, rfl⟩⟩ := Subtype.ext hz
+  subst hz'
+  have h1 : barConj _ σ (toBar (Ω ≃ₐ[k] Ω) i x) =
+      toBar _ (idxMap (conjCont σ) i) (abFamEquiv (conjCont σ) i x) := rfl
+  apply Subtype.ext
+  apply Units.ext
+  have e1 := unitsBarEquiv_toBar (p := p) i ⟨x, hx⟩
+  have e2 := unitsBarEquiv_toBar (p := p) (idxMap (conjCont σ) i)
+    ⟨abFamEquiv (conjCont σ) i x, (abEquiv_mem_abUnits_iff _ _).2 hx⟩
+  simp only [h1]
+  rw [e2, coe_unitsΩMap, e1]
+  exact unitsMap_conj σ i ⟨x, hx⟩
+
+end Equivariance
 
 end
 
