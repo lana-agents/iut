@@ -983,7 +983,9 @@ Mathlib-only, Mathlib-style (upstream candidates), independent of the rest of `I
   *Six exponentials Theorem – irrationality*, Resonance (June 2021), with the parameter
   inequality (3) worked out explicitly (`Real.sixExp_param_lt_one`); [FrdI] Lemma 6.5 (i)
   `Real.linearIndependent_log_primes` and (ii) `Real.not_exists_pos_rat_log_div_eq`.
-* `KroneckerDensity/`: the Euler product of `NumberField.dedekindZeta` for real `s > 1`
+* `KroneckerDensity/` (moved to `local-class-field-theory`,
+  `LocalClassFieldTheory/NumberField/KroneckerDensity/`, so that it lies below `curves-jacobian`;
+  same declaration names): the Euler product of `NumberField.dedekindZeta` for real `s > 1`
   (`NumberField.hasProd_dedekindZeta`), `Σ_𝔭 N𝔭^{-s} = log 1/(s-1) + O(1)` on `(1, 2]`, and
   Kronecker density of degree-one primes (`NumberField.exists_abs_tsum_degOnePrimes_sub_log_le`);
   splitting lemmas (`NumberField.SplitsCompletely`, `ncard_primesOver_eq_finrank_iff`);

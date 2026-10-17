@@ -5,7 +5,7 @@ Authors: LANA Project
 -/
 import Iut.Frobenioid.GlobalPf
 import Iut.NumberTheory.SixExponentials.LogPrimes
-import Iut.NumberTheory.KroneckerDensity.Bauer
+import LocalClassFieldTheory.NumberField.KroneckerDensity.Bauer
 
 /-!
 # [FrdI], Theorem 6.4(iii)
