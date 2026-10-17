@@ -94,7 +94,15 @@ Plan (keep each file small; the 7 GB cap kills large elaborations):
 points `x_N`). It is applied to the `p`-adic Frobenioids in `PAdicRecon.lean`
 (`PAdicGalois.exists_continuousMulEquiv`: `C^⊢(E) ≌ C^⊢(E')` lies over an equivalence
 `G : B(G_E)⁰ ≌ B(G_{E'})⁰` — `BaseEquiv.isEquivalence_base` — and gives `α : G_E ≃ₜ* G_{E'}` with
-`G(G_E/N) = G_{E'}/α(N)`). Steps 2–3 unchanged; for step 2 note `G_A ≅ Aut(A_E)`: for
+`G(G_E/N) = G_{E'}/α(N)`). Step 2 (Kummer classes) is done group-theoretically in `KummerClass.lean` /
+`KummerClassFrob.lean`: `frobKummerClass X H n g hg ∈ ContH1 H (μ_n(O^×(X)))` for
+`H ⊆ Aut_C(X)` (discrete), natural under fully faithful functors preserving `O^×`
+(`Model.thm24_kummerClass`, `PAdicGalois.thm24_kummerClass`), factoring through `H_A`
+(`kfun_eq_of_base`). Still open for step 2: identify, for `X` over `G/N` Galois and
+`H ⊆ G_E` open normal, the class with the Galois-theoretic one: the hom `σ ↦ galAut N a σ⁻¹`
+(`KummerFrob.lean`) from `H` to `Aut_C(X)`, `kummerCocycle_eq_kummerFun`, and LCFT's
+`FiveTerm.inf₁` (`ContH1 (G⧸N) (fixedPts N A) → ContH1 G A`); then (N,H)-saturation as
+bijectivity/surjectivity of `inf₁`/`inf₂`. Step 3 unchanged; for step 2 note `G_A ≅ Aut(A_E)`: for
 `A_D = G/N` Galois, `F(rmul g)(x_N) = α(g)·x_N` (`exists_continuousMulEquiv`) identifies
 `Ψ_Base` on `Aut(G/N) ≅ (G/N)^op` with `α mod N` up to conjugation by the base point.
 
