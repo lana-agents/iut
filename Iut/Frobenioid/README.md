@@ -100,6 +100,7 @@ challenge or by `Iut/Concrete/*`.
 | 14 Thm 5.1 (MR16) | `Thm51.lean` | `Model.exists_hom_iff` (5.1(ii)), `toElem_map_eq_of`, `u_sub_mem_ker` (uniqueness of unit-equivalence classes), `class_frobeniusType` (5.1(i)); `Model.nonempty_iso_iff` (5.1(i), `ModelFrobenioid.lean`) |
 | 15 `p`-adic over `B(G_K)⁰` (MR17) | `GaloisModel.lean`, `PAdicGalois.lean` | `invGrpOn` (`G/H ↦ M^H`), `constPhi`, `GaloisModel` (`[FrdII]` Ex 1.1(ii)), `GaloisModel.hasAllTorsion`, `orhdEquiv`/`ounitsEquiv`, `GaloisModel.thm34`, `thm34_base`; `PAdicGalois.Frob p K` (`C^⊢_v`), `FrobPf p K` (`C_v`), `norm_smul` (Galois-invariance of the norm), `torsion` (roots of unity), `PAdicGalois.thm34`, `thm34Pf` |
 | 16 `G_E` slim, Thm 3.4(v), FrdII Thm 2.4 Kummer part (MR17) | `PAdicSlim.lean`, `KummerFrob.lean` | `PAdicGalois.isSlimGroup` (via `PadicField.artin_naturality`, `artin_injective` of LCFT), `thm34_base`, `thm34Pf_base`, `orbitObj_isSlim`; `Model.conj`, `conj_u` (action of `Aut_C(A)` on `O^×(A)` through `Aut_D(A_D)`, FrdII Thm 1.2(ii)), `ounits_comm`, `Model.kummerCocycle`, `kummerCocycle_u`, `map_kummerCocycle`, `GaloisModel.galAut`, `PAdicGalois.kummerCocycle_galAut` (`κ_g(σ) = σγ/γ`), `kummerCocycle_eq_kummerFun`, `thm24_kummer` |
+| 17 Thm 6.4(iii) (MR16) | `GlobalPf.lean`, `Thm64iii.lean` | `GlobalPf K` (`(C^pf)^{un-tr}`, `Φ^pf`, `ℚ·Φ^birat`), `GlobalPf.realify`; `psiPhi_inv_psiPhi`, `psiPhi_castQ_mem` (`ℚ`-structure transported), `placeEquiv_inl` (finite places go to finite places), `exists_rat_degree`, **`GlobalRealified.thm64iii`** (`deg(F) ∈ ℚ_{>0}`, residue characteristics preserved; uses `Real.not_exists_pos_rat_log_div_eq` = FrdI Lemma 6.5(ii)) |
 | 7 FrdI §1 | `Props.lean` | Prop. 1.4(i)–(iii) (`coangular_of_isotropic`, `isPullback_iff`, `isIso_of_lbInvertible_preStep`), 1.7(i), (v), 1.8(iii), 1.9(iv), 1.11(iii), 1.12(i) |
 | 8 FrdI Prop. 1.14(iii) | `Counterexample.lean` | `Counterexample.not_prop114iii` (fails when `B` has torsion of every order), `frob_not_mono` |
 | 5 the wall | `Wall.lean` | `degreeNorm_qPilotObj`, `degreeNorm_thetaPilotObj` (`= s·|log q|`), `logVol_qRegion_eq_neg_degreeNorm`, `logVol_lgp_eq_neg_degreeNorm`, `scale_thetaPilotObj`, `nonempty_iso_scale_iff`, `isEmpty_iso_thetaPilot_qPilot` |
@@ -191,11 +192,11 @@ FSMI-morphisms). The statement of Theorem 3.4(ii) itself holds in that case (abo
 
 ## What remains
 
-* [FrdI], Theorem 6.4(iii), (iv): their proofs use Lang's six exponentials theorem
-  (Lemma 6.5(ii)) and the Chebotarev density theorem, neither of which is in Mathlib; (iv) also
-  needs Theorem 3.4 for the non-realified `GlobalFrobenioid` over `Pt`, whose `μ(K)` is finite
-  (Frobenius morphisms are not monomorphisms; neither route of `Thm34.lean`, `Thm34Rlf.lean`
-  applies).
+* [FrdI], Theorem 6.4(iv): its proof uses Chebotarev-type splitting (Bauer's theorem is now
+  `NumberField.le_of_splitsCompletely`, `Iut/NumberTheory/KroneckerDensity`) and Theorem 3.4 for
+  the non-realified `GlobalFrobenioid` over `Pt`, whose `μ(K)` is finite (Frobenius morphisms are
+  not monomorphisms; neither route of `Thm34.lean`, `Thm34Rlf.lean` applies). Theorem 6.4(iii) is
+  `Thm64iii.lean` (via Lemma 6.5 from `Iut/NumberTheory/SixExponentials`).
 * Theorem 3.4 for Frobenioids that are not models, or (outside the realified case of
   `Thm34Rlf.lean`) whose rational functions lack torsion of some order cofinally (e.g. a
   non-realified global Frobenioid over `Pt` with finite `μ(F)`); (iv)/(v) for the realified

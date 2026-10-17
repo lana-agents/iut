@@ -177,6 +177,7 @@ import Iut.Frobenioid.GaloisModel
 import Iut.Frobenioid.GaloisSlim
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalNonRlf
+import Iut.Frobenioid.GlobalPf
 import Iut.Frobenioid.GlobalPic
 import Iut.Frobenioid.GlobalPrime
 import Iut.Frobenioid.Invariance
@@ -199,6 +200,7 @@ import Iut.Frobenioid.Thm34Rlf
 import Iut.Frobenioid.Thm34iv
 import Iut.Frobenioid.Thm51
 import Iut.Frobenioid.Thm64
+import Iut.Frobenioid.Thm64iii
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
 import Iut.HodgeTheater.Gluing
