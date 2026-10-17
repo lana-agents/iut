@@ -173,6 +173,7 @@ import Iut.Frobenioid.Defs
 import Iut.Frobenioid.DivOrder
 import Iut.Frobenioid.GaloisBase
 import Iut.Frobenioid.GaloisExample
+import Iut.Frobenioid.GaloisModel
 import Iut.Frobenioid.GaloisSlim
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalNonRlf
@@ -184,6 +185,7 @@ import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.ModelTypes
 import Iut.Frobenioid.NaiveFrob
 import Iut.Frobenioid.PAdic
+import Iut.Frobenioid.PAdicGalois
 import Iut.Frobenioid.Props
 import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered
