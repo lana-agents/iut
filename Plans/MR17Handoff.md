@@ -26,6 +26,15 @@ statement there; do not cite from memory.
 
 ## Task A: [FrdII] Ex 3.3 angular-region archimedean Frobenioids (IUT I Ex 3.4(i))
 
+**Status (2026-10-17): done for `D = Pt`, `K = ℂ`** in `Iut/Frobenioid/Angular/` (`Circle.lean`:
+Lemma 3.2(iv),(v); `Category.lean`: `Obj`, `Hom`, `toElem`, iso / co-angular / isotropic
+characterisations; `Frobenioid.lean`: `Angular.isFrobenioid`; `Props.lean`: Ex 3.3(ii) object
+types, `orhdEquiv : O^▷(A) ≅ O^▷_ℂ`; `Kummer.lean`: `kummer : O^▷(A) → RecField D p`).
+Not done: `C^pf`, `C^rlf` of Ex 3.3(ii), the angular Frobenioid / angloids (iii)–(v), Prop 3.4,
+3.5, Thm 3.6 (category-theoretic reconstruction of `S¹`); real `K`; switching
+`HodgeTheater/PrimeStrip.lean`'s `archModel` (shell #31) to `Angular` (MR20). The plan below is
+kept for reference.
+
 IUT I Ex 3.4(i): `C_v` is "the archimedean Frobenioid as in [FrdII], Example 3.3, (ii) [i.e. `C`]",
 base category "the one-morphism category determined by Spec(K_v)" (so `Pt`), with
 `O^▷(C_v) ≅ O^▷_{K_v}` and Kummer structure `κ_v : O^▷(C_v) → A_{D_v}` (from `K_v ≅ A_{D_v}`).

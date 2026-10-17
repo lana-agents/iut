@@ -160,6 +160,9 @@ Iut.FlexData.equation	baseline
 Iut.FlexData.lam_mul	baseline
 Iut.FlexData.lam_sq	baseline
 Iut.FlexData.ne	baseline
+Iut.Frobenioid.Angular.Hom.ang_le	def
+Iut.Frobenioid.Angular.Hom.tip_le	def
+Iut.Frobenioid.Angular.Obj.isAngular	def
 Iut.Frobenioid.DivHom.natural	def
 Iut.Frobenioid.DivMonoid.generating	def
 Iut.Frobenioid.DivMonoid.pb_mem	def

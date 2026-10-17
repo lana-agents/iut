@@ -165,6 +165,11 @@ import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClass
 import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
+import Iut.Frobenioid.Angular.Category
+import Iut.Frobenioid.Angular.Circle
+import Iut.Frobenioid.Angular.Frobenioid
+import Iut.Frobenioid.Angular.Kummer
+import Iut.Frobenioid.Angular.Props
 import Iut.Frobenioid.Arch
 import Iut.Frobenioid.Basic
 import Iut.Frobenioid.Cor411Rlf
