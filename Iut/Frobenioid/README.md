@@ -202,7 +202,8 @@ FSMI-morphisms). The statement of Theorem 3.4(ii) itself holds in that case (abo
 ## What remains
 
 * [FrdI], Theorem 6.4(iv): its proof uses Chebotarev-type splitting (Bauer's theorem is now
-  `NumberField.le_of_splitsCompletely`, `Iut/NumberTheory/KroneckerDensity`) and Theorem 3.4 for
+  `NumberField.le_of_splitsCompletely`, local-class-field-theory
+  `LocalClassFieldTheory/NumberField/KroneckerDensity`) and Theorem 3.4 for
   the non-realified `GlobalFrobenioid` over `Pt`, whose `μ(K)` is finite (Frobenius morphisms are
   not monomorphisms; neither route of `Thm34.lean`, `Thm34Rlf.lean` applies). Theorem 6.4(iii) is
   `Thm64iii.lean` (via Lemma 6.5 from `Iut/NumberTheory/SixExponentials`).
