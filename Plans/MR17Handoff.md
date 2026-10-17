@@ -151,8 +151,8 @@ instead of `obtain` on concrete existentials; `Pull φ M` terms need `@id M m` t
   `PAdicGalois.lean`; `Frob`/`FrobPf` are `Γ = gammaZ/gammaQ`). `Thm24Pf.lean`: `exists_isSaturatedPf`,
   **`thm24Pf`**, `thm24Pf_recip`.
 * `InvCompat.lean` (first step of Thm 2.4(ii)): for `α : Gal(Ω/K) ≃ₜ* Gal(Ω'/K')` and an `α`-equivariant
-  `β : μ_n(Ω) ≃* μ_n(Ω')`: `PairCompat.h1PairEquiv` (`Φ₁`), `h2PairEquiv` (`Φ₂`), `h2PairEquiv_cupH1`
-  (`Φ₂(χ ∪ ζ) = (χ ∘ α⁻¹) ∪ Φ₁ ζ`), **`h2MuEquiv_mapEquiv2`**: if `⟨χ ∘ α⁻¹, Φ₁ ζ⟩ = ⟨χ, ζ⟩` for one pair with
+  `β : μ_n(Ω) ≃* μ_n(Ω')`: `PairCompat.h1PairMap` (`Φ₁`), `h2PairMap` (`Φ₂`), `h2PairMap_cupH1`
+  (`Φ₂(χ ∪ ζ) = (χ ∘ α⁻¹) ∪ Φ₁ ζ`), **`h2MuEquiv_h2PairMap`**: if `⟨χ ∘ α⁻¹, Φ₁ ζ⟩ = ⟨χ, ζ⟩` for one pair with
   `⟨χ, ζ⟩ ∈ (ℤ/n)^×`, then `h2MuEquiv ∘ Φ₂ = h2MuEquiv`. This replaces Mochizuki's Brauer-group /
   unramified-`H²` argument ([Mzk1] Prop 1.2.1(vii)) by reciprocity.
 
@@ -171,18 +171,20 @@ Invariants,Cyclotome}.lean` (`galEquiv_unrZHat`, `galEquiv_restrict_maxUnramifie
 for the `β` coming from `α` itself (vi), resp. from `Ψ` on `C_v` (Thm 2.4(ii)), and fails for `C^⊢_v`
 (Remark 2.4.2: cyclotomic twist).
 
-**Next steps (precise), Thm 2.4(ii) for `C_v` (`Γ = gammaQ`, fieldwise saturated):**
-1. *`β` from `Ψ`.* For `X = XN N a`, `Ψ X` and `α, τ` (`exists_galHom_compat`), define
-   `βΨ : μ_N(K̄) ≃* μ_N(K̄)` as `muRho (ratFunTw τ) ∘ muEquiv (autEquiv) ∘ uMuEquiv⁻¹` (all exist;
-   `uMuEquiv` needs `μ_N`-saturation of `X`, its analogue for `Ψ X` follows from `IsSat.transport.muSat` plus
-   injectivity of `ratFunY`). It is equivariant for `α|_H : Gal(K̄/L) ≅ Gal(K̄/L')` (`muRho_smul`,
-   `muEquiv_smul`, `uMu_smul_L`).
-2. *`fnEquiv` for `Ψ X`.* `fnEquivPsi : FNG (ouAut (Ψ X)) jΨ … (α(H)) N ≃* ℤ/N` via `muRho (ratFunTw τ)` and
-   `h2MuEquiv p L' K̄` (copy of `fnEquivH2L`/`fnEquiv` with `toLG`'s `galLAG`). Prove
-   `fnEquivPsi (fngEquiv x) = h2MuEquiv' (h2PairEquiv (α|_H) βΨ (fnEquivH2L x))` (cocycle level: all maps are
-   `ContH2.map`; use `ContH2.induction_on` + `rfl`, as `fnEquivH2L_mk`). Note `galFixEquiv` turns `α|_H` into
-   `Gal(K̄/L) ≃ₜ* Gal(K̄/L')` (`subKEquiv` composed with `galFixEquiv` on both sides).
-3. *The arithmetic input (`hpair` of `h2MuEquiv_mapEquiv2`).* Take `χ` unramified of order `N` over `L`
+**Thm 2.4(ii), Galois-side reduction done** (`Thm24ii.lean`, any `Γ`): for `Ψ`, `α`, `τ` with
+`hρ` (`ratFunTw τ` is `jΨ`-equivariant — exactly what `exists_galHom_compat` gives), `X = XN N a`
+`(n, H)`-saturated, `H`, `α(H)` open: `galPairEquiv : Gal(K̄/L) ≃ₜ* Gal(K̄/L')`, **`betaPsi`**
+(`μ_N(K̄) → μ_N(K̄)`, `ζ ↦ ρ(Ψ(γ⁻¹ζ))`), **`betaPsi_smul`** (equivariance), **`fnPsi`**
+(`F_N(Ψ X) → H²(L', μ_N)`), **`fnPsi_fngEquiv`** (`fnPsi ∘ fngEquiv = h2PairMap(galPairEquiv, betaPsi) ∘
+fnEquivH2L`), **`thm24ii_of_pairing`**: given `hpair`/`hunit` for one `(χ, ζ)` over `L`,
+`h2MuEquiv_{L'} (fnPsi (fngEquiv x)) = h2MuEquiv_L (fnEquivH2L x)` (`= fnEquiv x` by definition). The
+generic engine is `Saturation.map_h2Equiv_eq`, `pair_smul`, `ker_infl₂_le_map`, `ContH2Aux.map_map_eq`
+(concrete `rw`s against the Galois `H²` time out; every step is a generic lemma applied once).
+
+**Next steps (precise), Thm 2.4(ii) for `C_v` (`Γ = gammaQ`, fieldwise saturated):** only the
+arithmetic hypothesis `hpair` of `thm24ii_of_pairing` remains (it is false in general for `C^⊢_v`,
+Remark 2.4.2, which is why it cannot be proved for arbitrary `Γ`).
+1. *The arithmetic input (`hpair` of `thm24ii_of_pairing`).* Take `χ` unramified of order `N` over `L`
    and `ζ = κ(π)`, `π` a uniformiser of `L`; `⟨χ, κ(π)⟩ = χ(artin π) = χ(Frob)` is a unit
    (`pairingH1_kummer`; LCFT: `artin π` restricts to Frobenius on `L^ur`, see `Valuation.lean`
    `exists_restrict_eq_artin`, `hasRecVal_gal_iff`). Need: (a) `Φ₁(κ(π)) = κ(π')` for some `π' ∈ L'ˣ` with
@@ -190,16 +192,16 @@ for the `β` coming from `α` itself (vi), resp. from `Ψ` on `C_v` (Thm 2.4(ii)
    applied to `galFixEquiv`-transported `α|_H`). (a) is the field reconstruction of [FrdII] Thm 2.4(ii):
    for `C_v`, `O^▷(X)` (`GaloisModel.orhdEquiv`: `O^▷(X) ≅ {x ∈ (K̄^N)ˣ : ord x ∈ ℚ_{≥0}}`) is preserved by
    `Ψ` (`Thm34iv.lean`: `Model.map_mem_orhd`, `mem_orhd_iff`), with `Div` preserved up to the Frobenius
-   degree (FrdI Thm 3.4 / `thm34Pf`); its groupification gives `β_N : (K̄^N)ˣ ≅ (K̄^{N'})ˣ` extending `βΨ`,
+   degree (FrdI Thm 3.4 / `thm34Pf`); its groupification gives `β_N : (K̄^N)ˣ ≅ (K̄^{N'})ˣ` extending `betaPsi`,
    `α`-equivariant and `ord`-preserving. Kummer classes of non-units: extend `frobKummerClass` /
    `toL_kummerClass` from `O^×` to `O^▷`-elements with an `N`-th root in a deeper object `XN N'' a`
-   (`N'' ⊆ N` with `K̄^{N''} ∋ π^{1/N}`), or use instead of `κ(π)` the class `κ(u)` of a *unit* with `χ`
-   *ramified* such that `⟨χ, κ(u)⟩ = χ(artin u)` is a unit (exists by perfectness of the pairing on the
-   units part only when `μ_N(L) ` and the unit group allow it — check case by case); the unit route stays inside `thm24_kummer_galois` (only `O^×`) but needs the
-   inertia part of `artin` to be preserved, i.e. `β` on `O_L^×` vs `α^ab` on `I^ab` (`unitsAbEquiv`,
+   (`N'' ⊆ N` with `K̄^{N''} ∋ π^{1/N}`), or use a *unit* `u` and a *ramified* `χ` with
+   `⟨χ, κ(u)⟩ = χ(artin u)` a unit, if such a pair exists for the given `N` (not always: e.g. it needs
+   an element of order `N` in the image of `O_L^×` in `L^×/(L^×)^N`; check). The unit route stays inside
+   `thm24_kummer_galois` (only `O^×`) but needs the inertia part of `artin` to be preserved, i.e. `β` on `O_L^×` vs `α^ab` on `I^ab` (`unitsAbEquiv`,
    `galEquiv_multEquiv_units`).
-4. Then `thm24Pf_ii : fnEquivPsi (fngEquiv x) = fnEquiv x` is `h2MuEquiv_mapEquiv2` + step 2.
-5. Optional (unchanged): `O^□(A)^H ≅ O^□(LH)` (Rem 2.2.1); `(G_A/H_A)`-equivariance statements.
+2. Then `thm24Pf_ii` is `thm24ii_of_pairing` with `hpair` discharged.
+3. Optional (unchanged): `O^□(A)^H ≅ O^□(LH)` (Rem 2.2.1); `(G_A/H_A)`-equivariance statements.
 
 Practical: `lake build <targets>` inside the slot is the fastest way to check a chain after editing an
 upstream file (rebuilding from `PAdicGalois.lean` down to `Thm24Pf.lean` is a long queue); `lake env lean` on
