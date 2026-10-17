@@ -232,6 +232,8 @@ import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
 import Iut.Multiradial.Spec
 import Iut.Multiradial.ThetaData
+import Iut.NumberTheory.KroneckerDensity.Basic
+import Iut.NumberTheory.KroneckerDensity.EulerProduct
 import Iut.NumberTheory.SixExponentials.Basic
 import Iut.NumberTheory.SixExponentials.ExpPolyZeros
 import Iut.NumberTheory.SixExponentials.InterpolationDeterminant
