@@ -102,7 +102,28 @@ points `x_N`). It is applied to the `p`-adic Frobenioids in `PAdicRecon.lean`
 `H ⊆ G_E` open normal, the class with the Galois-theoretic one: the hom `σ ↦ galAut N a σ⁻¹`
 (`KummerFrob.lean`) from `H` to `Aut_C(X)`, `kummerCocycle_eq_kummerFun`, and LCFT's
 `FiveTerm.inf₁` (`ContH1 (G⧸N) (fixedPts N A) → ContH1 G A`); then (N,H)-saturation as
-bijectivity/surjectivity of `inf₁`/`inf₂`. Step 3 unchanged; for step 2 note `G_A ≅ Aut(A_E)`: for
+bijectivity/surjectivity of `inf₁`/`inf₂`. **Update (2026-10-17, later):** the Galois identification is done in `KummerGalois.lean`:
+`galHom N a : G_E →* Aut_C(X)` (`σ ↦ galAut σ⁻¹`), `uMu : μ_n(O^×(X)) → μ_n(K̄)` and
+`kummerClass_eq_galois` / `kummerClass_eq_kummer` (the pulled-back Frobenioid class is
+`KummerTheory.kummer n E K̄ x`).
+
+**Next steps (precise):**
+1. (N,H)-saturation (Def 2.2(ii)): for `H ⊆ G_E` open normal and `X` over `G_E/N`, the image
+   `H_A = galSub(H)`; condition (c) = bijectivity of `ContH1.map` along `H → H_A` on
+   `μ_n` and `ℤ/n` coefficients and surjectivity on `ContH2` (LCFT `Brauer/ContH2.lean`,
+   `Cohomology/FiveTerm.lean` has `inf₁`, `inf₂`, `res₁` for `G ⧸ N`). Define
+   `IsSaturated` as these three statements (definitions, not hypotheses-as-theorems).
+2. `F_N(A) := ContH2 H_A μ_N / ker(→ ContH2 H μ_N)`; Thm 2.4(ii): `F_N(A) ≅ ℤ/N` via
+   `PadicField.h2MuEquiv` for the fixed field `L = K̄^H` (needs `GK p L` vs the subgroup `H` of
+   `GK p E`: an `IntermediateField` restriction `Gal(K̄/L) ≃* H`).
+3. Reciprocity `η_f`: `PadicField.cupH1`/`pairingH1` over `L` with `pairingH1_kummer`
+   (`⟨χ, κ(a)⟩ = χ(artin a)`); transport along `α : G_E ≃ₜ* G_{E'}` (`PAdicRecon.lean`) is
+   naturality of `ContH1.map`/cup products under group isomorphisms (generic, like
+   `KummerClass.map_kummerClass`).
+4. Compatibility of `Ψ` with `galHom`: `F(galAut σ⁻¹)` vs `galAut (α σ)⁻¹` up to the base point
+   (`exists_continuousMulEquiv`: `F(rmul g)(x_N) = α(g)·x_N`).
+
+Step 3 unchanged; for step 2 note `G_A ≅ Aut(A_E)`: for
 `A_D = G/N` Galois, `F(rmul g)(x_N) = α(g)·x_N` (`exists_continuousMulEquiv`) identifies
 `Ψ_Base` on `Aut(G/N) ≅ (G/N)^op` with `α mod N` up to conjugation by the base point.
 

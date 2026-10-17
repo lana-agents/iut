@@ -55,6 +55,10 @@ variable (U : Subgroup G) [hUn : U.Normal] [IsMulCommutative U]
 def mu (n : ℕ) : Subgroup U := (powMonoidHom n : U →* U).ker
 
 omit hUn in
+/-- `μ_n(U)` is commutative (named instance, usable outside the `IsMulCommutative` scope). -/
+instance muCommGroup (n : ℕ) : CommGroup (mu U n) := inferInstance
+
+omit hUn in
 variable {U} in
 lemma mem_mu {n : ℕ} {u : U} : u ∈ mu U n ↔ u ^ n = 1 := Iff.rfl
 
@@ -110,6 +114,16 @@ variable [TopologicalSpace G] [DiscreteTopology G]
 noncomputable def kummerClass (g : U) (hg : ∀ h ∈ H, conjU U h (g ^ n) = g ^ n) :
     ContH1 H (mu U n) :=
   ContH1.mk ⟨kfun U H n g hg, continuous_of_discreteTopology, isMulCocycle₁_kfun U H n g hg⟩
+
+/-- Pulling back a Kummer class: computing the image under `ContH1.map` cocycle-wise. -/
+theorem map_kummerClass_eq_mk {K M : Type*} [Group K] [TopologicalSpace K] [CommGroup M]
+    [TopologicalSpace M] [IsTopologicalGroup M] [MulDistribMulAction K M]
+    (ψ : K →* H) (hψ : Continuous ψ) (f : mu U n →* M) (hf : Continuous f)
+    (hcomp : ∀ k m, f (ψ k • m) = k • f m) (g : U) (hg : ∀ h ∈ H, conjU U h (g ^ n) = g ^ n)
+    (c : ContH1.cocycles K M) (hc : ∀ k, f (kfun U H n g hg (ψ k)) = c k) :
+    ContH1.map ψ hψ f hf hcomp (kummerClass U H n g hg) = ContH1.mk c := by
+  rw [kummerClass, ContH1.map_mk]
+  exact congrArg ContH1.mk (Subtype.ext (funext hc))
 
 /-- **Independence of the root**: `N`-th roots with the same `N`-th power have the same Kummer
 class. -/
