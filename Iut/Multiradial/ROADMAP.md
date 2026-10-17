@@ -537,6 +537,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 - **Refs:** [FrdII]; IUT I Ex 3.3, 3.4.
 - **Depends on:** MR16, MR10, MR4. **Status:** P. **Size:** 15–30 k / 12–25.
 - **Repo:** same as MR16.
+- **Hand-off:** `Plans/MR17Handoff.md` (state, angular Frobenioids plan, remaining Thm 2.4 ingredients).
 - **Done when:** `def padicFrobenioid (G) : Frobenioid (GaloisBase G)` with `theorem padicFrobenioid_isFrobenioid` and `theorem kummer_categoryTheoretic` (FrdII Thm 2.4). Shells #7, #31 are gone.
 
 **MR18 — Tempered Frobenioids.**
