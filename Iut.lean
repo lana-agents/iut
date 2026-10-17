@@ -180,12 +180,14 @@ import Iut.Frobenioid.GlobalNonRlf
 import Iut.Frobenioid.GlobalPic
 import Iut.Frobenioid.GlobalPrime
 import Iut.Frobenioid.Invariance
+import Iut.Frobenioid.KummerFrob
 import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.ModelTypes
 import Iut.Frobenioid.NaiveFrob
 import Iut.Frobenioid.PAdic
 import Iut.Frobenioid.PAdicGalois
+import Iut.Frobenioid.PAdicSlim
 import Iut.Frobenioid.Props
 import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered

@@ -164,7 +164,7 @@ def gammaCone : AddSubmonoid Γ where
   zero_mem' := le_refl (0 : ℝ)
 
 /-- **The fixed-value divisor monoid `Γ_{≥0}`** on `D` (identity pull-backs). -/
-def constPhi : DivMonoid.{0} D where
+abbrev constPhi : DivMonoid.{0} D where
   obj _ := Γ
   pb _ := AddMonoidHom.id Γ
   pb_id _ _ := rfl
