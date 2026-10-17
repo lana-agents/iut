@@ -78,7 +78,7 @@ lemma ratFun_kfun_L (n : ℕ) (g : Model.ouAut (XN N a))
   congr 1
   exact ratFun_conj N a (Brauer.resScalars (fixL H) k) g
 
-/-- **The Frobenioid Kummer class of `g` over `H_A` is the Kummer class of `x = γ_g^N` over `L`.** -/
+/-- **The Frobenioid Kummer class of `g` over `H_A` is the Kummer class of `γ_g^N` over `L`.** -/
 theorem toL_kummerClass (n : ℕ) [NeZero (n : fixL H)] (g : Model.ouAut (XN N a))
     (hg : ∀ h ∈ subA N a H, KummerClass.conjU (Model.ouAut (XN N a)) h (g ^ n) = g ^ n)
     (x : (fixL H)ˣ)

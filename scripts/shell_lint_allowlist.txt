@@ -939,3 +939,7 @@ Iut.Frobenioid.Model.TypeCorresp.pullback	def
 Iut.Frobenioid.RespIso.left	def
 Iut.Frobenioid.RespIso.right	def
 Iut.Frobenioid.StableSub.smul_mem'	def
+Iut.Frobenioid.PAdicGalois.IsSaturated.h1Mu	def
+Iut.Frobenioid.PAdicGalois.IsSaturated.h1Z	def
+Iut.Frobenioid.PAdicGalois.IsSaturated.h2Mu	def
+Iut.Frobenioid.PAdicGalois.IsSaturated.muSat	def
