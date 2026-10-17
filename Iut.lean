@@ -175,6 +175,7 @@ import Iut.Frobenioid.BaseEquiv
 import Iut.Frobenioid.Basic
 import Iut.Frobenioid.Cor411Rlf
 import Iut.Frobenioid.Counterexample
+import Iut.Frobenioid.CupGeneric
 import Iut.Frobenioid.Defs
 import Iut.Frobenioid.DivOrder
 import Iut.Frobenioid.FNEquiv
@@ -194,6 +195,7 @@ import Iut.Frobenioid.KummerClass
 import Iut.Frobenioid.KummerClassFrob
 import Iut.Frobenioid.KummerFrob
 import Iut.Frobenioid.KummerGalois
+import Iut.Frobenioid.KummerTransportGalois
 import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.ModelTypes
@@ -205,6 +207,7 @@ import Iut.Frobenioid.PAdicSlim
 import Iut.Frobenioid.Props
 import Iut.Frobenioid.Reciprocity
 import Iut.Frobenioid.ReciprocityIso
+import Iut.Frobenioid.ReciprocityTransport
 import Iut.Frobenioid.Saturation
 import Iut.Frobenioid.SaturationExists
 import Iut.Frobenioid.SaturationGen
