@@ -51,6 +51,9 @@ instance [TopologicalSpace M] : TopologicalSpace (Pull φ M) :=
 instance [TopologicalSpace M] [IsTopologicalGroup M] : IsTopologicalGroup (Pull φ M) :=
   inferInstanceAs (IsTopologicalGroup M)
 
+instance [TopologicalSpace M] [DiscreteTopology M] : DiscreteTopology (Pull φ M) :=
+  inferInstanceAs (DiscreteTopology M)
+
 instance : MulDistribMulAction H (Pull φ M) :=
   MulDistribMulAction.compHom M φ
 

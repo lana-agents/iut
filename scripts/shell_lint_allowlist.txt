@@ -943,3 +943,5 @@ Iut.Frobenioid.PAdicGalois.IsSaturated.h1Mu	def
 Iut.Frobenioid.PAdicGalois.IsSaturated.h1Z	def
 Iut.Frobenioid.PAdicGalois.IsSaturated.h2Mu	def
 Iut.Frobenioid.PAdicGalois.IsSaturated.muSat	def
+Brauer.GPairing.map_smul'	def
+Brauer.SmoothAction.isLocallyConstant_smul	def
