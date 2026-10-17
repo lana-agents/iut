@@ -216,6 +216,7 @@ import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered
 import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
+import Iut.Frobenioid.Thm24Pf
 import Iut.Frobenioid.Thm24Saturated
 import Iut.Frobenioid.Thm34
 import Iut.Frobenioid.Thm34Base

@@ -31,14 +31,15 @@ open CategoryTheory
 namespace PAdicGalois
 
 variable {p : ℕ} [hp : Fact p.Prime] {E : IntermediateField ℚ_[p] (PadicAlgCl p)}
+variable {Γ : AddSubgroup ℝ}
 
-local notation "𝐏E" => Model.toElem (constPhi (OrbitObj (GK p E)) gammaZ)
-  (bGal (GK p E) (ord p) (ord_smul p E) gammaZ) (divGal (GK p E) (ord p) (ord_smul p E) gammaZ)
+local notation "𝐏E" => Model.toElem (constPhi (OrbitObj (GK p E)) Γ)
+  (bGal (GK p E) (ord p) (ord_smul p E) Γ) (divGal (GK p E) (ord p) (ord_smul p E) Γ)
 
-variable (N : OpenNormalSubgroup (GK p E)) (a : gammaZ)
+variable (N : OpenNormalSubgroup (GK p E)) (a : Γ)
 
 /-- The object `X = (G_E/N, a)`. -/
-noncomputable abbrev XN : Frob p E := ⟨OrbitObj.ofONS N, a⟩
+noncomputable abbrev XN : GFrob p E Γ := ⟨OrbitObj.ofONS N, a⟩
 
 local notation "W" => WithDisc (Aut (XN N a))
 
@@ -120,7 +121,7 @@ lemma ratFun_conj (σ : GK p E) (u : Model.ouAut (XN N a)) :
   rw [inv_inv] at h
   unfold ratFun
   rw [KummerClass.coe_conjU, Model.conj_hom, Model.conj_u _ u.2]
-  change (((((bGal (GK p E) (ord p) (ord_smul p E) gammaZ).pb
+  change (((((bGal (GK p E) (ord p) (ord_smul p E) Γ).pb
     (GaloisModel.galAut (ℓ := ord p) (hℓ := ord_smul p E) N a σ⁻¹).inv.base
       (show Aut (XN N a) from (u : W)).hom.u).1).toMul : (PadicAlgCl p)ˣ) : PadicAlgCl p) = _
   rw [h]

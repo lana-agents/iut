@@ -40,7 +40,8 @@ namespace PAdicGalois
 open Saturation CategoryTheory IntermediateField
 
 variable {p : ℕ} [hp : Fact p.Prime] {E : IntermediateField ℚ_[p] (PadicAlgCl p)}
-variable (N : OpenNormalSubgroup (GK p E)) (a : gammaZ) (H : Subgroup (GK p E))
+variable {Γ : AddSubgroup ℝ}
+variable (N : OpenNormalSubgroup (GK p E)) (a : Γ) (H : Subgroup (GK p E))
   (hH : IsOpen (H : Set (GK p E)))
 
 local notation "K̄" => PadicAlgCl p

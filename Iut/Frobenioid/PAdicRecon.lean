@@ -26,21 +26,22 @@ open CategoryTheory
 namespace PAdicGalois
 
 variable {p : ℕ} [hp : Fact p.Prime]
+variable {Γ : AddSubgroup ℝ}
 variable {E E' : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] E]
   [FiniteDimensional ℚ_[p] E']
 
-local notation "𝐏E" => Model.toElem (constPhi (OrbitObj (GK p E)) gammaZ)
-  (bGal (GK p E) (ord p) (ord_smul p E) gammaZ) (divGal (GK p E) (ord p) (ord_smul p E) gammaZ)
+local notation "𝐏E" => Model.toElem (constPhi (OrbitObj (GK p E)) Γ)
+  (bGal (GK p E) (ord p) (ord_smul p E) Γ) (divGal (GK p E) (ord p) (ord_smul p E) Γ)
 
-local notation "𝐏E'" => Model.toElem (constPhi (OrbitObj (GK p E')) gammaZ)
-  (bGal (GK p E') (ord p) (ord_smul p E') gammaZ)
-  (divGal (GK p E') (ord p) (ord_smul p E') gammaZ)
+local notation "𝐏E'" => Model.toElem (constPhi (OrbitObj (GK p E')) Γ)
+  (bGal (GK p E') (ord p) (ord_smul p E') Γ)
+  (divGal (GK p E') (ord p) (ord_smul p E') Γ)
 
 /-- **[FrdII], Theorem 2.4 (base step), for the `p`-adic Frobenioids `C^⊢`**: an equivalence
 `C^⊢(E) ≌ C^⊢(E')` induces an equivalence `G : B(G_E)⁰ ≌ B(G_{E'})⁰` of base categories
 (compatible with `Base`), hence an isomorphism of topological groups `α : G_E ≅ G_{E'}` with
 `G(G_E/N) = G_{E'}/α(N)` for every open normal `N`. -/
-theorem exists_continuousMulEquiv (F : Frob p E ⥤ Frob p E') [F.IsEquivalence] :
+theorem exists_continuousMulEquiv (F : GFrob p E Γ ⥤ GFrob p E' Γ) [F.IsEquivalence] :
     ∃ (G : OrbitObj (GK p E) ⥤ OrbitObj (GK p E')) (_ : G.IsEquivalence)
       (α : GK p E ≃ₜ* GK p E'),
       Nonempty (F ⋙ 𝐏E' ⋙ Elem.proj ≅ (𝐏E ⋙ Elem.proj) ⋙ G) ∧
@@ -53,7 +54,8 @@ theorem exists_continuousMulEquiv (F : Frob p E ⥤ Frob p E') [F.IsEquivalence]
     (GaloisModel.hasAllTorsion (torsion p E'))
     (GaloisModel.hasAllTorsion (torsion p E)) F.inv
   haveI hGe : G.IsEquivalence :=
-    isEquivalence_base (frob_isFrobenioid p E) (frob_isFrobenioid p E') F G G' hG hG'
+    isEquivalence_base (GaloisModel.isFrobenioid _ _ _ _) (GaloisModel.isFrobenioid _ _ _ _)
+      F G G' hG hG'
   obtain ⟨α, -, hα, -, -⟩ := OrbitObj.exists_continuousMulEquiv G
   exact ⟨G, hGe, α, ⟨hG⟩, hα⟩
 

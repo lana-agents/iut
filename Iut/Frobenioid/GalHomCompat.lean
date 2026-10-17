@@ -77,22 +77,23 @@ end OrbitObj
 namespace PAdicGalois
 
 variable {p : ℕ} [hp : Fact p.Prime]
+variable {Γ : AddSubgroup ℝ}
 variable {E E' : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
-local notation "𝐏E" => Model.toElem (constPhi (OrbitObj (GK p E)) gammaZ)
-  (bGal (GK p E) (ord p) (ord_smul p E) gammaZ) (divGal (GK p E) (ord p) (ord_smul p E) gammaZ)
+local notation "𝐏E" => Model.toElem (constPhi (OrbitObj (GK p E)) Γ)
+  (bGal (GK p E) (ord p) (ord_smul p E) Γ) (divGal (GK p E) (ord p) (ord_smul p E) Γ)
 
-local notation "𝐏E'" => Model.toElem (constPhi (OrbitObj (GK p E')) gammaZ)
-  (bGal (GK p E') (ord p) (ord_smul p E') gammaZ)
-  (divGal (GK p E') (ord p) (ord_smul p E') gammaZ)
+local notation "𝐏E'" => Model.toElem (constPhi (OrbitObj (GK p E')) Γ)
+  (bGal (GK p E') (ord p) (ord_smul p E') Γ)
+  (divGal (GK p E') (ord p) (ord_smul p E') Γ)
 
 /-- The rational function `γ_u ∈ K̄^×` of a unit `u ∈ O^×(Y)` of any object `Y` of `C^⊢(E')`. -/
-noncomputable def ratFunY {Y : Frob p E'} (u : Model.ouAut Y) : (PadicAlgCl p)ˣ :=
+noncomputable def ratFunY {Y : GFrob p E' Γ} (u : Model.ouAut Y) : (PadicAlgCl p)ˣ :=
   ((show Aut Y from (u : WithDisc (Aut Y))).hom.u.1).toMul
 
 /-- An automorphism `β` of `Y` acts on rational functions of units through the representative
 of the base of `β⁻¹`. -/
-lemma ratFunY_conjU {Y : Frob p E'} (β : WithDisc (Aut Y)) (u : Model.ouAut Y) :
+lemma ratFunY_conjU {Y : GFrob p E' Γ} (β : WithDisc (Aut Y)) (u : Model.ouAut Y) :
     ratFunY (KummerClass.conjU (Model.ouAut Y) β u) =
       OrbitHom.rep (show Aut Y from β).inv.base • ratFunY u := by
   have hu := u.2
@@ -107,9 +108,9 @@ variable [FiniteDimensional ℚ_[p] E] [FiniteDimensional ℚ_[p] E']
 `Ψ : C^⊢(E) ≌ C^⊢(E')` there is `α : G_E ≃ₜ* G_{E'}` (induced by `Ψ_Base`) such that for
 every `X = (G_E/N, a)` there is `τ ∈ G_{E'}` with: `Ψ(galHom σ)` acts on the rational functions
 of the units of `Ψ(X)` by `τ α(σ) τ⁻¹`. -/
-theorem exists_galHom_compat (F : Frob p E ⥤ Frob p E') [F.IsEquivalence] :
+theorem exists_galHom_compat (F : GFrob p E Γ ⥤ GFrob p E' Γ) [F.IsEquivalence] :
     ∃ α : GK p E ≃ₜ* GK p E',
-      ∀ (N : OpenNormalSubgroup (GK p E)) (a : gammaZ), ∃ τ : GK p E',
+      ∀ (N : OpenNormalSubgroup (GK p E)) (a : Γ), ∃ τ : GK p E',
         ∀ (σ : GK p E) (v : Model.ouAut (F.obj (XN N a))),
           ratFunY (KummerClass.conjU (Model.ouAut (F.obj (XN N a)))
             (Model.autEquiv F (XN N a) (galHom N a σ)) v) =
@@ -119,7 +120,8 @@ theorem exists_galHom_compat (F : Frob p E ⥤ Frob p E') [F.IsEquivalence] :
   obtain ⟨G', ⟨θ'⟩⟩ := Model.thm34_galois_preservesBase isSlimGroup
     (GaloisModel.hasAllTorsion (torsion p E')) (GaloisModel.hasAllTorsion (torsion p E)) F.inv
   haveI : G.IsEquivalence :=
-    isEquivalence_base (frob_isFrobenioid p E) (frob_isFrobenioid p E') F G G' θ θ'
+    isEquivalence_base (GaloisModel.isFrobenioid _ _ _ _) (GaloisModel.isFrobenioid _ _ _ _)
+      F G G' θ θ'
   obtain ⟨α, x, -, -, hx⟩ := OrbitObj.exists_continuousMulEquiv G
   refine ⟨α, fun N a => ?_⟩
   let θX : (F.obj (XN N a)).base ≅ G.obj (OrbitObj.ofONS N) := θ.app (XN N a)

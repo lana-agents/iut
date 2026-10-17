@@ -86,6 +86,10 @@ def gammaZ : AddSubgroup ℝ := AddSubgroup.zmultiples 1
 /-- `ℚ ⊆ ℝ` (`ord(O^▷)^{pf,gp}`). -/
 noncomputable def gammaQ : AddSubgroup ℝ := (algebraMap ℚ ℝ).toAddMonoidHom.range
 
+/-- The `p`-adic Galois-model Frobenioid over `B(G_K)⁰` with divisor monoid `Γ ⊆ ℝ` (`Frob` for
+`Γ = ℤ`, `FrobPf` for `Γ = ℚ`). -/
+abbrev GFrob (Γ : AddSubgroup ℝ) : Type := GaloisModel (GK p K) (ord p) (ord_smul p K) Γ
+
 /-- **The `p`-adic Frobenioid `C^⊢_v`** over `B(G_K)⁰` ([FrdII], Example 1.1(ii) with `Λ = ℤ`,
 absolutely primitive; IUT I, Example 3.3(i)). -/
 abbrev Frob : Type := GaloisModel (GK p K) (ord p) (ord_smul p K) (gammaZ)

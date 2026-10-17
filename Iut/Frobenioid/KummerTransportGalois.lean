@@ -74,6 +74,7 @@ namespace PAdicGalois
 open Saturation CategoryTheory IntermediateField
 
 variable {p : ℕ} [hp : Fact p.Prime]
+variable {Γ : AddSubgroup ℝ}
 
 local notation "K̄" => PadicAlgCl p
 
@@ -141,7 +142,7 @@ section Psi
 
 variable {E E' : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
-lemma ratFunY_mul {Y : Frob p E'} (u v : Model.ouAut Y) :
+lemma ratFunY_mul {Y : GFrob p E' Γ} (u v : Model.ouAut Y) :
     ratFunY (u * v) = ratFunY u * ratFunY v := by
   have h := Model.ounits_comp_u v.2 u.2
   unfold ratFunY
@@ -152,7 +153,7 @@ lemma ratFunY_mul {Y : Frob p E'} (u v : Model.ouAut Y) :
   rw [toMul_add, mul_comm]
 
 /-- The rational functions of the units of `Y`, translated by `τ⁻¹`. -/
-noncomputable def ratFunTw {Y : Frob p E'} (τ : GK p E') : Model.ouAut Y →* K̄ˣ where
+noncomputable def ratFunTw {Y : GFrob p E' Γ} (τ : GK p E') : Model.ouAut Y →* K̄ˣ where
   toFun v := τ⁻¹ • ratFunY v
   map_one' := by
     change τ⁻¹ • ratFunY (1 : Model.ouAut Y) = 1
@@ -168,7 +169,7 @@ noncomputable def ratFunTw {Y : Frob p E'} (τ : GK p E') : Model.ouAut Y →* K
 variable [FiniteDimensional ℚ_[p] E] [FiniteDimensional ℚ_[p] E']
 
 /-- `Ψ g ∈ O^×(Ψ X)`. -/
-noncomputable def psiU (F : Frob p E ⥤ Frob p E') [F.IsEquivalence] (X : Frob p E)
+noncomputable def psiU (F : GFrob p E Γ ⥤ GFrob p E' Γ) [F.IsEquivalence] (X : GFrob p E Γ)
     (g : Model.ouAut X) : Model.ouAut (F.obj X) :=
   ⟨Model.autEquiv F X g, (mem_ouAut_iff F X g).mp g.2⟩
 
@@ -181,8 +182,8 @@ units of `Ψ X` carry a "rational function" homomorphism `ρ : O^×(Ψ X) → K�
 (`Saturation.h1Equiv`, [FrdII], Theorem 2.4(i)) is, over `L' = K̄^{α(H)}`, the Kummer class of
 `y` (`KummerTheory.kummer`). (Over `L = K̄^H`, `κ_g` is the Kummer class of `γ_g^N`:
 `toL_kummerClass`.) -/
-theorem thm24_kummer_galois (F : Frob p E ⥤ Frob p E') [F.IsEquivalence] :
-    ∃ α : GK p E ≃ₜ* GK p E', ∀ (N : OpenNormalSubgroup (GK p E)) (a : gammaZ),
+theorem thm24_kummer_galois (F : GFrob p E Γ ⥤ GFrob p E' Γ) [F.IsEquivalence] :
+    ∃ α : GK p E ≃ₜ* GK p E', ∀ (N : OpenNormalSubgroup (GK p E)) (a : Γ),
       ∃ (ρ : Model.ouAut (F.obj (XN N a)) →* K̄ˣ)
         (hρ : ∀ (σ' : GK p E') (v : Model.ouAut (F.obj (XN N a))),
           ρ (KummerClass.conjU (Model.ouAut (F.obj (XN N a))) (jPsi F N a α σ') v) = σ' • ρ v),

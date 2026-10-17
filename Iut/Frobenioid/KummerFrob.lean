@@ -202,14 +202,15 @@ end GaloisModel
 namespace PAdicGalois
 
 variable {p : ℕ} [hp : Fact p.Prime] {E : IntermediateField ℚ_[p] (PadicAlgCl p)}
+variable {Γ : AddSubgroup ℝ}
 
-local notation "𝐏E" => Model.toElem (constPhi (OrbitObj (GK p E)) gammaZ)
-  (bGal (GK p E) (ord p) (ord_smul p E) gammaZ) (divGal (GK p E) (ord p) (ord_smul p E) gammaZ)
+local notation "𝐏E" => Model.toElem (constPhi (OrbitObj (GK p E)) Γ)
+  (bGal (GK p E) (ord p) (ord_smul p E) Γ) (divGal (GK p E) (ord p) (ord_smul p E) Γ)
 
 /-- **`κ_g(galAut σ⁻¹) = σ·γ/γ`** for a unit `g` of an object over `G_E/N` with rational
 function `γ ∈ (K̄^N)^×`. -/
-theorem kummerCocycle_galAut (N : OpenNormalSubgroup (GK p E)) (a : gammaZ)
-    {g : (⟨OrbitObj.ofONS N, a⟩ : Frob p E) ⟶ ⟨OrbitObj.ofONS N, a⟩} (hg : g ∈ Ounits 𝐏E _)
+theorem kummerCocycle_galAut (N : OpenNormalSubgroup (GK p E)) (a : Γ)
+    {g : (⟨OrbitObj.ofONS N, a⟩ : GFrob p E Γ) ⟶ ⟨OrbitObj.ofONS N, a⟩} (hg : g ∈ Ounits 𝐏E _)
     (σ : GK p E) :
     haveI := hg.1
     (((Model.kummerCocycle g (GaloisModel.galAut N a σ⁻¹)).u.1).toMul : (PadicAlgCl p)ˣ) =
@@ -221,8 +222,8 @@ theorem kummerCocycle_galAut (N : OpenNormalSubgroup (GK p E)) (a : gammaZ)
 
 /-- **The Frobenioid-theoretic Kummer cocycle is the Galois-theoretic one**: if `γ^n ∈ E`, then
 `κ_g(galAut σ⁻¹) = kummerFun γ σ` (`continuous-kummer-theory`). -/
-theorem kummerCocycle_eq_kummerFun (n : ℕ) (N : OpenNormalSubgroup (GK p E)) (a : gammaZ)
-    {g : (⟨OrbitObj.ofONS N, a⟩ : Frob p E) ⟶ ⟨OrbitObj.ofONS N, a⟩} (hg : g ∈ Ounits 𝐏E _)
+theorem kummerCocycle_eq_kummerFun (n : ℕ) (N : OpenNormalSubgroup (GK p E)) (a : Γ)
+    {g : (⟨OrbitObj.ofONS N, a⟩ : GFrob p E Γ) ⟶ ⟨OrbitObj.ofONS N, a⟩} (hg : g ∈ Ounits 𝐏E _)
     (hγ : ∀ σ : GK p E, σ • g.u.1.toMul ^ n = g.u.1.toMul ^ n) (σ : GK p E) :
     haveI := hg.1
     (((Model.kummerCocycle g (GaloisModel.galAut N a σ⁻¹)).u.1).toMul : (PadicAlgCl p)ˣ) =
@@ -233,14 +234,14 @@ theorem kummerCocycle_eq_kummerFun (n : ℕ) (N : OpenNormalSubgroup (GK p E)) (
 variable {E' : IntermediateField ℚ_[p] (PadicAlgCl p)}
 variable [FiniteDimensional ℚ_[p] E] [FiniteDimensional ℚ_[p] E']
 
-local notation "𝐏E'" => Model.toElem (constPhi (OrbitObj (GK p E')) gammaZ)
-  (bGal (GK p E') (ord p) (ord_smul p E') gammaZ)
-  (divGal (GK p E') (ord p) (ord_smul p E') gammaZ)
+local notation "𝐏E'" => Model.toElem (constPhi (OrbitObj (GK p E')) Γ)
+  (bGal (GK p E') (ord p) (ord_smul p E') Γ)
+  (divGal (GK p E') (ord p) (ord_smul p E') Γ)
 
 omit [FiniteDimensional ℚ_[p] E] in
 /-- **[FrdII], Theorem 2.4(i), Kummer part**: an equivalence `Ψ : C^⊢(E) ≌ C^⊢(E')` of `p`-adic
 Frobenioids maps `O^×(A)` into `O^×(Ψ A)`, and Kummer cocycles to Kummer cocycles. -/
-theorem thm24_kummer (F : Frob p E ⥤ Frob p E') [F.IsEquivalence] {X : Frob p E}
+theorem thm24_kummer (F : GFrob p E Γ ⥤ GFrob p E' Γ) [F.IsEquivalence] {X : GFrob p E Γ}
     {g : X ⟶ X} (hg : g ∈ Ounits 𝐏E X) (α : X ≅ X) :
     F.map g ∈ Ounits 𝐏E' (F.obj X) ∧
       haveI := hg.1

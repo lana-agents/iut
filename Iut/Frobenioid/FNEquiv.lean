@@ -61,6 +61,7 @@ namespace PAdicGalois
 open Saturation CategoryTheory IntermediateField
 
 variable {p : ℕ} [hp : Fact p.Prime] {E : IntermediateField ℚ_[p] (PadicAlgCl p)}
+variable {Γ : AddSubgroup ℝ}
 
 section Fix
 
@@ -108,7 +109,7 @@ end Fix
 
 section UMu
 
-variable (N : OpenNormalSubgroup (GK p E)) (a : gammaZ)
+variable (N : OpenNormalSubgroup (GK p E)) (a : Γ)
 
 lemma ratFun_injective : Function.Injective (ratFun N a) := by
   intro u v h
@@ -161,7 +162,7 @@ lemma uMuEquiv_smul (n : ℕ) [NeZero n] (hs : Nonempty (muX N a n ≃* Multipli
 
 end UMu
 
-variable (N : OpenNormalSubgroup (GK p E)) (a : gammaZ)
+variable (N : OpenNormalSubgroup (GK p E)) (a : Γ)
   (H : Subgroup (GK p E)) (hH : IsOpen (H : Set (GK p E)))
 
 include hH in

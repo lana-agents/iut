@@ -97,7 +97,8 @@ namespace PAdicGalois
 open Saturation CategoryTheory IntermediateField
 
 variable {p : ℕ} [hp : Fact p.Prime] {E : IntermediateField ℚ_[p] (PadicAlgCl p)}
-variable (N : OpenNormalSubgroup (GK p E)) (a : gammaZ) (H : Subgroup (GK p E))
+variable {Γ : AddSubgroup ℝ}
+variable (N : OpenNormalSubgroup (GK p E)) (a : Γ) (H : Subgroup (GK p E))
   (hH : IsOpen (H : Set (GK p E)))
 
 /-- `F_N(X) ≅ H²(L, μ_N)` on classes: the composite of the maps along `Gal(K̄/L) ≅ H ↠ H_A` and
@@ -130,7 +131,7 @@ the `α` induced by `Ψ`), the isomorphism `F_N(X) ≅ F_N(Ψ X)` maps the recip
 `η(κ)(χ)` of `X` (cup product over `L = K̄^H`) to the reciprocity class of `Ψ X` for the transported
 class `h1Equiv κ` and character `χ ∘ (H_A ≅ α(H)_{Ψ X})⁻¹`. -/
 theorem thm24_recip [FiniteDimensional ℚ_[p] E] [FiniteDimensional ℚ_[p] E']
-    (F : Frob p E ⥤ Frob p E') [F.IsEquivalence] (α : GK p E ≃ₜ* GK p E') (n : ℕ) [NeZero n]
+    (F : GFrob p E Γ ⥤ GFrob p E' Γ) [F.IsEquivalence] (α : GK p E ≃ₜ* GK p E') (n : ℕ) [NeZero n]
     (hs : IsSaturated N a H n) (κ : ContH1 (subA N a H) (muX N a n))
     (χ : subA N a H →* Multiplicative (ZMod n)) :
     fngEquiv (continuous_galHom N a) H n (continuous_jPsi F N a α) (Model.autEquiv F (XN N a))

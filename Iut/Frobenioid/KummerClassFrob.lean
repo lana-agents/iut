@@ -177,12 +177,13 @@ end Model
 namespace PAdicGalois
 
 variable {p : ℕ} [hp : Fact p.Prime]
+variable {Γ : AddSubgroup ℝ}
 variable {E E' : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] E']
 
 /-- **[FrdII], Theorem 2.4(i), Kummer classes, for `C^⊢`**: an equivalence
 `Ψ : C^⊢(E) ≌ C^⊢(E')` maps the Kummer class `κ ∈ H¹(H, μ_n(X))` of `g ∈ O^×(X)` to the Kummer
 class of `Ψ g` in `H¹(Ψ(H), μ_n(Ψ X))`. -/
-theorem thm24_kummerClass (F : Frob p E ⥤ Frob p E') [F.IsEquivalence] {X : Frob p E}
+theorem thm24_kummerClass (F : GFrob p E Γ ⥤ GFrob p E' Γ) [F.IsEquivalence] {X : GFrob p E Γ}
     (H : Subgroup (WithDisc (Aut X))) (n : ℕ) (g : Model.ouAut X)
     (hg : ∀ h ∈ H, KummerClass.conjU (Model.ouAut X) h (g ^ n) = g ^ n) :
     ∃ (hU : ∀ u ∈ Model.ouAut X, Model.autEquiv F X u ∈ Model.ouAut (F.obj X)),

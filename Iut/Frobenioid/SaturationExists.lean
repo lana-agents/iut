@@ -59,10 +59,11 @@ namespace PAdicGalois
 open Saturation CategoryTheory IntermediateField
 
 variable {p : ℕ} [hp : Fact p.Prime] {E : IntermediateField ℚ_[p] (PadicAlgCl p)}
+variable {Γ : AddSubgroup ℝ}
 
 local notation "K̄" => PadicAlgCl p
 
-lemma mem_of_galHom_eq_one (N : OpenNormalSubgroup (GK p E)) (a : gammaZ) {k : GK p E}
+lemma mem_of_galHom_eq_one (N : OpenNormalSubgroup (GK p E)) (a : Γ) {k : GK p E}
     (h : galHom N a k = 1) : k ∈ N := by
   have h1 := congrArg (fun α : WithDisc (Aut (XN N a)) => (show Aut (XN N a) from α).hom.base) h
   change OrbitObj.rmul N k⁻¹ = 𝟙 _ at h1
@@ -94,16 +95,16 @@ lemma ord_mu (n : ℕ) [NeZero n] (ζ : KummerTheory.Mu n K̄) :
   rw [h2, Real.logb_one, neg_zero]
 
 /-- **`μ_n`-saturation**: if `N` fixes `μ_n(K̄)`, then `μ_n(X) ≅ ℤ/n` for `X = (G_E/N, a)`. -/
-theorem muSat_of_fix (N : OpenNormalSubgroup (GK p E)) (a : gammaZ) (n : ℕ) [NeZero n]
+theorem muSat_of_fix (N : OpenNormalSubgroup (GK p E)) (a : Γ) (n : ℕ) [NeZero n]
     (hN : ∀ σ ∈ N, ∀ ζ : KummerTheory.Mu n K̄, σ • ζ = ζ) :
     Nonempty (muX N a n ≃* Multiplicative (ZMod n)) := by
   have hsurj : Function.Surjective (uMu N a n) := by
     intro ζ
     let w : Mul p := Additive.ofMul (KummerTheory.Mu.val ζ)
-    have hw : w ∈ fixedSub (preSub (GK p E) (ord p) (ord_smul p E) gammaZ)
+    have hw : w ∈ fixedSub (preSub (GK p E) (ord p) (ord_smul p E) Γ)
         (OrbitObj.ofONS N) := by
       refine ⟨?_, fun h hh => ?_⟩
-      · change ord p w ∈ gammaZ
+      · change ord p w ∈ Γ
         rw [ord_mu]
         exact zero_mem _
       · change Additive.ofMul (h • KummerTheory.Mu.val ζ) = Additive.ofMul (KummerTheory.Mu.val ζ)
@@ -191,7 +192,7 @@ end Finite
 theorem exists_isSaturated [FiniteDimensional ℚ_[p] E] (H : Subgroup (GK p E))
     (hH : IsOpen (H : Set (GK p E))) (n : ℕ) [NeZero n] :
     ∃ N₀ : OpenNormalSubgroup (GK p E), ∀ N : OpenNormalSubgroup (GK p E), N ≤ N₀ →
-      ∀ a : gammaZ, IsSaturated N a H n := by
+      ∀ a : Γ, IsSaturated N a H n := by
   classical
   haveI := finite_h1Mu_H H hH n
   haveI := finite_h1Z_H H hH n
