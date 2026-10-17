@@ -971,6 +971,32 @@ Corollary 3.12 variant/literal and ABC — with the equivalences proved in the m
 (`variant_of_ss`, `variant_iff`, `classicalABC_of_ss`); table in
 [`Iut/WallEquiv/README.md`](Iut/WallEquiv/README.md). Not imported by the comparator challenge.
 
+## Classical number theory for [FrdI] Thm 6.4(iii), (iv) (`Iut/NumberTheory`, FRD64)
+
+Mathlib-only, Mathlib-style (upstream candidates), independent of the rest of `Iut`:
+
+* `SixExponentials/`: zeros of real exponential polynomials
+  (`Real.card_zeros_sum_mul_exp_lt`), the interpolation-determinant bound
+  (`Matrix.sum_perm_sign_mul_sum_pow_eq_zero`, `Real.abs_det_exp_mul_le`), and the **rational
+  six exponentials theorem** `Real.exists_rat_eq_of_rpow_rat` (`p, q, r` multiplicatively
+  independent positive rationals, `p ^ u, q ^ u, r ^ u ∈ ℚ` ⇒ `u ∈ ℚ`), following Waldschmidt,
+  *Six exponentials Theorem – irrationality*, Resonance (June 2021), with the parameter
+  inequality (3) worked out explicitly (`Real.sixExp_param_lt_one`); [FrdI] Lemma 6.5 (i)
+  `Real.linearIndependent_log_primes` and (ii) `Real.not_exists_pos_rat_log_div_eq`.
+* `KroneckerDensity/`: the Euler product of `NumberField.dedekindZeta` for real `s > 1`
+  (`NumberField.hasProd_dedekindZeta`), `Σ_𝔭 N𝔭^{-s} = log 1/(s-1) + O(1)` on `(1, 2]`, and
+  Kronecker density of degree-one primes (`NumberField.exists_abs_tsum_degOnePrimes_sub_log_le`);
+  splitting lemmas (`NumberField.SplitsCompletely`, `ncard_primesOver_eq_finrank_iff`);
+  **Bauer's theorem** `NumberField.le_of_splitsCompletely` (`L/ℚ` Galois, almost every `p` with
+  a degree-one prime in `M` splits completely in `L` ⇒ `L ≤ M`), proved from Kronecker density
+  only (no Chebotarev); infinitely many completely split primes
+  (`NumberField.infinite_setOf_splitsCompletely`, `exists_ncard_primesOver_eq_finrank`).
+
+These are the number-theoretic inputs of the proofs of [FrdI] Thm 6.4(iii), (iv) (Lang's theorem
+is used there only in the rational special case; "Tchebotarev" only via Kronecker density and
+Bauer). The wiring into `Iut/Frobenioid` is not done yet; (iv) additionally needs Theorem 3.4
+for the non-realified global Frobenioid.
+
 ## Dependency pins
 
 `lakefile.toml` (Lean and Mathlib `v4.32.0`); `iut`'s own requirements override the pins of its
