@@ -88,6 +88,13 @@ Plan (keep each file small; the 7 GB cap kills large elaborations):
 
 ## Task B: the rest of [FrdII] Thm 2.4 (l.904–1218)
 
+**Status (2026-10-17):** step 1 is done for profinite groups in `Iut/Frobenioid/GaloisRecon.lean`
+(`OrbitObj.exists_continuousMulEquiv`: an equivalence `F : B(G₁)⁰ ≌ B(G₂)⁰` gives
+`α : G₁ ≃ₜ* G₂` with `F(G₁/N) = G₂/α(N)` and `F(rmul g)(x_N) = α(g)·x_N` for compatible base
+points `x_N`). Still missing before it applies to Thm 2.4: the base functor of an equivalence of
+`p`-adic Frobenioids (`PreservesBase` from `thm34_base`) is itself an equivalence (use the
+quasi-inverse and fullness/essential surjectivity of `Base` on pull-backs). Steps 2–3 unchanged.
+
 Missing ingredients, in order:
 
 1. **Outer isomorphism from an equivalence of Galois base categories.** Thm 2.4 obtains

@@ -179,6 +179,7 @@ import Iut.Frobenioid.DivOrder
 import Iut.Frobenioid.GaloisBase
 import Iut.Frobenioid.GaloisExample
 import Iut.Frobenioid.GaloisModel
+import Iut.Frobenioid.GaloisRecon
 import Iut.Frobenioid.GaloisSlim
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalNonRlf
