@@ -178,6 +178,7 @@ import Iut.Frobenioid.Counterexample
 import Iut.Frobenioid.Defs
 import Iut.Frobenioid.DivOrder
 import Iut.Frobenioid.FNEquiv
+import Iut.Frobenioid.GalHomCompat
 import Iut.Frobenioid.GaloisBase
 import Iut.Frobenioid.GaloisExample
 import Iut.Frobenioid.GaloisModel
