@@ -1,6 +1,6 @@
 # MR17 hand-off: angular archimedean Frobenioids and the rest of [FrdII] Thm 2.4
 
-State at iut main `d02df5d` (2026-10-17). Texts: `~/iut-scratch/frd/FrdII.txt` (line numbers below),
+State at iut main `d02df5d` (2026-10-17); Task B status updated at the MR17 Thm 2.4(i) merge. Texts: `~/iut-scratch/frd/FrdII.txt` (line numbers below),
 `~/iut-scratch/papers/txt/Inter-universal Teichmuller Theory I.txt` (IUT I Ex 3.4). Look up every
 statement there; do not cite from memory.
 
@@ -107,25 +107,50 @@ bijectivity/surjectivity of `inf₁`/`inf₂`. **Update (2026-10-17, later):** t
 `kummerClass_eq_galois` / `kummerClass_eq_kummer` (the pulled-back Frobenioid class is
 `KummerTheory.kummer n E K̄ x`).
 
-**Next steps (precise):**
-1. (N,H)-saturation (Def 2.2(ii)): for `H ⊆ G_E` open normal and `X` over `G_E/N`, the image
-   `H_A = galSub(H)`; condition (c) = bijectivity of `ContH1.map` along `H → H_A` on
-   `μ_n` and `ℤ/n` coefficients and surjectivity on `ContH2` (LCFT `Brauer/ContH2.lean`,
-   `Cohomology/FiveTerm.lean` has `inf₁`, `inf₂`, `res₁` for `G ⧸ N`). Define
-   `IsSaturated` as these three statements (definitions, not hypotheses-as-theorems).
-2. `F_N(A) := ContH2 H_A μ_N / ker(→ ContH2 H μ_N)`; Thm 2.4(ii): `F_N(A) ≅ ℤ/N` via
-   `PadicField.h2MuEquiv` for the fixed field `L = K̄^H` (needs `GK p L` vs the subgroup `H` of
-   `GK p E`: an `IntermediateField` restriction `Gal(K̄/L) ≃* H`).
-3. Reciprocity `η_f`: `PadicField.cupH1`/`pairingH1` over `L` with `pairingH1_kummer`
-   (`⟨χ, κ(a)⟩ = χ(artin a)`); transport along `α : G_E ≃ₜ* G_{E'}` (`PAdicRecon.lean`) is
-   naturality of `ContH1.map`/cup products under group isomorphisms (generic, like
-   `KummerClass.map_kummerClass`).
-4. Compatibility of `Ψ` with `galHom`: `F(galAut σ⁻¹)` vs `galAut (α σ)⁻¹` up to the base point
-   (`exists_continuousMulEquiv`: `F(rmul g)(x_N) = α(g)·x_N`).
+**Status (2026-10-17, evening): steps 1–4 of the previous hand-off are done** (all for `C^⊢ = Frob p E`,
+`Γ = ℤ`; `X = XN N a = (G_E/N, a)`, `H ⊆ G_E` open, `L = K̄^H = fixL H`):
 
-Step 3 unchanged; for step 2 note `G_A ≅ Aut(A_E)`: for
-`A_D = G/N` Galois, `F(rmul g)(x_N) = α(g)·x_N` (`exists_continuousMulEquiv`) identifies
-`Ψ_Base` on `Aut(G/N) ≅ (G/N)^op` with `α mod N` up to conjugation by the base point.
+* `Saturation.lean`: generic `Pull φ M`, `ZTriv n`, `infl₁`, `infl₁Z`, `infl₂`; `subA` (`H_A = galHom(H)`),
+  `subHom`, `muX`, **`IsSaturated`** (Def 2.2(ii)(a),(c); (b) is automatic for `G_E/N`), **`FN`**.
+* `FNEquiv.lean`: `galFixEquiv : Gal(K̄/L) ≃ₜ* H`, `h2HEquiv`, `uMu_bijective` (from μ_N-saturation),
+  `fnEquivH2L : F_N(X) ≅ H²(L, μ_N)`, **`fnEquiv : F_N(X) ≅ ℤ/N`** (LCFT `h2MuEquiv`).
+* `Reciprocity.lean`: `toL : H¹(H_A, μ_N(X)) → H¹(L, μ_N)`, **`toL_kummerClass`** (Frobenioid Kummer class
+  = `KummerTheory.kummer N L K̄ x`), `charL`, **`recip`** (`η(κ) ∈ Hom(H¹(H_A, ℤ/N), F_N(X)) ≅
+  H_A^ab ⊗ F_N(X)`, `χ ↦ χ ∪ κ` over `L`), **`fnEquiv_recip_kummerClass`** (`η_f(χ) = χ(artin x)`).
+* `ReciprocityIso.lean`: **`toL_bijective`**, **`exists_charL`**, **`recip_injective`**.
+* `GalHomCompat.lean`: **`exists_galHom_compat`**: `Ψ : C^⊢(E) ≌ C^⊢(E')` gives `α : G_E ≃ₜ* G_{E'}` with
+  `Ψ(galHom σ)` acting on rational functions of units of `Ψ X` by `τ α(σ) τ⁻¹`.
+* `SaturationGen.lean`, `SaturationExists.lean`: **`exists_isSaturated`** (Rem 2.2.1: all `(G_E/N, a)` with
+  `N ⊆ N₀` are `(n, H)`-saturated — `IsSaturated` is non-vacuous).
+* `SaturationTransport.lean`, `Thm24Saturated.lean`: generic `IsSat`/`FNG` for `(U, j, H)` and their
+  transport (`IsSat.transport`, `fngEquiv`, `h1Equiv`, `subAEquiv`); **`PAdicGalois.thm24`**: `ΨX` with
+  Galois structure `jPsi = Ψ ∘ galHom ∘ α⁻¹` is `(n, α(H))`-saturated and `F_N(X) ≅ F_N(ΨX)`.
+
+Practical lessons: `obtain ⟨_, rfl⟩`/`rw [map_div]`/`rw` with `_` subgroup arguments against concrete
+`ContH1`/`ContH2` goals over `Gal(K̄/L)`, `Pull …`, `WithDisc (Aut X)` time out (whnf/isDefEq) —
+prove a generic lemma over abstract `G M M'` (e.g. `DualityAux.eq_of_forall_cupH1_eq`,
+`Saturation.cocycle_eq_one_of_reps`, `ContH2Aux.exists_cocycle_of_reps`) and apply it; use `.elim`
+instead of `obtain` on concrete existentials; `Pull φ M` terms need `@id M m` to use the `Q`-action.
+
+**Next steps (precise):**
+1. *Reciprocity under `Ψ`* (Thm 2.4(i) "compatible with … reciprocity maps"): `recip` is defined over `L`;
+   define a generic cup product `H¹(G, ℤ/N) × H¹(G, M) → H²(G, M)` for `N`-torsion `M` (formula of
+   LCFT `Brauer.cupKummerFun`: `(g, h) ↦ (g•ζ(h))^{χ(g)}`, see `Brauer/DualityH1.lean`), show it is
+   natural under `ContH2Aux.mapEquiv2`/inflation and agrees with `Brauer.cupH1` after `toL`/`h2HEquiv`;
+   then `fngEquiv (recip κ χ) = recip' (h1Equiv κ) (χ ∘ subAEquiv⁻¹)` is formal.
+2. *Thm 2.4(ii)* (l.1029–1171): for `FrobPf` (fieldwise saturated) the isomorphism `F_N(X) ≅ F_N(ΨX)`
+   is compatible with `fnEquiv`. Mochizuki's proof: `Ψ` induces `K̄₁^× ≅ K̄₂^×` compatible with
+   `G₁ ≅ G₂`, and `G₁ ≅ G₂` preserves the unramified quotient and Frobenius ([Mzk1] Prop 1.2.1), so
+   the invariant maps `H²(G_i, μ(K̄_i^×)) ≅ ℚ/ℤ` agree. Needs: `FrobPf` versions of the files above
+   (they hard-code `gammaZ`), the field reconstruction from `O^▷` (`GaloisModel.orhdEquiv`), LCFT
+   `invEquiv` naturality under such pairs (cf. `Iut/Reconstruction/Local/Abelianization.lean`
+   `galEquiv_multEquiv`, LCFT `artin_naturality`). Remark 2.4.2: false for `Frob` (cyclotomic twist).
+3. `Ψ` and Kummer classes on the Galois side: combine `thm24_kummerClass` (Frobenioid level),
+   `h1Equiv`, `exists_galHom_compat` and `kummerClass_eq_kummer` to state: the Kummer class of `Ψ g`
+   over `L' = K̄^{α(H)}` is the transport of that of `g` (with `μ_N(X) ≅ μ_N(ΨX)` from `Ψ`).
+4. Optional: `O^□(A)^H ≅ O^□(LH)` (Rem 2.2.1) and the `(G_A/H_A)`-equivariance statements.
+
+Older notes (superseded where the status above says so):
 
 Missing ingredients, in order:
 
