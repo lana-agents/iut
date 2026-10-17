@@ -171,6 +171,7 @@ import Iut.Frobenioid.Angular.Frobenioid
 import Iut.Frobenioid.Angular.Kummer
 import Iut.Frobenioid.Angular.Props
 import Iut.Frobenioid.Arch
+import Iut.Frobenioid.BaseEquiv
 import Iut.Frobenioid.Basic
 import Iut.Frobenioid.Cor411Rlf
 import Iut.Frobenioid.Counterexample
@@ -194,6 +195,7 @@ import Iut.Frobenioid.ModelTypes
 import Iut.Frobenioid.NaiveFrob
 import Iut.Frobenioid.PAdic
 import Iut.Frobenioid.PAdicGalois
+import Iut.Frobenioid.PAdicRecon
 import Iut.Frobenioid.PAdicSlim
 import Iut.Frobenioid.Props
 import Iut.Frobenioid.TateTheta

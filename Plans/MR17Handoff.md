@@ -91,9 +91,12 @@ Plan (keep each file small; the 7 GB cap kills large elaborations):
 **Status (2026-10-17):** step 1 is done for profinite groups in `Iut/Frobenioid/GaloisRecon.lean`
 (`OrbitObj.exists_continuousMulEquiv`: an equivalence `F : B(G₁)⁰ ≌ B(G₂)⁰` gives
 `α : G₁ ≃ₜ* G₂` with `F(G₁/N) = G₂/α(N)` and `F(rmul g)(x_N) = α(g)·x_N` for compatible base
-points `x_N`). Still missing before it applies to Thm 2.4: the base functor of an equivalence of
-`p`-adic Frobenioids (`PreservesBase` from `thm34_base`) is itself an equivalence (use the
-quasi-inverse and fullness/essential surjectivity of `Base` on pull-backs). Steps 2–3 unchanged.
+points `x_N`). It is applied to the `p`-adic Frobenioids in `PAdicRecon.lean`
+(`PAdicGalois.exists_continuousMulEquiv`: `C^⊢(E) ≌ C^⊢(E')` lies over an equivalence
+`G : B(G_E)⁰ ≌ B(G_{E'})⁰` — `BaseEquiv.isEquivalence_base` — and gives `α : G_E ≃ₜ* G_{E'}` with
+`G(G_E/N) = G_{E'}/α(N)`). Steps 2–3 unchanged; for step 2 note `G_A ≅ Aut(A_E)`: for
+`A_D = G/N` Galois, `F(rmul g)(x_N) = α(g)·x_N` (`exists_continuousMulEquiv`) identifies
+`Ψ_Base` on `Aut(G/N) ≅ (G/N)^op` with `α mod N` up to conjugation by the base point.
 
 Missing ingredients, in order:
 
