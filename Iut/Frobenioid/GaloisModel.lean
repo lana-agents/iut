@@ -19,7 +19,7 @@ additively), a `G`-invariant homomorphism `ℓ : M → ℝ` (the valuation `ord`
 
 * `invGrpOn G S` (`S ⊆ M` a `G`-stable subgroup): the group-like monoid `G/H ↦ S^H` on
   `B(G)⁰`, with pull-back along `f : G/H → G/H'`, `f(H) = gH'`, given by `m ↦ g·m`;
-* `constPhi G Γ`: the constant divisor monoid `Γ_{≥0} ⊆ Γ`;
+* `constPhi G Γ`: the fixed-value divisor monoid `Γ_{≥0} ⊆ Γ`;
 * **`GaloisModel G ℓ Γ`**: the model Frobenioid with `Φ = Γ_{≥0}`,
   `B(G/H) = (ℓ⁻¹(Γ))^H = M^H ×_ℝ Γ` and `Div_B = ℓ`; `GaloisModel.isFrobenioid`;
 * `GaloisModel.hasAllTorsion`: if `M` has nonzero `ℓ`-null `n`-torsion with open stabilizer for
@@ -149,7 +149,7 @@ noncomputable def invGrpOn (S : StableSub G M) [IsTopologicalGroup G] : GrpOn.{u
 
 end Fixed
 
-/-! ### Constant divisor monoids `Γ_{≥0}` -/
+/-! ### Fixed-value divisor monoids `Γ_{≥0}` -/
 
 section Const
 
@@ -163,7 +163,7 @@ def gammaCone : AddSubmonoid Γ where
     exact add_nonneg ha hb
   zero_mem' := le_refl (0 : ℝ)
 
-/-- **The constant divisor monoid `Γ_{≥0}`** on `D` (identity pull-backs). -/
+/-- **The fixed-value divisor monoid `Γ_{≥0}`** on `D` (identity pull-backs). -/
 def constPhi : DivMonoid.{0} D where
   obj _ := Γ
   pb _ := AddMonoidHom.id Γ
