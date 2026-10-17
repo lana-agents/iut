@@ -177,6 +177,7 @@ import Iut.Frobenioid.Cor411Rlf
 import Iut.Frobenioid.Counterexample
 import Iut.Frobenioid.Defs
 import Iut.Frobenioid.DivOrder
+import Iut.Frobenioid.FNEquiv
 import Iut.Frobenioid.GaloisBase
 import Iut.Frobenioid.GaloisExample
 import Iut.Frobenioid.GaloisModel
@@ -201,6 +202,8 @@ import Iut.Frobenioid.PAdicGalois
 import Iut.Frobenioid.PAdicRecon
 import Iut.Frobenioid.PAdicSlim
 import Iut.Frobenioid.Props
+import Iut.Frobenioid.Reciprocity
+import Iut.Frobenioid.Saturation
 import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered
 import Iut.Frobenioid.TemperedBase
