@@ -41,8 +41,8 @@ extension class `∈ H²(Δ^ell_X, Δ_Θ)` of this extension determines a tautol
 `cuspCentralKer_thetaMap` (`Δ^Θ = Δ/cl⁅cl⁅Δ, Δ⁆, Δ⁆`), `thetaInertia_eq_map` (`Δ_Θ` is the image
 of `cl⁅Δ, Δ⁆`), and `thetaClass N ∈ H²(Δ^Θ/Δ_Θ, Δ_Θ/N)`.
 
-Not here: the identifications `M_X = Hom(H²(Δ_X, Ẑ), Ẑ) ≅ I_x`, which need `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ`
-for surface groups (MR9 step C1, `Plans/MR9Plan.md`).
+The identifications `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ` and `M_X = Hom(H²(Δ_X, Ẑ), Ẑ) ≅ I_x` for the closed
+surface group are in `Iut/Reconstruction/Cusp/SurfaceH2.lean`.
 -/
 
 namespace Iut.Reconstruction
