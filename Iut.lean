@@ -194,6 +194,7 @@ import Iut.Frobenioid.GlobalPrime
 import Iut.Frobenioid.GlobalPrimeZ
 import Iut.Frobenioid.GlobalRho
 import Iut.Frobenioid.GlobalTorsor
+import Iut.Frobenioid.GlobalUnique
 import Iut.Frobenioid.InvCompat
 import Iut.Frobenioid.Invariance
 import Iut.Frobenioid.KummerClass
