@@ -191,6 +191,7 @@ import Iut.Frobenioid.GlobalGalois
 import Iut.Frobenioid.GlobalGaloisCmp
 import Iut.Frobenioid.GlobalGaloisFibre
 import Iut.Frobenioid.GlobalGaloisRlf
+import Iut.Frobenioid.GlobalGaloisRlfDeg
 import Iut.Frobenioid.GlobalNonRlf
 import Iut.Frobenioid.GlobalPf
 import Iut.Frobenioid.GlobalPic

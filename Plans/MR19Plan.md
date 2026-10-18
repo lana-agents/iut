@@ -333,3 +333,6 @@ for `recFunctionField` (MR9).
     torsion (the counterexample of `Counterexample.lean` needs all torsion), giving
     `PreservesBase` and preservation of base-identity morphisms; then `fibre`/`fibreRlf` reduce
     (iv) objectwise to `thm64iv_deg`/`thm64iv_galois`. Estimate: 1.5–3k lines.
+  * `Frobenioid/GlobalGaloisRlfDeg.lean`: `log_absNorm_eq` (`log N(I) = Σ_w ord_w(I)·log N(𝔭_w)`),
+    `degArith_castG` (`deg^arith ∘ castG = degG`), **`degArith_pbR`**
+    (`deg^arith_L(σ^* x) = [L:K]·deg^arith_K(x)` for ℝ-divisors).
