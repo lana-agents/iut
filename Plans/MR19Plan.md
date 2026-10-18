@@ -309,3 +309,10 @@ for `recFunctionField` (MR9).
     reconstruction, `Thm34Base.lean`) matching `G₁/H₁ ↔ G₂/H₂`. Restricted to the fibres over
     `G/H` (`fibreTop`, generalised from `G/G` to any `G/H` with `End(G/H)` acting), the `Pt`
     results `thm64iv_deg`/`thm64iv_galois` apply objectwise to `L_i = E_i^{H_i}`.
+
+* 2026-10-18 (MR9+MR19 track agent): **realification over `B(G)⁰`** (`Frobenioid/GlobalGaloisRlf.lean`):
+  `eZ σ w` (counts of `𝔭_w O_L`; effective, nonzero, pairwise disjoint supports via
+  `𝔭_{w₁} + 𝔭_{w₂} = O_K`), `pbR σ` (ℝ-linear extension of the integral pull-back, `pbR_castDiv`,
+  `span_castDiv`, `pbR_comp`, `pbR_id`, `pbR_mem_iff`, `pbR_injective`, `pbR_divOf`, `pbR_ratFun`),
+  `phiRlfGal`, `bRlfGal` (`ℝ·div(L^×)`), **`GlobalGaloisRlf F E`** with `isFrobenioid`, and
+  **`GlobalGaloisFrob.realify : C_{F̃/F} ⥤ C_{F̃/F}^rlf`** ([FrdI] Prop 5.3; `castG = castDiv ∘ toZ`).
