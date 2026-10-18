@@ -431,7 +431,9 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
   - cuspidal principal divisors and Kummer classes of NF-functions and NF-constants ([AbsTopIII] Prop 1.4, 1.6, 1.8);
   - Kummer theory on tempered coverings (for MR14).
 - **Refs:** [AbsTopIII] Def 1.5, Prop 1.4, 1.6, 1.8.
-- **Depends on:** MR2. **Status:** M. **Size:** 15–25 k / 12–20.
+- **Plan:** continuous-kummer-theory `Plans/MR5Plan.md` (dependency direction curves-jacobian → CKT → pi1).
+- **Progress (CKT main b4003d6):** [AbsTopIII] Def 1.5 (torally Kummer-faithful; ℚ, number fields, `p`-adic fields), Prop 1.6(i), the cusp-residue part of Prop 1.6(iii), Prop 1.8(ii) (`s_x^*κ_U(u) = κ_k(u(x))` given `D_A ↠ Gal(κ(A)/k)`).
+- **Depends on:** MR2. **Status:** P. **Size:** 15–25 k / 12–20.
 - **Repo:** continuous-kummer-theory.
 - **Done when:** `theorem kummer_injective (U/k Kummer-faithful) : Function.Injective (kummerMap U)`; `theorem principalDivisor_iff : c ∈ P_U ↔ …` (AbsTopIII Prop 1.6(ii)).
 
@@ -464,7 +466,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 - **Content:** [AbsTopIII] Thm 1.9 steps (a)–(e) (NF-portion of the function field), Cor 1.10 (MLF function field, `μ(G_k) ≅ μ(Π_X)`), Prop 1.3 (additive structure), Prop 3.2, 3.3 (monoid cyclotomes, unit Kummer maps, `Isom(MLF pairs) ↪ Isom(Π, Π*)`), [AbsTopI] Lemma 4.5 weights, `μ_{ℚ/ℤ}(G)`.
 - **Refs:** above, plus [AbsAnab] Prop 1.2.1 (not available).
 - **Plan:** `Plans/MR9Plan.md` (exact [AbsTopIII] §1 statements with T3 line numbers — Thm 1.9 is at l.2109, Cor 1.10 at l.2352 —, dependency map, step list U1–T2).
-- **Progress:** U1, Uchida's lemma (Prop 1.3), algorithm side and functoriality (`Reconstruction/Uchida/Basic.lean`, `Iso.addRel_iff`).
+- **Progress:** U1, Uchida's lemma (Prop 1.3), algorithm side and functoriality (`Reconstruction/Uchida/Basic.lean`, `Iso.addRel_iff`); U2, its correctness for function fields over algebraically closed `k` (`Reconstruction/Uchida/FunctionField.lean`, `ofFunctionField.addRel_iff`, `addRel_iso_iff`; curve side in weil-curves `FunctionField/LinearSystem`, now an iut dependency); C1, the maximal cuspidally central quotient and its transgression, with the Θ-approach (`Reconstruction/Cusp/CuspCentral.lean`, `CuspTransgression.lean`); L1, Cor 1.10(a), (b), (d) at the MLF level (`Reconstruction/Local/Cor110*.lean`).
 - **Depends on:** MR3, MR4, MR5, MR8. **Status:** P (`Reconstruction/Local/*`, `Reconstruction/Uchida`). **Size:** 25–45 k / 20–35.
 - **Repo:** iut `Reconstruction`.
 - **Done when:** `def recFunctionField (Π) : Field` with `theorem recFunctionField_equiv (X/k) : recFunctionField Π_X ≃+* K_X^NF` (Thm 1.9) and `recMLF … ≃+* k̄` (Cor 1.10), each functorial (`map` over `≃ₜ*` with `map_id`, `map_comp`, and compatibility with base change). Shell #35 is gone.
@@ -664,7 +666,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 | MR2 | π₁ of hyperbolic curves | — | P | 15–30 | 15–30 | pi1/oka |
 | MR3 | Weil RH, weights | MR2 | M | 25–50 | 25–50 | new / elliptic-curves |
 | MR4 | LCFT completion | — | P | 8–15 | 6–12 | LCFT |
-| MR5 | Kummer for curves | MR2 | M | 15–25 | 12–20 | continuous-kummer-theory |
+| MR5 | Kummer for curves | MR2 | P | 15–25 | 12–20 | continuous-kummer-theory |
 | MR6 | p-adic Hodge theory | — | M | 150–400 | 150–400 | new |
 | MR7 | [LocAn] p-adic GC | MR6, MR2, MR3 | M | 60–150 | 60–150 | new |
 | MR8 | Belyi / elliptic cuspidalisation | MR7, MR2 | P | 20–40 | 15–30 | belyi + iut |

@@ -111,13 +111,13 @@ the κ-coric pseudo-monoids.
 |---|---|---|
 | Thm 1.9(a) | [AbsTopII] Cor 3.7, rel-isom-DGC ([LocAn] Thm A, MR7), weights (MR3) | MR8: group side done (`belyi` mr8: `belyiCusp`, `belyiCusp_transport`); `belyiCusp_spec` (MR8.5) blocked on MR8.3 (chain functor; ⋎ needs quotients of curves by finite groups) |
 | Thm 1.9(b) | Prop 1.4: `I_x ≅ Ẑ(1)`, maximal cuspidally central quotient, transgression, `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ` | absent (surface groups with `r > 0` exist in pi1; `r = 0` is absent) |
-| Thm 1.9(c) | Prop 1.6(ii), (iii): Kummer map into `H¹(Π_U)`, `J^d`, sections `s_x`, Kummer-faithfulness | absent (MR5, status M) |
-| Thm 1.9(d) | Prop 1.6(i), Prop 1.8, `s_x^* κ_U(f) = κ(f(x))` | `continuous-kummer-theory` `Specialization.map_section_kummer` (abstract sections); the rest absent |
-| Thm 1.9(e) | Prop 1.1–1.3 (Riemann–Roch-level facts on a proper curve over `k̄`) | RR in `weil-curves` (`ell`, `riemannRoch`; iut does not depend on it); Uchida's lemma absent everywhere |
+| Thm 1.9(c) | Prop 1.6(ii), (iii): Kummer map into `H¹(Π_U)`, `J^d`, sections `s_x`, Kummer-faithfulness | MR5 (status P, CKT `Plans/MR5Plan.md`): Def 1.5, Prop 1.6(i), the cusp-residue part of 1.6(iii) in CKT main b4003d6; 1.6(ii) and the rest of (iii) open |
+| Thm 1.9(d) | Prop 1.6(i), Prop 1.8, `s_x^* κ_U(f) = κ(f(x))` | `continuous-kummer-theory` `Specialization.map_section_kummer` (abstract sections); Prop 1.6(i) and Prop 1.8(ii) (`s_x^*κ_U(u) = κ_k(u(x))` given `D_A ↠ Gal(κ(A)/k)`) in CKT main b4003d6 |
+| Thm 1.9(e) | Prop 1.1–1.3 (Riemann–Roch-level facts on a proper curve over `k̄`) | **done** (U1 + U2: `Reconstruction/Uchida/*`, weil-curves `FunctionField/LinearSystem`) |
 | Cor 1.10(a), (b), (d) | transfer, `μ(K) ≅ (G_K^ab)_tors`, `H²(G_K, Ẑ(1)) ≅ Ẑ`, `(K^×)^ ≅ O^× × Ẑ` | iut `Reconstruction/Local` (`Torsion.torsAbEquiv`, `Cyclotome.cyclotomic_rigidity`, `AbelianZHat.abZHatEquiv`, `Transfer.verAb`); LCFT `artin_transfer`, `h2ZHatOneEquiv` |
 | Cor 1.10(c) | weights, [AbsAnab] Lemma 2.5 (text not available) | blocked (MR3(b)); IUT can use (d′) or the κ-cyclotome of Rem 1.10.3(ii) instead |
 
-Inputs from MR5 (Kummer theory of curves, status M): `κ_U` over non-closed `k`, its injectivity
+Inputs from MR5 (Kummer theory of curves, status P; plan: CKT `Plans/MR5Plan.md`, dependency direction curves-jacobian → CKT → pi1): `κ_U` over non-closed `k`, its injectivity
 for Kummer-faithful `k` (Prop 1.6(i)), and the principal-divisor criterion (Prop 1.6(ii), (iii)).
 
 Inputs from MR8: `belyiCusp_spec`, the NF-point decomposition groups (Cor 3.7(c)), the cusp
@@ -159,7 +159,7 @@ iut does not yet see any MR8 work.
 | U2 | Uchida, correctness: for the function field of a proper curve over algebraically closed `k`, the reconstructed sum is the field sum (Prop 1.1 via `ell`, Prop 1.2(i) from RR; `λ/μ = −1` and `0` handled separately) | weil-curves (has RR), then a bridge | 1.5–3k | **done** (2026-10-18) |
 | L1 | Cor 1.10(a), (b), (d) at the MLF level: `μ_{ℚ/ℤ}(G)` as a colimit along `verAb`, `≅ μ_∞(K̄)`, `H²(G_K, μ_Ẑ(G_K)) ≅ Ẑ` with index normalisation (Rem 1.10.1(iii)), Frobenius surjection, Kummer image `= ` preimage of `ℤ` | iut `Reconstruction/Local` | 1–2k | **done** (2026-10-18; open: naturality of `H² ≅ Ẑ`, Rem 1.10.1(iii) group side) |
 | C1 | Prop 1.4(ii) group-theoretic part: maximal cuspidally central quotient (universal property), the transgression of a central extension (via `ContH2`), and the same construction for the Θ-approach `M_X ≅ l·Δ_Θ` (IUT I Rem 3.1.2(iii)) | iut `Reconstruction/Cusp/CuspCentral.lean` | 500–1000 | **group/cohomology part done** (the final iso needs `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ`: pi1, `r = 0` surface groups) |
-| K1 | Def 1.5 (Kummer-faithful, torus version first); number fields and `p`-adic fields are torally Kummer-faithful | CKT | 300–600 | yes |
+| K1 | Def 1.5 (Kummer-faithful, torus version first); number fields and `p`-adic fields are torally Kummer-faithful | CKT | 300–600 | **done** in CKT (b4003d6, MR5 step K1) |
 | K2 | Prop 1.8 bookkeeping relative to Kummer data given as **arguments** (`κ`, restriction maps and `res_x ∘ κ = κ_{k_x} ∘ eval_x` as hypotheses of the theorem, not structure fields): NF-functions and NF-constants are characterised by restrictions | CKT / cj | 400–800 | yes |
 | K3 | genuine `κ_U : O(U)^× → H¹(Π_U, Ẑ(1))` over non-closed `k`, injective for Kummer-faithful `k` (Prop 1.6(i)); exact sequence of Prop 1.6(iii) | MR5 (cj + CKT) | 2–4k | partly (needs `Π_U` of MR8.3(b)) |
 | K4 | Prop 1.6(ii) (principal divisors via `t_D` and `π₁(J^d)`, or the [Cusp] Prop 2.2 route through `Π^{c-ab}`) | MR5 | 3–6k | no (needs `J^d` as a scheme and `π₁(J^d)`) |
@@ -233,3 +233,15 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   * Open: naturality of `h2ZHatGEquiv` under arbitrary `ψ : G_k ≃ₜ* G_{k'}` ([Mzk9] 1.2.1(vii),
     needs cup products); Rem 1.10.1(iii) on the group side; (b) with group-theoretic `μ_Ẑ(G)`
     coefficients in `H¹` (only levelwise comparison `muNEquiv` available).
+* 2026-10-18 (end of lead MR9 session): **next steps**, in order:
+  1. C1 finish: `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ` (pi1 has `Π̂_{g,0}` as a quotient of `Π̂_{g,r}`, see
+     `exists_quotient_sup_mulEquiv_surfaceGroup_zero`), then `M_X ≅ I_x` from the finite-level
+     classes `cuspClass N` (inverse limit over `N`).
+  2. L1 rest: naturality of `h2ZHatGEquiv` under `ψ : G_k ≃ₜ* G_{k'}` (cup products, [Mzk9]
+     1.2.1(vii), text unavailable: use the LCFT pairing), Rem 1.10.1(iii) on the group side
+     (`AbBar H ≅ AbBar G` for open `H`), (b) with `μ_Ẑ(G)` coefficients.
+  3. K2/K3 against CKT `Plans/MR5Plan.md` (MR5 is now status P there).
+  4. A1 after MR8.5; T1 assembles U2 + C1 + K3/K4 + A1.
+  MR19 side (this session): IUT III Ex 3.6(i) and the composite of (iii) are done
+  (`Frobenioid/GlobalTorsor.lean`); open: the uniqueness of (iii) on realifications, [FrdI] Ex 6.3
+  over a Galois base (MR19Plan §7 item 3) and Thm 6.4(iv) over it.
