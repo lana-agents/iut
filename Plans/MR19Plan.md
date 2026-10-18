@@ -229,6 +229,13 @@ for `recFunctionField` (MR9).
 
 ## 6. Status log
 
+* 2026-10-18 (MR9 lead session): IUT III Ex 3.6(i) and the first half of (iii) (`GlobalTorsor.lean`):
+  `TorsorFrob K` (`F^⊛_MOD`: `K^×`-torsors with equivariant `τ : T → ArithDivZ K` encoding the
+  trivializations of the `β_v`-pushouts; morphisms = integral `n`-equivariant maps),
+  `TorsorFrob.ofModel : GlobalFrobenioid K ⥤ TorsorFrob K` fully faithful + essentially surjective
+  (`equivModel`), preserving Frobenius degrees and inducing the identity on `K^×` (`ofModel_map_one`);
+  `fracIdealEquivTorsor : FracIdealFrob K ≌ TorsorFrob K` (the composite of (iii)). Left of (iii): the
+  uniqueness statement on perfections/realifications.
 * 2026-10-18 (later): IUT III Ex 3.6(ii) (`GlobalFracIdeal.lean`, iut c785b58): `FracIdeal.le_iff_count_le`
   (not in Mathlib), `FracIdealFrob K`, `toModel` full, faithful, bijective on objects, identity on `K^×`,
   Frobenius degrees preserved. Deviation (documented in the file): the text takes `J_v ⊆ K_v` for `K ⊇ F_mod`;

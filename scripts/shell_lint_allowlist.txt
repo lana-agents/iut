@@ -958,3 +958,9 @@ WeilCurves.FunctionField.IsFunctionField.exists_finite	def
 FiveTerm.Admissible.ext	def
 FiveTerm.Admissible.left	def
 FiveTerm.Admissible.right	def
+Iut.Frobenioid.TorsorObj.nonempty	def
+Iut.Frobenioid.TorsorObj.free	def
+Iut.Frobenioid.TorsorObj.trans	def
+Iut.Frobenioid.TorsorObj.τ_smul	def
+Iut.Frobenioid.TorsorHom.ψ_smul	def
+Iut.Frobenioid.TorsorHom.integral	def
