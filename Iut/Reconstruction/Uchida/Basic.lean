@@ -38,9 +38,11 @@ the abstract triple `(G, {ord_x}, {U_x})` (`ValEvalData`), following the proof (
 intermediate constructions: `Iso.mem_consts_iff`, `Iso.evalAt_iff`, `Iso.ell_eq`, …). So the
 additive structure is a "group-theoretic" invariant of the triple.
 
-Not here (MR9 step U2): the *correctness* theorem — for the triple of the function field of a
-proper curve over an algebraically closed field, `AddRel a b c ↔ a + b = c` — which needs
-Riemann–Roch-level input (Propositions 1.1 and 1.2(i)).
+The *correctness* theorem (MR9 step U2) — for the triple of the function field of a proper curve
+over an algebraically closed field, `AddRel a b c ↔ a + b = c` — is
+`Iut/Reconstruction/Uchida/FunctionField.lean` (`ofFunctionField.addRel_iff`), from the
+Riemann–Roch-level input of Propositions 1.1 and 1.2 proved in `weil-curves`
+(`WeilCurves.FunctionField.LinearSystem`).
 -/
 
 namespace Iut.Reconstruction.Uchida

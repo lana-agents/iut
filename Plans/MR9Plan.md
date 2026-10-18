@@ -156,7 +156,7 @@ iut does not yet see any MR8 work.
 | # | step | where | size | now? |
 |---|---|---|---|---|
 | U1 | **Uchida's lemma, algorithm side**: valuation–evaluation data `(G, {ord_x}, {U_x})` (Prop 1.3(a)–(c)); constants `⋂ Ker`; evaluation `Ker(v) → k^×`; divisors, `Γ^×(D)`, `l(D)` via Prop 1.1(ii); the Prop 1.2 configuration and the characterisation of `λ + μ`; **transport along isomorphisms of triples** (the functoriality) | iut `Reconstruction/Uchida/` | 400–700 | **yes (started)** |
-| U2 | Uchida, correctness: for the function field of a proper curve over algebraically closed `k`, the reconstructed sum is the field sum (Prop 1.1 via `ell`, Prop 1.2(i) from RR; `λ/μ = −1` and `0` handled separately) | weil-curves (has RR), then a bridge | 1.5–3k | yes (needs a weil-curves dependency, or a port of `ell`/RR to the iut import closure) |
+| U2 | Uchida, correctness: for the function field of a proper curve over algebraically closed `k`, the reconstructed sum is the field sum (Prop 1.1 via `ell`, Prop 1.2(i) from RR; `λ/μ = −1` and `0` handled separately) | weil-curves (has RR), then a bridge | 1.5–3k | **done** (2026-10-18) |
 | L1 | Cor 1.10(a), (b), (d) at the MLF level: `μ_{ℚ/ℤ}(G)` as a colimit along `verAb`, `≅ μ_∞(K̄)`, `H²(G_K, μ_Ẑ(G_K)) ≅ Ẑ` with index normalisation (Rem 1.10.1(iii)), Frobenius surjection, Kummer image `= ` preimage of `ℤ` | iut `Reconstruction/Local` | 1–2k | yes |
 | C1 | Prop 1.4(ii) group-theoretic part: maximal cuspidally central quotient (universal property), the transgression of a central extension (via `ContH2`), and the same construction for the Θ-approach `M_X ≅ l·Δ_Θ` (IUT I Rem 3.1.2(iii)) | iut `Reconstruction/Cusp/CuspCentral.lean` | 500–1000 | yes (the final iso needs `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ`: pi1, `r = 0` surface groups) |
 | K1 | Def 1.5 (Kummer-faithful, torus version first); number fields and `p`-adic fields are torally Kummer-faithful | CKT | 300–600 | yes |
@@ -195,3 +195,19 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `cuspCentralLift_unique`.
   * Next: the transgression `Hom(I, I) → H²(Δ_X, I)` of a central extension (LCFT `ContH2`), and
     the Θ-approach version for `Δ_X/[Δ_X, [Δ_X, Δ_X]]`.
+* 2026-10-18: **U2 done (correctness of the Uchida algorithm)**.
+  * Placement decision: iut now requires `weil-curves` directly (same Mathlib `81a5d25`, Lean
+    v4.32.0, no further dependencies; only `WeilCurves.FunctionField.*` up to `Riemann` is in the
+    closure, ~2.6k jobs mostly Mathlib already built). The curve-side proof is in weil-curves.
+  * weil-curves `WeilCurves/FunctionField/LinearSystem.lean` (`k` algebraically closed): values
+    `Place.IsValue`/`Place.value`; constants `= k`; infinitely many places; Prop 1.1(ii)
+    `Divisor.ell_eq_sInf`; Prop 1.2(i) `Divisor.exists_uchidaConfig`; two-point evaluation
+    `Divisor.existsUnique_isValue_two` (Prop 1.2(ii), (iii)).
+  * iut bridge `Iut/Reconstruction/Uchida/FunctionField.lean`: the triple `ofFunctionField k K`
+    (`Kˣ`, places, `ord_P`, principal units); `isConstSum_iff` (Prop 1.2(iii)), `isNegOne_iff`,
+    **`ofFunctionField.addRel_iff`** (`AddRel a b c ↔ a + b = c` under `WithZero Kˣ ≃* K`) and
+    **`addRel_iso_iff`** (the same for every triple isomorphic to it: Prop 1.3 in full).
+  * Remaining for Prop 1.3 as used in Thm 1.9(e): over the NF-portion the triple is only given
+    for `k̄_NF` (number-field points); the function field there is still a function field over
+    the algebraically closed field `k̄_NF = ℚ̄`, so `ofFunctionField` applies once T1 identifies
+    the reconstructed triple with it.

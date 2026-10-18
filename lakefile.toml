@@ -91,6 +91,15 @@ name = "local-class-field-theory"
 git = "https://github.com/lana-agents/local-class-field-theory"
 rev = "a6655a871f92138e486362f08f7df48204f3e985"
 
+# Function fields of curves: places, divisors, Riemann–Roch (`WeilCurves.FunctionField`), and the
+# linear-system input of Uchida's lemma over an algebraically closed field ([AbsTopIII],
+# Props 1.1(ii), 1.2; `WeilCurves.FunctionField.LinearSystem`), consumed by the correctness
+# of the Uchida algorithm (`Iut/Reconstruction/Uchida/FunctionField.lean`, MR9 step U2).
+[[require]]
+name = "weil-curves"
+git = "https://github.com/lana-agents/weil-curves"
+rev = "1cadab4e0a16f6a315a18e52369fbf45048ec503"
+
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
 name = "Iut"
