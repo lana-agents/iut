@@ -374,3 +374,16 @@ for `recFunctionField` (MR9).
     non-realified `C` (finite torsion) is needed.
   * Not done: compatibility of `L₁ ≅ L₂` with an isomorphism `F₁ ≅ F₂` (Mochizuki's last clause);
     base reconstruction for the non-realified `C_{F̃/F}` on its own (only via `e`).
+* **Hand-off 2026-10-18 (MR9+MR19 track agent, base-reconstruction session).** Merged: d0b54ae
+  (Thm34Irr, Thm34DivSlim, GlobalGaloisBase, Thm34Base refactor), and 5e50079 (ModelFib,
+  Thm64ivGal). No WIP branch. No new debts, no new hypotheses. Next, in order:
+  1. `Iso.Crlf` of `ThetaPmEllNFHT.Iso` respecting `glob.prime`/`glob.rho`. Design issue found:
+     `FRlfGlobal.prime` and `.rho` are free data, not tied to `equiv`, so a compatibility field in
+     `Iso` (conjugating `Crlf` by the `equiv`s and comparing the induced `Ψ_Prime` of
+     `Cor411Rlf`/`GlobalPrime` with `prime`) would break `toLabels_surjective` unless `prime` is
+     derived from `equiv` (e.g. `prime := primeEquiv ∘ Ψ_Prime(equiv)`). Also the compatibility is a
+     Prop field (shell-lint allowlist) and forces the HodgeTheater/ThetaLink/LogLink rebuild.
+     Decision needed (lead): derive `prime`/`rho` from `equiv` in `FRlfGlobal`, or keep them as data.
+  2. [FrdI] Thm 6.4(iv), last clause (`L₁ ≅ L₂` compatible with `F₁ ≅ F₂`): apply
+     `GlobalGaloisRlf.thm64iv` also at `G/G` and compare the two isomorphisms (Bauer for subfields).
+  3. Θ-version `ρΘ_v` (needs MR18); κ-coric items after MR9 `recFunctionField`.
