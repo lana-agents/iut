@@ -31,8 +31,8 @@ topological groups, or categories with equivalences of categories).
   * `F^{⊢×μ}`-prime-strips (IUT II, Definition 4.9(vii)): the GM-data `G_v ↷ O^{×μ}(K_v)` |
     `{1} ↷ O^{×μ}(K_v)` (`O^{×μ} = O^×/μ`, the unit circle modulo torsion);
   * `F^⊩`-prime-strips (Definition 5.2(iv)): the global data `FRlfGlobal` of `F^⊩_mod` (a category
-    with an equivalence to `C^⊩_mod`, `Prime(C^⊩_mod) ≅ V` and the maps `ρ_v`; IUT I,
-    Example 3.5(ii)), with an `F^⊢`-prime-strip;
+    with an equivalence to `C^⊩_mod`; `Prime(C^⊩) ≅ V` and the maps `ρ_v` are derived from it;
+    IUT I, Example 3.5(ii)), with an `F^⊢`-prime-strip;
   * the global objects `D^⊚ = B(C̲_K)^0` and `D^⊚± = B(X̲_K)^0` (Definitions 4.1(v), 6.1(v)), by
     their (étale) fundamental groups.
 
@@ -369,24 +369,64 @@ noncomputable def rhoMod (v : Vp D) : ArithDiv ↥(fieldOfModuli D.F D.E) → �
 
 end FRlfMod
 
-/-- **The global data of `F^⊩_mod`** (IUT I, Example 3.5(ii)): the Frobenioid `C^⊩_mod`, an
-equivalence with the model, the bijection `Prime(C^⊩_mod) ≅ V` and the maps `ρ_v`. -/
+/-- **The global data of `F^⊩_mod`** (IUT I, Example 3.5(ii); Definition 5.2(iv)(a), (f)): a
+category `C^⊩` with an identification with the model `C^⊩_mod`.
+
+IUT I, Definition 5.2(iv), requires the collection `(C^⊩, Prime(C^⊩) ≅ V, F^⊢, {ρ_v})` to be
+isomorphic to `F^⊩_mod` (condition (f)), and `Prime(−)` is computed from the Frobenioid structure of
+`C^⊩` (condition (b)), which is the one transported from `C^⊩_mod` along such an isomorphism. Hence
+the bijection `Prime(C^⊩) ≅ V` and the maps `ρ_v` are not inputs: they are those of `F^⊩_mod`
+transported along `equiv` (`FRlfGlobal.prime`, `FRlfGlobal.rho`), and an isomorphism `C^⊩₁ ≌ C^⊩₂`
+acts on them through the induced `Ψ_Prime`, `Ψ_Φ` of the conjugated autoequivalence of `C^⊩_mod`
+(`HodgeTheater/FRlfIso.lean`). -/
 structure FRlfGlobal where
   /-- The global realified Frobenioid. -/
   C : Cat.{u, u}
   /-- Its identification with `C^⊩_mod`. -/
   equiv : C ≌ rlfModel D
-  /-- `Prime(C^⊩_mod) ≅ V` (`V ≅ V_mod`). -/
-  prime : GlobalRealified.Prime ↥(fieldOfModuli D.F D.E) ≃ Vp D
-  /-- The local-global maps `ρ_v : Φ_{C^⊩_mod,v} → ℝ_{≥0}`. -/
-  rho : Vp D → ArithDiv ↥(fieldOfModuli D.F D.E) → ℝ
+
+namespace FRlfGlobal
+
+variable {D}
+
+/-- **`Prime(C^⊩) ≅ V`**: through `equiv`, `Prime(C^⊩) = Prime(C^⊩_mod) ≅ V(F_mod) = V`
+(`GlobalRealified.primeEquiv`). -/
+noncomputable def prime (_G : FRlfGlobal D) :
+    GlobalRealified.Prime ↥(fieldOfModuli D.F D.E) ≃ Vp D :=
+  GlobalRealified.primeEquiv
+
+/-- **The local-global maps `ρ_v : Φ_{C^⊩,v} → ℝ_{≥0}`**, through `equiv` those of `F^⊩_mod`
+(`FRlfMod.rhoMod`). -/
+noncomputable def rho (_G : FRlfGlobal D) : Vp D → ArithDiv ↥(fieldOfModuli D.F D.E) → ℝ :=
+  FRlfMod.rhoMod D
+
+/-- **An isomorphism of the global data of `F^⊩`-prime-strips** (IUT I, Definition 5.2(iv): an
+isomorphism of the collections of data): an equivalence `C^⊩₁ ≌ C^⊩₂` together with a natural
+isomorphism identifying it, through the `equiv`s, with the identity of `C^⊩_mod`.
+
+The natural isomorphism is unique when it exists (`GlobalRealified.unique_of_inducesIdRatFun`), and
+it exists if and only if the conjugated autoequivalence of `C^⊩_mod` is compatible with
+`Prime(−) ≅ V` and with the `ρ_v` (`FRlfGlobal.Iso.ofCompat`, `FRlfGlobal.Iso.placeEquiv_conj`,
+`FRlfGlobal.Iso.rho_psiPhi_conj`, `HodgeTheater/FRlfIso.lean`), which is the compatibility required
+by Definition 5.2(iv). -/
+structure Iso (A B : FRlfGlobal D) where
+  /-- `C^⊩₁ ≌ C^⊩₂`. -/
+  equiv : A.C ≌ B.C
+  /-- Compatibility with the identifications with `C^⊩_mod`. -/
+  comm : equiv.functor ⋙ B.equiv.functor ≅ A.equiv.functor
+
+/-- The isomorphism `A ≅ B` through `F^⊩_mod`. -/
+noncomputable def Iso.viaModel (A B : FRlfGlobal D) : A.Iso B where
+  equiv := A.equiv.trans B.equiv.symm
+  comm := Functor.associator _ _ _ ≪≫ Functor.isoWhiskerLeft _ B.equiv.counitIso ≪≫
+    Functor.rightUnitor _
+
+end FRlfGlobal
 
 /-- **`F^⊩_mod`** (global part), constructed from the Θ-data. -/
 noncomputable def FRlfGlobal.ofThetaData : FRlfGlobal D where
   C := rlfModel D
   equiv := CategoryTheory.Equivalence.refl
-  prime := GlobalRealified.primeEquiv
-  rho := FRlfMod.rhoMod D
 
 /-- **An `F^⊩`-prime-strip** (IUT I, Definition 5.2(iv), Example 3.5(ii)): the global data
 `(C^⊩, C^⊩ ≌ C^⊩_mod, Prime(C^⊩_mod) ≅ V, {ρ_v})` and an `F^⊢`-prime-strip. -/

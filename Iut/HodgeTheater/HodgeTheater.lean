@@ -184,8 +184,8 @@ structure Iso (A B : ThetaPmEllNFHT D) where
   Dcirc : A.Dcirc.G.carrier ≃ₜ* B.Dcirc.G.carrier
   /-- `†D^⊚± ≅ ‡D^⊚±`. -/
   DcircPm : A.DcircPm.G.carrier ≃ₜ* B.DcircPm.G.carrier
-  /-- `†C^⊩ ≃ ‡C^⊩`. -/
-  Crlf : A.Frlf.C ≌ B.Frlf.C
+  /-- `†C^⊩ ≃ ‡C^⊩`, compatible with `Prime(−) ≅ V` and the `ρ_v` (`FRlfGlobal.Iso`). -/
+  Crlf : A.Frlf.glob.Iso B.Frlf.glob
   /-- The `F^⊢`-prime-strips of the `F^⊩`-prime-strips. -/
   Frlf : A.Frlf.strip.Iso B.Frlf.strip
   /-- The `F^{⊢×μ}`-prime-strips. -/
@@ -200,7 +200,7 @@ theorem toLabels_surjective (A B : ThetaPmEllNFHT D) :
     (PrimeStrip.nonempty_iso _ _).some, (PrimeStrip.nonempty_iso _ _).some,
     (A.Dcirc.iso_model.some.trans B.Dcirc.iso_model.some.symm),
     (A.DcircPm.iso_model.some.trans B.DcircPm.iso_model.some.symm),
-    (A.Frlf.glob.equiv.trans B.Frlf.glob.equiv.symm),
+    FRlfGlobal.Iso.viaModel _ _,
     (PrimeStrip.nonempty_iso _ _).some, (PrimeStrip.nonempty_iso _ _).some⟩, rfl⟩
 
 /-- **Any two `Θ^{±ell}NF`-Hodge theaters are isomorphic**, and the isomorphisms induce exactly the

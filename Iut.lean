@@ -254,6 +254,7 @@ import Iut.Frobenioid.Thm64ivGal
 import Iut.Frobenioid.UnrPairing
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
+import Iut.HodgeTheater.FRlfIso
 import Iut.HodgeTheater.FRlfMod
 import Iut.HodgeTheater.Gluing
 import Iut.HodgeTheater.HodgeTheater

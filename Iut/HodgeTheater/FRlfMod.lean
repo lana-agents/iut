@@ -15,9 +15,10 @@ IUT I, Example 3.5(ii) (l.5654–5665): "`F⊩_mod def= (C⊩_mod, Prime(C⊩_mo
 are MR20) are defined in `HodgeTheater/PrimeStrip.lean`, where `FRlfStrip` carries them:
 
 * `FRlfMod.sectPlace D v ∈ V ⊆ V(K)`: the place of the section over `v ∈ V_mod`;
-* **`FRlfGlobal D`**: `C^⊩_mod` (with its identity equivalence to `rlfModel D`), the bijection
-  `Prime(C^⊩_mod) ≅ V` (`GlobalRealified.primeEquiv`, `V ≅ V_mod` by the section), and the maps
-  `ρ_v : Φ_{C^⊩_mod,v} → ℝ_{≥0}` (`GlobalRealified.rho`) — data only, no Prop fields;
+* **`FRlfGlobal D`**: `C^⊩` with an equivalence to `rlfModel D = C^⊩_mod` (data only, no Prop
+  fields); `FRlfGlobal.prime` (`Prime(C^⊩) ≅ V`, `GlobalRealified.primeEquiv` with `V ≅ V_mod` by
+  the section) and `FRlfGlobal.rho` (`ρ_v : Φ_{C^⊩,v} → ℝ_{≥0}`, `GlobalRealified.rho`) are derived,
+  transported along the equivalence; isomorphisms: `FRlfGlobal.Iso` (`HodgeTheater/FRlfIso.lean`).
 
 This file proves their properties:
 
