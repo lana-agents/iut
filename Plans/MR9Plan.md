@@ -325,3 +325,19 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   1. Pin train (with MR8), then the one-line `SurfGrp g ≅ Pi1.ProfiniteSurfaceGroup g 0`.
   2. Rem 1.10.1(i) as above (Schreier for `Π̂_{g,0}` from pi1's discrete version + completion).
   3. K-steps against MR5 after the pin train; A1 after MR8.5; T1.
+* 2026-10-18 (fourth lead session, WIP, local branch, NOT validated/pushed):
+  `Cusp/SurfaceIndex.lean` (compiles standalone): **Rem 1.10.1(i)** with the profinite
+  Schreier/Riemann–Hurwitz input as explicit arguments (`φ : H ≃ₜ* Π̂_{g',0}` and
+  `ResCuspInput`: `res(gen_X) = φ^*(gen_Y)^d`). General: `MXg P`, `resM` (dual of res), `normM`
+  (dual of `cor⁻¹`, given cor bijective), `resM_eq_normM_pow` (`resM = normM^d`, LCFT `cor_res`),
+  `normM_unique`. Model: `cor_gen`, `cor_bijective`, **`normM_syncEquiv`** (normalised map sends
+  `sync_Y(i_y)` to `sync_X(i_x)`), `resM_syncEquiv`, `normM_unique_model`, `hres_top` (input holds
+  for `H = ⊤`). Next: run validation + comparator guard and push; then MR19 realification over
+  `B(G)^0` and Thm 6.4(iv) over the Galois base (MR19Plan §7 "Next").
+* 2026-10-18 (fifth session, MR9+MR19 track agent): `Cusp/SurfaceIndex.lean` validated (full guard
+  incl. comparator) and merged. **Debt (explicit theorem arguments):** `φ : H ≃ₜ* Π̂_{g',0}` and
+  `ResCuspInput` (profinite Schreier/Riemann–Hurwitz for surface groups). Not provable inside the
+  current iut pins: the pinned pi1 (7647d28) has no Schreier/ribbon-graph results for surface
+  groups (those are in later pi1 revisions, discrete only), and the profinite completion step
+  (open subgroups of `Π̂` ↔ finite-index subgroups of the discrete group, completion commuting
+  with passage to them) is not formalised anywhere. Discharge after the pin train.
