@@ -336,3 +336,15 @@ for `recFunctionField` (MR9).
   * `Frobenioid/GlobalGaloisRlfDeg.lean`: `log_absNorm_eq` (`log N(I) = Σ_w ord_w(I)·log N(𝔭_w)`),
     `degArith_castG` (`deg^arith ∘ castG = degG`), **`degArith_pbR`**
     (`deg^arith_L(σ^* x) = [L:K]·deg^arith_K(x)` for ℝ-divisors).
+* **Hand-off 2026-10-18 (MR9+MR19 track agent).** Merged: a9408f4 (MR9 SurfaceIndex), 76a32cd
+  (realification over `B(G)⁰`), a7f08bf + 9c7fb4f (FRlfStrip/FRlfGlobal; fibres), 55bd45e
+  (`degArith_pbR`). No WIP branch. Next, in order:
+  1. Decision needed (lead): base reconstruction for global Frobenioids (`B` with finite torsion),
+     i.e. [FrdI] Cor 4.11(ii)/Prop 1.14 route, as the prerequisite of Thm 6.4(iv) over the Galois
+     base (see the entry above). Alternative stop-gap: state (iv) over the Galois base for
+     equivalences that preserve base-identity morphisms (explicit, recorded hypothesis), reducing to
+     `thm64iv_deg`/`thm64iv_galois` via `fibre`/`fibreRlf`.
+  2. `Iso.Crlf` of `ThetaPmEllNFHT.Iso` (`HodgeTheater.lean`) could be required to respect
+     `glob.prime`/`glob.rho`; the `ρ_v` should land in the `F^⊢`-strip components once MR20 has
+     genuine `C^⊢_v`.
+  3. Θ-version `ρΘ_v` (needs MR18); κ-coric items after MR9 `recFunctionField`.

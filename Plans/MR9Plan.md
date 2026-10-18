@@ -341,3 +341,6 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   groups (those are in later pi1 revisions, discrete only), and the profinite completion step
   (open subgroups of `Π̂` ↔ finite-index subgroups of the discrete group, completion commuting
   with passage to them) is not formalised anywhere. Discharge after the pin train.
+* Hand-off 2026-10-18 (MR9+MR19 track agent): SurfaceIndex merged (a9408f4). Open MR9 items unchanged:
+  pin train (then `SurfGrp g ≅ Pi1.ProfiniteSurfaceGroup g 0` and discharge of the Schreier/RH debt),
+  K-steps against MR5, A1 after MR8.5, T1.
