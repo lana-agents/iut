@@ -348,3 +348,29 @@ for `recFunctionField` (MR9).
      `glob.prime`/`glob.rho`; the `ρ_v` should land in the `F^⊢`-strip components once MR20 has
      genuine `C^⊢_v`.
   3. Θ-version `ρΘ_v` (needs MR18); κ-coric items after MR9 `recFunctionField`.
+
+* 2026-10-18 (MR9+MR19 track agent, next session; lead decision: no base-identity hypothesis):
+  **Base reconstruction for `C^rlf` over `B(Gal(F̃/F))⁰` and [FrdI] Thm 6.4(iv) over the Galois base.**
+  * `Frobenioid/Thm34Irr.lean`: [FrdI] Thm 3.4(ii),(iii) for model Frobenioids over bases with
+    irreducible factorizations (`IrredBase`; `OrbitObj.irredBase` for compact `G`) and divisor
+    monoids without irreducibles: `isPreStep_iff_midAdj` (pre-steps = mid-adjoint to the
+    irreducibles, cf. Prop 1.14(i),(ii)), `typeCorresp_irr`, `thm34_irr`. No torsion hypothesis.
+  * `Frobenioid/Thm34DivSlim.lean`: [FrdI] Cor 4.11(ii) for model Frobenioids over a Div-slim base:
+    order isomorphisms `τ_X` on pre-step classes, `Compat` (base-isomorphisms vs `τ`),
+    `base_map_eq_of_base_eq_divSlim`, `preservesBase_divSlim`. Hypotheses `GoodDiv` (chain-primes
+    stable under `n·`, Riesz, archimedean) and `AutFaithful` (Div-slimness).
+    `Thm34Base.preservesBase_of` now generic.
+  * `Frobenioid/GlobalGaloisBase.lean`: `GlobalGaloisRlf.preservesBase`, `.thm34`, `.base_map_eq`;
+    Div-slimness from `eq_id_of_map_le` (an endomorphism of a number field mapping every prime into
+    itself is the identity: degree-one primes, LCFT `infinite_degOnePrimes`) and
+    `eq_id_of_sigma_eq` (infinite Galois theory). Merged: iut d0b54ae.
+  * `Frobenioid/ModelFib.lean`: fibres `Fib Φ B divB A` of model Frobenioids, restriction
+    `resFib Ψ G η` of a base-preserving functor (an equivalence when `Ψ` is and `G` is fully faithful).
+  * `Frobenioid/Thm64ivGal.lean`: **`GlobalGaloisRlf.thm64iv`**: for `Ψ^rlf` arising from `Ψ`
+    (`e : realify ⋙ Ψ^rlf ≅ Ψ ⋙ realify`), `Ψ^rlf` lies over an equivalence `Ψ_Base`, and for every
+    `A = G₁/H` the fibre restriction `G_A : C^rlf(L₁) ≌ C^rlf(L₂)` (`G_A ⋙ fibreRlf ≅ fibreRlf ⋙ Ψ^rlf`)
+    has `deg = 1`, `[L₁:ℚ] = [L₂:ℚ]`, and `L₁ ≅ L₂` if `L₁/ℚ` is Galois. The base of `Ψ` is derived
+    from that of `Ψ^rlf` through `e` (`baseIsoOfRealify`), so no base reconstruction for the
+    non-realified `C` (finite torsion) is needed.
+  * Not done: compatibility of `L₁ ≅ L₂` with an isomorphism `F₁ ≅ F₂` (Mochizuki's last clause);
+    base reconstruction for the non-realified `C_{F̃/F}` on its own (only via `e`).

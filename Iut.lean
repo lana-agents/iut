@@ -210,6 +210,7 @@ import Iut.Frobenioid.KummerFrob
 import Iut.Frobenioid.KummerGalois
 import Iut.Frobenioid.KummerTransportGalois
 import Iut.Frobenioid.Model
+import Iut.Frobenioid.ModelFib
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.ModelTypes
 import Iut.Frobenioid.NaiveFrob
@@ -249,6 +250,7 @@ import Iut.Frobenioid.Thm51
 import Iut.Frobenioid.Thm64
 import Iut.Frobenioid.Thm64iii
 import Iut.Frobenioid.Thm64iv
+import Iut.Frobenioid.Thm64ivGal
 import Iut.Frobenioid.UnrPairing
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
