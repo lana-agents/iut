@@ -425,9 +425,11 @@ for `recFunctionField` (MR9).
   f710ff2 (Thm 6.4(iv) last clause), and the `FStarMod` commit. No WIP branch. Next, in order:
   1. Decision (lead): accept the last clause of Thm 6.4(iv) with `F₁/ℚ` Galois, or investigate the
      general case (arithmetically equivalent pairs).
-  2. Small: `GlobalRealified.congr (τ : K ≃+* K')` (transport along ring isomorphisms), then the
-     realified `F^⊛R_mod` as the fibre of `GlobalGaloisRlf` over `G/G` with `F^⊛R_mod ≌ C^⊩_mod`
-     and an `FRlfGlobal` built from it (IUT II Cor 4.8(iii) `†C^⊩ ≅ †F^⊛R_mod`, field-theoretic).
+  2. *Done* (`HodgeTheater/FStarRlf.lean`): `GlobalRealified.mapRingEquiv`/`congr` (transport
+     along `K ≃+* L` via `pbR`), `globalFrobenioidRlfMod D = F^⊛R_mod`, `modRlfEquiv :
+     C^⊩_mod ≌ F^⊛R_mod`, `modToRlf : F^⊛_mod ⥤ F^⊛R_mod` (restricted realification),
+     `FRlfGlobal.ofGlobalFrobenioid` (IUT II Cor 4.8(iii) global part, field-theoretic). Left: the
+     compatibility `modToRlf ≅ modEquiv⁻¹ ⋙ realify ⋙ modRlfEquiv` (castG/eTop vs pbR/fixTopEquiv).
   3. Blocked: `ρΘ_v` (MR18); `ρ_v` into the `F^⊢`-strip components and `F^⊩_D` (Ex 3.5(iii),
      `(R^⊢_{≥0})_v` of [AbsTopIII] Prop 5.8: MR20); κ-coric items and the group-theoretic `F^⊛`
      (MR9 `recFunctionField`, MR22); non-realified base reconstruction (see above, optional).
