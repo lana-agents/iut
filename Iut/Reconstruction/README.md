@@ -210,6 +210,9 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   maximal/minimal weight `2`/`0`; the occurring weights are a deep input); `IsQuasiTrivial`,
   `twist`, **`isQuasiTrivial_twist_iff`** (quasi-triviality of `M(χ⁻¹)` depends only on the
   power-equivalence class of `χ`, the point of Lemma 4.5 (ii)).
+* `Cusp/CuspCentral.lean` ([AbsTopIII], Prop. 1.4(ii), group-theoretic part) — done: the maximal
+  cuspidally central quotient `CuspCentral π = Δ / cl⁅Ker π, Δ⁆`, `ker_cuspCentralMap_le_center`,
+  maximality `cuspCentralKer_le_ker`, `cuspCentralLift`, `cuspCentralLift_unique`.
 * `Uchida/Basic.lean` ([AbsTopIII], Prop. 1.1–1.3, MR9 step U1, algorithm side) — done:
   `ValEvalData` (the triple `(K_X^×, {ord_x}, {U_x})`), `consts`, `EvalAt`, `Gamma` (`Γ^×(E)`),
   `ell` (`l(E)` via Prop. 1.1(ii)), `IsConfig`, `IsBasisFn`, `IsConstSum` (Prop. 1.2), `IsNegOne`,

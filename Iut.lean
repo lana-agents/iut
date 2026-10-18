@@ -281,6 +281,7 @@ import Iut.NumberTheory.SixExponentials.ExpPolyZeros
 import Iut.NumberTheory.SixExponentials.InterpolationDeterminant
 import Iut.NumberTheory.SixExponentials.LogPrimes
 import Iut.Reconstruction.Cusp.Belyi
+import Iut.Reconstruction.Cusp.CuspCentral
 import Iut.Reconstruction.Cusp.Elliptic
 import Iut.Reconstruction.Cusp.OutSemidirect
 import Iut.Reconstruction.Cusp.Weights

@@ -188,3 +188,10 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `Place.residue`) or whether U2 lives in weil-curves and only the bridge is in iut.
   * The `λ/μ = −1` case is handled in `AddRel` by the `c = 0` clause. The paper leaves it
     implicit.
+* 2026-10-18: **C1 started**. `Iut/Reconstruction/Cusp/CuspCentral.lean` builds the maximal
+  cuspidally central quotient `Δ / cl⁅Ker π, Δ⁆` (`CuspCentral`).
+  * `ker_cuspCentralMap_le_center`: the kernel of the map to `Q` is central.
+  * Maximality and uniqueness of the factorisation: `cuspCentralKer_le_ker`, `cuspCentralLift`,
+    `cuspCentralLift_unique`.
+  * Next: the transgression `Hom(I, I) → H²(Δ_X, I)` of a central extension (LCFT `ContH2`), and
+    the Θ-approach version for `Δ_X/[Δ_X, [Δ_X, Δ_X]]`.
