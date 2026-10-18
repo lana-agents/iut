@@ -55,7 +55,7 @@ namespace Iut.Reconstruction.SurfaceH2
 
 open CategoryTheory ProfiniteGrp FiveTerm Brauer
 
-open scoped commutatorElement
+open scoped commutatorElement IsMulCommutative
 
 set_option linter.unusedSectionVars false
 
@@ -955,5 +955,38 @@ noncomputable def syncEquiv (i₀ : Fin g) : Inertia g ≃* MX g :=
 lemma syncEquiv_apply (i : Inertia g) (n : ℕ+) (z : ContH2 (SurfGrp g) (Zn n)) :
     (syncEquiv i₀ i).1 n z = (cuspTgEquiv g (Multiplicative (ZMod n))).symm (toCusp g _ z) i :=
   rfl
+
+/-! ### The finite-level classes `cuspClass N` -/
+
+/-- `N_n = Ker(charN n) ⊆ I` (open, `I/N_n ≅ ℤ/n`). -/
+noncomputable abbrev kerN (n : ℕ+) : Subgroup (Inertia g) := (charN n i₀).toMonoidHom.ker
+
+lemma isOpen_kerN (n : ℕ+) : IsOpen (kerN i₀ n : Set (Inertia g)) := by
+  have : (kerN i₀ n : Set (Inertia g)) = charN n i₀ ⁻¹' {1} := by ext; simp
+  rw [this]
+  exact (isOpen_discrete _).preimage (charN n i₀).continuous
+
+/-- `I/N_n → ℤ/n` induced by `charN n`. -/
+noncomputable def kerNHom (n : ℕ+) :
+    ContinuousMonoidHom (TrivCoeff (cuspInertiaQuot (surfMap g) (continuous_surfMap g) (kerN i₀ n)))
+      (Zn n) :=
+  haveI := discreteTopology_cuspInertiaQuot (surfMap g) (continuous_surfMap g) _ (isOpen_kerN i₀ n)
+  { toMonoidHom := QuotientGroup.lift (kerN i₀ n) (charN n i₀).toMonoidHom le_rfl
+    continuous_toFun := continuous_of_discreteTopology }
+
+/-- **The generator of `H²(Π̂_{g,0}, ℤ/n)` is the class `cuspClass N_n` of the cuspidally central
+extension modulo `N_n`** (pushed along `I/N_n ≅ ℤ/n`): the isomorphism `M_X ≅ I_x` of
+`syncEquiv` is the limit over `n` of the classes `cuspClass N_n`. -/
+theorem map_cuspClass_kerN (n : ℕ+) :
+    haveI := discreteTopology_cuspInertiaQuot (surfMap g) (continuous_surfMap g) _
+      (isOpen_kerN i₀ n)
+    ContH2.map (MonoidHom.id _) continuous_id
+      (fixedPtsMap ((kerNHom i₀ n : TrivCoeff (cuspInertiaQuot (surfMap g) (continuous_surfMap g)
+        (kerN i₀ n)) →* Zn n)) (fun _ _ => rfl)) (fixedPtsMap_smul _ _)
+      (cuspClass (surfMap g) (continuous_surfMap g) (kerN i₀ n) (isOpen_kerN i₀ n)) =
+      toCusp g _ (gen i₀ n) := by
+  haveI := discreteTopology_cuspInertiaQuot (surfMap g) (continuous_surfMap g) _ (isOpen_kerN i₀ n)
+  rw [gen, MulEquiv.apply_symm_apply, cuspClass, ← cuspTg_comp]
+  congr 1
 
 end Iut.Reconstruction.SurfaceH2
