@@ -316,3 +316,20 @@ for `recFunctionField` (MR9).
   `span_castDiv`, `pbR_comp`, `pbR_id`, `pbR_mem_iff`, `pbR_injective`, `pbR_divOf`, `pbR_ratFun`),
   `phiRlfGal`, `bRlfGal` (`ℝ·div(L^×)`), **`GlobalGaloisRlf F E`** with `isFrobenioid`, and
   **`GlobalGaloisFrob.realify : C_{F̃/F} ⥤ C_{F̃/F}^rlf`** ([FrdI] Prop 5.3; `castG = castDiv ∘ toZ`).
+* 2026-10-18 (MR9+MR19 track agent, cont.):
+  * **Fibres over `G/H`** (`Frobenioid/GlobalGaloisFibre.lean`): `fibre A : GlobalFrobenioid (E^H) ⥤
+    GlobalGaloisFrob F E` and `fibreRlf A : GlobalRealified (E^H) ⥤ GlobalGaloisRlf F E` (faithful,
+    every object over `G/H` in the image, every base-identity morphism between image objects
+    comes from the fibre), compatible with both realifications on objects and morphism components.
+  * **Shell #8, global half done**: `FRlfStrip` now carries `glob : FRlfGlobal D` (moved to
+    `PrimeStrip.lean`, data only) instead of `C` + the Prop field `equiv_model`; `FRlfStrip.C`
+    is an abbreviation; allowlist entry removed.
+  * **Thm 6.4(iv) over the Galois base: blocked (decision needed).** The statement needs the
+    base equivalence `D₁ ≅ D₂` induced by `Ψ : C_{F̃₁/F₁} ≌ C_{F̃₂/F₂}` ([FrdI] Thm 6.4(iv) cites
+    (i) and Cor 4.11(ii): `D` Frobenius-slim and Div-slim). iut's base reconstruction
+    (`Thm34.lean`/`Thm34Base.lean`) assumes `HasAllTorsion B` (pre-steps = FSM-morphisms), which
+    fails here (`B(L) = L^×` has finite torsion), and `IsSlim D` fails for finite nontrivial
+    `G`. Needed: [FrdI] Prop 1.14 / Cor 4.11(ii) route for Frobenioids with `B` of finite
+    torsion (the counterexample of `Counterexample.lean` needs all torsion), giving
+    `PreservesBase` and preservation of base-identity morphisms; then `fibre`/`fibreRlf` reduce
+    (iv) objectwise to `thm64iv_deg`/`thm64iv_galois`. Estimate: 1.5–3k lines.
