@@ -250,6 +250,20 @@ for `recFunctionField` (MR9).
   `F^⊩_mod` from Θ-data). Later the same day: `rhoEquivFin`/`rhoEquivInf` (`ρ_v : Φ_v ≃+ ℝ≥0`), and
   `GlobalFrobenioid.exists_supp_eq` (every finite set of places is a support).
 
+* 2026-10-18 (second MR9 lead session, subagent): **IUT III Ex 3.6(iii) both halves**
+  (`Frobenioid/GlobalUnique.lean`): "identity on `K^×`" as preservation of unit differences
+  `u_φ − u_ψ` for equal degrees (`InducesIdUnits`, `InducesIdRatFun`); non-uniqueness:
+  `GlobalFrobenioid.twist c` (`α ↦ α + div c_α`), `twist_ofModel_ne`, `isEquivalence_twist_ofModel`;
+  uniqueness on the realification `C^⊩(K)`: `psiPhi_eq_self`, `degOf_eq_one`,
+  `unique_of_inducesIdRatFun : Unique (G ≅ 𝟭)`, `uniqueIso`. Deviation: stated on `C^⊩` rather than
+  the perfection, and the non-realified condition is not transported to the realified one.
+  **[FrdI] Ex 6.3 over `B(Gal(E/F))^0`** (`Frobenioid/GlobalGalois.lean`): finite divisors as
+  invertible fractional ideals (pull-back = extension of ideals), `pbDiv`, `divG`, `pbDiv_divG`,
+  `GlobalGaloisFrob F E` with `isFrobenioid`, `ounitsEquiv` (`O^× = O^▷ ≅ μ(L)`), `degG_divG`.
+  Open: `Prime(Φ(L)) ≅ V(L)` in this encoding, comparison of the fibre over `G/G` with
+  `GlobalFrobenioid F` (fractional ideals ≃ `FinitePlace →₀ ℤ`), realification over `B(G)^0`,
+  `deg(σ^*D) = [L:K]·deg D`, then Thm 6.4(iv) over the Galois base.
+
 ## 7. Next steps (precise)
 
 1. `FRlfStrip` (shell #8): make it carry `FRlfGlobal D` (move `FRlfGlobal` below `PrimeStrip.lean`'s imports
