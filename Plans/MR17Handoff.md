@@ -181,6 +181,45 @@ fnEquivH2L`), **`thm24ii_of_pairing`**: given `hpair`/`hunit` for one `(χ, ζ)`
 generic engine is `Saturation.map_h2Equiv_eq`, `pair_smul`, `ker_infl₂_le_map`, `ContH2Aux.map_map_eq`
 (concrete `rw`s against the Galois `H²` time out; every step is a generic lemma applied once).
 
+**Status (2026-10-18): Thm 2.4(ii) for `C_v` is done, unconditionally** (`Thm24iiPfMain.lean`,
+**`PAdicGalois.thm24Pf_ii`**): for every equivalence `Ψ : C_v(E) ≌ C_v(E')` there is `α : G_E ≃ₜ* G_{E'}`
+such that for every `X = (G_E/N, a)` there are `τ` and `hρ` with: for every `(n, H)`-saturated `X` with
+`N ⊆ H` (`H`, `α(H)` open), `h2MuEquiv_{L'} (fnPsi (fngEquiv x)) = fnEquiv x`. The restriction `N ⊆ H` is
+harmless (saturated objects with `N ⊆ H` exist for every `H`: `exists_isSaturatedPf`, all `N ⊆ N₀`); it is
+used to put `L = K̄^H` inside the field `K̄^N` of `X`. Route (Mochizuki's proof, [FrdII] l.1120–1160, with the
+Brauer-group step replaced by the pairing of `InvCompat.lean`):
+* `UnrPairing.lean` (field side, the [Mzk1] Prop 1.2.1 (ii), (iv) input — quoted: "(ii) α induces an isomorphism
+  `I_{K1} ∼→ I_{K2}` between the respective inertia subgroups of `G_{K1}`, `G_{K2}`."; "(iv) The morphism induced by α between the
+  respective quotients `G^ab_{Ki}/Im(O^×_{Ki})` preserves the respective Frobenius elements"):
+  `unrChar_apply_of_frob`, **`artinChar_charPair_unrChar`** (`(unrChar 1 ∘ ψ⁻¹)(artin y) = 1` for `v(y) = 1`,
+  any `ψ : G_K ≃ₜ* G_{K'}`, via `galEquiv_inertia`, `galEquiv_arithFrob`), `h1PairMap_kummer`,
+  **`pairing_unrChar_kummer`** (if `Φ₁(κ(π)) = κ(π')`, `v(π) = v(π') = 1`, then `hpair`, `hunit` hold for
+  `χ = unrChar 1`, `ζ = κ(π)`).
+* `OrhdPsi.lean`: `O^▷` versions of `conj_u` etc., `rfE` (rational function of an endomorphism), `endY`,
+  **`exists_galHom_compat_orhd`** (the `τ`-compatibility of `exists_galHom_compat` on all of `O^▷(Ψ X)`, and
+  `(Ψ X).base.H = α(N)`).
+* `OrhdPsiMap.lean`: `Bmap e = τ⁻¹ γ_{Ψ e}` on `O^▷(X)`: multiplicative, `α`-equivariant (`Bmap_conj`), injective,
+  onto `O^▷(K̄^{α(N)})` (`exists_Bmap_eq`, fullness), `= β_Ψ` on `μ_n` (`val_betaPsi`).
+* `Thm24iiAux.lean`: `ValAux.val_eq_one_of_rel` (abstract: multiplicative bijections of `{v ≥ 0}` preserve
+  valuation-one elements), `norm_coe_eq_nrm`, `ord_nonneg_iff`, **`ord_mem_gammaQ`** (`ord(K̄^×) ⊆ ℚ` — where
+  `Γ = ℚ` enters), **`root_fixed`** (saturation ⇒ `n`-th roots of `L`-elements are in `K̄^N`).
+* `Thm24iiPf.lean`: `RelB`, **`exists_unif_rel`** (a uniformiser `π` of `L` with `B(e_π) = π'` a uniformiser of
+  `L'`); `Thm24iiPfMain.lean`: `exists_kummer_data`, **`h1PairMap_kummer_unif`** (`Φ₁(κ(π)) = κ(π')`),
+  **`thm24Pf_ii`**.
+
+**Next steps (optional, MR17 leftovers):**
+1. Drop `N ⊆ H` from `thm24Pf_ii` (needs Thm 2.4(ii) compatibility under pull-backs `XN N' a → XN N a`,
+   i.e. `betaPsi` for different objects; not needed for IUT).
+2. `O^□(A)^H ≅ O^□(LH)` (Rem 2.2.1) — essentially `exists_unif_rel`'s `hRtot`/`hRsurj` (the maps
+   `x ↦ endY x`, `B`) packaged as a monoid isomorphism `O_L^▷ ≅ O^▷(X)^{H_A}`; and the `(G_A/H_A)`-equivariance
+   statements of Thm 2.4(i).
+3. Move `CupGeneric.lean` (no iut dependency) to `LocalClassFieldTheory/Brauer/` (separate LCFT commit + pin bump).
+4. `thm24Pf_ii` costs ~6 min to elaborate (`exists_kummer_data` under `maxHeartbeats 800000`); splitting it
+   further would help (the cost is the concrete `X`/Galois-group unifications; local `haveI`
+   `FiniteDimensional`/`HasKummerRoots` instances in context make every elaboration step much slower — keep them
+   out of Frobenioid-side proofs).
+
+**Previous next steps (now done)**, kept for reference:
 **Next steps (precise), Thm 2.4(ii) for `C_v` (`Γ = gammaQ`, fieldwise saturated):** only the
 arithmetic hypothesis `hpair` of `thm24ii_of_pairing` remains (it is false in general for `C^⊢_v`,
 Remark 2.4.2, which is why it cannot be proved for arbitrary `Γ`).

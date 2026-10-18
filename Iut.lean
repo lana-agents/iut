@@ -201,6 +201,8 @@ import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.ModelTypes
 import Iut.Frobenioid.NaiveFrob
+import Iut.Frobenioid.OrhdPsi
+import Iut.Frobenioid.OrhdPsiMap
 import Iut.Frobenioid.PAdic
 import Iut.Frobenioid.PAdicGalois
 import Iut.Frobenioid.PAdicRecon
@@ -220,6 +222,9 @@ import Iut.Frobenioid.Theoreticity
 import Iut.Frobenioid.Thm24Pf
 import Iut.Frobenioid.Thm24Saturated
 import Iut.Frobenioid.Thm24ii
+import Iut.Frobenioid.Thm24iiAux
+import Iut.Frobenioid.Thm24iiPf
+import Iut.Frobenioid.Thm24iiPfMain
 import Iut.Frobenioid.Thm34
 import Iut.Frobenioid.Thm34Base
 import Iut.Frobenioid.Thm34Rlf
@@ -227,6 +232,7 @@ import Iut.Frobenioid.Thm34iv
 import Iut.Frobenioid.Thm51
 import Iut.Frobenioid.Thm64
 import Iut.Frobenioid.Thm64iii
+import Iut.Frobenioid.UnrPairing
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
 import Iut.HodgeTheater.Gluing
