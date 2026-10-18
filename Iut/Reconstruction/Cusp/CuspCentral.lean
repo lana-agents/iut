@@ -109,7 +109,7 @@ omit [TopologicalSpace Q] [T1Space Q] in
     (hcent : τ.ker ≤ Subgroup.center Q') (a : Δ) :
     cuspCentralLift π ρ hρ τ hτ hcent (QuotientGroup.mk a) = ρ a := rfl
 
-omit [IsTopologicalGroup Δ] [TopologicalSpace Q] [T1Space Q] in
+omit [TopologicalSpace Q] [T1Space Q] in
 /-- **Uniqueness of the factorisation.** -/
 theorem cuspCentralLift_unique {Q' : Type*} [Group Q'] (ρ : Δ →* Q') (f g : CuspCentral π →* Q')
     (hf : f.comp (QuotientGroup.mk' _) = ρ) (hg : g.comp (QuotientGroup.mk' _) = ρ) : f = g := by
