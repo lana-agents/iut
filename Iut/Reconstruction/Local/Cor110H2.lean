@@ -32,11 +32,10 @@ For a compact topological group `G`, with `μ_n(G) ⊆ μ_{ℚ/ℤ}(G)` the `G`-
   isomorphisms `PadicField.h2MuEquiv`, `PadicField.h2ZHatOneEquiv`), with `h2ZHatGEquiv_apply`
   computing it levelwise.
 
-Not formalised here: that `h2ZHatGEquiv` commutes with `H2ZHatGEquivOf ψ` for an arbitrary
-`ψ : G_k ≃ₜ* G_{k'}` (the "group-theoretic" characterisation of the invariant map of [Mzk9],
-Proposition 1.2.1 (vii), which uses the cup product with the Kummer classes of (b)), and the
-index normalisation of Remark 1.10.1 (iii) (l.2558–2561) on the group side (on the field side it
-is `PadicField.h2ZHatOneEquiv_res`).
+The naturality of `h2ZHatGEquiv` under an arbitrary `ψ : G_k ≃ₜ* G_{k'}` ([Mzk9],
+Proposition 1.2.1 (vii)) is `h2ZHatGEquiv_H2ZHatGEquivOf` in `Cor110Natural.lean`; the index
+normalisation of Remark 1.10.1 (iii) (l.2558–2561) on the group side is `h2ZHatGEquiv_resZHatG`
+in `Cor110Res.lean` (on the field side it is `PadicField.h2ZHatOneEquiv_res`).
 -/
 
 namespace Iut.Reconstruction

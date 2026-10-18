@@ -32,10 +32,11 @@ Here the coefficients are the **group-theoretic cyclotome** of `Cor110.lean`:
 * (d) with group-theoretic coefficients: `range_kummerZHatG`, the Kummer image is the inverse
   image of `ℤ = ⟨Frob⟩`.
 
-Not formalised here: that `h1ZHatGAbEquiv` commutes with `H1ZHatGEquivOf ψ` for an arbitrary
-`ψ : G_k ≃ₜ* G_{k'}` (this is equivalent to the naturality of `h2ZHatGEquiv`, see
-`Cor110Natural.lean`). The Frobenius surjection `frobAb` itself is group-theoretic
-(`frobAb_abEquiv`).
+Not formalised here: that `h1ZHatGAbEquiv` itself commutes with `H1ZHatGEquivOf ψ` for an
+arbitrary `ψ : G_k ≃ₜ* G_{k'}` (it would follow from the naturality of the invariant,
+`h2ZHatGEquiv_H2ZHatGEquivOf` in `Cor110Natural.lean`, together with the naturality of the cup
+product and the perfectness of the local duality pairing). The Frobenius surjection `frobAb`
+itself is group-theoretic (`frobAb_abEquiv`).
 -/
 
 namespace Iut.Reconstruction
