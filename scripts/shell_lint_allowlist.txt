@@ -955,3 +955,6 @@ Iut.Frobenioid.Saturation.IsSat.h1Z	def
 Iut.Frobenioid.Saturation.IsSat.h2Mu	def
 Iut.Frobenioid.Saturation.IsSat.muSat	def
 WeilCurves.FunctionField.IsFunctionField.exists_finite	def
+FiveTerm.Admissible.ext	def
+FiveTerm.Admissible.left	def
+FiveTerm.Admissible.right	def
