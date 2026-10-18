@@ -139,7 +139,8 @@ lemma unit_ne_zero (I : (FI K)ˣ) : (I : FI K) ≠ 0 := I.ne_zero
 variable (K) in
 /-- The finite part of `toZ`: `I ↦ (count_w I)_w`. -/
 noncomputable def toZFin : Additive (FI K)ˣ →+ (FinitePlace K →₀ ℤ) where
-  toFun x := Finsupp.ofSupportFinite (fun w => FracIdealFrob.cnt ((Additive.toMul x : (FI K)ˣ) : FI K) w)
+  toFun x := Finsupp.ofSupportFinite
+    (fun w => FracIdealFrob.cnt ((Additive.toMul x : (FI K)ˣ) : FI K) w)
     (FracIdealFrob.finite_support_cnt _)
   map_zero' := by
     ext w
