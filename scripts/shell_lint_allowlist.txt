@@ -192,6 +192,9 @@ Iut.Frobenioid.IsFrobenioid.preStep_factor_unique	def
 Iut.Frobenioid.IsFrobenioid.preStep_mono	def
 Iut.Frobenioid.IsFrobenioid.preStep_span	def
 Iut.Frobenioid.IsFrobenioid.pullback_lb	def
+Iut.Frobenioid.FracIdealHom.integral	def
+Iut.Frobenioid.FracIdealObj.ne_zero	def
+Iut.Frobenioid.FracIdealObj.r_pos	def
 Iut.Frobenioid.IsFrobenioid.pullback_surj	def
 Iut.Frobenioid.IsFrobenioid.slice_full	def
 Iut.Frobenioid.IsFrobenioid.slice_surj	def
