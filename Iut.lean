@@ -187,6 +187,7 @@ import Iut.Frobenioid.GaloisRecon
 import Iut.Frobenioid.GaloisSlim
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalFracIdeal
+import Iut.Frobenioid.GlobalGalois
 import Iut.Frobenioid.GlobalNonRlf
 import Iut.Frobenioid.GlobalPf
 import Iut.Frobenioid.GlobalPic
