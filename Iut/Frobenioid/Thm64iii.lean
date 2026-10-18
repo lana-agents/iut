@@ -3,6 +3,7 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
+import Iut.Frobenioid.GlobalNonRlf
 import Iut.Frobenioid.GlobalPf
 import Iut.NumberTheory.SixExponentials.LogPrimes
 import LocalClassFieldTheory.NumberField.KroneckerDensity.Bauer
@@ -17,7 +18,12 @@ valuation lying over a valuation `v₀` of `ℚ` to a valuation lying over `v₀
 
 Here, for the global Frobenioids over `Pt`: `F : C^⊩(K) ≌ C^⊩(L)` an equivalence,
 `Ψ : (C^pf)^{un-tr}(K) ≌ (C^pf)^{un-tr}(L)` an equivalence and `e : realify ⋙ F ≅ Ψ ⋙ realify`
-(i.e. `F` arises from `Ψ`). **`GlobalRealified.thm64iii`**:
+(i.e. `F` arises from `Ψ`). The proof only uses that `Ψ_Φ(F)` and `Ψ_Φ(F⁻¹)` map divisors with
+integral finite part to divisors with rational finite part (**`PreservesRatFin`**;
+`preservesRatFin_of_pf`), so the theorem is stated under this hypothesis
+(**`GlobalRealified.thm64iii`**) and specialised to `(C^pf)^{un-tr}` (**`thm64iii_pf`**); the
+case of an equivalence of the non-realified Frobenioids is used for Theorem 6.4(iv)
+(`Thm64iv.lean`):
 
 * `deg(F) ∈ ℚ_{>0}`;
 * finite places go to finite places (`placeEquiv_inl`), and `v` and its image lie over the same
@@ -120,6 +126,39 @@ noncomputable def invCompat (Ψ : GlobalPf K ⥤ GlobalPf L) [Ψ.IsEquivalence]
       Functor.isoWhiskerLeft (GlobalPf.realify K) F.asEquivalence.unitIso.symm ≪≫
       Functor.rightUnitor _)
 
+/-! ### Rationality of `Ψ_Φ` -/
+
+/-- **`Ψ_Φ(G)` maps divisors with integral finite part to divisors with rational finite part**
+(the only input of Theorem 6.4(iii) beyond the realified equivalence). -/
+def PreservesRatFin {M N : Type u} [Field M] [NumberField M] [Field N] [NumberField N]
+    (G : GlobalRealified M ⥤ GlobalRealified N) [G.IsEquivalence] : Prop :=
+  ∀ (z : ArithDivZ M) (hz : z ∈ effConeZ M) (w : FinitePlace N),
+    ∃ q : ℚ, (psiPhi G (castDiv M z) (castDiv_mem_iff.mpr hz)).1 w = q
+
+/-- `ℤ`-divisors as `ℚ`-divisors. -/
+noncomputable def zToQ {M : Type u} [Field M] [NumberField M] (z : ArithDivZ M) : ArithDivQ M :=
+  (z.1.mapRange (fun n : ℤ => (n : ℚ)) (by simp), z.2)
+
+lemma castQ_zToQ {M : Type u} [Field M] [NumberField M] (z : ArithDivZ M) :
+    castQ M (zToQ z) = castDiv M z := by
+  refine Prod.ext (Finsupp.ext fun w => ?_) rfl
+  simp [zToQ]
+
+lemma zToQ_mem {M : Type u} [Field M] [NumberField M] {z : ArithDivZ M} (hz : z ∈ effConeZ M) :
+    zToQ z ∈ effConeQ M := by
+  rw [← castQ_mem_iff, castQ_zToQ]
+  exact castDiv_mem_iff.mpr hz
+
+/-- **If `F` arises from an equivalence of the unit-trivialized perfections, then
+`PreservesRatFin F`.** -/
+theorem preservesRatFin_of_pf (G : GlobalRealified K ⥤ GlobalRealified L) [G.IsEquivalence]
+    (Ψ : GlobalPf K ⥤ GlobalPf L) (e : GlobalPf.realify K ⋙ G ≅ Ψ ⋙ GlobalPf.realify L) :
+    PreservesRatFin G := by
+  intro z hz w
+  obtain ⟨z', -, hz'⟩ := psiPhi_castQ_mem G Ψ e (zToQ z) (zToQ_mem hz)
+  refine ⟨z'.1 w, ?_⟩
+  rw [psiPhi_congr G _ (castQ_mem_iff.mpr (zToQ_mem hz)) (castQ_zToQ z).symm, hz', castQ_fst]
+
 /-! ### Single-place divisors -/
 
 attribute [local instance] Classical.propDecidable
@@ -154,6 +193,33 @@ lemma oneQ_mem (w : FinitePlace K) : oneQ w ∈ effConeQ K := by
   rw [← castQ_mem_iff, castQ_oneQ]
   exact single_mem zero_le_one
 
+/-- `t·[u]` at an archimedean place, with integral (zero) finite part. -/
+noncomputable def singleZ (u : InfinitePlace K) (t : ℝ) : ArithDivZ K := (0, Pi.single u t)
+
+lemma castDiv_singleZ (u : InfinitePlace K) (t : ℝ) :
+    castDiv K (singleZ u t) = single (Sum.inr u) t := by
+  refine Prod.ext (Finsupp.ext fun w => ?_) (funext fun v' => ?_)
+  · simp [singleZ, single]
+  · rfl
+
+lemma singleZ_mem (u : InfinitePlace K) {t : ℝ} (ht : 0 ≤ t) : singleZ u t ∈ effConeZ K := by
+  rw [← castDiv_mem_iff, castDiv_singleZ]
+  exact single_mem ht
+
+/-- `[w]` for a finite place, with integral coordinates. -/
+noncomputable def oneZ (w : FinitePlace K) : ArithDivZ K := (Finsupp.single w 1, 0)
+
+lemma castDiv_oneZ (w : FinitePlace K) : castDiv K (oneZ w) = single (Sum.inl w) 1 := by
+  refine Prod.ext (Finsupp.ext fun w' => ?_) (funext fun v' => ?_)
+  · rw [castDiv_fst]
+    simp only [oneZ, single, Finsupp.single_apply]
+    split_ifs <;> simp
+  · rfl
+
+lemma oneZ_mem (w : FinitePlace K) : oneZ w ∈ effConeZ K := by
+  rw [← castDiv_mem_iff, castDiv_oneZ]
+  exact single_mem zero_le_one
+
 lemma eq_single_of_supp {x : ArithDiv K} {p : Place K} (h : supp x = {p}) :
     x = single p (coord x p) := by
   refine eq_iff_coord.mpr fun q => ?_
@@ -178,10 +244,9 @@ lemma coord_psiPhi_pos (p : Place K) :
 
 /-! ### Finite places go to finite places -/
 
-variable (Ψ : GlobalPf K ⥤ GlobalPf L) [Ψ.IsEquivalence]
-  (e : GlobalPf.realify K ⋙ F ≅ Ψ ⋙ GlobalPf.realify L)
+variable (hF : PreservesRatFin F) (hFi : PreservesRatFin F.inv)
 
-include e in
+include hFi in
 /-- **A finite place is not mapped to an archimedean place.** -/
 theorem placeEquiv_inl (v : FinitePlace K) : ∃ w, placeEquiv F (Sum.inl v) = Sum.inl w := by
   rcases h : placeEquiv F (Sum.inl v) with w | u
@@ -235,13 +300,12 @@ theorem placeEquiv_inl (v : FinitePlace K) : ∃ w, placeEquiv F (Sum.inl v) = S
   -- `g(s) ∈ ℚ` for `s ≥ 0`
   have hgq : ∀ s, 0 ≤ s → ∃ q : ℚ, g s = q := by
     intro s hs
-    obtain ⟨z', -, hz'⟩ := psiPhi_castQ_mem F.inv Ψ.inv (invCompat F Ψ e)
-      (singleQ (Sum.inr u) s) (singleQ_inr_mem u hs)
-    refine ⟨z'.1 v, ?_⟩
+    obtain ⟨q, hq⟩ := hFi (singleZ u s) (singleZ_mem u hs) v
+    refine ⟨q, ?_⟩
     change coord (psiPhi F.inv (single (Sum.inr u) (max s 0)) _) (Sum.inl v) = _
-    rw [psiPhi_congr F.inv _ (castQ_mem_iff.mpr (singleQ_inr_mem u hs))
-      (show single (Sum.inr u) (max s 0) = castQ L (singleQ (Sum.inr u) s) by
-        rw [max_eq_left hs, castQ_singleQ_inr]), hz', coord_inl, castQ_fst]
+    rw [psiPhi_congr F.inv _ (castDiv_mem_iff.mpr (singleZ_mem u hs))
+      (show single (Sum.inr u) (max s 0) = castDiv L (singleZ u s) by
+        rw [max_eq_left hs, castDiv_singleZ]), coord_inl, hq]
   -- contradiction with `√2 ∉ ℚ`
   have hs2 : 0 ≤ t * Real.sqrt 2 := mul_nonneg ht.le (Real.sqrt_nonneg _)
   obtain ⟨q, hq⟩ := hgq _ hs2
@@ -251,34 +315,35 @@ theorem placeEquiv_inl (v : FinitePlace K) : ∃ w, placeEquiv F (Sum.inl v) = S
 
 /-- **The finite place `Ψ_Prime(v)`.** -/
 noncomputable def finMap (v : FinitePlace K) : FinitePlace L :=
-  (placeEquiv_inl F Ψ e v).choose
+  (placeEquiv_inl F hFi v).choose
 
 lemma placeEquiv_finMap (v : FinitePlace K) :
-    placeEquiv F (Sum.inl v) = Sum.inl (finMap F Ψ e v) :=
-  (placeEquiv_inl F Ψ e v).choose_spec
+    placeEquiv F (Sum.inl v) = Sum.inl (finMap F hFi v) :=
+  (placeEquiv_inl F hFi v).choose_spec
 
-lemma finMap_injective : Function.Injective (finMap F Ψ e) := fun v v' h => by
-  have := (placeEquiv F).injective ((placeEquiv_finMap F Ψ e v).trans
-    (h ▸ (placeEquiv_finMap F Ψ e v').symm))
+lemma finMap_injective : Function.Injective (finMap F hFi) := fun v v' h => by
+  have := (placeEquiv F).injective ((placeEquiv_finMap F hFi v).trans
+    (h ▸ (placeEquiv_finMap F hFi v').symm))
   exact Sum.inl_injective this
 
+include hF in
 /-- **`Ψ_Φ([v]) = q_v·[w]` with `q_v ∈ ℚ_{>0}`**, and `deg(F)·log N(v) = q_v·log N(w)`. -/
 theorem exists_rat_degree (v : FinitePlace K) :
     ∃ q : ℚ, 0 < q ∧ degOf F * Real.log (primeNorm v) =
-      q * Real.log (primeNorm (finMap F Ψ e v)) := by
-  set w := finMap F Ψ e v
+      q * Real.log (primeNorm (finMap F hFi v)) := by
+  set w := finMap F hFi v
   have hsupp := supp_psiPhi_one F (Sum.inl v)
-  rw [placeEquiv_finMap F Ψ e v] at hsupp
+  rw [placeEquiv_finMap F hFi v] at hsupp
   have hsingle := eq_single_of_supp hsupp
-  obtain ⟨z', -, hz'⟩ := psiPhi_castQ_mem F Ψ e (oneQ v) (oneQ_mem v)
+  obtain ⟨q, hq⟩ := hF (oneZ v) (oneZ_mem v) w
   have e1 : psiPhi F (single (Sum.inl v) 1) (single_mem zero_le_one) =
-      psiPhi F (castQ K (oneQ v)) (castQ_mem_iff.mpr (oneQ_mem v)) :=
-    divMap_congr F (objOfDeg 0) _ _ (castQ_oneQ v).symm
+      psiPhi F (castDiv K (oneZ v)) (castDiv_mem_iff.mpr (oneZ_mem v)) :=
+    divMap_congr F (objOfDeg 0) _ _ (castDiv_oneZ v).symm
   have hcoord : coord (psiPhi F (single (Sum.inl v) 1) (single_mem zero_le_one))
-      (Sum.inl w) = z'.1 w := by rw [e1, hz', coord_inl, castQ_fst]
+      (Sum.inl w) = q := by rw [e1, coord_inl, hq]
   have hpos := coord_psiPhi_pos F (Sum.inl v)
-  rw [placeEquiv_finMap F Ψ e v, hcoord] at hpos
-  refine ⟨z'.1 w, by exact_mod_cast hpos, ?_⟩
+  rw [placeEquiv_finMap F hFi v, hcoord] at hpos
+  refine ⟨q, by exact_mod_cast hpos, ?_⟩
   have hdeg := degArith_psiPhi F (single (Sum.inl v) 1) (single_mem zero_le_one)
   rw [hsingle, hcoord] at hdeg
   have hds : ∀ {M : Type u} [Field M] [NumberField M] (x : FinitePlace M) (r : ℝ),
@@ -342,12 +407,11 @@ lemma infinite_finitePlace (M : Type u) [Field M] [NumberField M] : Infinite (Fi
     Infinite.of_injective _ (Subtype.val_injective (p := (· ∈ degOnePrimes M)))
   exact Infinite.of_injective _ FinitePlace.equivHeightOneSpectrum.symm.injective
 
-include e in
 lemma exists_avoid (S : Finset ℕ) :
-    ∃ v : FinitePlace K, resChar v ∉ S ∧ resChar (finMap F Ψ e v) ∉ S := by
+    ∃ v : FinitePlace K, resChar v ∉ S ∧ resChar (finMap F hFi v) ∉ S := by
   have h1 := finite_resChar_mem (M := K) S
-  have h2 : (finMap F Ψ e ⁻¹' {w : FinitePlace L | resChar w ∈ S}).Finite :=
-    (finite_resChar_mem (M := L) S).preimage (finMap_injective F Ψ e).injOn
+  have h2 : (finMap F hFi ⁻¹' {w : FinitePlace L | resChar w ∈ S}).Finite :=
+    (finite_resChar_mem (M := L) S).preimage (finMap_injective F hFi).injOn
   haveI := infinite_finitePlace K
   obtain ⟨v, hv⟩ := (h1.union h2).infinite_compl.nonempty
   simp only [Set.mem_compl_iff, Set.mem_union, Set.mem_setOf_eq, not_or] at hv
@@ -355,10 +419,10 @@ lemma exists_avoid (S : Finset ℕ) :
 
 /-- `log p_w / log p_v = deg(F)·(f_v / (q_v f_w))`. -/
 lemma log_div (v : FinitePlace K) {q : ℚ} (hq : 0 < q)
-    (h : degOf F * Real.log (primeNorm v) = q * Real.log (primeNorm (finMap F Ψ e v))) :
-    Real.log (resChar (finMap F Ψ e v)) / Real.log (resChar v) =
-      degOf F * ((resDeg v : ℚ) / (q * resDeg (finMap F Ψ e v)) : ℚ) := by
-  set w := finMap F Ψ e v
+    (h : degOf F * Real.log (primeNorm v) = q * Real.log (primeNorm (finMap F hFi v))) :
+    Real.log (resChar (finMap F hFi v)) / Real.log (resChar v) =
+      degOf F * ((resDeg v : ℚ) / (q * resDeg (finMap F hFi v)) : ℚ) := by
+  set w := finMap F hFi v
   rw [log_primeNorm, log_primeNorm] at h
   have hv : 0 < Real.log (resChar v) := Real.log_pos (by exact_mod_cast (resChar_prime v).one_lt)
   have hfw : (0 : ℝ) < resDeg w := by exact_mod_cast resDeg_pos w
@@ -367,17 +431,19 @@ lemma log_div (v : FinitePlace K) {q : ℚ} (hq : 0 < q)
   field_simp
   linarith
 
-/-- **[FrdI], Theorem 6.4(iii)** for the global Frobenioids over `Pt`. -/
+include hF in
+/-- **[FrdI], Theorem 6.4(iii)** for the global Frobenioids over `Pt`, for an equivalence `F`
+with `PreservesRatFin F` and `PreservesRatFin F⁻¹`. -/
 theorem thm64iii :
-    (∃ q : ℚ, 0 < q ∧ degOf F = q) ∧ ∀ v : FinitePlace K, resChar (finMap F Ψ e v) = resChar v := by
+    (∃ q : ℚ, 0 < q ∧ degOf F = q) ∧ ∀ v : FinitePlace K, resChar (finMap F hFi v) = resChar v := by
   -- a rational degree forces equal residue characteristics
   have hsame : ∀ c : ℚ, degOf F = c → ∀ v : FinitePlace K,
-      resChar (finMap F Ψ e v) = resChar v := by
+      resChar (finMap F hFi v) = resChar v := by
     intro c hc v
-    obtain ⟨q, hq, h⟩ := exists_rat_degree F Ψ e v
-    have hl := log_div F Ψ e v hq h
+    obtain ⟨q, hq, h⟩ := exists_rat_degree F hF hFi v
+    have hl := log_div F hFi v hq h
     by_contra hne
-    let p : Fin 2 → ℕ := ![resChar (finMap F Ψ e v), resChar v]
+    let p : Fin 2 → ℕ := ![resChar (finMap F hFi v), resChar v]
     have hp : ∀ i, (p i).Prime := fun i => by
       fin_cases i
       · exact resChar_prime _
@@ -388,8 +454,8 @@ theorem thm64iii :
         exact absurd hij.symm hne
     have hv : Real.log (resChar v) ≠ 0 :=
       (Real.log_pos (by exact_mod_cast (resChar_prime v).one_lt)).ne'
-    set r : ℚ := c * ((resDeg v : ℚ) / (q * resDeg (finMap F Ψ e v)))
-    have hr : Real.log (resChar (finMap F Ψ e v)) = r * Real.log (resChar v) := by
+    set r : ℚ := c * ((resDeg v : ℚ) / (q * resDeg (finMap F hFi v)))
+    have hr : Real.log (resChar (finMap F hFi v)) = r * Real.log (resChar v) := by
       rw [hc] at hl
       rw [div_eq_iff hv] at hl
       rw [hl]; push_cast [r]; ring
@@ -401,28 +467,28 @@ theorem thm64iii :
     exact ⟨⟨q, by exact_mod_cast hq ▸ degOf_pos F, hq⟩, hsame q hq⟩
   exfalso
   push Not at hc
-  have hdiff : ∀ v : FinitePlace K, resChar (finMap F Ψ e v) ≠ resChar v := by
+  have hdiff : ∀ v : FinitePlace K, resChar (finMap F hFi v) ≠ resChar v := by
     intro v hv
-    obtain ⟨q, hq, h⟩ := exists_rat_degree F Ψ e v
-    have hl := log_div F Ψ e v hq h
+    obtain ⟨q, hq, h⟩ := exists_rat_degree F hF hFi v
+    have hl := log_div F hFi v hq h
     rw [hv, div_self (Real.log_pos (by exact_mod_cast (resChar_prime v).one_lt)).ne'] at hl
-    have hpos : (0 : ℚ) < (resDeg v : ℚ) / (q * resDeg (finMap F Ψ e v)) :=
+    have hpos : (0 : ℚ) < (resDeg v : ℚ) / (q * resDeg (finMap F hFi v)) :=
       div_pos (by exact_mod_cast resDeg_pos v)
         (mul_pos hq (by exact_mod_cast resDeg_pos _))
-    set a : ℚ := (resDeg v : ℚ) / (q * resDeg (finMap F Ψ e v))
+    set a : ℚ := (resDeg v : ℚ) / (q * resDeg (finMap F hFi v))
     refine hc a⁻¹ (inv_pos.mpr hpos) ?_
     have ha : (a : ℝ) ≠ 0 := by exact_mod_cast hpos.ne'
     push_cast
     field_simp
     linarith
   -- three pairs over six distinct primes
-  obtain ⟨v₁, -, -⟩ := exists_avoid F Ψ e ∅
-  obtain ⟨v₃, h3, h3'⟩ := exists_avoid F Ψ e {resChar v₁, resChar (finMap F Ψ e v₁)}
-  obtain ⟨v₅, h5, h5'⟩ := exists_avoid F Ψ e {resChar v₁, resChar (finMap F Ψ e v₁),
-    resChar v₃, resChar (finMap F Ψ e v₃)}
+  obtain ⟨v₁, -, -⟩ := exists_avoid F hFi ∅
+  obtain ⟨v₃, h3, h3'⟩ := exists_avoid F hFi {resChar v₁, resChar (finMap F hFi v₁)}
+  obtain ⟨v₅, h5, h5'⟩ := exists_avoid F hFi {resChar v₁, resChar (finMap F hFi v₁),
+    resChar v₃, resChar (finMap F hFi v₃)}
   simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at h3 h3' h5 h5'
-  let p : Fin 6 → ℕ := ![resChar (finMap F Ψ e v₁), resChar v₁, resChar (finMap F Ψ e v₃),
-    resChar v₃, resChar (finMap F Ψ e v₅), resChar v₅]
+  let p : Fin 6 → ℕ := ![resChar (finMap F hFi v₁), resChar v₁, resChar (finMap F hFi v₃),
+    resChar v₃, resChar (finMap F hFi v₅), resChar v₅]
   have hp : ∀ i, (p i).Prime := fun i => by fin_cases i <;> exact resChar_prime _
   have d1 := hdiff v₁
   have d3 := hdiff v₃
@@ -431,17 +497,17 @@ theorem thm64iii :
     intro i j hij
     fin_cases i <;> fin_cases j <;> simp [p] at hij ⊢ <;> omega
   apply Real.not_exists_pos_rat_log_div_eq hp hinj
-  obtain ⟨q₁, hq₁, e₁⟩ := exists_rat_degree F Ψ e v₁
-  obtain ⟨q₃, hq₃, e₃⟩ := exists_rat_degree F Ψ e v₃
-  obtain ⟨q₅, hq₅, e₅⟩ := exists_rat_degree F Ψ e v₅
-  have l₁ := log_div F Ψ e v₁ hq₁ e₁
-  have l₃ := log_div F Ψ e v₃ hq₃ e₃
-  have l₅ := log_div F Ψ e v₅ hq₅ e₅
-  set a₁ : ℚ := (resDeg v₁ : ℚ) / (q₁ * resDeg (finMap F Ψ e v₁))
-  set a₃ : ℚ := (resDeg v₃ : ℚ) / (q₃ * resDeg (finMap F Ψ e v₃))
-  set a₅ : ℚ := (resDeg v₅ : ℚ) / (q₅ * resDeg (finMap F Ψ e v₅))
+  obtain ⟨q₁, hq₁, e₁⟩ := exists_rat_degree F hF hFi v₁
+  obtain ⟨q₃, hq₃, e₃⟩ := exists_rat_degree F hF hFi v₃
+  obtain ⟨q₅, hq₅, e₅⟩ := exists_rat_degree F hF hFi v₅
+  have l₁ := log_div F hFi v₁ hq₁ e₁
+  have l₃ := log_div F hFi v₃ hq₃ e₃
+  have l₅ := log_div F hFi v₅ hq₅ e₅
+  set a₁ : ℚ := (resDeg v₁ : ℚ) / (q₁ * resDeg (finMap F hFi v₁))
+  set a₃ : ℚ := (resDeg v₃ : ℚ) / (q₃ * resDeg (finMap F hFi v₃))
+  set a₅ : ℚ := (resDeg v₅ : ℚ) / (q₅ * resDeg (finMap F hFi v₅))
   have pos : ∀ (x : FinitePlace K) (q : ℚ), 0 < q →
-      (0 : ℚ) < (resDeg x : ℚ) / (q * resDeg (finMap F Ψ e x)) := fun x q hq =>
+      (0 : ℚ) < (resDeg x : ℚ) / (q * resDeg (finMap F hFi x)) := fun x q hq =>
     div_pos (by exact_mod_cast resDeg_pos x) (mul_pos hq (by exact_mod_cast resDeg_pos _))
   have ha₃ : (a₃ : ℝ) ≠ 0 := by exact_mod_cast (pos v₃ q₃ hq₃).ne'
   have ha₅ : (a₅ : ℝ) ≠ 0 := by exact_mod_cast (pos v₅ q₅ hq₅).ne'
@@ -451,6 +517,15 @@ theorem thm64iii :
     rw [l₁, l₃]; push_cast; field_simp
   · simp only [p, Matrix.cons_val]
     rw [l₁, l₅]; push_cast; field_simp
+
+omit hF hFi in
+/-- **[FrdI], Theorem 6.4(iii)** for an equivalence `F` arising from an equivalence `Ψ` of the
+unit-trivialized perfections `(C^pf)^{un-tr}`. -/
+theorem thm64iii_pf (Ψ : GlobalPf K ⥤ GlobalPf L) [Ψ.IsEquivalence]
+    (e : GlobalPf.realify K ⋙ F ≅ Ψ ⋙ GlobalPf.realify L) :
+    (∃ q : ℚ, 0 < q ∧ degOf F = q) ∧ ∀ v : FinitePlace K,
+      resChar (finMap F (preservesRatFin_of_pf F.inv Ψ.inv (invCompat F Ψ e)) v) = resChar v :=
+  thm64iii F (preservesRatFin_of_pf F Ψ e) _
 
 end GlobalRealified
 

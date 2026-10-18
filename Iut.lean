@@ -238,6 +238,7 @@ import Iut.Frobenioid.Thm34iv
 import Iut.Frobenioid.Thm51
 import Iut.Frobenioid.Thm64
 import Iut.Frobenioid.Thm64iii
+import Iut.Frobenioid.Thm64iv
 import Iut.Frobenioid.UnrPairing
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
