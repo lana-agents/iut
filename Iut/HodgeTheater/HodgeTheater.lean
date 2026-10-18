@@ -200,7 +200,7 @@ theorem toLabels_surjective (A B : ThetaPmEllNFHT D) :
     (PrimeStrip.nonempty_iso _ _).some, (PrimeStrip.nonempty_iso _ _).some,
     (A.Dcirc.iso_model.some.trans B.Dcirc.iso_model.some.symm),
     (A.DcircPm.iso_model.some.trans B.DcircPm.iso_model.some.symm),
-    (A.Frlf.equiv_model.some.trans B.Frlf.equiv_model.some.symm),
+    (A.Frlf.glob.equiv.trans B.Frlf.glob.equiv.symm),
     (PrimeStrip.nonempty_iso _ _).some, (PrimeStrip.nonempty_iso _ _).some⟩, rfl⟩
 
 /-- **Any two `Θ^{±ell}NF`-Hodge theaters are isomorphic**, and the isomorphisms induce exactly the

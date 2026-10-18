@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Frobenioid.Arch
+import Iut.Frobenioid.GlobalRho
 import Iut.Cor312.ThetaData.Basic
 
 /-!
@@ -29,8 +30,9 @@ topological groups, or categories with equivalences of categories).
     archimedean Frobenioid with `O^▷(K_v)`;
   * `F^{⊢×μ}`-prime-strips (IUT II, Definition 4.9(vii)): the GM-data `G_v ↷ O^{×μ}(K_v)` |
     `{1} ↷ O^{×μ}(K_v)` (`O^{×μ} = O^×/μ`, the unit circle modulo torsion);
-  * `F^⊩`-prime-strips (Definition 5.2(iv)): the global realified Frobenioid `C^⊩_mod` of `F_mod`
-    (P15, `GlobalRealified`) up to equivalence, with an `F^⊢`-prime-strip;
+  * `F^⊩`-prime-strips (Definition 5.2(iv)): the global data `FRlfGlobal` of `F^⊩_mod` (a category
+    with an equivalence to `C^⊩_mod`, `Prime(C^⊩_mod) ≅ V` and the maps `ρ_v`; IUT I,
+    Example 3.5(ii)), with an `F^⊢`-prime-strip;
   * the global objects `D^⊚ = B(C̲_K)^0` and `D^⊚± = B(X̲_K)^0` (Definitions 4.1(v), 6.1(v)), by
     their (étale) fundamental groups.
 
@@ -44,7 +46,8 @@ topological groups, or categories with equivalences of categories).
   or `D_v`; the tempered Frobenioid at `V^bad` is replaced by the `p`-adic Frobenioid of `K_v` (its
   base-field portion; P15 has only the interface `TemperedFrobenioidData`).
 * `O^{×μ}` is the `G_v`-invariant (base-field) portion `O^×(K_v)/μ`, with the trivial `G_v`-action.
-* `F^⊩`: the bijection `Prime(C^⊩) ≅ V` and the isomorphisms `ρ_v` are not recorded.
+* `F^⊩`: the `ρ_v` land in `ℝ` (on `Φ_v ≅ ℝ_{≥0}`, `GlobalRealified.rho`), not in the realified
+  divisor monoids of the `F^⊢`-strip components (those wait for genuine `C^⊢_v`, MR20).
 * **Mono-analyticization** `†D ↦ †D^⊢` and the passage from `F`- to `D`-prime-strips are
   group-theoretic reconstruction algorithms (P17); they are not defined on abstract prime-strips
   here (only the interface `PrimeStrip.map` for componentwise operations of kinds).
@@ -353,18 +356,53 @@ abbrev FVdashStrip : Type (u + 1) := PrimeStrip (fVdashKind D) (fVdashModel D)
 /-- **The global realified Frobenioid `C^⊩_mod` of `F_mod`** (IUT I, Example 3.5(i); P15). -/
 noncomputable def rlfModel : Cat.{u, u} := Cat.of (GlobalRealified ↥(fieldOfModuli D.F D.E))
 
-/-- **An `F^⊩`-prime-strip** (IUT I, Definition 5.2(iv), simplified): a category equivalent to
-`C^⊩_mod` and an `F^⊢`-prime-strip. -/
-structure FRlfStrip where
+namespace FRlfMod
+
+/-- The place `v̲ ∈ V ⊆ V(K)` lying over `v ∈ V_mod` (IUT I, Definition 3.1(e)). -/
+noncomputable def sectPlace : Vp D → GlobalRealified.Place D.Kt
+  | Sum.inl v => Sum.inl (D.V.sectFin v)
+  | Sum.inr v => Sum.inr (D.V.sectInf v)
+
+/-- `ρ_v` of `F^⊩_mod`: `Φ_{C^⊩_mod} → ℝ` (`ρ_v` on `Φ_v`). -/
+noncomputable def rhoMod (v : Vp D) : ArithDiv ↥(fieldOfModuli D.F D.E) → ℝ :=
+  GlobalRealified.rho (sectPlace D v) v
+
+end FRlfMod
+
+/-- **The global data of `F^⊩_mod`** (IUT I, Example 3.5(ii)): the Frobenioid `C^⊩_mod`, an
+equivalence with the model, the bijection `Prime(C^⊩_mod) ≅ V` and the maps `ρ_v`. -/
+structure FRlfGlobal where
   /-- The global realified Frobenioid. -/
   C : Cat.{u, u}
-  equiv_model : Nonempty (C ≌ (rlfModel D))
+  /-- Its identification with `C^⊩_mod`. -/
+  equiv : C ≌ rlfModel D
+  /-- `Prime(C^⊩_mod) ≅ V` (`V ≅ V_mod`). -/
+  prime : GlobalRealified.Prime ↥(fieldOfModuli D.F D.E) ≃ Vp D
+  /-- The local-global maps `ρ_v : Φ_{C^⊩_mod,v} → ℝ_{≥0}`. -/
+  rho : Vp D → ArithDiv ↥(fieldOfModuli D.F D.E) → ℝ
+
+/-- **`F^⊩_mod`** (global part), constructed from the Θ-data. -/
+noncomputable def FRlfGlobal.ofThetaData : FRlfGlobal D where
+  C := rlfModel D
+  equiv := CategoryTheory.Equivalence.refl
+  prime := GlobalRealified.primeEquiv
+  rho := FRlfMod.rhoMod D
+
+/-- **An `F^⊩`-prime-strip** (IUT I, Definition 5.2(iv), Example 3.5(ii)): the global data
+`(C^⊩, C^⊩ ≌ C^⊩_mod, Prime(C^⊩_mod) ≅ V, {ρ_v})` and an `F^⊢`-prime-strip. -/
+structure FRlfStrip where
+  /-- The global data of `F^⊩`. -/
+  glob : FRlfGlobal D
   /-- The `F^⊢`-prime-strip. -/
   strip : (FVdashStrip D)
 
+variable {D} in
+/-- The global realified Frobenioid of an `F^⊩`-prime-strip. -/
+abbrev FRlfStrip.C (S : FRlfStrip D) : Cat.{u, u} := S.glob.C
+
 /-- The tautological `F^⊩`-prime-strip `F^⊩_mod` (IUT I, Example 3.5(ii)). -/
 noncomputable def FRlfStrip.tautological : (FRlfStrip D) :=
-  ⟨rlfModel D, ⟨CategoryTheory.Equivalence.refl⟩, PrimeStrip.tautological _ _⟩
+  ⟨FRlfGlobal.ofThetaData D, PrimeStrip.tautological _ _⟩
 
 /-! #### The global objects `D^⊚`, `D^⊚±` -/
 

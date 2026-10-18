@@ -229,7 +229,6 @@ Iut.HodgeTheater.DThetaPmEllHT.pos	baseline
 Iut.HodgeTheater.DThetaPmEllHT.θ_zero	baseline
 Iut.HodgeTheater.DThetaPmEllNFHT.Iso.glue	shell
 Iut.HodgeTheater.DThetaPmEllNFHT.γ₀_apply	shell
-Iut.HodgeTheater.FRlfStrip.equiv_model	shell
 Iut.HodgeTheater.Kind.GMIso.compact	def
 Iut.HodgeTheater.Kind.GMIso.equivariant	def
 Iut.HodgeTheater.LabelHom.maps_to	def
