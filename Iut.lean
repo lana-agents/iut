@@ -297,6 +297,7 @@ import Iut.Reconstruction.Local.Cor110H1
 import Iut.Reconstruction.Local.Cor110H2
 import Iut.Reconstruction.Local.Cor110Kummer
 import Iut.Reconstruction.Local.Cor110Res
+import Iut.Reconstruction.Local.Cor110WeilBar
 import Iut.Reconstruction.Local.Cyclotome
 import Iut.Reconstruction.Local.Frobenius
 import Iut.Reconstruction.Local.Inertia
