@@ -30,7 +30,8 @@ place `v` of `k` (`w = sect v`):
 * the local realified divisor monoid `Φ^rlf_{C⊢_w} = ℝ≥0` in the coordinate `ord_{K_w}` (resp.
   `−log|·|_w`); `logPhi w = logΦ(p_v)`: `ord_w(p_v)` (computed from `div_K(p_v)`), resp. `1`;
 * `localDeg w v = [K_w : k_v]` (`e(w|v)·f(w|v)`, resp. `mult w / mult v`);
-* **`rho`** `ρ_v : Φ_v → ℝ≥0` (as an isomorphism `Φ_v ≅ ℝ≥0`: `rhoEquivFin`, `rhoEquivInf`), the unique additive map with **`rho_logMod`**
+* **`rho`** `ρ_v : Φ_v → ℝ≥0` (as an isomorphism `Φ_v ≅ ℝ≥0`: `rhoEquivFin`, `rhoEquivInf`),
+  the unique additive map with **`rho_logMod`**
   `ρ_v(log⊢(p_v)) = logΦ(p_v)/[K_w : k_v]`;
 * **`degArith_eq_vol_rho`** (the "volume interpretation"): for `z ∈ Φ_v`,
   `deg^arith_k(z) = vol_w(ρ_v z)`, where `vol_w(y) = y·log N(w)` (finite) and `[K_w : ℝ]·y`
