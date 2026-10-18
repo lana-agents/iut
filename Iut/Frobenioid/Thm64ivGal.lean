@@ -37,7 +37,8 @@ Here `C_i = C_{F̃_i/F_i}` (`GlobalGaloisFrob`), `C_i^rlf` its realification (`G
 * The one-morphism-base results `thm64iv_deg`, `finrank_eq`, `thm64iv_galois` (`Thm64iv.lean`)
   apply: **`GlobalGaloisRlf.thm64iv`**.
 
-Not formalised: the compatibility of `L₁ ≅ L₂` with an isomorphism `F₁ ≅ F₂`.
+The compatibility of `L₁ ≅ L₂` with an isomorphism `F₁ ≅ F₂` (for `F₁/ℚ` Galois):
+`Thm64ivCompat.lean`.
 -/
 
 namespace Iut
@@ -301,13 +302,11 @@ section Final
 variable {F₁ E₁ : Type} [Field F₁] [NumberField F₁] [Field E₁] [Algebra F₁ E₁] [IsGalois F₁ E₁]
 variable {F₂ E₂ : Type} [Field F₂] [NumberField F₂] [Field E₂] [Algebra F₂ E₂] [IsGalois F₂ E₂]
 
-/-- **[FrdI], Theorem 6.4(iv) over the Galois base.** Let `Ψ^rlf : C^rlf_{F̃₁/F₁} ≌ C^rlf_{F̃₂/F₂}`
-arise from `Ψ : C_{F̃₁/F₁} ≌ C_{F̃₂/F₂}` (`e : realify ⋙ Ψ^rlf ≅ Ψ ⋙ realify`). Then `Ψ^rlf`
-lies over an equivalence `Ψ_Base : B(G₁)⁰ ≌ B(G₂)⁰`, and for every `A = G₁/H` (field
-`L₁ = F̃₁^H`), the restriction `G_A : C^rlf(L₁) ≌ C^rlf(L₂)` of `Ψ^rlf` to the fibres over `A` and
-`Ψ_Base(A)` (`L₂ = F̃₂^{Ψ_Base(A)}`) has degree `deg(G_A) = 1`, `[L₁:ℚ] = [L₂:ℚ]`, and if `L₁` is
-Galois over `ℚ`, then `L₁ ≅ L₂`. -/
-theorem GlobalGaloisRlf.thm64iv (Ψr : GlobalGaloisRlf F₁ E₁ ⥤ GlobalGaloisRlf F₂ E₂)
+/-- **The fibre restrictions of `Ψ^rlf`, `Ψ`**: `Ψ^rlf` lies over an equivalence
+`Ψ_Base : B(G₁)⁰ ≌ B(G₂)⁰`, and for every `A = G₁/H` the restrictions of `Ψ^rlf`, `Ψ` to the
+fibres over `A`, `Ψ_Base(A)` are equivalences `G_A : C^rlf(L₁) ≌ C^rlf(L₂)`,
+`Ψ_A : C(L₁) ≌ C(L₂)` with `realify ⋙ G_A ≅ Ψ_A ⋙ realify`. -/
+theorem GlobalGaloisRlf.exists_fibreEquiv (Ψr : GlobalGaloisRlf F₁ E₁ ⥤ GlobalGaloisRlf F₂ E₂)
     [Ψr.IsEquivalence] (Ψ : GlobalGaloisFrob F₁ E₁ ⥤ GlobalGaloisFrob F₂ E₂) [Ψ.IsEquivalence]
     (e : GlobalGaloisFrob.realify F₁ E₁ ⋙ Ψr ≅ Ψ ⋙ GlobalGaloisFrob.realify F₂ E₂) :
     ∃ Gb : OrbitObj (GalG F₁ E₁) ⥤ OrbitObj (GalG F₂ E₂), Gb.IsEquivalence ∧
@@ -315,12 +314,13 @@ theorem GlobalGaloisRlf.thm64iv (Ψr : GlobalGaloisRlf F₁ E₁ ⥤ GlobalGaloi
         (toElem (phiRlfGal F₁ E₁) (bRlfGal F₁ E₁) (divRlfGal F₁ E₁) ⋙ Elem.proj) ⋙ Gb) ∧
       ∀ A : OrbitObj (GalG F₁ E₁),
         ∃ (GA : GlobalRealified (Fix A) ⥤ GlobalRealified (Fix (Gb.obj A)))
-          (_ : GA.IsEquivalence),
+          (_ : GA.IsEquivalence)
+          (ΨA : GlobalFrobenioid (Fix A) ⥤ GlobalFrobenioid (Fix (Gb.obj A)))
+          (_ : ΨA.IsEquivalence),
           Nonempty (GA ⋙ GlobalGaloisRlf.fibreRlf (Gb.obj A) ≅
             GlobalGaloisRlf.fibreRlf A ⋙ Ψr) ∧
-          GlobalRealified.degOf GA = 1 ∧
-          Module.finrank ℚ (Fix A) = Module.finrank ℚ (Fix (Gb.obj A)) ∧
-          (IsGalois ℚ (Fix A) → Nonempty (Fix A ≃+* Fix (Gb.obj A))) := by
+          Nonempty (GlobalFrobenioid.realify (Fix A) ⋙ GA ≅
+            ΨA ⋙ GlobalFrobenioid.realify (Fix (Gb.obj A))) := by
   obtain ⟨Gb, ⟨ηr⟩⟩ := GlobalGaloisRlf.preservesBase Ψr
   obtain ⟨Gb', ⟨ηr'⟩⟩ := GlobalGaloisRlf.preservesBase Ψr.inv
   haveI : Gb.IsEquivalence := isEquivalence_base (GlobalGaloisRlf.isFrobenioid F₁ E₁)
@@ -351,7 +351,33 @@ theorem GlobalGaloisRlf.thm64iv (Ψr : GlobalGaloisRlf F₁ E₁ ⥤ GlobalGaloi
       Functor.isoWhiskerRight ((Functor.leftUnitor _).symm ≪≫
         Functor.isoWhiskerRight (ofFibR A).asEquivalence.counitIso.symm _ ≪≫
         Functor.associator _ _ _ ≪≫ Functor.isoWhiskerLeft (ofFibR A).inv (ofFibRFibre A)).symm Ψr
-  exact ⟨GA, inferInstance, ⟨hfib⟩, GlobalRealified.thm64iv_deg GA ΨA eA,
+  exact ⟨GA, inferInstance, ΨA, inferInstance, ⟨hfib⟩, ⟨eA⟩⟩
+
+
+/-- **[FrdI], Theorem 6.4(iv) over the Galois base.** Let `Ψ^rlf : C^rlf_{F̃₁/F₁} ≌ C^rlf_{F̃₂/F₂}`
+arise from `Ψ : C_{F̃₁/F₁} ≌ C_{F̃₂/F₂}` (`e : realify ⋙ Ψ^rlf ≅ Ψ ⋙ realify`). Then `Ψ^rlf`
+lies over an equivalence `Ψ_Base : B(G₁)⁰ ≌ B(G₂)⁰`, and for every `A = G₁/H` (field
+`L₁ = F̃₁^H`), the restriction `G_A : C^rlf(L₁) ≌ C^rlf(L₂)` of `Ψ^rlf` to the fibres over `A` and
+`Ψ_Base(A)` (`L₂ = F̃₂^{Ψ_Base(A)}`) has degree `deg(G_A) = 1`, `[L₁:ℚ] = [L₂:ℚ]`, and if `L₁` is
+Galois over `ℚ`, then `L₁ ≅ L₂`. -/
+theorem GlobalGaloisRlf.thm64iv (Ψr : GlobalGaloisRlf F₁ E₁ ⥤ GlobalGaloisRlf F₂ E₂)
+    [Ψr.IsEquivalence] (Ψ : GlobalGaloisFrob F₁ E₁ ⥤ GlobalGaloisFrob F₂ E₂) [Ψ.IsEquivalence]
+    (e : GlobalGaloisFrob.realify F₁ E₁ ⋙ Ψr ≅ Ψ ⋙ GlobalGaloisFrob.realify F₂ E₂) :
+    ∃ Gb : OrbitObj (GalG F₁ E₁) ⥤ OrbitObj (GalG F₂ E₂), Gb.IsEquivalence ∧
+      Nonempty (Ψr ⋙ toElem (phiRlfGal F₂ E₂) (bRlfGal F₂ E₂) (divRlfGal F₂ E₂) ⋙ Elem.proj ≅
+        (toElem (phiRlfGal F₁ E₁) (bRlfGal F₁ E₁) (divRlfGal F₁ E₁) ⋙ Elem.proj) ⋙ Gb) ∧
+      ∀ A : OrbitObj (GalG F₁ E₁),
+        ∃ (GA : GlobalRealified (Fix A) ⥤ GlobalRealified (Fix (Gb.obj A)))
+          (_ : GA.IsEquivalence),
+          Nonempty (GA ⋙ GlobalGaloisRlf.fibreRlf (Gb.obj A) ≅
+            GlobalGaloisRlf.fibreRlf A ⋙ Ψr) ∧
+          GlobalRealified.degOf GA = 1 ∧
+          Module.finrank ℚ (Fix A) = Module.finrank ℚ (Fix (Gb.obj A)) ∧
+          (IsGalois ℚ (Fix A) → Nonempty (Fix A ≃+* Fix (Gb.obj A))) := by
+  obtain ⟨Gb, hGb, hηr, hA⟩ := GlobalGaloisRlf.exists_fibreEquiv Ψr Ψ e
+  refine ⟨Gb, hGb, hηr, fun A => ?_⟩
+  obtain ⟨GA, _, ΨA, _, hfib, ⟨eA⟩⟩ := hA A
+  exact ⟨GA, inferInstance, hfib, GlobalRealified.thm64iv_deg GA ΨA eA,
     GlobalRealified.finrank_eq GA ΨA eA, fun h => by
       haveI := h
       exact GlobalRealified.thm64iv_galois GA ΨA eA⟩
