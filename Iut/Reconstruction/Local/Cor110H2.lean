@@ -19,7 +19,7 @@ l.2392–2395):
 
 For a compact topological group `G`, with `μ_n(G) ⊆ μ_{ℚ/ℤ}(G)` the `G`-module of `Cor110.lean`:
 
-* `H2MuG G n = H²(G, μ_n(G))` (`ContH2`, locally constant cochains), `h2PowG` the maps induced by
+* `H2MuG G n = H²(G, μ_n(G))` (`ContH2`, continuous cochains), `h2PowG` the maps induced by
   `μ_m(G) → μ_n(G)`, `z ↦ z^{m/n}`, and **`H2ZHatG G = H²(G, μ_Ẑ(G)) = lim_n H²(G, μ_n(G))`**
   (the inverse-limit convention of `Brauer.H2ZHatOne`, i.e. `μ_Ẑ(G) = lim_n μ_n(G)`, which is
   `Hom(ℚ/ℤ, μ_{ℚ/ℤ}(G))`);
