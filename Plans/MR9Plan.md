@@ -211,3 +211,13 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     for `k̄_NF` (number-field points); the function field there is still a function field over
     the algebraically closed field `k̄_NF = ℚ̄`, so `ofFunctionField` applies once T1 identifies
     the reconstructed triple with it.
+* 2026-10-18: **C1 group/cohomology part done** (`Iut/Reconstruction/Cusp/CuspTransgression.lean`):
+  `cuspInertia` (`= Ker(Δ^{c-cn} → Q)`, the image of `Ker π`, closed, central, abelian),
+  `cuspCentralMap_surjective` (exactness of `1 → I → Δ^{c-cn} → Q → 1`), `cuspQuotEquiv :
+  Δ^{c-cn}/I ≃ₜ* Q`; the transgression `cuspTg : Hom_cont(I, A) → H²(Δ^{c-cn}/I, A)` (LCFT
+  `tgCentral`, trivial discrete coefficients via `TrivCoeff`) with `cuspTg_eq_one_iff`,
+  `exists_cuspTg_eq_of_inf₂_eq_one`, `inf₂_cuspTg`, `cuspTg_comp`; the class of `1 ∈ Hom(I, I)` at
+  finite level `cuspClass N = d₂(I ↠ I/N)`. Θ-approach (IUT I Rem 3.1.2(iii)) as the case
+  `π = Δ ↠ Δ^ab`: `cuspCentralKer_thetaMap` (`Δ^Θ = Δ/cl⁅cl⁅Δ,Δ⁆,Δ⁆`), `thetaInertia_eq_map`
+  (`Δ_Θ`), `thetaClass`. Remaining for C1: `M_X ≅ I_x` (needs `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ`, pi1), and the
+  passage from the finite-level classes to `Hom(M_X, I_x)` (inverse limit over `N`).

@@ -26,8 +26,9 @@ to `Q`, and proves:
   every intermediate quotient `ρ : Δ → Q'`, `τ : Q' → Q`, `τ ∘ ρ = π`, with `Ker τ` central and
   `ρ` continuous into a `T1` group, factors uniquely through `Δ^{c-cn}` (maximality).
 
-This is the group-theoretic part of MR9 step C1 (`Plans/MR9Plan.md`); the transgression
-`M_X ≅ I_x` needs `H²` of the surface group (not here).
+This is the group-theoretic part of MR9 step C1 (`Plans/MR9Plan.md`); the transgression of the
+extension is in `CuspTransgression.lean`; the isomorphism `M_X ≅ I_x` needs `H²` of the surface
+group (not here).
 -/
 
 namespace Iut.Reconstruction
