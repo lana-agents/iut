@@ -550,7 +550,9 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 
 **MR19 — Global Frobenioids and κ-coric structures.**
 - **Content:** the non-realified global Frobenioid of `F_mod` ([FrdI] Ex 6.3, Thm 6.4); `Prime(C^⊩) ≅ V` and `ρ_v`; κ-coric functions `∞κ`, `∞κ×` via [AbsTopIII] Thm 1.9 (IUT I Ex 5.1(v)); IUT II Cor 4.7, 4.8 (κ-sol pseudo-monoids, `M_mod`); IUT III Ex 3.6 (arithmetic line bundles; reuse `Arakelov/`).
-- **Refs:** IUT I Ex 3.5, Ex 5.1 (l.6905); IUT II Cor 4.7 (l.9045), 4.8 (l.9641); IUT III Ex 3.6 (l.7073).
+- **Refs:** IUT I Ex 3.5 (l.5485), Rem 3.1.7 (l.4316, κ-coric functions), Ex 5.1 (l.8234); IUT II Cor 4.7 (l.10441), 4.8 (l.11183); IUT III Ex 3.6 (l.7074) (line numbers in `~/iut-scratch/papers/txt/`; the earlier numbers 6905/9045/9641 came from a different extraction).
+- **Plan:** `Plans/MR19Plan.md` (exact statements, what exists, what needs MR9, order of work).
+- **Progress:** `Prime(Φ(F)) ≅ V(F)` for the non-realified [FrdI] Ex 6.3 Frobenioid, compatible with realification (`Frobenioid/GlobalPrimeZ.lean`); `ρ_v` with `ρ_v(log⊢(p_v)) = logΦ(p_v)/[K_v:(F_mod)_v]` and the volume interpretation `deg^arith = vol ∘ ρ_v` (`Frobenioid/GlobalRho.lean`); the global data of `F^⊩_mod` from Θ-data (`HodgeTheater/FRlfMod.lean`, `FRlfGlobal.ofThetaData`).
 - **Depends on:** MR16, MR9. **Status:** P. **Size:** 10–20 k / 8–15.
 - **Repo:** iut `Frobenioid`, `Multiradial/Global`.
 - **Done when:** `def globalFrobenioid (D) : Frobenioid …`; `def kappaCoric (D) : …` with `theorem kappaCoric_kummer : kummer ∘ … = recFunctionField …`; `primeEquiv : Prime (C^⊩) ≃ V`. Shell #8 (`FRlfStrip`) is gone.

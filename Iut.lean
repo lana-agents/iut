@@ -190,6 +190,8 @@ import Iut.Frobenioid.GlobalNonRlf
 import Iut.Frobenioid.GlobalPf
 import Iut.Frobenioid.GlobalPic
 import Iut.Frobenioid.GlobalPrime
+import Iut.Frobenioid.GlobalPrimeZ
+import Iut.Frobenioid.GlobalRho
 import Iut.Frobenioid.InvCompat
 import Iut.Frobenioid.Invariance
 import Iut.Frobenioid.KummerClass
@@ -238,6 +240,7 @@ import Iut.Frobenioid.Thm64iii
 import Iut.Frobenioid.UnrPairing
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
+import Iut.HodgeTheater.FRlfMod
 import Iut.HodgeTheater.Gluing
 import Iut.HodgeTheater.HodgeTheater
 import Iut.HodgeTheater.Labels
