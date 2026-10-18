@@ -293,6 +293,7 @@ import Iut.Reconstruction.Local.AbelianZHat
 import Iut.Reconstruction.Local.Abelianization
 import Iut.Reconstruction.Local.CharCount
 import Iut.Reconstruction.Local.Cor110
+import Iut.Reconstruction.Local.Cor110H1
 import Iut.Reconstruction.Local.Cor110H2
 import Iut.Reconstruction.Local.Cor110Kummer
 import Iut.Reconstruction.Local.Cor110Res
