@@ -188,6 +188,7 @@ import Iut.Frobenioid.GaloisSlim
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalFracIdeal
 import Iut.Frobenioid.GlobalGalois
+import Iut.Frobenioid.GlobalGaloisBase
 import Iut.Frobenioid.GlobalGaloisCmp
 import Iut.Frobenioid.GlobalGaloisFibre
 import Iut.Frobenioid.GlobalGaloisRlf
@@ -240,6 +241,8 @@ import Iut.Frobenioid.Thm24iiPf
 import Iut.Frobenioid.Thm24iiPfMain
 import Iut.Frobenioid.Thm34
 import Iut.Frobenioid.Thm34Base
+import Iut.Frobenioid.Thm34DivSlim
+import Iut.Frobenioid.Thm34Irr
 import Iut.Frobenioid.Thm34Rlf
 import Iut.Frobenioid.Thm34iv
 import Iut.Frobenioid.Thm51

@@ -375,67 +375,70 @@ variable (F : Model Φ₁ B₁ divB₁ ⥤ Model Φ₂ B₂ divB₂) [F.IsEquiva
 noncomputable def baseFunctor : D₁ ⥤ D₂ :=
   zeroSection Φ₁ B₁ divB₁ ⋙ F ⋙ forget Φ₂ B₂ divB₂
 
-variable (hD₁ : BaseHyp D₁) (hB₁ : HasAllTorsion B₁) (hD₂ : BaseHyp D₂)
-  (hB₂ : HasAllTorsion B₂)
+variable (hbi : ∀ ⦃X Y : Model Φ₁ B₁ divB₁⦄ (ψ : X ⟶ Y), IsIso ψ.base → IsIso (F.map ψ).base)
+variable (hbe : ∀ ⦃X Y : Model Φ₁ B₁ divB₁⦄ (φ φ' : X ⟶ Y), φ.base = φ'.base →
+  (F.map φ).base = (F.map φ').base)
 
-omit [IsConnected D₁] [IsConnected D₂] in
-include hD₁ hB₁ hD₂ hB₂ in
-lemma isIso_base_map_of_baseIso {X Y : Model Φ₁ B₁ divB₁} (ψ : X ⟶ Y) (hψ : IsIso ψ.base) :
-    IsIso (F.map ψ).base :=
-  ((typeCorresp hD₁ hB₁ hD₂ hB₂ F).baseIso ψ).1 hψ
-
-omit [IsConnected D₁] [IsConnected D₂] in
-include hD₁ hB₁ hD₂ hB₂ in
+omit [IsConnected D₁] [IsConnected D₂] [TotallyEpimorphic D₁] [TotallyEpimorphic D₂]
+  [F.IsEquivalence] in
+include hbi in
 lemma isIso_spanL (X : Model Φ₁ B₁ divB₁) : IsIso (F.map (spanL X)).base :=
-  isIso_base_map_of_baseIso F hD₁ hB₁ hD₂ hB₂ (spanL X)
-    (by change IsIso (𝟙 X.base); infer_instance)
+  hbi (spanL X) (by change IsIso (𝟙 X.base); infer_instance)
 
-omit [IsConnected D₁] [IsConnected D₂] in
-include hD₁ hB₁ hD₂ hB₂ in
+omit [IsConnected D₁] [IsConnected D₂] [TotallyEpimorphic D₁] [TotallyEpimorphic D₂]
+  [F.IsEquivalence] in
+include hbi in
 lemma isIso_spanR (X : Model Φ₁ B₁ divB₁) : IsIso (F.map (spanR X)).base :=
-  isIso_base_map_of_baseIso F hD₁ hB₁ hD₂ hB₂ (spanR X)
-    (by change IsIso (𝟙 X.base); infer_instance)
+  hbi (spanR X) (by change IsIso (𝟙 X.base); infer_instance)
 
 /-- The component `Base(F X) ≅ F_Base(A_X)`. -/
 noncomputable def baseComp (X : Model Φ₁ B₁ divB₁) :
     (F.obj X).base ≅ (baseFunctor F).obj X.base :=
-  (@asIso _ _ _ _ (F.map (spanL X)).base (isIso_spanL F hD₁ hB₁ hD₂ hB₂ X)).symm ≪≫
-    @asIso _ _ _ _ (F.map (spanR X)).base (isIso_spanR F hD₁ hB₁ hD₂ hB₂ X)
+  (@asIso _ _ _ _ (F.map (spanL X)).base (isIso_spanL F hbi X)).symm ≪≫
+    @asIso _ _ _ _ (F.map (spanR X)).base (isIso_spanR F hbi X)
 
-omit [IsConnected D₁] [IsConnected D₂] in
-include hD₁ hB₁ hD₂ hB₂ in
-lemma baseComp_natural (hD : IsSlim D₂) {X Y : Model Φ₁ B₁ divB₁} (φ : X ⟶ Y) :
-    (F.map φ).base ≫ (baseComp F hD₁ hB₁ hD₂ hB₂ Y).hom =
-      (baseComp F hD₁ hB₁ hD₂ hB₂ X).hom ≫ (baseFunctor F).map φ.base := by
-  have c := typeCorresp hD₁ hB₁ hD₂ hB₂ F
+omit [IsConnected D₁] [IsConnected D₂] [TotallyEpimorphic D₁] [TotallyEpimorphic D₂]
+  [F.IsEquivalence] in
+include hbe in
+lemma baseComp_natural {X Y : Model Φ₁ B₁ divB₁} (φ : X ⟶ Y) :
+    (F.map φ).base ≫ (baseComp F hbi Y).hom =
+      (baseComp F hbi X).hom ≫ (baseFunctor F).map φ.base := by
   -- the auxiliary object `W = (A_X, −q_X − f^* q_Y)` with `μ : W → E_X`, `ν : W → E_Y`
   let W : Model Φ₁ B₁ divB₁ := ⟨X.base, -negPart X - Φ₁.pb φ.base (negPart Y)⟩
   let μ : W ⟶ spanObj X := mk1 (𝟙 _) (Φ₁.pb φ.base (negPart Y)) (Φ₁.pb_mem _ (negPart_mem Y)) 0
     (by simp [W])
   let ν : W ⟶ spanObj Y := mk1 φ.base (negPart X) (negPart_mem X) 0 (by simp [W]; abel)
-  have K₁ := base_map_eq_of_base_eq F c.pullback c.baseIso (μ ≫ spanL X ≫ φ) (ν ≫ spanL Y)
-    (by simp [μ, ν, spanL]) hD
-  have K₂ := base_map_eq_of_base_eq F c.pullback c.baseIso
-    (μ ≫ spanR X ≫ (zeroSection Φ₁ B₁ divB₁).map φ.base) (ν ≫ spanR Y)
-    (by simp [μ, ν, spanR, zeroSection]) hD
+  have K₁ := hbe (μ ≫ spanL X ≫ φ) (ν ≫ spanL Y) (by simp [μ, ν, spanL])
+  have K₂ := hbe (μ ≫ spanR X ≫ (zeroSection Φ₁ B₁ divB₁).map φ.base) (ν ≫ spanR Y)
+    (by simp [μ, ν, spanR, zeroSection])
   simp only [F.map_comp, comp_base] at K₁ K₂
-  haveI := isIso_spanL F hD₁ hB₁ hD₂ hB₂ X
-  haveI := isIso_spanL F hD₁ hB₁ hD₂ hB₂ Y
-  haveI := isIso_base_map_of_baseIso F hD₁ hB₁ hD₂ hB₂ μ
-    (by change IsIso (𝟙 X.base); infer_instance)
+  haveI := isIso_spanL F hbi X
+  haveI := isIso_spanL F hbi Y
+  haveI := hbi μ (by change IsIso (𝟙 X.base); infer_instance)
   rw [← cancel_epi ((F.map μ).base ≫ (F.map (spanL X)).base)]
   simp only [baseComp, Iso.trans_hom, Iso.symm_hom, asIso_hom, asIso_inv, Category.assoc,
     IsIso.hom_inv_id_assoc]
   rw [reassoc_of% K₁, IsIso.hom_inv_id_assoc]
   exact K₂.symm
 
+omit [IsConnected D₁] [IsConnected D₂] [TotallyEpimorphic D₁] [TotallyEpimorphic D₂]
+  [F.IsEquivalence] in
+include hbi hbe in
+/-- **The base functor of an equivalence of model Frobenioids** ([FrdI], Theorem 3.4(v)): if `F`
+maps base-isomorphisms to base-isomorphisms and morphisms with the same base to morphisms with
+the same base, it lies over `F_Base`. -/
+theorem preservesBase_of : PreservesBase 𝐏₁ 𝐏₂ F :=
+  ⟨baseFunctor F, ⟨NatIso.ofComponents (fun X => baseComp F hbi X)
+    (fun φ => baseComp_natural F hbi hbe φ)⟩⟩
+
 omit [IsConnected D₁] [IsConnected D₂] in
-include hD₁ hB₁ hD₂ hB₂ in
 /-- **[FrdI], Theorem 3.4(v)** for model Frobenioids with a slim base category `D₂`: every
 equivalence lies over a functor of base categories. -/
-theorem thm34_preservesBase (hD : IsSlim D₂) : PreservesBase 𝐏₁ 𝐏₂ F :=
-  ⟨baseFunctor F, ⟨NatIso.ofComponents (fun X => baseComp F hD₁ hB₁ hD₂ hB₂ X)
-    (fun φ => baseComp_natural F hD₁ hB₁ hD₂ hB₂ hD φ)⟩⟩
+theorem thm34_preservesBase (hD₁ : BaseHyp D₁) (hB₁ : HasAllTorsion B₁) (hD₂ : BaseHyp D₂)
+    (hB₂ : HasAllTorsion B₂) (hD : IsSlim D₂) : PreservesBase 𝐏₁ 𝐏₂ F :=
+  have c := typeCorresp hD₁ hB₁ hD₂ hB₂ F
+  preservesBase_of F (fun _ _ ψ h => (c.baseIso ψ).1 h)
+    (fun _ _ φ φ' h => base_map_eq_of_base_eq F c.pullback c.baseIso φ φ' h hD)
 
 end Base
 
