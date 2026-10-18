@@ -188,6 +188,7 @@ import Iut.Frobenioid.GaloisSlim
 import Iut.Frobenioid.Global
 import Iut.Frobenioid.GlobalFracIdeal
 import Iut.Frobenioid.GlobalGalois
+import Iut.Frobenioid.GlobalGaloisCmp
 import Iut.Frobenioid.GlobalNonRlf
 import Iut.Frobenioid.GlobalPf
 import Iut.Frobenioid.GlobalPic
@@ -289,6 +290,7 @@ import Iut.Reconstruction.Cusp.CuspCentralH1
 import Iut.Reconstruction.Cusp.CuspTransgression
 import Iut.Reconstruction.Cusp.Elliptic
 import Iut.Reconstruction.Cusp.OutSemidirect
+import Iut.Reconstruction.Cusp.SurfaceDiscrete
 import Iut.Reconstruction.Cusp.SurfaceH2
 import Iut.Reconstruction.Cusp.Weights
 import Iut.Reconstruction.GroupTheoretic
