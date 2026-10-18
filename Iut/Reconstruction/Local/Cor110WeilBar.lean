@@ -27,8 +27,9 @@ here we treat the **Weil part**, the images of the `E_U^×`:
   `E_U^× ⊆ E_V^×` (`verAb_weil`, from `PadicField.artin_transfer`), hence a homomorphism
   **`weilBarHom p : weilBar G_k →* Ωˣ`**, which is **`G_k`-equivariant**
   (`weilBarHom_barConj`, from `PadicField.artin_naturality`), extends `unitsBarEquiv`
-  (`weilBarHom_eq_unitsBarEquiv`), is bijective (`weilBarEquiv`), and sends the image of `x ∈ abWeil(G_k)` at the top level to
-  the element `a ∈ k^×` with Artin symbol `x` (`weilBarHom_topBar`).
+  (`weilBarHom_eq_unitsBarEquiv`), is bijective (`weilBarEquiv`), and sends the image of
+  `x ∈ abWeil(G_k)` at the top level to the element `a ∈ k^×` with Artin symbol `x`
+  (`weilBarHom_topBar`).
 -/
 
 namespace Iut.Reconstruction
@@ -393,6 +394,7 @@ section Equivariance
 variable (σ : Ω ≃ₐ[k] Ω) (i : OpenIdx (Ω ≃ₐ[k] Ω))
 
 set_option maxHeartbeats 1000000 in
+-- elaborating the fixed fields of open subgroups and their Galois groups is slow
 /-- **`G_k`-equivariance on generators** (`PadicField.artin_naturality`). -/
 theorem weilMap_conj (x : abWeil (sg i)) :
     ((weilMap p (idxMap (conjCont σ) i)
@@ -498,6 +500,7 @@ theorem kFldTopEquiv_compat (c : k) :
       algebraMap (fld (idxTop (Ω ≃ₐ[k] Ω))) Ω (kFldTopEquiv p k Ω c) := rfl
 
 set_option maxHeartbeats 1000000 in
+-- elaborating the fixed fields of open subgroups and their Galois groups is slow
 /-- **At the top level, `weilMap` is the inverse of the Artin map of `k`**: the image of
 `x = artin(a) ∈ abWeil(G_k)` is `a`. -/
 theorem weilMap_topBar (a : kˣ) :
@@ -548,6 +551,7 @@ theorem weilMap_topBar (a : kˣ) :
   rfl
 
 set_option maxHeartbeats 1000000 in
+-- elaborating the fixed fields of open subgroups and their Galois groups is slow
 /-- **`weilBarHom` on `topBar`**: the image of `x = artin(a)`, `a ∈ k^×`, at the top level is
 `a`. -/
 theorem weilBarHom_topBar (a : kˣ) :

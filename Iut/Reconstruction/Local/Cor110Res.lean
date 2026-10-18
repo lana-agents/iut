@@ -398,6 +398,7 @@ theorem unitsBarEquiv_barEmb (z : unitsBar (Ω ≃ₐ[K'] Ω)) :
   exact unitsMap_emb i ⟨x, hx⟩
 
 set_option maxHeartbeats 1000000 in
+-- elaborating the fixed fields of open subgroups and their Galois groups is slow
 /-- **The identification `μ_n(G_{K'}) ≅ μ_n(G_k)` is compatible with `μ_n(·) ≅ μ_n(Ω)`.** -/
 theorem muNEquiv_muNEmb (n : ℕ) [NeZero n] (z : muN (Ω ≃ₐ[K'] Ω) n) :
     muNEquiv p k Ω n (muNEmb (isOpenEmbedding_resScalars K') n z) = muNEquiv p K' Ω n z := by
