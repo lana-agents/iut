@@ -346,3 +346,6 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   K-steps against MR5, A1 after MR8.5, T1.
 * Hand-off 2026-10-18 (MR9+MR19 track agent, base-reconstruction session): no MR9 changes this
   session (MR19 work only, see `Plans/MR19Plan.md`). Open MR9 items unchanged.
+* Hand-off 2026-10-18 (MR9+MR19 track agent, Option-A session): no MR9 changes (MR19 work only,
+  see `Plans/MR19Plan.md`). MR9 items stay blocked on the pin train (lead decision: no pin bumps
+  in iut until the coordinated train after MR8.5).

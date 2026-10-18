@@ -387,3 +387,47 @@ for `recFunctionField` (MR9).
   2. [FrdI] Thm 6.4(iv), last clause (`L₁ ≅ L₂` compatible with `F₁ ≅ F₂`): apply
      `GlobalGaloisRlf.thm64iv` also at `G/G` and compare the two isomorphisms (Bauer for subfields).
   3. Θ-version `ρΘ_v` (needs MR18); κ-coric items after MR9 `recFunctionField`.
+
+* 2026-10-18 (MR9+MR19 track agent, Option-A session; lead decisions: Option A, no pin bumps):
+  * **`F^⊩` global data, Option A** (iut d2a4216): `FRlfGlobal` carries only `C` and
+    `equiv : C ≌ C^⊩_mod`; `FRlfGlobal.prime` (`Prime(C^⊩) ≅ V`) and `FRlfGlobal.rho` are derived
+    (transported along `equiv`). `ThetaPmEllNFHT.Iso.Crlf : FRlfGlobal.Iso` = an equivalence with a
+    natural iso to the identifications with `C^⊩_mod` (data, no Prop field, no allowlist entry).
+    `HodgeTheater/FRlfIso.lean`: compatibility with `Prime ≅ V` (`placeEquiv_conj`,
+    `prime_primeMap`) and with the `ρ_v` (`psiPhi_conj`, `rho_psiPhi_conj`) are theorems; converse
+    `Iso.ofCompat` (an equivalence whose conjugate `σ_e` respects `Prime ≅ V` and the `ρ_v`, i.e. the
+    compatibility of IUT I Def 5.2(iv), underlies an `Iso`), so `FRlfGlobal.Iso` is exactly that
+    notion; the datum is unique (`subsingleton_comm`). General lemmas: `psiPhi_eq_of_iso`,
+    `placeEquiv_eq_of_psiPhi`, `inducesIdRatFun_of_psiPhi`, `psiPhi_eq_of_phiAt`.
+    `toLabels_surjective` kept (`Iso.viaModel`).
+  * **[FrdI] Thm 6.4(iv), last clause** (iut f710ff2, `Frobenioid/Thm64ivCompat.lean`):
+    `fieldRange_eq_of_normPrime` (Bauer for arbitrary embeddings), `compat_of_normPrime`,
+    `GlobalRealified.thm64iv_compat` (over `Pt`), **`GlobalGaloisRlf.thm64iv_compat`** (Galois base:
+    `Ψ_Base(G₁/G₁) = G₂/G₂` via `eq_topObj_of_hom`, and `L₁ ≅ L₂` compatible with `F₁ ≅ F₂`).
+    **Deviation: extra hypothesis `F₁/ℚ` Galois.** Without it the available data (norm-preserving
+    place bijections at the `L`- and `F`-levels) only make `σ₁(F₁)`, `σ₂(F₂)` subfields of
+    `σ₁(L₁) = σ₂(L₂)` with the same splitting data, which does not force conjugacy
+    (arithmetically equivalent fields). [FrdI]'s proof (l.5772–5795) does not address the clause.
+    Open; it may be false in general if a `Ψ` exists between `C_{L/F₁}` and `C_{L/F₂}` for an
+    arithmetically equivalent non-isomorphic pair `F₁, F₂ ⊆ L` (not checked).
+    `exists_fibreEquiv` factored out of `GlobalGaloisRlf.thm64iv`.
+  * **IUT I Ex 5.1(ii), (iii), field-theoretic** (`HodgeTheater/FStarMod.lean`): for
+    `D : InitialThetaData.{0}`, `F̄/F_mod` Galois, **`globalFrobenioid D = C_{F̄/F_mod}`** over
+    `B(Gal(F̄/F_mod))⁰` (ROADMAP "Done when" `globalFrobenioid`, field-theoretic version),
+    `isTerminalTopObj`, `eq_topObj_of_isTerminal`, **`globalFrobenioidMod D = F^⊛|terminal objects`**,
+    `modEquiv : C(F_mod) ≌ F^⊛_mod`, `modRealify : F^⊛_mod ⥤ C^⊩_mod` (essentially surjective).
+    Deviation: base `B(Gal(F̄/F_mod))⁰` instead of `B(π₁(C_{F_mod}))⁰` (needs MR9/MR22).
+  * Not done: **base reconstruction for the non-realified `C_{F̃/F}` on its own** — not cheap: `Φ(L)`
+    has irreducibles (the primes), so `Thm34Irr` (no irreducibles) does not apply and the route is
+    [FrdI] Prop 1.14(ii), (iii) (FSM-morphisms, bounded FSMI-chains) with `B(L) = L^×` of finite
+    torsion (est. 1.5–3k lines). Thm 6.4(iv) does not need it (`baseIsoOfRealify`).
+* **Hand-off 2026-10-18 (MR9+MR19 track agent, Option-A session).** Merged: d2a4216 (Option A),
+  f710ff2 (Thm 6.4(iv) last clause), and the `FStarMod` commit. No WIP branch. Next, in order:
+  1. Decision (lead): accept the last clause of Thm 6.4(iv) with `F₁/ℚ` Galois, or investigate the
+     general case (arithmetically equivalent pairs).
+  2. Small: `GlobalRealified.congr (τ : K ≃+* K')` (transport along ring isomorphisms), then the
+     realified `F^⊛R_mod` as the fibre of `GlobalGaloisRlf` over `G/G` with `F^⊛R_mod ≌ C^⊩_mod`
+     and an `FRlfGlobal` built from it (IUT II Cor 4.8(iii) `†C^⊩ ≅ †F^⊛R_mod`, field-theoretic).
+  3. Blocked: `ρΘ_v` (MR18); `ρ_v` into the `F^⊢`-strip components and `F^⊩_D` (Ex 3.5(iii),
+     `(R^⊢_{≥0})_v` of [AbsTopIII] Prop 5.8: MR20); κ-coric items and the group-theoretic `F^⊛`
+     (MR9 `recFunctionField`, MR22); non-realified base reconstruction (see above, optional).
