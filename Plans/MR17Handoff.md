@@ -210,9 +210,11 @@ Brauer-group step replaced by the pairing of `InvCompat.lean`):
 **Next steps (optional, MR17 leftovers):**
 1. Drop `N ⊆ H` from `thm24Pf_ii` (needs Thm 2.4(ii) compatibility under pull-backs `XN N' a → XN N a`,
    i.e. `betaPsi` for different objects; not needed for IUT).
-2. `O^□(A)^H ≅ O^□(LH)` (Rem 2.2.1) — essentially `exists_unif_rel`'s `hRtot`/`hRsurj` (the maps
-   `x ↦ endY x`, `B`) packaged as a monoid isomorphism `O_L^▷ ≅ O^▷(X)^{H_A}`; and the `(G_A/H_A)`-equivariance
-   statements of Thm 2.4(i).
+2. Done (`OrhdField.lean`): `orhdFixEquiv : O^▷(X)^{H_A} ≃ O^▷_{K̄^H}` (Rem 2.2.1, multiplicative:
+   `orhdFixEquiv_comp`) and `orhdPsiEquiv : O^▷_{K̄^H} ≃ O^▷_{K̄^{α(H)}}` induced by `Ψ` (`psiFun_mul`; the
+   `O^□` part of Thm 2.4(i)). Still open: compatibility of `orhdPsiEquiv` with the Kummer maps on all of
+   `O^▷` (as for `π` in `exists_kummer_data`; same proof with `π` replaced by any `x`), and the
+   `(G_A/H_A)`-equivariance statements of Thm 2.4(i).
 3. Move `CupGeneric.lean` (no iut dependency) to `LocalClassFieldTheory/Brauer/` (separate LCFT commit + pin bump).
 4. `thm24Pf_ii` costs ~6 min to elaborate (`exists_kummer_data` under `maxHeartbeats 800000`); splitting it
    further would help (the cost is the concrete `X`/Galois-group unifications; local `haveI`

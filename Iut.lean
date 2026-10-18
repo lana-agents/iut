@@ -201,6 +201,7 @@ import Iut.Frobenioid.Model
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.ModelTypes
 import Iut.Frobenioid.NaiveFrob
+import Iut.Frobenioid.OrhdField
 import Iut.Frobenioid.OrhdPsi
 import Iut.Frobenioid.OrhdPsiMap
 import Iut.Frobenioid.PAdic
