@@ -291,6 +291,9 @@ import Iut.Reconstruction.GroupTheoretic
 import Iut.Reconstruction.Local.AbelianZHat
 import Iut.Reconstruction.Local.Abelianization
 import Iut.Reconstruction.Local.CharCount
+import Iut.Reconstruction.Local.Cor110
+import Iut.Reconstruction.Local.Cor110H2
+import Iut.Reconstruction.Local.Cor110Kummer
 import Iut.Reconstruction.Local.Cyclotome
 import Iut.Reconstruction.Local.Frobenius
 import Iut.Reconstruction.Local.Inertia

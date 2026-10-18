@@ -221,3 +221,15 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `π = Δ ↠ Δ^ab`: `cuspCentralKer_thetaMap` (`Δ^Θ = Δ/cl⁅cl⁅Δ,Δ⁆,Δ⁆`), `thetaInertia_eq_map`
   (`Δ_Θ`), `thetaClass`. Remaining for C1: `M_X ≅ I_x` (needs `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ`, pi1), and the
   passage from the finite-level classes to `Hom(M_X, I_x)` (inverse limit over `N`).
+* 2026-10-18: **L1 (Cor 1.10(a), (b), (d), MLF level)**: `Iut/Reconstruction/Local/Cor110.lean`,
+  `Cor110H2.lean`, `Cor110Kummer.lean`.
+  * (a) `muQZ G = lim→_U (U^ab)_tors` along `verAb` (`= torsion (AbBar G)`), `μ_n(G) = muN G n`
+    as a `G`-module, both functorial in `≃ₜ*`; `muQZEquiv : μ_{ℚ/ℤ}(G_k) ≃* μ_∞(Ω)`,
+    `muNEquiv : μ_n(G_k) ≃* μ_n(Ω)` (`G_k`-equivariant); `H2ZHatG G = lim_n H²(G, μ_n(G))`,
+    functorial (`H2ZHatGEquivOf`), and `h2ZHatGEquiv : H²(G_k, μ_Ẑ(G_k)) ≃* Ẑ`.
+  * (b) `h1AbEquiv : H¹(G_k, Ẑ(1)) ≃* G_k^ab` (Kummer + `artinCompletionEquiv`), Kummer class ↦
+    Artin symbol; `frobAb : G_k^ab ↠ Ẑ`, group-theoretic (`frobAb_abEquiv`).
+  * (d) `range_kummerZHat`: Kummer image = preimage of `⟨Frob⟩ = ℤ` under `h1Frob`.
+  * Open: naturality of `h2ZHatGEquiv` under arbitrary `ψ : G_k ≃ₜ* G_{k'}` ([Mzk9] 1.2.1(vii),
+    needs cup products); Rem 1.10.1(iii) on the group side; (b) with group-theoretic `μ_Ẑ(G)`
+    coefficients in `H¹` (only levelwise comparison `muNEquiv` available).
