@@ -27,6 +27,9 @@ Here, for the global Frobenioids over `Pt` (trivial Galois extensions, so `L_i =
   prime splitting completely in `K` (`NumberField.infinite_setOf_splitsCompletely`, which replaces
   the use of Chebotarev's density theorem in [FrdI]): **`finrank_eq`** (`[K:ℚ] = [L:ℚ]`) and
   **`thm64iv_deg`** (`deg(F) = 1`).
+* **`thm64iv_galois`**: if `K/ℚ` is Galois, then `K ≅ L` (Bauer's theorem
+  `NumberField.le_of_splitsCompletely`, proved from Kronecker's density theorem, replaces the
+  second use of Chebotarev).
 -/
 
 namespace Iut
@@ -290,6 +293,63 @@ theorem thm64iv_deg : degOf F = 1 := by
   have hl : Real.log p ≠ 0 := (Real.log_pos (by exact_mod_cast hp.prime.one_lt)).ne'
   have := mul_right_cancel₀ hl (h.trans (one_mul _).symm)
   exact this
+
+/-- **`N(Ψ_Prime(v)) = N(v)`** (degree-one places correspond). -/
+theorem primeNorm_finMapZ (v : FinitePlace K) : primeNorm (finMapZ F Ψ e v) = primeNorm v := by
+  have h := degOf_mul_log F Ψ e v
+  rw [thm64iv_deg F Ψ e, one_mul] at h
+  exact Real.log_injOn_pos (Set.mem_Ioi.2 (primeNorm_pos _)) (Set.mem_Ioi.2 (primeNorm_pos _))
+    h.symm
+
+/-- **[FrdI], Theorem 6.4(iv), second part**: if `K` is Galois over `ℚ`, then `L ≅ K`.
+
+Proof (as in [FrdI], with Chebotarev replaced by Bauer's theorem
+`NumberField.le_of_splitsCompletely`): embed `K`, `L` into `ℚ̄`. If `p ∤ disc(K)` and `L` has a
+prime of norm `p`, then so does `K` (`primeNorm_finMapZ` for `F⁻¹`), hence `p` splits completely in
+the Galois field `K`; by Bauer `K ⊆ L` inside `ℚ̄`, and `[K:ℚ] = [L:ℚ]` (`finrank_eq`). -/
+theorem thm64iv_galois [IsGalois ℚ K] : Nonempty (K ≃+* L) := by
+  classical
+  let σK : K →ₐ[ℚ] AlgebraicClosure ℚ := IsAlgClosed.lift
+  let σL : L →ₐ[ℚ] AlgebraicClosure ℚ := IsAlgClosed.lift
+  let K' : IntermediateField ℚ (AlgebraicClosure ℚ) := σK.fieldRange
+  let L' : IntermediateField ℚ (AlgebraicClosure ℚ) := σL.fieldRange
+  let eK : K ≃ₐ[ℚ] K' := AlgEquiv.ofInjectiveField σK
+  let eL : L ≃ₐ[ℚ] L' := AlgEquiv.ofInjectiveField σL
+  have : NumberField K' :=
+    { to_finiteDimensional := (finiteDimensional_rat_iff _ _).mp
+        (LinearEquiv.finiteDimensional eK.toLinearEquiv) }
+  have : NumberField L' :=
+    { to_finiteDimensional := (finiteDimensional_rat_iff _ _).mp
+        (LinearEquiv.finiteDimensional eL.toLinearEquiv) }
+  have : IsGalois ℚ K' := (isGalois_rat_iff _ _).mp (IsGalois.of_algEquiv eK)
+  have hle : K' ≤ L' := by
+    refine le_of_splitsCompletely K' L' ⟨(finite_setOf_dvd_discr K).toFinset,
+      fun p hp hpS ⟨P, hP⟩ => ?_⟩
+    obtain ⟨Q, hQ⟩ := exists_heightOneSpectrum_absNorm_eq
+      (RingOfIntegers.mapRingEquiv eL.symm.toRingEquiv) P
+    let w : FinitePlace L := FinitePlace.mk Q
+    let v : FinitePlace K := finMapZ F.inv Ψ.inv (invCompatZ F Ψ e) w
+    have hv : primeNorm v = p := by
+      rw [primeNorm_finMapZ F.inv Ψ.inv (invCompatZ F Ψ e) w, primeNorm,
+        FinitePlace.maximalIdeal_mk, hQ, hP]
+    have habs : Ideal.absNorm v.maximalIdeal.asIdeal = p := by
+      have : ((Ideal.absNorm v.maximalIdeal.asIdeal : ℕ) : ℝ) = (p : ℝ) := hv
+      exact_mod_cast this
+    have := v.maximalIdeal.isPrime
+    have hmem := mem_primesOver_of_absNorm_eq hp habs
+    have hd : ¬ (p : ℤ) ∣ discr K := by simpa using hpS
+    have hsplit : SplitsCompletely K p := splitsCompletely_of_isGalois hp _ hmem
+      (ramificationIdx_eq_one_of_not_dvd_discr hp hd hmem)
+      ((absNorm_eq_iff_inertiaDeg_eq_one hp hmem).mp habs)
+    letI : Algebra K' K := eK.symm.toRingEquiv.toRingHom.toAlgebra
+    exact SplitsCompletely.of_algebra (F := K) hsplit
+  let φ : K →+* L := (eL.symm.toRingEquiv.toRingHom).comp
+    ((IntermediateField.inclusion hle).toRingHom.comp eK.toRingEquiv.toRingHom)
+  let ψ : K →ₐ[ℚ] L := φ.toRatAlgHom
+  have hinj : Function.Injective ψ.toLinearMap := ψ.toRingHom.injective
+  have hsurj := (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+    (finrank_eq F Ψ e)).mp hinj
+  exact ⟨RingEquiv.ofBijective φ ⟨hinj, hsurj⟩⟩
 
 end GlobalRealified
 
