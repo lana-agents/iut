@@ -227,7 +227,22 @@ for `recFunctionField` (MR9).
 
 * 2026-10-18: `GlobalPrimeZ.lean` (`primeEquivZ : Prime(Φ(F)) ≃ V(F)`, `primeRlf`, `primeRlf_bijective`,
   `supp_finite`); `GlobalRho.lean` (`ρ_v`, volume interpretation); `HodgeTheater/FRlfMod.lean` (global part of
-  `F^⊩_mod` from Θ-data).
+  `F^⊩_mod` from Θ-data). Later the same day: `rhoEquivFin`/`rhoEquivInf` (`ρ_v : Φ_v ≃+ ℝ≥0`), and
+  `GlobalFrobenioid.exists_supp_eq` (every finite set of places is a support).
+
+## 7. Next steps (precise)
+
+1. `FRlfStrip` (shell #8): make it carry `FRlfGlobal D` (move `FRlfGlobal` below `PrimeStrip.lean`'s imports
+   by stating it with `Place ↥(fieldOfModuli D.F D.E)` and `Cat.of (GlobalRealified _)` directly). Then
+   replace `C`/`equiv_model` and update `HodgeTheater.lean` (`Frlf.C`, `Iso.Crlf`). This is a downstream
+   rebuild of the HodgeTheater/ThetaLink/LogLink chain; plan a long build queue.
+2. IUT III Ex 3.6(ii) (item 6 of §4). Missing Mathlib input: for nonzero fractional ideals `I ≤ J ↔ ∀ v,
+   count_v J ≤ count_v I` (only the integral-ideal version `multiplicity_le_of_ideal_ge` exists). Prove it
+   via `FractionalIdeal.count_mul`, `count_finprod` and `I = ∏ 𝔭^{count}`.
+3. [FrdI] Ex 6.3 over the Galois base `B(Gal(F̃/F))^0` (item 4). Pull-back of divisors along `L ⊆ L'` is
+   `ord_{w'} = e(w'|w)·ord_w`, which is `GlobalRealified.ord_algebraMap` (`GlobalRho.lean`).
+4. The Θ-version `ρΘ_v` (Ex 3.5(ii)): at good `v` it is `ρ_v`; at bad `v` it needs `logΦ(Θ_v)/logΦ(q_v)`
+   from the tempered Frobenioid (MR18).
 * Conventions to keep in mind: the archimedean coordinate of `ArithDiv` is `−log|·|_v` with `|·|_v` Mathlib's
   `InfinitePlace` absolute value (not squared at complex places; the degree weights by `mult`), and
   `log⊢(p_v) = [v]` at archimedean `v` (`log e = 1`). The local coordinate at finite `w` is `ord_{K_w}`

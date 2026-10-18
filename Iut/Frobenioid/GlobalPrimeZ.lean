@@ -24,7 +24,7 @@ compared with the realification ([FrdI] §0: `Prime(M) ≅ Prime(M^pf)`):
 * **`GlobalFrobenioid.primeRlf`**, **`primeEquiv_primeRlf`**: realification `a ↦ castDiv a`
   induces `Prime(Φ) → Prime(Φ^rlf)`, compatible with the two bijections with `V(F)` (so it is a
   bijection, as in [FrdI] §0);
-* `GlobalFrobenioid.supp_finite`: supports are finite.
+* `GlobalFrobenioid.supp_finite`, `exists_supp_eq`: supports are exactly the finite sets of places.
 -/
 
 set_option linter.unusedSectionVars false
@@ -226,6 +226,25 @@ lemma primeRlf_bijective : Function.Bijective (primeRlf (K := K)) := by
 /-- **Supports of elements of `Φ(F)` are finite** ([FrdI], Example 6.3). -/
 theorem supp_finite (a : ArithDivZ K) : (supp (castDiv K a)).Finite :=
   (suppFinset (castDiv K a)).finite_toSet.subset fun _ hp => mem_suppFinset hp
+
+/-- **Every finite set of places is the support of an element of `Φ(F)`** ([FrdI], Example 6.3:
+"the supports of elements of `Φ(L)` are precisely the finite subsets of `V(L)`"). -/
+theorem exists_supp_eq (S : Finset (GlobalRealified.Place K)) :
+    ∃ a ∈ effConeZ K, supp (castDiv K a) = (S : Set (GlobalRealified.Place K)) := by
+  refine ⟨∑ p ∈ S, singleZ p 1, ?_, ?_⟩
+  · exact (effConeZ K).sum_mem fun p _ => (singleZ_one_isPrimary p).1
+  · ext q
+    simp only [supp, Set.mem_setOf_eq, map_sum, castDiv_singleZ, Finset.mem_coe]
+    have : coord (∑ p ∈ S, single p ((1 : ℤ) : ℝ)) q = if q ∈ S then 1 else 0 := by
+      induction S using Finset.induction_on with
+      | empty => simp
+      | insert p S hp ih =>
+        rw [Finset.sum_insert hp, coord_add, ih, coord_single]
+        by_cases hq : q = p
+        · subst hq; simp [Finset.mem_insert, hp]
+        · simp [Finset.mem_insert, hq]
+    rw [this]
+    split_ifs with h <;> simp [h]
 
 end GlobalFrobenioid
 

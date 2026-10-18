@@ -30,7 +30,7 @@ place `v` of `k` (`w = sect v`):
 * the local realified divisor monoid `Φ^rlf_{C⊢_w} = ℝ≥0` in the coordinate `ord_{K_w}` (resp.
   `−log|·|_w`); `logPhi w = logΦ(p_v)`: `ord_w(p_v)` (computed from `div_K(p_v)`), resp. `1`;
 * `localDeg w v = [K_w : k_v]` (`e(w|v)·f(w|v)`, resp. `mult w / mult v`);
-* **`rho`** `ρ_v : Φ_v → ℝ≥0`, the unique additive map with **`rho_logMod`**
+* **`rho`** `ρ_v : Φ_v → ℝ≥0` (as an isomorphism `Φ_v ≅ ℝ≥0`: `rhoEquivFin`, `rhoEquivInf`), the unique additive map with **`rho_logMod`**
   `ρ_v(log⊢(p_v)) = logΦ(p_v)/[K_w : k_v]`;
 * **`degArith_eq_vol_rho`** (the "volume interpretation"): for `z ∈ Φ_v`,
   `deg^arith_k(z) = vol_w(ρ_v z)`, where `vol_w(y) = y·log N(w)` (finite) and `[K_w : ℝ]·y`
@@ -256,6 +256,40 @@ theorem degArith_eq_vol_rho_inf {z : ArithDiv k} (hz : z ∈ phiAt (Sum.inr v)) 
   field_simp
 
 end LiesOverInf
+
+/-! ### `ρ_v` as an isomorphism `Φ_v ≅ ℝ_{≥0}` -/
+
+/-- Scaling by a positive real is an automorphism of `ℝ_{≥0}`. -/
+noncomputable def nnScale (c : ℝ) (hc : 0 < c) : NNReal ≃+ NNReal where
+  toFun t := ⟨c * t, mul_nonneg hc.le t.2⟩
+  invFun t := ⟨t / c, div_nonneg t.2 hc.le⟩
+  left_inv t := NNReal.eq (by change c * t / c = t; field_simp)
+  right_inv t := NNReal.eq (by change c * (t / c) = t; field_simp)
+  map_add' a b := NNReal.eq (by change c * (a + b : ℝ) = c * a + c * b; ring)
+
+/-- **`ρ_v : Φ_v ≅ ℝ_{≥0}`** (finite places), an isomorphism of monoids. -/
+noncomputable def rhoEquivFin {w : FinitePlace K} {v : FinitePlace k}
+    (hwv : FinitePlace.LiesOver w v) : phiAt (Sum.inl v) ≃+ NNReal :=
+  (phiAtEquiv (Sum.inl v)).trans (nnScale _ (inv_pos.mpr (Nat.cast_pos.mpr
+    (Nat.pos_of_ne_zero (inertiaDeg'_ne_zero hwv)))))
+
+lemma coe_rhoEquivFin {w : FinitePlace K} {v : FinitePlace k} (hwv : FinitePlace.LiesOver w v)
+    (z : phiAt (Sum.inl v)) : (rhoEquivFin hwv z : ℝ) = rho (Sum.inl w) (Sum.inl v) z.1 := by
+  change _ * coord z.1 (Sum.inl v) = _
+  simp only [rho]
+  ring
+
+/-- **`ρ_v : Φ_v ≅ ℝ_{≥0}`** (infinite places), an isomorphism of monoids. -/
+noncomputable def rhoEquivInf (w : InfinitePlace K) (v : InfinitePlace k) :
+    phiAt (Sum.inr v) ≃+ NNReal :=
+  (phiAtEquiv (Sum.inr v)).trans (nnScale ((v.mult : ℝ) / w.mult)
+    (div_pos (Nat.cast_pos.mpr InfinitePlace.mult_pos) (Nat.cast_pos.mpr InfinitePlace.mult_pos)))
+
+lemma coe_rhoEquivInf (w : InfinitePlace K) (v : InfinitePlace k) (z : phiAt (Sum.inr v)) :
+    (rhoEquivInf w v z : ℝ) = rho (Sum.inr w) (Sum.inr v) z.1 := by
+  change _ * coord z.1 (Sum.inr v) = _
+  simp only [rho]
+  ring
 
 end GlobalRealified
 
