@@ -283,3 +283,45 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   3. Naturality of `h1ZHatGAbEquiv` under `ψ` (cup-product pairing perfectness).
   4. K-steps: consume MR5 (CKT R2b(1), R3, cj J1–J3) once pinned; K4 stays blocked (`J^d`).
   5. A1 after MR8.5; T1 assembles U2 + C1 + K3/K4 + A1.
+* 2026-10-18 (third lead MR9 session): merged 43b79b8, 7ab458a and the `Cor110H1Natural` commit.
+  * **pi1 pin bump: deferred (decision).** pi1 master (60231e7) requires only Mathlib, and TFG main
+    already compiles unchanged against pi1 8e0239a, so the compatibility risk is low. The cost is
+    pure build time: all of pi1 (~100 files, now on the module system), 141 TFG, 11
+    orbicurve-cores and 7 oka modules, and 255 of the 409 iut modules (almost everything in
+    `Frobenioid/` and `Reconstruction/` depends on pi1 transitively). That is hours of one 7G slot,
+    and it blocks every single-file check in the worktree while it runs. Do it once, together
+    with the MR8 belyi/oka bump.
+  * **Bridge, iut side done** (`Cusp/SurfaceDiscrete.lean`): `surfComplEquiv : SurfGrp g ≃ₜ*`
+    profinite completion of the discrete one-relator group `⟨a, b | ∏⁅aᵢ,bᵢ⁆⟩`, generators to
+    generators. After the bump the remaining step is mechanical: relabel `SurfaceGen g 0 ≃ Gen g`
+    (`relator g 0 = commProd · ordProd ∅ = rel g`), then apply `PresentedGroup` congruence and the
+    `profiniteCompletion` functor.
+  * **Naturality of `h1ZHatGAbEquiv` done** (`Local/Cor110H1Natural.lean`). `chiAb_h1ZHatGAbEquiv`:
+    `χ(h1ZHatGAbEquiv [c]) = inv(χ ∪ (c mod n))`, proved by density on `(k^×)^∧`
+    (`chiAb_h1AbEquiv`, from LCFT `pairingH1_kummer`). Characters separate the points of `G^ab`
+    (`eq_of_forall_chiAb`). Hence **`h1ZHatGAbEquiv_H1ZHatGEquivOf`**: for every `ψ : G_k ≃ₜ* G_{k'}`,
+    `h1ZHatGAbEquiv k' (ψ_* x) = ψ^ab (h1ZHatGAbEquiv k x)`.
+  * **Rem 1.10.1(i) for `syncEquiv`: not done.** T3 l.2545–2551: "dividing the usual functorially
+    induced morphism on "μ_Ẑ(Π_X)'s" by a factor given by the index". In the model this needs an
+    open subgroup `H ⊆ Π̂_{g,0}` of index `d` to be identified with `Π̂_{1+d(g−1),0}`, together with
+    the cusp inertia of the induced cover of `U_x`. That is a Schreier/Riemann–Hurwitz statement for
+    profinite surface groups. pi1 has the discrete Schreier ribbon-graph results (12c03e4,
+    98c77bc); LCFT has `cor`/`res` on `ContH2` with `cor ∘ res = [G:H]`
+    (`Brauer/Corestriction.lean`, `cor_res`). Planned formal statement: the index-normalised map
+    `M_H → M_X` is the dual of `cor⁻¹`, and `syncEquiv` intertwines it with `I_y ≅ I_x`.
+  * **How iut consumes MR5 (decision): no CKT/cj pin now.**
+    * CKT main (dabc152) requires pi1 8e0239a.
+    * LCFT and tate-curves-theta depend on CKT, so a CKT bump rebuilds LCFT (466M of oleans) and
+      nearly all of iut.
+    * cj additionally requires belyi f0d1a5c, pi1 60231e7, formal-schemes e58ecf0 and weil-curves
+      007793b. iut is on weil-curves 1cadab4 (U2), so a weil-curves revision containing both is
+      needed first.
+
+    Do one coordinated pin train (pi1 + CKT + oka/belyi + formal-schemes + weil-curves + cj)
+    after MR8.5. Until then, the iut K-steps take the MR5 outputs (`κ_U`, Prop 1.6(i), Prop
+    1.8(ii) at rational points) as explicit theorem arguments: data and equations, not structure
+    fields.
+* Next steps (after the third session), in order:
+  1. Pin train (with MR8), then the one-line `SurfGrp g ≅ Pi1.ProfiniteSurfaceGroup g 0`.
+  2. Rem 1.10.1(i) as above (Schreier for `Π̂_{g,0}` from pi1's discrete version + completion).
+  3. K-steps against MR5 after the pin train; A1 after MR8.5; T1.

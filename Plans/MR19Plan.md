@@ -287,3 +287,25 @@ for `recFunctionField` (MR9).
   `InfinitePlace` absolute value (not squared at complex places; the degree weights by `mult`), and
   `log⊢(p_v) = [v]` at archimedean `v` (`log e = 1`). The local coordinate at finite `w` is `ord_{K_w}`
   (normalised valuation of `K_w`), so `ρ_v(c·[v]) = c/f(w|v)`.
+
+* 2026-10-18 (third lead MR9/MR19 session), `Frobenioid/GlobalGaloisCmp.lean` (iut 43b79b8, 7ab458a):
+  * `toZ L : ArithDivG L ≃+ ArithDivZ L` (fractional ideals ↔ `FinitePlace →₀ ℤ`), with
+    `toZ_mem_iff` (effective ↔ effective) and `toZ_divG` (div ↔ div).
+  * Generic primes `DivMonoid.Prime Φ A` and `primeCongr`.
+  * **`primeGalEquiv A : Prime(Φ(G/H)) ≃ V(E^H)`** ([FrdI] Ex 6.3, l.6281–6284).
+  * **The fibre over `G/G`**: `fixTopEquiv : F ≃+* E^G`, and `fibreTop : GlobalFrobenioid F ⥤
+    GlobalGaloisFrob F E` is `Full` and `Faithful`. Every object over `G/G` lies in its image
+    (`fibreTop_obj_mk`), and every endomorphism of `G/G` is the identity.
+  * **`degG_pbDiv`: `deg_L(σ^*D) = [L:K]·deg_K(D)`**, from `absNorm_extIdeal`
+    (`N(I·O_L) = N(I)^{[L:K]}`) and `sum_mult_comap`.
+* Next (MR19 §7 item 3, remaining):
+  * **Realification over `B(G)⁰`.** Transport `pbDiv` to coordinates (`toZ ∘ pbDiv σ ∘ toZ⁻¹`)
+    and extend it ℝ-linearly on the basis `single w 1` (`Finsupp.lift`). Functoriality and
+    preservation of effectivity follow from the integral case. Reflection of effectivity needs
+    the supports of `σ^*[w]` to be nonempty and pairwise disjoint: each prime of `O_L` lies over
+    exactly one prime of `O_K`. `B^rlf(L) = ℝ·div(L^×)` as in `GlobalRealified.ratFun`.
+  * **Thm 6.4(iv) over the Galois base.** Honest form: an equivalence
+    `Ψ : C_{F̃₁/F₁} ≌ C_{F̃₂/F₂}` induces an equivalence of the bases (Thm 3.4-type base
+    reconstruction, `Thm34Base.lean`) matching `G₁/H₁ ↔ G₂/H₂`. Restricted to the fibres over
+    `G/H` (`fibreTop`, generalised from `G/G` to any `G/H` with `End(G/H)` acting), the `Pt`
+    results `thm64iv_deg`/`thm64iv_galois` apply objectwise to `L_i = E_i^{H_i}`.
