@@ -194,6 +194,7 @@ import Iut.Frobenioid.InvCompat
 import Iut.Frobenioid.Invariance
 import Iut.Frobenioid.KummerClass
 import Iut.Frobenioid.KummerClassFrob
+import Iut.Frobenioid.KummerEquivariance
 import Iut.Frobenioid.KummerFrob
 import Iut.Frobenioid.KummerGalois
 import Iut.Frobenioid.KummerTransportGalois
@@ -222,6 +223,7 @@ import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
 import Iut.Frobenioid.Thm24Pf
 import Iut.Frobenioid.Thm24Saturated
+import Iut.Frobenioid.Thm24iCompat
 import Iut.Frobenioid.Thm24ii
 import Iut.Frobenioid.Thm24iiAux
 import Iut.Frobenioid.Thm24iiPf

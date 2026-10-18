@@ -207,19 +207,36 @@ Brauer-group step replaced by the pairing of `InvCompat.lean`):
   `L'`); `Thm24iiPfMain.lean`: `exists_kummer_data`, **`h1PairMap_kummer_unif`** (`Φ₁(κ(π)) = κ(π')`),
   **`thm24Pf_ii`**.
 
-**Next steps (optional, MR17 leftovers):**
+**Status (2026-10-18, later): MR17 leftovers.**
+* Done: `KummerEquivariance.lean` (generic, `G` discrete, `U ⊴ G` commutative, `H ≤ G`): `conjH1`/`conjH2`
+  (action `(g·c)(h) = g·c(g⁻¹hg)` of the normaliser of `H`), **`kummerClass_conjU`** (`κ(gug⁻¹) = g·κ(u)`),
+  **`conjH1_of_mem`** (`H` acts trivially on `H¹(H, μ_n(U))`, so for `H = H_A` this is an action of `G_A/H_A`),
+  **`kummerMap_conjH1`**, **`Saturation.h1Equiv_conjH1`**, **`h2Equiv_conjH2`** (the Thm 2.4(i) isomorphisms
+  are equivariant). `Thm24iCompat.lean` (`C_v`, `N ⊆ H`): **`kummer_psiFun`** (`Φ₁(κ(x)) = κ(Ψ x)` for every
+  `x ∈ O^▷_{K̄^H}`: Kummer compatibility of `orhdPsiEquiv` on all of `O^▷`), **`psiFun_galois`**
+  (`Ψ(σx) = α(σ)Ψ(x)`), **`orhdFixEquiv_conj`** (`orhdFixEquiv` is `G_E`-equivariant).
+* Item "split `exists_kummer_data`": not needed. Measured on 2026-10-18 (`lake env lean`, inside the slot,
+  `LEAN_NUM_THREADS=4`): the whole of `Thm24iiPfMain.lean` elaborates in 25 s (19.8 s typeclass inference);
+  the earlier "~6 min" was a whole-chain rebuild under load.
+* Not done: drop `N ⊆ H` from `thm24Pf_ii`. Analysis (for whoever picks it up): with `X' = XN N' a`,
+  `N' ⊆ N ∩ H` open normal, `X'` is `(n, H)`-saturated (inflation `H/(H∩N) → H/N' → H` factors, `infl₁` is
+  injective — `SaturationGen.infl₁_injective`), and the pull-back `f : X' → X` gives
+  `rfE(Ψ e') = r • rfE(Ψ e)` for `e' = f^*e` (`r` a representative of `(Ψ f).base`). The obstacle is the
+  twist `τ`: `OrhdCompat` determines `τ` only up to `g` with `g` central in `Gal(K̄^{α(N)}/E')`, and
+  `β_Ψ` changes by the cyclotomic character `χ(g)` (`h2MuEquiv_coeffMap`). One needs either a coherent
+  choice `N ↦ τ_N` (from the compatible base points `x N` in `exists_galHom_compat_orhd`, which currently
+  hides them behind `∃`) together with the naturality of `θ` for `f`, or a proof that `χ(g) ≡ 1 mod n` for
+  such central `g` (expected under saturation, since `g` commutes with the Kummer part of `Gal(K̄^{α(N)}/L')`; not checked).
+  Estimated 400–800 lines; not needed for IUT (saturated objects with `N ⊆ H` exist for every `H`).
+* Deferred (as instructed): moving `CupGeneric.lean` into LCFT.
+
+**Older next steps (MR17 leftovers), superseded by the status above:**
 1. Drop `N ⊆ H` from `thm24Pf_ii` (needs Thm 2.4(ii) compatibility under pull-backs `XN N' a → XN N a`,
    i.e. `betaPsi` for different objects; not needed for IUT).
 2. Done (`OrhdField.lean`): `orhdFixEquiv : O^▷(X)^{H_A} ≃ O^▷_{K̄^H}` (Rem 2.2.1, multiplicative:
    `orhdFixEquiv_comp`) and `orhdPsiEquiv : O^▷_{K̄^H} ≃ O^▷_{K̄^{α(H)}}` induced by `Ψ` (`psiFun_mul`; the
-   `O^□` part of Thm 2.4(i)). Still open: compatibility of `orhdPsiEquiv` with the Kummer maps on all of
-   `O^▷` (as for `π` in `exists_kummer_data`; same proof with `π` replaced by any `x`), and the
-   `(G_A/H_A)`-equivariance statements of Thm 2.4(i).
+   `O^□` part of Thm 2.4(i)).
 3. Move `CupGeneric.lean` (no iut dependency) to `LocalClassFieldTheory/Brauer/` (separate LCFT commit + pin bump).
-4. `thm24Pf_ii` costs ~6 min to elaborate (`exists_kummer_data` under `maxHeartbeats 800000`); splitting it
-   further would help (the cost is the concrete `X`/Galois-group unifications; local `haveI`
-   `FiniteDimensional`/`HasKummerRoots` instances in context make every elaboration step much slower — keep them
-   out of Frobenioid-side proofs).
 
 **Previous next steps (now done)**, kept for reference:
 **Next steps (precise), Thm 2.4(ii) for `C_v` (`Γ = gammaQ`, fieldwise saturated):** only the
