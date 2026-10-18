@@ -210,6 +210,12 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   maximal/minimal weight `2`/`0`; the occurring weights are a deep input); `IsQuasiTrivial`,
   `twist`, **`isQuasiTrivial_twist_iff`** (quasi-triviality of `M(χ⁻¹)` depends only on the
   power-equivalence class of `χ`, the point of Lemma 4.5 (ii)).
+* `Uchida/Basic.lean` ([AbsTopIII], Prop. 1.1–1.3, MR9 step U1, algorithm side) — done:
+  `ValEvalData` (the triple `(K_X^×, {ord_x}, {U_x})`), `consts`, `EvalAt`, `Gamma` (`Γ^×(E)`),
+  `ell` (`l(E)` via Prop. 1.1(ii)), `IsConfig`, `IsBasisFn`, `IsConstSum` (Prop. 1.2), `IsNegOne`,
+  `AddRel` (the additive structure on `G ∪ {0}`), and the functoriality **`Iso.addRel_iff`**.
+  Not done: correctness for function fields of proper curves over algebraically closed fields
+  (MR9 step U2, needs Riemann–Roch; `Plans/MR9Plan.md`).
 * Not done: the quasi-trivial rank `τ(M)` and Lemma 4.5 (iii) (iv) themselves (they need
   `ℓ`-adic Galois representations of curves and their weights); the remaining steps (b)–(e) of
   [AbsTopIII], Thm. 1.9 (Kummer classes of functions, additive structure on `k_NF`);

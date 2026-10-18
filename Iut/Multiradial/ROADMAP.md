@@ -463,7 +463,9 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 **MR9 — Mono-anabelian reconstruction.**
 - **Content:** [AbsTopIII] Thm 1.9 steps (a)–(e) (NF-portion of the function field), Cor 1.10 (MLF function field, `μ(G_k) ≅ μ(Π_X)`), Prop 1.3 (additive structure), Prop 3.2, 3.3 (monoid cyclotomes, unit Kummer maps, `Isom(MLF pairs) ↪ Isom(Π, Π*)`), [AbsTopI] Lemma 4.5 weights, `μ_{ℚ/ℤ}(G)`.
 - **Refs:** above, plus [AbsAnab] Prop 1.2.1 (not available).
-- **Depends on:** MR3, MR4, MR5, MR8. **Status:** P (`Reconstruction/Local/*`). **Size:** 25–45 k / 20–35.
+- **Plan:** `Plans/MR9Plan.md` (exact [AbsTopIII] §1 statements with T3 line numbers — Thm 1.9 is at l.2109, Cor 1.10 at l.2352 —, dependency map, step list U1–T2).
+- **Progress:** U1, Uchida's lemma (Prop 1.3), algorithm side and functoriality (`Reconstruction/Uchida/Basic.lean`, `Iso.addRel_iff`).
+- **Depends on:** MR3, MR4, MR5, MR8. **Status:** P (`Reconstruction/Local/*`, `Reconstruction/Uchida`). **Size:** 25–45 k / 20–35.
 - **Repo:** iut `Reconstruction`.
 - **Done when:** `def recFunctionField (Π) : Field` with `theorem recFunctionField_equiv (X/k) : recFunctionField Π_X ≃+* K_X^NF` (Thm 1.9) and `recMLF … ≃+* k̄` (Cor 1.10), each functorial (`map` over `≃ₜ*` with `map_id`, `map_comp`, and compatibility with base change). Shell #35 is gone.
 
@@ -552,7 +554,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 - **Content:** the non-realified global Frobenioid of `F_mod` ([FrdI] Ex 6.3, Thm 6.4); `Prime(C^⊩) ≅ V` and `ρ_v`; κ-coric functions `∞κ`, `∞κ×` via [AbsTopIII] Thm 1.9 (IUT I Ex 5.1(v)); IUT II Cor 4.7, 4.8 (κ-sol pseudo-monoids, `M_mod`); IUT III Ex 3.6 (arithmetic line bundles; reuse `Arakelov/`).
 - **Refs:** IUT I Ex 3.5 (l.5485), Rem 3.1.7 (l.4316, κ-coric functions), Ex 5.1 (l.8234); IUT II Cor 4.7 (l.10441), 4.8 (l.11183); IUT III Ex 3.6 (l.7074) (line numbers in `~/iut-scratch/papers/txt/`; the earlier numbers 6905/9045/9641 came from a different extraction).
 - **Plan:** `Plans/MR19Plan.md` (exact statements, what exists, what needs MR9, order of work).
-- **Progress:** `Prime(Φ(F)) ≅ V(F)` for the non-realified [FrdI] Ex 6.3 Frobenioid, compatible with realification (`Frobenioid/GlobalPrimeZ.lean`); `ρ_v` with `ρ_v(log⊢(p_v)) = logΦ(p_v)/[K_v:(F_mod)_v]` and the volume interpretation `deg^arith = vol ∘ ρ_v` (`Frobenioid/GlobalRho.lean`); the global data of `F^⊩_mod` from Θ-data (`HodgeTheater/FRlfMod.lean`, `FRlfGlobal.ofThetaData`).
+- **Progress:** `Prime(Φ(F)) ≅ V(F)` for the non-realified [FrdI] Ex 6.3 Frobenioid, compatible with realification (`Frobenioid/GlobalPrimeZ.lean`); `ρ_v` with `ρ_v(log⊢(p_v)) = logΦ(p_v)/[K_v:(F_mod)_v]` and the volume interpretation `deg^arith = vol ∘ ρ_v` (`Frobenioid/GlobalRho.lean`); the global data of `F^⊩_mod` from Θ-data (`HodgeTheater/FRlfMod.lean`, `FRlfGlobal.ofThetaData`); IUT III Ex 3.6(ii) (`Frobenioid/GlobalFracIdeal.lean`: the fractional-ideal Frobenioid is isomorphic to the Ex 6.3 Frobenioid, identity on `F^×`); [FrdI] Thm 6.4(iv) over `Pt` (`Frobenioid/Thm64iv.lean`: `thm64iv_deg`, `thm64iv_galois`).
 - **Depends on:** MR16, MR9. **Status:** P. **Size:** 10–20 k / 8–15.
 - **Repo:** iut `Frobenioid`, `Multiradial/Global`.
 - **Done when:** `def globalFrobenioid (D) : Frobenioid …`; `def kappaCoric (D) : …` with `theorem kappaCoric_kummer : kummer ∘ … = recFunctionField …`; `primeEquiv : Prime (C^⊩) ≃ V`. Shell #8 (`FRlfStrip`) is gone.

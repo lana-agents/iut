@@ -165,8 +165,11 @@ function ﬁeld" of X from the extension 1 → ΔX → ΠX → Gk → 1". The st
 * Shell #8: `HodgeTheater/PrimeStrip.lean` `FRlfStrip` (`C : Cat`, `equiv_model`, `strip`). It has no
   `Prime ≅ V` and no `ρ_v`.
 
+* New (2026-10-18): `GlobalFracIdeal.lean` (IUT III Ex 3.6(ii)), `Thm64iv.lean` ([FrdI] Thm 6.4(iv) over `Pt`).
+
 ## 3. What depends on MR9 (mono-anabelian reconstruction; only the local part exists)
 
+* MR9 itself is planned in `Plans/MR9Plan.md` (step U1, Uchida's lemma, started).
 * Everything κ: IUT I Ex 5.1(i), (v) (`M⊛`, `M⊛_κ`, `M⊛_∞κ`, `M⊛_∞κ×` as group-theoretic
   constructions from `π1(†D⊚)`; the uniqueness of ∞κ-coric structures), and IUT II Cor 4.7(i)/4.8(i)
   (the Kummer isomorphisms). These need [AbsTopIII] Thm 1.9 (a)–(e) for the once-punctured elliptic
@@ -206,9 +209,10 @@ function ﬁeld" of X from the extension 1 → ΔX → ΠX → Gk → 1". The st
    for Thm 6.4(iv)): divisor monoid `L ↦ Φ(L)` with pull-back maps along `L ⊆ L'` (`ord_{w'} = e·ord_w`,
    the same input as 2). Model Frobenioid via `Model` over `OrbitObj G` as in `GaloisModel.lean`, which
    currently supports only constant monoids.
-5. Thm 6.4(iv) (`deg = 1` for equivalences of non-realified Frobenioids): needs Thm 3.4 for
-   `GlobalFrobenioid` (MR16 for this type), plus Chebotarev for the second half (not in Mathlib).
-6. IUT III Ex 3.6(ii): the fractional-ideal Frobenioid. Objects `{J_v}`: `J_v = π_v^{n_v} O_{K_v}` at
+5. *Done over `Pt`* (`Thm64iv.lean`): Thm 6.4(iv), both halves. "Arises from `Ψ`" is the natural iso
+   `realify ⋙ F ≅ Ψ ⋙ realify`, so Thm 3.4 for `GlobalFrobenioid` is not needed; Chebotarev is replaced by
+   LCFT's `infinite_setOf_splitsCompletely` and Bauer's theorem. Over a Galois base: after item 4.
+6. *Done* (`GlobalFracIdeal.lean`; (i), (iii) open): IUT III Ex 3.6(ii): the fractional-ideal Frobenioid. Objects `{J_v}`: `J_v = π_v^{n_v} O_{K_v}` at
    finite `v` (a theorem about f.g. `O_v`-submodules of `K_v`, Mathlib's DVR API), `r_v·O` at
    archimedean `v`. Morphisms `(n, f)` with `f·J1^n ⊆ J2`. Then an isomorphism of categories with
    `GlobalFrobenioid F_mod` inducing the identity on `F_mod^×`. (i), the torsor version, follows via
@@ -225,6 +229,15 @@ for `recFunctionField` (MR9).
 
 ## 6. Status log
 
+* 2026-10-18 (later): IUT III Ex 3.6(ii) (`GlobalFracIdeal.lean`, iut c785b58): `FracIdeal.le_iff_count_le`
+  (not in Mathlib), `FracIdealFrob K`, `toModel` full, faithful, bijective on objects, identity on `K^×`,
+  Frobenius degrees preserved. Deviation (documented in the file): the text takes `J_v ⊆ K_v` for `K ⊇ F_mod`;
+  for `e(K_v|(F_mod)_v) > 1` that category is *not* isomorphic to the Ex 6.3 Frobenioid of `F_mod` compatibly
+  with the identity on `F_mod^×`, so the local fields of `F_mod` are used (cf. IUT III Rem 3.6.1, which reads
+  the `β_v` in the perfection). [FrdI] Thm 6.4(iii) restated under `PreservesRatFin` (`thm64iii_pf` is the old
+  statement); Thm 6.4(iv) over `Pt` (`Thm64iv.lean`): `thm64iv_deg` (`deg = 1`) and `thm64iv_galois`
+  (`K/ℚ` Galois ⇒ `K ≅ L`), with Chebotarev replaced by `NumberField.infinite_setOf_splitsCompletely` and
+  Bauer's theorem `NumberField.le_of_splitsCompletely` (LCFT `KroneckerDensity`). MR9 plan: `Plans/MR9Plan.md`.
 * 2026-10-18: `GlobalPrimeZ.lean` (`primeEquivZ : Prime(Φ(F)) ≃ V(F)`, `primeRlf`, `primeRlf_bijective`,
   `supp_finite`); `GlobalRho.lean` (`ρ_v`, volume interpretation); `HodgeTheater/FRlfMod.lean` (global part of
   `F^⊩_mod` from Θ-data). Later the same day: `rhoEquivFin`/`rhoEquivInf` (`ρ_v : Φ_v ≃+ ℝ≥0`), and
@@ -236,10 +249,16 @@ for `recFunctionField` (MR9).
    by stating it with `Place ↥(fieldOfModuli D.F D.E)` and `Cat.of (GlobalRealified _)` directly). Then
    replace `C`/`equiv_model` and update `HodgeTheater.lean` (`Frlf.C`, `Iso.Crlf`). This is a downstream
    rebuild of the HodgeTheater/ThetaLink/LogLink chain; plan a long build queue.
-2. IUT III Ex 3.6(ii) (item 6 of §4). Missing Mathlib input: for nonzero fractional ideals `I ≤ J ↔ ∀ v,
-   count_v J ≤ count_v I` (only the integral-ideal version `multiplicity_le_of_ideal_ge` exists). Prove it
-   via `FractionalIdeal.count_mul`, `count_finprod` and `I = ∏ 𝔭^{count}`.
-3. [FrdI] Ex 6.3 over the Galois base `B(Gal(F̃/F))^0` (item 4). Pull-back of divisors along `L ⊆ L'` is
+2. *Done:* IUT III Ex 3.6(ii). Left: Ex 3.6(i) (torsor version `F^⊛_MOD`, via `ArithLineBundle` ↔ torsors
+   with local trivialisations) and (iii) (the composite is unique on perfections/realifications; non-unique on
+   `F^⊛_mod` itself: twist by `Pic`-type automorphisms). Small: 300–600 lines.
+3. [FrdI] Ex 6.3 over the Galois base `B(Gal(F̃/F))^0` (item 4). Design: `G = Gal(F̃/F)` with the Krull
+   topology; `Φ(G/H) = ArithDivZ (F̃^H)` (needs `NumberField` on `fixedField H`, open `H`); pull-back along
+   `f : G/H → G/H'` (representative `g`, `σ_g : F̃^{H'} → F̃^H`) is `w ↦ e(w|w∘σ)·D(w∘σ)` at finite and
+   `v ↦ D(v∘σ)` at infinite places; needs `pb_comp` (multiplicativity of `e` in towers), principal-divisor
+   compatibility (`ord_algebraMap`), and FSM-morphisms of `OrbitObj G` being isomorphisms (as in
+   `GaloisModel.lean`). Estimate 1–2k lines; then Thm 6.4(iv) over this base follows the `Pt` proof
+   objectwise. Pull-back of divisors along `L ⊆ L'` is
    `ord_{w'} = e(w'|w)·ord_w`, which is `GlobalRealified.ord_algebraMap` (`GlobalRho.lean`).
 4. The Θ-version `ρΘ_v` (Ex 3.5(ii)): at good `v` it is `ρ_v`; at bad `v` it needs `logΦ(Θ_v)/logΦ(q_v)`
    from the tempered Frobenioid (MR18).

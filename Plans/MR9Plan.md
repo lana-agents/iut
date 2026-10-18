@@ -171,5 +171,20 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
 
 ## 5. Status log
 
-* 2026-10-18: plan written. U1 started (`Iut/Reconstruction/Uchida/Basic.lean`, see the status
-  update at the end of the session).
+* 2026-10-18: plan written. **U1 done (algorithm side)**: `Iut/Reconstruction/Uchida/Basic.lean`.
+  * `ValEvalData` is the triple of Prop 1.3(a)–(c); it has no Prop fields.
+  * `consts`, `EvalAt`, `Gamma`, `ell` (Prop 1.1(ii)), `IsConfig`, `IsBasisFn`, `IsConstSum` (Prop 1.2),
+    `IsNegOne`, and `AddRel` (the additive structure on `G ∪ {0}`).
+  * `Iso` is an isomorphism of triples; `Iso.addRel_iff` proves that the algorithm is functorial.
+  * Next, U2 (correctness): build the triple of a function field of a proper curve over an
+    algebraically closed `k`, and prove `AddRel a b c ↔ a + b = c`. This needs:
+    * `l(E)` = Prop 1.1(ii) (`l(E − x) ≥ l(E) − 1`, `l(E) = 0` for `deg E < 0`);
+    * Prop 1.2(i) (some `D` with `l(D) ≥ 2`; subtract points);
+    * uniqueness in 1.2(ii), (iii) (`L(D) → k²`, `f ↦ (f(y₁), f(y₂))` is injective because
+      `l(D − y₁ − y₂) = 0`);
+    * "a function is determined by its values at the infinitely many points where it is a unit".
+
+    Decide first whether iut takes a `weil-curves` dependency (it has `ell`, `riemannRoch`,
+    `Place.residue`) or whether U2 lives in weil-curves and only the bridge is in iut.
+  * The `λ/μ = −1` case is handled in `AddRel` by the `c = 0` clause. The paper leaves it
+    implicit.
