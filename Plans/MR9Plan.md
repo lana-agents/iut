@@ -122,8 +122,8 @@ Inputs from MR5 (Kummer theory of curves, status P; plan: CKT `Plans/MR5Plan.md`
 for Kummer-faithful `k` (Prop 1.6(i)), and the principal-divisor criterion (Prop 1.6(ii), (iii)).
 
 Inputs from MR8: `belyiCusp_spec`, the NF-point decomposition groups (Cor 3.7(c)), the cusp
-inertia groups as subgroups, and the iut pin bump. iut pins `belyi` 1d84db9 and `pi1` 7647d28, so
-iut does not yet see any MR8 work.
+inertia groups as subgroups. Since the pin train of 2026-10-22, iut pins `curves-jacobian`
+a258c15 (MR8.5 `belyiCusp_spec`), `belyi` 5f3a88e and `pi1` 12719c9.
 
 ## 3. What exists
 
@@ -349,3 +349,12 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
 * Hand-off 2026-10-18 (MR9+MR19 track agent, Option-A session): no MR9 changes (MR19 work only,
   see `Plans/MR19Plan.md`). MR9 items stay blocked on the pin train (lead decision: no pin bumps
   in iut until the coordinated train after MR8.5).
+* 2026-10-22 (pin-train agent): **coordinated pin train done.** pi1 12719c9, belyi 5f3a88e,
+  oka 7f2a624, tempered-fundamental-groups b65b663, orbicurve-cores d08559e, and new direct pins
+  continuous-kummer-theory 1d5194f, formal-schemes e58ecf0, elliptic-curves 8e2b208,
+  curves-jacobian a258c15 (main; MR8.5 `belyiCusp_spec`, MR5 S1b–S1e). All bumps are
+  fast-forwards of the previous pins, and every package's own manifest pins an ancestor of the
+  direct pin. Decision: pin cj now (its oleans are reused from the package build; the bump
+  rebuilt only the iut files that import changed modules), so that MR8.8 and the MR9 K-steps can
+  consume cj directly. Bridge: **`SurfaceH2.surfPi1Equiv : SurfGrp g ≃ₜ* Pi1.ProfiniteSurfaceGroup g 0`**
+  (`Cusp/SurfacePi1.lean`; relabelling `genEquiv`, `discEquiv`, generators to generators).
