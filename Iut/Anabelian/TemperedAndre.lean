@@ -5,6 +5,7 @@ Authors: LANA Project
 -/
 import Iut.Anabelian.Tempered
 import Pi1.Orbifold.Smooth
+import TemperedFundamentalGroups.Andre.TheoremAFinal
 
 /-!
 # The tempered group of a model orbicurve is André's tempered group

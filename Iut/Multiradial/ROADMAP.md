@@ -135,7 +135,7 @@ Here `MRRep`, `Procession`, `KummerIso` and `LGPLogThetaLattice` are new *types 
 | `ThetaLink/` (1.3 k, P19) | Concrete splitting / Gaussian / q monoids at bad places of `D.Kt` (`Gauss.lean`: `splitMonoid` l.72, `gaussGen` l.262, `gaussLink` l.292); Kummer statements over a field (`Kummer.lean`) | `ThetaLinkIso` (`Link.lean:71`) = full poly-iso of `RlfMuStrip`s (`PrimeStrip.lean:159`: unit = shell `FMuStrip`, val = wall `ValBPS` pilots); `ThetaLinkLGP := ThetaLinkIso` (l.75); `unitIdent := refl` (l.253); `FrobeniusPicture` chosen data (l.214); `LinkedChain.logShell` Prop field (`Wall.lean:166`) | **shell** (Gauss monoids reusable) |
 | `LogLink/` (5.5 k, P20 + items 7, 8, 10, step 4) | On a local field: log-links `LocalLogLink` (`Local.lean:150`), Prop 1.2(ii)–(v), unit-inducedness, log-shell invariance; columns and upper semi-compatibility (`Column.lean`); archimedean (`Arch.lean`, `GaloisArch.lean`: `archPolyIso_iff_*`); Galois-induced ⇒ unit-induced (`Galois.lean`, `GalKummer.lean`); splitting / LGP monoids, Prop 3.5(ii)(c) (`Split.lean`); Prop 3.10(ii)/(iii) on number fields (`Global.lean`: `nonInterference`, `divisor_trivial_iff`) | Scope decisions 1–8 of its README: local fields instead of Frobenioids; copies of one field; Kummer isos, strips, coric strips and environments as data (`LogColumn.kum` `Column.lean:63`, `LogThetaLattice.loc` `Lattice.lean:98`, `LatticeKummer.unit` `Kummer.lean:252`, `StripKummer` `StripKummer.lean:168`, `BiCoricKummer` `Thm311Rest.lean:164`, `MonoThetaKummer` l.270, `LGPColumn.kum_gen` `Split.lean:308`); `Thm311`, `Thm311LGP`, `Thm311iii`, `Thm15v` are Prop-structures proved in the model | **partial**: the local-field lemmas are reusable *after* MR21 identifies the Frobenioid data with field data through Kummer isomorphisms. The lattice, Kummer and Thm 3.11 layers are a shell |
 | `EtaleTheta/` (4.1 k, P16 + step 2) | θ̈ as a power series and its Kummer classes on `G_K` (`Theta.lean`, `KummerClass.lean`, `ThetaValues.lean`); Heisenberg group and the algebraic core of Cor 2.19(i) (`Heisenberg.lean`); EtTh Prop 2.15 discrete rigidity (`DiscreteRigidity.lean`); `Π^tp_Y`, `Π^tp_Ÿ` as stabilisers, `Π_X/Π_Y ≅ ℤ` unconditional (`TemperedCovering.lean`, `TemperedDouble.lean`); Prop 2.11 on the envelope | `Env` (`CyclotomicRigidity.lean:81`) and `MonoThetaEnv` (`MonoTheta.lean:220`) are abstract, not built from `Π^tp_Y[μ_N]`; the theta class is a model cocycle (`ThetaClass.lean`); `tempSlim_piY` needs `VerticialTempSlim` (`TempSlimPiY.lean`); `prop214` needs `hG` (`ArithEnv.lean:170`). Thm 1.6, Thm 1.10 (group-theoretic part), Cor 2.18(i), Cor 2.19 for genuine environments missing (README "research-level") | **partial** |
-| `Reconstruction/` (6.1 k, P17 + items 11/13) | Local mono-anabelian invariants from `G_K` (genuinely group-theoretic, invariant under `≃ₜ*`): `p`, `[K:ℚ_p]`, `e`, `f`, inertia, Frobenius, Weil group, `G^ab ≅ 𝒪^××Ẑ`, `K^× ≃* K'^×` with valuation, `μ_{p^k}`, H²-cyclotomic rigidity, log-shell constants and volumes (`Local/*`); outer semidirect products, the elliptic cuspidalisation step (b) (`Cusp/Elliptic.lean`) | `CuspData.inertia` given (`Cusp/Belyi.lean:46`); weights as hypotheses (`Cusp/Weights.lean:121`); [AbsTopIII] Thm 1.9 steps (b)–(e), Cor 1.10(ii)(iii), `μ_{ℚ/ℤ}(G)` via transfer: missing | **partial** (local: largely exists; global/Belyi: skeleton) |
+| `Reconstruction/` (6.1 k, P17 + items 11/13) | Local mono-anabelian invariants from `G_K` (genuinely group-theoretic, invariant under `≃ₜ*`): `p`, `[K:ℚ_p]`, `e`, `f`, inertia, Frobenius, Weil group, `G^ab ≅ 𝒪^××Ẑ`, `K^× ≃* K'^×` with valuation, `μ_{p^k}`, H²-cyclotomic rigidity, log-shell constants and volumes (`Local/*`); outer semidirect products, the elliptic cuspidalisation step (b) (`Cusp/Elliptic.lean`) | cuspidal inertia groups of curves over number fields genuine and Belyi cuspidalisation [AbsTopII] Cor 3.7, 3.8 consumed from curves-jacobian (`Cusp/BelyiSpec.lean`, MR8.8; input: rel-isom-DGC = MR7); weights as hypotheses (`Cusp/Weights.lean:121`); [AbsTopIII] Thm 1.9 steps (b)–(e), Cor 1.10(ii)(iii), `μ_{ℚ/ℤ}(G)` via transfer: missing | **partial** (local: largely exists; global/Belyi: skeleton) |
 | `Anabelian/` (5.1 k) | Model orbicurves (`Model.lean:66`), genuine étale π₁ (`Genuine/*`, `etaleEquiv` = SGA1 V.8.2), cores (`genuineHasCore`, `canLift27`), tempered π₁ and the André equivalence at `K_v` (`Tempered.lean`, `TemperedAndre.lean`, `AdicCompletion.lean`); existence of Θ-data (`Existence.lean`) | `IsThetaRootModel := IsTypeOneZModPM` (`Local.lean:52`); `orbicurveData` takes `hcore` (`Existence.lean:382`); orbicurves are records `(E, ℓ, M, ±)`, not schemes | **exists** (needs MR1 tightening) |
 | `Cor312/`, `Concrete/` (8.4 k + 14.7 k) | `InitialThetaData` (`Cor312/ThetaData/Basic.lean:81`) with Tate parameters, `qroot`, `TateFamily`; complete local theory: tensor packets, `(R_I)^∼`, log-shells (`LocalConstruct/LogShell`, `ArchLogShell`), `componentVol`, hulls, `processionVol`, IUT IV Props 1.1–1.5, 1.7; the q-pilot side `QPilotData` | The Θ-pilot region is an *input* (`RHSData.thetaPilot`, `Cor312/RightHandSide.lean:88`), filled by the hand-built `thetaPilotOn` (`Concrete/ThetaRegion.lean:273`); `IndAut` deliberately enlarges Ism; `LocalThetaData.decomp` arbitrary (`ThetaData/LocalConditions.lean:203`; fixed by MR1: now `decompGroup`) | **exists** for log-volume and packet targets (reuse in MR29) |
 | `Arakelov/` (1.9 k, P14) | Arithmetic line bundles, degrees, IUT III Prop 3.9(iii) for the concrete container, q-pilot divisor (`QPilot.lean`) | Idelic stand-ins for `F^⊛_mod` | **partial** (reuse in MR19, MR29) |
@@ -237,7 +237,8 @@ Line numbers refer to the text files of Appendix A.
 | [AbsTopIII] Cor 5.5 (l.7306), Prop 5.7 (l.7868), 5.8 (l.8012), Cor 5.10 (l.8443) | log-shells, mono-analytic reconstruction, log-volumes | P/E (`Reconstruction/Local/LogShell*`, `Concrete`) → **MR11** |
 | [AbsTopII] Cor 3.3, Def 3.5, Cor 3.7 (l.4217), 3.8 | elliptic / Belyi cuspidalisation. **Cor 3.7 hypothesis: "the rel-isom-DGC holds"** ([AbsTopI] Def 4.6(ii)) | P (elliptic step (b)) / M → **MR8** (needs **MR7**) |
 | [AbsTopI] Lemma 4.5; [AbsAnab] Prop 1.2.1, Lemma 1.3.8 (**[AbsAnab] text not available**) | weights; group-theoreticity of `p`, the cyclotomic character, `Π_X ↠ G_k` | P (weights as hypotheses) → **MR3**, **MR9** |
-| [LocAn] = [Mzk5] in AbsTopIII (**text not available**) | relative p-adic Grothendieck conjecture (Hom form, sub-p-adic) | M → **MR6**, **MR7** |
+| [LocAn] = [Mzk5] in AbsTopIII (`~/iut-scratch/papers/txt/The Local Pro-p Anabelian Geometry of Curves.txt`; Thm A l.104, truncated Thms A′, A′′ l.162, 174, isomorphism version in the Appendix l.5125) | relative p-adic Grothendieck conjecture (Hom form, sub-p-adic) | M → **MR6**, **MR7** |
+| [TopSurr] Thm 4.12 (`~/iut-scratch/papers/txt/Topics Surrounding the Anabelian Geometry of Hyperbolic Curves.txt` l.2208–2220; proof sketch l.2221–2316, "entirely similar to the proof of Theorem A in [Mzk2]" = [LocAn], once one has Cor 4.10) | isomorphism version of the GC over generalized sub-p-adic fields: `Isom(X₁, X₂) → Isom_{Γ_K}(Π_{X₁}, Π_{X₂})/Inn` bijective. Source of the rel-isom-DGC in [AbsTopI] Ex 4.8 (i) (AbsTopI l.3032; "the rel-isom-DGC follows from [Mzk5], Theorem 4.12", l.3040–3041; [Mzk5] of AbsTopI is [TopSurr], bibliography l.4341) | M → **MR7** |
 
 ### 4.5 [EtTh] (`~/iut-scratch/wall/txt/The Etale Theta Function…txt`, Dec 2008)
 
@@ -269,7 +270,7 @@ Line numbers refer to the text files of Appendix A.
 | [SemiAnbd] (`~/iut-scratch/p13/semianbd.txt`) | Ex 3.10 (l.2053) pointed stable curves over p-adic fields; Thm 6.6 (l.3725), 6.8 (l.3917), 6.5(iii), Cor 6.11, 6.12 (used by [EtTh] Thm 1.6). §6 relies on [GalSect] (Thm 1.2, 1.3, Cor 2.6, 2.8, 3.2, Lemma 3.1) and [AbsAnab] Lemma 2.3 | P (tfg tree-tower CombGC, conditional) → **MR13** |
 | [CombGC] (`p13/combgc.txt`) | Prop 1.2, 1.5, Thm 1.6 (graphicity). Cited in IUT I/II §2-type material, not in IUT III | P (tree-tower version) → **MR13** |
 | [CanLift] (`~/orbicurve-cores/references/canlift.txt`) | Prop 2.7 / Rem 2.1.1 (cores): E (orbicurve-cores, `Anabelian/CanLift.lean`). Thm 3.6 (only in IUT II Remark 1.11.x): not needed | E |
-| [GalSect] (**text not available**) | needed for [SemiAnbd] §6, hence [EtTh] Thm 1.6, hence IUT II Cor 1.12 | M → **MR13** (needs MR7: [GalSect] uses [LocAn] "in essence", per [SemiAnbd] §6, to be verified) |
+| [GalSect] (`~/iut-scratch/papers/txt/Galois Sections.txt`; Thm 1.2 l.204, Thm 1.3 l.263) | needed for [SemiAnbd] §6, hence [EtTh] Thm 1.6, hence IUT II Cor 1.12 | M → **MR13** (needs MR7: [GalSect] uses [LocAn] "in essence", per [SemiAnbd] §6; to be verified now that the text is available) |
 
 ### 4.8 Classical prerequisites
 
@@ -338,7 +339,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 | 31 | `Frobenioid/Global.lean:61`; `PAdic.lean:125`; `Arch.lean:84` | base `Pt` for all concrete Frobenioids. The `p`-adic Frobenioids over `B(G_K)⁰` now exist (`PAdicGalois.lean`); `PAdic.lean` remains until MR20 switches `padicModel`. `Pt` is IUT's own base for `C^⊩_mod` (IUT I Ex 3.5(i)) and `C_v`, `v ∈ V^arc` (IUT I Ex 3.4(i)); the archimedean `C_v` should be the angular-region Frobenioid of [FrdII] Ex 3.3, not the model of `Arch.lean` | S | MR17, MR19, MR20 |
 | 32 | `Frobenioid/Tempered.lean:73`; `TateTheta.lean:39` | `TemperedFrobenioidData` (monoids as data); `unitThetaGrp χ U` (`U` arbitrary) | D+S | MR18 |
 | 33 | `Frobenioid/Theoreticity.lean:63,75` | `PreservesFrobeniusStructure`, `PreservesBase`: conclusions of FrdI Thm 3.4, unproved | P | MR16 |
-| 34 | `Reconstruction/Cusp/Belyi.lean:44,46` | `CuspData.inertia` given | D | MR8, MR9 |
+| 34 | `Reconstruction/Cusp/Belyi.lean:44,46` | `CuspData.inertia` given — **removed (MR8.8, 2026-10-23)**: `Cusp/BelyiSpec.lean` gives the genuine cusp data `arithCuspData` (cuspidal inertia groups `arithCusps` of `Π_U`, `CuspData.Iso.ofExtIso`), filling a closed point = the group-theoretic filling (`ker_fillMap_eq_closure_kernel`), and `belyiCuspSpec`, `belyiCuspSpec_oncePunctured` ([AbsTopII] Cor 3.7 (a), (b), Cor 3.8 from curves-jacobian's `belyiCusp_spec`). Debt: `hDGC` (rel-isom-DGC, [LocAn] Thm A) as the only theorem argument, removed by MR7; open: [AbsTopI] Lemma 4.5 (v) (an isomorphism `Π_X ≃ₜ* Π_{X'}` over `G_K` preserves cusps), needed for functoriality in all `≃ₜ*` | D | MR8, MR9 |
 | 35 | `Reconstruction/Cusp/Weights.lean:121` | `powEquiv_mul_of_weights (hu hl : IsQCyclotomic …)` | P | MR3, MR9 |
 | 36 | `Reconstruction/Local/LogVolumeLCFT.lean:54`, `LogLink/Galois.lean` | `hball` (two norms have the same unit ball) — **removed (MR11)**: it is a theorem for every field carrying both structures (`Reconstruction/Local/UnitBall.lean`, `hball_auto`; no continuity assumption), and the main results have hypothesis-free versions (`LogShellMono.lean`: `measure_logShell_eq_auto`, `logVolume_logShell_eq_auto`, `image_logTensor_monoLogShell_auto`) | P (mild) | MR11 |
 | 37 | `Anabelian/Local.lean:52` | `IsThetaRootModel := IsTypeOneZModPM` (stand-in for [EtTh] Def 2.5) | W | MR1 |
@@ -439,7 +440,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 
 **MR6 — p-adic Hodge theory sufficient for [LocAn].**
 - **Content:** Tate's theorem on p-divisible groups (Hodge–Tate decomposition of `T_p` of abelian varieties with good reduction), the Hodge–Tate decomposition of `H¹_et` of curves over p-adic fields, and whatever further comparison input [LocAn] uses.
-  - **Scoping first (MR6a):** obtain the [LocAn] text, which is not available locally, and list its exact inputs.
+  - **Scoping first (MR6a):** list the exact inputs of [LocAn] (text now local: `~/iut-scratch/papers/txt/The Local Pro-p Anabelian Geometry of Curves.txt`).
 - **Refs:** [LocAn] = Mochizuki, Invent. Math. 1999 ([Mzk5] in AbsTopIII bibliography l.9468); [AbsTopIII] Rem 1.11.3.
 - **Depends on:** none (Mathlib `B_dR` start). **Status:** M. **Size:** 150–400 k / 150–400.
 - **Repo:** **new** (`padic-hodge`); QUESTION.
@@ -447,9 +448,9 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 
 **MR7 — Mochizuki's relative p-adic GC.**
 - **Content:** the Hom / Isom version for hyperbolic curves over sub-p-adic fields, in the form "rel-isom-DGC holds" ([AbsTopI] Def 4.6(ii)) that [AbsTopII] Cor 3.7 assumes.
-- **Refs:** [LocAn] Thm A; [AbsTopI] Def 4.6; [AbsTopII] Cor 3.7 (l.4217).
+- **Refs:** [LocAn] Thm A (`papers/txt/The Local Pro-p Anabelian Geometry of Curves.txt` l.104); [TopSurr] Thm 4.12 (`papers/txt/Topics Surrounding…txt` l.2208), the isomorphism version cited by [AbsTopI] Ex 4.8 (i) (l.3040–3041); [AbsTopI] Def 4.6; [AbsTopII] Cor 3.7 (l.4217).
 - **Depends on:** MR6, MR2, MR3. **Status:** M. **Size:** 60–150 k / 60–150.
-- **Repo:** new (with MR6).
+- **Repo:** curves-jacobian, `CurvesJacobian/LocAn/` (Christian, Zulip #924). `RelIsomDGC` is split into `Exists ∧ Unique` (belyi 7206d78; iut still pins belyi 5f3a88e, where `hDGC` of `Cusp/BelyiSpec.lean` is the unsplit form).
 - **Done when:** `theorem relIsomDGC (k sub-p-adic) : RelIsomDGC k`, where `RelIsomDGC` is a `def … : Prop` stating that open outer isomorphisms over `G_k` come from scheme isomorphisms, uniquely.
 
 **MR8 — Elliptic and Belyi cuspidalisation.**
@@ -461,12 +462,13 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 - **Depends on:** MR7, MR2, belyi (E). **Status:** P (elliptic step (b)). **Size:** 20–40 k / 15–30.
 - **Repo:** belyi (cuspidalisation) + iut `Reconstruction/Cusp`.
 - **Done when:** a `def belyiCusp (Π : ExtGSAFG) : …` with `theorem belyiCusp_spec (X strictly Belyi) : belyiCusp (Π_X) ≅ (Π_U ↠ Π_Y, {D_x})`, functorial in `≃ₜ*`. Shell #34 is gone.
+- **Status (2026-10-23):** MR8.5/8.6 done in curves-jacobian (`belyiCusp_spec`, `cor38_exists`, `cor38_unique`, Cor 3.7 (c) `cor37c`; only input `hDGC` = MR7). MR8.8 done: iut pins curves-jacobian (pin train of 2026-10-22) and `Reconstruction/Cusp/BelyiSpec.lean` consumes it; shell #34 removed. Functoriality is in isomorphisms of cuspidal extensions (cusp-preserving by definition); [AbsTopI] Lemma 4.5 (v) is open. MR8.7 (Cor 3.3) in progress in curves-jacobian.
 
 **MR9 — Mono-anabelian reconstruction.**
 - **Content:** [AbsTopIII] Thm 1.9 steps (a)–(e) (NF-portion of the function field), Cor 1.10 (MLF function field, `μ(G_k) ≅ μ(Π_X)`), Prop 1.3 (additive structure), Prop 3.2, 3.3 (monoid cyclotomes, unit Kummer maps, `Isom(MLF pairs) ↪ Isom(Π, Π*)`), [AbsTopI] Lemma 4.5 weights, `μ_{ℚ/ℤ}(G)`.
 - **Refs:** above, plus [AbsAnab] Prop 1.2.1 (not available).
 - **Plan:** `Plans/MR9Plan.md` (exact [AbsTopIII] §1 statements with T3 line numbers — Thm 1.9 is at l.2109, Cor 1.10 at l.2352 —, dependency map, step list U1–T2).
-- **Progress:** U1, Uchida's lemma (Prop 1.3), algorithm side and functoriality (`Reconstruction/Uchida/Basic.lean`, `Iso.addRel_iff`); U2, its correctness for function fields over algebraically closed `k` (`Reconstruction/Uchida/FunctionField.lean`, `ofFunctionField.addRel_iff`, `addRel_iso_iff`; curve side in weil-curves `FunctionField/LinearSystem`, now an iut dependency); C1, the maximal cuspidally central quotient and its transgression, with the Θ-approach (`Reconstruction/Cusp/CuspCentral.lean`, `CuspTransgression.lean`); L1, Cor 1.10(a), (b), (d) at the MLF level (`Reconstruction/Local/Cor110*.lean`); after the coordinated pin train (2026-10-22: pi1, belyi, oka, tfg, orbicurve-cores, CKT, formal-schemes, elliptic-curves, curves-jacobian a258c15), the model `Π̂_{g,0}` is `pi1`'s (`Cusp/SurfacePi1.lean`, `surfPi1Equiv`).
+- **Progress:** U1, Uchida's lemma (Prop 1.3), algorithm side and functoriality (`Reconstruction/Uchida/Basic.lean`, `Iso.addRel_iff`); U2, its correctness for function fields over algebraically closed `k` (`Reconstruction/Uchida/FunctionField.lean`, `ofFunctionField.addRel_iff`, `addRel_iso_iff`; curve side in weil-curves `FunctionField/LinearSystem`, now an iut dependency); C1, the maximal cuspidally central quotient and its transgression, with the Θ-approach (`Reconstruction/Cusp/CuspCentral.lean`, `CuspTransgression.lean`); L1, Cor 1.10(a), (b), (d) at the MLF level (`Reconstruction/Local/Cor110*.lean`); C1 bridge to geometry: the model `F̂ ↠ SurfGrp g` with `cl⟨rel⟩`, `relSub`, `cuspCentralKer` is the geometric `π₁(X ∖ {x}) ↠ π₁(X)` with `I_x`, the kernel and `cl⁅ker, π₁⁆` (`Cusp/SurfaceGeom.lean`, `exists_fhat_equiv`, from curves-jacobian's MR5 S1d); after the coordinated pin train (2026-10-22: pi1, belyi, oka, tfg, orbicurve-cores, CKT, formal-schemes, elliptic-curves, curves-jacobian a258c15), the model `Π̂_{g,0}` is `pi1`'s (`Cusp/SurfacePi1.lean`, `surfPi1Equiv`).
 - **Depends on:** MR3, MR4, MR5, MR8. **Status:** P (`Reconstruction/Local/*`, `Reconstruction/Uchida`). **Size:** 25–45 k / 20–35.
 - **Repo:** iut `Reconstruction`.
 - **Done when:** `def recFunctionField (Π) : Field` with `theorem recFunctionField_equiv (X/k) : recFunctionField Π_X ≃+* K_X^NF` (Thm 1.9) and `recMLF … ≃+* k̄` (Cor 1.10), each functorial (`map` over `≃ₜ*` with `map_id`, `map_comp`, and compatibility with base change). Shell #35 is gone.
@@ -504,7 +506,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
   - tempered vs. profinite outer isomorphisms ([SemiAnbd] Thm 6.5(iii), 6.6, 6.8, Cor 6.11, 6.12, needing [GalSect]);
   - profinite combinatorial GC ([CombGC] Thm 1.6);
   - injectivity of `Π^tp ↪ Π̂`.
-- **Refs:** [SemiAnbd] (`p13/semianbd.txt` l.2053, 3725, 3917); [CombGC] (l.690); [GalSect] (not available).
+- **Refs:** [SemiAnbd] (`p13/semianbd.txt` l.2053, 3725, 3917); [CombGC] (l.690); [GalSect] (`papers/txt/Galois Sections.txt`).
 - **Depends on:** MR12, MR2, MR3; MR7 for the [GalSect]-dependent §6 part (to be verified when [GalSect] is obtained). **Status:** P (conditional tree-tower CombGC). **Size:** 40–80 k / 40–80.
 - **Repo:** tempered-fundamental-groups.
 - **Done when:** `theorem tempSlim (X/K) : TempSlim (temperedPi1 X)`, `theorem dualGraph_groupTheoretic (X/K) : ∀ φ : Π^tp_X ≃ₜ* Π^tp_X', inducesGraphIso φ`, and `theorem tempered_profinite_outer : …` ([SemiAnbd] Thm 6.6), all unconditional. Shells #29, #42 are gone.
@@ -853,9 +855,9 @@ If Christian rejects intermediate hypotheses, Phase I is simply the internal sch
 - **R1 — p-adic Hodge theory and [LocAn] (MR6, MR7).**
   - Text-verified: [AbsTopIII] Rem 1.11.3 says Thm 1.9 depends on [Mzk5] "e.g., in their use of p-adic Hodge theory". [AbsTopII] Cor 3.7 takes "rel-isom-DGC holds" as a hypothesis.
   - This is not new mathematics, but it is a library-scale formalisation that nobody has done. Mathlib has only the beginnings of Fontaine rings.
-  - The [LocAn] text is **not available locally**, so its exact inputs are unknown until MR6a. The estimate of 150–400 k lines is the least reliable number in this document.
+  - The [LocAn] text is now local (`~/iut-scratch/papers/txt/`); its exact inputs are listed by MR6a/MR7 planning. The estimate of 150–400 k lines is the least reliable number in this document.
   - **No known bypass.** [AbsTopIII] Thm 1.11 avoids [LocAn] but only reconstructs function fields of Kummer-faithful fields, without cores. IUT needs Thm 1.9 for curves of strictly Belyi type: κ-coric functions (IUT I Ex 5.1(v)) and Cor 5.3.
-- **R2 — Texts not available locally:** [LocAn], [GalSect], [AbsAnab], [GenEll], [NodNon], [QuCnf], [Lang], André's tempered paper.
+- **R2 — Texts not available locally:** ([LocAn], [GalSect] and [TopSurr] are now in `~/iut-scratch/papers/txt/`) [AbsAnab], [GenEll], [NodNon], [QuCnf], [Lang], André's tempered paper.
   - [GalSect] and [AbsAnab] carry part of [SemiAnbd] §6 ([EtTh] Thm 1.6) and of [EtTh] Cor 2.18(i).
   - Until they are obtained, the dependencies MR13 → MR7 (dashed in §7.1) and the sizes of MR13 and MR15 are provisional. Memory note *verify-literature* applies: research subagents must fetch and cite these texts, not paraphrase them.
 - **R3 — Terse proofs.** The proofs of IUT III Thm 3.11, Props 3.5, 3.7, 3.9, IUT II Cor 1.10, 1.11 and 4.5–4.11 are one line ("follow immediately from the definitions"). The formalisation must reconstruct all details.
@@ -898,7 +900,7 @@ If Christian rejects intermediate hypotheses, Phase I is simply the internal sch
 - **Per-milestone sizing:**
   - **Line counts** were estimated as follows. First, count the results to be formalised in the cited sections, using the result lists of §4. Then multiply by an average of 0.3–1.5 k lines per paper-result. The lower factor is for definitional results, the upper for theorems whose proof leans on unformalised background. Finally, compare with the closest finished analogue: tfg for MR13, oka for MR10, LCFT for MR4, `Iut/LogLink` for MR26–MR29.
   - **Agent-days** use about 1 k lines per agent-day for foundations (MR2–MR16) and about 1.25 k for IUT-specific milestones. That includes review, rebases and validation.
-- **Error bars.** Ranges are ±50 % at best. MR6/MR7 are order-of-magnitude only, because the [LocAn] text is not available. Milestones with "follow immediately from the definitions" proofs (MR24, MR28, MR29) carry an extra risk: the definitions themselves may need several iterations (R3).
+- **Error bars.** Ranges are ±50 % at best. MR6/MR7 are order-of-magnitude only (estimated before the [LocAn] text was available). Milestones with "follow immediately from the definitions" proofs (MR24, MR28, MR29) carry an extra risk: the definitions themselves may need several iterations (R3).
 
 ---
 
@@ -916,7 +918,8 @@ If Christian rejects intermediate hypotheses, Phase I is simply the internal sch
 | SemiAnbd, CombGC | `~/iut-scratch/p13/semianbd.txt` (use `grep -a`), `combgc.txt` | |
 | CanLift | `~/orbicurve-cores/references/canlift.txt` | |
 | EssLgc | `~/iut-scratch/wall/txt/Essential Logical Structure of Inter-universal Teichmuller Theory.txt` | for R10 only |
-| **Not available** | [LocAn] (Mzk5 in AbsTopIII), [GalSect], [AbsAnab], [GenEll], [NodNon], [QuCnf], [Lang], André (tempered) | must be obtained (R1, R2) |
+| LocAn ([Mzk5] of AbsTopIII), GalSect, TopSurr ([Mzk5] of AbsTopI) | `~/iut-scratch/papers/txt/{The Local Pro-p Anabelian Geometry of Curves,Galois Sections,Topics Surrounding the Anabelian Geometry of Hyperbolic Curves}.txt` | TopSurr: use `grep -a` |
+| **Not available** | [AbsAnab], [GenEll], [NodNon], [QuCnf], [Lang], André (tempered) | must be obtained (R1, R2) |
 
 ## Appendix B. Source documents for the inventory
 

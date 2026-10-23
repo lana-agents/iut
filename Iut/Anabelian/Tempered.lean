@@ -6,10 +6,45 @@ Authors: LANA Project
 import Iut.Anabelian.Model
 import Iut.Anabelian.Genuine.Orbifold
 import Iut.Anabelian.Genuine.Theory
-import TemperedFundamentalGroups
+import TemperedFundamentalGroups.Andre.FieldChangeDirect
+import TemperedFundamentalGroups.Andre.OrbStageFunctor
+import TemperedFundamentalGroups.Andre.TateNodeChart
+import TemperedFundamentalGroups.Andre.TateProjection
+import TemperedFundamentalGroups.Andre.TateRestrictIUT
+import TemperedFundamentalGroups.Andre.TateWildFin
+import TemperedFundamentalGroups.Andre.TempSlim
+import TemperedFundamentalGroups.Andre.TransferCompare
+import TemperedFundamentalGroups.Andre.WDualGraphMap
+import TemperedFundamentalGroups.FibreFunctor.Realization
+import TemperedFundamentalGroups.Orbicurve.Orbifold
+import TemperedFundamentalGroups.SemiAnbd.Anabelioid
+import TemperedFundamentalGroups.SemiAnbd.MidpointAdj
+import TemperedFundamentalGroups.SemistableReduction.AnnulusGerm
+import TemperedFundamentalGroups.SemistableReduction.AnnulusRecognition
+import TemperedFundamentalGroups.SemistableReduction.ChartModuleNakayama
+import TemperedFundamentalGroups.SemistableReduction.EtaleBaseChange
+import TemperedFundamentalGroups.SemistableReduction.EtaleLiftUnique
+import TemperedFundamentalGroups.SemistableReduction.KummerNodeData
+import TemperedFundamentalGroups.SemistableReduction.NodeEtaleGlueReduced
+import TemperedFundamentalGroups.SemistableReduction.NormalisedModel
+import TemperedFundamentalGroups.SemistableReduction.PointReduction
+import TemperedFundamentalGroups.SemistableReduction.SplitAfterExtension
+import TemperedFundamentalGroups.SemistableReduction.TateChartFinite
+import TemperedFundamentalGroups.SemistableReduction.TateFlatAlgebraization
+import TemperedFundamentalGroups.SemistableReduction.TwoChartStructureMap
+import TemperedFundamentalGroups.SemistableReduction.ZariskiAlgebraDescent
+import TemperedFundamentalGroups.SemistableReduction.ZariskiHarmonic
+import TemperedFundamentalGroups.Setup.Schmidt
+import TemperedFundamentalGroups.Tempered.EtaleOrbCover
+import TemperedFundamentalGroups.Tempered.Kummer
 
 /-!
 # Tempered fundamental groups of the model orbicurves (taxis #7)
+
+(The imports are all of `TemperedFundamentalGroups` except the six modules over
+`SemistableReduction.LinearProjectionKer`, whose instance
+`Scheme.IdealSheafData.isReduced_subscheme_vanishingIdeal` is also declared by `oka`'s
+`AlgebraicGeometry.Modules.Support`, which `curves-jacobian` imports.)
 
 This module builds the tempered fundamental groups of the model orbicurves over the
 genuine étale fundamental groups `Orbicurve.genuinePi1 X = Genuine.pi1C E ℓ M ±` of the model

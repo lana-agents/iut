@@ -18,7 +18,8 @@ group-theoretically. The construction runs as follows:
    `Π_W`, `W = Y \ β⁻¹{0,1,∞}`, as an open subgroup of the tripod group `Π_{ℙ¹ \ {0,1,∞}}`; the
    existence of `β` (Belyi) and the group-theoretic characterisation of the open immersions
    arising this way (the Grothendieck conjecture over sub-`p`-adic fields, [AbsTopII], Cor. 3.7)
-   are the deep inputs — not formalised;
+   are the deep inputs — formalised in `curves-jacobian` (`belyiCusp_spec`, with the
+   rel-isom-DGC as the only input) and consumed in `BelyiSpec.lean`;
 2. the cusps of `W` correspond to conjugacy classes of cuspidal inertia subgroups `I_c ≤ Π_W`
    ([AbsTopI], Lemma 4.5 (v));
 3. **filling in cusps**: `Π_U = Π_W / ⟨⟨I_c : c ∉ S⟩⟩` and `Π_Y = Π_W / ⟨⟨I_c : all c⟩⟩`, and
@@ -27,6 +28,11 @@ group-theoretically. The construction runs as follows:
 Step 3 is pure group theory and is formalised here, together with its **functoriality**: an
 isomorphism of the data of step 2 (an isomorphism `Π_W ≃ Π_W'` carrying the family of cuspidal
 inertia subgroups onto the other family) induces compatible isomorphisms of the filled groups.
+
+Here the family of subgroups is arbitrary; the genuine cuspidal inertia groups of a curve over a
+number field are `BelyiSpec.lean`'s `arithCuspData` (with `CuspData.Iso.ofExtIso` for
+isomorphisms of cuspidal extensions), and there the filling is the geometric one
+(`ker_fillMap_eq_closure_kernel`).
 
 ## Main definitions and results
 

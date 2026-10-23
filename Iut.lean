@@ -297,12 +297,14 @@ import Iut.NumberTheory.SixExponentials.ExpPolyZeros
 import Iut.NumberTheory.SixExponentials.InterpolationDeterminant
 import Iut.NumberTheory.SixExponentials.LogPrimes
 import Iut.Reconstruction.Cusp.Belyi
+import Iut.Reconstruction.Cusp.BelyiSpec
 import Iut.Reconstruction.Cusp.CuspCentral
 import Iut.Reconstruction.Cusp.CuspCentralH1
 import Iut.Reconstruction.Cusp.CuspTransgression
 import Iut.Reconstruction.Cusp.Elliptic
 import Iut.Reconstruction.Cusp.OutSemidirect
 import Iut.Reconstruction.Cusp.SurfaceDiscrete
+import Iut.Reconstruction.Cusp.SurfaceGeom
 import Iut.Reconstruction.Cusp.SurfaceH2
 import Iut.Reconstruction.Cusp.SurfaceIndex
 import Iut.Reconstruction.Cusp.SurfacePi1

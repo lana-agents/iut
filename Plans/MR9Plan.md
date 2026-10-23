@@ -111,7 +111,7 @@ the κ-coric pseudo-monoids.
 | step | needs | status |
 |---|---|---|
 | Thm 1.9(a) | [AbsTopII] Cor 3.7, rel-isom-DGC ([LocAn] Thm A, MR7), weights (MR3) | MR8: group side done (`belyi` mr8: `belyiCusp`, `belyiCusp_transport`); `belyiCusp_spec` (MR8.5) blocked on MR8.3 (chain functor; ⋎ needs quotients of curves by finite groups) |
-| Thm 1.9(b) | Prop 1.4: `I_x ≅ Ẑ(1)`, maximal cuspidally central quotient, transgression, `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ` | **group side done** (`Cusp/SurfaceH2.lean`: model `Π̂_{g,0} = F̂_{2g}/⟨⟨∏⁅aᵢ,bᵢ⁆⟩⟩`); open: bridge to the geometric `Δ_{U_x} ≃ F̂_{2g}` (cj/pi1) |
+| Thm 1.9(b) | Prop 1.4: `I_x ≅ Ẑ(1)`, maximal cuspidally central quotient, transgression, `H²(Π̂_{g,0}, Ẑ) ≅ Ẑ` | **group side done** (`Cusp/SurfaceH2.lean`: model `Π̂_{g,0} = F̂_{2g}/⟨⟨∏⁅aᵢ,bᵢ⁆⟩⟩`); **bridge to geometry done** (`Cusp/SurfacePi1.lean`, `Cusp/SurfaceGeom.lean`: `exists_fhat_equiv`) |
 | Thm 1.9(c) | Prop 1.6(ii), (iii): Kummer map into `H¹(Π_U)`, `J^d`, sections `s_x`, Kummer-faithfulness | MR5 (status P, CKT `Plans/MR5Plan.md`): Def 1.5, Prop 1.6(i), the cusp-residue part of 1.6(iii) in CKT main b4003d6; 1.6(ii) and the rest of (iii) open |
 | Thm 1.9(d) | Prop 1.6(i), Prop 1.8, `s_x^* κ_U(f) = κ(f(x))` | `continuous-kummer-theory` `Specialization.map_section_kummer` (abstract sections); Prop 1.6(i) and Prop 1.8(ii) (`s_x^*κ_U(u) = κ_k(u(x))` given `D_A ↠ Gal(κ(A)/k)`) in CKT main b4003d6 |
 | Thm 1.9(e) | Prop 1.1–1.3 (Riemann–Roch-level facts on a proper curve over `k̄`) | **done** (U1 + U2: `Reconstruction/Uchida/*`, weil-curves `FunctionField/LinearSystem`) |
@@ -164,7 +164,7 @@ a258c15 (MR8.5 `belyiCusp_spec`), `belyi` 5f3a88e and `pi1` 12719c9.
 | K2 | Prop 1.8 bookkeeping relative to Kummer data given as **arguments** (`κ`, restriction maps and `res_x ∘ κ = κ_{k_x} ∘ eval_x` as hypotheses of the theorem, not structure fields): NF-functions and NF-constants are characterised by restrictions | CKT / cj | 400–800 | yes |
 | K3 | genuine `κ_U : O(U)^× → H¹(Π_U, Ẑ(1))` over non-closed `k`, injective for Kummer-faithful `k` (Prop 1.6(i)); exact sequence of Prop 1.6(iii) | MR5 (cj + CKT) | 2–4k | partly (needs `Π_U` of MR8.3(b)) |
 | K4 | Prop 1.6(ii) (principal divisors via `t_D` and `π₁(J^d)`, or the [Cusp] Prop 2.2 route through `Π^{c-ab}`) | MR5 | 3–6k | no (needs `J^d` as a scheme and `π₁(J^d)`) |
-| A1 | Thm 1.9(a) from `belyiCusp_spec` | MR8.5, then iut | 300–600 | no |
+| A1 | Thm 1.9(a) from `belyiCusp_spec` | MR8.5, then iut | 300–600 | **done** as far as MR8 goes (`Cusp/BelyiSpec.lean`; debt `hDGC`; Cor 3.7 (c) is cj `cor37c`) |
 | T1 | assemble `recFunctionField` (NF-portion) and `recFunctionField_equiv`, functorial in `≃ₜ*` | iut | 1–2k | no (needs A1, C1, K3, K4, U2) |
 | T2 | IUT I Ex 5.1(i)/(v): `M^⊛(†D^⊚)`, the κ-coric pseudo-monoids, uniqueness of ∞κ-coric structures | iut (MR19) | 2–4k | no |
 
@@ -358,3 +358,21 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   rebuilt only the iut files that import changed modules), so that MR8.8 and the MR9 K-steps can
   consume cj directly. Bridge: **`SurfaceH2.surfPi1Equiv : SurfGrp g ≃ₜ* Pi1.ProfiniteSurfaceGroup g 0`**
   (`Cusp/SurfacePi1.lean`; relabelling `genEquiv`, `discEquiv`, generators to generators).
+* 2026-10-23 (pin-train agent): **MR8.8 done**: `Cusp/BelyiSpec.lean` (`CuspData.ofExt`,
+  `CuspData.Iso.ofExtIso`, `arithCuspData`, `ker_fillMap_eq_closure_kernel`, `BelyiCuspSpec`,
+  `belyiCuspSpec`, `belyiCuspSpec_oncePunctured`); ROADMAP shell #34 removed. **Debt (explicit
+  theorem argument):** `hDGC : ∀ k [NumberField k], RelIsomDGC k` (the rel-isom-DGC, [LocAn]
+  Thm A via [AbsTopI] Def 4.6), milestone MR7. Open: [AbsTopI] Lemma 4.5 (v) (cusp preservation
+  by `Π_X ≃ₜ* Π_{X'}` over `G_K`), so that the functoriality of `belyiCusp` applies to all
+  isomorphisms and not only to isomorphisms of cuspidal extensions. **C1 bridge to geometry
+  done**: `Cusp/SurfaceGeom.lean` (`fhatEquiv : F̂ ≃ₜ* Π̂_{g,1}`, `map_relSub`, `map_relInertia`,
+  `map_cuspCentralKer`, `surfPi1Equiv_surfMap`, **`exists_fhat_equiv`**: for `X` proper over
+  `k = k̄`, char `0`, `U = X ∖ {x}`, the model `F̂ ↠ SurfGrp g` is `π₁(U) ↠ π₁(X)` with `I_x`, the
+  kernel and `cl⁅ker, π₁(U)⁆`). **Import fix:** oka 7f2a624 and tfg b65b663 both declare the
+  instance `AlgebraicGeometry.Scheme.IdealSheafData.isReduced_subscheme_vanishingIdeal`
+  (oka `Modules/Support`, tfg `SemistableReduction/LinearProjectionKer`), so no module can import
+  both; `Iut/Anabelian/Tempered.lean` now imports the three tfg modules it uses instead of the
+  umbrella `TemperedFundamentalGroups`. The MR12 track should drop tfg's copy when it bumps oka.
+  Next: the K-steps against MR5 (cj `Kummer/NFCharacterization`, `ClosedCharacterization`:
+  Prop 1.8 at NF-points; `KummerFaithful`; S1e: `cuspInertiaZHatEquiv`, `TopClass`) and the
+  Schreier/RH debt of `SurfaceIndex.lean` (`φ : H ≃ₜ* Π̂_{g',0}`, `ResCuspInput`).
