@@ -298,6 +298,7 @@ import Iut.NumberTheory.SixExponentials.InterpolationDeterminant
 import Iut.NumberTheory.SixExponentials.LogPrimes
 import Iut.Reconstruction.Cusp.Belyi
 import Iut.Reconstruction.Cusp.BelyiSpec
+import Iut.Reconstruction.Cusp.Cor37c
 import Iut.Reconstruction.Cusp.CuspCentral
 import Iut.Reconstruction.Cusp.CuspCentralH1
 import Iut.Reconstruction.Cusp.CuspTransgression
@@ -343,6 +344,7 @@ import Iut.Reconstruction.Local.UnitsColimitGalois
 import Iut.Reconstruction.Local.UnramifiedZHat
 import Iut.Reconstruction.Local.Valuation
 import Iut.Reconstruction.Local.ZHat
+import Iut.Reconstruction.Thm19.NFKummer
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
 import Iut.Reconstruction.Uchida.FunctionField
