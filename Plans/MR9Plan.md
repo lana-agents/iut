@@ -425,10 +425,14 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     route is the cheaper one (needs: `c1Div` natural under finite étale pull-back, ~0.5–1k lines in
     cj; the generic-point bridge between `SurfGrp`/`MXg` (LCFT `ContH2`, `ℕ+`) and cj `MXHat`
     (pi1 `H2lc`, `KummerIndex`)).
-  * **Thm 1.9 (c) group-theoretic `P_U`: not done.** cj's `PU` is defined through `res ∘ κ`; the
-    group-theoretic form needs (1) a bridge "residues of `κ_U(u)` at `(W, σ)` = `θ_W(σ)^{ord_W u}`"
-    indexed by `RatPoint`s (CKT `evalTriv_kummerMapZHat` has the pointwise formula, the
-    `InertiaIndex` ↔ `RatPoint`/`placeOfF` bookkeeping is missing), then (2) `η ∈ P_U ⟺` its residue
-    divisor `f` (supported on rational cusps) has `deg f = 0` and `eta f = 1` (cj
-    `eta_eq_one_iff_principal_curve`), and (3) the change of coefficients `Ẑ(1) ≅ M_X = MXHat Δ_X`
-    (`natIsoHatBar`); its `Π_U`-equivariance (MR5 S1f) is now cj `natIsoHatPi_smul`, `h1MXEquiv`.
+  * **Thm 1.9 (c) done for curves with rational cusps** (`Reconstruction/Thm19/CuspPrincipal.lean`):
+    `tameGen p` (residue of the Kummer class of a uniformiser at `p = (W, σ)`), `divAt`;
+    **`res_kummerMapZHat`** (`res_p(κ_U(u)) = θ_p^{ord_{P_p} u}`); units of `U` = functions without
+    zeros/poles over `U` (`ord_eq_zero_of_mem_units`, `isIntegral_of_forall_place` via Mathlib
+    `Subring.eq_iInf_of_isIntegrallyClosedIn`, `mem_units_of_ord`); **`mem_PU_iff_principal`**
+    (Prop 1.6 (iii) image part: `η ∈ P_U` ⟺ residues of `η` = those of a principal divisor on the
+    cusps); `sum_eq_zero_of_div_eq`; `eta_eq_one_iff_principal_curve_of_ext` (Prop 1.6 (ii) with
+    debt `JacDivFree`); **`mem_PU_iff_eta_curve`**: `η ∈ P_U` ⟺ `∃ f` on the cusps, `deg f = 0`,
+    `η_f = 1`, `HasResidues η (ratDivF f)`. Still `Ẑ(1)`-coefficients: the transport to
+    `M_X = μ_Ẑ(Π_U)` along cj `h1MXEquiv` (S1f, now pinned) and `syncEquivBar` (the isomorphisms
+    of (b): `θ_p` ↔ the generator of `I_x ≅ M_X`) is the next T1 step.
