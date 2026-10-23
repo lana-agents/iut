@@ -44,8 +44,14 @@ import Iut.Arakelov.LineBundle
 import Iut.Arakelov.QPilot
 import Iut.AutHolomorphic.Basic
 import Iut.AutHolomorphic.CAF
+import Iut.AutHolomorphic.Elliptic.Lie
+import Iut.AutHolomorphic.Elliptic.LinearHol
+import Iut.AutHolomorphic.Elliptic.RLinear
+import Iut.AutHolomorphic.Elliptic.Torus
+import Iut.AutHolomorphic.Elliptic.TorusField
 import Iut.AutHolomorphic.EntireAut
 import Iut.AutHolomorphic.HalfPlane
+import Iut.AutHolomorphic.OfCover
 import Iut.AutHolomorphic.Plane
 import Iut.AutHolomorphic.PlaneAut
 import Iut.AutHolomorphic.PlaneField

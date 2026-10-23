@@ -156,3 +156,15 @@ T2 depends on it.
 ## 5. Progress log
 
 * 2026-10-23: plan written (T0–T7).
+* 2026-10-23: T0, T1 (part) and T4 for the torus model are done.
+  * T0 is `Elliptic/Torus.lean`.
+  * T1 is `OfCover.lean`: `ofCover`, `RCAlong`, the easy half of Cor 2.3 (i) (`ofCover_conj`),
+    `restrict`, `isMorphism_val`.
+  * T4 is `Elliptic/Lie.lean`, `RLinear.lean`, `LinearHol.lean` and `TorusField.lean`:
+    * `isLinHol_iff`: the holomorphic `ℝ`-linear automorphisms of `Lie T_Λ` are exactly
+      `c ↦ a c` and `c ↦ a c̄`;
+    * `mem_apSet_iff`: `A_p` is the set of maps `c ↦ b c`;
+    * `TorusField L q ≃+* ℂ`, which is a homeomorphism.
+  * The torus model is `torusStr L` on all of `T_Λ`. It is not yet tied to the abstract input
+    `(E, A_E)`. That needs T2, T3 and T5, plus a locality lemma: `IsLinHol` at `p ≠ 0` only sees
+    `A` near `p`.

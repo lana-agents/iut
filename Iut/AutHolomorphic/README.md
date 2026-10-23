@@ -23,6 +23,12 @@ No module of this directory is imported by the comparator challenge or by the wa
 | `CAF.lean` | complex archimedean fields: `cafStr κ` (independent of `κ`, `cafStr_eq`), `tautEquiv` (`c ↦ (x ↦ c x)`), `kummer_transition_archPolyIso` (transitions lie in IUT III Prop 1.2(vii)'s poly-isomorphism `ArchPolyIso` and preserve the log-shell) | Def 4.1(i); IUT I Ex 3.4 |
 | `HalfPlane.lean` | the Aut-holomorphic disc `ℍ`: `A_ℍ(ℍ)` = Möbius maps, `globalEquivPSL : A_ℍ(ℍ) ≃* SL₂(ℝ)/{±1}` | Prop 2.2(ii) (group part) |
 | `Punctured.lean` | `ℂ^×`: `mem_global_punct` (`A_{ℂ^×}(ℂ^×) = {az, a/z}`); `eq_id_of_mul_of_monoid` | IUT I Rem 3.4.2 |
+| `OfCover.lean` | `RCDiffAt`, `RCAlong` ((anti)holomorphy along a coordinate map `π : ℂ → X`), `ofCover hπ` (Aut-holomorphic structure of a uniformised Riemann surface), `ofCover_conj` (RC-holomorphic homeomorphisms are isomorphisms), `AutHolStr.restrict`, `isMorphism_val` (open immersions are morphisms) | Def 2.1 (i), (ii); Cor 2.3 (i) (easy half); Cor 2.7 (b) |
+| `Elliptic/Torus.lean` | the complex torus `T_Λ = ℂ ⧸ Λ` (Mathlib `PeriodPair`), torsion points dense (`dense_torsion`), `eq_add_of_continuous`: the group law is the unique continuous law extending the torsion law | Cor 2.7 (c) |
+| `Elliptic/Lie.lean` | one-parameter subgroups `Lie Y = ℝ →ₜ+ Y` (tangent space, compact-open topology, `ℝ`-module), `expAt`; `lieEquiv`/`lieHomeo : ℂ ≃ Lie T_Λ` (every one-parameter subgroup is `t ↦ mk (t c)`) | Cor 2.7 (c); Rem 2.7.2 |
+| `Elliptic/RLinear.lean` | `ℝ`-linear self-maps of `ℂ`: differentiable ⇒ `ℂ`-linear; `M i M⁻¹` complex linear ⇒ `M` linear or antilinear; squares in `ℂ^× ⋊ Gal(ℂ/ℝ)` | Cor 2.7 (d), (e) |
+| `Elliptic/LinearHol.lean` | model-implicit `IsLinHol A p M` (the germ of `M` at `p` is a local morphism of Aut-holomorphic spaces), `holGroup`, **`apSet A p` = `A_p`**, `fieldSet`; for `T_Λ`: `torusStr`, `isLinHol_iff` (holomorphic ⇔ `c ↦ a c` or `c ↦ a c̄`) | Cor 2.7 (d), (e) |
+| `Elliptic/TorusField.lean` | `mem_apSet_iff` (`A_p = {c ↦ b c, b ≠ 0}`, independent of `p`); **`TorusField L q = A_p ∪ {0}`** with addition = sum of endomorphisms, multiplication = composition; `torusEquiv : TorusField L q ≃+* ℂ`, `torusHomeo` | Prop 2.6 (a), Cor 2.7 (e), Def 4.1 (i) |
 
 ## Main statements
 
@@ -47,9 +53,11 @@ Plan for [AbsTopIII] Cor 2.7 (holomorphic elliptic cuspidalisation, the part IUT
 * Aut-holomorphic structures of general Riemann surfaces and orbisurfaces (charts; Rem 2.1.1),
   the local (germ) version of Cor 2.3 and Cor 2.3(ii); the topological and commensurable
   terminality parts of Prop 2.2(ii) (Cartan's theorem).
-* Cor 2.4 (hyperbolic cores via `π₁(X^top) ↪ Aut(U)`), Prop 2.5, 2.6 (parallelograms), and the
-  holomorphic elliptic cuspidalisation Cor 2.7(a)–(d) that constructs `A_p` for an elliptically
-  admissible orbispace; Cor 2.8, 2.9.
+* Cor 2.4 (hyperbolic cores via `π₁(X^top) ↪ Aut(U)`), Prop 2.5, 2.6 (parallelograms); Cor 2.8, 2.9.
+* Cor 2.7: (d), (e) and the uniqueness half of (c) are done for the complex torus (`Elliptic/`).
+  Still open: (a) cores, (b) torsion points from elliptic cuspidalisation diagrams, the
+  reconstruction of the group law on `OnePoint E` from (b), and the transport of `A_p` to an abstract
+  Aut-holomorphic space isomorphic to `T_Λ ∖ {0}` (steps T2, T3, T5, T6, T7 of `Plans/MR10Plan.md`).
 * Archimedean Frobenioids [FrdII] Ex 3.3 over the Aut-holomorphic base, angular / radial
   log-volumes, and wiring `FullKummer.arc` (shells #18, #22) to these constructions (MR17, MR20,
   MR26).
