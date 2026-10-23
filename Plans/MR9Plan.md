@@ -436,3 +436,13 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `η_f = 1`, `HasResidues η (ratDivF f)`. Still `Ẑ(1)`-coefficients: the transport to
     `M_X = μ_Ẑ(Π_U)` along cj `h1MXEquiv` (S1f, now pinned) and `syncEquivBar` (the isomorphisms
     of (b): `θ_p` ↔ the generator of `I_x ≅ M_X`) is the next T1 step.
+* Hand-off 2026-10-23 (MR9 track agent): merged iut 82481d2, 53bf58e, 6e9ce43 (cj pin 601db27),
+  the CuspPrincipal commit and its shell-lint commit (main 72aec4d). No WIP.
+  Next, in order: (1) transport `P_U`, the residues and the Prop 1.8 test to `M_X = μ_Ẑ(Π_U)`
+  coefficients along cj `h1MXEquiv` and identify `tameGen p` with the generator of `I_x` under
+  `syncEquivBar` (the isomorphisms of Thm 1.9 (b); needs the comparison of CKT's `I_W ∩ H` with
+  cj's `cuspInertia` for `barData`, cf. `inertiaCuspEquiv`); (2) Thm 1.9 (d) as the colimit over
+  `V` and finite `k'` (removes the "positive multiple"); (3) (e): feed the NF-portion triple into
+  `Uchida.ofFunctionField` (`addRel_iso_iff`); (4) the Schreier/RH debt via the geometric route
+  (needs `c1Div` under finite étale pull-back in cj); (5) bridge cj's étale-π₁ cusp data
+  (`Cor37c`, MR8) to the Galois-model `Pi D` used by the Kummer side (T1 needs both on one `Π_U`).
