@@ -40,6 +40,8 @@ No module of this directory is imported by the comparator challenge or by the wa
 
 ## What remains of MR10
 
+Plan for [AbsTopIII] Cor 2.7 (holomorphic elliptic cuspidalisation, the part IUT cites): `Plans/MR10Plan.md`.
+
 * Co-orientations and co-holomorphicizations ([AbsTopIII] Def 2.1(iii), (iv)) via
   `Orn(Z, p) = lim π₁(W ∖ {p})^ab`.
 * Aut-holomorphic structures of general Riemann surfaces and orbisurfaces (charts; Rem 2.1.1),
