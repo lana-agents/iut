@@ -390,9 +390,14 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `IsNFKummerTest` (the test of (i) for some `η† = η^M`); **`isNFKummerTest_iff`** (Prop 1.8 (i):
     for `η ∈ P_U`, test ⟺ some positive multiple of `η` is `κ_U(w)` for a nonconstant NF-rational
     unit `w`), **`exists_restrictClosed_eq_iff`** (Prop 1.8 (ii): `c ∈ (k^×)^∧` is the class of an
-    NF-constant ⟺ `κ_U(f)|_x = c|_{G_{k_x}}` for a nonconstant NF unit `f` and an NF-point `x`),
-    and the curve forms `isNFKummerTest_iff_curve`, `exists_restrictClosed_eq_iff_curve`
-    (`curveGaloisData k hτ`, `IsKummerFaithful k`, `X(k) ≠ ∅`).
+    `IsNFConstant` element ⟺ `κ_U(f)|_x = c|_{G_{k_x}}` for a nonconstant NF unit `f` and an NF-point `x`),
+    and the curve forms (`curveGaloisData k hτ`, `X(k) ≠ ∅`, `k` torally Kummer-faithful):
+    `isNFKummerTest_iff_curve` (debt `hL : JacDivFree X σ hσ L`, `⋂_N N·J(L) = 0` for one
+    extension `L / k`), `isNFKummerTest_iff_curve_numberField`,
+    `isNFKummerTest_iff_curve_of_isKummerFaithful`, and `exists_restrictClosed_eq_iff_curve`
+    (Prop 1.8 (ii): no Jacobian input, so unconditional over number fields / `p`-adic fields).
+    **cj pin bumped da434f1 → 601db27** (MR5 S1f `SyncEquivariant`: `natIsoHatPi`, `h1MXEquiv`,
+    `kummerMapMX`; `JacobianDivExt`; manifest of cj unchanged).
     *Note (T3 l.2078–2086 re-read):* "η is the Kummer class … iff some positive multiple η† passes the
     test" is only right up to positive multiples over `k`: `η^M = κ(w)` gives `η = κ(v)·c` with
     `c ∈ (k^×)^∧`, `c^M ∈ k^×`, and `c` comes from `k'^×` only after `k' = k(c^{1/M})`; Thm 1.9 (d)
@@ -402,10 +407,9 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     **`cor37c_cusps`** (one base-point change `α₀` and one `t`: `fillMap(Comm(I)) = t·α₀(D_W(X))·t⁻¹`
     for every cuspidal subgroup `I = I_W` of `Π_{U_X}`), from cj `cor37c`; the T1(a) input
     "decomposition groups of the points of `X ∖ U_X`".
-  * **Debts (explicit theorem arguments, unchanged in kind):** `IsKummerFaithful k` for number
-    fields / `p`-adic fields (MR5 audit: Rem 1.5.4(i) for semi-abelian varieties is blocked; the
-    minimal debt is `⋂_N N·J(k) = 0` for Jacobians over `p`-adic fields); `hDGC` (MR7, existence
-    half); `φ`, `ResCuspInput` of `SurfaceIndex.lean` (see below).
+  * **Debts (explicit theorem arguments):** `hL : JacDivFree X σ hσ L` (`⋂_N N·J(L) = 0` for the
+    Jacobian over one extension `L` of `k`, e.g. `p`-adic; MR5 Task B), used only by Prop 1.8 (i)
+    "if"; `hDGC` (MR7, existence half); `φ`, `ResCuspInput` of `SurfaceIndex.lean` (see below).
   * **Schreier/RH debt of `SurfaceIndex.lean`: cost check (not discharged).** pi1 12719c9 (= pi1
     master, no newer commits) has Schreier only for subgroups of free groups / covers of punctured
     spheres (`exists_quotient_cuspSubgroup_mulEquiv_surfaceGroup`,
@@ -427,4 +431,4 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `InertiaIndex` ↔ `RatPoint`/`placeOfF` bookkeeping is missing), then (2) `η ∈ P_U ⟺` its residue
     divisor `f` (supported on rational cusps) has `deg f = 0` and `eta f = 1` (cj
     `eta_eq_one_iff_principal_curve`), and (3) the change of coefficients `Ẑ(1) ≅ M_X = MXHat Δ_X`
-    (`natIsoHatBar`), whose `Π_U`-equivariance is MR5's S1f (in progress).
+    (`natIsoHatBar`); its `Π_U`-equivariance (MR5 S1f) is now cj `natIsoHatPi_smul`, `h1MXEquiv`.

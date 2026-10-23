@@ -5,6 +5,7 @@ Authors: LANA Project
 -/
 import CurvesJacobian.Kummer.NFCurve
 import CurvesJacobian.Kummer.KummerCurve
+import CurvesJacobian.Kummer.JacobianDivExt
 
 /-!
 # [AbsTopIII] Thm 1.9 (d): Kummer classes of NF-functions and NF-constants inside `P_U`
@@ -18,10 +19,11 @@ reads:
 * (i) "A class `η ∈ P_U` is the Kummer class of a nonconstant NF-rational function if and only if
   there exist a positive multiple `η†` of `η` and NF-points `xᵢ ∈ U(k_x)`, `i = 1, 2`, […] such
   that […] `η†|x₁ = 0`, `η†|x₂ ≠ 0`."
-* (ii) If nonconstant NF-rational functions in `Γ(U, 𝒪_U^×)` exist, then "a class
-  `η ∈ P_U ⋂ H¹(G_k, M_X) ≅ (k^×)^∧` […] is the Kummer class of an NF-constant `∈ k^×` if and
-  only if there exist a nonconstant NF-rational function `f ∈ Γ(U, 𝒪_U^×)` and an NF-point
-  `x ∈ U(k_x)` […] such that `κ_U(f)|x = η|G_{k_x}`."
+* (ii) (paraphrased; the paper's word for the elements of `k^×` that descend to `k̄_NF` is the
+  one formalised as `IsNFConstant`): if nonconstant NF-rational functions in `Γ(U, 𝒪_U^×)`
+  exist, a class `η ∈ P_U ⋂ H¹(G_k, M_X) ≅ (k^×)^∧` is the Kummer class of such an element of
+  `k^×` iff there exist a nonconstant NF-rational function `f ∈ Γ(U, 𝒪_U^×)` and an NF-point
+  `x ∈ U(k_x)` such that `κ_U(f)|x = η|G_{k_x}`.
 
 Here both are assembled from curves-jacobian's MR5 results (`Kummer/NFCharacterization.lean`,
 `Kummer/NFCurve.lean`) as **equivalences** whose right-hand sides only use `P_U`, the restrictions
@@ -34,20 +36,27 @@ Here both are assembled from curves-jacobian's MR5 results (`Kummer/NFCharacteri
 * **`isNFKummerTest_iff`** (Prop 1.8 (i)): for `η ∈ P_U`, the test holds iff some positive
   multiple of `η` is the Kummer class of a nonconstant NF-rational unit of `U`;
 * **`exists_restrictClosed_eq_iff`** (Prop 1.8 (ii)): for `c ∈ (k^×)^∧`, the class of `c` passes
-  the test of (ii) iff `c` is the Kummer class of an NF-constant `b ∈ k^×`;
-* `isNFKummerTest_iff_curve`, `exists_restrictClosed_eq_iff_curve`: the same for the Galois model
-  `curveGaloisData k hτ` of a curve `X` over a Kummer-faithful field `k` with `X(k) ≠ ∅`.
+  the test of (ii) iff `c` is the Kummer class of some `b ∈ k^×` with `IsNFConstant b`;
+* `isNFKummerTest_iff_curve` (given `⋂_N N · J(L) = 0` for one extension `L / k`, curves-jacobian
+  `JacDivFree`), `isNFKummerTest_iff_curve_numberField`,
+  `isNFKummerTest_iff_curve_of_isKummerFaithful` and `exists_restrictClosed_eq_iff_curve` (no
+  Jacobian input): the same for the Galois model
+  `curveGaloisData k hτ` of a curve `X` with `X(k) ≠ ∅` over a torally Kummer-faithful field `k`
+  (number fields and finite extensions of `ℚ_p` are, unconditionally).
 
 **On "positive multiple".** The paper's (i) has `η†` only on the test side. The "if" direction
-for `η` itself is not literally true over `k`: if `η^M = κ_U(w)`, then `η = κ_U(v) · c` with
-`c ∈ (k^×)^∧` and `c^M ∈ k^×`, and `c` need not come from `k^×`. It becomes a Kummer class after
-the finite extension `k' = k(c^{1/M})`, which Thm 1.9 (d) allows (`V` ranges over curves over
-finite extensions `k'` of `k_Z`). So the exact statement over `k` is the one proved here:
+for `η` itself does not follow from the argument over `k`: if `η^M = κ_U(w)`, then
+`η = κ_U(v) · c` with `c ∈ (k^×)^∧` and `c^M ∈ k^×`, and nothing says that `c` comes from
+`k^×`. It does become a Kummer class after the finite extension `k' = k(c^{1/M})`, which
+Thm 1.9 (d) allows (`V` ranges over curves over finite extensions `k'` of `k_Z`). So the exact
+statement over `k` is the one proved here:
 "some positive multiple of `η` is the Kummer class of a nonconstant NF-rational function".
 
-**Debt.** For number fields and `p`-adic fields `IsKummerFaithful k` (Kummer-faithfulness for the
-Jacobian) is not yet a theorem of curves-jacobian (MR5, in progress); the curve versions take it
-as the explicit hypothesis `hk`, as in curves-jacobian. Recorded in `Plans/MR9Plan.md`.
+**Debt.** Prop 1.8 (i) ("if") uses Kummer-faithfulness of the Jacobian through Prop 1.6 (iii).
+For number fields this is not yet a theorem of curves-jacobian (MR5, in progress); the curve
+versions take the explicit, minimal hypothesis `hL : JacDivFree X σ hσ L` (`⋂_N N · J(L) = 0` for
+one field extension `L / k`, e.g. a finite extension of `ℚ_p`). Prop 1.8 (ii) needs no such input.
+Recorded in `Plans/MR9Plan.md`.
 -/
 
 open KummerTheory Curve AffOrbicurve IsLocalRing CurvesJacobian.Kummer
@@ -89,8 +98,8 @@ def IsNFKummerTest (η : ContH1 (Pi D) (ZHatOne (F D) Ω)) : Prop :=
   ∃ M : ℕ, 0 < M ∧ RestrictTrivAt N hHL (η ^ M) ∧ RestrictNontrivAt N hHL (η ^ M)
 
 omit [IsAlgClosed Ω] [CharZero Ω] [IsGalois (K₀ k t) Ω] [CharZero k] in
-/-- A unit of `U` that is not a constant is transcendental over `k`, if `k` is algebraically
-closed in `F`. -/
+/-- A unit of `U` that is not in the image of `kˣ` is transcendental over `k`, if `k` is
+algebraically closed in `F`. -/
 lemma transcendental_of_not_mem_range_constUnit
     (hkF : ∀ x : F D, IsAlgebraic k x → x ∈ Set.range (algebraMap k (F D)))
     (w : units D) (hw : w ∉ Set.range (constUnit D)) :
@@ -147,8 +156,8 @@ set_option synthInstance.maxHeartbeats 100000 in
 -- the action of `Gal(κ(A)/k_x)` on `Ẑ(1)_{k_x}` is found slowly (coercion of `k_x` to a type)
 /-- **[AbsTopIII] Prop 1.8 (ii)** (generic Galois model): if `U` has a nonconstant NF-rational
 unit `f₀`, then the class of `c ∈ (k^×)^∧` (an element of `P_U ∩ H¹(G_k, Ẑ(1))`) is the Kummer
-class of an NF-constant `b ∈ k^×` iff `κ_U(f)|_x = c|_{G_{k_x}}` for some nonconstant NF-rational
-unit `f` and some NF-point `x ∈ U(k_x)`, `[k_x : k] < ∞`. -/
+class of some `b ∈ k^×` with `IsNFConstant b` iff `κ_U(f)|_x = c|_{G_{k_x}}` for some
+nonconstant NF-rational unit `f` and some NF-point `x ∈ U(k_x)`, `[k_x : k] < ∞`. -/
 theorem exists_restrictClosed_eq_iff (htf : IsTorallyKummerFaithful k) (f₀ : units D)
     (hf₀ : Transcendental k ((f₀ : (F D)ˣ) : F D)) (hNF₀ : N.IsNFFunction ((f₀ : (F D)ˣ) : F D))
     (c : KummerCompletion k) :
@@ -188,12 +197,45 @@ variable (k : Type u) [Field k] [CharZero k] {X : Scheme.{u}} [X.Over (Spec (.of
 
 variable {k hτ}
 
-/-- **[AbsTopIII] Prop 1.8 (i) for an NF-curve `X` over a Kummer-faithful field `k`** with
-`X(k) ≠ ∅` (Galois model `curveGaloisData k hτ`, `U` the open where `τ` is regular): `η ∈ P_U`
-passes the test of (i) iff some positive multiple of `η` is the Kummer class of a nonconstant
+/-- **[AbsTopIII] Prop 1.8 (i) for an NF-curve `X` over a torally Kummer-faithful field `k`**
+with `X(k) ≠ ∅` (Galois model `curveGaloisData k hτ`, `U` the open where `τ` is regular), given
+`⋂_N N · J(L) = 0` for the Jacobian over **some** field extension `L / k` (curves-jacobian
+`JacDivFree`; for a number field `k` one takes `L` a finite extension of `ℚ_p`): `η ∈ P_U` passes
+the test of (i) iff some positive multiple of `η` is the Kummer class of a nonconstant
 NF-rational unit of `U`. -/
-theorem isNFKummerTest_iff_curve (N : NFModel (curveGaloisData k hτ)) (hk : IsKummerFaithful k)
+theorem isNFKummerTest_iff_curve (N : NFModel (curveGaloisData k hτ))
+    (htf : IsTorallyKummerFaithful k) (σ : Spec (CommRingCat.of k) ⟶ X)
+    (hσ : σ ≫ (X ↘ Spec (CommRingCat.of k)) = 𝟙 (Spec (CommRingCat.of k)))
+    (L : Type u) [Field L] [Algebra k L] (hL : JacDivFree X σ hσ L)
+    (η : ContH1 (Pi (curveGaloisData k hτ)) (ZHatOne (F (curveGaloisData k hτ)) (FFClosure X)))
+    (hη : η ∈ PU (curveGaloisData k hτ)) :
+    IsNFKummerTest N rfl η ↔
+      ∃ M : ℕ, 0 < M ∧ ∃ w : units (curveGaloisData k hτ),
+        η ^ M = kummerMapZHat (curveGaloisData k hτ) w ∧
+        w ∉ Set.range (constUnit (curveGaloisData k hτ)) ∧
+        N.IsNFFunction ((w : (F (curveGaloisData k hτ))ˣ) : F (curveGaloisData k hτ)) :=
+  isNFKummerTest_iff htf (isKummerFaithfulJac_curveGaloisData_of_ext k hτ σ hσ L hL)
+    (mem_range_of_isAlgebraic_F k hτ) η hη
+
+/-- **[AbsTopIII] Prop 1.8 (i) for an NF-curve over a number field** `k` with `X(k) ≠ ∅`. The
+only input is the debt `hL : ⋂_N N · J(L) = 0` for one extension `L / k` (e.g. a completion of
+`k`, a finite extension of `ℚ_p`; Kummer-faithfulness of `p`-adic fields for Jacobians, MR5). -/
+theorem isNFKummerTest_iff_curve_numberField [NumberField k] (N : NFModel (curveGaloisData k hτ))
     (σ : Spec (CommRingCat.of k) ⟶ X)
+    (hσ : σ ≫ (X ↘ Spec (CommRingCat.of k)) = 𝟙 (Spec (CommRingCat.of k)))
+    (L : Type u) [Field L] [Algebra k L] (hL : JacDivFree X σ hσ L)
+    (η : ContH1 (Pi (curveGaloisData k hτ)) (ZHatOne (F (curveGaloisData k hτ)) (FFClosure X)))
+    (hη : η ∈ PU (curveGaloisData k hτ)) :
+    IsNFKummerTest N rfl η ↔
+      ∃ M : ℕ, 0 < M ∧ ∃ w : units (curveGaloisData k hτ),
+        η ^ M = kummerMapZHat (curveGaloisData k hτ) w ∧
+        w ∉ Set.range (constUnit (curveGaloisData k hτ)) ∧
+        N.IsNFFunction ((w : (F (curveGaloisData k hτ))ˣ) : F (curveGaloisData k hτ)) :=
+  isNFKummerTest_iff_curve N (NumberField.isTorallyKummerFaithful k) σ hσ L hL η hη
+
+/-- **[AbsTopIII] Prop 1.8 (i) over a Kummer-faithful field** ([AbsTopIII] Def 1.5). -/
+theorem isNFKummerTest_iff_curve_of_isKummerFaithful (N : NFModel (curveGaloisData k hτ))
+    (hk : IsKummerFaithful k) (σ : Spec (CommRingCat.of k) ⟶ X)
     (hσ : σ ≫ (X ↘ Spec (CommRingCat.of k)) = 𝟙 (Spec (CommRingCat.of k)))
     (η : ContH1 (Pi (curveGaloisData k hτ)) (ZHatOne (F (curveGaloisData k hτ)) (FFClosure X)))
     (hη : η ∈ PU (curveGaloisData k hτ)) :
@@ -205,11 +247,11 @@ theorem isNFKummerTest_iff_curve (N : NFModel (curveGaloisData k hτ)) (hk : IsK
   isNFKummerTest_iff hk.isTorallyKummerFaithful
     (isKummerFaithfulJac_of_isKummerFaithful k hτ hk σ hσ) (mem_range_of_isAlgebraic_F k hτ) η hη
 
-/-- **[AbsTopIII] Prop 1.8 (ii) for an NF-curve `X` over a Kummer-faithful field `k`**: if `U`
-has a nonconstant NF-rational unit, the class of `c ∈ (k^×)^∧` is the Kummer class of an
-NF-constant iff it passes the test of (ii). -/
+/-- **[AbsTopIII] Prop 1.8 (ii) for an NF-curve `X` over a torally Kummer-faithful field `k`**:
+if `U` has a nonconstant NF-rational unit, the class of `c ∈ (k^×)^∧` is the Kummer class of an
+`IsNFConstant` element of `kˣ` iff it passes the test of (ii). No Jacobian input is needed. -/
 theorem exists_restrictClosed_eq_iff_curve (N : NFModel (curveGaloisData k hτ))
-    (hk : IsKummerFaithful k) (f₀ : units (curveGaloisData k hτ))
+    (htf : IsTorallyKummerFaithful k) (f₀ : units (curveGaloisData k hτ))
     (hf₀ : Transcendental k ((f₀ : (F (curveGaloisData k hτ))ˣ) : F (curveGaloisData k hτ)))
     (hNF₀ : N.IsNFFunction ((f₀ : (F (curveGaloisData k hτ))ˣ) : F (curveGaloisData k hτ)))
     (c : KummerCompletion k) :
@@ -230,7 +272,7 @@ theorem exists_restrictClosed_eq_iff_curve (N : NFModel (curveGaloisData k hτ))
               restrictClosed (curveGaloisData k hτ) A hkA
                 (Decomposition.residue_algebraMap_residueAlgebra A hkA) rfl ht
                 (constMapZHat (curveGaloisData k hτ) c) :=
-  exists_restrictClosed_eq_iff hk.isTorallyKummerFaithful f₀ hf₀ hNF₀ c
+  exists_restrictClosed_eq_iff htf f₀ hf₀ hNF₀ c
 
 end Curve
 
