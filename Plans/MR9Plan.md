@@ -376,3 +376,8 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Next: the K-steps against MR5 (cj `Kummer/NFCharacterization`, `ClosedCharacterization`:
   Prop 1.8 at NF-points; `KummerFaithful`; S1e: `cuspInertiaZHatEquiv`, `TopClass`) and the
   Schreier/RH debt of `SurfaceIndex.lean` (`φ : H ≃ₜ* Π̂_{g',0}`, `ResCuspInput`).
+* 2026-10-23 (pin-train agent, second bump): belyi 5f3a88e → 7206d78 (`RelIsomDGC.Exists/Unique`),
+  curves-jacobian a258c15 → da434f1 (MR8 round 29 incl. `ellipticCusp_spec_oncePunctured`; MR7
+  uniqueness of the rel-isom-DGC proved; MR5 S1e). `Cusp/BelyiSpec.lean` now takes only
+  **`hDGC : ∀ k [NumberField k], RelIsomDGC.Exists k`** (the debt is the existence half only) and
+  adds `ellipticCuspSpec_oncePunctured` (step (a) of `Cusp/Elliptic.lean` for `X = E ∖ {O}`).

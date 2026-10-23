@@ -14,7 +14,9 @@ with `D → C` a semi-elliptic double cover, `U ⊆ D` the complement of the `N`
 `Π_{U_X} ↠ Π` is constructed in three steps:
 
 * (a) `Π_U ↠ Π_D` from a chain of `Π` (this uses the relative Grothendieck conjecture and the
-  categories of [AbsTopI], §4 — a deep input, not formalised);
+  categories of [AbsTopI], §4); for IUT's `X = E ∖ {O}` with `N = 2` this is
+  `Iut.Reconstruction.ellipticCuspSpec_oncePunctured` (`BelyiSpec.lean`, from curves-jacobian's
+  `ellipticCusp_spec_oncePunctured`, part (b)), with `V = D = X`;
 * (a′) `Π_{U_V} ↠ Π_V` as the fibre product of `Π_U ↠ Π_D` with `Π_V ↪ Π_D`
   (`Iut.Reconstruction.fibreSubgroup`, `Iut.Reconstruction.fibreSubgroup_surjective`);
 * (b) `Π_{U_X}` as the out-semidirect product of `Π_{U_V}` with the finite group `Π/Π_V`,

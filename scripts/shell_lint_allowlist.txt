@@ -1526,3 +1526,33 @@ VanKampen.Hypotheses.isPathConnected_right	new
 VanKampen.Hypotheses.mem_inter	new
 VanKampen.Hypotheses.union_eq	new
 VanKampen.PathClassHom.map_trans'	new
+# Second bump 2026-10-23 (belyi 7206d78, curves-jacobian da434f1): elliptic candidates (`def`, as
+# CuspCandidate); EllipticData (construction data of the elliptic chain) and TorsRep: `new`.
+Belyi.Anabelian.EllCandidate.emb_injective	def
+Belyi.Anabelian.EllCandidate.incl_injective	def
+Belyi.Anabelian.EllCandidate.isOpen_range_emb	def
+Belyi.Anabelian.EllCandidate.isOpen_range_incl	def
+Belyi.Anabelian.EllCandidate.surj_surjective	def
+CurvesJacobian.Cusp.EllipticData.finFD	new
+CurvesJacobian.Cusp.EllipticData.finFQ	new
+CurvesJacobian.Cusp.EllipticData.finFV	new
+CurvesJacobian.Cusp.EllipticData.finβ	new
+CurvesJacobian.Cusp.EllipticData.hFD	new
+CurvesJacobian.Cusp.EllipticData.hFQ	new
+CurvesJacobian.Cusp.EllipticData.hFV	new
+CurvesJacobian.Cusp.EllipticData.hUW0	new
+CurvesJacobian.Cusp.EllipticData.hcQ	new
+CurvesJacobian.Cusp.EllipticData.hcUW	new
+CurvesJacobian.Cusp.EllipticData.hcV	new
+CurvesJacobian.Cusp.EllipticData.hcW	new
+CurvesJacobian.Cusp.EllipticData.hleW	new
+CurvesJacobian.Cusp.EllipticData.hmonoW	new
+CurvesJacobian.Cusp.EllipticData.hxUW	new
+CurvesJacobian.Cusp.EllipticData.hxUW'	new
+CurvesJacobian.Cusp.EllipticData.hxW	new
+CurvesJacobian.Cusp.EllipticData.hypW	new
+CurvesJacobian.Cusp.EllipticData.hβ	new
+CurvesJacobian.Cusp.EllipticData.ratW	new
+CurvesJacobian.TorsRep.f_ne	new
+CurvesJacobian.TorsRep.mk_eq	new
+CurvesJacobian.TorsRep.nsmul_eq	new

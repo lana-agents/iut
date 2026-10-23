@@ -5,6 +5,7 @@ Authors: LANA Project
 -/
 import Iut.Reconstruction.Cusp.Belyi
 import CurvesJacobian.Cusp.BelyiCuspSpec
+import CurvesJacobian.Cusp.EllipticCuspSpec
 
 /-!
 # Belyi cuspidalisation of `Π_X` (MR8.8): the genuine cusp data and `belyiCusp_spec`
@@ -27,11 +28,17 @@ group-theoretic algorithm of [AbsTopII] Cor 3.7, 3.8 with its specification, bot
 * `BelyiCuspSpec Ω C hc` (the statement of [AbsTopII] Cor 3.7 (a), (b), Cor 3.8 for
   `belyiCusp (Π_X)`) and **`belyiCuspSpec`** (`X` of strictly Belyi type with a Galois Belyi
   cover), **`belyiCuspSpec_oncePunctured`** (`X = E ∖ {O}` with rational `E[2]`, the case of
-  IUT I, Def 3.1 (b)).
+  IUT I, Def 3.1 (b));
+* **`ellipticCuspSpec_oncePunctured`** ([AbsTopII] Ex 3.2, Cor 3.3 (iii)(a) for `X = E ∖ {O}`,
+  `N = 2`): the elliptic cuspidalisation `Π_{E ∖ E[2]} ↠ Π_{E ∖ {O}}`, step (a) of
+  `Elliptic.lean`.
 
-**Debt (explicit theorem argument).** The only input is `hDGC`, the rel-isom-DGC over all number
-fields ([LocAn] Thm A, via [AbsTopI] Def 4.6; `Belyi.Anabelian.RelIsomDGC`), which is milestone
-MR7 (the relative `p`-adic Grothendieck conjecture). It is recorded in `Plans/MR9Plan.md`.
+**Debt (explicit theorem argument).** The only input is `hDGC`, the **existence half** of the
+rel-isom-DGC over all number fields (`Belyi.Anabelian.RelIsomDGC.Exists`: every isomorphism
+`Π_{U₁} ≃ₜ* Π_{U₂}` over `G_k` is induced by a `k`-isomorphism; [LocAn] Thm A, [TopSurr]
+Thm 4.12, via [AbsTopI] Def 4.6, Ex 4.8 (i)), milestone MR7. The uniqueness half is a theorem
+of curves-jacobian (MR7, inner rigidity, `CurvesJacobian.LocAn`). The debt is recorded in
+`Plans/MR9Plan.md`.
 Functoriality is in isomorphisms of cuspidal extensions, which preserve the cuspidal subgroups by
 definition; that every `Π_X ≃ₜ* Π_{X'}` over `G_K ≃ₜ* G_{K'}` does so is [AbsTopI] Lemma 4.5 (v)
 (not yet formalised).
@@ -153,21 +160,59 @@ def BelyiCuspSpec : Prop :=
       ∃ n ∈ (cor38Fill Ω C hc UX hUX hne α₀).ker, ∀ p, φ₂ p = n * φ₁ p * n⁻¹)
 
 /-- **[AbsTopII] Cor 3.7, 3.8 for `belyiCusp (Π_X)`**, `X` of strictly Belyi type with a Galois
-Belyi cover (`S`). The only input is the rel-isom-DGC over number fields (`hDGC`, MR7). -/
-theorem belyiCuspSpec (hDGC : ∀ (k : Type u) [Field k] [NumberField k], RelIsomDGC k)
+Belyi cover (`S`). The only input is the existence half of the rel-isom-DGC over number fields
+(`hDGC`, MR7). -/
+theorem belyiCuspSpec (hDGC : ∀ (k : Type u) [Field k] [NumberField k], RelIsomDGC.Exists k)
     {M : Type u} [Field M] [NumberField M] [Algebra K M] [Algebra M Ω] [IsScalarTower K M Ω]
     [Algebra.IsAlgebraic M Ω] (S : GaloisBelyiInput C M) : BelyiCuspSpec Ω C hc :=
   belyiCusp_spec Ω C hc hDGC S
 
 /-- **[AbsTopII] Cor 3.7, 3.8 for the once-punctured elliptic curve `X = E ∖ {O}`** with
 `K`-rational `E[2]` (IUT I, Def 3.1 (b), assumes the `2·3`-torsion rational). The only input is
-the rel-isom-DGC over number fields (`hDGC`, MR7). -/
+the existence half of the rel-isom-DGC over number fields (`hDGC`, MR7). -/
 theorem belyiCuspSpec_oncePunctured
-    (hDGC : ∀ (k : Type u) [Field k] [NumberField k], RelIsomDGC k)
+    (hDGC : ∀ (k : Type u) [Field k] [NumberField k], RelIsomDGC.Exists k)
     {E : WeierstrassCurve K} [E.IsElliptic] (hE : E.Ψ₂Sq.Splits) :
     BelyiCuspSpec Ω (hypCurveX E) (compl_XE_nonempty E) := by
   obtain ⟨S⟩ := nonempty_galoisBelyiInput E hE
   exact belyiCuspSpec Ω (hypCurveX E) (compl_XE_nonempty E) hDGC (M := K) S
+
+/-- **The elliptic cuspidalisation of `X = E ∖ {O}`** ([AbsTopII] Ex 3.2, Cor 3.3 (iii)(a),
+`Topics in Absolute Anabelian Geometry II.txt` l.4326–4400, l.4481–4491; `N = 2`, `E[2]`
+rational), from curves-jacobian's `ellipticCusp_spec_oncePunctured`:
+(a) every elliptic candidate of `Π_X` with torsion-free `Δ_U` is geometric;
+(b) some elliptic candidate `Π_U ↠ Π_D ↩ Π_V ↪ Π_X` is, up to continuous isomorphisms, the
+filling `Π_{E ∖ E[2]} ↠ Π_{E ∖ {O}}` with `Π_V = Π_D = Π_X` — step (a) of `Elliptic.lean` for
+`X = E ∖ {O}` (there `V = D = X`, so steps (a′) and (b) are the identity);
+(c) `ellipticCusp` is functorial in isomorphisms of cuspidal extensions.
+The only input is the existence half of the rel-isom-DGC over number fields (`hDGC`, MR7). -/
+theorem ellipticCuspSpec_oncePunctured
+    (hDGC : ∀ (k : Type u) [Field k] [NumberField k], RelIsomDGC.Exists k)
+    (E : WeierstrassCurve K) [E.IsElliptic] (hE : E.Ψ₂Sq.Splits) :
+    (∀ (c : PiChain (arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E))) (n : ℕ)
+      (hc : c.IsEllipticType n) (t : c.TerminalIso (PiChain.trivial _))
+      (_ : IsTorsionFreeSubgroup (c.objN 3 (by have := hc.len_eq; omega)).Delta),
+      IsGeomCandidate₂ Ω (hypCurveX E) (compl_XE_nonempty E)
+        (PiChain.ellipticCandidate hc t).toCuspCandidate) ∧
+    (∃ x ∈ ellipticCusp (arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E)),
+      ∃ (eU : x.PiU ≃ₜ* π₁ᵉᵗ(basePoint Ω (hypCurveV E) (compl_VE_nonempty₂ E) ≫
+          baseChangeSpec K Ω Γ(curveE E, VE E)))
+        (eD : x.PiD ≃ₜ* π₁ᵉᵗ(basePoint Ω (fillCurve (hypCurveV E) (VE_le_XE E)
+          (hyperbolic_of_le E (VE_le_XE E) le_rfl)) (compl_XE_nonempty E) ≫
+            baseChangeSpec K Ω Γ(curveE E, XE E)))
+        (eV : x.PiV ≃ₜ* (arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E)).Pi)
+        (ψ : (arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E)).Pi ≃ₜ*
+          π₁ᵉᵗ(basePoint Ω (fillCurve (hypCurveV E) (VE_le_XE E)
+            (hyperbolic_of_le E (VE_le_XE E) le_rfl)) (compl_XE_nonempty E) ≫
+              baseChangeSpec K Ω Γ(curveE E, XE E))),
+        (∀ u, eD (x.surj u) = fillPiHom Ω (hypCurveV E) (compl_VE_nonempty₂ E) (VE_le_XE E)
+          (compl_XE_nonempty E) (hyperbolic_of_le E (VE_le_XE E) le_rfl) (eU u)) ∧
+        (∀ v, eD (x.incl v) = ψ (eV v)) ∧ ∀ v, x.emb v = eV v) ∧
+    (∀ {E' : CuspidalExt.{u + 1}}
+      (Φ : (arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E)).Iso E'),
+      ∀ x ∈ ellipticCusp (arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E)),
+        x.transport Φ ∈ ellipticCusp E') :=
+  ellipticCusp_spec_oncePunctured Ω hDGC E hE
 
 end Arith
 

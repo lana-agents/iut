@@ -67,7 +67,7 @@ rev = "d08559e6c9eba410a1ed102e7f4cc8abfddcbbbc"
 [[require]]
 name = "belyi"
 git = "https://github.com/lana-agents/belyi"
-rev = "5f3a88ec79f35dbf1a25e0e80548d8aab72deac5"
+rev = "7206d7839b5bb76a08343a2436384ba85e046e0e"
 
 # Pinned directly so that one warning-free `oka` revision serves `belyi`, `genl`,
 # `orbicurve-cores` (which pins the ancestor 75dcdc3) and `tempered-fundamental-groups`.
@@ -124,7 +124,7 @@ rev = "8e2b20806fbe97d6fede33dc4eda1e7f350fb138"
 [[require]]
 name = "curves-jacobian"
 git = "https://github.com/lana-agents/curves-jacobian"
-rev = "a258c1576ecb880986d90fc322c54baf4b8a2f47"
+rev = "da434f11ef3eec1b2decca4ee4c5e0984defd780"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
