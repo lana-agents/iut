@@ -446,3 +446,23 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `Uchida.ofFunctionField` (`addRel_iso_iff`); (4) the Schreier/RH debt via the geometric route
   (needs `c1Div` under finite étale pull-back in cj); (5) bridge cj's étale-π₁ cusp data
   (`Cor37c`, MR8) to the Galois-model `Pi D` used by the Kummer side (T1 needs both on one `Π_U`).
+* 2026-10-24 (MR9 track agent, lead christian-41): worktree `~/iut-pins` (standalone packages),
+  branch `mr9-cj`.
+  * **cj pin 601db27 → 995a389** (cj main: MR5 Task B `jacDivFree_padic`/`_numberField` (debt
+    D-KF discharged), MR7 Thm C pieces, MR8 r32, MR3 CuspChar, JAC D-d; purely additive, cj
+    manifest unchanged). pi1 stays at 12719c9 (cj still pins it; the cup products of pi1 3fb0593
+    are not needed yet).
+  * **Debt `JacDivFree` removed over number fields and `p`-adic fields:**
+    `isNFKummerTest_iff_curve_numberField` (Prop 1.8 (i)) no longer takes `L`, `hL`;
+    new **`mem_PU_iff_eta_curve_numberField`**, **`mem_PU_iff_eta_curve_padic`** (Thm 1.9 (c),
+    unconditional). The general `_of_ext`/`mem_PU_iff_eta_curve` keep `JacDivFree X σ hσ L` as a
+    hypothesis (needed only for fields that are neither).
+  * **Thm 1.9 (e)** (`Reconstruction/Thm19/NFAdditive.lean`): `fnf N` (`F_NF` over
+    `k̄_NF = algebraicClosure ℚ Ω`), **`isFunctionField_fnf`**, `isAlgClosed_algebraicClosure`,
+    `nfTriple N` (Prop 1.3 (a)–(c) for `K_{Z_NF}`), **`nf_addRel_iso_iff`** (any triple isomorphic
+    to it recovers `+` of `F_NF`), **`nf_mem_consts_iso_iff`** (its constants are `k̄_NF^×`);
+    NF-points as points of `Z_NF`: `nfPlace`, `barPlace`, `Place.ord_le_ord_iff`,
+    **`exists_valuation_eq_fnf`** (Gauss lemma: values of `W` on `F k̄` are values on `F_NF`),
+    **`ord_nfPlace`** (`ord` at an NF-point is the same in `F_NF` and `F k̄`: unramified).
+    Open for (e): surjectivity of `nfPlace` onto the places of `F_NF` (needs the Gauss extension
+    of a place of `F_NF` to `F k̄` trivial on `k̄`), and the evaluation part `U_x` in the same form.

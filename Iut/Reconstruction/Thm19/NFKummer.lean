@@ -6,6 +6,7 @@ Authors: LANA Project
 import CurvesJacobian.Kummer.NFCurve
 import CurvesJacobian.Kummer.KummerCurve
 import CurvesJacobian.Kummer.JacobianDivExt
+import CurvesJacobian.Kummer.JacobianLocalField
 
 /-!
 # [AbsTopIII] Thm 1.9 (d): Kummer classes of NF-functions and NF-constants inside `P_U`
@@ -38,7 +39,8 @@ Here both are assembled from curves-jacobian's MR5 results (`Kummer/NFCharacteri
 * **`exists_restrictClosed_eq_iff`** (Prop 1.8 (ii)): for `c ∈ (k^×)^∧`, the class of `c` passes
   the test of (ii) iff `c` is the Kummer class of some `b ∈ k^×` with `IsNFConstant b`;
 * `isNFKummerTest_iff_curve` (given `⋂_N N · J(L) = 0` for one extension `L / k`, curves-jacobian
-  `JacDivFree`), `isNFKummerTest_iff_curve_numberField`,
+  `JacDivFree`), `isNFKummerTest_iff_curve_numberField` (unconditional, via curves-jacobian
+  `jacDivFree_numberField`),
   `isNFKummerTest_iff_curve_of_isKummerFaithful` and `exists_restrictClosed_eq_iff_curve` (no
   Jacobian input): the same for the Galois model
   `curveGaloisData k hτ` of a curve `X` with `X(k) ≠ ∅` over a torally Kummer-faithful field `k`
@@ -52,11 +54,11 @@ Thm 1.9 (d) allows (`V` ranges over curves over finite extensions `k'` of `k_Z`)
 statement over `k` is the one proved here:
 "some positive multiple of `η` is the Kummer class of a nonconstant NF-rational function".
 
-**Debt.** Prop 1.8 (i) ("if") uses Kummer-faithfulness of the Jacobian through Prop 1.6 (iii).
-For number fields this is not yet a theorem of curves-jacobian (MR5, in progress); the curve
-versions take the explicit, minimal hypothesis `hL : JacDivFree X σ hσ L` (`⋂_N N · J(L) = 0` for
-one field extension `L / k`, e.g. a finite extension of `ℚ_p`). Prop 1.8 (ii) needs no such input.
-Recorded in `Plans/MR9Plan.md`.
+**Jacobian input.** Prop 1.8 (i) ("if") uses Kummer-faithfulness of the Jacobian through
+Prop 1.6 (iii). The general curve version takes `JacDivFree X σ hσ L` (`⋂_N N · J(L) = 0` for one
+field extension `L / k`) as a hypothesis; over number fields it is the curves-jacobian theorem
+`jacDivFree_numberField` (MR5 Task B), so `isNFKummerTest_iff_curve_numberField` has no Jacobian
+hypothesis. Prop 1.8 (ii) needs no such input.
 -/
 
 open KummerTheory Curve AffOrbicurve IsLocalRing CurvesJacobian.Kummer
@@ -217,13 +219,12 @@ theorem isNFKummerTest_iff_curve (N : NFModel (curveGaloisData k hτ))
   isNFKummerTest_iff htf (isKummerFaithfulJac_curveGaloisData_of_ext k hτ σ hσ L hL)
     (mem_range_of_isAlgebraic_F k hτ) η hη
 
-/-- **[AbsTopIII] Prop 1.8 (i) for an NF-curve over a number field** `k` with `X(k) ≠ ∅`. The
-only input is the debt `hL : ⋂_N N · J(L) = 0` for one extension `L / k` (e.g. a completion of
-`k`, a finite extension of `ℚ_p`; Kummer-faithfulness of `p`-adic fields for Jacobians, MR5). -/
+/-- **[AbsTopIII] Prop 1.8 (i) for an NF-curve over a number field** `k` with `X(k) ≠ ∅`,
+unconditionally: `⋂_N N · J(k) = 0` is curves-jacobian `jacDivFree_numberField`
+([AbsTopIII] Rem 1.5.4 (i), MR5 Task B). -/
 theorem isNFKummerTest_iff_curve_numberField [NumberField k] (N : NFModel (curveGaloisData k hτ))
     (σ : Spec (CommRingCat.of k) ⟶ X)
     (hσ : σ ≫ (X ↘ Spec (CommRingCat.of k)) = 𝟙 (Spec (CommRingCat.of k)))
-    (L : Type u) [Field L] [Algebra k L] (hL : JacDivFree X σ hσ L)
     (η : ContH1 (Pi (curveGaloisData k hτ)) (ZHatOne (F (curveGaloisData k hτ)) (FFClosure X)))
     (hη : η ∈ PU (curveGaloisData k hτ)) :
     IsNFKummerTest N rfl η ↔
@@ -231,7 +232,8 @@ theorem isNFKummerTest_iff_curve_numberField [NumberField k] (N : NFModel (curve
         η ^ M = kummerMapZHat (curveGaloisData k hτ) w ∧
         w ∉ Set.range (constUnit (curveGaloisData k hτ)) ∧
         N.IsNFFunction ((w : (F (curveGaloisData k hτ))ˣ) : F (curveGaloisData k hτ)) :=
-  isNFKummerTest_iff_curve N (NumberField.isTorallyKummerFaithful k) σ hσ L hL η hη
+  isNFKummerTest_iff_curve N (NumberField.isTorallyKummerFaithful k) σ hσ k
+    (jacDivFree_numberField X σ hσ) η hη
 
 /-- **[AbsTopIII] Prop 1.8 (i) over a Kummer-faithful field** ([AbsTopIII] Def 1.5). -/
 theorem isNFKummerTest_iff_curve_of_isKummerFaithful (N : NFModel (curveGaloisData k hτ))

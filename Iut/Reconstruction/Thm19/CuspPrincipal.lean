@@ -8,6 +8,7 @@ import CurvesJacobian.Galois.FunctionFieldF
 import CurvesJacobian.Kummer.PrincipalDescent
 import WeilCurves.FunctionField.LinearSystem
 import CurvesJacobian.Kummer.JacobianDivExt
+import CurvesJacobian.Kummer.JacobianLocalField
 
 /-!
 # [AbsTopIII] Thm 1.9 (c): `P_U` from the cuspidal principal divisors
@@ -43,8 +44,10 @@ in the Galois model `D` (`M_X = Ẑ(1)`):
   with `deg f = 0` and `η_f = 1` (`t_f` conjugate to the identity section).
 
 The hypothesis "all cusps rational" is that of Thm 1.9 (b) (l.2148: "the points of `Z \ U` are all
-rational over the base field `k_Z` of `Z`"). **Debt** (explicit theorem argument, recorded in
-`Plans/MR9Plan.md`): `hL : JacDivFree X σ hσ L` (`⋂_N N · J(L) = 0` for one extension `L / k`).
+rational over the base field `k_Z` of `Z`"). The general forms take `hL : JacDivFree X σ hσ L`
+(`⋂_N N · J(L) = 0` for one extension `L / k`) as a hypothesis; over number fields and finite
+extensions of `ℚ_p` it is a curves-jacobian theorem (`jacDivFree_numberField`, `jacDivFree_padic`),
+so **`mem_PU_iff_eta_curve_numberField`** and **`mem_PU_iff_eta_curve_padic`** are unconditional.
 Not yet done: the passage from `Ẑ(1)` to `M_X = μ_Ẑ(Π_U)` coefficients via the `Π_U`-equivariant
 `M_X ≅ Ẑ(1)` (curves-jacobian `h1MXEquiv`), which is how (b) enters.
 -/
@@ -309,6 +312,37 @@ theorem mem_PU_iff_eta_curve (σ : Spec (CommRingCat.of k) ⟶ X)
     exact ⟨f, hs, h0, (eta_eq_one_iff_principal_curve_of_ext σ hσ L hL f h0).2 hp, hr⟩
   · rintro ⟨f, hs, h0, he, hr⟩
     exact ⟨f, hs, (eta_eq_one_iff_principal_curve_of_ext σ hσ L hL f h0).1 he, hr⟩
+
+/-- **[AbsTopIII] Thm 1.9 (c) for a curve with rational cusps over a number field**,
+unconditionally: `mem_PU_iff_eta_curve` with `⋂_N N · J(k) = 0` from curves-jacobian
+`jacDivFree_numberField` ([AbsTopIII] Rem 1.5.4 (i), MR5 Task B). -/
+theorem mem_PU_iff_eta_curve_numberField [NumberField k] (σ : Spec (CommRingCat.of k) ⟶ X)
+    (hσ : σ ≫ (X ↘ Spec (CommRingCat.of k)) = 𝟙 (Spec (CommRingCat.of k)))
+    (hrat : ∀ P : Place k (F (curveGaloisData k hτ)), IsCuspPlaceF P →
+      ∃ x : RatPoint (curveGaloisData k hτ), placeOfF x = P)
+    (η : ContH1 (Pi (curveGaloisData k hτ)) (ZHatOne (F (curveGaloisData k hτ)) (FFClosure X))) :
+    letI : Fact (Function.Surjective (piJ1ToGk (curveGaloisData k hτ))) :=
+      fact_piJ1ToGk_surjective _ (mem_range_of_isAlgebraic_F k hτ)
+    η ∈ PU (curveGaloisData k hτ) ↔ ∃ f : RatPoint (curveGaloisData k hτ) →₀ ℤ,
+      (∀ x ∈ f.support, IsCuspPlaceF (placeOfF x)) ∧ (f.sum fun _ m => m) = 0 ∧ eta f = 1 ∧
+        HasResidues η (ratDivF f) :=
+  mem_PU_iff_eta_curve σ hσ k (jacDivFree_numberField X σ hσ) hrat η
+
+/-- **[AbsTopIII] Thm 1.9 (c) for a curve with rational cusps over a finite extension of `ℚ_p`**,
+unconditionally: `mem_PU_iff_eta_curve` with `⋂_N N · J(k) = 0` from curves-jacobian
+`jacDivFree_padic` ([AbsTopIII] Rem 1.5.4 (i), MR5 Task B). -/
+theorem mem_PU_iff_eta_curve_padic (p : ℕ) [Fact p.Prime] [Algebra ℚ_[p] k]
+    [FiniteDimensional ℚ_[p] k] (σ : Spec (CommRingCat.of k) ⟶ X)
+    (hσ : σ ≫ (X ↘ Spec (CommRingCat.of k)) = 𝟙 (Spec (CommRingCat.of k)))
+    (hrat : ∀ P : Place k (F (curveGaloisData k hτ)), IsCuspPlaceF P →
+      ∃ x : RatPoint (curveGaloisData k hτ), placeOfF x = P)
+    (η : ContH1 (Pi (curveGaloisData k hτ)) (ZHatOne (F (curveGaloisData k hτ)) (FFClosure X))) :
+    letI : Fact (Function.Surjective (piJ1ToGk (curveGaloisData k hτ))) :=
+      fact_piJ1ToGk_surjective _ (mem_range_of_isAlgebraic_F k hτ)
+    η ∈ PU (curveGaloisData k hτ) ↔ ∃ f : RatPoint (curveGaloisData k hτ) →₀ ℤ,
+      (∀ x ∈ f.support, IsCuspPlaceF (placeOfF x)) ∧ (f.sum fun _ m => m) = 0 ∧ eta f = 1 ∧
+        HasResidues η (ratDivF f) :=
+  mem_PU_iff_eta_curve σ hσ k (jacDivFree_padic X σ hσ p) hrat η
 
 end Curve
 

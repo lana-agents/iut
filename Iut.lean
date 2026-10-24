@@ -365,6 +365,7 @@ import Iut.Reconstruction.Local.UnramifiedZHat
 import Iut.Reconstruction.Local.Valuation
 import Iut.Reconstruction.Local.ZHat
 import Iut.Reconstruction.Thm19.CuspPrincipal
+import Iut.Reconstruction.Thm19.NFAdditive
 import Iut.Reconstruction.Thm19.NFKummer
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
