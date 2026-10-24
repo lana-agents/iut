@@ -1,6 +1,6 @@
 # MR10 plan: holomorphic elliptic cuspidalisation ([AbsTopIII] Cor 2.7)
 
-State: iut main `6e9ce43` (2026-10-23). ROADMAP §6.1 (MR10). The planar part of MR10 is done
+State: iut main after the 2026-10-24 second-session hand-off (§7). ROADMAP §6.1 (MR10). The planar part of MR10 is done
 (`Iut/AutHolomorphic/`, README there). This file covers what IUT actually cites: [AbsTopIII]
 Cor 2.7, the construction of `A_X` for an elliptically admissible Aut-holomorphic orbispace.
 
@@ -261,3 +261,58 @@ holomorphic analogue of elliptic cuspidalisation (Cor 2.7 (b)) has to be built h
 4. T7 (cores, Cor 2.4) is unchanged (large).
 
 **Blockers.** None.
+
+## 7. Hand-off 2026-10-24, second session (MR10 agent, lead christian-aa)
+
+**Merged to iut main.**
+
+* `798a62b`: **T6b** and **step 2 by route (a)** (lead decision: the paper's cuspidalisation
+  diagrams, no translation shortcut).
+  * `Morphism.lean`: `IsMorphism.comp`, `codRestrict`, `restrict`, `isIso_of_isMorphism`,
+    `isIso_openImageHomeo`.
+  * `Elliptic/Chart.lean`: `isMorphism_mk` (charts are morphisms) and
+    **`exists_rcLift_of_isMorphism`** ([AbsTopIII] Cor 2.3 (i) for opens of `T_Λ`).
+  * `Cusp.lean` (model-implicit, any `(E, A)`): `IsEllCusp A U q` (diagram `E ⊇ U → E`: cofinite
+    open immersion, morphism `q`, covering after extension to `OnePoint E`, Galois, abelian
+    `deck q = Gal(U/E)`), `cuspTors A`, `CuspLim`, `CuspSum` (law via `Gal(U/E)`), `IsRecAdd`,
+    `recAdd A`.
+  * `Elliptic/{Punct,Affine,Lift,Deck,CuspModel}.lean`: `T_Λ` compact, `E_Λ = punct L`,
+    `ellStr L`, `onePointEquiv : OnePoint E_Λ ≃ₜ T_Λ`; `exists_rc_of_rcLift` (RC-holomorphic
+    self-coverings of `T_Λ` fixing `0` are `x ↦ a x` / `x ↦ a x̄`: lift through `mk`, type
+    constant on the connected `ℂ ∖ mk⁻¹K`, removable singularities, Liouville on the periodic
+    derivative); `isEllCusp_mulN` (the `[N]` diagrams of [AbsTopII] Ex 3.2 (i));
+    **`exists_hom_of_isEllCusp`** (classification of all diagrams of `E_Λ`); **`mem_cuspTors_iff`**,
+    **`cuspSum_iff`**, **`isRecAdd_iff`**, **`recAdd_ellStr`**.
+* `96fb410`: `CuspTransport.lean` (isomorphisms carry diagrams, torsion points, their law and
+  `recAdd`) and `Elliptic/EllModel.lean`: `IsEllModel A`, **`recAdd_of_isIso`** (Cor 2.7 (c) for
+  an abstract `(E, A) ≅ E_Λ`), `isRecAdd_iff_of_isIso`, `ellAddCommGroup` with
+  `ellAddCommGroup_add : x + y = recAdd A x y`, zero `∞`.
+
+No sorry, no new axioms, no Prop-field structures (all predicates are `def … : Prop`).
+Deviations (documented in `Cusp.lean`): co-holomorphy of `E ← U → E` (Def 2.1 (iv), `Orn`) not
+imposed — the model classification shows the torsion points and law are unchanged; the extension of
+`U → E` over the compactification is imposed (paper: "necessarily"); `IsRecAdd` asks for a
+continuous operation rather than a topological group structure.
+
+**WIP.** None (branch `mr10-cor27` = main after the hand-off commit).
+
+**Next steps.**
+
+1. **T5: `A_p` for abstract `(E, A) ≅ E_Λ`** (estimate 0.8–1.2 k lines). Design:
+   * `onePointStr A : AutHolStr (OnePoint E)`: `aut V := if ∞ ∈ V then ⊤ else` the transport of
+     `A.aut (coe⁻¹ V)` (only germs at `p ≠ ∞` matter);
+   * `IsTopologicalAddGroup` for `ellAddCommGroup hA` (transported along `compEquiv ψ`);
+   * `lieMap Θ : Lie Y ≃ₗ[ℝ] Lie Y'` for an additive homeomorphism `Θ` (post-composition), with
+     continuity for the compact-open topology;
+   * transport + locality lemma: if `Θ` is additive and matches `A`, `A'` on all opens inside a
+     neighbourhood of `p`, then `IsLinHol A p M ↔ IsLinHol A' (Θ p) (Θ∗ M Θ∗⁻¹)` (shrink `N` using
+     continuity of `expAt` and of `M`; `M` is continuous since `Lie T_Λ ≃ₜ ℂ`, `lieHomeo`);
+   * apply with `Θ = compEquiv ψ`, `A' = torusStr L`: `fieldSet (onePointStr A) p` corresponds to
+     `fieldSet (torusStr L) (Θ p)`, hence `EllField A p ≃+* ℂ` (via `TorusField`, `torusEquiv`),
+     homeomorphically; indeterminacy `{id, conj}` as in `Transport.lean`;
+   * hook into `Frobenioid/Angular/Kummer.lean` (a `kummer` for `D` with `IsEllModel D`).
+2. T7 (cores, Cor 2.4) unchanged (large).
+3. Optional: derive the "necessarily extends" condition (Riemann–Hurwitz-free argument: a finite
+   covering of `E_Λ` by a cofinite `U ⊆ E_Λ` is unramified over `∞`) and add co-orientations.
+
+**Blockers.** None. Slot contention made single-file checks slow (14 waiting jobs at times).
