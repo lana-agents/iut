@@ -24,6 +24,12 @@ No module of this directory is imported by the comparator challenge or by the wa
 | `HalfPlane.lean` | the Aut-holomorphic disc `ℍ`: `A_ℍ(ℍ)` = Möbius maps, `globalEquivPSL : A_ℍ(ℍ) ≃* SL₂(ℝ)/{±1}` | Prop 2.2(ii) (group part) |
 | `Punctured.lean` | `ℂ^×`: `mem_global_punct` (`A_{ℂ^×}(ℂ^×) = {az, a/z}`); `eq_id_of_mul_of_monoid` | IUT I Rem 3.4.2 |
 | `OfCover.lean` | `RCDiffAt`, `RCAlong` ((anti)holomorphy along a coordinate map `π : ℂ → X`), `ofCover hπ` (Aut-holomorphic structure of a uniformised Riemann surface), `ofCover_conj` (RC-holomorphic homeomorphisms are isomorphisms), `AutHolStr.restrict`, `isMorphism_val` (open immersions are morphisms) | Def 2.1 (i), (ii); Cor 2.3 (i) (easy half); Cor 2.7 (b) |
+| `Disc/Basic.lean` | the unit disc `Dk`; `holAut` (holomorphic automorphisms), `mobH`, `rotH`, `conjH`; `eq_mul_of_mem_holAut` (stabiliser of `0` = rotations, Schwarz lemma); half-turns `half x`, `eq_half` (the unique involution `≠ 1` fixing `x`); midpoints `mid`, `half_mid`, `eq_mid` | Prop 2.2 (input) |
+| `Disc/Formulas.lean` | explicit hyperbolic geometry: `mid_tanh`, dyadic subdivision `Icc_subset_of_mid`, rays `OnRay`/`mid_onRay`, `qN = cosh d(0, ·)`, `qN_double`, `qN_mob_I` (hyperbolic Pythagoras), `half_real`, `exists_real_mob_imag` | Prop 2.2 (input) |
+| `Disc/Normalizer.lean` | **`rc_of_normalizes`**: a homeomorphism of the disc normalising `holAut` is `g` or `g ∘ conj`, `g ∈ holAut` (elementary proof replacing Cartan's theorem: half-turns, midpoints, the functional equation `fe_eq_id`) | Prop 2.2 (i), (ii) (normaliser part) |
+| `Disc/Domain.lean` | `HolOn`, `holAutOn Ω`, biholomorphisms `IsBihol` and transport `IsBihol.conj_mem_iff`; **`rc_of_normalizes_bihol`**: an isomorphism of Aut-holomorphic discs is RC-holomorphic | Prop 2.2 (i) |
+| `Disc/RiemannMap.lean` | **`exists_isBihol`**: a bounded simply connected domain is biholomorphic to the disc (oka's Koebe covering + lifting through the covering) | Riemann mapping theorem |
+| `LocalRC.lean` | `mem_aut_iff` (`ofEmbedding (↑)` on `W ⊆ ℂ` is `Aut^hol(W)`); **`rcDiff_of_isMorphism`**: a morphism of Aut-holomorphic spaces between open subsets of `ℂ` is holomorphic or antiholomorphic near every point | **Cor 2.3 (i)** |
 | `Elliptic/Torus.lean` | the complex torus `T_Λ = ℂ ⧸ Λ` (Mathlib `PeriodPair`), torsion points dense (`dense_torsion`), `eq_add_of_continuous`: the group law is the unique continuous law extending the torsion law | Cor 2.7 (c) |
 | `Elliptic/Lie.lean` | one-parameter subgroups `Lie Y = ℝ →ₜ+ Y` (tangent space, compact-open topology, `ℝ`-module), `expAt`; `lieEquiv`/`lieHomeo : ℂ ≃ Lie T_Λ` (every one-parameter subgroup is `t ↦ mk (t c)`) | Cor 2.7 (c); Rem 2.7.2 |
 | `Elliptic/RLinear.lean` | `ℝ`-linear self-maps of `ℂ`: differentiable ⇒ `ℂ`-linear; `M i M⁻¹` complex linear ⇒ `M` linear or antilinear; squares in `ℂ^× ⋊ Gal(ℂ/ℝ)` | Cor 2.7 (d), (e) |
@@ -51,8 +57,9 @@ Plan for [AbsTopIII] Cor 2.7 (holomorphic elliptic cuspidalisation, the part IUT
 * Co-orientations and co-holomorphicizations ([AbsTopIII] Def 2.1(iii), (iv)) via
   `Orn(Z, p) = lim π₁(W ∖ {p})^ab`.
 * Aut-holomorphic structures of general Riemann surfaces and orbisurfaces (charts; Rem 2.1.1),
-  the local (germ) version of Cor 2.3 and Cor 2.3(ii); the topological and commensurable
-  terminality parts of Prop 2.2(ii) (Cartan's theorem).
+  Cor 2.3 (i) for them (done for open subsets of `ℂ`: `LocalRC.lean`) and Cor 2.3(ii); the
+  topological and commensurable terminality parts of Prop 2.2(ii) (the normaliser part is
+  `Disc/Normalizer.lean`).
 * Cor 2.4 (hyperbolic cores via `π₁(X^top) ↪ Aut(U)`), Prop 2.5, 2.6 (parallelograms); Cor 2.8, 2.9.
 * Cor 2.7: (d), (e) and the uniqueness half of (c) are done for the complex torus (`Elliptic/`).
   Still open: (a) cores, (b) torsion points from elliptic cuspidalisation diagrams, the

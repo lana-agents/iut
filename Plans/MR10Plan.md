@@ -168,3 +168,17 @@ T2 depends on it.
   * The torus model is `torusStr L` on all of `T_Λ`. It is not yet tied to the abstract input
     `(E, A_E)`. That needs T2, T3 and T5, plus a locality lemma: `IsLinHol` at `p ≠ 0` only sees
     `A` near `p`.
+* 2026-10-24: merged the 2026-10-23 torus work (main `e8dce3b`). **T6 done for open subsets of
+  `ℂ`**: `LocalRC.rcDiff_of_isMorphism` ([AbsTopIII] Cor 2.3 (i): a morphism of Aut-holomorphic
+  spaces `U → V`, `U, V ⊆ ℂ` open, is holomorphic or antiholomorphic near every point), via
+  * `Disc/Normalizer.rc_of_normalizes` (Prop 2.2 (i) for the disc: a homeomorphism normalising
+    `Aut^hol(𝔻)` is RC-holomorphic). **Deviation**: the paper uses Cartan's theorem on
+    `SL₂(ℝ)/{±1}`; the proof here is elementary hyperbolic geometry (half-turns ↦ half-turns,
+    midpoints, rays by dyadic subdivision, and the functional equation
+    `φ(st) = φ(s)φ(t)`, `φ(2t²−1) = 2φ(t)²−1` for `φ(cosh d(0,z)) = cosh d(0,αz)`, which forces
+    `φ(2) = 2` and then `φ = id`);
+  * `Disc/RiemannMap.exists_isBihol` (Riemann mapping for bounded simply connected domains, from
+    oka's Koebe covering and lifting through coverings);
+  * `Disc/Domain.rc_of_normalizes_bihol` (Prop 2.2 (i) for Aut-holomorphic discs).
+  The debt `Cor23i` of §4 is therefore not needed for planar charts; for `E_Λ` it remains to pass
+  through the charts of `ofCover` (T6b below).

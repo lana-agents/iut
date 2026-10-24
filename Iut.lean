@@ -44,6 +44,11 @@ import Iut.Arakelov.LineBundle
 import Iut.Arakelov.QPilot
 import Iut.AutHolomorphic.Basic
 import Iut.AutHolomorphic.CAF
+import Iut.AutHolomorphic.Disc.Basic
+import Iut.AutHolomorphic.Disc.Domain
+import Iut.AutHolomorphic.Disc.Formulas
+import Iut.AutHolomorphic.Disc.Normalizer
+import Iut.AutHolomorphic.Disc.RiemannMap
 import Iut.AutHolomorphic.Elliptic.Lie
 import Iut.AutHolomorphic.Elliptic.LinearHol
 import Iut.AutHolomorphic.Elliptic.RLinear
@@ -51,6 +56,7 @@ import Iut.AutHolomorphic.Elliptic.Torus
 import Iut.AutHolomorphic.Elliptic.TorusField
 import Iut.AutHolomorphic.EntireAut
 import Iut.AutHolomorphic.HalfPlane
+import Iut.AutHolomorphic.LocalRC
 import Iut.AutHolomorphic.OfCover
 import Iut.AutHolomorphic.Plane
 import Iut.AutHolomorphic.PlaneAut
