@@ -182,3 +182,67 @@ T2 depends on it.
   * `Disc/Domain.rc_of_normalizes_bihol` (Prop 2.2 (i) for Aut-holomorphic discs).
   The debt `Cor23i` of §4 is therefore not needed for planar charts; for `E_Λ` it remains to pass
   through the charts of `ofCover` (T6b below).
+
+## 6. Hand-off 2026-10-24 (MR10 agent, lead christian-41)
+
+**Merged to iut main.**
+
+* `e8dce3b`: the 2026-10-23 torus work (T0, T1 part, T4 for `T_Λ`): `OfCover.lean`,
+  `Elliptic/{Torus,Lie,RLinear,LinearHol,TorusField}.lean`. This is the stopped agent's commit
+  `5062270`, rebased. Two comments and one proof contained the audit token `constant` and were
+  reworded.
+* `10a5ee0`: **T6 for open subsets of `ℂ`**, i.e. [AbsTopIII] Cor 2.3 (i):
+  `LocalRC.rcDiff_of_isMorphism`. Its inputs:
+  * Prop 2.2 (i): `Disc/Normalizer.rc_of_normalizes` for the disc, and
+    `Disc/Domain.rc_of_normalizes_bihol` for Aut-holomorphic discs;
+  * Riemann mapping: `Disc/RiemannMap.exists_isBihol`.
+
+  No sorry, no new axioms, no new structures (the shell lint is unchanged).
+
+**WIP.** None. Branch `mr10-cor27` in `~/mr10-iut` equals main.
+
+**MR8.7.** MR8.7 is [AbsTopII] Cor 3.3 in curves-jacobian. It is profinite and group-theoretic,
+and it contains nothing holomorphic. For the Aut-holomorphic side MR10 uses nothing from it. The
+holomorphic analogue of elliptic cuspidalisation (Cor 2.7 (b)) has to be built here.
+
+**Next steps (proposal).**
+
+1. **T6b: Cor 2.3 (i) for `ofCover`** (about 0.4 k lines). Charts `mk : ball(q, ρ) ≃ mk(ball)`
+   identify `(torusStr L).restrict (mk ball)` with `ofEmbedding (↑)` on the ball. Use `chart`,
+   `injOn_psi`, `rcAlong_of_lift` and `differentiableAt_of_holAlong` from
+   `Elliptic/LinearHol.lean`. Then a morphism between opens of `T_Λ` is RC-holomorphic in charts,
+   by `rcDiff_of_isMorphism`. This needs two lemmas:
+   * pre- and post-composition of `IsMorphism` with `IsIso`;
+   * `IsMorphism` for restrictions.
+2. **Group law on `OnePoint E` (T2/T3).** Two options.
+   * (a) Follow the paper's (b), (c). For `⊆` one must classify the finite abelian coverings
+     `U → E_Λ`, `U ⊆ E_Λ` cofinite, that extend over the cusp. This needs covering theory of
+     tori, removable singularities on tori, and "holomorphic maps of tori are affine". Estimate:
+     3–5 k lines.
+   * (b) A cheaper, still model-implicit **deviation**:
+     * `Aut^RC(OnePoint E)` is the set of homeomorphisms whose restriction to
+       `E ∩ σ⁻¹ E → E` is a morphism of Aut-holomorphic spaces;
+     * the translations are the squares in it that are `1` or have no fixed point;
+     * `x + y = τ_x(y)`, where `τ_x` is the translation with `τ_x(∞) = x`.
+
+     For the model this needs: T6b; removable singularities at two points; the fact that an
+     RC-holomorphic homeomorphism of `T_Λ` lifts to an affine map of `ℂ` (Liouville); and
+     constancy of `δ` on the connected set `T ∖ {2 points}`. Estimate: 1–1.5 k lines.
+
+     Then the torsion points of (b) are the finite-order elements. The diagram characterisation
+     can be added later as a second theorem. IUT I Rem 3.4.3 (ii) uses (b) for NF-points.
+
+   *Decision for the lead*: (a) or (b) first.
+3. **T5.** Follow the `RecField` pattern:
+   * `Fact (IsEllModel A)`: there is an iso `(E, A) ≅ (E_Λ, ellStr Λ)`, where
+     `ellStr Λ = (torusStr Λ).restrict {0}ᶜ`;
+   * an `AddCommGroup` instance on `OnePoint E`, transported along the chosen iso, with the
+     theorem that it equals the model-implicit law of step 2;
+   * `A` pushed forward to `OnePoint E` along the open embedding;
+   * transport and locality lemmas for `IsLinHol`: invariance under group isos that are
+     Aut-holomorphic isos, and dependence only on `A` near `p ≠ ∞`;
+   * `ellField A p ≃+* ℂ` from `TorusField`;
+   * hook into `Frobenioid/Angular/Kummer.lean`.
+4. T7 (cores, Cor 2.4) is unchanged (large).
+
+**Blockers.** None.

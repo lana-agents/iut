@@ -479,6 +479,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 - **Depends on:** oka (E). **Status:** M. **Size:** 20–40 k / 15–30.
 - **Repo:** oka (complex analysis) + iut `Multiradial/Arch`.
 - **Done when:** `def AutHol.recField (X : AutHolSpace) : …` with `theorem recField_equiv : … ≃ ℂ` (up to conjugation) for elliptically admissible `X`. Shells #18, #22 (arch) are gone.
+- **Status (2026-10-24):** planar part done (`Iut/AutHolomorphic/`); Cor 2.7 (c)–(e) for the complex torus (`Elliptic/`, main `e8dce3b`); [AbsTopIII] Prop 2.2 (i) and Cor 2.3 (i) for open subsets of `ℂ` (`Disc/`, `LocalRC.lean`, main `10a5ee0`; elementary proof of the normaliser statement instead of Cartan, Riemann mapping from oka). Next: Cor 2.3 (i) in torus charts, the group law on `OnePoint E` (Cor 2.7 (b)/(c)), `A_p` for an abstract `(E, A) ≅ E_Λ`; see `Plans/MR10Plan.md` §6.
 
 **MR11 — Log-shells in Galois / Frobenioid form.**
 - **Content:**
