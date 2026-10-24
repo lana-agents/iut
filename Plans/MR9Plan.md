@@ -470,3 +470,21 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     Mathlib's `Ideal.image_subset_nonunits_valuationSubring`), **`barPlace_eq_of_nfPlace_eq`**
     (the point of `X_{k̄}` is determined by the point of `Z_NF`; Gauss representations
     `exists_gaussRep`, `valuation_le_iff_of_gaussRep`, `mem_iff_of_forall_fnf`).
+* Hand-off 2026-10-24 (MR9 track agent, lead christian-41): merged iut ade38b0 + f95c8fd
+  (cj pin 995a389, JacDivFree debt gone over NF/`p`-adic fields, Thm 1.9 (e) for the NF-portion),
+  cc0e287 (points of `Z_NF` = NF-points), and the MR19 `FStarRlfCompat` commit. Worktree
+  `~/iut-pins`, branch `mr9-cj` (standalone packages; cj clone at 995a389). No WIP.
+  Debts now: `hDGC` (MR7, existence half), `φ`/`ResCuspInput` of `SurfaceIndex.lean`
+  (Schreier/RH), `JacDivFree` only for fields that are neither number fields nor `p`-adic.
+  Next, in order:
+  1. (b)/(c) with `M_X` coefficients: `h1MXEquiv` transport of `P_U`, residues and the Prop 1.8
+     tests; identify `tameGen p` with `syncEquivBar` of the inertia generator (cj
+     `cuspInertiaZHatEquiv_inertiaToCusp` gives `θ_π(σ)`; need `I_W ∩ H ⊆ (barData).H` and the
+     match of CKT's `InertiaIndex` with cj's `inertiaToCusp`; cj's sync is only for
+     `U = X ∖ {x}`, so multi-cusp `U` needs `Π_U → Π_{U_z}` on inertia).
+  2. (e) evaluation part: `U_x` of `nfTriple` vs restriction to decomposition groups of
+     NF-points (`f(x) = 1` iff `W.valuation (f - 1) < 1`), and the bijection
+     `{NF-points of X_k̄} ≃ Place k̄_NF F_NF` packaged from `exists_nfPlace_eq` and
+     `barPlace_eq_of_nfPlace_eq`.
+  3. (d) as the colimit over `V`, `k'` (removes "positive multiple"); then T1.
+  4. Schreier/RH debt via the geometric route (cj: `c1Div` under finite étale pull-back).

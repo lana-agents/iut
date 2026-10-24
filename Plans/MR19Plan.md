@@ -433,3 +433,11 @@ for `recFunctionField` (MR9).
   3. Blocked: `ρΘ_v` (MR18); `ρ_v` into the `F^⊢`-strip components and `F^⊩_D` (Ex 3.5(iii),
      `(R^⊢_{≥0})_v` of [AbsTopIII] Prop 5.8: MR20); κ-coric items and the group-theoretic `F^⊛`
      (MR9 `recFunctionField`, MR22); non-realified base reconstruction (see above, optional).
+* **Hand-off 2026-10-24 (MR9+MR19 track agent, lead christian-41).** Done: the leftover
+  compatibility of `FStarRlf`: `HodgeTheater/FStarRlfCompat.lean`, **`modToRlfIso :
+  modEquiv.functor ⋙ modToRlf ≅ GlobalFrobenioid.realify ⋙ modRlfEquiv.functor`** (IUT II
+  Cor 4.7 (i): `F^⊛_mod → F^⊛R_mod` is the realification of `C(F_mod)`), from
+  `castG_eTop_symm`, `realifyU_uTop` and `Model.eqToHom_{deg,div,u,base}`. No WIP, no new debts.
+  Remaining MR19 items unchanged: blocked on MR18 (`ρΘ_v`), MR20 (`ρ_v` into the `F^⊢`-strips),
+  MR9 `recFunctionField`/MR22 (κ-coric items, group-theoretic `F^⊛`); optional: base
+  reconstruction for the non-realified `C_{F̃/F}`.
