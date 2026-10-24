@@ -464,5 +464,9 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     NF-points as points of `Z_NF`: `nfPlace`, `barPlace`, `Place.ord_le_ord_iff`,
     **`exists_valuation_eq_fnf`** (Gauss lemma: values of `W` on `F k̄` are values on `F_NF`),
     **`ord_nfPlace`** (`ord` at an NF-point is the same in `F_NF` and `F k̄`: unramified).
-    Open for (e): surjectivity of `nfPlace` onto the places of `F_NF` (needs the Gauss extension
-    of a place of `F_NF` to `F k̄` trivial on `k̄`), and the evaluation part `U_x` in the same form.
+  * **Points of `Z_NF` = NF-points of `X_{k̄}`** (same file): **`exists_nfPlace_eq`** (every
+    place of `F_NF / k̄_NF` is `W ∩ F_NF` for an NF-point `W ⊇ k`: `m_P` stays proper in
+    `k̄[𝒪_P]` by linear disjointness, `mul_ne_one_of_mem_closure`, `linearIndependent_fnf`; then
+    Mathlib's `Ideal.image_subset_nonunits_valuationSubring`), **`barPlace_eq_of_nfPlace_eq`**
+    (the point of `X_{k̄}` is determined by the point of `Z_NF`; Gauss representations
+    `exists_gaussRep`, `valuation_le_iff_of_gaussRep`, `mem_iff_of_forall_fnf`).
