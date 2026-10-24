@@ -1659,3 +1659,6 @@ CurvesJacobian.Kummer.RatPoint.hrat	def
 CurvesJacobian.Kummer.RatPoint.isIntegral	def
 CurvesJacobian.OmegaPlace.bijective	def
 CurvesJacobian.OmegaPlace.liesOver	def
+# MR9 cj pin 995a389 (2026-10-24): curves-jacobian PointTopology/Germ (via Kummer/JacobianLocalField): IsGermPt is the defining predicate "ξ is a germ point of the family y along 𝒰"
+CurvesJacobian.PointTopology.IsGermPt.ev_eq	def
+CurvesJacobian.PointTopology.IsGermPt.eventually_lands	def
