@@ -35,6 +35,14 @@ No module of this directory is imported by the comparator challenge or by the wa
 | `Elliptic/RLinear.lean` | `ℝ`-linear self-maps of `ℂ`: differentiable ⇒ `ℂ`-linear; `M i M⁻¹` complex linear ⇒ `M` linear or antilinear; squares in `ℂ^× ⋊ Gal(ℂ/ℝ)` | Cor 2.7 (d), (e) |
 | `Elliptic/LinearHol.lean` | model-implicit `IsLinHol A p M` (the germ of `M` at `p` is a local morphism of Aut-holomorphic spaces), `holGroup`, **`apSet A p` = `A_p`**, `fieldSet`; for `T_Λ`: `torusStr`, `isLinHol_iff` (holomorphic ⇔ `c ↦ a c` or `c ↦ a c̄`) | Cor 2.7 (d), (e) |
 | `Elliptic/TorusField.lean` | `mem_apSet_iff` (`A_p = {c ↦ b c, b ≠ 0}`, independent of `p`); **`TorusField L q = A_p ∪ {0}`** with addition = sum of endomorphisms, multiplication = composition; `torusEquiv : TorusField L q ≃+* ℂ`, `torusHomeo` | Prop 2.6 (a), Cor 2.7 (e), Def 4.1 (i) |
+| `Morphism.lean` | `IsMorphism.comp`, `IsMorphism.codRestrict`, `IsMorphism.restrict`, `isIso_of_isMorphism`, `isIso_openImageHomeo` | Def 2.1 (ii) |
+| `Cusp.lean` | model-implicit **elliptic cuspidalisation**: `IsEllCusp A U q` (diagrams `E ⊇ U → E`), `deck q = Gal(U/E)`, `cuspTors A` (torsion points), `CuspSum` (their law via `Gal(U/E)`), `IsRecAdd`, `recAdd A` (the law on `OnePoint E`) | Cor 2.7 (b), (c); [AbsTopII] Ex 3.2 (i) |
+| `Elliptic/Chart.lean` | `isMorphism_mk` (charts of `T_Λ` are morphisms); **`exists_rcLift_of_isMorphism`**: a morphism `U → T_Λ` lifts locally to RC-holomorphic maps of `ℂ` | **Cor 2.3 (i) on `T_Λ`** |
+| `Elliptic/Punct.lean` | `T_Λ` compact, minus a countable set connected; `punct L`, `ellStr L` (`E_Λ = T_Λ ∖ {0}`), `onePointEquiv : OnePoint E_Λ ≃ₜ T_Λ` | Cor 2.7 (a)–(c) |
+| `Elliptic/Affine.lean` | `exists_rc_of_rcLift`: an RC-holomorphic self-covering of `T_Λ` fixing `0` is `x ↦ a x` or `x ↦ a x̄` (lifting, removable singularities, Liouville) | classical |
+| `Elliptic/Lift.lean` | `isMorphism_of_lift` (maps induced by RC-holomorphic homeomorphisms of `ℂ` are morphisms), `finite_fiber` | Def 2.1 (ii) |
+| `Elliptic/Deck.lean` | for `q = f|_{f ≠ 0}`, `f` an endomorphism: deck transformations = translations by `ker f` (`exists_eq_translU`), `cuspLim_iff`, `cuspExt_eq` | Cor 2.7 (b) |
+| `Elliptic/CuspModel.lean` | `isEllCusp_mulN` (the `[N]` diagrams); **classification** `exists_hom_of_isEllCusp`; **`mem_cuspTors_iff`**, **`cuspSum_iff`** (torsion points and their law are those of `T_Λ`); **`isRecAdd_iff`, `recAdd_ellStr`** (the model-implicit law on `OnePoint E_Λ` is the group law of `T_Λ`) | **Cor 2.7 (b), (c)** |
 
 ## Main statements
 
@@ -61,10 +69,10 @@ Plan for [AbsTopIII] Cor 2.7 (holomorphic elliptic cuspidalisation, the part IUT
   topological and commensurable terminality parts of Prop 2.2(ii) (the normaliser part is
   `Disc/Normalizer.lean`).
 * Cor 2.4 (hyperbolic cores via `π₁(X^top) ↪ Aut(U)`), Prop 2.5, 2.6 (parallelograms); Cor 2.8, 2.9.
-* Cor 2.7: (d), (e) and the uniqueness half of (c) are done for the complex torus (`Elliptic/`).
-  Still open: (a) cores, (b) torsion points from elliptic cuspidalisation diagrams, the
-  reconstruction of the group law on `OnePoint E` from (b), and the transport of `A_p` to an abstract
-  Aut-holomorphic space isomorphic to `T_Λ ∖ {0}` (steps T2, T3, T5, T6, T7 of `Plans/MR10Plan.md`).
+* Cor 2.7: (b), (c), (d), (e) are done for the model `E_Λ = T_Λ ∖ {0}` (`Elliptic/`; (b), (c)
+  model-implicitly in `Cusp.lean`, computed in `Elliptic/CuspModel.lean`). Still open: (a) cores,
+  and the transport of `A_p` to an abstract Aut-holomorphic space isomorphic to `E_Λ` (steps T5, T7
+  of `Plans/MR10Plan.md`).
 * Archimedean Frobenioids [FrdII] Ex 3.3 over the Aut-holomorphic base, angular / radial
   log-volumes, and wiring `FullKummer.arc` (shells #18, #22) to these constructions (MR17, MR20,
   MR26).

@@ -183,6 +183,16 @@ T2 depends on it.
   The debt `Cor23i` of §4 is therefore not needed for planar charts; for `E_Λ` it remains to pass
   through the charts of `ofCover` (T6b below).
 
+* 2026-10-24 (second session). **T6b**: `Elliptic/Chart.lean`, `exists_rcLift_of_isMorphism`
+  (Cor 2.3 (i) for opens of `T_Λ`, via `isMorphism_mk` and `rcDiff_of_isMorphism`). **Step 2 by
+  route (a)** (lead decision): `Cusp.lean` (model-implicit `IsEllCusp`, `cuspTors`, `CuspSum`,
+  `IsRecAdd`, `recAdd`), `Elliptic/{Punct,Affine,Lift,Deck,CuspModel}.lean`: the `[N]` diagrams,
+  the classification of all diagrams of `E_Λ` (RC-holomorphic self-coverings of `T_Λ` are
+  `x ↦ a x`, `x ↦ a x̄`: lifting, removable singularities, Liouville), `mem_cuspTors_iff`,
+  `cuspSum_iff`, `recAdd_ellStr`. Deviations (recorded in `Cusp.lean`): co-holomorphy of
+  `E ← U → E` not imposed (shown not to matter in the model); the extension to the
+  compactification is imposed rather than derived; `IsRecAdd` asks for a continuous operation.
+
 ## 6. Hand-off 2026-10-24 (MR10 agent, lead christian-41)
 
 **Merged to iut main.**
