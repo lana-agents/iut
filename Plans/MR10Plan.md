@@ -193,6 +193,11 @@ T2 depends on it.
   `E ← U → E` not imposed (shown not to matter in the model); the extension to the
   compactification is imposed rather than derived; `IsRecAdd` asks for a continuous operation.
 
+* 2026-10-24 (second session, cont.). **T3 for abstract `(E, A) ≅ E_Λ`**: `CuspTransport.lean`
+  (the constructions of `Cusp.lean` are carried along isomorphisms) and `Elliptic/EllModel.lean`
+  (`recAdd_of_isIso`, `isRecAdd_iff_of_isIso`, `ellAddCommGroup` on `OnePoint E` with addition
+  `recAdd A`).
+
 ## 6. Hand-off 2026-10-24 (MR10 agent, lead christian-41)
 
 **Merged to iut main.**

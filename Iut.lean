@@ -45,6 +45,7 @@ import Iut.Arakelov.QPilot
 import Iut.AutHolomorphic.Basic
 import Iut.AutHolomorphic.CAF
 import Iut.AutHolomorphic.Cusp
+import Iut.AutHolomorphic.CuspTransport
 import Iut.AutHolomorphic.Disc.Basic
 import Iut.AutHolomorphic.Disc.Domain
 import Iut.AutHolomorphic.Disc.Formulas
@@ -54,6 +55,7 @@ import Iut.AutHolomorphic.Elliptic.Affine
 import Iut.AutHolomorphic.Elliptic.Chart
 import Iut.AutHolomorphic.Elliptic.CuspModel
 import Iut.AutHolomorphic.Elliptic.Deck
+import Iut.AutHolomorphic.Elliptic.EllModel
 import Iut.AutHolomorphic.Elliptic.Lie
 import Iut.AutHolomorphic.Elliptic.Lift
 import Iut.AutHolomorphic.Elliptic.LinearHol
