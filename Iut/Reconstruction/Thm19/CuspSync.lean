@@ -26,7 +26,7 @@ to `M_X = Hom(H²(Δ_X, Ẑ), Ẑ)` (curves-jacobian `MX`, a `Π_U`-module, and 
   of `X_{k̄}`, where curves-jacobian's synchronization lives;
 * `idxPlaceBar_eq`: for `p` over a rational point `x`, `W ∩ F k̄ = x_{k̄}`;
   **`proj_tameChar_inertiaBar`**: the tame character of any uniformiser of `W ∩ F k̄` at `σ` is
-  `θ_p` (the constant field extension is unramified at `x`, curves-jacobian `ord_placeOf_ιF`);
+  `θ_p` (the extension of constants is unramified at `x`, curves-jacobian `ord_placeOf_ιF`);
 * `pointData_of_liesOver`, `exists_syncData`: the data of curves-jacobian's `syncEquivBar`
   (`U_x = X_{k̄} ∖ {x}`, `W` centred on `x`, a uniformiser) exist for the prescribed `W`;
 * `mxReindex`: `M_X` with the Kummer indices of `F k̄` or of `F` (both all `n ≥ 1`);
@@ -141,8 +141,8 @@ set_option maxHeartbeats 1600000 in
 -- `ContH1.evalTriv` terms unify slowly
 /-- **The tame characters of `D` and of its base change `D_{k̄}` agree on `I_W ∩ H`**, at every
 level `n`: for `p = (W, σ)` over a `k`-rational point `x` and any uniformiser `π` of `W ∩ F k̄`,
-`θ_π(σ) = θ_p` (`tameGen p`, the tame character of a uniformiser of `W ∩ F`). The constant field
-extension is unramified at `x` (`ord_placeOf_ιF`), so the two uniformisers differ by a unit,
+`θ_π(σ) = θ_p` (`tameGen p`, the tame character of a uniformiser of `W ∩ F`). The extension of
+constants is unramified at `x` (`ord_placeOf_ιF`), so the two uniformisers differ by a unit,
 whose `n`-th roots are fixed by inertia (`smul_eq_of_ord_eq_zero`). -/
 theorem proj_tameChar_inertiaBar (p : InertiaIndex D) (x : RatPoint D)
     (hpx : ∀ y : F D, (y : Ω) ∈ p.1.1 ↔ (y : Ω) ∈ x.A) {π : (F (baseChange D))ˣ}
