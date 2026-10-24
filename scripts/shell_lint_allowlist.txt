@@ -1662,3 +1662,15 @@ CurvesJacobian.OmegaPlace.liesOver	def
 # MR9 cj pin 995a389 (2026-10-24): curves-jacobian PointTopology/Germ (via Kummer/JacobianLocalField): IsGermPt is the defining predicate "ξ is a germ point of the family y along 𝒰"
 CurvesJacobian.PointTopology.IsGermPt.ev_eq	def
 CurvesJacobian.PointTopology.IsGermPt.eventually_lands	def
+# MR9 Thm19/CuspSync (2026-10-24): curves-jacobian Kummer/ChernClass, CuspChern, ChernDivisor (via Kummer/SyncEquivariant): KummerInv, IsAdm, IsChernRep, IsChernRepDiv are the defining predicates "f is a Kummer-invariant function / g is an admissible system of n-th-root quotients for f / f represents O_X(E) mod n" of the Chern-class construction (no theorem content)
+CurvesJacobian.ChernClass.IsAdm.eq	def
+CurvesJacobian.ChernClass.IsAdm.fix	def
+CurvesJacobian.ChernClass.IsAdm.ne	def
+CurvesJacobian.ChernClass.IsChernRep.cusp	def
+CurvesJacobian.ChernClass.IsChernRep.toKummerInv	def
+CurvesJacobian.ChernClass.IsChernRep.unram	def
+CurvesJacobian.ChernClass.IsChernRepDiv.loc	def
+CurvesJacobian.ChernClass.IsChernRepDiv.toKummerInv	def
+CurvesJacobian.ChernClass.KummerInv.fix	def
+CurvesJacobian.ChernClass.KummerInv.inv	def
+CurvesJacobian.ChernClass.KummerInv.ne	def
