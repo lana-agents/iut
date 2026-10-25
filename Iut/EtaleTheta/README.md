@@ -282,6 +282,25 @@ Files `ModelAut.lean`, `ModelTower.lean`.
 * Not done: separating the components of `Y_H ×_X Y` (needs verticial subgroups, not provided by
   `tempered-fundamental-groups`) and the cusps.
 
+### (16) MR14: theta cohomology and the theta quotient (`ThetaCohomology.lean`, `ThetaQuotient.lean`)
+
+Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not models), MR14 tasks A1–A3
+(`~/iut-scratch/multiradial/MR14-plan.md`):
+
+* Prop. 1.5(i),(ii): for `DΘ ≤ D ≤ G` with `D` acting trivially on `M`, restriction
+  `ContH1.resTriv` to `Hom(S, M)` (equivariant: `resTriv_conj`), `F1 = ker res_{DΘ}`,
+  `F2 = ker res_D` = image of inflation from `G ⧸ D` (`ker_resTriv_eq_range_inflation`),
+  `F1 → Hom(D/DΘ, M)` with kernel `F2` (`thetaGraded`, `ker_thetaGraded`).
+* Inner automorphisms act trivially on `H¹` (`map_conj_eq_id`); transport along `G ≃ₜ* G'`
+  (`pushIso`, `resTriv_pushIso`, `pushIso_pushIso`).
+* Thm. 1.6(iii), uniqueness step: classes with the same restriction to `DΘ` that are fixed by an
+  inversion `ι` modulo `F2` differ by `F2` (`div_mem_F2_of_inv`, `noInvariantHom_of_inv`); the
+  theta-class set `thetaClassSet` is an `F2`-coset (`mul_mem_thetaClassSet`) and is carried to the
+  theta-class set by every compatible isomorphism (`pushIso_mem_thetaClassSet`).
+* The theta quotient `Δ^Θ = Δ/[[Δ,Δ],Δ]` (`thetaQuot`, class `2`), the commutator pairing
+  `∧²Δ^ell → Δ_Θ` (`thetaPairing`: biadditive, alternating, natural), and `[G, G] = ⟨⁅a, b⁆⟩`
+  for two generators (`commutator_eq_zpowers`).
+
 ## Scope decisions
 
 Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.

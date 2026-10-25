@@ -187,6 +187,8 @@ import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClass
+import Iut.EtaleTheta.ThetaCohomology
+import Iut.EtaleTheta.ThetaQuotient
 import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
 import Iut.Frobenioid.Angular.Category
