@@ -198,6 +198,21 @@ T2 depends on it.
   (`recAdd_of_isIso`, `isRecAdd_iff_of_isIso`, `ellAddCommGroup` on `OnePoint E` with addition
   `recAdd A`).
 
+* 2026-10-25. **T5 done**: `Elliptic/LieTransport.lean` (`lieMap`, `lieConj`, `IsIsoNear`;
+  `IsLinHol.transport`, `mem_apSet_transport`, `mem_fieldSet_transport`: `A_p ∪ {0}` depends only
+  on the germ of the Aut-holomorphic structure at `p` and is carried along additive homeomorphisms
+  that are isomorphisms near `p`; every `ℝ`-linear endomorphism of `Lie T_Λ` is continuous) and
+  `Elliptic/EllField.lean` (`onePointStr A` = `A` on the opens of `OnePoint E` not containing `∞`,
+  `EllSpace A` with the group law `recAdd A` of Cor 2.7 (c) as a topological group,
+  `isIsoNear_compEquiv`, **`EllField A p = A_p ∪ {0}`** for `p ∈ E`, `add_val`/`mul_val`,
+  **`ellEquiv hψ p : EllField A p ≃+* ℂ`** homeomorphically for every `ψ : (E, A) ≅ E_Λ`,
+  `ellEquiv_trans_eq` (indeterminacy `{id, conj}`), `fieldSet_eq`). Hook:
+  `Frobenioid/Angular/Kummer.lean` section `Ell` (`kummerEll` and its injectivity,
+  multiplicativity, continuity, range, transport, indeterminacy for `D` with `IsEllModel D`).
+  Design note: the opens containing `∞` get the full group in `onePointStr` (an arbitrary choice);
+  this is harmless because `A_p` is only formed for `p ∈ E`, and `IsLinHol` only sees opens near
+  `p` (`IsLinHol.transport` with `O = E`).
+
 ## 6. Hand-off 2026-10-24 (MR10 agent, lead christian-41)
 
 **Merged to iut main.**

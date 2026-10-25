@@ -5,6 +5,7 @@ Authors: LANA Project
 -/
 import Iut.Frobenioid.Angular.Props
 import Iut.AutHolomorphic.Transport
+import Iut.AutHolomorphic.Elliptic.EllField
 
 /-!
 # The Kummer structure on the archimedean Frobenioid (IUT I, Example 3.4(i))
@@ -19,11 +20,20 @@ Here `C_v` is the archimedean Frobenioid of angular regions (`Angular.Obj`, a Fr
 Aut-holomorphic space by MR10 (`AutHol.RecField D p`, a topological field isomorphic to `ℂ` via
 `recEquiv hψ p` for any isomorphism `ψ : (X, D) ≅ ℂ`).
 
-**Simplification.** MR10 reconstructs `A_D` for Aut-holomorphic spaces isomorphic to the plane;
-the elliptic cuspidalisation producing `A_{D_v}` from the orbispace `D_v = X→_v` ([AbsTopIII],
-Cor 2.7) is not formalised, so `D` is an Aut-holomorphic plane here.
+Two versions of `A_D`:
 
-Proved: `kummer hψ p hA : O^▷(A) → A_D` is injective (`kummer_injective`), multiplicative
+* `D` an Aut-holomorphic plane: `A_D = AutHol.RecField D p` (`kummer`);
+* `D` an Aut-holomorphic space isomorphic to a once-punctured complex torus `E_Λ` (the output
+  `E` of [AbsTopIII] Cor 2.7 (a) for `D_v = X→_v`): `A_D = A_p ∪ {0} = Ell.EllField D p`, built by
+  elliptic cuspidalisation (Cor 2.7 (b)–(e)), a topological field isomorphic to `ℂ` via
+  `Ell.ellEquiv hψ p` for any isomorphism `ψ : (X, D) ≅ E_Λ` (`kummerEll`).
+
+**Simplification.** Cor 2.7 (a) (the core `D_v → \underline{D}_v` and its double cover by a
+once-punctured elliptic curve, via [AbsTopIII] Cor 2.4) is not formalised: `D` is assumed
+isomorphic to some `E_Λ`.
+
+Proved (for both versions; the elliptic statements carry the suffix `Ell`):
+`kummer hψ p hA : O^▷(A) → A_D` is injective (`kummer_injective`), multiplicative
 (`kummer_comp`), continuous for the topology of `O^▷_ℂ` (`continuous_kummer`), with image the
 elements of norm `≤ 1` of `A_D^×` (`range_kummer`); it is compatible with the isomorphisms
 `O^▷(A) ≅ O^▷(B)` induced by co-angular pre-steps (`kummer_transport`); and the Kummer structures
@@ -117,6 +127,87 @@ theorem kummer_indet {ψ' : X ≃ₜ ℂ} (hψ' : IsIso D plane ψ') {A : Obj} (
   · right
     intro e
     exact congrArg (fun f : ℂ →+* ℂ => f (val e.1)) h
+
+/-! ### `A_D` for an Aut-holomorphic once-punctured elliptic curve ([AbsTopIII] Cor 2.7) -/
+
+section Ell
+
+variable {X : Type*} [TopologicalSpace X] {D : AutHolStr X} [Fact (Ell.IsEllModel D)]
+  {L : PeriodPair} {ψ : X ≃ₜ Ell.punct L} (hψ : IsIso D (Ell.ellStr L) ψ) (p : X)
+
+/-- **The Kummer structure** `κ : O^▷(A) → A_D` for `D ≅ E_Λ` (IUT I, Example 3.4(i), with
+`A_D = A_p ∪ {0}` of [AbsTopIII] Corollary 2.7 (e)). -/
+def kummerEll {A : Obj} (_hA : IsIsotropic P A) (e : Orhd P A) : Ell.EllField D p :=
+  (Ell.ellEquiv hψ p).symm (val e.1)
+
+lemma ellEquiv_kummerEll {A : Obj} (hA : IsIsotropic P A) (e : Orhd P A) :
+    Ell.ellEquiv hψ p (kummerEll hψ p hA e) = val e.1 := by
+  simp [kummerEll]
+
+theorem kummerEll_injective {A : Obj} (hA : IsIsotropic P A) :
+    Function.Injective (kummerEll hψ p hA) := fun e₁ e₂ h => by
+  have h' : (orhdEquiv hA e₁ : ℂ) = orhdEquiv hA e₂ := by
+    have := congrArg (Ell.ellEquiv hψ p) h
+    rwa [ellEquiv_kummerEll, ellEquiv_kummerEll] at this
+  exact (orhdEquiv hA).injective (Subtype.ext h')
+
+/-- `κ` is multiplicative. -/
+theorem kummerEll_comp {A : Obj} (hA : IsIsotropic P A) (e₁ e₂ e : Orhd P A)
+    (he : e.1 = e₁.1 ≫ e₂.1) :
+    kummerEll hψ p hA e = kummerEll hψ p hA e₂ * kummerEll hψ p hA e₁ := by
+  have := orhdEquiv_comp hA e₁ e₂ e he
+  simp only [kummerEll]
+  rw [← map_mul]
+  exact congrArg _ this
+
+/-- `κ ∘ (O^▷(A) ≅ O^▷_ℂ)⁻¹` is the restriction of the topological isomorphism `ℂ ≅ A_D`. -/
+theorem continuous_kummerEll {A : Obj} (hA : IsIsotropic P A) :
+    Continuous fun z : orhdC => kummerEll hψ p hA ((orhdEquiv hA).symm z) := by
+  have : (fun z : orhdC => kummerEll hψ p hA ((orhdEquiv hA).symm z)) =
+      fun z : orhdC => (Ell.ellEquiv hψ p).symm z := by
+    funext z
+    simp only [kummerEll]
+    congr 1
+    exact congrArg Subtype.val ((orhdEquiv hA).apply_symm_apply z)
+  rw [this]
+  exact (Ell.continuous_ellEquiv_symm hψ p).comp continuous_subtype_val
+
+/-- The image of `κ` is `{x ∈ A_D^× : |x| ≤ 1}`. -/
+theorem range_kummerEll {A : Obj} (hA : IsIsotropic P A) :
+    range (kummerEll hψ p hA) = {x | Ell.ellEquiv hψ p x ∈ orhdC} := by
+  ext x
+  constructor
+  · rintro ⟨e, rfl⟩
+    simp only [mem_setOf_eq, ellEquiv_kummerEll]
+    exact (orhdEquiv hA e).2
+  · intro hx
+    refine ⟨(orhdEquiv hA).symm ⟨_, hx⟩, ?_⟩
+    apply (Ell.ellEquiv hψ p).injective
+    rw [ellEquiv_kummerEll]
+    exact congrArg Subtype.val ((orhdEquiv hA).apply_symm_apply ⟨_, hx⟩)
+
+/-- Compatibility with the isomorphisms `O^▷(A) ≅ O^▷(B)` induced by pre-steps. -/
+theorem kummerEll_transport {A B : Obj} (hA : IsIsotropic P A) (hB : IsIsotropic P B)
+    (φ : A ⟶ B) (hφ : IsPreStep P φ) (e : Orhd P A) (e' : Orhd P B) (h : φ ≫ e'.1 = e.1 ≫ φ) :
+    kummerEll hψ p hB e' = kummerEll hψ p hA e := by
+  simp only [kummerEll]
+  rw [val_transport φ hφ ((mem_orhd _).mp e.2) ((mem_orhd _).mp e'.2) h]
+
+/-- **The Kummer indeterminacy**: Kummer structures defined via two isomorphisms `ψ, ψ'` of `D`
+with once-punctured complex tori agree up to `Gal(ℂ/ℝ)`. -/
+theorem kummerEll_indet {L' : PeriodPair} {ψ' : X ≃ₜ Ell.punct L'}
+    (hψ' : IsIso D (Ell.ellStr L') ψ') {A : Obj} (hA : IsIsotropic P A) :
+    (∀ e, Ell.ellEquiv hψ' p (kummerEll hψ p hA e) = val e.1) ∨
+      ∀ e, Ell.ellEquiv hψ' p (kummerEll hψ p hA e) = starRingEnd ℂ (val e.1) := by
+  rcases Ell.ellEquiv_trans_eq hψ p hψ' with h | h
+  · left
+    intro e
+    exact congrArg (fun f : ℂ →+* ℂ => f (val e.1)) h
+  · right
+    intro e
+    exact congrArg (fun f : ℂ →+* ℂ => f (val e.1)) h
+
+end Ell
 
 end
 

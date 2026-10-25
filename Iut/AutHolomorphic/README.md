@@ -39,6 +39,8 @@ No module of this directory is imported by the comparator challenge or by the wa
 | `Cusp.lean` | model-implicit **elliptic cuspidalisation**: `IsEllCusp A U q` (diagrams `E ⊇ U → E`), `deck q = Gal(U/E)`, `cuspTors A` (torsion points), `CuspSum` (their law via `Gal(U/E)`), `IsRecAdd`, `recAdd A` (the law on `OnePoint E`) | Cor 2.7 (b), (c); [AbsTopII] Ex 3.2 (i) |
 | `CuspTransport.lean` | functoriality: isomorphisms carry diagrams, torsion points (`mem_cuspTors_transport`), their law (`cuspSum_transport`) and the law of Cor 2.7 (c) (`isRecAdd_transport`, `recAdd_transport`) | Cor 2.7 (functoriality) |
 | `Elliptic/EllModel.lean` | `IsEllModel A` (`(E, A) ≅ E_Λ`); **`recAdd_of_isIso`**: `OnePoint E ≃ₜ T_Λ` carries the model-implicit `recAdd A` to `+`; uniqueness `isRecAdd_iff_of_isIso`; `ellAddCommGroup` with `ellAddCommGroup_add : x + y = recAdd A x y` | **Cor 2.7 (c) for abstract `E`** |
+| `Elliptic/LieTransport.lean` | `lieMap`, `lieConj` (tangent maps of additive homeomorphisms), `IsIsoNear` (isomorphism on the connected opens inside `O`); **`IsLinHol.transport`, `mem_fieldSet_transport`**: `A_p ∪ {0}` depends only on the germ of `A` at `p` and is carried along additive local isomorphisms | Cor 2.7 (e) (locality, functoriality) |
+| `Elliptic/EllField.lean` | `onePointStr A` (`A` on `OnePoint E` away from `∞`), `EllSpace A` (topological group of Cor 2.7 (c)); **`EllField A p = A_p ∪ {0}`** for abstract `(E, A) ≅ E_Λ`, addition = sum, multiplication = composition; **`ellEquiv hψ p : EllField A p ≃+* ℂ`** (homeomorphism), `ellEquiv_trans_eq` (indeterminacy `{id, conj}`), `fieldSet_eq` (`A_p ≅ A_{p'}` are identities) | **Cor 2.7 (e), Def 4.1 (i) for abstract `E`** |
 | `Elliptic/Chart.lean` | `isMorphism_mk` (charts of `T_Λ` are morphisms); **`exists_rcLift_of_isMorphism`**: a morphism `U → T_Λ` lifts locally to RC-holomorphic maps of `ℂ` | **Cor 2.3 (i) on `T_Λ`** |
 | `Elliptic/Punct.lean` | `T_Λ` compact, minus a countable set connected; `punct L`, `ellStr L` (`E_Λ = T_Λ ∖ {0}`), `onePointEquiv : OnePoint E_Λ ≃ₜ T_Λ` | Cor 2.7 (a)–(c) |
 | `Elliptic/Affine.lean` | `exists_rc_of_rcLift`: an RC-holomorphic self-covering of `T_Λ` fixing `0` is `x ↦ a x` or `x ↦ a x̄` (lifting, removable singularities, Liouville) | classical |
@@ -72,9 +74,10 @@ Plan for [AbsTopIII] Cor 2.7 (holomorphic elliptic cuspidalisation, the part IUT
   `Disc/Normalizer.lean`).
 * Cor 2.4 (hyperbolic cores via `π₁(X^top) ↪ Aut(U)`), Prop 2.5, 2.6 (parallelograms); Cor 2.8, 2.9.
 * Cor 2.7: (b), (c), (d), (e) are done for the model `E_Λ = T_Λ ∖ {0}` (`Elliptic/`; (b), (c)
-  model-implicitly in `Cusp.lean`, computed in `Elliptic/CuspModel.lean`). Still open: (a) cores,
-  and the transport of `A_p` to an abstract Aut-holomorphic space isomorphic to `E_Λ` (steps T5, T7
-  of `Plans/MR10Plan.md`).
+  model-implicitly in `Cusp.lean`, computed in `Elliptic/CuspModel.lean`). `A_p ∪ {0}` is built for
+  an abstract Aut-holomorphic space isomorphic to `E_Λ` (`Elliptic/EllField.lean`) and feeds the
+  Kummer structure `Frobenioid/Angular/Kummer.lean` (`kummerEll`). Still open: (a) cores (step T7 of
+  `Plans/MR10Plan.md`).
 * Archimedean Frobenioids [FrdII] Ex 3.3 over the Aut-holomorphic base, angular / radial
   log-volumes, and wiring `FullKummer.arc` (shells #18, #22) to these constructions (MR17, MR20,
   MR26).
