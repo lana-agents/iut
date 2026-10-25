@@ -374,6 +374,7 @@ import Iut.Reconstruction.Thm19.NFColimit
 import Iut.Reconstruction.Thm19.NFEval
 import Iut.Reconstruction.Thm19.NFKummer
 import Iut.Reconstruction.Thm19.NFPoints
+import Iut.Reconstruction.Thm19.NFShrink
 import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic

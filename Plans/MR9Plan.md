@@ -546,3 +546,51 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
      a cj lemma, coordinate with the cj agents first).
   Process note: the scratch subdir `scratchpad/mr9/` holds logs of several MR9 sessions with
   reused names (`push2.log` etc.); use a fresh subdir and fresh log names per session.
+
+* 2026-10-25 (MR9 track agent, lead christian-aa, session c): worktree `~/iut-pins`, branch `mr9-cj`,
+  no pin change (cj 995a389, pi1 12719c9). New files `Reconstruction/Thm19/NFColimit.lean`,
+  `NFEval.lean`, `NFShrink.lean`.
+  * **Thm 1.9 (d), colimit over finite `k′` (`NFColimit`)**: generic `zHatRes` (`Ẑ(1)_K → Ẑ(1)_L`
+    in char 0), **`kummerZHatEquiv_symm_completionMap`** (restriction `H¹(G_K, Ẑ(1)) → H¹(G_L, Ẑ(1))`
+    is `completionMap` under Kummer, any `L / K` of char 0, levelwise from CKT
+    `restriction_kummerEquiv`), `kummerZHat_restrict`; `resKH1 K D` (pull-back along cj `piRes`,
+    coefficients reindexed), **`resKH1_kummerMapZHat`** (`κ_U(u)|_{U_K} = κ_{U_K}(u)`, `unitsRes`),
+    **`resKH1_constMapZHat`** (`c|_{Π_{U_K}} = c|_{G_K}`, via `G_K → G_k` = `galRestrict` on
+    `k̄ ⊆ K̄`, `piToGk_piRes`), **`exists_resKH1_eq_kummerMapZHat`** (`η ∈ P_U`, `η^M = κ_U(w)` ⇒
+    `w = u^M b`, and over every algebraic `K` with `β^M = b` in `K`: `η|_{U_K} = κ_{U_K}(v)`,
+    `v^M = w`; no Kummer-faithfulness over `K`), **`exists_finite_resKH1_eq_kummerMapZHat`**
+    (`K = k(b^{1/M})` finite), and the number-field curve form with Prop 1.8 (i)
+    (`…_of_isNFKummerTest_numberField`). So "some positive multiple" of Prop 1.8 (i) disappears in
+    the colimit over `k′`, as in the paper.
+  * **Thm 1.9 (d), transition maps over `V` (`NFShrink`)**: `V ⊆ U` as cj `newData D t′` with
+    `t ∈ chartRing k t′`; `piV : Π_V → Π_U`, `resV`, `unitsV`, **`resV_kummerMapZHat`**
+    (`resV (κ_U(u)) = κ_V(u)`). Open: cofinality (every NF-rational `f` is a unit on some `V`,
+    i.e. a `t′` with `t, f, f⁻¹` integral over `k[t′]`; e.g. `t′ = t + c f + d f⁻¹` for generic
+    `c, d ∈ k`), and composing the `V`- and `k′`-colimits.
+  * **Thm 1.9 (e), evaluation from Kummer classes (`NFEval`)**:
+    **`restrictClosed_kummerMapZHat_eq_one_iff`** (`s_x^*κ_U(u) = 1` iff `u(x) = 1`, `k` torally
+    Kummer-faithful, `[k_x : k] < ∞`; cj `restrictClosed_kummerMapZHat` + injectivity of `κ` over
+    `k_x`), `…_valuation` (iff `v_A(u − 1) < 1`), **`mem_U_nfTriple_iff_restrictClosed`** (the
+    subgroup `U_x` of the triple of `Z_NF` at an NF-point which is a closed point of `U` is read off
+    from the Kummer classes: `f ∈ U_x` iff `s_x^*κ_U(f) = 1`).
+  * Process notes: in the `constExt`/`newData` setting, `rfl` between elements of two different
+    intermediate fields (`F` vs `F K`, `k̄` vs `K̄`) makes the kernel compare the membership
+    predicates and time out: use `Subtype.coe_mk` lemmas (`coe_algebraMap_fRes`); `exact` of
+    `ContH1.map` congruences unifies huge instance terms (278 s): prove them at cocycle level
+    (`induction … using ContH1.induction_on`, `simp only [ContH1.map_mk]`, `congr 1`); CKT's
+    `algebraMap_galRestrict_apply` clashes with Mathlib's root lemma (write
+    `KummerTheory.algebraMap_galRestrict_apply`).
+  * **T1 / Schreier–RH: cost check (not started).** (1) cj has `etalePi1OpenEquiv :
+    π₁ᵉᵗ(U) ≃ₜ* H ⧸ ⟨⟨S_U⟩⟩` (`Galois/EtalePi1Open`) only for `k = k̄`; the arithmetic `Π_U` of the
+    Kummer side (`Pi D` over non-closed `k`) has no étale-π₁ bridge in cj 995a389 (cj main 1a312df
+    has the proper-curve section bridge `SectionBridge*`, MR7, but it needs pi1 3fb0593). Cor37c's
+    cusp data are étale (fiber functors) over number fields, so T1 needs either the arithmetic
+    `π₁ᵉᵗ(U) ≃ Pi D` (generalise `EtalePi1Open` to non-closed `k`, the descent part is cj's
+    `piToGk`) or a Galois-model restatement of Cor 3.7 (c). (2) Schreier/RH (`SurfaceIndex` debt
+    `φ`, `ResCuspInput`): the geometric route needs (a) a cover `Y → X` as a Galois model with
+    `Δ_Y ⊆ Δ_X` open (cj `coverSubgroup`), (b) `c1Div` natural under the pull-back (cj
+    `Kummer/ChernDivisor`; nobody edited it since 2026-10-23), (c) the bridge between cj's
+    `H²(Δ_X, μ_n)` (`c1One`, `natIso`) and iut's `SurfGrp`/`gen` (orientation of
+    `exists_cuspCentral_equiv` vs `surfPi1Equiv`), and (d) `φ : H ≃ₜ* Π̂_{g',0}` from cj
+    `etaleFundamentalGroup_equiv_profiniteSurfaceGroup_zero_of_isAlgClosed` for `Y`. Each is
+    ~0.5–1.5k lines; (c) is the cheapest first step.
