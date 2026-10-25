@@ -373,6 +373,7 @@ import Iut.Reconstruction.Thm19.NFAdditive
 import Iut.Reconstruction.Thm19.NFColimit
 import Iut.Reconstruction.Thm19.NFEval
 import Iut.Reconstruction.Thm19.NFKummer
+import Iut.Reconstruction.Thm19.NFLimit
 import Iut.Reconstruction.Thm19.NFPoints
 import Iut.Reconstruction.Thm19.NFShrink
 import Iut.Reconstruction.Thm19.NFStage
