@@ -393,3 +393,35 @@ Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.
 * Tempered anabelian rigidity of the étale theta function (Thm. 1.6), the theta trivializations
   `τ_N` and their compatibility (Lemma 1.2), and the Frobenioid-theoretic manifestations
   (§§3–5).
+
+## (MR15) Mono-theta environments from an abstract theta setting (`Env/`)
+
+Layer A of the MR15 plan (`~/iut-scratch/multiradial/MR15-plan.md`): [EtTh] §2 for an
+**abstract theta setting** given as explicit data — a topological group `PX` (`Π^tp_X̲`) with an
+augmentation `aug : PX →* G` (`G_K`), a discrete cyclotome `μ` (`μ_N`) with `ψ : G →* MulAut μ`,
+subgroups `PYdd ≤ PY ≤ PX` (`Π^tp_Ÿ̲ ⊆ Π^tp_Y̲`), a cocycle `η` on `PYdd` (`η̈^Θ̲ mod N`) and a group
+`Kum` of Kummer cocycles `G → μ`. Every property of the genuine objects enters as a separately
+named theorem hypothesis (no `Prop`-field structures); the list is the Layer-B obligation list of
+the MR15 plan.
+
+* `Env/Envelope.lean` — [EtTh] Def. 2.10 literally (`fibreEnvelope = Π ×_G (μ ⋊ G)`,
+  `fibreEquiv : ≃ₜ* μ ⋊ Π`, tautological section), `Δ[μ] ≅ Δ × μ` and **Prop. 2.11(i)**
+  (`mem_center_geom_iff`), the envelope is a topological group (`Envelope.isTopologicalGroup`),
+  and the **finite-index form of Prop. 2.11(ii)** (`FISlim`, `mem_range_inl_iff_finiteIndex`,
+  `rightEquivFI`: every group isomorphism of envelopes respects `μ` and induces `Π ≅ Π'`) — the
+  route of MR13 decision D4 (`TempSlim.centralizer_eq_bot_of_denseRange` in tfg).
+* `Env/Model.lean` — **Def. 2.13**: Kummer twists, `DX`/`DY` (preimage of `D_Y̲ ⊆ Out`, generated
+  by `K^×` and `Gal(Y̲/X̲)`, closed under composition via the triviality of the inner action on
+  `H¹(G, μ)`, `conj_mul_twist`), theta and algebraic sections, datum (c) = cohomology class of `η`
+  (`thetaSubgroups_eq_iff`), the **model mono-theta environment** `modelEnv : MonoThetaEnv`, and
+  isomorphisms between models: cohomologous cocycles (`modelEnv_eq_of_cohomologous`), `O_K^×`-
+  multiples (`kummerIso`).
+* `Env/Shift.lean` — **Prop. 2.14(ii)**: shifting automorphisms `α_δ` (identity on `Π_Y` and on
+  `μ`, map `s^Θ` to `t^Θ = s^Θ + δ`, normalise `D_Y`), `shiftIso : modelEnv η ≅ modelEnv (η·δ⁻¹)`
+  over the identity of `Π_Y` (Cor. 2.18(ii) uniqueness). Layer-B hypotheses: the extension `δY` of
+  `δ` to `PY` (Prop. 1.5(ii),(iii)) and `ShiftConj` (`Gal(Y̲/X̲)` maps `Ü²` to a `K^×`-multiple).
+* `Env/Prop214.lean` — **Prop. 2.14(i)** for the abstract setting as an exact description
+  (`prop214Set_eq`: the set is the tautological image of the commutators `[a, b]`, `a ∈ Δ_X`,
+  `b ∈ Δ_Y`), with the center-freeness of `G_K` **proved** from `PAdicGalois.isSlimGroup`
+  (`gK_center_free`, `prop214Set_eq_padic`); the arithmetic model's `prop214` without `hG`
+  (`prop214_padic`, `prop214_inter_padic`).

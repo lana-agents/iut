@@ -176,6 +176,10 @@ import Iut.EtaleTheta.ArithEnv
 import Iut.EtaleTheta.CyclotomicEnvelope
 import Iut.EtaleTheta.CyclotomicRigidity
 import Iut.EtaleTheta.DiscreteRigidity
+import Iut.EtaleTheta.Env.Envelope
+import Iut.EtaleTheta.Env.Model
+import Iut.EtaleTheta.Env.Prop214
+import Iut.EtaleTheta.Env.Shift
 import Iut.EtaleTheta.Heisenberg
 import Iut.EtaleTheta.KummerClass
 import Iut.EtaleTheta.ModelAut
