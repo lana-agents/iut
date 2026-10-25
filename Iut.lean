@@ -180,6 +180,7 @@ import Iut.EtaleTheta.Env.Envelope
 import Iut.EtaleTheta.Env.Model
 import Iut.EtaleTheta.Env.Prop214
 import Iut.EtaleTheta.Env.Shift
+import Iut.EtaleTheta.Env.Transport
 import Iut.EtaleTheta.Heisenberg
 import Iut.EtaleTheta.KummerClass
 import Iut.EtaleTheta.ModelAut

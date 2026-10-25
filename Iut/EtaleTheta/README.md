@@ -425,3 +425,8 @@ the MR15 plan.
   `b ∈ Δ_Y`), with the center-freeness of `G_K` **proved** from `PAdicGalois.isSlimGroup`
   (`gK_center_free`, `prop214Set_eq_padic`); the arithmetic model's `prop214` without `hG`
   (`prop214_padic`, `prop214_inter_padic`).
+* `Env/Transport.lean` — the formal half of **Cor. 2.18(i)** ("functorial group-theoretic
+  algorithm"): transporting a reference subgroup along isomorphisms is independent of the choice
+  and functorial exactly when the reference subgroup is preserved by all automorphisms
+  (`IsCharacteristicT`, `transportSub_indep`, `transportSub_map_of_char`); Cor. 2.18(i) thus
+  reduces to characteristic-subgroup statements (Prop. 2.4 etc., Layer B).
