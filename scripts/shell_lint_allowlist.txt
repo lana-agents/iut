@@ -1674,3 +1674,6 @@ CurvesJacobian.ChernClass.IsChernRepDiv.toKummerInv	def
 CurvesJacobian.ChernClass.KummerInv.fix	def
 CurvesJacobian.ChernClass.KummerInv.inv	def
 CurvesJacobian.ChernClass.KummerInv.ne	def
+# MR8 pin train 2026-10-25 (cj fd1aee4): predicate class "G_K is slim" with instances for number fields
+# (isSlimGk_numberField), finite extensions and p-adic fields; a definition, not a shell.
+CurvesJacobian.Cusp.IsSlimGk.isSlim	def
