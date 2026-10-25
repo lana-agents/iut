@@ -311,6 +311,12 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   cusps, compatible in `N` (`thetaLevel_mul`), and `κ_n(f_N(Ü)) = κ_n(Θ̈(Ü))` for `n ∣ N`
   (`kummer_thetaLevel`).
 
+* Route R-alg, task G2b (`TateElliptic.lean`): **Tate's theorem for theta functions** — every
+  weight-`k` family with the multiplier of `θ(-u)^k` has values `(P(X) + Y·Q(X))·θ(-u)^k`
+  (`exists_poly_of_isWeightFamily`), via the dimension count of tate-curves-theta
+  (`finrank_weightSpace`) and the independence of `Xⁱ, XⁱY` as functions
+  (`poly_eq_zero_of_eval`, `infinite_range_X`).
+
 ## Scope decisions
 
 Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.
