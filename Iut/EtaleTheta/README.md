@@ -316,6 +316,16 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   (`exists_poly_of_isWeightFamily`), via the dimension count of tate-curves-theta
   (`finrank_weightSpace`) and the independence of `Xⁱ, XⁱY` as functions
   (`poly_eq_zero_of_eval`, `infinite_range_X`).
+* Route R-alg, task G2c (`ThetaLevelRational.lean`): for even `N`, `f_N` is a rational function
+  `(P₁(X_Q) + Y_Q Q₁(X_Q))/(P₂(X_Q) + Y_Q Q₂(X_Q))` on `E_Q`, `Q = q^{N/2}` (`thetaLevel_eq_div`).
+* Route R-alg, task G1 (ψ-route; `TateFunctionField.lean`, `ThetaPullback.lean`,
+  `ThetaIsogeny.lean`): evaluation of `K[E_q]` at Tate points and elements of `K(E_q)` with
+  prescribed values (`evalTate`, `HasTateValue`, `eq_of_hasTateValue`,
+  `exists_hasTateValue_of_weight`); pulling theta families back along `u ↦ u^m`
+  (`isWeightFamily_pull`, `isWeightFamily_pullIter`); the isogeny `φ(Ü) = Ü²` in Tate coordinates
+  (`exists_poly_isogenyX`, `exists_poly_isogenyY`); and the function field of the level
+  `Ÿ'_N` as `ψ^* K(E_Q) = K(x_Q∘ψ, y_Q∘ψ) ⊆ K(E_q)` (`ψ(u) = u^N`, `φ ∘ ψ = [2N]`), containing
+  `F_N = f_N∘ψ` and `[2N]^* x_q, [2N]^* y_q` (`exists_pullTheta`, `exists_levelField`).
 
 ## Scope decisions
 
