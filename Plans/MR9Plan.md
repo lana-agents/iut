@@ -707,3 +707,22 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     at the stages, which needs `piBridge` for the stage curves); (v) functoriality from an
     isomorphism `Π_U ≃ₜ* Π_{U′}`: it must preserve the stages (Belyi cuspidalization,
     `belyiCuspSpec`, debt `hDGC`) and the cuspidal subgroups ([AbsTopI] Lemma 4.5 (v), open).
+* Hand-off 2026-10-25 (MR9 track agent, session e): merged iut 4396e61 (`NFDirectLimit`,
+  `NFDecomp`, `RecFunctionField`, plan entry) and de563a8 (`RecOrd`). No WIP. `~/iut-pins` now
+  at the pins of main (cj fd1aee4, pi1 3fb0593; pi1 clone un-hard-linked). Debts unchanged:
+  `hDGC` (MR7, existence half), `φ`/`ResCuspInput` of `SurfaceIndex.lean`, `JacDivFree` only
+  outside number fields / `p`-adic fields. Next, in order:
+  1. (i) `kummerNFRange` characterised in `H1Lim` by the test of Prop 1.8 (i) at a stage (needs
+     the curve form of the stages: NF-model and `IsKummerFaithfulJac` for `stage D K t′`, or a
+     transfer of `isNFKummerTest_iff_curve_numberField` along `resT`).
+  2. (iv) index the points of `recTriple` by decomposition groups: `NFDecomp` at the stages
+     (needs `piBridge` for the stage curves, i.e. `stage D K t′` as `curveGaloisData` of
+     `subCurve`), and the injectivity "distinct NF-points have distinct decomposition groups".
+  3. (v) functoriality from `Π_U ≃ₜ* Π_{U′}`: cj main now has [AbsTopI] Lemma 4.5 (v) (MR3,
+     iut b4f3e57 consumer), so isomorphisms preserve the cuspidal subgroups; what remains is that
+     they preserve the stage system (Belyi cuspidalization, `belyiCuspSpec`, debt `hDGC`) and
+     induce an isomorphism of `H1Lim` respecting residues and `s_x^*`.
+  4. Schreier/RH debt via the geometric route (session-c cost check, step (c) first).
+  Process: main moves every ~30 min (MR8/MR14/MR3); five validation rounds were needed for one
+  push. Heavy cj modules (`Cusp.ModelEnlarge`, `Kummer.KummerFaithful`, `Kummer.CuspChern`)
+  must be built one at a time with `LEAN_NUM_THREADS=2` after a cj bump.
