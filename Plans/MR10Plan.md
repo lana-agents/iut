@@ -341,3 +341,48 @@ continuous operation rather than a topological group structure.
    covering of `E_Λ` by a cofinite `U ⊆ E_Λ` is unramified over `∞`) and add co-orientations.
 
 **Blockers.** None. Slot contention made single-file checks slow (14 waiting jobs at times).
+
+## 8. Hand-off 2026-10-25 (MR10 agent, lead christian-aa)
+
+**Merged to iut main.**
+
+* `be269cb`: **T5**. Files: `Elliptic/LieTransport.lean`, `Elliptic/EllField.lean`, and a new
+  section `Ell` in `Frobenioid/Angular/Kummer.lean`.
+  * `IsLinHol.transport` and `mem_fieldSet_transport` show locality and functoriality of `A_p`
+    along additive homeomorphisms that are isomorphisms near `p`.
+  * `EllField A p = A_p ∪ {0}` is defined for an abstract `(E, A)` with `IsEllModel A`.
+  * Its addition is the sum of endomorphisms and its multiplication is composition.
+  * `ellEquiv hψ p : EllField A p ≃+* ℂ` is a homeomorphism, and `ellEquiv_trans_eq` gives the
+    indeterminacy `{id, conj}`.
+  * `fieldSet_eq`: the identifications `A_p ≅ A_{p'}` are identities.
+  * `kummerEll` comes with injectivity, multiplicativity, continuity, range, compatibility with
+    pre-steps, and the Kummer indeterminacy.
+* `f357df2`: **item 3, "necessarily extends"**. `IsEllCusp` now asks for a finite covering map
+  `q : U → E`. The extension `cuspExt U q` is proved to be a covering:
+  * `isCoveringMap_cuspExt` for `E_Λ`;
+  * `isCoveringMap_cuspExt_of_isIso` for `(E, A) ≅ E_Λ`.
+
+  The ingredients are `isCompact_preimage_of_isCoveringMap`, `continuous_cuspExt`, and a weaker
+  `exists_rc_of_rcLift` that needs no local-homeomorphism hypothesis at `K`.
+
+No sorry, no new axioms, no Prop-field structures. All predicates are `def … : Prop`.
+
+**WIP.** None. Branch `mr10-t5` in `~/mr10-iut` equals main after this hand-off commit.
+
+**Design notes.**
+* On opens containing `∞`, `onePointStr A` takes the full group. This choice is arbitrary.
+  `A_p` is only formed for `p ∈ E`, and `IsLinHol` only sees germs.
+* The field structure on `EllField` is transported along a chosen model. `add_val` and `mul_val`
+  show that it agrees with the model-free operations, as in `RecField`.
+
+**Next steps.**
+1. T7: cores (Cor 2.4) and the double cover `E → H` for general elliptically admissible `X`.
+   This is large and is the only step left of Cor 2.7 (a).
+2. Co-orientations and co-holomorphicizations (Def 2.1 (iii), (iv)). They are needed for the
+   co-holomorphy condition of the diagrams in Cor 2.7 (b), which is still not imposed.
+3. The paper's (d) as a second characterisation of `A_p`: orthogonal frames from one-parameter
+   subgroups of `A_V(V) ≅ SL₂(ℝ)/{±1}` (`Disc/` has the inputs).
+4. Consumers: use `kummerEll` downstream, wherever IUT I Ex 3.4 / Def 5.2 (vii) reads `A_{D_v}`
+   (MR17/MR26).
+
+**Blockers.** None.
