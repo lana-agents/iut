@@ -196,6 +196,19 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   `quotientComapEquiv` (`Π_{U_X}/Π_{U_V} ≃ Π/Π_V`), **`cuspidalizationEquiv'`** (step (b):
   `Π_{U_X} ≃ Π_{U_V} ⋊^out (Π/Π_V)` compatibly with the projections, for center-free
   `Π_{U_V}`). Step (a) (chains and the relative Grothendieck conjecture) is a deep input.
+* `Cusp/HemiCuspidal.lean` (MR8, done) — Cor. 3.3 (iii) with base `X = C_{F_mod}`, the
+  hemi-elliptic orbicurve of curves-jacobian's Galois form (`hemiData E'`, `E'/F_mod` with
+  `j(E') ∉ {0, 1728}`, e.g. `WeierstrassCurve.ofJ j`): `fibreSubgroup_hemiFillN`
+  (`π⁻¹(Π_V) = Π_{U_V}`), `center_fibreSubgroup_hemiFillN` (from slimness of `G_M` and `Δ`),
+  **`hemiCuspidalizationEquiv`** (`Π_{U_X} ≃* Π_{U_V} ⋊^out (Π_C/Π_V)`), `hemiFibreArithEquiv`
+  and `hemi_fibre_fill_arith` (`Π_{U_V}` is cj's arithmetic `π₁` of `(E' ∖ E'[N])_M`, the filling is
+  cj's `fillPiHom` up to `Inn`), **`hemi_cor33iii_Fmod`** (with every twist `E/M`, `j(E) = j(E')`,
+  embedding openly into `Π_C`).
+* `Cusp/HemiCoreBaseChange.lean`, `Cusp/EtLocChainIso.lean` (MR8, done) — Cor. 3.3 (i):
+  `hemi_cor33i_terminal_baseChange` (`G′ ≠ G`: `Π_{X_M} ≃ Π ×_G G′`, `hemiBaseChangeEquiv`, and
+  `Π_{X_M} ⇝ Π_{C_M}` terminal in `ÉtLoc`), `nonempty_iso_of_isTerminalEtLoc`,
+  `hemi_cor33i_unique(_baseChange)` (uniqueness of the terminal `⋎`-chain in `Chain(Π′)`).
+  Input: `hDGC` (existence half of the rel-isom-DGC) as for `HemiSelfComm`.
 * `Cusp/Belyi.lean` (done) — [AbsTopIII], Thm. 1.9 (a), step "filling in cusps":
   `CuspData` (a group with cuspidal inertia subgroups), `CuspData.kernel`, `Filled`,
   `fillMap` (`Π_U ↠ Π_Y`), `mk_inertia`, and the functoriality `CuspData.Iso`, `map_kernel`,
