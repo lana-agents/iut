@@ -657,3 +657,46 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Decision for the lead: none needed for 1–2 (all at the current pins). cj main has a generic
   `piXGalG₃ : Π_W ≃ₜ* H_L ⧸ ⟨⟨S⟩⟩` (MR8 `HemiConstArith`) without inertia matching; iut does
   not need it now.
+
+* 2026-10-25 (MR9 track agent, lead christian-aa, session e): worktree `~/iut-pins`, branch
+  `mr9-t1e`, no pin change (cj 995a389, pi1 12719c9). New files `Thm19/NFDirectLimit.lean`,
+  `NFDecomp.lean`, `RecFunctionField.lean`. **T1 assembled on the Galois model.**
+  * **Thm 1.9 (d), the colimit as a group (`NFDirectLimit`)**: `StageIdx D` (stages `V ⊆ U_K`,
+    `K / k` finite, ordered by `K ⊆ K′` and "`t′` regular on the open of `t″`"; directed via
+    `exists_stage_ge_sup`, nonempty via `U` itself), **`H1Lim D = lim→_V H¹(Π_V, Ẑ(1))`** and
+    `UnitsLim D = lim→_V Γ(V, 𝒪^×)` (Mathlib `DirectLimit` along `resT`/`unitsT`; `resS_self`,
+    `resS_resS`), **`kummerLim`** with **`kummerLim_injective`** (number fields; generic
+    `directLimit_map_injective`), `coeLim` (injective), `nfToLim`, and
+    **`kummerNF : K^×_{Z_NF} →* H1Lim D`**, **`kummerNF_injective`** (the "`↪`" of (d) as a
+    monomorphism of groups).
+  * **Thm 1.9 (a) on the Galois model (`NFDecomp`)**: **`map_decompH_eq_fillMap_commensurator`**:
+    for `U_X ⊆ U` and `α₀` there is one `t` such that for every place `W` of `K(X̄)^alg` over a
+    point of `U ∖ U_X`, `I_{σW}` is a cuspidal subgroup of `Π_{U_X}` and `piBridge(D_W ∩ H)`
+    (moved by `α₀` and `t`) is `fillMap(Comm(I_{σW}))` (cj `cor37c` + `map_decompH_piBridge`).
+  * **T1 (`RecFunctionField`)**: `kummerNFRange` (image of `kummerNF`), `kummerNFEquiv`;
+    **`recTriple N hkF`** (Prop 1.3 (a)–(c) on the Kummer classes: group `kummerNFRange`, points
+    of `Z_NF`, `ord_x` and `U_x` carried by the Kummer map), **`recIso : nfTriple N ≅ recTriple`**;
+    **`recFunctionField`** (`kummerNFRange ∪ {0}` with its `Field` structure) with
+    `recFunctionFieldEquiv : K_{Z_NF} ≃+* recFunctionField`, `recFunctionField_mul` (the
+    multiplication is that of the classes) and **`recFunctionField_add_eq_iff`** (`a + b = c ↔
+    AddRel a b c`: the addition is Uchida's algorithm on the reconstructed triple);
+    functoriality **`recFunctionFieldIso`/`ringEquivOfIso`** (every isomorphism of reconstructed
+    triples is additive, hence a field isomorphism `K_{Z_NF} ≃+* K_{Z′_NF}`). The data of the
+    triple are read off from the Kummer classes: **`kummerNF_eq_mk`** (`[V, κ_V(v)]` at every
+    stage where `f` is a unit `v`); **`mem_U_recTriple_iff`** (`U_x` via `s_x^*κ_V(v) = 1` at an
+    NF-point which is a closed point of `V`; the decomposition groups of (a)); **`ord_x` from the
+    residues**: `mem_F_baseChange_of_stage`, `ord_stage_eq_one` (a uniformiser of `Z_NF` at `x`
+    lying in `F_V` is a uniformiser of `V` at `x`: unramified constant extensions, via
+    `exists_valuation_eq_fnf`), `ord_stage_eq_ord_nf`, **`res_kummerMapZHat_eq_tameGen_zpow`**
+    (`res_p(κ_V(v)) = θ_p^{ord_x(f)}` for every inertia index `p = (W, σ)` of `V` at `x`, (b)/(c)).
+  * Not yet group-theoretic in `recTriple` (each is a characterisation still to be proved, no
+    hypothesis was added): (i) membership in `kummerNFRange` by the test of Prop 1.8 (i) at a
+    stage (in the colimit the "positive multiple" disappears, `exists_stage_resT_eq_kummerMapZHat`;
+    needs NF-models and `IsKummerFaithfulJac` at the stages); (ii) uniqueness of the exponent in
+    `res_p = θ_p^n` (`θ_p` of infinite order when `σ` generates the tame inertia; CKT
+    `TameCharInjective`); (iii) cofinality: for every NF-point `x` and `f` a stage on which `f`
+    is a unit, `x` a cusp, and a uniformiser at `x` lies in `F_V` (`exists_stage_units` with a
+    prescribed pole); (iv) the points of the triple indexed by decomposition groups (`NFDecomp`
+    at the stages, which needs `piBridge` for the stage curves); (v) functoriality from an
+    isomorphism `Π_U ≃ₜ* Π_{U′}`: it must preserve the stages (Belyi cuspidalization,
+    `belyiCuspSpec`, debt `hDGC`) and the cuspidal subgroups ([AbsTopI] Lemma 4.5 (v), open).
