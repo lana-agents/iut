@@ -183,6 +183,7 @@ import Iut.EtaleTheta.ModelTower
 import Iut.EtaleTheta.MonoTheta
 import Iut.EtaleTheta.RigidSystems
 import Iut.EtaleTheta.TateElliptic
+import Iut.EtaleTheta.TateFunctionField
 import Iut.EtaleTheta.TempSlimPiY
 import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.TemperedDouble
@@ -191,6 +192,7 @@ import Iut.EtaleTheta.ThetaClass
 import Iut.EtaleTheta.ThetaCohomology
 import Iut.EtaleTheta.ThetaLevel
 import Iut.EtaleTheta.ThetaLevelRational
+import Iut.EtaleTheta.ThetaPullback
 import Iut.EtaleTheta.ThetaQuotient
 import Iut.EtaleTheta.ThetaRigidity
 import Iut.EtaleTheta.ThetaValues
