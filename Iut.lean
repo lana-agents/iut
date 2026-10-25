@@ -190,6 +190,7 @@ import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClass
 import Iut.EtaleTheta.ThetaCohomology
 import Iut.EtaleTheta.ThetaLevel
+import Iut.EtaleTheta.ThetaLevelRational
 import Iut.EtaleTheta.ThetaQuotient
 import Iut.EtaleTheta.ThetaRigidity
 import Iut.EtaleTheta.ThetaValues
