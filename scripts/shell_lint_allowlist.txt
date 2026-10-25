@@ -1682,3 +1682,7 @@ CurvesJacobian.Cusp.IsSlimGk.isSlim	def
 CurvesJacobian.Cusp.OpenInjOver.inj	def
 CurvesJacobian.Cusp.OpenInjOver.isOpen_range	def
 CurvesJacobian.Cusp.OpenInjOver.toG_hom	def
+# MR3 consumer 2026-10-25 (cj CuspChar, imported by Iut/Reconstruction/Cusp/CuspDataIso): CycNoExponent K Ω l = "the
+# mod-l^k cyclotomic characters have no finite exponent on open subgroups"; predicate class with instances (number
+# fields at l = 3, cycNoExponent_padic); a definition, not a shell.
+CurvesJacobian.CuspChar.CycNoExponent.exists_ne	def

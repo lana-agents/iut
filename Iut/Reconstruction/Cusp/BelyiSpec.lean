@@ -40,8 +40,9 @@ Thm 4.12, via [AbsTopI] Def 4.6, Ex 4.8 (i)), milestone MR7. The uniqueness half
 of curves-jacobian (MR7, inner rigidity, `CurvesJacobian.LocAn`). The debt is recorded in
 `Plans/MR9Plan.md`.
 Functoriality is in isomorphisms of cuspidal extensions, which preserve the cuspidal subgroups by
-definition; that every `Π_X ≃ₜ* Π_{X'}` over `G_K ≃ₜ* G_{K'}` does so is [AbsTopI] Lemma 4.5 (v)
-(not yet formalised).
+definition; that every `Π_X ≃ₜ* Π_{X'}` over `G_K ≃ₜ* G_{K'}` does so is [AbsTopI] Lemma 4.5 (v),
+consumed in `CuspDataIso.lean` (`arithCuspDataIso`, from curves-jacobian's
+`CuspChar.arithmeticExtIso'`; `p`-adic: `arithCuspDataIso_padic`).
 -/
 
 universe u

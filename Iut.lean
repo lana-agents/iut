@@ -332,6 +332,7 @@ import Iut.Reconstruction.Cusp.Cor37c
 import Iut.Reconstruction.Cusp.CoverIsoDGC
 import Iut.Reconstruction.Cusp.CuspCentral
 import Iut.Reconstruction.Cusp.CuspCentralH1
+import Iut.Reconstruction.Cusp.CuspDataIso
 import Iut.Reconstruction.Cusp.CuspTransgression
 import Iut.Reconstruction.Cusp.Elliptic
 import Iut.Reconstruction.Cusp.HemiCoreRing
