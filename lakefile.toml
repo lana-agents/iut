@@ -54,7 +54,7 @@ rev = "f4379dbccc8cdc4faa894a236d5581a6a635c5b5"
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "12719c9ae4ff061c0f98c11ec1bb5a064132afc3"
+rev = "3fb0593bfc17719d90b3352d8a9fa8326c681d25"
 
 # [CanLift], Prop. 2.7 over ℂ (`OrbicurveCores.U2.canLift27C`, branch wp-u2), which together
 # with `AffOrbicurve.canLift27_of_complex` discharges `AffOrbicurve.CanLift27`.
@@ -124,7 +124,7 @@ rev = "8e2b20806fbe97d6fede33dc4eda1e7f350fb138"
 [[require]]
 name = "curves-jacobian"
 git = "https://github.com/lana-agents/curves-jacobian"
-rev = "995a389fbcee73a2d29223c38918e3afe66e1c12"
+rev = "c7efa71c205cbe68222c67e39e82364ea84f032a"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
