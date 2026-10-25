@@ -564,9 +564,10 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     the colimit over `k′`, as in the paper.
   * **Thm 1.9 (d), transition maps over `V` (`NFShrink`)**: `V ⊆ U` as cj `newData D t′` with
     `t ∈ chartRing k t′`; `piV : Π_V → Π_U`, `resV`, `unitsV`, **`resV_kummerMapZHat`**
-    (`resV (κ_U(u)) = κ_V(u)`). Open: cofinality (every NF-rational `f` is a unit on some `V`,
-    i.e. a `t′` with `t, f, f⁻¹` integral over `k[t′]`; e.g. `t′ = t + c f + d f⁻¹` for generic
-    `c, d ∈ k`), and composing the `V`- and `k′`-colimits.
+    (`resV (κ_U(u)) = κ_V(u)`); cofinality **`exists_coordinate_V`** / **`exists_units_V`** (every
+    `f ∈ F^×` is a unit on the open `V` of `t′ = t + c₂ (f + c₁ f⁻¹)`, generic `c₁, c₂ ∈ k`,
+    `exists_smul_add_mem_imp`). Open: composing the `V`- and `k′`-colimits (`constExt` of
+    `newData`), and the transition maps between two arbitrary `V`, `V′` (only `V ⊆ U` so far).
   * **Thm 1.9 (e), evaluation from Kummer classes (`NFEval`)**:
     **`restrictClosed_kummerMapZHat_eq_one_iff`** (`s_x^*κ_U(u) = 1` iff `u(x) = 1`, `k` torally
     Kummer-faithful, `[k_x : k] < ∞`; cj `restrictClosed_kummerMapZHat` + injectivity of `κ` over
@@ -594,3 +595,18 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `exists_cuspCentral_equiv` vs `surfPi1Equiv`), and (d) `φ : H ≃ₜ* Π̂_{g',0}` from cj
     `etaleFundamentalGroup_equiv_profiniteSurfaceGroup_zero_of_isAlgClosed` for `Y`. Each is
     ~0.5–1.5k lines; (c) is the cheapest first step.
+* Hand-off 2026-10-25 (MR9 track agent, session c): merged iut 13daf5e (`NFColimit`, `NFEval`),
+  43f8052 (`NFShrink` transition maps + this plan entry) and the cofinality commit (`NFShrink`:
+  `exists_coordinate_V`, `exists_units_V`, plan hand-off). No WIP, no pin change. Debts unchanged:
+  `hDGC` (MR7, existence half), `φ`/`ResCuspInput` of `SurfaceIndex.lean`, `JacDivFree` only for
+  fields that are neither number fields nor `p`-adic. Next, in order:
+  1. (d) bookkeeping: the double colimit (`constExt` of `newData` and vice versa, i.e. `V_{k′}`),
+     and the injectivity of `K^×_{Z_NF} → lim→ H¹(Π_V, M_X)` (Prop 1.6 (i) at each stage; over `k′`
+     cj `isKummerFaithfulJac_curveGaloisData_of_ext` needs the curve form of `constExt`).
+  2. T1 bridge (see the cost check above): either an arithmetic `π₁ᵉᵗ(U) ≃ₜ* Pi D` (generalise cj
+     `Galois/EtalePi1Open` from `k = k̄` to non-closed `k`; needs pi1/cj bump past 3fb0593 if the
+     MR7 `SectionBridge*` files are used) or a Galois-model restatement of `cor37c`.
+  3. Schreier/RH via the geometric route; first step (c) of the cost check: identify cj's
+     `c1One`/`natIso` (`H²(Δ_X, μ_n)`, pi1 `H2lc`) with iut's `SurfGrp`/`gen` (`ContH2`) along
+     `surfPi1Equiv`/`exists_fhat_equiv`, then (b) `c1Div` under finite étale pull-back in cj
+     (`Kummer/ChernDivisor`, untouched since 2026-10-23; check LEAD lines before editing).

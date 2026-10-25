@@ -24,7 +24,13 @@ of NF-points (and over finite extensions `k′`, `Thm19/NFColimit.lean`). In the
 * `unitsV`: units of `U` are units of `V` (integrality over `k[t]` implies integrality over
   `k[t′]`);
 * **`resV_kummerMapZHat`**: `resV (κ_U(u)) = κ_V(u)`, the Kummer maps are compatible with the
-  transition maps.
+  transition maps;
+* **cofinality**: `exists_smul_add_mem_imp` (for `a, b ∈ F` some `a + c b`, `c ∈ k`, has a pole
+  wherever `a` or `b` has one: at each place at most one `c` fails, and only finitely many places
+  matter, weil-curves `Place.finite_setOf_notMem`), hence **`exists_coordinate_V`**: every unit `f`
+  of the function field is regular and invertible on the open `V` of a coordinate
+  `t′ = t + c₂ (f + c₁ f⁻¹)` with `t` regular on `V`, and **`exists_units_V`**: `f` is then a unit
+  of `V`. So the Kummer classes `κ_V(f)` of all `f ∈ F^×` live in the colimit over `V`.
 -/
 
 open KummerTheory Curve AffOrbicurve WeilCurves.FunctionField CurvesJacobian.Kummer
@@ -243,5 +249,148 @@ theorem resV_kummerMapZHat (u : units D) :
   exact resHV_resZHat D ht' htr' _
 
 end Shrink
+
+section Cofinal
+
+open CurvesJacobian
+
+set_option linter.unusedSectionVars false
+
+/-- An element lying in every valuation subring of `Ω` containing `k` and `t'` lies in the
+integral closure of `k[t']`. -/
+lemma mem_chartRing_of_forall {k Ω : Type*} [Field k] [Field Ω] [Algebra k Ω] {t' y : Ω}
+    (h : ∀ W : ValuationSubring Ω, (∀ c : k, algebraMap k Ω c ∈ W) → t' ∈ W → y ∈ W) :
+    y ∈ chartRing k t' := by
+  change y ∈ (chartRing k t').toSubring
+  rw [Subring.eq_iInf_of_isIntegrallyClosedIn (R := (chartRing k t').toSubring), Subring.mem_iInf]
+  intro V
+  exact h V.1 (fun c => V.2 (algebraMap_mem_chartRing t' c)) (V.2 (self_mem_chartRing k t'))
+
+variable {k Ω : Type u} [Field k] [Field Ω] [Algebra k Ω] {t : Ω}
+  (D : Pi1.Orbifold.GaloisData k t) [CharZero k] [IsGalois (K₀ k t) Ω] [IsSepClosed Ω]
+
+attribute [local instance] CurvesJacobian.isFunctionField_F
+
+/-- **Choosing a coordinate with prescribed poles**: for `a, b ∈ F` there is `λ ∈ k` such that
+every place `W ⊇ k` of `Ω` containing `a + λ b` contains `a` and `b` (at each place of `F` with a
+pole of `a` or `b` at most one `λ` fails, and there are finitely many such places). -/
+theorem exists_smul_add_mem_imp (a b : F D) :
+    ∃ c : k, ∀ W : ValuationSubring Ω, (∀ c : k, algebraMap k Ω c ∈ W) →
+      (((a + algebraMap k (F D) c * b : F D) : Ω) ∈ W) → (a : Ω) ∈ W ∧ (b : Ω) ∈ W := by
+  classical
+  set bad : Set k := {c | ∃ W : ValuationSubring Ω, (∀ c : k, algebraMap k Ω c ∈ W) ∧
+    ((a + algebraMap k (F D) c * b : F D) : Ω) ∈ W ∧ ¬ ((a : Ω) ∈ W ∧ (b : Ω) ∈ W)}
+  -- the place of `F` under the chosen `W`
+  have hplace : ∀ c ∈ bad, ∃ P : Place k (F D), ((a + algebraMap k (F D) c * b : F D) ∈ P.1) ∧
+      ¬ (a ∈ P.1 ∧ b ∈ P.1) := by
+    rintro c ⟨W, hk, hW, hab⟩
+    refine ⟨⟨W.comap (algebraMap (F D) Ω), ?_, fun c' => ?_⟩, hW, hab⟩
+    · intro htop
+      apply hab
+      constructor
+      · exact (show a ∈ W.comap (algebraMap (F D) Ω) by rw [htop]; trivial)
+      · exact (show b ∈ W.comap (algebraMap (F D) Ω) by rw [htop]; trivial)
+    · change algebraMap (F D) Ω (algebraMap k (F D) c') ∈ W
+      rw [← IsScalarTower.algebraMap_apply]
+      exact hk c'
+  choose! P hP using hplace
+  have hinj : Set.InjOn P bad := by
+    intro c hc c' hc' hcc
+    by_contra hne
+    have h1 := (hP c hc).1
+    have h2 := (hP c' hc').1
+    rw [hcc] at h1
+    have hsub : algebraMap k (F D) (c - c') * b ∈ (P c').1 := by
+      have := (P c').1.sub_mem h1 h2
+      rwa [add_sub_add_left_eq_sub, ← sub_mul, ← map_sub] at this
+    have hunit : (algebraMap k (F D) (c - c'))⁻¹ ∈ (P c').1 := by
+      rw [← map_inv₀]
+      exact (P c').2.2 _
+    have hb : b ∈ (P c').1 := by
+      have := mul_mem hunit hsub
+      rwa [← mul_assoc, inv_mul_cancel₀ ((map_ne_zero _).2 (sub_ne_zero.2 hne)), one_mul]
+        at this
+    have ha : a ∈ (P c').1 := by
+      have := (P c').1.sub_mem h2 (mul_mem ((P c').2.2 c') hb)
+      rwa [add_sub_cancel_right] at this
+    exact (hP c' hc').2 ⟨ha, hb⟩
+  have hfin : bad.Finite := by
+    refine Set.Finite.of_finite_image ?_ hinj
+    refine ((Place.finite_setOf_notMem (k := k) a).union
+      (Place.finite_setOf_notMem (k := k) b)).subset ?_
+    rintro _ ⟨c, hc, rfl⟩
+    by_contra h
+    simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not] at h
+    exact (hP c hc).2 h
+  obtain ⟨c, hc⟩ := hfin.infinite_compl.nonempty
+  exact ⟨c, fun W hk hW => of_not_not fun hab => hc ⟨W, hk, hW, hab⟩⟩
+
+lemma mem_L_of_mem_F_shrink {x : Ω} (hx : x ∈ F D) : x ∈ D.L := by
+  rw [Pi1.Orbifold.GaloisData.L, IntermediateField.mem_fixedField_iff]
+  rw [IntermediateField.mem_fixedField_iff] at hx
+  exact fun σ hσ => hx σ (D.le hσ)
+
+/-- **Cofinality of the opens `V`**: for every unit `f` of the function field there is a
+coordinate `t′ ∈ L`, transcendental over `k`, such that `t`, `f` and `f⁻¹` are regular on the
+open `V` of `t′` (integral over `k[t′]`): `f` is a unit on some open `V ⊆ U`. -/
+theorem exists_coordinate_V (f : (F D)ˣ) :
+    ∃ t' : Ω, t' ∈ D.L ∧ Transcendental k t' ∧ t ∈ chartRing k t' ∧
+      ((f : F D) : Ω) ∈ chartRing k t' ∧ (((f⁻¹ : (F D)ˣ) : F D) : Ω) ∈ chartRing k t' := by
+  obtain ⟨c₁, h₁⟩ := exists_smul_add_mem_imp D (f : F D) ((f⁻¹ : (F D)ˣ) : F D)
+  obtain ⟨c₂, h₂⟩ := exists_smul_add_mem_imp D (tF D)
+    ((f : F D) + algebraMap k (F D) c₁ * ((f⁻¹ : (F D)ˣ) : F D))
+  set z : F D := tF D + algebraMap k (F D) c₂ *
+    ((f : F D) + algebraMap k (F D) c₁ * ((f⁻¹ : (F D)ˣ) : F D)) with hz
+  have key : ∀ W : ValuationSubring Ω, (∀ c : k, algebraMap k Ω c ∈ W) → (z : Ω) ∈ W →
+      t ∈ W ∧ ((f : F D) : Ω) ∈ W ∧ (((f⁻¹ : (F D)ˣ) : F D) : Ω) ∈ W := by
+    intro W hk hW
+    obtain ⟨ht, hz₁⟩ := h₂ W hk hW
+    obtain ⟨hf, hf'⟩ := h₁ W hk hz₁
+    exact ⟨ht, hf, hf'⟩
+  have htr' : Transcendental k (z : Ω) := by
+    intro halg
+    apply D.transcendental
+    have hall : ∀ W : ValuationSubring Ω, (∀ c : k, algebraMap k Ω c ∈ W) → t ∈ W :=
+      fun W hk => (key W hk (KummerTheory.Curve.mem_of_isIntegral hk halg.isIntegral)).1
+    have hmem : t ∈ (integralClosure k Ω).toSubring := by
+      rw [Subring.eq_iInf_of_isIntegrallyClosedIn (R := (integralClosure k Ω).toSubring),
+        Subring.mem_iInf]
+      intro V
+      exact hall V.1 fun c => V.2 (Subalgebra.algebraMap_mem _ c)
+    exact ((mem_integralClosure_iff k Ω).1 hmem).isAlgebraic
+  refine ⟨z, mem_L_of_mem_F_shrink D z.2, htr', ?_, ?_, ?_⟩
+  · exact mem_chartRing_of_forall fun W hk hW => (key W hk hW).1
+  · exact mem_chartRing_of_forall fun W hk hW => (key W hk hW).2.1
+  · exact mem_chartRing_of_forall fun W hk hW => (key W hk hW).2.2
+
+variable {D} {t' : Ω} (ht' : t' ∈ D.L) (htr' : Transcendental k t')
+
+attribute [local instance] algebraFV
+
+lemma isIntegral_fV_of_mem_chartRing (x : F D) (hx : (x : Ω) ∈ chartRing k t') :
+    haveI := isGalois_K₀_V D ht' htr'
+    IsIntegral (A₀ k t') (algebraMap (F D) (F (VData D ht' htr')) x) := by
+  haveI := isGalois_K₀_V D ht' htr'
+  haveI : IsScalarTower (A₀ k t') (F (VData D ht' htr')) Ω :=
+    IsScalarTower.of_algebraMap_eq fun _ => rfl
+  have h3 : IsIntegral (A₀ k t') (x : Ω) := hx
+  rw [← coe_algebraMap_fV D ht' htr' x] at h3
+  exact (isIntegral_algHom_iff (IsScalarTower.toAlgHom (A₀ k t') (F (VData D ht' htr')) Ω)
+    (algebraMap (F (VData D ht' htr')) Ω).injective).1 h3
+
+/-- **`f` is a unit on `V`** once `f` and `f⁻¹` are regular on `V`. -/
+theorem exists_units_V (f : (F D)ˣ) (hf : ((f : F D) : Ω) ∈ chartRing k t')
+    (hf' : (((f⁻¹ : (F D)ˣ) : F D) : Ω) ∈ chartRing k t') :
+    ∃ v : units (VData D ht' htr'),
+      (((v : (F (VData D ht' htr'))ˣ) : F (VData D ht' htr')) : Ω) = ((f : F D) : Ω) := by
+  haveI := isGalois_K₀_V D ht' htr'
+  refine ⟨⟨Units.map (algebraMap (F D) (F (VData D ht' htr')) :
+      F D →* F (VData D ht' htr')) f, isIntegral_fV_of_mem_chartRing ht' htr' _ hf, ?_⟩, ?_⟩
+  · rw [← map_inv]
+    exact isIntegral_fV_of_mem_chartRing ht' htr' _ hf'
+  · change ((algebraMap (F D) (F (VData D ht' htr')) (f : F D) : F (VData D ht' htr')) : Ω) = _
+    exact coe_algebraMap_fV D ht' htr' _
+
+end Cofinal
 
 end Iut.Reconstruction.Thm19
