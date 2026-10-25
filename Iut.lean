@@ -329,10 +329,14 @@ import Iut.NumberTheory.SixExponentials.LogPrimes
 import Iut.Reconstruction.Cusp.Belyi
 import Iut.Reconstruction.Cusp.BelyiSpec
 import Iut.Reconstruction.Cusp.Cor37c
+import Iut.Reconstruction.Cusp.CoverIsoDGC
 import Iut.Reconstruction.Cusp.CuspCentral
 import Iut.Reconstruction.Cusp.CuspCentralH1
 import Iut.Reconstruction.Cusp.CuspTransgression
 import Iut.Reconstruction.Cusp.Elliptic
+import Iut.Reconstruction.Cusp.HemiCoreRing
+import Iut.Reconstruction.Cusp.HemiInvConj
+import Iut.Reconstruction.Cusp.HemiSelfComm
 import Iut.Reconstruction.Cusp.OutSemidirect
 import Iut.Reconstruction.Cusp.SurfaceDiscrete
 import Iut.Reconstruction.Cusp.SurfaceGeom

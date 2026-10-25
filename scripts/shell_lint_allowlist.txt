@@ -1677,3 +1677,8 @@ CurvesJacobian.ChernClass.KummerInv.ne	def
 # MR8 pin train 2026-10-25 (cj fd1aee4): predicate class "G_K is slim" with instances for number fields
 # (isSlimGk_numberField), finite extensions and p-adic fields; a definition, not a shell.
 CurvesJacobian.Cusp.IsSlimGk.isSlim	def
+# MR8 D-c 2026-10-25 (cj EtLocTerminal, imported by Iut/Reconstruction/Cusp/HemiSelfComm): OpenInjOver = ÉtLoc morphism
+# data (open injection over G up to conjugation, lead decision); its Prop fields define the notion.
+CurvesJacobian.Cusp.OpenInjOver.inj	def
+CurvesJacobian.Cusp.OpenInjOver.isOpen_range	def
+CurvesJacobian.Cusp.OpenInjOver.toG_hom	def
