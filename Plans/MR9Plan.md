@@ -689,8 +689,15 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     lying in `F_V` is a uniformiser of `V` at `x`: unramified constant extensions, via
     `exists_valuation_eq_fnf`), `ord_stage_eq_ord_nf`, **`res_kummerMapZHat_eq_tameGen_zpow`**
     (`res_p(κ_V(v)) = θ_p^{ord_x(f)}` for every inertia index `p = (W, σ)` of `V` at `x`, (b)/(c)).
+  * **`ord_x` determined by the residues (`RecOrd`)**: `zHatOne_eq_one_of_pow_eq_one`,
+    `zHatOne_zpow_injective` (`Ẑ(1)` torsion-free), **`tameGen_ne_one`** (`θ_p ≠ 1` for `σ ≠ 1`,
+    CKT `eq_one_of_forall_evalTriv_kummer_eq_one`), **`val_recTriple_eq_iff`** (`ord_x(f) = n` iff
+    `res_p(κ_V(v)) = θ_p^n`), **`exists_stage_inertia`** (cofinality: a stage with `f` a unit,
+    `x` a cusp, a uniformiser of `Z_NF` at `x` in `F_V`, and `σ ≠ 1` in `I_W ∩ H_V`) and
+    **`val_recTriple_eq_iff_exists`**. Pins moved with main (cj c7efa71, pi1 3fb0593; pi1 clone
+    in `~/iut-pins` un-hard-linked first).
   * Not yet group-theoretic in `recTriple` (each is a characterisation still to be proved, no
-    hypothesis was added): (i) membership in `kummerNFRange` by the test of Prop 1.8 (i) at a
+    hypothesis was added; (ii), (iii) below are done in `RecOrd`): (i) membership in `kummerNFRange` by the test of Prop 1.8 (i) at a
     stage (in the colimit the "positive multiple" disappears, `exists_stage_resT_eq_kummerMapZHat`;
     needs NF-models and `IsKummerFaithfulJac` at the stages); (ii) uniqueness of the exponent in
     `res_p = θ_p^n` (`θ_p` of infinite order when `σ` generates the tame inertia; CKT

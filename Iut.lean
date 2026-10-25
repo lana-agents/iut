@@ -399,6 +399,7 @@ import Iut.Reconstruction.Thm19.NFShrink
 import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Thm19.NFTransition
 import Iut.Reconstruction.Thm19.RecFunctionField
+import Iut.Reconstruction.Thm19.RecOrd
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
 import Iut.Reconstruction.Uchida.FunctionField
