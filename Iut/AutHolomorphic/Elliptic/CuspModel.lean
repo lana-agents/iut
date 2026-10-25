@@ -18,6 +18,10 @@ For the once-punctured curve `E_Λ = T_Λ ∖ {0}` with its Aut-holomorphic stru
   with `U = {f ≠ 0}` and `q = f|_U`. The inputs are Corollary 2.3 (i) on `T_Λ`
   (`exists_rcLift_of_isMorphism`) and `exists_rc_of_rcLift` (lifting, removable singularities,
   Liouville);
+* **`isCoveringMap_cuspExt`**: the extension of every diagram to the one-point compactification
+  is a covering map ("which necessarily extends to a covering of the one-point compactification";
+  the extension is continuous because a finite covering is proper, and it is then the map induced
+  by `z ↦ a z` or `z ↦ a z̄`, hence unramified);
 * **`mem_cuspTors_iff`**: the torsion points of Corollary 2.7 (b) are the torsion points of
   `T_Λ` (under `OnePoint E_Λ ≃ₜ T_Λ`, `∞ ↦ 0`);
 * **`cuspSum_iff`**: their group law induced by `Gal(U/E)` is the group law of `T_Λ`;
@@ -91,9 +95,11 @@ theorem isEllCusp_mulN {N : ℕ} (hN : 0 < N) : IsEllCusp (ellStr L) (cuspU L N)
   have hqmor : IsMorphism ((ellStr L).restrict (cuspU L N)) (ellStr L) (cuspQ L N) :=
     ((hmor.comp (AutHolStr.isMorphism_val (torusStr L) (punct L))).comp
       (AutHolStr.isMorphism_val (ellStr L) (cuspU L N))).codRestrict (punct L) fun x => x.2
-  refine ⟨hfin, hqmor, ?_, ?_, ?_⟩
-  · rw [cuspExt_eq (mulN L N) (map_zero _) hU hq, ← isLocalHomeomorph_iff_isCoveringMap]
+  have hcov : IsCoveringMap (cuspExt (cuspU L N) (cuspQ L N)) := by
+    rw [cuspExt_eq (mulN L N) (map_zero _) hU hq, ← isLocalHomeomorph_iff_isCoveringMap]
     exact (σ).symm.isLocalHomeomorph.comp (hlh.comp (σ).isLocalHomeomorph)
+  obtain ⟨hqcov, hqfin⟩ := isCoveringMap_of_cuspExt hcov
+  refine ⟨hfin, hqmor, hqcov, hqfin, ?_, ?_⟩
   · intro x y hxy
     have ht : mulN L N (jU _ y - jU _ x) = 0 := by
       have := congrArg Subtype.val hxy
@@ -118,10 +124,10 @@ theorem exists_hom_of_isEllCusp {U : Opens (punct L)} {q : U → punct L}
     (hc : IsEllCusp (ellStr L) U q) :
     ∃ f : Torus L →+ Torus L, (∀ x : punct L, x ∈ U ↔ f x ≠ 0) ∧
       (∀ x, (q x : Torus L) = f (jU U x)) ∧ IsLocalHomeomorph f := by
-  obtain ⟨hfin, hqmor, hcov, -, -⟩ := hc
+  obtain ⟨hfin, hqmor, hqcov, hqfin, -, -⟩ := hc
   set F : Torus L → Torus L := σ ∘ cuspExt U q ∘ (σ).symm with hFdef
-  have hFlh : IsLocalHomeomorph F :=
-    (σ).isLocalHomeomorph.comp (hcov.isLocalHomeomorph.comp (σ).symm.isLocalHomeomorph)
+  have hFc : Continuous F :=
+    (σ).continuous.comp ((continuous_cuspExt hqcov hqfin).comp (σ).symm.continuous)
   have hF0 : F 0 = 0 := by simp [F, onePointEquiv_symm_zero]
   have hFmem : ∀ (x : punct L) (hx : x ∈ U), F x = q ⟨x, hx⟩ := by
     intro x hx
@@ -168,7 +174,38 @@ theorem exists_hom_of_isEllCusp {U : Opens (punct L)} {q : U → punct L}
       rw [Homeomorph.symm_apply_eq]
       rfl
     simp only [q', this]
-  obtain ⟨a, ha, δ, hFa⟩ := exists_rc_of_rcLift hFlh hF0 hK hloc
+  -- `F` is locally injective outside `K` (there it is `q`, a covering map)
+  have hinj : ∀ x ∉ K, ∃ N ∈ 𝓝 x, InjOn F N := by
+    intro x hx
+    simp only [K, mem_insert_iff, mem_image, not_or] at hx
+    have hxU : (⟨x, hx.1⟩ : punct L) ∈ U := by
+      by_contra hn
+      exact hx.2 ⟨_, hn, rfl⟩
+    obtain ⟨N, hNo, hxN, hNinj⟩ := hqcov.isLocalHomeomorph.isLocallyInjective ⟨⟨x, hx.1⟩, hxU⟩
+    have hj : IsOpenEmbedding (jU U) :=
+      (punct L).isOpenEmbedding'.comp U.isOpenEmbedding'
+    refine ⟨jU U '' N, hj.isOpenMap _ hNo |>.mem_nhds ⟨_, hxN, rfl⟩, ?_⟩
+    rintro _ ⟨y, hy, rfl⟩ _ ⟨y', hy', rfl⟩ hyy
+    rw [← hq, ← hq] at hyy
+    rw [hNinj hy hy' (Subtype.ext hyy)]
+  obtain ⟨a, ha, δ, hFa⟩ := exists_rc_of_rcLift hFc hF0 hK hinj hloc
+  -- hence `F` is a local homeomorphism
+  let R : ℂ ≃ₜ ℂ :=
+    { toFun := rc a δ
+      invFun := rc (if δ then (starRingEnd ℂ a)⁻¹ else a⁻¹) δ
+      left_inv := rc_inv_left ha δ
+      right_inv := rc_inv_right ha δ
+      continuous_toFun := continuous_rc a δ
+      continuous_invFun := continuous_rc _ δ }
+  have hFlh : IsLocalHomeomorph F := by
+    have h1 : IsLocalHomeomorphOn (F ∘ mk L) univ := by
+      have : F ∘ mk L = mk L ∘ R := funext hFa
+      rw [this]
+      exact (isCoveringMap_mk.isLocalHomeomorph.comp R.isLocalHomeomorph).isLocalHomeomorphOn
+    have h2 := IsLocalHomeomorphOn.of_comp_right h1
+      isCoveringMap_mk.isLocalHomeomorph.isLocalHomeomorphOn
+    rwa [image_univ, mk_surjective.range_eq, ← isLocalHomeomorph_iff_isLocalHomeomorphOn_univ]
+      at h2
   have hadd : ∀ x y, F (x + y) = F x + F y := by
     intro x y
     obtain ⟨z, rfl⟩ := mk_surjective (L := L) x
@@ -177,6 +214,15 @@ theorem exists_hom_of_isEllCusp {U : Opens (punct L)} {q : U → punct L}
     congr 1
     cases δ <;> simp [rc, mul_add, map_add]
   exact ⟨AddMonoidHom.mk' F hadd, hU, hq, hFlh⟩
+
+/-- **The extension to the one-point compactification is a covering** ([AbsTopIII] Corollary 2.7
+(b): "which necessarily extends to a covering of the one-point compactification"): for every
+elliptic cuspidalisation diagram of `E_Λ`, `cuspExt U q` is a covering map. -/
+theorem isCoveringMap_cuspExt {U : Opens (punct L)} {q : U → punct L}
+    (hc : IsEllCusp (ellStr L) U q) : IsCoveringMap (cuspExt U q) := by
+  obtain ⟨f, hU, hq, hf⟩ := exists_hom_of_isEllCusp hc
+  rw [cuspExt_eq f (map_zero f) hU hq, ← isLocalHomeomorph_iff_isCoveringMap]
+  exact (σ).symm.isLocalHomeomorph.comp (hf.comp (σ).isLocalHomeomorph)
 
 /-! ### Torsion points and their group law -/
 

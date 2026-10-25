@@ -16,6 +16,8 @@ Corollary 2.7 (c) (`Cusp.lean`) is then a group law:
 * `recAdd_of_isIso`: for every isomorphism `ψ : (E, A) ≅ (E_Λ, ellStr L)`, the extension
   `OnePoint E ≃ₜ T_Λ` of `ψ` carries `recAdd A` to the group law of `T_Λ`;
 * `isRecAdd_iff_of_isIso`: `recAdd A` is the unique continuous operation extending the torsion law;
+* `isCoveringMap_cuspExt_of_isIso`: every elliptic cuspidalisation diagram of `(E, A)` extends to a
+  covering of the one-point compactification (Corollary 2.7 (b), "necessarily extends");
 * `ellAddCommGroup hA`: the resulting commutative group structure on `OnePoint E`, with
   `ellAddCommGroup_add : x + y = recAdd A x y`; the zero is `∞`.
 -/
@@ -68,6 +70,18 @@ theorem isRecAdd_iff_of_isIso {L : PeriodPair} {ψ : E ≃ₜ punct L} (hψ : Is
     funext x y
     simp only [trOp, Homeomorph.symm_symm, onePointCongr_symm_apply',
       onePointCongr_symm_symm_apply', Homeomorph.apply_symm_apply]
+
+/-- **"Necessarily extends"** ([AbsTopIII] Corollary 2.7 (b)): on `(E, A) ≅ E_Λ`, the extension
+of every elliptic cuspidalisation diagram `E ⊇ U → E` to the one-point compactification is a
+covering map. -/
+theorem isCoveringMap_cuspExt_of_isIso {L : PeriodPair} {ψ : E ≃ₜ punct L}
+    (hψ : IsIso A (ellStr L) ψ) {U : TopologicalSpace.Opens E} {q : U → E} (hc : IsEllCusp A U q) :
+    IsCoveringMap (cuspExt U q) := by
+  have h := isCoveringMap_cuspExt (isEllCusp_transport ψ hψ hc)
+  rw [cuspExt_transport] at h
+  have h' : IsCoveringMap (ψ.onePointCongr ∘ cuspExt U q) :=
+    (IsCoveringMap.comp_homeomorph_iff ψ.onePointCongr.symm).1 h
+  exact (IsCoveringMap.homeomorph_comp_iff ψ.onePointCongr).1 h'
 
 /-- **The group structure on `OnePoint E`** ([AbsTopIII] Corollary 2.7 (c)), for `(E, A)`
 isomorphic to some `E_Λ`: transported from `T_Λ` along a chosen isomorphism; its addition is the

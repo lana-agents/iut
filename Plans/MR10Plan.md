@@ -213,6 +213,16 @@ T2 depends on it.
   this is harmless because `A_p` is only formed for `p ∈ E`, and `IsLinHol` only sees opens near
   `p` (`IsLinHol.transport` with `O = E`).
 
+* 2026-10-25. **Item 3 ("necessarily extends") done**: `IsEllCusp` now asks for a finite covering
+  map `q : U → E` ("abelian finite étale covering", T3 l.3314) instead of a covering
+  `cuspExt U q` of the one-point compactification. `Cusp.lean`: `isCompact_preimage_of_isCoveringMap`
+  (finite coverings are proper), `continuous_cuspExt`, `isCoveringMap_of_cuspExt` (converse).
+  `Elliptic/Affine.lean`: `exists_rc_of_rcLift` now needs only continuity and local injectivity
+  outside `K` (no local homeomorphism at `K`). `Elliptic/CuspModel.lean`: **`isCoveringMap_cuspExt`**
+  (the extension of every diagram of `E_Λ` is a covering, i.e. unramified over `∞`, without
+  Riemann–Hurwitz); `Elliptic/EllModel.lean`: `isCoveringMap_cuspExt_of_isIso` for `(E, A) ≅ E_Λ`.
+  Co-holomorphy of `E ← U → E` is still not imposed (needs co-orientations, Def 2.1 (iii), (iv)).
+
 ## 6. Hand-off 2026-10-24 (MR10 agent, lead christian-41)
 
 **Merged to iut main.**

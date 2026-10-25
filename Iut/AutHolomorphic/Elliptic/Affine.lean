@@ -10,8 +10,8 @@ import Mathlib.Analysis.Complex.RemovableSingularity
 /-!
 # RC-holomorphic self-coverings of a complex torus are linear
 
-**Theorem** (`exists_rc_of_rcLift`). Let `f : T_Λ → T_Λ` be a local homeomorphism with `f 0 = 0`
-that is holomorphic or antiholomorphic (in the coordinate `mk : ℂ → T_Λ`) near every point
+**Theorem** (`exists_rc_of_rcLift`). Let `f : T_Λ → T_Λ` be continuous with `f 0 = 0`, locally
+injective and holomorphic or antiholomorphic (in the coordinate `mk : ℂ → T_Λ`) near every point
 outside a finite set `K`. Then `f (mk z) = mk (a z)` for all `z`, or `f (mk z) = mk (a z̄)` for
 all `z`, with `a ≠ 0`. In particular `f` is a group endomorphism.
 
@@ -132,23 +132,26 @@ theorem rcDiffAt_of_lift {F : ℂ → ℂ} (hF : Continuous F) {z : ℂ} {δ : B
 
 /-- **RC-holomorphic self-coverings of `T_Λ` fixing `0` are `ℝ`-linear**: `x ↦ a x` or
 `x ↦ a x̄`. -/
-theorem exists_rc_of_rcLift {f : Torus L → Torus L} (hf : IsLocalHomeomorph f) (hf0 : f 0 = 0)
-    {K : Set (Torus L)} (hK : K.Finite)
+theorem exists_rc_of_rcLift {f : Torus L → Torus L} (hfc : Continuous f) (hf0 : f 0 = 0)
+    {K : Set (Torus L)} (hK : K.Finite) (hinj : ∀ x ∉ K, ∃ N ∈ 𝓝 x, InjOn f N)
     (hloc : ∀ z, mk L z ∉ K → ∃ (δ : Bool) (Φ : ℂ → ℂ), (∀ᶠ w in 𝓝 z, RCDiffAt δ Φ w) ∧
       ∀ᶠ w in 𝓝 z, f (mk L w) = mk L (Φ w)) :
     ∃ a : ℂ, a ≠ 0 ∧ ∃ δ : Bool, ∀ z, f (mk L z) = mk L (rc a δ z) := by
   -- the lift
   obtain ⟨F, ⟨hF0, hFf⟩, -⟩ := isCoveringMap_mk.existsUnique_continuousMap_lifts
-    (⟨f ∘ mk L, hf.continuous.comp continuous_mk⟩ : C(ℂ, Torus L)) 0 0
+    (⟨f ∘ mk L, hfc.comp continuous_mk⟩ : C(ℂ, Torus L)) 0 0
     (by simp [mk_zero, hf0])
   have hF : ∀ z, mk L (F z) = f (mk L z) := fun z => congrFun hFf z
   have hFc : Continuous F := F.continuous
   -- `F` is locally injective
-  have hloc_inj : ∀ z, ∃ N ∈ 𝓝 z, InjOn F N := by
-    intro z
-    obtain ⟨N, hNo, hzN, hN⟩ := (hf.comp isCoveringMap_mk.isLocalHomeomorph).isLocallyInjective z
-    refine ⟨N, hNo.mem_nhds hzN, fun a ha b hb hab => hN ha hb ?_⟩
-    simp only [Function.comp_apply, ← hF, hab]
+  have hloc_inj : ∀ z, mk L z ∉ K → ∃ N ∈ 𝓝 z, InjOn F N := by
+    intro z hz
+    obtain ⟨N₁, hN₁, hinj₁⟩ := hinj (mk L z) hz
+    obtain ⟨N₂, hN₂o, hzN₂, hN₂⟩ := isCoveringMap_mk.isLocalHomeomorph.isLocallyInjective z
+    refine ⟨N₂ ∩ mk L ⁻¹' N₁, inter_mem (hN₂o.mem_nhds hzN₂)
+      (continuous_mk.continuousAt.preimage_mem_nhds hN₁), fun a ha b hb hab => hN₂ ha.1 hb.1 ?_⟩
+    refine hinj₁ ha.2 hb.2 ?_
+    rw [← hF, ← hF, hab]
   -- the local type
   set Ω : Set ℂ := (mk L ⁻¹' K)ᶜ with hΩ
   have hΩo : IsOpen Ω := (hK.isClosed.preimage continuous_mk).isOpen_compl
@@ -170,8 +173,8 @@ theorem exists_rc_of_rcLift {f : Torus L → Torus L} (hf : IsLocalHomeomorph f)
     · exact Or.inr ⟨hz, hδ⟩
   have hdisj : Disjoint Hol Anti := by
     rw [Set.disjoint_left]
-    rintro z ⟨-, h1⟩ ⟨-, h2⟩
-    obtain ⟨N, hN, hNinj⟩ := hloc_inj z
+    rintro z ⟨hzΩ, h1⟩ ⟨-, h2⟩
+    obtain ⟨N, hN, hNinj⟩ := hloc_inj z hzΩ
     have hall : ∀ᶠ w in 𝓝 z, (DifferentiableAt ℂ F w ∧ deriv F w = 0) ∧ w ∈ N := by
       filter_upwards [h1, h2, hN] with w hw1 hw2 hw3
       exact ⟨⟨hw1, deriv_eq_zero_of_both hw1 hw2⟩, hw3⟩
@@ -279,14 +282,17 @@ theorem exists_rc_of_rcLift {f : Torus L → Torus L} (hf : IsLocalHomeomorph f)
   -- `a ≠ 0`
   have ha : a ≠ 0 := by
     intro ha0
-    obtain ⟨N, hN, hNinj⟩ := hloc_inj 0
+    obtain ⟨z₀, hz₀⟩ := hΩc.nonempty
+    obtain ⟨N, hN, hNinj⟩ := hloc_inj z₀ hz₀
     obtain ⟨ρ, hρ, hball⟩ := Metric.mem_nhds_iff.1 hN
-    have hw : ((ρ / 2 : ℝ) : ℂ) ∈ ball (0 : ℂ) ρ := by
-      rw [mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs,
+    have hw : z₀ + ((ρ / 2 : ℝ) : ℂ) ∈ ball z₀ ρ := by
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, Complex.norm_real, Real.norm_eq_abs,
         abs_of_pos (by positivity)]
       linarith
-    have := hNinj (hball hw) (hball (mem_ball_self hρ)) (by rw [hFa, hFa, ha0]; simp [rc])
-    have : ρ / 2 = 0 := by exact_mod_cast this
+    have := hNinj (hball hw) (hball (mem_ball_self hρ))
+      (by rw [hFa, hFa, ha0]; cases δ <;> simp [rc])
+    have h0 : ((ρ / 2 : ℝ) : ℂ) = 0 := by linear_combination this
+    have : ρ / 2 = 0 := by exact_mod_cast h0
     linarith
   exact ⟨a, ha, δ, fun z => by rw [← hF, hFa]⟩
 

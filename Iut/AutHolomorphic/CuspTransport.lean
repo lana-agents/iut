@@ -103,15 +103,19 @@ theorem mem_deck_transport_iff {U : Opens E} {q : U → E} (g' : imOpen φ U ≃
 theorem isEllCusp_transport {A : AutHolStr E} {A' : AutHolStr E'} (hφ : IsIso A A' φ)
     {U : Opens E} {q : U → E} (hc : IsEllCusp A U q) :
     IsEllCusp A' (imOpen φ U) (trQ φ U q) := by
-  obtain ⟨hfin, hmor, hcov, hgal, hab⟩ := hc
+  obtain ⟨hfin, hmor, hqcov, hqfin, hgal, hab⟩ := hc
   have hiso : IsIso (A.restrict U) (A'.restrict (imOpen φ U)) (imHomeo φ U) :=
     isIso_of_isMorphism (IsMorphism.comp hφ (AutHolStr.isMorphism_val A U)) _ fun _ => rfl
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
   · refine (hfin.image φ).subset fun y hy => ⟨φ.symm y, fun h => hy ((mem_imOpen_iff φ).2 h),
       φ.apply_symm_apply y⟩
   · exact IsMorphism.comp hφ (hmor.comp (IsIso.symm hiso))
-  · rw [cuspExt_transport]
-    exact (hcov.comp_homeomorph φ.onePointCongr.symm).homeomorph_comp φ.onePointCongr
+  · exact (hqcov.comp_homeomorph (imHomeo φ U).symm).homeomorph_comp φ
+  · intro y
+    refine ((hqfin (φ.symm y)).image (imHomeo φ U)).subset fun x hx => ⟨(imHomeo φ U).symm x, ?_,
+      Homeomorph.apply_symm_apply _ _⟩
+    change q _ = φ.symm y
+    rw [← show trQ φ U q x = y from hx, trQ, Homeomorph.symm_apply_apply]
   · intro x y hxy
     have h1 : q ((imHomeo φ U).symm x) = q ((imHomeo φ U).symm y) := φ.injective hxy
     obtain ⟨g, hg, hgxy⟩ := hgal _ _ h1
