@@ -370,6 +370,8 @@ import Iut.Reconstruction.Local.ZHat
 import Iut.Reconstruction.Thm19.CuspPrincipal
 import Iut.Reconstruction.Thm19.CuspSync
 import Iut.Reconstruction.Thm19.NFAdditive
+import Iut.Reconstruction.Thm19.NFColimit
+import Iut.Reconstruction.Thm19.NFEval
 import Iut.Reconstruction.Thm19.NFKummer
 import Iut.Reconstruction.Thm19.NFPoints
 import Iut.Reconstruction.Thm19.NFStage
