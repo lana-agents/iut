@@ -639,16 +639,16 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `↔ ker projGk`). So the cusp data of (a) (`Cor37c`, `BelyiSpec`) and the Kummer side
     (b)–(e) now live on one `Π_U`.
 * Hand-off 2026-10-25 (MR9 track agent, session d): merged iut 0cb66b9 (`NFTransition`), cdb3c56
-  (`NFLimit`), 758e7a0 (`ArithBridge`) and the `ArithBridgeDecomp` commit (+ this entry). No WIP,
+  (`NFLimit`), 758e7a0 (`ArithBridge`), 70919d1 (`ArithBridgeDecomp` + this entry) and the
+  `ArithBridgeGk` commit. No WIP,
   no pin change. Debts unchanged: `hDGC` (MR7, existence half), `φ`/`ResCuspInput` of
   `SurfaceIndex.lean` (Schreier/RH), `JacDivFree` only for fields that are neither number fields
   nor `p`-adic. Next, in order:
-  1. **`G_K`-compatibility of `piBridge`**: an isomorphism `ε : Gal(k̄/K) ≃ₜ* (arithmeticExt).G`
-     with `ε ∘ piToGk = projGk ∘ piBridge` (only the kernels are matched so far). Route:
-     `projGk ∘ autIso(arithFiberIso) = autIso(pushed fibre iso) ∘ fundamentalGroupMap`, then the
-     Galois action through `Spec L₀ → Spec K` only sees `g|_Ω` (use `Ω ⊆ K(X̄_Ω)^alg`,
-     `exists_algebraMap_eq_of_isAlgebraic`, and `galoisAction_eq_of_apply_eq` for `F = K`, `Ω`).
-     Needed to move `constMapZHat` / `H¹(G_K, Ẑ(1))` (Prop 1.6 (iii), Prop 1.8 (ii)) across.
+  1. *Done in the follow-up commit* (`Thm19/ArithBridgeGk.lean`): **`gkBridge : Gal(k̄/K) ≃*
+     π₁ᵉᵗ(Spec K)`** with **`gkBridge_piToGk`** (`gkBridge ∘ piToGk = projGk ∘ piBridge`), from
+     the kernel match and the surjectivity of both projections, so `piBridge` is an isomorphism
+     of extensions over `G_K`. Open (only if a concrete form is needed): `gkBridge` as the
+     restriction of `σ = closureEquiv` to `k̄ ≅ Ω`, and its continuity.
   2. **T1 assembly** on the Galois model: the NF-points' decomposition groups of (a) via Belyi
      cuspidalization (cusps of a smaller `V` = points of `U`; `Cor37c` + `map_decompH_piBridge`
      at `V`), the residues/`P_U` of (c) (`CuspSync`, `map_inertiaH_piBridge`), the colimit (d)
