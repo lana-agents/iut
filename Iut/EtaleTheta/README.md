@@ -301,6 +301,16 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   `∧²Δ^ell → Δ_Θ` (`thetaPairing`: biadditive, alternating, natural), and `[G, G] = ⟨⁅a, b⁆⟩`
   for two generators (`commutator_eq_zpowers`).
 
+* Thm. 1.6(iii), last step (`ThetaRigidity.lean`): restriction along a section `σ : G ⧸ D → G`
+  (a cusp decomposition group) is a left inverse of inflation (`resSection_inflation`); the
+  `F2`-indeterminacy is reduced to any subgroup `U` containing the difference of the evaluations
+  (`div_mem_inflation_map_of_resSection`), and a theta class is determined by its evaluation
+  (`eq_of_mem_thetaClassSet_of_resSection_eq`).
+* Route R-alg, task G2a (`ThetaLevel.lean`): the theta level functions
+  `f_N = Θ̈_q / Θ̈_{q^N}^N` are `q^{N/2}`-periodic (`thetaLevel_sqrt_pow_mul`), invertible off the
+  cusps, compatible in `N` (`thetaLevel_mul`), and `κ_n(f_N(Ü)) = κ_n(Θ̈(Ü))` for `n ∣ N`
+  (`kummer_thetaLevel`).
+
 ## Scope decisions
 
 Decisions S1–S3 were made for P16; S1'–S5 for step 2 refine them.

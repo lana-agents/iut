@@ -188,7 +188,9 @@ import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClass
 import Iut.EtaleTheta.ThetaCohomology
+import Iut.EtaleTheta.ThetaLevel
 import Iut.EtaleTheta.ThetaQuotient
+import Iut.EtaleTheta.ThetaRigidity
 import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
 import Iut.Frobenioid.Angular.Category
