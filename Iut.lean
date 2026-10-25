@@ -376,6 +376,7 @@ import Iut.Reconstruction.Thm19.NFKummer
 import Iut.Reconstruction.Thm19.NFPoints
 import Iut.Reconstruction.Thm19.NFShrink
 import Iut.Reconstruction.Thm19.NFStage
+import Iut.Reconstruction.Thm19.NFTransition
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
 import Iut.Reconstruction.Uchida.FunctionField
