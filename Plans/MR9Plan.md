@@ -610,3 +610,50 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
      `c1One`/`natIso` (`H²(Δ_X, μ_n)`, pi1 `H2lc`) with iut's `SurfGrp`/`gen` (`ContH2`) along
      `surfPi1Equiv`/`exists_fhat_equiv`, then (b) `c1Div` under finite étale pull-back in cj
      (`Kummer/ChernDivisor`, untouched since 2026-10-23; check LEAD lines before editing).
+
+* 2026-10-25 (MR9 track agent, lead christian-aa, session d): worktree `~/iut-pins`, branch `mr9-cj`
+  (the brief named `~/lead-iut-b`, but its cj package is at 601db27, behind the pin; `~/iut-pins` has
+  the pinned standalone packages), no pin change (cj 995a389, pi1 12719c9). New files
+  `Thm19/NFTransition.lean` (left uncommitted by session c, merged unchanged), `NFLimit.lean`,
+  `ArithBridge.lean`, `ArithBridgeDecomp.lean`.
+  * **Thm 1.9 (d), double colimit (`NFTransition`)**: generic transition maps between Galois models
+    (`piT`, `resT`, `unitsT`, `resT_resT`, `resT_kummerMapZHat`), stages `stage D K t′ =
+    newData (constExt K D) t′`, directedness over one `K` (`exists_stage_ge`), injectivity at the
+    stages over number fields, `exists_stage_resT_eq_kummerMapZHat`.
+  * **Thm 1.9 (d), `K^×_{Z_NF} ↪ lim→_V` (`NFLimit`)**: **`exists_finite_mem_F_constExt`**
+    (`F k̄ = ⋃_K F K` over finite `K / k`: the stabiliser of `x` in `H` is open and saturated for
+    `H ↠ G_k`), `exists_stage_ge_sup` (directedness across `K`), **`exists_stage_units_fnf`** (every
+    `f ∈ F_NF^×` is a unit on a stage), **`coe_eq_of_resT_eq`** (the Kummer map into the colimit is
+    injective, `k` torally Kummer-faithful: number fields and finite extensions of `ℚ_p`).
+  * **T1 bridge (`ArithBridge`, `ArithBridgeDecomp`)**, at the pinned cj (the cost check of
+    session c was outdated: cj `etalePi1OpenEquiv`/`genericL_spec` already hold for non-closed
+    `k`, and cj `Cusp/FieldChange` changes the algebraically closed field): for an affine
+    hyperbolic `C : HypCurve K` over a number field (`[Fact (C.U)ᶜ.Nonempty]`) and a coordinate
+    `τ` with `C.U = chartOne τ` (`exists_coord`), **`piBridge : Pi (curveGaloisData K hτ) ≃ₜ*
+    (arithmeticExt Ω C hc).Pi`** (`genericL_spec` + `U ≅ Spec Γ(U)` + `closureEquiv :
+    K(X̄)^alg ≃ K(X̄_Ω)^alg` over `K(X̄) ≅ L₀` + `fieldChangeIso` + `arithFiberIso`);
+    **`piBridge_mk`** (`h ↦ arithAction (σ h σ⁻¹)`); **`map_inertiaH_piBridge`** (`I_W ∩ H ↦
+    arithInertia (σ W)`); **`mem_cusps_iff_piBridge`** (the cuspidal subgroups of
+    `arithmeticExt` = images of `I_W ∩ H` at cusp places); **`map_decompH_piBridge`**
+    (`D_W ∩ H ↦ arithDecomp (σ W)`); **`projGk_piBridge_eq_one_iff`** (`Δ_U` of the Galois model
+    `↔ ker projGk`). So the cusp data of (a) (`Cor37c`, `BelyiSpec`) and the Kummer side
+    (b)–(e) now live on one `Π_U`.
+* Hand-off 2026-10-25 (MR9 track agent, session d): merged iut 0cb66b9 (`NFTransition`), cdb3c56
+  (`NFLimit`), 758e7a0 (`ArithBridge`) and the `ArithBridgeDecomp` commit (+ this entry). No WIP,
+  no pin change. Debts unchanged: `hDGC` (MR7, existence half), `φ`/`ResCuspInput` of
+  `SurfaceIndex.lean` (Schreier/RH), `JacDivFree` only for fields that are neither number fields
+  nor `p`-adic. Next, in order:
+  1. **`G_K`-compatibility of `piBridge`**: an isomorphism `ε : Gal(k̄/K) ≃ₜ* (arithmeticExt).G`
+     with `ε ∘ piToGk = projGk ∘ piBridge` (only the kernels are matched so far). Route:
+     `projGk ∘ autIso(arithFiberIso) = autIso(pushed fibre iso) ∘ fundamentalGroupMap`, then the
+     Galois action through `Spec L₀ → Spec K` only sees `g|_Ω` (use `Ω ⊆ K(X̄_Ω)^alg`,
+     `exists_algebraMap_eq_of_isAlgebraic`, and `galoisAction_eq_of_apply_eq` for `F = K`, `Ω`).
+     Needed to move `constMapZHat` / `H¹(G_K, Ẑ(1))` (Prop 1.6 (iii), Prop 1.8 (ii)) across.
+  2. **T1 assembly** on the Galois model: the NF-points' decomposition groups of (a) via Belyi
+     cuspidalization (cusps of a smaller `V` = points of `U`; `Cor37c` + `map_decompH_piBridge`
+     at `V`), the residues/`P_U` of (c) (`CuspSync`, `map_inertiaH_piBridge`), the colimit (d)
+     (`NFLimit`), and Uchida (e) (`NFAdditive`, `NFPoints`, `NFEval`) into `recFunctionField`.
+  3. Schreier/RH via the geometric route (step (c) of the session-c cost check first).
+  Decision for the lead: none needed for 1–2 (all at the current pins). cj main has a generic
+  `piXGalG₃ : Π_W ≃ₜ* H_L ⧸ ⟨⟨S⟩⟩` (MR8 `HemiConstArith`) without inertia matching; iut does
+  not need it now.

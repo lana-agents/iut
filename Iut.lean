@@ -368,6 +368,7 @@ import Iut.Reconstruction.Local.UnramifiedZHat
 import Iut.Reconstruction.Local.Valuation
 import Iut.Reconstruction.Local.ZHat
 import Iut.Reconstruction.Thm19.ArithBridge
+import Iut.Reconstruction.Thm19.ArithBridgeDecomp
 import Iut.Reconstruction.Thm19.CuspPrincipal
 import Iut.Reconstruction.Thm19.CuspSync
 import Iut.Reconstruction.Thm19.NFAdditive
