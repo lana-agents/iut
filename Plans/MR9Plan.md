@@ -488,3 +488,61 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
      `barPlace_eq_of_nfPlace_eq`.
   3. (d) as the colimit over `V`, `k'` (removes "positive multiple"); then T1.
   4. Schreier/RH debt via the geometric route (cj: `c1Div` under finite étale pull-back).
+
+* 2026-10-24/25 (MR9 track agent, lead christian-aa): worktree `~/iut-pins`, branch `mr9-cj`, no pin
+  change (cj 995a389, pi1 12719c9). New files `Reconstruction/Thm19/CuspSync.lean`,
+  `NFPoints.lean`, `NFStage.lean`.
+  * **Thm 1.9 (b) at the cusps, `M_X` coefficients (`CuspSync`)**: `exists_inertiaBar`/`inertiaBar`
+    (**`I_W ∩ H ⊆ Gal(Ω/F k̄)`**: inertia fixes `k̄`, so `σ` lies in the inertia group of `W` for
+    cj's `barData`); `idxPlaceBar_eq` (`W ∩ F k̄ = x_{k̄}` for `p` over a rational point `x`);
+    **`proj_tameChar_inertiaBar`** (the tame character of any uniformiser of `W ∩ F k̄` at `σ` is
+    `θ_p = tameGen p`; unramified extension of constants, cj `ord_placeOf_ιF`);
+    `pointData_of_liesOver`, `exists_syncData` (the data of cj `syncEquivBar` exist for the
+    prescribed `W`); `mxReindex` (`MXHat G K ≃* MXHat G K'` in char 0);
+    **`syncEquivBar_inertiaToCusp`**: `syncEquivBar (inertiaToCusp σ) = θ_p` read in `M_X`
+    (via `natIsoHatK`, the map defining `h1MXEquiv`). This is the match of CKT's `InertiaIndex`
+    `(W, σ)` (any number of cusps of `U`) with cj's `inertiaToCusp` for `U_x = X_{k̄} ∖ {x}`:
+    residues are computed on `I_W ∩ H`, and `I_W ∩ H ≅ I_x ⊆ Δ_{U_x}` (`inertiaCuspEquiv`), so no
+    map `Π_U → Π_{U_x}` is needed for (b)/(c). (Open, not needed so far: injectivity of
+    `I_W ∩ H → Π_U`, i.e. the factorisation `Δ_U → Δ_{U_x}` on the Galois-model side.)
+  * **Thm 1.9 (c) with `M_X` coefficients**: `resMX`, `tameGenMX`, `HasResiduesMX`, `PUMX`
+    (`= h1MXEquiv(P_U)`), `resMX_h1MXEquiv`, `res_kummerMapMX`, **`resMX_eq_sync_zpow`** (residue at
+    a cusp `x` = `sync(σ)^{E(x)}`), **`mem_PUMX_iff_eta_curve_numberField`**,
+    **`mem_PUMX_iff_eta_curve_padic`**; Prop 1.8 with `M_X` coefficients: `restrictClosedMX`,
+    `IsNFKummerTestMX`, **`isNFKummerTestMX_iff_curve_numberField`**,
+    **`exists_restrictClosedMX_eq_iff_curve`** (stated with `kummerMapMX`).
+  * **Thm 1.9 (e), points and evaluation (`NFPoints`)**: `IsNFPlaceBar` (place of `F k̄` nontrivial
+    on `F_NF`), `nfPlaceOfBar`, **`nfPointEquiv : {NF-points of X_{k̄}} ≃ Place k̄_NF F_NF`**,
+    `ord_nfPointEquiv`, **`mem_U_nfTriple_iff`** (`f ∈ U_x` iff `v_W(f − 1) < 1`),
+    `mem_U_nfTriple_iff_bar`.
+  * **Thm 1.9 (d), one stage (`NFStage`)**: **`exists_toKummerCompletion_eq_of_pow_eq_one`** (the
+    `M`-torsion of `(K^×)^∧` is `μ_M(K)`, any field, `M` invertible), `constUnit_mul/pow`,
+    `exists_constUnit_eq_of_kummerMapZHat_eq`, **`exists_kummerMapZHat_eq_of_pow_eq`** (`η ∈ P_U`,
+    `η^M = κ_U(w)` ⇒ `w = u^M b`, and `η = κ_U(v)` with `v^M = w` as soon as `b` has an `M`-th root
+    in the base field), `exists_kummerMapZHat_eq_of_isNFKummerTest_numberField`.
+  * Shell-lint allowlist: cj `ChernClass.KummerInv/IsAdm/IsChernRep/IsChernRepDiv` (`def`).
+  * Note for all agents: the audit rejects the bare word "constant" (also in comments).
+* Hand-off 2026-10-25 (MR9 track agent): merged iut 8dda986, 41b0678, 1321b45 (main 1321b45).
+  No WIP. Debts unchanged: `hDGC` (MR7, existence half), `φ`/`ResCuspInput` of `SurfaceIndex.lean`
+  (Schreier/RH), `JacDivFree` only for fields that are neither number fields nor `p`-adic.
+  Next, in order:
+  1. **(d) as the colimit over finite `k′`** (cj `LocAn/ThmCConstExt`: `constExt K D`, `piRes`,
+     `hRes`). Define `resK : H¹(Π_U, Ẑ(1)) → H¹(Π_{U_K}, Ẑ(1))` (`ContH1.map (piRes K D)` with the
+     char-0 reindexing `ZHatOne (F D) Ω → ZHatOne (F (constExt K D)) Ω`); prove
+     (a) `resK ∘ kummerMapZHat = kummerMapZHat ∘ (units D → units (constExt K D))` (cocycle level:
+     `h1ZHatOneEquiv` injective + `kummer_eq π α hα`), (b) `resK ∘ constMapZHat_k =
+     constMapZHat_K ∘ ι`, `ι : (k^×)^∧ → (K^×)^∧` (density: CKT `denseRange_kummerZHat`,
+     `kummerZHatContinuousEquiv`, plus `constMapZHat_toKummerCompletion`). Then with
+     `exists_kummerMapZHat_eq_of_pow_eq` (gives `η = κ(u)·const(c)`, `c^M = b`) and
+     `exists_toKummerCompletion_eq_of_pow_eq_one` at `K = k(b^{1/M})`: `resK η = κ_{U_K}(v)`,
+     `v^M = w`, with **no** Kummer-faithfulness input over `K` (route (b) avoids
+     `IsKummerFaithfulJac (constExt K D)`). The colimit over `V` (removing NF-points) is then the
+     same with the Galois data of smaller opens.
+  2. T1: assemble (a) `Cusp/BelyiSpec` + (b)/(c) `CuspSync` + (d) + (e) `NFAdditive`/`NFPoints`
+     into `recFunctionField`; still needed: the bridge between cj's étale-π₁ cusp data (`Cor37c`,
+     MR8) and the Galois model `Pi D` of the Kummer side, and the Kummer-level evaluation
+     `s_x^*κ_U(f) = κ(f(x))` matched with `mem_U_nfTriple_iff`.
+  3. Schreier/RH debt via the geometric route (cj: `c1Div` natural under finite étale pull-back;
+     a cj lemma, coordinate with the cj agents first).
+  Process note: the scratch subdir `scratchpad/mr9/` holds logs of several MR9 sessions with
+  reused names (`push2.log` etc.); use a fresh subdir and fresh log names per session.
