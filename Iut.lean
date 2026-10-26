@@ -176,6 +176,7 @@ import Iut.EtaleTheta.ArithEnv
 import Iut.EtaleTheta.CyclotomicEnvelope
 import Iut.EtaleTheta.CyclotomicRigidity
 import Iut.EtaleTheta.DiscreteRigidity
+import Iut.EtaleTheta.Env.CycRigidity
 import Iut.EtaleTheta.Env.Envelope
 import Iut.EtaleTheta.Env.Model
 import Iut.EtaleTheta.Env.PiX

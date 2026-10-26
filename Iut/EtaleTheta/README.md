@@ -445,3 +445,10 @@ the MR15 plan.
   environments (`piX_map`); for the model, `piXModelEquiv : PX ≃* Π_X(modelEnv)` (`a` acting on
   `Π_Y` by conjugation; Kummer twists act trivially), given that `PY` has trivial centralizer in
   `PX` (temp-slimness, Layer B).
+* `Env/CycRigidity.lean` — **Cor. 2.19(i)** (cyclotomic rigidity) for the nonabelian
+  environments: the intrinsic algorithm on any `MonoThetaEnv` with the Cor. 2.18(i) input subgroups
+  (`MonoThetaEnv.mu`, `kerTheta`, `thetaSplit`, `algSet`, `taut`, `IsCyc`), its functoriality
+  (`MonoThetaEnv.Iso.isCyc_iff`), its value on the model (`isCyc_model`: the natural isomorphism
+  `l·Δ_Θ ⊗ ℤ/N ≅ μ_N` given by `-η`), `cyclotomicRigidity_env` and `cyclotomicRigidity_envAut`
+  (no `(ℤ/N)^×`-indeterminacy). Layer-B hypotheses: `hη13` (Prop. 1.3), `hL` (Prop. 2.12(i)-type),
+  `FISlim PY`, the Cor. 2.18(i) inputs.
