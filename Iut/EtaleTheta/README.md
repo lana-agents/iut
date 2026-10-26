@@ -336,6 +336,11 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   (`etale_mulByNField`), hence every level `L_X ≤ L' ≤ L_m` étale over `X`
   (`etale_of_le_mulByNField`, via `pi1`'s `etale_iff_inertia`); `ThetaLevelGalois.lean`:
   **`Ÿ'_N` is étale over `X` and carries `F_N`** (`exists_thetaLevel_etale`).
+* G1 step 3 groundwork (`ThetaDivision.lean`): block division of pulled-back theta functions
+  (`exists_theta_pull_div`: `θ_{T₁}(-u^m) = θ_{T₂}(-u)·C(u)`), Tate's theorem with degree bounds
+  (`exists_poly_of_isWeightFamily_deg`), and **the division polynomial in theta functions**
+  (`exists_ΨSq_theta`: `u^{-(m²-m)}θ(-u^m)² = α·ΨSq_m(X(u))·θ(-u)^{2m²}`, `m` even), the input
+  for `F_N` being a unit on `Ÿ'_N`.
 
 ## Scope decisions
 

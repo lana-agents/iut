@@ -199,6 +199,7 @@ import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClass
 import Iut.EtaleTheta.ThetaCohomology
+import Iut.EtaleTheta.ThetaDivision
 import Iut.EtaleTheta.ThetaIsogeny
 import Iut.EtaleTheta.ThetaLevel
 import Iut.EtaleTheta.ThetaLevelGalois
