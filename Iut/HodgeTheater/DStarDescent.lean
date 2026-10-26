@@ -16,7 +16,7 @@ unique […] model `C_{F_mod}` over `F_mod`". The model is algebro-geometric (he
 `π₁(C_K) ↪ π₁(C_{F_mod})` from `genuine_CF_emb`); the group-theoretic passage from `K` down to
 `F_mod` needs an *absolute* anabelian input, since [AbsTopII] Cor. 3.3 (i) only moves the base
 field up (its chains have `G_j ⊆ G`, [AbsTopI] Def. 4.2 (iii) (1Π), `Topics in Absolute Anabelian
-Geometry I.txt` l.2979).
+Geometry I.txt` l.2980).
 
 This file records that input as the named hypothesis `hAbs` and derives the reconstruction
 `π₁(C_{F_mod}) = Aut(π₁(C_K))`:
@@ -27,7 +27,7 @@ This file records that input as the named hypothesis `hAbs` and derives the reco
   automorphism of `G_K` ([AbsTopI] Cor. 2.8 (ii), strict semi-absoluteness for number fields,
   l.1348–1358); the functorial reconstruction of the field `K̄_NF` with its `G_K`-action and of the
   NF-portion of the function field ([AbsTopIII] Thm. 1.9, `Topics in Absolute Anabelian Geometry
-  III.txt` l.2109–2194; MR9) shows that this automorphism is conjugation by a lift `σ̃` of a field
+  III.txt` l.2109–2196; MR9) shows that this automorphism is conjugation by a lift `σ̃` of a field
   automorphism `σ` with `C_K^σ ≅ C_K`, i.e. `σ(j) = j`, i.e. `σ̃ ∈ Gal(F̄/F_mod)`
   (`F_mod = ℚ(j)`);
 * **`piCK_aut_eq_conj`**: under `hAbs` (and the existing inputs `hDGC`, `hj`), every continuous
