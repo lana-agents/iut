@@ -257,6 +257,7 @@ import Iut.Frobenioid.ModelFib
 import Iut.Frobenioid.ModelFrobenioid
 import Iut.Frobenioid.ModelTypes
 import Iut.Frobenioid.NaiveFrob
+import Iut.Frobenioid.OrbitMap
 import Iut.Frobenioid.OrhdField
 import Iut.Frobenioid.OrhdPsi
 import Iut.Frobenioid.OrhdPsiMap
@@ -355,6 +356,8 @@ import Iut.Reconstruction.Cusp.HemiCoreBaseChange
 import Iut.Reconstruction.Cusp.HemiCoreRing
 import Iut.Reconstruction.Cusp.HemiCuspidal
 import Iut.Reconstruction.Cusp.HemiGenuine
+import Iut.Reconstruction.Cusp.HemiGenuineField
+import Iut.Reconstruction.Cusp.HemiGenuineTwist
 import Iut.Reconstruction.Cusp.HemiInvConj
 import Iut.Reconstruction.Cusp.HemiSelfComm
 import Iut.Reconstruction.Cusp.OutSemidirect
