@@ -156,8 +156,6 @@ Iut.EtaleTheta.DiscreteRigidity.Chain.e_zero	baseline
 Iut.EtaleTheta.DiscreteRigidity.Chain.pos	baseline
 Iut.EtaleTheta.DiscreteRigidity.ESystem.comp	baseline
 Iut.EtaleTheta.DiscreteRigidity.ESystem.dvd	baseline
-Iut.EtaleTheta.Env.Iso.map_D	def
-Iut.EtaleTheta.Env.Iso.map_S	def
 Iut.EtaleTheta.MonoThetaEnv.Iso.map_D	def
 Iut.EtaleTheta.MonoThetaEnv.Iso.map_theta	def
 Iut.EtaleTheta.MonoThetaEnv.inner_le	def
