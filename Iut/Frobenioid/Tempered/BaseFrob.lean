@@ -22,7 +22,8 @@ the morphisms of `P`). Restricting `(P, F)` to a Frobenius-trivial object `A ∈
 
 `σ` a section of `Aut_C(A) ↠ Aut_D(A_D)` ([FrdI], Theorem 5.1(iii):
 `Aut_C(A)/O^×(A) ≅ Aut_D(A_D)`), `φ` a monoid homomorphism, the values of `σ` commuting with
-those of `φ`; Proposition 5.6 states that this pair depends on `(C, A)` only, up to conjugation by an element of `O^×(A)`. [EtTh],
+those of `φ`; Proposition 5.6 states that this pair depends on `(C, A)` only, up to conjugation
+by an element of `O^×(A)`. [EtTh],
 Proposition 4.3(i), uses the resulting homomorphism `str^trv_N : H_{A_N} → Aut_C(A_N)` on a
 subgroup `H_{A_N} ⊆ Aut_C(A_N)/O^×(A_N)` (and Lemma 5.9 its images).
 
