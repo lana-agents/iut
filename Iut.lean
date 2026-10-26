@@ -294,6 +294,7 @@ import Iut.Frobenioid.Tempered.BiKummer
 import Iut.Frobenioid.Tempered.Birat
 import Iut.Frobenioid.Tempered.FracPair
 import Iut.Frobenioid.Tempered.PiTpONS
+import Iut.Frobenioid.Tempered.ThetaEnv
 import Iut.Frobenioid.Tempered.Thm34Temp
 import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
