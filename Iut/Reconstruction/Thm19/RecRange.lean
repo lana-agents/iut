@@ -27,7 +27,7 @@ the Kummer map. Here that image is characterised inside `H1Lim D` by the two tes
   disappears in the colimit: if `η^M = κ_V(w)`, then after the stage `V′` over `K(b^{1/M})`
   (`exists_resKH1_eq_kummerMapZHat` on the stage, transported to `V′`), `[V, η] = [V′, κ(v)]`
   with `v^M = w`, and `v` is an NF-rational function (`NFModel.unitsDescend`: `l v ∈ F_NF` for a
-  constant `l`, and `l^M ∈ F_NF ∩ k̄ = k̄_NF`);
+  scalar `l ∈ k̄`, and `l^M ∈ F_NF ∩ k̄ = k̄_NF`);
 * **`exists_kummerNF_isAlgebraic_iff`**: the classes of the NF-constants `k̄_NF^×` are those
   passing the test (ii);
 * **`mem_kummerNFRange_iff`**: `ξ ∈ kummerNFRange ↔ IsNFStageTest ξ ∨ IsNFStageConstTest ξ`;
@@ -102,8 +102,8 @@ def IsNFStageConstTest (ξ : H1Lim D) : Prop :=
 variable {N}
 
 include hkF in
-/-- **A unit of a stage is a constant iff it is an algebraic number** (`K` a number field,
-algebraically closed in the function field of the stage). -/
+/-- **A unit of a stage lies in the field of constants iff it is an algebraic number** (`K` a
+number field, algebraically closed in the function field of the stage). -/
 lemma mem_range_constUnit_iff (s : StageIdx D) (v : US D s) :
     v ∈ Set.range (constUnit s.data) ↔
       IsAlgebraic ℚ (((v : (F s.data)ˣ) : F s.data) : Ω) := by
