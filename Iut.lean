@@ -178,6 +178,7 @@ import Iut.EtaleTheta.CyclotomicRigidity
 import Iut.EtaleTheta.DiscreteRigidity
 import Iut.EtaleTheta.Env.Envelope
 import Iut.EtaleTheta.Env.Model
+import Iut.EtaleTheta.Env.PiX
 import Iut.EtaleTheta.Env.Prop214
 import Iut.EtaleTheta.Env.Shift
 import Iut.EtaleTheta.Env.Transport

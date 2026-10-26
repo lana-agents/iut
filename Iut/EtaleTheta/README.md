@@ -430,3 +430,8 @@ the MR15 plan.
   and functorial exactly when the reference subgroup is preserved by all automorphisms
   (`IsCharacteristicT`, `transportSub_indep`, `transportSub_map_of_char`); Cor. 2.18(i) thus
   reduces to characteristic-subgroup statements (Prop. 2.4 etc., Layer B).
+* `Env/PiX.lean` — **Cor. 2.18(iii)**: `Π_X(M) = Aut(Π_Y) ×_{Out(Π_Y)} Im(D)` for an abstract
+  environment and a `D`-stable normal subgroup `N` (`piX`), functorial under isomorphisms of
+  environments (`piX_map`); for the model, `piXModelEquiv : PX ≃* Π_X(modelEnv)` (`a` acting on
+  `Π_Y` by conjugation; Kummer twists act trivially), given that `PY` has trivial centralizer in
+  `PX` (temp-slimness, Layer B).
