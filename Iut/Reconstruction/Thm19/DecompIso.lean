@@ -36,7 +36,9 @@ and a place `W` of `K(X̄_Ω)^alg` over `x` is a cusp place of `U_X = U ∖ {x}`
 * **`map_ptDecomps_eq`**: for two curves with `BelyiCuspSpec` (e.g. of strictly Belyi type,
   `belyiCuspSpec`), `Φ(ptDecomps U) = ptDecomps U'`; **`map_ptDecomps_eq'`**: the same for any
   pair of compatible isomorphisms `Π_U ≃ₜ* Π_{U'}`, `G_K ≃ₜ* G_{K'}` (no cusp hypothesis:
-  [AbsTopI] Lemma 4.5 (v)).
+  [AbsTopI] Lemma 4.5 (v)); `map_ptDecomps_eq_of_belyi` (strictly Belyi type with a Galois Belyi
+  cover) and **`map_ptDecomps_eq_oncePunctured`** (`X = E ∖ {O}` with rational `E[2]`, the `X_K` of
+  IUT I).
 
 The only debt is `hDGC` (inside `BelyiCuspSpec`, MR7).
 -/
@@ -327,6 +329,26 @@ theorem map_ptDecomps_eq_of_belyi
     (hpr : ∀ x, (arithmeticExt Ω₂ C₂ hc₂).pr (Φ x) = ψ ((arithmeticExt Ω C hc).pr x)) :
     (fun D => D.map Φ.toMulEquiv.toMonoidHom) '' ptDecomps Ω C hc = ptDecomps Ω₂ C₂ hc₂ :=
   map_ptDecomps_eq' (belyiCuspSpec Ω C hc hDGC S) (belyiCuspSpec Ω₂ C₂ hc₂ hDGC S₂) Φ ψ hpr
+
+/-- **Thm 1.9 (a) functoriality for once-punctured elliptic curves** `X = E ∖ {O}` with rational
+`E[2]` (the curves `X_K` of IUT I, Def 3.1 (b), to which the Θ-approach of IUT I, Rem 3.1.2 (ii)
+applies [AbsTopIII] Thm 1.9): every pair of compatible isomorphisms `Π_X ≃ₜ* Π_{X'}`,
+`G_K ≃ₜ* G_{K'}` maps the decomposition groups of the closed points of `X` onto those of `X'`. The
+only input is `hDGC` (MR7). -/
+theorem map_ptDecomps_eq_oncePunctured
+    (hDGC : ∀ (k : Type u) [Field k] [NumberField k], RelIsomDGC.Exists k)
+    {E : WeierstrassCurve K} [E.IsElliptic] (hE : E.Ψ₂Sq.Splits)
+    {E₂ : WeierstrassCurve K₂} [E₂.IsElliptic] (hE₂ : E₂.Ψ₂Sq.Splits)
+    (Φ : (arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E)).Pi ≃ₜ*
+      (arithmeticExt Ω₂ (hypCurveX E₂) (compl_XE_nonempty E₂)).Pi)
+    (ψ : (arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E)).G ≃ₜ*
+      (arithmeticExt Ω₂ (hypCurveX E₂) (compl_XE_nonempty E₂)).G)
+    (hpr : ∀ x, (arithmeticExt Ω₂ (hypCurveX E₂) (compl_XE_nonempty E₂)).pr (Φ x) =
+      ψ ((arithmeticExt Ω (hypCurveX E) (compl_XE_nonempty E)).pr x)) :
+    (fun D => D.map Φ.toMulEquiv.toMonoidHom) '' ptDecomps Ω (hypCurveX E) (compl_XE_nonempty E) =
+      ptDecomps Ω₂ (hypCurveX E₂) (compl_XE_nonempty E₂) :=
+  map_ptDecomps_eq' (belyiCuspSpec_oncePunctured Ω hDGC hE)
+    (belyiCuspSpec_oncePunctured Ω₂ hDGC hE₂) Φ ψ hpr
 
 end Functorial
 

@@ -810,3 +810,42 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     field automorphism `σ` of `F̄ = K̄_NF` with `ψ = conj σ` and a `σ`-semilinear automorphism of the
     NF-function field of `X_K`, so `σ(j) = j`, `σ ∈ Gal(F̄/F_mod)`. Existing consumers keep their
     `hAbs` argument; feed them `hAbs_of D h₁ h₂`.
+* Hand-off 2026-10-26 (MR9 track agent, session g): merged iut 5c2bd3d (`DecompIso`, `RecPoints`,
+  `hAbs_of`, plan entry) and the follow-up commit (`map_ptDecomps_eq_oncePunctured`,
+  `exists_nfStage_units_mem`, this hand-off; hash in ~/session2-status.md). No WIP, no pin
+  change (worktree `~/mr8-iut`, branch `mr9-g`; MR8's branch `mr8-r42` untouched). Debts: `hDGC` (MR7),
+  `φ`/`ResCuspInput` of `SurfaceIndex.lean`, `JacDivFree` outside number fields / `p`-adic fields;
+  `hAbs` of `DStarDescent` is now `hAbs_of D h₁ h₂` with the named statements `CKStrictSemiAbs`
+  ([AbsTopI] Cor 2.8 (ii)) and `CKSemiAbsConj` (MR9 target). Next, in order (the chain to
+  `CKSemiAbsConj`, all "over `ψ`", i.e. for `Φ : Π_U ≃ₜ* Π_{U'}` with `pr' ∘ Φ = ψ ∘ pr`):
+  1. **Points**: the decomposition groups of distinct closed points are not conjugate (so
+     `map_ptDecomps_eq'` induces a bijection of closed points `U(k̄) ≅ U'(k̄)` up to the Galois
+     actions). Route: Galois-model form of session f step (iv) — for NF-points `W₁, W₂` that are closed
+     points of one NF-stage, `nfPlace W₁ = nfPlace W₂ ↔ ∀ f, (s_{W₁}^*κ(f) = 1 ↔ s_{W₂}^*κ(f) = 1)`;
+     "←" is now `recTriple_U_injective` + `mem_U_recTriple_iff`; the common stage is
+     `exists_nfStage_units_mem` (done: every place `W ⊇ K` with `t, f, f⁻¹ ∈ W` is a point of the
+     stage); what remains is the closed-point data (`Algebra.IsIntegral s.K κ(W)`,
+     `FiniteDimensional s.K pointField`) for NF-points over a number field (to instantiate
+     `mem_U_recTriple_iff` at both points). Then match `arithDecomp` (cj world) with
+     `restrictClosed` (Galois model) through `map_decompH_piBridge` at the stage curves (needs the stage as `curveGaloisData` of a
+     `subCurve`, the larger step noted by session f).
+  2. **Cyclotome over `ψ`**: `Φ` maps the cusp inertia `I_W ≅ Ẑ(1)` onto `I_{W'}` (`arithmeticExtIso'`);
+     with the synchronisation of Prop 1.4 (`CuspSync`, `syncEquiv`) this gives a `ψ`-equivariant
+     `Ẑ(1)_K ≅ Ẑ(1)_{K'}` (independent of the cusp), hence `H¹(Π_V, Ẑ(1)) ≅ H¹(Π_{V'}, Ẑ(1))`.
+  3. **Stages over `ψ`**: `BelyiCuspSpec` (d) lifts `Φ` to every `U_X ⊆ U` (used in `DecompIso`); the
+     constant-field extensions are `pr⁻¹(G_{K'})`, preserved since `ψ` maps open subgroups to open
+     subgroups. Build the iso of directed systems and `H1Lim D ≃* H1Lim D'` (generic: an order iso of
+     index sets + compatible stagewise isos).
+  4. **Residues, `P_U`, tests**: residues (`res_p`, `θ_p`) and `P_V` are preserved by 2–3 (cusps and
+     cyclotomes); `s_x^*` by `map_ptDecomps_eq'` at the stages; the tests of Prop 1.8 (`RecRange`) then
+     transport, so `kummerNFRange` maps onto `kummerNFRange'`, and with `RecOrd`, `mem_U_recTriple_iff`,
+     `recTriple_U_injective` one gets `recTriple N ≅ recTriple N'`, hence `ringEquivOfIso`.
+  5. **To `CKSemiAbsConj`**: Π_{X_K} ⊆ Π_{C_K} group-theoretically (IUT I Rem 3.1.2 (i), l.4155–4168:
+     `Δ_X` by the explicit algorithm of [EtTh] §2, and the decomposition groups at the nonzero cusps,
+     [AbsTopI] Lemma 4.5); the field iso of 4 restricted to the NF-field of constants gives `σ` with
+     `ψ = conj σ`; `σ`-semilinearity on the function field of `X_K = E ∖ {O}` gives `σ(j) = j`.
+  Decisions for the lead: (i) whether `CKStrictSemiAbs` stays a named statement (its proof needs the
+  very elasticity of `G_K` for number fields, [AbsTopI] Thm 1.7 (iii), = [Mzk11] Cor 2.2, Thm 2.4 —
+  a separate Galois-cohomology project) or goes to a Galois-groups track; (ii) whether MR9 should
+  first do item 1 (points, Galois model) or items 2–3 (cyclotome and stages over `ψ`), which are
+  independent.

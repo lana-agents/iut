@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Reconstruction.Thm19.RecFunctionField
+import Iut.Reconstruction.Thm19.StageNF
 import WeilCurves.ConstantExtension.ExtPlaces
 
 /-!
@@ -23,7 +24,11 @@ points must have distinct subgroups `U_x`. Here:
   inequality), so `g` is regular at `P` with a pole at `Q`, and `f = 1 + g − g(P)`;
 * **`recTriple_U_injective`**: in the reconstructed triple of the NF-portion, distinct points have
   distinct `U_x`; with `mem_U_recTriple_iff`, an NF-point is determined by which Kummer classes
-  restrict trivially to its decomposition group.
+  restrict trivially to its decomposition group;
+* `exists_nfStage_units_mem`: `exists_nfStage_units` (every nonzero NF-rational function `f` is a
+  unit on an NF-stage) together with the points of that stage: every place `W ⊇ K` of `Ω` with
+  `t, f, f⁻¹ ∈ W` is a point of the stage (the coordinate `t′` is regular at `W`), so two
+  NF-points of `U_K` at which `f` is a unit are closed points of one stage on which `f` is a unit.
 -/
 
 open WeilCurves.FunctionField
@@ -124,6 +129,46 @@ so the points are recovered from the subgroups `U_x`, which `mem_U_recTriple_iff
 the restrictions of the Kummer classes to the decomposition groups. -/
 theorem recTriple_U_injective : Function.Injective (recTriple N hkF).U :=
   (recIso N hkF).U_injective Uchida.ofFunctionField.U_injective
+
+omit [NumberField k] in
+include hkF in
+/-- **NF-stages on which `f` is a unit, with their points** (`exists_nfStage_units` with the extra
+conjunct of its proof): every nonzero NF-rational function `f` is a unit on an NF-stage whose field
+of constants contains `K₀′`, and every place `W ⊇ K` of `Ω` with `t, f, f⁻¹ ∈ W` is a point of the
+stage. -/
+theorem exists_nfStage_units_mem (K₀' : IntermediateField k Ω) [FiniteDimensional k K₀']
+    {f : Ω} (hf : f ∈ N.FNF) (hf0 : f ≠ 0) :
+    ∃ s : StageIdx D, s.IsNF N ∧ K₀' ≤ s.K ∧
+      (∃ v : US D s, (((v : (F s.data)ˣ) : F s.data) : Ω) = f) ∧
+      ∀ W : ValuationSubring Ω, (∀ c : s.K, algebraMap s.K Ω c ∈ W) → t ∈ W → f ∈ W →
+        f⁻¹ ∈ W → s.t' ∈ W := by
+  obtain ⟨K, hK, hfK⟩ := exists_finite_mem_F_constExt D hkF (N.mem_F f hf)
+  set K' : IntermediateField k Ω := K ⊔ K₀' with hK'
+  have hfK' : f ∈ F (constExt K' D) :=
+    mem_F_of_mem_L _ (constExt_H_le D (Fact.out : D.H ≤ D.HL) K')
+      (L_constExt_mono D le_sup_left (F_constExt_le_L D K hfK))
+  have hne : (⟨f, hfK'⟩ : F (constExt K' D)) ≠ 0 := fun h => hf0 (congrArg Subtype.val h)
+  set fu : (F (constExt K' D))ˣ := Units.mk0 _ hne with hfu
+  obtain ⟨t', ht'L, htr', htV, hf1, hf2, hrev⟩ := exists_coordinate_V_rev (constExt K' D) fu
+  obtain ⟨v, hv⟩ := exists_units_V ht'L htr' fu hf1 hf2
+  have e : (((fu⁻¹ : (F (constExt K' D))ˣ) : F (constExt K' D)) : Ω) = f⁻¹ := by
+    rw [Units.val_inv_eq_inv_val, hfu, Units.val_mk0]
+    rfl
+  refine ⟨⟨K', t', ht'L, htr', htV⟩, ?_, le_sup_right, ⟨v, hv⟩, ?_⟩
+  · intro W hW ht'W
+    by_contra hNF
+    apply ht'W
+    have hk : ∀ c : k, algebraMap k Ω c ∈ W := fun c => hW (algebraMap k K' c)
+    refine hrev W hW ?_ ?_ ?_
+    · by_contra ht
+      exact hNF (N.cusp_nf W hk ht)
+    · by_contra hfW
+      exact hNF ⟨f, hf, hfW⟩
+    · by_contra hfW
+      refine hNF ⟨f⁻¹, N.FNF.inv_mem hf, ?_⟩
+      rwa [e] at hfW
+  · intro W hW ht hfW hfW'
+    exact hrev W hW ht hfW (by rw [e]; exact hfW')
 
 end Thm19
 
