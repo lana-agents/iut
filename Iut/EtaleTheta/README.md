@@ -331,6 +331,21 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   `residue_toΩ_eq`, `rational_of_center`), and **[EtTh] Prop. 1.4(iii) at points, étale
   version** (`exists_etaleThetaClass`): along the section of the rational point over `u`,
   `s^* κ_n(η) = κ_n(Θ̈(u^N))` for `n ∣ N`.
+* **Compatibility in `N` (projective system), étale level** (MR14 run 5). `MulByNGalois.lean`:
+  `[m]^*` on `K(E)` (`pb`, `elliptic-curves`' `mulByNEndoAlgHom`) with `pb_mul : [a·b]^* =
+  [a]^* ∘ [b]^*`, and the embeddings `mulByNEmb E m` are now chosen **compatibly in `m`**
+  (`mulByNEmb_comp_pb_mul : mulByNEmb (r·m) ∘ [r]^* = mulByNEmb m`), read off one tower
+  `chainEmb` of embeddings of the sources of `[(k+1)!]`. `ThetaQuotIsogeny.lean`: the cyclic
+  isogeny `E_{Q^M} → E_Q`, `v ↦ v`, in Tate coordinates (`exists_poly_quotX`,
+  `exists_poly_quotY`). `ThetaLevelSystem.lean`: values of `[m]^*` (`hasTateValue_pb`), the level
+  data with values at all `u` with `u^{2N} ∉ q^ℤ` (`exists_levelData`), the transition
+  `Ÿ'_{NM} → Ÿ'_N` (`levelData_transition`: `[M]^*` maps the generators of `Ÿ'_N` into the
+  function field of `Ÿ'_{NM}` and `F_{NM} = [M]^*F_N · G^N`, from `thetaLevel_mul`), nested levels
+  (`levelField_mono`), and the naturality of `continuous-kummer-theory`'s Kummer map under a
+  change of level (`resPi`, `resPi_kummerMap`). `ThetaClassSystem.lean`:
+  **`exists_etaleThetaSystem`** — levels `L'_j` (`N_j = 2(j+1)`), étale over `X`, with units
+  `η_j`, the point statement at every level, and for `N_{j'} = N_j·M`, `M` even:
+  `L'_j ≤ L'_{j'}` and `res κ_n(η_j) = κ_n(η_{j'})` for `n ∣ N_j` (`LevelTransition`).
 
 ## Scope decisions
 

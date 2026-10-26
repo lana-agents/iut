@@ -202,6 +202,7 @@ import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClass
+import Iut.EtaleTheta.ThetaClassSystem
 import Iut.EtaleTheta.ThetaCohomology
 import Iut.EtaleTheta.ThetaDivision
 import Iut.EtaleTheta.ThetaIsogeny
@@ -209,8 +210,10 @@ import Iut.EtaleTheta.ThetaLevel
 import Iut.EtaleTheta.ThetaLevelGalois
 import Iut.EtaleTheta.ThetaLevelKummer
 import Iut.EtaleTheta.ThetaLevelRational
+import Iut.EtaleTheta.ThetaLevelSystem
 import Iut.EtaleTheta.ThetaLevelUnit
 import Iut.EtaleTheta.ThetaPullback
+import Iut.EtaleTheta.ThetaQuotIsogeny
 import Iut.EtaleTheta.ThetaQuotient
 import Iut.EtaleTheta.ThetaRigidity
 import Iut.EtaleTheta.ThetaValues

@@ -8,6 +8,7 @@ import CurvesJacobian.Cusp.EllipticMulByN
 import Pi1.Orbicurve.EtaleInertia
 import Pi1.Orbicurve.BaseChange
 import EllipticCurves.FunctionField.CoordinateRingNormalGeneral
+import EllipticCurves.FunctionField.TranslationDoublingCommGeneral
 
 /-!
 # The cover `[m] : E ∖ E[m] → E ∖ {O}` inside `Ω = K(E)^alg` (MR14, G1 step 2)
@@ -17,8 +18,13 @@ Weierstrass coordinate, and `hemiData E` the Galois data of `curves-jacobian` wh
 `L_X = (hemiData E).L` is `K(E) ⊆ Ω` (embedded by `embE`), with coordinate ring `K[E]`. We embed
 the source of `[m]` into `Ω`:
 
-* `mulByNEmb E m : K(E) →ₐ[K] Ω` with `mulByNEmb ([m]^* f) = embE f` (`mulByNEmb_mulByNHom`):
-  `K(E)` is algebraic over `[m]^* K(E)` and `Ω` is algebraically closed;
+* `pb E m = [m]^* : K(E) → K(E)` (`elliptic-curves`' `mulByNEndoAlgHom`), with the composition
+  law `pb_mul : [a·b]^* = [a]^* ∘ [b]^*`;
+* `mulByNEmb E m : K(E) →ₐ[K] Ω` with `mulByNEmb ∘ [m]^* = embE` (`mulByNEmb_comp_pb`,
+  `mulByNEmb_mulByNHom`): `K(E)` is algebraic over `[m]^* K(E)` and `Ω` is algebraically closed.
+  The embeddings are **compatible in `m`** (`mulByNEmb_comp_pb_mul`:
+  `mulByNEmb (r·m) ∘ [r]^* = mulByNEmb m`): they are read off one tower `chainEmb` of embeddings
+  of the sources of `[(k+1)!]`, `e_{k+1} ∘ [k+2]^* = e_k`;
 * `mulByNField E m`: its image `L_m`, an intermediate field of `Ω / K(τ)` containing `L_X`
   (`hemiL_le_mulByNField`), whose coordinate ring (the integral closure of `K[τ]`) is the image of
   `K[E][1/ψ_m]` (`mem_coordRing_mulByNField_iff`);
@@ -63,75 +69,6 @@ lemma mem_hemiL_iff (z : Ω) : z ∈ (hemiData E).L ↔ ∃ f : FF, embE E f = z
     rw [← hemiEquivL_apply]
     exact SetLike.coe_mem _
 
-variable (m : ℕ) [NeZero m]
-
-section Emb
-
-/-- The embedding of `K[E][1/ψ_m]` (the source of `[m]`) into `Ω` over `K[E]`. -/
-def mulByNEmbB : MulByNB E m →+* Ω :=
-  letI : Algebra CR Ω := (rhoA E).toAlgebra
-  haveI : Module.IsTorsionFree CR Ω :=
-    Module.isTorsionFree_iff_algebraMap_injective.mpr (rhoA_injective E)
-  haveI : Module.IsTorsionFree CR (MulByNB E m) :=
-    Module.isTorsionFree_iff_algebraMap_injective.mpr (mulByNHom_injective E m)
-  (IsAlgClosed.lift (R := CR) (S := MulByNB E m) (M := Ω)).toRingHom
-
-lemma mulByNEmbB_mulByNHom (a : CR) :
-    mulByNEmbB E m (toMulByNB E m (mulByNHom E m a)) = rhoA E a := by
-  letI : Algebra CR Ω := (rhoA E).toAlgebra
-  haveI : Module.IsTorsionFree CR Ω :=
-    Module.isTorsionFree_iff_algebraMap_injective.mpr (rhoA_injective E)
-  haveI : Module.IsTorsionFree CR (MulByNB E m) :=
-    Module.isTorsionFree_iff_algebraMap_injective.mpr (mulByNHom_injective E m)
-  exact (IsAlgClosed.lift (R := CR) (S := MulByNB E m) (M := Ω)).commutes a
-
-lemma mulByNEmbB_injective : Function.Injective (mulByNEmbB E m) := by
-  rw [injective_iff_map_eq_zero]
-  intro b hb
-  have hker : RingHom.ker (mulByNEmbB E m) = ⊥ := by
-    refine Ideal.eq_bot_of_comap_eq_bot (R := CR) ?_
-    refine (Submodule.eq_bot_iff _).mpr fun a ha => ?_
-    rw [Ideal.mem_comap, RingHom.mem_ker, algebraMap_mulByNB, mulByNEmbB_mulByNHom] at ha
-    exact rhoA_injective E (ha.trans (map_zero _).symm)
-  have : b ∈ RingHom.ker (mulByNEmbB E m) := hb
-  rwa [hker, Ideal.mem_bot] at this
-
-/-- The source of `[m]` in `Ω`, as a ring map. -/
-def mulByNEmbR : FF →+* Ω :=
-  IsFractionRing.lift (K := FF)
-    (g := (mulByNEmbB E m).comp (toMulByNB E m).toRingEquiv.toRingHom)
-    ((mulByNEmbB_injective E m).comp (toMulByNB E m).injective)
-
-lemma mulByNEmbR_algebraMap (b : coverRingN E m) :
-    mulByNEmbR E m (algebraMap (coverRingN E m) FF b) = mulByNEmbB E m (toMulByNB E m b) :=
-  IsFractionRing.lift_algebraMap _ _
-
-lemma mulByNEmbR_mulByNHom (a : CR) :
-    mulByNEmbR E m (algebraMap (coverRingN E m) FF (mulByNHom E m a)) =
-      embE E (algebraMap CR FF a) := by
-  rw [mulByNEmbR_algebraMap, mulByNEmbB_mulByNHom]; rfl
-
-/-- **The source of `[m]` in `Ω`**: `K(E) ↪ Ω` with `[m]^* f ↦ embE f`. -/
-def mulByNEmb : FF →ₐ[K] Ω where
-  toRingHom := mulByNEmbR E m
-  commutes' c := by
-    have h := mulByNEmbR_mulByNHom E m (algebraMap K CR c)
-    rw [mulByNHom_algebraMap, ← IsScalarTower.algebraMap_apply,
-      ← IsScalarTower.algebraMap_apply] at h
-    exact h.trans ((embE E).commutes c)
-
-lemma mulByNEmb_algebraMap (b : coverRingN E m) :
-    mulByNEmb E m (algebraMap (coverRingN E m) FF b) = mulByNEmbB E m (toMulByNB E m b) :=
-  mulByNEmbR_algebraMap E m b
-
-/-- `mulByNEmb ∘ [m]^* = embE` on `K[E]`. -/
-lemma mulByNEmb_mulByNHom (a : CR) :
-    mulByNEmb E m (algebraMap (coverRingN E m) FF (mulByNHom E m a)) =
-      embE E (algebraMap CR FF a) :=
-  mulByNEmbR_mulByNHom E m a
-
-end Emb
-
 /-- `K[E] ≅ R` of `hemiData E` is compatible with `embE`. -/
 lemma algebraMap_hemiREquiv' (a : CR) :
     algebraMap (hemiData E).R Ω (hemiREquiv E a) = embE E (algebraMap CR FF a) := by
@@ -142,6 +79,239 @@ lemma algebraMap_hemiREquiv' (a : CR) :
   rw [AlgEquiv.apply_symm_apply] at h
   change _ = algebraMap _ _ ((funFieldEquivE E).symm (algebraMap CR FF a))
   rw [← h, RingEquiv.symm_apply_apply]
+
+lemma isIntegral_rhoA (a : CR) : IsIntegral (A₀ K (coordT (xN E))) (rhoA E a) := by
+  have := CoordRing.isIntegral_algebraMap (hemiREquiv E a)
+  rwa [algebraMap_hemiREquiv'] at this
+
+/-! ### `[m]^*` on `K(E)` and a compatible system of embeddings -/
+
+section Pullback
+
+/-- **`[m]^* : K(E) → K(E)`**, `elliptic-curves`' pullback along `P ↦ m • P`
+(`mulByNEndoAlgHom`). -/
+def pb (m : ℕ) [NeZero m] : FF →ₐ[K] FF :=
+  WeierstrassCurve.Affine.CoordinateRing.mulByNEndoAlgHom (W := E.toAffine) m (transcendental_N E m)
+
+/-- `cj`'s `[m]^* : K[E] → K[E][1/ψ_m]` is `pb m` on `K[E] ⊆ K(E)`. -/
+lemma algebraMap_mulByNHom_eq_pb (m : ℕ) [NeZero m] (a : CR) :
+    algebraMap (coverRingN E m) FF (mulByNHom E m a) = pb E m (algebraMap CR FF a) :=
+  algebraMap_mulByNHom E m a
+
+lemma genPointHom_pb (m : ℕ) [NeZero m] :
+    WeierstrassCurve.Affine.CoordinateRing.genPointHom (pb E m)
+        WeierstrassCurve.Affine.CoordinateRing.genericPoint =
+      m • WeierstrassCurve.Affine.CoordinateRing.genericPoint (W := E.toAffine) :=
+  (WeierstrassCurve.Affine.CoordinateRing.nsmul_genericPoint_eq m (transcendental_N E m)).symm
+
+/-- **The composition law** `[a·b]^* = [a]^* ∘ [b]^*` (through the generic point, as in
+`elliptic-curves`' `mulByNEndoAlgHom_mul`). -/
+lemma pb_mul (a b : ℕ) [NeZero a] [NeZero b] [NeZero (a * b)] :
+    pb E (a * b) = (pb E a).comp (pb E b) := by
+  refine WeierstrassCurve.Affine.CoordinateRing.algHom_ext_of_genPointHom ?_
+  rw [← WeierstrassCurve.Affine.CoordinateRing.genPointHom_comp, genPointHom_pb, genPointHom_pb,
+    map_nsmul, genPointHom_pb, smul_smul, mul_comm]
+
+lemma pb_one : pb E 1 = AlgHom.id K FF := by
+  refine WeierstrassCurve.Affine.CoordinateRing.algHom_ext_of_genPointHom ?_
+  rw [genPointHom_pb, one_smul]
+  rfl
+
+lemma pb_congr {a b : ℕ} [NeZero a] [NeZero b] (h : a = b) : pb E a = pb E b := by
+  subst h; rfl
+
+lemma pb_comp_pb (a b c : ℕ) [NeZero a] [NeZero b] [NeZero c] (h : a * b = c) :
+    (pb E a).comp (pb E b) = pb E c := by
+  haveI : NeZero (a * b) := ⟨by rw [h]; exact NeZero.ne c⟩
+  rw [← pb_mul, pb_congr E h]
+
+/-- `K(E)` is integral over `[m]^*K(E)` on `K[E][1/ψ_m]`. -/
+lemma isIntegral_pb (m : ℕ) [NeZero m] (b : coverRingN E m) :
+    IsIntegral (pb E m).fieldRange (algebraMap (coverRingN E m) FF b) := by
+  obtain ⟨p, hp, hpb⟩ := Algebra.IsIntegral.isIntegral (R := CR) (toMulByNB E m b)
+  let ρ : CR →+* (pb E m).fieldRange :=
+    ((pb E m).toRingHom.comp (algebraMap CR FF)).codRestrict
+      (pb E m).fieldRange.toSubfield.toSubring fun a => ⟨_, rfl⟩
+  let g : MulByNB E m →+* FF :=
+    (algebraMap (coverRingN E m) FF).comp (toMulByNB E m).symm.toRingEquiv.toRingHom
+  have hg : (algebraMap (pb E m).fieldRange FF).comp ρ =
+      g.comp (algebraMap CR (MulByNB E m)) := by
+    refine RingHom.ext fun a => ?_
+    change pb E m (algebraMap CR FF a) = algebraMap (coverRingN E m) FF ((toMulByNB E m).symm
+      (algebraMap CR (MulByNB E m) a))
+    rw [algebraMap_mulByNB, AlgEquiv.symm_apply_apply, algebraMap_mulByNHom_eq_pb]
+  have hb : algebraMap (coverRingN E m) FF b = g (toMulByNB E m b) := by
+    change _ = algebraMap (coverRingN E m) FF ((toMulByNB E m).symm (toMulByNB E m b))
+    rw [AlgEquiv.symm_apply_apply]
+  refine ⟨p.map ρ, hp.map ρ, ?_⟩
+  rw [eval₂_map, hg, hb, ← Polynomial.hom_eval₂, hpb, map_zero]
+
+instance isAlgebraic_pb (m : ℕ) [NeZero m] : Algebra.IsAlgebraic (pb E m).fieldRange FF := by
+  refine ⟨fun z => ?_⟩
+  obtain ⟨a, b, -, rfl⟩ := IsFractionRing.div_surjective (A := coverRingN E m) z
+  rw [div_eq_mul_inv]
+  exact (isIntegral_pb E m a).isAlgebraic.mul (isIntegral_pb E m b).isAlgebraic.inv
+
+/-- **Extending an embedding of `K(E)` along `[r]^*`** (`Ω` is algebraically closed and `K(E)`
+is algebraic over `[r]^*K(E)`). -/
+lemma exists_extend (r : ℕ) [NeZero r] (e : FF →ₐ[K] Ω) :
+    ∃ e' : FF →ₐ[K] Ω, e'.comp (pb E r) = e := by
+  let iso : FF ≃ₐ[K] (pb E r).fieldRange := AlgEquiv.ofInjectiveField (pb E r)
+  let f : (pb E r).fieldRange →+* Ω := e.toRingHom.comp iso.symm.toRingEquiv.toRingHom
+  letI : Algebra (pb E r).fieldRange Ω := f.toAlgebra
+  haveI : Module.IsTorsionFree (pb E r).fieldRange FF :=
+    Module.isTorsionFree_iff_algebraMap_injective.mpr
+      (algebraMap (pb E r).fieldRange FF).injective
+  haveI : Module.IsTorsionFree (pb E r).fieldRange Ω :=
+    Module.isTorsionFree_iff_algebraMap_injective.mpr f.injective
+  let g : FF →ₐ[(pb E r).fieldRange] Ω := IsAlgClosed.lift
+  have hg : ∀ z : FF, g (pb E r z) = e z := fun z => by
+    have h := g.commutes (iso z)
+    change g (pb E r z) = f (iso z) at h
+    rw [h]
+    change e (iso.symm (iso z)) = e z
+    rw [AlgEquiv.symm_apply_apply]
+  refine ⟨{ g.toRingHom with commutes' := fun c => ?_ }, AlgHom.ext fun z => hg z⟩
+  have h := hg (algebraMap K FF c)
+  rw [AlgHom.commutes, AlgHom.commutes] at h
+  exact h
+
+/-- The extension of `e` along `[r]^*` (a choice). -/
+def extendEmb (r : ℕ) [NeZero r] (e : FF →ₐ[K] Ω) : FF →ₐ[K] Ω :=
+  (exists_extend E r e).choose
+
+lemma extendEmb_comp (r : ℕ) [NeZero r] (e : FF →ₐ[K] Ω) :
+    (extendEmb E r e).comp (pb E r) = e :=
+  (exists_extend E r e).choose_spec
+
+/-- **The tower of embeddings** `e_k` of the source of `[(k+1)!]` into `Ω`:
+`e_0 = embE`, `e_{k+1} ∘ [k+2]^* = e_k`. -/
+def chainEmb : ℕ → (FF →ₐ[K] Ω)
+  | 0 => embE E
+  | k + 1 => extendEmb E (k + 2) (chainEmb k)
+
+instance neZero_factorial (k : ℕ) : NeZero k.factorial := ⟨Nat.factorial_ne_zero _⟩
+
+lemma chainEmb_comp_pb (k : ℕ) : (chainEmb E k).comp (pb E (k + 1).factorial) = embE E := by
+  induction k with
+  | zero =>
+    change (embE E).comp (pb E 1) = embE E
+    rw [pb_one]; rfl
+  | succ k ih =>
+    rw [← pb_comp_pb E (k + 2) (k + 1).factorial _ (Nat.factorial_succ (k + 1)).symm,
+      ← AlgHom.comp_assoc]
+    change ((extendEmb E (k + 2) (chainEmb E k)).comp (pb E (k + 2))).comp _ = _
+    rw [extendEmb_comp, ih]
+
+lemma factorial_div_pos (k j : ℕ) : 0 < (k + j + 1).factorial / (k + 1).factorial :=
+  Nat.div_pos (Nat.factorial_le (by omega)) (Nat.factorial_pos _)
+
+lemma chainEmb_comp_pb_le (k j : ℕ) :
+    haveI : NeZero ((k + j + 1).factorial / (k + 1).factorial) :=
+      ⟨(factorial_div_pos k j).ne'⟩
+    (chainEmb E (k + j)).comp (pb E ((k + j + 1).factorial / (k + 1).factorial)) =
+      chainEmb E k := by
+  induction j with
+  | zero =>
+    haveI : NeZero ((k + 0 + 1).factorial / (k + 1).factorial) := ⟨(factorial_div_pos k 0).ne'⟩
+    rw [pb_congr E (Nat.div_self (Nat.factorial_pos _)), pb_one]; rfl
+  | succ j ih =>
+    haveI : NeZero ((k + j + 1).factorial / (k + 1).factorial) :=
+      ⟨(factorial_div_pos k j).ne'⟩
+    haveI : NeZero ((k + (j + 1) + 1).factorial / (k + 1).factorial) :=
+      ⟨(factorial_div_pos k (j + 1)).ne'⟩
+    have hf : (k + (j + 1) + 1).factorial = (k + j + 2) * (k + j + 1).factorial :=
+      Nat.factorial_succ (k + j + 1)
+    have e : (k + j + 2) * ((k + j + 1).factorial / (k + 1).factorial) =
+        (k + (j + 1) + 1).factorial / (k + 1).factorial := by
+      rw [hf, Nat.mul_div_assoc _ (Nat.factorial_dvd_factorial (by omega))]
+    rw [← pb_comp_pb E _ _ _ e, ← AlgHom.comp_assoc]
+    change ((extendEmb E (k + j + 2) (chainEmb E (k + j))).comp (pb E (k + j + 2))).comp _ = _
+    rw [extendEmb_comp, ih]
+
+lemma chainEmb_comp_pb_le' (k n : ℕ) (h : k ≤ n)
+    [NeZero ((n + 1).factorial / (k + 1).factorial)] :
+    (chainEmb E n).comp (pb E ((n + 1).factorial / (k + 1).factorial)) = chainEmb E k := by
+  obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le h
+  exact chainEmb_comp_pb_le E k j
+
+variable (m : ℕ) [NeZero m]
+
+/-- The cofactor `(m+1)!/m` with `[(m+1)!] = [cof m] ∘ [m]`. -/
+def cof : ℕ := (m + 1).factorial / m
+
+lemma cof_mul : cof m * m = (m + 1).factorial :=
+  Nat.div_mul_cancel (Nat.dvd_factorial (Nat.pos_of_ne_zero (NeZero.ne m)) (by omega))
+
+instance : NeZero (cof m) := ⟨fun h => by
+  have := cof_mul m
+  rw [h, zero_mul] at this
+  exact Nat.factorial_ne_zero _ this.symm⟩
+
+/-- **The source of `[m]` in `Ω`**: `K(E) ↪ Ω` with `[m]^* f ↦ embE f`. The embeddings are
+chosen compatibly in `m` (`mulByNEmb_comp_pb`): `mulByNEmb m = e_m ∘ [(m+1)!/m]^*` for the
+tower `chainEmb`. -/
+def mulByNEmb : FF →ₐ[K] Ω := (chainEmb E m).comp (pb E (cof m))
+
+/-- `mulByNEmb ∘ [m]^* = embE` on `K(E)`. -/
+lemma mulByNEmb_comp_pb : (mulByNEmb E m).comp (pb E m) = embE E := by
+  rw [mulByNEmb, AlgHom.comp_assoc, pb_comp_pb E _ _ _ (cof_mul m), chainEmb_comp_pb]
+
+/-- `mulByNEmb ∘ [m]^* = embE` on `K[E]`. -/
+lemma mulByNEmb_mulByNHom (a : CR) :
+    mulByNEmb E m (algebraMap (coverRingN E m) FF (mulByNHom E m a)) =
+      embE E (algebraMap CR FF a) := by
+  rw [algebraMap_mulByNHom_eq_pb, ← AlgHom.comp_apply, mulByNEmb_comp_pb]
+
+/-- **Compatibility of the embeddings in `m`**: `mulByNEmb (r·m) ∘ [r]^* = mulByNEmb m` (the
+source of `[r·m]` maps to the source of `[m]` by `[r]`). -/
+lemma mulByNEmb_comp_pb_mul (r : ℕ) [NeZero r] [NeZero (r * m)] :
+    (mulByNEmb E (r * m)).comp (pb E r) = mulByNEmb E m := by
+  have hm : 0 < m := Nat.pos_of_ne_zero (NeZero.ne m)
+  have hr : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
+  have hle : m ≤ r * m := Nat.le_mul_of_pos_left m hr
+  have hA : 0 < (r * m + 1).factorial / (m + 1).factorial :=
+    Nat.div_pos (Nat.factorial_le (by omega)) (Nat.factorial_pos _)
+  haveI : NeZero ((r * m + 1).factorial / (m + 1).factorial) := ⟨hA.ne'⟩
+  haveI : NeZero (cof (r * m) * r) := ⟨mul_ne_zero (NeZero.ne _) (NeZero.ne r)⟩
+  haveI : NeZero ((r * m + 1).factorial / (m + 1).factorial * cof m) :=
+    ⟨mul_ne_zero hA.ne' (NeZero.ne _)⟩
+  have e : cof (r * m) * r = (r * m + 1).factorial / (m + 1).factorial * cof m := by
+    refine Nat.eq_of_mul_eq_mul_right hm ?_
+    rw [mul_assoc, cof_mul (r * m), mul_assoc, cof_mul m,
+      Nat.div_mul_cancel (Nat.factorial_dvd_factorial (by omega))]
+  rw [mulByNEmb, mulByNEmb, AlgHom.comp_assoc,
+    pb_comp_pb E (cof (r * m)) r (cof (r * m) * r) rfl, pb_congr E e,
+    ← pb_comp_pb E ((r * m + 1).factorial / (m + 1).factorial) (cof m) _ rfl,
+    ← AlgHom.comp_assoc, chainEmb_comp_pb_le' E m (r * m) hle]
+
+/-- Elements of `K[E][1/ψ_m]` are integral over `K[τ]` in `Ω`. -/
+lemma isIntegral_mulByNEmb' (b : coverRingN E m) :
+    IsIntegral (A₀ K (coordT (xN E))) (mulByNEmb E m (algebraMap (coverRingN E m) FF b)) := by
+  obtain ⟨p, hp, hpb⟩ := Algebra.IsIntegral.isIntegral (R := CR) (toMulByNB E m b)
+  let T := integralClosure (A₀ K (coordT (xN E))) Ω
+  have hT : ∀ a : CR, rhoA E a ∈ T := isIntegral_rhoA E
+  let r : CR →+* T := (rhoA E).codRestrict T.toSubring hT
+  let g : MulByNB E m →+* Ω := (mulByNEmb E m).toRingHom.comp
+    ((algebraMap (coverRingN E m) FF).comp (toMulByNB E m).symm.toRingEquiv.toRingHom)
+  have hrr : (algebraMap T Ω).comp r = g.comp (algebraMap CR (MulByNB E m)) := by
+    refine RingHom.ext fun a => ?_
+    change rhoA E a = mulByNEmb E m (algebraMap (coverRingN E m) FF ((toMulByNB E m).symm
+      (algebraMap CR (MulByNB E m) a)))
+    rw [algebraMap_mulByNB, AlgEquiv.symm_apply_apply, mulByNEmb_mulByNHom]
+    rfl
+  have hb : mulByNEmb E m (algebraMap (coverRingN E m) FF b) = g (toMulByNB E m b) := by
+    change _ = mulByNEmb E m (algebraMap (coverRingN E m) FF
+      ((toMulByNB E m).symm (toMulByNB E m b)))
+    rw [AlgEquiv.symm_apply_apply]
+  have hint : IsIntegral T (mulByNEmb E m (algebraMap (coverRingN E m) FF b)) := by
+    refine ⟨p.map r, hp.map r, ?_⟩
+    rw [eval₂_map, hrr, hb, ← Polynomial.hom_eval₂, hpb, map_zero]
+  exact isIntegral_trans _ hint
+
+end Pullback
+
+variable (m : ℕ) [NeZero m]
 
 /-! ### The intermediate field `L_m = mulByNEmb(K(E))` -/
 
@@ -188,24 +358,8 @@ lemma liftA₀_spec (c : A₀ K τ) : φ (ι (liftA₀ E m c)) = c := by
   exact (Polynomial.aeval_algHom_apply
     ((mulByNEmb E m).comp (IsScalarTower.toAlgHom K (coverRingN E m) FF)) _ p).symm
 
-lemma isIntegral_rhoA (a : CR) : IsIntegral (A₀ K τ) (rhoA E a) := by
-  have := CoordRing.isIntegral_algebraMap (hemiREquiv E a)
-  rwa [algebraMap_hemiREquiv'] at this
-
-lemma isIntegral_mulByNEmb (b : coverRingN E m) : IsIntegral (A₀ K τ) (φ (ι b)) := by
-  rw [mulByNEmb_algebraMap]
-  obtain ⟨p, hp, hpb⟩ := Algebra.IsIntegral.isIntegral (R := CR) (toMulByNB E m b)
-  let T := integralClosure (A₀ K τ) Ω
-  have hT : ∀ a : CR, rhoA E a ∈ T := isIntegral_rhoA E
-  let r : CR →+* T := (rhoA E).codRestrict T.toSubring hT
-  have hrr : (algebraMap T Ω).comp r = (mulByNEmbB E m).comp (algebraMap CR (MulByNB E m)) := by
-    refine RingHom.ext fun a => ?_
-    change rhoA E a = mulByNEmbB E m (toMulByNB E m (mulByNHom E m a))
-    rw [mulByNEmbB_mulByNHom]
-  have hint : IsIntegral T (mulByNEmbB E m (toMulByNB E m b)) := by
-    refine ⟨p.map r, hp.map r, ?_⟩
-    rw [eval₂_map, hrr, ← Polynomial.hom_eval₂, hpb, map_zero]
-  exact isIntegral_trans _ hint
+lemma isIntegral_mulByNEmb (b : coverRingN E m) : IsIntegral (A₀ K τ) (φ (ι b)) :=
+  isIntegral_mulByNEmb' E m b
 
 lemma exists_of_isIntegral {f : FF} (hf : IsIntegral (A₀ K τ) (φ f)) :
     ∃ b : coverRingN E m, ι b = f := by
