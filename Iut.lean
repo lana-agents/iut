@@ -176,12 +176,17 @@ import Iut.EtaleTheta.ArithEnv
 import Iut.EtaleTheta.CyclotomicEnvelope
 import Iut.EtaleTheta.CyclotomicRigidity
 import Iut.EtaleTheta.DiscreteRigidity
+import Iut.EtaleTheta.Env.AutKernel
+import Iut.EtaleTheta.Env.BiTheta
 import Iut.EtaleTheta.Env.CycRigidity
 import Iut.EtaleTheta.Env.Envelope
 import Iut.EtaleTheta.Env.Model
+import Iut.EtaleTheta.Env.Padic
 import Iut.EtaleTheta.Env.PiX
 import Iut.EtaleTheta.Env.Prop214
+import Iut.EtaleTheta.Env.Reduction
 import Iut.EtaleTheta.Env.Shift
+import Iut.EtaleTheta.Env.Tower
 import Iut.EtaleTheta.Env.Transport
 import Iut.EtaleTheta.Heisenberg
 import Iut.EtaleTheta.KummerClass

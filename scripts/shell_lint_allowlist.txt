@@ -146,6 +146,7 @@ Iut.EllipticCurveData.TateInputs.unif_isUniformizer	baseline
 Iut.EllipticCurveData.isAlgClosure	baseline
 Iut.EllipticCurveData.isElliptic	baseline
 Iut.EllipticCurveData.numberFieldF	baseline
+Iut.EtaleTheta.BiThetaEnv.Iso.map_alg	def
 Iut.EtaleTheta.DiscreteRigidity.Chain.cofinal	baseline
 Iut.EtaleTheta.DiscreteRigidity.Chain.dvd_succ	baseline
 Iut.EtaleTheta.DiscreteRigidity.Chain.e_zero	baseline

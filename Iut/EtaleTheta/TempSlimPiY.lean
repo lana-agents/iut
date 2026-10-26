@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.EtaleTheta.CyclotomicEnvelope
+import Iut.EtaleTheta.Env.Envelope
 import Iut.EtaleTheta.TemperedCovering
 import TemperedFundamentalGroups.Andre.TempSlim
 
@@ -19,10 +20,19 @@ subgroup of André's tower satisfies `HI` (the specialization theorem M2) and is
 argument from it is proved.
 
 * **`tempSlim_piY`**: `VerticialTempSlim → TempSlim Π^tp_Y`;
-* **`mem_range_inl_iff_piY`**: in `Π^tp_Y[μ] = μ ⋊ Π^tp_Y` (`μ` discrete, the action with open
-  kernel) the subgroup `μ` is the union of the centralizers of the open subgroups;
-* **`apply_mem_range_inl_iff_piY`**: isomorphisms of such envelopes preserve `μ`
-  ([EtTh], Cor. 2.19(i), first step).
+* **`mem_range_inl_iff_piY`**: in `Π^tp_Y[μ] = μ ⋊ Π^tp_Y` (`μ` finite) the subgroup `μ` is the
+  union of the centralizers of the finite-index subgroups, given **`FISlim Π^tp_Y`**;
+* **`apply_mem_range_inl_iff_piY`**: group isomorphisms of such envelopes preserve `μ`
+  ([EtTh], Cor. 2.19(i), first step), given `FISlim`.
+
+**Shell #29 (lead decision 2026-10-26):** the consumers of [EtTh], Prop. 2.11(ii) for `Π^tp_Y`
+use the finite-index form (`Env/Envelope.lean`, `Envelope.mem_range_inl_iff_finiteIndex`), so the
+remaining debt is `FISlim Π^tp_Y` (every finite-index subgroup has trivial centralizer) instead of
+`VerticialTempSlim`. Discharge path: `TempSlim.centralizer_eq_bot_of_denseRange`
+(`tempered-fundamental-groups`, `SemiAnbd/DenseSlim.lean`, MR13 decision D4; not yet at iut's
+pin) applied to the dense embedding `Π^tp_Y ↪ Π̂_Y` (M2-GEA) and the slimness of the profinite
+`Π̂_Y` (MR2). `tempSlim_piY` stays as the (open-subgroup) temp-slimness statement of the
+`VerticialTempSlim` route.
 -/
 
 universe u
@@ -49,32 +59,34 @@ theorem tempSlim_piY (h : VerticialTempSlim (R := R) (A := A) V hV hp hR) :
     TempSlim (piY (A := A) T V hV) :=
   fun H hH => tempSlim_ker_character V hV hp hR T h H hH
 
-variable {μ : Type*} [CommGroup μ] [TopologicalSpace μ] [DiscreteTopology μ]
+variable {μ : Type*} [CommGroup μ] [Finite μ]
 
-/-- **[EtTh], Prop. 2.11(ii) for `Π^tp_Y[μ]`**, given `VerticialTempSlim`. -/
-theorem mem_range_inl_iff_piY (h : VerticialTempSlim (R := R) (A := A) V hV hp hR)
-    {φ : piY (A := A) T V hV →* MulAut μ} (hφ : IsOpen (φ.ker : Set (piY (A := A) T V hV)))
-    (x : μ ⋊[φ] piY (A := A) T V hV) :
+omit [CharZero K] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+  [PerfectField (IsLocalRing.ResidueField O)] [Algebra.Smooth K R] [Finite A] [SMulCommClass A K R]
+  [IsAlgClosed Ω] in
+/-- **[EtTh], Prop. 2.11(ii) for `Π^tp_Y[μ]`** (`μ` finite), given `FISlim Π^tp_Y`. -/
+theorem mem_range_inl_iff_piY (hFI : Envelope.FISlim (piY (A := A) T V hV))
+    {φ : piY (A := A) T V hV →* MulAut μ} (x : μ ⋊[φ] piY (A := A) T V hV) :
     x ∈ (inl : μ →* μ ⋊[φ] piY (A := A) T V hV).range ↔
-      ∃ W : Subgroup (μ ⋊[φ] piY (A := A) T V hV), IsOpen (W : Set (μ ⋊[φ] _)) ∧
+      ∃ W : Subgroup (μ ⋊[φ] piY (A := A) T V hV), W.FiniteIndex ∧
         x ∈ Subgroup.centralizer (W : Set (μ ⋊[φ] piY (A := A) T V hV)) :=
-  Envelope.mem_range_inl_iff (tempSlim_piY V hV hp hR T h) hφ x
+  Envelope.mem_range_inl_iff_finiteIndex hFI x
 
-/-- **[EtTh], Cor. 2.19(i) (first step) for `Π^tp_Y[μ]`**: an isomorphism of cyclotomic
-envelopes of `Π^tp_Y` (for two Tate data) preserves the cyclotomic subgroups, given
-`VerticialTempSlim`. -/
-theorem apply_mem_range_inl_iff_piY (h : VerticialTempSlim (R := R) (A := A) V hV hp hR)
-    (T' : TemperedFundamentalGroups.TateObject.Data O R)
-    {μ' : Type*} [CommGroup μ'] [TopologicalSpace μ'] [DiscreteTopology μ']
+omit [CharZero K] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+  [PerfectField (IsLocalRing.ResidueField O)] [Algebra.Smooth K R] [Finite A] [SMulCommClass A K R]
+  [IsAlgClosed Ω] in
+/-- **[EtTh], Cor. 2.19(i) (first step) for `Π^tp_Y[μ]`**: a group isomorphism of cyclotomic
+envelopes of `Π^tp_Y` (for two Tate data, `μ`, `μ'` finite) preserves the cyclotomic subgroups,
+given `FISlim` for both tempered groups. -/
+theorem apply_mem_range_inl_iff_piY (T' : TemperedFundamentalGroups.TateObject.Data O R)
+    (hFI : Envelope.FISlim (piY (A := A) T V hV)) (hFI' : Envelope.FISlim (piY (A := A) T' V hV))
+    {μ' : Type*} [CommGroup μ'] [Finite μ']
     {φ : piY (A := A) T V hV →* MulAut μ} {φ' : piY (A := A) T' V hV →* MulAut μ'}
-    (hφ : IsOpen (φ.ker : Set (piY (A := A) T V hV)))
-    (hφ' : IsOpen (φ'.ker : Set (piY (A := A) T' V hV)))
-    (e : (μ ⋊[φ] piY (A := A) T V hV) ≃ₜ* (μ' ⋊[φ'] piY (A := A) T' V hV))
+    (e : (μ ⋊[φ] piY (A := A) T V hV) ≃* (μ' ⋊[φ'] piY (A := A) T' V hV))
     (x : μ ⋊[φ] piY (A := A) T V hV) :
     e x ∈ (inl : μ' →* μ' ⋊[φ'] piY (A := A) T' V hV).range ↔
       x ∈ (inl : μ →* μ ⋊[φ] piY (A := A) T V hV).range :=
-  Envelope.apply_mem_range_inl_iff (tempSlim_piY V hV hp hR T h) (tempSlim_piY V hV hp hR T' h)
-    hφ hφ' e x
+  Envelope.apply_mem_range_inl_iff_finiteIndex hFI hFI' e x
 
 end TateObject
 

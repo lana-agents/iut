@@ -172,9 +172,9 @@ Input: `TateObject.X₀ T` of `tempered-fundamental-groups` for Tate data `T` ov
   `ThetaGroup.commutator_envelope_inf` (with `ThetaGroup.commutator_eq_theta` = Prop. 2.12(i)).
 * (7f) **For the actual `Π^tp_Y`** (`TempSlimPiY.lean`): `TateObject.tempSlim_piY`
   (`VerticialTempSlim → TempSlim Π^tp_Y`, from `tempered-fundamental-groups`'
-  `tempSlim_ker_character`, [Mzk14] Example 3.10), hence `mem_range_inl_iff_piY` (Prop. 2.11(ii))
-  and `apply_mem_range_inl_iff_piY` (Cor. 2.19(i), first step) for `Π^tp_Y[μ]`, with
-  `VerticialTempSlim` as the only hypothesis.
+  `tempSlim_ker_character`, [Mzk14] Example 3.10); `mem_range_inl_iff_piY` (Prop. 2.11(ii))
+  and `apply_mem_range_inl_iff_piY` (Cor. 2.19(i), first step) for `Π^tp_Y[μ]` (`μ` finite), with
+  `FISlim Π^tp_Y` as the only hypothesis (finite-index route, MR15 section below).
 
 ### (8) Cyclotomic rigidity (`CyclotomicRigidity.lean`) — done for the theta quotient
 
@@ -467,3 +467,35 @@ the MR15 plan.
   `l·Δ_Θ ⊗ ℤ/N ≅ μ_N` given by `-η`), `cyclotomicRigidity_env` and `cyclotomicRigidity_envAut`
   (no `(ℤ/N)^×`-indeterminacy). Layer-B hypotheses: `hη13` (Prop. 1.3), `hL` (Prop. 2.12(i)-type),
   `FISlim PY`, the Cor. 2.18(i) inputs.
+* `Env/Reduction.lean` — **Def. 2.13(ii), reduction mod `N'`** of an abstract environment, built
+  intrinsically: `fiPow` (the `k`-th powers of the cyclotome recovered by Prop. 2.11(ii)) is
+  preserved by every group isomorphism, `MonoThetaEnv.reduce M k = (M.G ⧸ fiPow, image of D,
+  images of the theta subgroups)`, `reduceIso`; the **groupoid of mono-theta environments**
+  (`MonoThetaEnv.instCategory`) and the **reduction functor** `reduceFunctor k`.
+* `Env/AutKernel.lean` — **Cor. 2.18(iv), the kernel half**: every automorphism of `Π_Y[μ]`
+  preserves `μ` (`apply_mem_range_inlY_iff`, `FISlim PY`, `μ` finite); the action
+  `autPY : Aut(modelEnv) →* Aut(Π_Y)`; **`finite_ker_autPY`** (finite kernel when
+  `[Π_Y̲ : Π_Ÿ̲] < ∞`); **`ker_autPY_eq_conj_shift`** (a kernel element acting trivially on `μ` is
+  `inn(ζ) ∘ α_δ` with `δ` a cocycle on `Π_Y̲` trivial on `Π_Ÿ̲`), `ker_autPY_inlY_eq` (kernel
+  elements *do* act trivially on `μ`, by Cor. 2.19(i), when `-η` maps `L` onto `μ`), and
+  `cocycle_trivialOn_coset/_sq/_fixed` (such `δ` are `Hom(Π_Y̲/Π_Ÿ̲, μ)`, `c² = 1` for `t`
+  geometric).
+* `Env/Tower.lean` — **Cor. 2.19(ii)** (discrete rigidity): levelwise theta settings with
+  reductions `μ_{n+1} ↠ μ_n`; `fiPow_envY`, the reduction `redY : Π_Y[μ_{n+1}] ↠ Π_Y[μ_n]`,
+  **`betaIso`** (reduction of the level-`n+1` model = level-`n` model: the natural projective
+  system), `envTower` (a `RigidSystems.Tower`), `autPY_comp_autRes`, and
+  **`discreteRigidity_env`**: every projective system of environments levelwise isomorphic to
+  the models is isomorphic to the model system. The finite kernels are proved; the surjectivity
+  half of Cor. 2.18(iv) enters as `hlift` (Layer B: Cor. 2.18(ii) functorial algorithm).
+* `Env/Padic.lean` — Cor. 2.19(i) and the kernel statement over `G = G_K` without the
+  center-freeness hypothesis (`cyclotomicRigidity_env_padic`, `cyclotomicRigidity_envAut_padic`,
+  `ker_autPY_inlY_eq_padic`).
+* `Env/BiTheta.lean` — **Def. 2.13(iii)**: `BiThetaEnv`, `BiThetaEnv.Iso`, the model
+  `modelBiEnv` (datum (d) = `algSubgroups`), `algSubgroups_eq_thetaSubgroups_one`,
+  `modelBiEnv_eq_of_cohomologous`, `image_algSubgroups_shift` (a shift moves datum (d) to the
+  class of `-δ`) and `shiftBiIso` (shifts by cocycles that are coboundaries on `Π_Ÿ̲` are
+  bi-theta isomorphisms).
+* `TempSlimPiY.lean` (shell #29, lead decision 2026-10-26): the consumers of Prop. 2.11(ii) for
+  `Π^tp_Y` (`mem_range_inl_iff_piY`, `apply_mem_range_inl_iff_piY`) now take `FISlim Π^tp_Y`
+  (finite `μ`) instead of `VerticialTempSlim`; discharge path `TempSlim.centralizer_eq_bot_of_
+  denseRange` (tfg, MR13 D4) + `Π^tp_Y ↪ Π̂_Y` (M2-GEA) + slimness of `Π̂_Y` (MR2).

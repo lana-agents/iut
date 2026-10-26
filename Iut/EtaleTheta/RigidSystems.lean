@@ -101,13 +101,14 @@ theorem exists_untwist {G : ℕ → Type w} [∀ n, Group (G n)] {H : Type*} [Gr
 
 /-! ### Towers of categories and their projective systems -/
 
+set_option linter.checkUnivs false in
 /-- **A tower of categories with model objects**: categories `C_n` (e.g. mod `e_n` mono-theta
 environments), restriction functors `res_n : C_{n+1} ⥤ C_n` (e.g. `M ↦ M_{e_n}`) and model objects
 `M_n` with isomorphisms `β_n : res_n(M_{n+1}) ≅ M_n` (the natural projective system). -/
 structure Tower where
   /-- The categories. -/
   C : ℕ → Type u
-  [cat : ∀ n, Category.{u} (C n)]
+  [cat : ∀ n, Category.{v} (C n)]
   /-- The restriction functors. -/
   res : ∀ n, C (n + 1) ⥤ C n
   /-- The model objects. -/
@@ -119,7 +120,7 @@ attribute [instance] Tower.cat
 
 namespace Tower
 
-variable (T : Tower.{u})
+variable (T : Tower.{u, v})
 
 /-- **A projective system** in the tower: objects `X_n` with `γ_n : res_n(X_{n+1}) ≅ X_n`. -/
 structure System where
@@ -130,7 +131,7 @@ structure System where
 
 /-- A projective system is **isomorphic to the model system** if there are isomorphisms
 `α_n : X_n ≅ M_n` compatible with the transition isomorphisms. -/
-def System.IsoModel {T : Tower.{u}} (S : T.System) : Prop :=
+def System.IsoModel {T : Tower.{u, v}} (S : T.System) : Prop :=
   ∃ α : ∀ n, S.X n ≅ T.model n,
     ∀ n, (T.res n).map (α (n + 1)).hom ≫ (T.β n).hom = (S.γ n).hom ≫ (α n).hom
 
