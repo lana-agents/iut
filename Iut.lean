@@ -290,6 +290,7 @@ import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered
 import Iut.Frobenioid.Tempered.BaseFrob
 import Iut.Frobenioid.Tempered.BaseRecon
+import Iut.Frobenioid.Tempered.BiKummer
 import Iut.Frobenioid.Tempered.Birat
 import Iut.Frobenioid.Tempered.FracPair
 import Iut.Frobenioid.Tempered.PiTpONS
