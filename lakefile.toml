@@ -54,7 +54,7 @@ rev = "f4379dbccc8cdc4faa894a236d5581a6a635c5b5"
 [[require]]
 name = "pi1"
 git = "https://github.com/lana-agents/pi1"
-rev = "3fb0593bfc17719d90b3352d8a9fa8326c681d25"
+rev = "d7e705ffcffbf9c87b64418a0cf864245be982cc"
 
 # [CanLift], Prop. 2.7 over ℂ (`OrbicurveCores.U2.canLift27C`, branch wp-u2), which together
 # with `AffOrbicurve.canLift27_of_complex` discharges `AffOrbicurve.CanLift27`.
@@ -81,7 +81,7 @@ rev = "7f2a6241f6db0693605838b5513b5fbafec14783"
 [[require]]
 name = "tempered-fundamental-groups"
 git = "https://github.com/lana-agents/tempered-fundamental-groups"
-rev = "b65b6639e3c2beafdfa6112c7b879a8c429ee7ed"
+rev = "1143e13753c3640d5d77c7fb828ab36251da7972"
 
 # Local class field theory and the Brauer group of p-adic fields (roadmap P8/P9): the Artin
 # map, local duality and `h2MuEquiv`, consumed by the absolute anabelian reconstruction of
@@ -116,7 +116,7 @@ rev = "e58ecf04554f14c8d1cc2753136f9d785525df5a"
 [[require]]
 name = "elliptic-curves"
 git = "https://github.com/lana-agents/elliptic-curves"
-rev = "8e2b20806fbe97d6fede33dc4eda1e7f350fb138"
+rev = "e70086a9c442dcfe76152fa03777091c50985d43"
 
 # Curves over number fields and their Jacobians, with Belyi cuspidalisation ([AbsTopII] Cor 3.7,
 # 3.8: `CurvesJacobian.belyiCusp_spec`, MR8.5/8.6), consumed by `Iut/Reconstruction/Cusp`
