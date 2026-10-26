@@ -346,6 +346,10 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   **`exists_etaleThetaSystem`** — levels `L'_j` (`N_j = 2(j+1)`), étale over `X`, with units
   `η_j`, the point statement at every level, and for `N_{j'} = N_j·M`, `M` even:
   `L'_j ≤ L'_{j'}` and `res κ_n(η_j) = κ_n(η_{j'})` for `n ∣ N_j` (`LevelTransition`).
+* [EtTh] Prop. 1.5(iii), inversion part, function fields (`ThetaLevelInversion.lean`): values of
+  `[-1]^* = negYAlgEquiv` (`hasTateValue_negY`), `f_N(Ü⁻¹) = -f_N(Ü)` (`thetaLevel_inv`), and
+  `levelData_inv`: `[-1]^*` preserves `K(x_Q∘ψ, y_Q∘ψ)` and sends `F_N` to `-F_N`. The lift to `Ω`
+  and the action on `H¹(Π_{Ÿ'_N}, μ_n)` are not done yet.
 
 ## Scope decisions
 
