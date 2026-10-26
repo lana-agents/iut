@@ -40,10 +40,13 @@ Grothendieck conjecture (`RelIsomDGC.Exists`, MR7) as the named input `hDGC` and
   among open embeddings with the same composite to `Gal(F̄/F_mod)` up to conjugation, and the
   natural morphism `†D^⊚ → †D^⊛` (`dCircToStar`) is unique up to natural isomorphism.
 
-Not formalised here: the passage from `π₁(†D^⊚)` to the extension `Π_{X_{F_mod}} ↠ Gal(F̄/F_mod)`
-itself (descent from `K` to `F_mod`, IUT I, Remark 3.1.7 (i); the `K`-step is
-`hemi_cor33i_terminal_baseChange`), and the "Θ-approach" subgroup `Π_{X_K} ⊆ Π_{C_K}` of IUT I,
-Remark 3.1.2 (i).
+* `j_notMem_excJ`: the condition `hj` from IUT I, Definition 3.1, for `j ∈ {0, 1728}` outright and
+  for the two other exceptional values modulo the converse of [CanLift], Proposition 2.7 (named
+  debt `h27a`).
+
+The descent from `K` to `F_mod` (`π₁(C_{F_mod}) ≅ Aut(π₁(C_K))`, modulo an absolute anabelian
+input) is in `DStarDescent.lean`; the `K`-step is `hemi_cor33i_terminal_baseChange`. Not formalised
+here: the "Θ-approach" subgroup `Π_{X_K} ⊆ Π_{C_K}` of IUT I, Remark 3.1.2 (i).
 -/
 
 noncomputable section
@@ -103,6 +106,42 @@ lemma curveMod_j_notMem (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F)) 
   have h' := congrArg (algebraMap (fieldOfModuli D.F D.E) D.F) h
   rw [map_ratCast, show (curveMod D.E).j = jMod D.E from WeierstrassCurve.ofJ_j _] at h'
   exact h'
+
+/-- **The `j`-invariant condition `hj` from IUT I, Definition 3.1** (`Inter-universal Teichmuller
+Theory I.txt` l.3990–4000), modulo the converse of [CanLift], Proposition 2.7 for the two
+exceptional values without complex multiplication. `j(E_F) ∉ {0, 1728}` is proved: `E_F` has
+multiplicative reduction at the places of `V_mod^bad ≠ ∅` (Def. 3.1 (b)), so `j(E_F)` is not
+integral there (`jMod_ne`). For `j ∈ {2¹⁴·31³/5³, 2²·73³/3⁴}` the argument needs the named debt
+`h27a`, the converse of [CanLift], Proposition 2.7 (the corresponding part of
+`AffOrbicurve.CanLift27Arith` of the `pi1` project: such `E ∖ {0}` are `k`-arithmetic; not proved,
+see MR8-plan, round 40): `C_K` is the `K`-core of `C̲_K` (`CKu_core`, Def. 3.1 (d)), hence, by the
+covers `X̲_K → C̲_K` and `X̲_K → X_K`, of `X_K = (E_F)_K ∖ {0}`; so `X_K` is not `K`-arithmetic. -/
+theorem j_notMem_excJ (h27a : ∀ (k : Type) [Field k] [CharZero k] (E : WeierstrassCurve k)
+      [E.IsElliptic], (E.j = ((488095744 / 125 : ℚ) : k) ∨ E.j = ((1556068 / 81 : ℚ) : k)) →
+      AffOrbicurve.IsArithmetic (AffOrbicurve.punctured E)) :
+    ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F) := by
+  intro c hc hjc
+  obtain ⟨h0, h1728⟩ := jMod_ne D
+  simp only [AffOrbicurve.excJ, Finset.mem_insert, Finset.mem_singleton] at hc
+  rcases hc with rfl | rfl | hc'
+  · exact h0 (Subtype.ext (by change D.E.j = _; simp [hjc]))
+  · refine h1728 ((algebraMap (fieldOfModuli D.F D.E) D.F).injective ?_)
+    rw [map_ofNat]
+    change D.E.j = _
+    simp [hjc]
+  have h1 := (genuineHasCore_iff_of_cover D.orb.XKu_to_XK).mp
+    ((genuineHasCore_iff_of_cover D.orb.XKu_to_CKu).mpr D.orb.CKu_core)
+  have hXK : OrbicurveDataSection.XK D.F D.E D.Fbar D.VBad D.prime =
+      Orbicurve.oncePunctured (D.E.map (algebraMap D.F D.Kt)) := by
+    rw [OrbicurveDataSection.XK, Orbicurve.baseChange_oncePunctured]
+  rw [hXK] at h1
+  obtain ⟨_, hcore⟩ := h1
+  refine h27a D.Kt (D.E.map (algebraMap D.F D.Kt)) ?_
+    ⟨_, hcore.congr_left (Genuine.isoPunctured (D.E.map (algebraMap D.F D.Kt)))⟩
+  rw [WeierstrassCurve.map_j, hjc]
+  rcases hc' with rfl | rfl
+  · exact Or.inl (map_ratCast _ _)
+  · exact Or.inr (map_ratCast _ _)
 
 /-- **[AbsTopII] Cor. 3.3 (i) for `C_{F_mod}`**: the chain `Π_{X_{F_mod}} ⇝ Π_{C_{F_mod}}` is
 terminal in `ÉtLoc(Π_{X_{F_mod}})`, and its last group is `π₁(C_{F_mod})` (`piCmodCoreEquiv`)

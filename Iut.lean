@@ -317,6 +317,7 @@ import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
 import Iut.HodgeTheater.DStar
 import Iut.HodgeTheater.DStarCore
+import Iut.HodgeTheater.DStarDescent
 import Iut.HodgeTheater.FRlfIso
 import Iut.HodgeTheater.FRlfMod
 import Iut.HodgeTheater.FStarMod
@@ -372,6 +373,7 @@ import Iut.Reconstruction.Cusp.EtLocChainIso
 import Iut.Reconstruction.Cusp.GaloisConj
 import Iut.Reconstruction.Cusp.HemiCoreBaseChange
 import Iut.Reconstruction.Cusp.HemiCoreRing
+import Iut.Reconstruction.Cusp.HemiCuspDecomp
 import Iut.Reconstruction.Cusp.HemiCuspidal
 import Iut.Reconstruction.Cusp.HemiGenuine
 import Iut.Reconstruction.Cusp.HemiGenuineField

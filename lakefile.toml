@@ -124,7 +124,7 @@ rev = "e70086a9c442dcfe76152fa03777091c50985d43"
 [[require]]
 name = "curves-jacobian"
 git = "https://github.com/lana-agents/curves-jacobian"
-rev = "fd1aee4ed9b5e53011a9e46c789d3ddd35aef05b"
+rev = "4e5483f35891925f225a3319cea1a2158a47aa8e"
 
 # Corollary 3.12 variant (IUT III) and the ABC target statement.
 [[lean_lib]]
