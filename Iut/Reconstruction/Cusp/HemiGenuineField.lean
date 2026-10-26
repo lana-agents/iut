@@ -22,7 +22,8 @@ transports the genuine `π₁` along field isomorphisms and realises `F` inside 
   `E ↦ E.map e`;
 * **`genuine_CF_emb`**: for number fields `K ⊆ F` with `F/K` Galois, `E` over `F` and `E'` over
   `K` with `j(E) = j(E') ∉ {0, 1728}`, the genuine `π₁` of `C_F` is an open normal subgroup of
-  index `[F : K]` of the genuine `π₁` of `C_K`;
+  index `[F : K]` of the genuine `π₁` of `C_K`, namely the preimage of `Gal(K̄ / F)` under
+  `π₁(C_K) ↠ Gal(K̄ / K)` (Galois compatibility, `mem_range_twInclC_iff`);
 * **`genuine_CF_emb_Fmod`**: the same with `K = F_mod = ℚ(j(E))` and `E' = WeierstrassCurve.ofJ j`
   (IUT's `C_{F_mod}`), for `F/F_mod` Galois and `j(E) ∉ {0, 1728}`.
 -/
@@ -250,17 +251,20 @@ instance : IsGalois K (fieldM E' (F := F)) := IsGalois.of_algEquiv (equivM E' (F
 `K ⊆ F` with `F/K` Galois, an elliptic curve `E` over `F` and `E'` over `K` with
 `j(E) = j(E') ∉ {0, 1728}`, the genuine `π₁` of `C_F = (E ∖ {O}) / ±1` is an open normal subgroup
 of index `[F : K]` of the genuine `π₁` of `C_K = (E' ∖ {O}) / ±1` (`F` is realised inside
-`K̄ ⊆ K(Ē')^alg`, `genuinePi1MapEquiv`, then `genuine_CM_emb`). -/
+`K̄ ⊆ K(Ē')^alg`, `genuinePi1MapEquiv`, then `genuine_CM_emb`); the image is the preimage of
+`Gal(K̄ / F)` under the restriction to the field of constants `π₁(C_K) ↠ Gal(K̄ / K)`. -/
 theorem genuine_CF_emb (hj : E.j = algebraMap K F E'.j) (h0 : E'.j ≠ 0) (h1728 : E'.j ≠ 1728) :
     ∃ f : (Orbicurve.pmQuotient (Orbicurve.oncePunctured E)).genuinePi1 →ₜ*
         (Orbicurve.pmQuotient (Orbicurve.oncePunctured E')).genuinePi1,
       IsOpenEmbedding f ∧ f.toMonoidHom.range.Normal ∧
-        f.toMonoidHom.range.index = Module.finrank K F := by
+        f.toMonoidHom.range.index = Module.finrank K F ∧
+        ∀ y, y ∈ f.toMonoidHom.range ↔ piConstC (hemiData E') (genuinePi1HemiEquiv E' y) ∈
+          (fieldM E' (F := F)).fixingSubgroup := by
   set e := (equivM E' (F := F)).toRingEquiv
   have hjM : (mapE e E).j = algebraMap K (fieldM E' (F := F)) E'.j := by
     rw [map_j, hj]
     exact (equivM E' (F := F)).commutes _
-  obtain ⟨g, hg, hn, hi⟩ := genuine_CM_emb E' (fieldM E' (F := F)) (mapE e E) hjM h0 h1728
+  obtain ⟨g, hg, hn, hi, hgal⟩ := genuine_CM_emb E' (fieldM E' (F := F)) (mapE e E) hjM h0 h1728
   let t := genuinePi1MapEquiv e E
   let f := g.comp (ContinuousMonoidHom.toContinuousMonoidHom t)
   have hrange : f.toMonoidHom.range = g.toMonoidHom.range := by
@@ -272,13 +276,14 @@ theorem genuine_CF_emb (hj : E.j = algebraMap K F E'.j) (h0 : E'.j ≠ 0) (h1728
       refine ⟨t.symm y, ?_⟩
       change g (t (t.symm y)) = g y
       rw [ContinuousMulEquiv.apply_symm_apply]
-  refine ⟨f, ?_, ?_, ?_⟩
+  refine ⟨f, ?_, ?_, ?_, fun y => ?_⟩
   · have hf : (f : _ → _) = g ∘ t := rfl
     rw [hf]
     exact hg.comp t.toHomeomorph.isOpenEmbedding
   · rw [hrange]; exact hn
   · rw [hrange, hi]
     exact (equivM E' (F := F)).toLinearEquiv.finrank_eq.symm
+  · rw [hrange]; exact hgal y
 
 end NF
 
@@ -309,13 +314,15 @@ theorem genuine_CF_emb_Fmod [IsGalois (fieldOfModuli F E) F] (h0 : E.j ≠ 0) (h
   have hj : (curveMod E).j = jMod E := by
     classical
     exact WeierstrassCurve.ofJ_j _
-  refine genuine_CF_emb (curveMod E) E ?_ ?_ ?_
-  · rw [hj]; rfl
-  · rw [hj]; exact fun h => h0 (congrArg Subtype.val h)
-  · rw [hj]; intro h
-    have h' := congrArg (algebraMap (fieldOfModuli F E) F) h
-    rw [map_ofNat] at h'
-    exact h1728 h'
+  have hemb := genuine_CF_emb (curveMod E) E (by rw [hj]; rfl)
+    (by rw [hj]; exact fun h => h0 (congrArg Subtype.val h))
+    (by
+      rw [hj]; intro h
+      have h' := congrArg (algebraMap (fieldOfModuli F E) F) h
+      rw [map_ofNat] at h'
+      exact h1728 h')
+  obtain ⟨f, h1, h2, h3, -⟩ := hemb
+  exact ⟨f, h1, h2, h3⟩
 
 /-- At a place of multiplicative reduction, `j(E) ∉ {0, 1728}`. -/
 lemma j_ne_of_mult {w : NumberField.FinitePlace F} (hw : HasMultiplicativeReductionAt E w) :

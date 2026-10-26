@@ -554,6 +554,24 @@ variable {K : Type u} [Field K] [NumberField K] (E' : WeierstrassCurve K) [E'.Is
 
 attribute [local instance high] decEqM
 
+omit [E.IsElliptic] in
+/-- **Galois compatibility of `Π_{C_M} ↪ Π_{C_K}`**: the image of curves-jacobian's `twInclC` is
+the preimage of `Gal(K̄ / M)` under the restriction to the field of constants
+`Π_{C_K} ↠ Gal(K̄ / K)` (`H(hemiTwData) = constFixer₃ M`, the preimage of `Gal(K̄ / M)` in
+`Gal(K(Ē')^alg / K(x'))`). -/
+lemma mem_range_twInclC_iff {u2 r : M} (hS : (hemiTwData E' M E u2 r).S = (hemiData E').S)
+    (y : GaloisPi1.pi1 (hemiData E').H (hemiData E').S (hemiData E').isClosed_H) :
+    y ∈ (twInclC (hemiTwData E' M E u2 r) (hemiData E') le_top hS).toMonoidHom.range ↔
+      piConstC (hemiData E') y ∈ M.fixingSubgroup := by
+  constructor
+  · rintro ⟨z, rfl⟩
+    obtain ⟨τ, rfl⟩ := QuotientGroup.mk_surjective z
+    exact τ.2
+  · intro hy
+    obtain ⟨σ, rfl⟩ := QuotientGroup.mk_surjective y
+    exact ⟨QuotientGroup.mk (⟨(σ : FFClosure (curveE E') ≃ₐ[K₀ K (coordT (xN E'))]
+      FFClosure (curveE E')), hy⟩ : (hemiTwData E' M E u2 r).H), rfl⟩
+
 /-- **`Π_{C_F} ↪ Π_{C_{F_mod}}` for iut's genuine orbicurves** (IUT I, Def. 3.1 (b)): for an
 elliptic curve `E'` over the number field `K = F_mod` with `j(E') ∉ {0, 1728}`, `M ⊆ K̄` finite
 Galois over `K` and `E` over `M` with `j(E) = j(E')`, the genuine `π₁` of
@@ -565,7 +583,9 @@ theorem genuine_CM_emb (hj : E.j = algebraMap K M E'.j) (h0 : E'.j ≠ 0)
     ∃ f : (Orbicurve.pmQuotient (Orbicurve.oncePunctured E)).genuinePi1 →ₜ*
         (Orbicurve.pmQuotient (Orbicurve.oncePunctured E')).genuinePi1,
       IsOpenEmbedding f ∧ f.toMonoidHom.range.Normal ∧
-        f.toMonoidHom.range.index = Module.finrank K M := by
+        f.toMonoidHom.range.index = Module.finrank K M ∧
+        ∀ y, y ∈ f.toMonoidHom.range ↔
+          piConstC (hemiData E') (genuinePi1HemiEquiv E' y) ∈ M.fixingSubgroup := by
   have hj' : E.j = (E'.baseChange M).j := by
     rw [hj]
     change _ = (E'.map (algebraMap K M)).j
@@ -592,11 +612,13 @@ theorem genuine_CM_emb (hj : E.j = algebraMap K M E'.j) (h0 : E'.j ≠ 0)
       change e₂ (ι (e₁ (e₁.symm z))) = e₂ (ι z)
       rw [ContinuousMulEquiv.apply_symm_apply]
   refine ⟨f, e₂.toHomeomorph.isOpenEmbedding.comp (ho.comp e₁.toHomeomorph.isOpenEmbedding),
-    ?_, ?_⟩
+    ?_, ?_, fun y => ?_⟩
   · rw [hrange]
     exact hn.map _ e₂.toMulEquiv.surjective
   · rw [hrange, Subgroup.index_map_equiv]
     exact hi
+  · rw [hrange]
+    exact Subgroup.mem_map_equiv.trans (mem_range_twInclC_iff E' M E _ _)
 
 end Emb
 

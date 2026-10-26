@@ -216,7 +216,7 @@ theorem exists_piCKu_emb :
     rw [WeierstrassCurve.map_j, show (curveMod D.E).j = jMod D.E from WeierstrassCurve.ofJ_j _]
     rfl
   have hj0 : (curveMod D.E).j = jMod D.E := WeierstrassCurve.ofJ_j _
-  obtain ⟨g, hg, -, -⟩ := genuine_CF_emb (K := fieldOfModuli D.F D.E) (F := D.Kt) (curveMod D.E)
+  obtain ⟨g, hg, -, -, -⟩ := genuine_CF_emb (K := fieldOfModuli D.F D.E) (F := D.Kt) (curveMod D.E)
     (D.E.map (algebraMap D.F D.Kt)) hj (by rw [hj0]; exact (jMod_ne D).1)
     (by rw [hj0]; exact (jMod_ne D).2)
   let e := genuinePi1EqEquiv hCK

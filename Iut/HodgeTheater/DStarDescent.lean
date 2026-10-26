@@ -39,7 +39,11 @@ This file records that input as the named hypothesis `hAbs` and derives the reco
 * **`piCmodAutEquiv`**: hence `π₁(C_{F_mod}) ≃* Aut(π₁(C_K))` (continuous automorphisms), so
   `π₁(†D^⊛)` is determined group-theoretically by `π₁(C_K)`, which in turn is the last group of the
   terminal `⋎`-chain of `ÉtLoc` over `K` ([AbsTopII] Cor. 3.3 (i) with `G′ ⊆ G`,
-  `hemi_cor33i_terminal_baseChange`).
+  `hemi_cor33i_terminal_baseChange`);
+* `galK` (`G_K`, the image of `π₁(C_K)` in `Gal(F̄/F_mod)`), **`mem_range_piCKToCmod_iff`**
+  (`π₁(C_K) = pr⁻¹(G_K)`, Galois compatibility of `genuine_CF_emb`), `piCKuToCK_unique` and
+  **`piCKuToCK_unique_inner`**: `π₁(C̲_K) ↪ π₁(C_K)` is unique up to `Inn(π₁(C_K))` among open
+  embeddings whose composite to `Gal(F̄/F_mod)` agrees up to conjugation by an element of `G_K`.
 -/
 
 noncomputable section
@@ -59,10 +63,22 @@ variable (D : InitialThetaData.{0})
 /-- `π₁(C_K)`, `C_K = C_F ×_F K` (IUT I, Def. 3.1 (d)). -/
 abbrev piCK : Type := (OrbicurveDataSection.CK D.F D.E D.Fbar D.VBad D.prime).genuinePi1
 
+/-- `piCmodPr` unfolded: restriction to the field of constants, then `galConstEquiv`. -/
+lemma piCmodPr_apply (y : piCmod D) :
+    piCmodPr D y = galConstEquiv D
+      (piConstC (hemiData (curveMod D.E)) (genuinePi1HemiEquiv (curveMod D.E) y)) :=
+  rfl
+
+set_option maxHeartbeats 1000000 in
+-- matching `genuine_CF_emb`'s `piConstC (hemiData (curveMod D.E))` (instances over `F_mod` found
+-- generically) with the one in `piCmodPr` (instances of `Fmod D`) unfolds the instance terms
 /-- **`π₁(C_K) ↪ π₁(C_{F_mod})`**, open with normal image (`genuine_CF_emb`; `K/F_mod` is Galois,
-IUT I Rem. 3.1.5). -/
+IUT I Rem. 3.1.5), compatible with the projections to the Galois groups: the image is the full
+preimage of its image in `Gal(F̄/F_mod)` (the preimage of `Gal(K̄/K)` under the restriction to the
+field of constants, `genuine_CF_emb`). -/
 theorem exists_piCK_emb :
-    ∃ f : piCK D →ₜ* piCmod D, IsOpenEmbedding f ∧ f.toMonoidHom.range.Normal := by
+    ∃ f : piCK D →ₜ* piCmod D, IsOpenEmbedding f ∧ f.toMonoidHom.range.Normal ∧
+      ∀ y z, piCmodPr D y = piCmodPr D (f z) → y ∈ f.toMonoidHom.range := by
   have hCK : OrbicurveDataSection.CK D.F D.E D.Fbar D.VBad D.prime = Orbicurve.pmQuotient
       (Orbicurve.oncePunctured (D.E.map (algebraMap D.F D.Kt))) := by
     rw [OrbicurveDataSection.CK, OrbicurveDataSection.CF, Orbicurve.baseChange_pmQuotient,
@@ -72,24 +88,32 @@ theorem exists_piCK_emb :
     rw [WeierstrassCurve.map_j, show (curveMod D.E).j = jMod D.E from WeierstrassCurve.ofJ_j _]
     rfl
   have hj0 : (curveMod D.E).j = jMod D.E := WeierstrassCurve.ofJ_j _
-  obtain ⟨g, hg, hn, -⟩ := genuine_CF_emb (K := fieldOfModuli D.F D.E) (F := D.Kt) (curveMod D.E)
-    (D.E.map (algebraMap D.F D.Kt)) hj (by rw [hj0]; exact (jMod_ne D).1)
+  obtain ⟨g, hg, hn, -, hgal⟩ := genuine_CF_emb (K := fieldOfModuli D.F D.E) (F := D.Kt)
+    (curveMod D.E) (D.E.map (algebraMap D.F D.Kt)) hj (by rw [hj0]; exact (jMod_ne D).1)
     (by rw [hj0]; exact (jMod_ne D).2)
   let e := genuinePi1EqEquiv hCK
-  refine ⟨g.comp (ContinuousMonoidHom.toContinuousMonoidHom e), ?_, ?_⟩
+  have hr : (g.comp (ContinuousMonoidHom.toContinuousMonoidHom e)).toMonoidHom.range =
+      g.toMonoidHom.range := by
+    ext y
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact ⟨e x, rfl⟩
+    · rintro ⟨x, rfl⟩
+      exact ⟨e.symm x, by
+        change g (e (e.symm x)) = g x
+        rw [ContinuousMulEquiv.apply_symm_apply]⟩
+  refine ⟨g.comp (ContinuousMonoidHom.toContinuousMonoidHom e), ?_, ?_, fun y z hyz => ?_⟩
   · exact hg.comp e.toHomeomorph.isOpenEmbedding
-  · have hr : (g.comp (ContinuousMonoidHom.toContinuousMonoidHom e)).toMonoidHom.range =
-        g.toMonoidHom.range := by
-      ext y
-      constructor
-      · rintro ⟨x, rfl⟩
-        exact ⟨e x, rfl⟩
-      · rintro ⟨x, rfl⟩
-        exact ⟨e.symm x, by
-          change g (e (e.symm x)) = g x
-          rw [ContinuousMulEquiv.apply_symm_apply]⟩
-    rw [hr]
+  · rw [hr]
     exact hn
+  · rw [hr]
+    set w := (g.comp (ContinuousMonoidHom.toContinuousMonoidHom e)) z with hw
+    have hz : w ∈ g.toMonoidHom.range := ⟨e z, rfl⟩
+    rw [piCmodPr_apply, piCmodPr_apply] at hyz
+    have hP := (galConstEquiv D).injective hyz
+    have h2 := (hgal w).1 hz
+    have h3 := (hgal y).2
+    exact h3 (hP ▸ h2)
 
 /-- The chosen embedding `π₁(C_K) ↪ π₁(C_{F_mod})`. -/
 def piCKToCmod : piCK D →ₜ* piCmod D := (exists_piCK_emb D).choose
@@ -98,7 +122,18 @@ lemma isOpenEmbedding_piCKToCmod : IsOpenEmbedding (piCKToCmod D) :=
   (exists_piCK_emb D).choose_spec.1
 
 instance normal_range_piCKToCmod : (piCKToCmod D).toMonoidHom.range.Normal :=
-  (exists_piCK_emb D).choose_spec.2
+  (exists_piCK_emb D).choose_spec.2.1
+
+/-- **`G_K`**: the image of `π₁(C_K)` in `Gal(F̄/F_mod)` (an open normal subgroup; `Gal(F̄/K)` for
+the realisation of `K` inside `F̄` given by the chosen embedding). -/
+def galK : Subgroup (GalG (Fmod D) D.Fbar) := (piCKToCmod D).toMonoidHom.range.map (piCmodPr D)
+
+/-- **`π₁(C_K) = pr⁻¹(G_K)`** inside `π₁(C_{F_mod})` (Galois compatibility of `genuine_CF_emb`). -/
+lemma mem_range_piCKToCmod_iff (y : piCmod D) :
+    y ∈ (piCKToCmod D).toMonoidHom.range ↔ piCmodPr D y ∈ galK D := by
+  refine ⟨fun hy => ⟨y, hy, rfl⟩, ?_⟩
+  rintro ⟨_, ⟨z, rfl⟩, hz⟩
+  exact (exists_piCK_emb D).choose_spec.2.2 y z hz.symm
 
 omit D in
 /-- A topological group mapping to a slim group with open image and slim kernel is slim (as in
@@ -206,9 +241,7 @@ self-commensuration `piCmod_selfComm`): if an open embedding `f : π₁(C̲_K) �
 `π₁(C_K) ↪ π₁(C_{F_mod}) ↠ Gal(F̄/F_mod)`, the composite of the covering `piCKuToCK` conjugated by
 `g ∈ Gal(F̄/F_mod)`, then `f` is the covering followed by the automorphism `α` of `π₁(C_K)` given by
 conjugation by an element `γ ∈ π₁(C_{F_mod})` lying over `g`; `γ` is unique (`isSlim_piCmod`).
-For `g ∈ Gal(F̄/K)` such `γ` lies in `π₁(C_K) = pr⁻¹(Gal(F̄/K))` and `α` is inner; the
-identification of the image of `π₁(C_K)` with `pr⁻¹(Gal(F̄/K))` is not formalised here
-(`genuine_CF_emb` records only openness, normality and the index). -/
+For `g ∈ G_K` such `γ` lies in `π₁(C_K) = pr⁻¹(G_K)` and `α` is inner (`piCKuToCK_unique_inner`). -/
 theorem piCKuToCK_unique (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F))
     (f : D.orb.CKu.genuinePi1 →* piCK D) (hf : IsOpenEmbedding f) (g : GalG (Fmod D) D.Fbar)
@@ -327,6 +360,54 @@ def piCmodAutEquiv (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.
     refine ⟨γ, Subtype.ext (MulEquiv.ext fun x => (isOpenEmbedding_piCKToCmod D).injective ?_)⟩
     rw [piCKToCmod_piCmodToAut]
     exact (hγ x).symm⟩
+
+/-- **The embedding `π₁(C̲_K) ↪ π₁(C_K)` is unique up to `Inn(π₁(C_K))`** (IUT I, Example 5.1 (i),
+[AbsTopII] Cor. 3.3 (i), one step lower than `piCKuToCmod_unique`): if an open embedding
+`f : π₁(C̲_K) ↪ π₁(C_K)` has, in `Gal(F̄/F_mod)`, the composite of the covering `piCKuToCK`
+conjugated by an element `g` of `G_K` (the image of `π₁(C_K)`), then `f` is the covering followed by
+conjugation by a unique `δ ∈ π₁(C_K)`. From `piCKuToCK_unique` (`γ ∈ π₁(C_{F_mod})` over `g`) and
+`π₁(C_K) = pr⁻¹(G_K)` (`mem_range_piCKToCmod_iff`); uniqueness from the slimness of
+`π₁(C_{F_mod})`. -/
+theorem piCKuToCK_unique_inner
+    (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
+    (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F))
+    (f : D.orb.CKu.genuinePi1 →* piCK D) (hf : IsOpenEmbedding f) (g : GalG (Fmod D) D.Fbar)
+    (hgK : g ∈ galK D)
+    (hg : ∀ x, piCmodPr D (piCKToCmod D (f x)) =
+      g * piCmodPr D (piCKToCmod D (piCKuToCK D x)) * g⁻¹) :
+    ∃! δ : piCK D, ∀ x, f x = δ * piCKuToCK D x * δ⁻¹ := by
+  have hι := isOpenEmbedding_piCKToCmod D
+  have h₀ : IsOpenEmbedding (piCKuToCK D) := D.orb.pi1CKu_to_CK_isOpenEmbedding
+  have hu := piCKuToCK_unique D hDGC hj f hf g hg
+  obtain ⟨γ, ⟨hpr, α, hα, hfα⟩, -⟩ := hu
+  have hγ : γ ∈ (piCKToCmod D).toMonoidHom.range :=
+    (mem_range_piCKToCmod_iff D γ).2 (hpr ▸ hgK)
+  obtain ⟨δ, hδ⟩ := hγ
+  have hδ' : piCKToCmod D δ = γ := hδ
+  have hfδ : ∀ x, f x = δ * piCKuToCK D x * δ⁻¹ := fun x => hι.injective (by
+    rw [hfα x, hα, map_mul, map_mul, map_inv, hδ'])
+  refine ⟨δ, hfδ, fun δ₂ hδ₂ => ?_⟩
+  -- `δ⁻¹ δ₂` centralises the open subgroup `π₁(C̲_K)` of `π₁(C_K)`, whose image in the slim
+  -- `π₁(C_{F_mod})` is open
+  let f₁ : D.orb.CKu.genuinePi1 →ₜ* piCmod D := (piCKToCmod D).comp (piCKuToCK D)
+  have hf₁ : IsOpenEmbedding f₁ := by
+    have e : ⇑f₁ = piCKToCmod D ∘ piCKuToCK D := rfl
+    rw [e]
+    exact hι.comp h₀
+  have h1 : piCKToCmod D (δ⁻¹ * δ₂) = 1 := eq_one_of_commute_open₄ (isSlim_piCmod D) f₁
+    hf₁.isOpen_range (U := ⊤) isOpen_univ fun x _ => by
+      have e : δ₂ * piCKuToCK D x * δ₂⁻¹ = δ * piCKuToCK D x * δ⁻¹ := (hδ₂ x).symm.trans (hfδ x)
+      have e' : δ⁻¹ * δ₂ * piCKuToCK D x = piCKuToCK D x * (δ⁻¹ * δ₂) := by
+        calc δ⁻¹ * δ₂ * piCKuToCK D x
+            = δ⁻¹ * (δ₂ * piCKuToCK D x * δ₂⁻¹) * δ₂ := by group
+          _ = δ⁻¹ * (δ * piCKuToCK D x * δ⁻¹) * δ₂ := by rw [e]
+          _ = piCKuToCK D x * (δ⁻¹ * δ₂) := by group
+      change piCKToCmod D (δ⁻¹ * δ₂) * piCKToCmod D (piCKuToCK D x) =
+        piCKToCmod D (piCKuToCK D x) * piCKToCmod D (δ⁻¹ * δ₂)
+      rw [← map_mul, ← map_mul, e']
+  have h2 : δ⁻¹ * δ₂ = 1 := hι.injective (by rw [h1, map_one])
+  calc δ₂ = δ * (δ⁻¹ * δ₂) := by group
+    _ = δ := by rw [h2, mul_one]
 
 end HodgeTheater
 
