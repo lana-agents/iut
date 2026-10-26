@@ -209,7 +209,9 @@ import Iut.EtaleTheta.ThetaDivision
 import Iut.EtaleTheta.ThetaIsogeny
 import Iut.EtaleTheta.ThetaLevel
 import Iut.EtaleTheta.ThetaLevelGalois
+import Iut.EtaleTheta.ThetaLevelKummer
 import Iut.EtaleTheta.ThetaLevelRational
+import Iut.EtaleTheta.ThetaLevelUnit
 import Iut.EtaleTheta.ThetaPullback
 import Iut.EtaleTheta.ThetaQuotient
 import Iut.EtaleTheta.ThetaRigidity

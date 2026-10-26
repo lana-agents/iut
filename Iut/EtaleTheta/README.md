@@ -341,6 +341,15 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   (`exists_poly_of_isWeightFamily_deg`), and **the division polynomial in theta functions**
   (`exists_ΨSq_theta`: `u^{-(m²-m)}θ(-u^m)² = α·ΨSq_m(X(u))·θ(-u)^{2m²}`, `m` even), the input
   for `F_N` being a unit on `Ÿ'_N`.
+* G1 step 3 (`ThetaLevelUnit.lean`): **`F_N` is a unit on `Ÿ'_N`** (`exists_thetaLevel_unit`):
+  `u^{-(3N²-N)}θ_{q^N}(-u^{2N})^Nθ_q(-u^{2N})` and `u^{-(4N³-N²-N)}θ_q(-u^{2N})^{N+1}C(u)^N`
+  are theta families of weight `8N²`, `8N³` (`exists_invLevelFam`, `exists_levelFam`), equal to
+  `α F_N⁻¹ ΨSq_{2N}θ^{8N²}` and `α^N F_N ΨSq_{2N}^N θ^{8N³}`; so `F_N^{±1} ∈ K[E][1/ψ_{2N}]`.
+* G4, étale level (`ThetaLevelKummer.lean`): the Galois model `fieldData L'` of `Ÿ'_N`, the unit
+  `η = F_N`, places of `Ω` over Tate points with residues = values (`exists_place_tate`,
+  `residue_toΩ_eq`, `rational_of_center`), and **[EtTh] Prop. 1.4(iii) at points, étale
+  version** (`exists_etaleThetaClass`): along the section of the rational point over `u`,
+  `s^* κ_n(η) = κ_n(Θ̈(u^N))` for `n ∣ N`.
 
 ## Scope decisions
 
