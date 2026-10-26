@@ -755,3 +755,26 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     (NF-constants = test (ii)), **`mem_kummerNFRange_iff`** (`hJ : ∀ s, IsKummerFaithfulJac
     s.data` as an argument) and **`mem_kummerNFRange_iff_curve`** (curves with a rational point
     over a number field, unconditional).
+* Hand-off 2026-10-26 (MR9 track agent, session f): merged the `StageNF`/`StageJac`/`RecRange`
+  commit and this hand-off (hashes in ~/session2-status.md). No WIP, no pin change (cj fd1aee4,
+  pi1 3fb0593). Debts unchanged: `hDGC` (MR7, existence half), `φ`/`ResCuspInput` of
+  `SurfaceIndex.lean`, `JacDivFree` only outside number fields / `p`-adic fields (now discharged at
+  every stage over number fields, `isKummerFaithfulJac_stage_curve_numberField`). Next, in order:
+  1. (iv) points of `recTriple` by decomposition groups, Galois-model form first: for NF-points
+     `W₁`, `W₂` which are closed points of one NF-stage (`exists_nfStage_units` gives a stage on
+     which a chosen `f` is a unit; its proof via `exists_coordinate_V_rev` also makes every closed
+     point of `U_K` at which `f` is a unit a closed point of the stage — export that conjunct),
+     `nfPlace W₁ = nfPlace W₂ ↔ ∀ f, (s_{W₁}^*κ(f) = 1 ↔ s_{W₂}^*κ(f) = 1)`: "→" by
+     `mem_U_recTriple_iff`; "←" with `f = (1 + u)/(1 + 2u)`, `u = g − g(x₁)`, `g` regular at `x₁`
+     with a pole at `x₂` (`f(x₁) = 1`, `f(x₂) = 1/2`). Then the closed-point data
+     (`Algebra.IsIntegral K κ(W)`, `FiniteDimensional K (pointField)`) for NF-points over a number
+     field, and the comparison of `restrictClosed` with restriction to the image subgroup of
+     `decompH` in `Π_V` (`closedSectionMap` is injective onto it). The link to Belyi
+     cuspidalization (`NFDecomp` at stages) needs the stage as `curveGaloisData` of a `subCurve`
+     of the base change (`piBridge` for it), which is a larger, separate step.
+  2. (v) functoriality from `Π_U ≃ₜ* Π_{U′}` (`arithCuspDataIso` for the cusps; stages via
+     `belyiCuspSpec`, debt `hDGC`; residues and `s_x^*`).
+  3. Schreier/RH debt via the geometric route (session-c cost check, step (c) first).
+  Process: iut pushes go through `~/iut-push.sh` (rule 16); the slot queue was ~1 h per Lean job
+  at night, so batch fixes; the trust audit rejects the standalone word "constant" also in
+  docstrings (rule 15).
