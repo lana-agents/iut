@@ -326,6 +326,16 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   (`exists_poly_isogenyX`, `exists_poly_isogenyY`); and the function field of the level
   `Ÿ'_N` as `ψ^* K(E_Q) = K(x_Q∘ψ, y_Q∘ψ) ⊆ K(E_q)` (`ψ(u) = u^N`, `φ ∘ ψ = [2N]`), containing
   `F_N = f_N∘ψ` and `[2N]^* x_q, [2N]^* y_q` (`exists_pullTheta`, `exists_levelField`).
+* G1, identification with `curves-jacobian`'s `[m]^*` (`TateMulByN.lean`; needs `‖2‖ = 1`, i.e.
+  odd residue characteristic as for `V^bad_mod` in IUT I, Def. 3.1(b), for the Tate group law):
+  `[m]^* a` has value `a(u^m)` at the Tate point of `u` (`hasTateValue_mulByNHom`), so cj's
+  `[2N]^*` lands in `ψ^* K(E_Q)` (`exists_levelField_mulByN`).
+* G1, the level in `Ω = K(Ē)^alg` (`MulByNGalois.lean`, any elliptic curve in characteristic `0`):
+  the source of `[m]` embedded over `embE` (`mulByNEmb`), its image `L_m` with coordinate ring
+  `K[E][1/ψ_m]` (`coverEquivCoordRing`), `coordRing L_X → coordRing L_m` étale
+  (`etale_mulByNField`), hence every level `L_X ≤ L' ≤ L_m` étale over `X`
+  (`etale_of_le_mulByNField`, via `pi1`'s `etale_iff_inertia`); `ThetaLevelGalois.lean`:
+  **`Ÿ'_N` is étale over `X` and carries `F_N`** (`exists_thetaLevel_etale`).
 
 ## Scope decisions
 

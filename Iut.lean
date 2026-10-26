@@ -188,9 +188,11 @@ import Iut.EtaleTheta.KummerClass
 import Iut.EtaleTheta.ModelAut
 import Iut.EtaleTheta.ModelTower
 import Iut.EtaleTheta.MonoTheta
+import Iut.EtaleTheta.MulByNGalois
 import Iut.EtaleTheta.RigidSystems
 import Iut.EtaleTheta.TateElliptic
 import Iut.EtaleTheta.TateFunctionField
+import Iut.EtaleTheta.TateMulByN
 import Iut.EtaleTheta.TempSlimPiY
 import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.TemperedDouble
@@ -199,6 +201,7 @@ import Iut.EtaleTheta.ThetaClass
 import Iut.EtaleTheta.ThetaCohomology
 import Iut.EtaleTheta.ThetaIsogeny
 import Iut.EtaleTheta.ThetaLevel
+import Iut.EtaleTheta.ThetaLevelGalois
 import Iut.EtaleTheta.ThetaLevelRational
 import Iut.EtaleTheta.ThetaPullback
 import Iut.EtaleTheta.ThetaQuotient
