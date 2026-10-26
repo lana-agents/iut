@@ -39,8 +39,9 @@ through the surjection `π_1(C_{F_mod}) ↠ Gal(F̄/F_mod)`. This file works ove
 `π_1(C_{F_mod}) ↠ Gal(F̄/F_mod)`, and identifies its `F^⊛_mod` with `globalFrobenioidMod D`
 (`starModEquiv`); the realification and `F^⊩` (`HodgeTheater/FStarRlf.lean`) are stated over
 `†D^⊛`, with this file's Galois-base Frobenioid as an intermediate step.
-Not formalised: the group-theoretic reconstruction of `π_1(†D^⊛)` and of
-`M^⊛(†D^⊚)` from `π_1(†D^⊚)` (MR9, [AbsTopIII] Theorem 1.9; MR22). The divisors are those of
+`π_1(†D^⊛)` is characterised group-theoretically in `HodgeTheater/DStarCore.lean` ([AbsTopII]
+Cor. 3.3 (i)). Not formalised: the reconstruction of `M^⊛(†D^⊚)` from `π_1(†D^⊚)` (MR9,
+[AbsTopIII] Theorem 1.9; MR22). The divisors are those of
 [FrdI], Example 6.3 (not the "stack-theoretic" ones of IUT I, Remark 3.1.5).
 -/
 

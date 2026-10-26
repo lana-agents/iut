@@ -326,6 +326,79 @@ lemma isOpen_map_of_surjective [IsTopologicalGroup Γ] [CompactSpace Γ] [IsTopo
 
 end OrbitMap
 
+/-! ### Conjugate homomorphisms induce isomorphic functors -/
+
+section Conj
+
+variable {G : Type*} [Group G] [TopologicalSpace G]
+
+/-- Right multiplication by `γ`, `G/H → G/H'`, `xH ↦ xγH'`, for `γ⁻¹ H γ ⊆ H'`. -/
+def OrbitHom.ofRightMul (A B : OrbitObj G) (γ : G) (h : ∀ a ∈ A.H, γ⁻¹ * a * γ ∈ B.H) :
+    A ⟶ B where
+  toFun := Quotient.map' (· * γ) fun x y hxy => by
+    rw [QuotientGroup.leftRel_apply] at hxy ⊢
+    have := h _ hxy
+    convert this using 1
+    group
+  map_smul g x := by
+    induction x using QuotientGroup.induction_on with
+    | H a =>
+      change (QuotientGroup.mk (g * a * γ) : G ⧸ B.H) = g • (QuotientGroup.mk (a * γ) : G ⧸ B.H)
+      rw [MulAction.Quotient.smul_mk, smul_eq_mul, mul_assoc]
+
+lemma OrbitHom.ofRightMul_mk (A B : OrbitObj G) (γ : G) (h : ∀ a ∈ A.H, γ⁻¹ * a * γ ∈ B.H)
+    (x : G) : (OrbitHom.ofRightMul A B γ h).toFun (QuotientGroup.mk x) = QuotientGroup.mk (x * γ) :=
+  rfl
+
+/-- `G/H ≅ G/H'` for `H' = γ⁻¹ H γ`. -/
+def OrbitObj.isoOfConj (A B : OrbitObj G) (γ : G) (h₁ : ∀ a ∈ A.H, γ⁻¹ * a * γ ∈ B.H)
+    (h₂ : ∀ b ∈ B.H, γ * b * γ⁻¹ ∈ A.H) : A ≅ B where
+  hom := OrbitHom.ofRightMul A B γ h₁
+  inv := OrbitHom.ofRightMul B A γ⁻¹ fun b hb => by simpa using h₂ b hb
+  hom_inv_id := OrbitHom.hom_ext <| funext fun x => by
+    induction x using QuotientGroup.induction_on with
+    | H a =>
+      change (QuotientGroup.mk (a * γ * γ⁻¹) : G ⧸ A.H) = QuotientGroup.mk a
+      rw [mul_inv_cancel_right]
+  inv_hom_id := OrbitHom.hom_ext <| funext fun x => by
+    induction x using QuotientGroup.induction_on with
+    | H a =>
+      change (QuotientGroup.mk (a * γ⁻¹ * γ) : G ⧸ B.H) = QuotientGroup.mk a
+      rw [inv_mul_cancel_right]
+
+end Conj
+
+section ConjFunctor
+
+variable {Γ G : Type*} [Group Γ] [TopologicalSpace Γ] [Group G] [TopologicalSpace G]
+  (p p' : Γ →* G) (hp : ∀ U : Subgroup Γ, IsOpen (U : Set Γ) → IsOpen (U.map p : Set G))
+  (hp' : ∀ U : Subgroup Γ, IsOpen (U : Set Γ) → IsOpen (U.map p' : Set G))
+
+/-- **Conjugate homomorphisms induce isomorphic functors `B(Γ)⁰ ⥤ B(G)⁰`**: for
+`p' = γ p(−) γ⁻¹`, `G/p'(U) ≅ G/p(U)`, `x p'(U) ↦ x γ p(U)`. -/
+def OrbitObj.mapFunctorConjIso (γ : G) (h : ∀ x, p' x = γ * p x * γ⁻¹) :
+    OrbitObj.mapFunctor p' hp' ≅ OrbitObj.mapFunctor p hp :=
+  NatIso.ofComponents
+    (fun A => OrbitObj.isoOfConj _ _ γ
+      (fun a ha => by
+        obtain ⟨u, hu, rfl⟩ := Subgroup.mem_map.mp ha
+        refine Subgroup.mem_map.mpr ⟨u, hu, ?_⟩
+        rw [h]
+        group)
+      (fun b hb => by
+        obtain ⟨u, hu, rfl⟩ := Subgroup.mem_map.mp hb
+        exact Subgroup.mem_map.mpr ⟨u, hu, by rw [h]⟩))
+    (fun {A B} f => OrbitHom.hom_ext <| funext fun x => by
+      induction x using QuotientGroup.induction_on with
+      | H a =>
+        change (QuotientGroup.mk (a * p' (OrbitHom.rep f) * γ) : G ⧸ (B.H.map p)) =
+          QuotientGroup.mk (a * γ * p (OrbitHom.rep f))
+        rw [h]
+        congr 1
+        group)
+
+end ConjFunctor
+
 end Frobenioid
 
 end Iut

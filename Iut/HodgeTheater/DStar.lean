@@ -36,8 +36,9 @@ models over IUT's base `†D^⊛`:
   (`genuine_CF_emb_Fmod_theta`), the category-theoretic version of `C_F → C_{F_mod}`, and
   **`dCircToStar D : †D^⊚ = B(π₁(C̲_K))⁰ ⥤ †D^⊛`** (`C̲_K → C_K → C_{F_mod}`).
 
-The group-theoretic reconstruction of `π₁(†D^⊛)` from `π₁(†D^⊚)` (via [AbsTopII], Cor. 3.3 (i))
-and of `M^⊛(†D^⊚)` ([AbsTopIII], Thm. 1.9) are not part of this file.
+The group-theoretic characterisation of `π₁(†D^⊛)` ([AbsTopII], Cor. 3.3 (i): terminal object of
+`ÉtLoc(Π_{X_{F_mod}})`) and the uniqueness of `†D^⊚ → †D^⊛` up to isomorphism are in
+`HodgeTheater/DStarCore.lean`; `M^⊛(†D^⊚)` ([AbsTopIII], Thm. 1.9) is not part of this file.
 -/
 
 noncomputable section
