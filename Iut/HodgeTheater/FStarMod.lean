@@ -30,13 +30,16 @@ This file gives the **field-theoretic** version, over the Galois base `B(Gal(F̄
 * the realification `F^⊛_mod → C^⊩_mod` (`modRealify`), essentially surjective
   (IUT II, Corollary 4.7(i): "the realification `F^⊛_mod → F^⊛R_mod`").
 
-## Deviation
+## Base category
 
 IUT's base is `†D^⊛ = B(π_1(C_{F_mod}))⁰` (the orbicurve `C_{F_mod}`), whose objects are reached
-through the surjection `π_1(C_{F_mod}) ↠ Gal(F̄/F_mod)`; the group-theoretic version needs MR9
-(`M^⊛(†D^⊚)`, [AbsTopIII] Theorem 1.9) and MR22. Here the base is `B(Gal(F̄/F_mod))⁰` directly,
-and the divisors are those of [FrdI], Example 6.3 (not the "stack-theoretic" ones of IUT I,
-Remark 3.1.5).
+through the surjection `π_1(C_{F_mod}) ↠ Gal(F̄/F_mod)`. This file works over the Galois base
+`B(Gal(F̄/F_mod))⁰`; `HodgeTheater/DStar.lean` builds `F^⊛` over IUT's base `†D^⊛` (with
+`π_1(C_{F_mod})` iut's genuine `π₁` of `C_{F_mod}`) as the pull-back of this Frobenioid along
+`π_1(C_{F_mod}) ↠ Gal(F̄/F_mod)`, and identifies its `F^⊛_mod` with `globalFrobenioidMod D`
+(`starModEquiv`). Not formalised: the group-theoretic reconstruction of `π_1(†D^⊛)` and of
+`M^⊛(†D^⊚)` from `π_1(†D^⊚)` (MR9, [AbsTopIII] Theorem 1.9; MR22). The divisors are those of
+[FrdI], Example 6.3 (not the "stack-theoretic" ones of IUT I, Remark 3.1.5).
 -/
 
 namespace Iut

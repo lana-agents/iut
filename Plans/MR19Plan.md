@@ -417,6 +417,10 @@ for `recFunctionField` (MR9).
     `isTerminalTopObj`, `eq_topObj_of_isTerminal`, **`globalFrobenioidMod D = F^⊛|terminal objects`**,
     `modEquiv : C(F_mod) ≌ F^⊛_mod`, `modRealify : F^⊛_mod ⥤ C^⊩_mod` (essentially surjective).
     Deviation: base `B(Gal(F̄/F_mod))⁰` instead of `B(π₁(C_{F_mod}))⁰` (needs MR9/MR22).
+    **Update 2026-10-26 (MR8 r38):** `HodgeTheater/DStar.lean` adds `DStar D = B(π₁(C_{F_mod}))⁰`
+    (iut genuine `π₁`), `globalFrobenioidStar D` (pull-back along `π₁(C_{F_mod}) ↠ Gal(F̄/F_mod)`,
+    a Frobenioid), `starModEquiv : F^⊛_mod(†D^⊛) ≌ globalFrobenioidMod D`, `dCircToStar : †D^⊚ ⥤ †D^⊛`.
+    Still open: the group-theoretic reconstruction of `π₁(†D^⊛)`, `M^⊛` from `π₁(†D^⊚)`.
   * Not done: **base reconstruction for the non-realified `C_{F̃/F}` on its own** — not cheap: `Φ(L)`
     has irreducibles (the primes), so `Thm34Irr` (no irreducibles) does not apply and the route is
     [FrdI] Prop 1.14(ii), (iii) (FSM-morphisms, bounded FSMI-chains) with `B(L) = L^×` of finite
