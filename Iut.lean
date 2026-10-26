@@ -293,9 +293,12 @@ import Iut.Frobenioid.Tempered.BaseRecon
 import Iut.Frobenioid.Tempered.BiKummer
 import Iut.Frobenioid.Tempered.Birat
 import Iut.Frobenioid.Tempered.FracPair
+import Iut.Frobenioid.Tempered.KummerTransport
 import Iut.Frobenioid.Tempered.PiTpONS
 import Iut.Frobenioid.Tempered.ThetaEnv
+import Iut.Frobenioid.Tempered.ThetaEnvModel
 import Iut.Frobenioid.Tempered.Thm34Temp
+import Iut.Frobenioid.Tempered.TwistEquiv
 import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
 import Iut.Frobenioid.Thm24Pf
