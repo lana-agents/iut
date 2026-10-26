@@ -416,6 +416,9 @@ import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Thm19.NFTransition
 import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
+import Iut.Reconstruction.Thm19.RecRange
+import Iut.Reconstruction.Thm19.StageJac
+import Iut.Reconstruction.Thm19.StageNF
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
 import Iut.Reconstruction.Uchida.FunctionField

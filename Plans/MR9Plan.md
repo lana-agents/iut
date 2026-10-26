@@ -726,3 +726,32 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Process: main moves every ~30 min (MR8/MR14/MR3); five validation rounds were needed for one
   push. Heavy cj modules (`Cusp.ModelEnlarge`, `Kummer.KummerFaithful`, `Kummer.CuspChern`)
   must be built one at a time with `LEAN_NUM_THREADS=2` after a cj bump.
+
+* 2026-10-26 (MR9 track agent, lead christian-aa, session f): worktree `~/iut-pins`, branch
+  `mr9-t1e`, no pin change. New files `Thm19/StageNF.lean`, `StageJac.lean`, `RecRange.lean`.
+  **Hand-off step (i) done: `kummerNFRange` is characterised inside `H1Lim` by the tests of
+  Prop 1.8 at NF-stages.**
+  * **NF-stages (`StageNF`)**: `mem_F_baseChange_stage_iff` (`F K̄` of a stage is `F k̄` of `U`
+    inside `Ω`), `StageIdx.IsNF N s` (the cusps of the stage are NF-points, the paper's "`V`
+    obtained by removing NF-points"), **`StageIdx.nfModel`** (the NF-model `N` of `U` is an
+    NF-model of every NF-stage), `isNF_stageOfK` (`U_K` is an NF-stage),
+    `exists_coordinate_V_rev` (the coordinate `t + c₂(f + c₁f⁻¹)` is regular wherever `t`, `f`,
+    `f⁻¹` are) and **`exists_nfStage_units`** (every nonzero NF-rational function is a unit on an
+    NF-stage over any given finite `K₀ / k`).
+  * **Jacobian at the stages (`StageJac`)**: semilinear transport `placeMapS`, `ord_placeMapS`,
+    `picEquivS` (a ring isomorphism of function fields mapping the fields of constants onto each
+    other), equivariant (`picEquivS_picMap`); `picStageEquiv : Pic(F K̄)_stage ≃+ Pic(F k̄)_U`,
+    `exists_stage_lift`, **`isKummerFaithfulJac_stage`** (from `IsDivFreeOver D K`:
+    `⋂_N N · Pic(F k̄)^{H_K} = 0`); for curves: `JacDivFree.of_ext'` (descent along
+    `J(K) ↪ J(L)` for `k ⊆ K ⊆ L`), `jacDivFree_numberField'` (every number field `K ⊇ k`),
+    `isDivFreeOver_curve` (`J(K) ≅ J(k̄)^{G_K}` via cj `jacPointsEquivInv` + `picPsi_picAct`) and
+    **`isKummerFaithfulJac_stage_curve_numberField`** (every stage of `curveGaloisData` over a
+    number field; no hypothesis).
+  * **`RecRange`**: `IsNFConstTest` (the test of Prop 1.8 (ii)), `IsNFStageTest N ξ`,
+    `IsNFStageConstTest N ξ`; **`exists_kummerNF_not_isAlgebraic_iff`** (classes of nonconstant
+    NF-functions = classes passing test (i) at an NF-stage; the positive multiple disappears at
+    the stage over `K(b^{1/M})`, `StageIdx.extend`, `resS_extend_eq`, and the root `v` is
+    NF by `NFModel.unitsDescend` + `F_NF ∩ k̄ = k̄_NF`), **`exists_kummerNF_isAlgebraic_iff`**
+    (NF-constants = test (ii)), **`mem_kummerNFRange_iff`** (`hJ : ∀ s, IsKummerFaithfulJac
+    s.data` as an argument) and **`mem_kummerNFRange_iff_curve`** (curves with a rational point
+    over a number field, unconditional).
