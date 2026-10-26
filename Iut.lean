@@ -172,7 +172,6 @@ import Iut.Cor312.ThetaData.TwoTorsion
 import Iut.Cor312.ThetaData.UltrametricSqrt
 import Iut.Cor312.ThetaData.ValuationTransfer
 import Iut.Cor312.ThetaData.VariableChangePoint
-import Iut.EtaleTheta.ArithEnv
 import Iut.EtaleTheta.CyclotomicEnvelope
 import Iut.EtaleTheta.CyclotomicRigidity
 import Iut.EtaleTheta.DiscreteRigidity
@@ -180,6 +179,7 @@ import Iut.EtaleTheta.Env.AutKernel
 import Iut.EtaleTheta.Env.BiTheta
 import Iut.EtaleTheta.Env.CycRigidity
 import Iut.EtaleTheta.Env.Envelope
+import Iut.EtaleTheta.Env.Inputs
 import Iut.EtaleTheta.Env.Lift
 import Iut.EtaleTheta.Env.Model
 import Iut.EtaleTheta.Env.Padic
@@ -191,8 +191,6 @@ import Iut.EtaleTheta.Env.Tower
 import Iut.EtaleTheta.Env.Transport
 import Iut.EtaleTheta.Heisenberg
 import Iut.EtaleTheta.KummerClass
-import Iut.EtaleTheta.ModelAut
-import Iut.EtaleTheta.ModelTower
 import Iut.EtaleTheta.MonoTheta
 import Iut.EtaleTheta.MulByNGalois
 import Iut.EtaleTheta.RigidSystems

@@ -315,14 +315,17 @@ log-volume compatibility being Proposition 3.9(iv), `Thm311.volCompat`.)
   (`kum_comm`), the same holds relative to the natural isomorphisms `F^{⊢×μ}_△ ≅ F^{⊢×μ}_env`
   (`horizEnv_eq`), and Θ-links of different rows inducing the same coric isomorphism commute with
   the vertical isomorphisms (`biCoric_square`).
-* **(c).** With P16's abelian mono-theta environments (`EtaleTheta.Env`, whose cyclotomic
-  rigidity algorithm is functorial, `Env.Iso.isCyc_iff`) as data (`MonoThetaKummer`), the
+* **(c).** With the (nonabelian) mono-theta environments `EtaleTheta.MonoThetaEnv` of [EtTh],
+  Def. 2.13(ii), and the inputs of their cyclotomic rigidity algorithm (`MonoThetaEnv.Inputs`;
+  [EtTh], Cor. 2.19(i), functorial: `MonoThetaEnv.Iso.isCyc_inputs_iff`) as data
+  (`MonoThetaKummer`), and Kummer and permutation isomorphisms respecting the inputs
+  (`MonoThetaKummer.Compatible`, [EtTh], Cor. 2.18(i) for the genuine environments), the
   transport along a horizontal arrow (Kummer isomorphism, permutation symmetry of the
   étale-picture, inverse Kummer isomorphism) carries the cyclotomic rigidity isomorphism of
   `n,mHT` onto that of `n+1,mHT`, also after composing with arbitrary automorphisms of domain and
-  codomain (`isCyc_horizMap_aut`); for a rigidified étale-like environment the output at every
-  vertex is the natural `l·c ↦ −red(l·c)`, independent of the Kummer class `ρ` of the coordinate
-  (`isCyc_of_rigid`). The theta values are fixed by the Kummer isomorphisms of an LGP-lattice
+  codomain respecting the inputs (`isCyc_horizMap_aut`); for an étale-like environment
+  rigidified by the model environment over `G_K` the output at every vertex is the natural
+  `s^alg(l) ↦ η(l)⁻¹`, independent of the Kummer classes (`isCyc_of_rigid`). The theta values are fixed by the Kummer isomorphisms of an LGP-lattice
   (`LGPLattice.kum_gen`).
 * **(c), (d), stabilization.** The Θ-links are permuted by arbitrary automorphisms of domain and
   codomain theaters (`thetaLink_congr_bijective`), and every automorphism of the étale-like

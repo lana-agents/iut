@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.EtaleTheta.Env.Model
-import Iut.EtaleTheta.ArithEnv
 import Iut.Frobenioid.PAdicSlim
 
 /-!
@@ -26,9 +25,7 @@ commutators are `l·Δ_Θ` by Prop. 2.12(i) (`ThetaGroup.commutator_eq_theta` fo
 
 The center-freeness hypothesis is **discharged for `G = G_K`**, `K` a finite extension of `ℚ_p`:
 `G_K` is slim (`PAdicGalois.isSlimGroup`, via local class field theory), hence center-free
-(`IsSlimGroup.center_free`). This gives `prop214Set_eq_padic`, and for the arithmetic model of
-`ArithEnv.lean` the unconditional `prop214_padic`, `prop214_inter_padic` (the hypothesis `hG`
-of `prop214` is gone).
+(`IsSlimGroup.center_free`). This gives `prop214Set_eq_padic`.
 -/
 
 namespace Iut.EtaleTheta
@@ -45,23 +42,6 @@ theorem gK_center_free {p : ℕ} [Fact p.Prime]
     (τ : Iut.Frobenioid.PAdicGalois.GK p E)
     (hτ : ∀ σ, τ * σ = σ * τ) : τ = 1 :=
   Iut.Frobenioid.PAdicGalois.isSlimGroup.center_free τ hτ
-
-/-- **[EtTh], Prop. 2.14(i)** in the arithmetic model, for `G = G_K` (`K/ℚ_p` finite), without
-hypotheses. -/
-theorem prop214_padic {p : ℕ} [Fact p.Prime]
-    {E : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] E]
-    (M : Type) [AddCommGroup M] (l : ℤ) (μ : Type) [AddCommGroup μ]
-    (χ : Iut.Frobenioid.PAdicGalois.GK p E →* ℤˣ) :
-    prop214Set (M := M) (μ := μ) (χ := χ) l = Set.range (tautArith l) :=
-  prop214 l gK_center_free
-
-/-- **[EtTh], Prop. 2.14(i)**, in the form of the statement, for `G = G_K`. -/
-theorem prop214_inter_padic {p : ℕ} [Fact p.Prime]
-    {E : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] E]
-    (M : Type) [AddCommGroup M] (l : ℤ) (μ : Type) [AddCommGroup μ]
-    (χ : Iut.Frobenioid.PAdicGalois.GK p E →* ℤˣ) :
-    lArith (M := M) (μ := μ) (χ := χ) l ∩ prop214Set l = Set.range (tautArith l) :=
-  prop214_inter l gK_center_free
 
 namespace Env
 

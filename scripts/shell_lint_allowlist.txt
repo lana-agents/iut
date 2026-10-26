@@ -1,5 +1,8 @@
 # Shell-lint allowlist (scripts/shell_lint.sh; multiradial roadmap MR0, criterion (L1)).
 # <Structure>.<field> TAB <tag>; tags: def, shell, statement, baseline, new (see the script).
+# 2026-10-26 (MR15 run 3): shell #28 — `MonoThetaEnv` is [EtTh] Def. 2.13(ii) itself (inner_le, topGroup and
+# the Iso compatibilities are part of that definition; the model is built in Env/Model.lean): retagged `def`;
+# `LevelChain` deleted with the abelian ModelTower.lean.
 # Baseline recorded at MR0 on the import closure of `Iut` (origin/main cdc9602).
 # `shell` entries are those of ROADMAP §5; they must disappear by MR30.
 # Shell audit 2026-10-23 (iut main 171522b): all 439 `new` entries are construction data whose Prop
@@ -155,12 +158,10 @@ Iut.EtaleTheta.DiscreteRigidity.ESystem.comp	baseline
 Iut.EtaleTheta.DiscreteRigidity.ESystem.dvd	baseline
 Iut.EtaleTheta.Env.Iso.map_D	def
 Iut.EtaleTheta.Env.Iso.map_S	def
-Iut.EtaleTheta.LevelChain.dvd	baseline
-Iut.EtaleTheta.LevelChain.ne_zero	baseline
-Iut.EtaleTheta.MonoThetaEnv.Iso.map_D	shell
-Iut.EtaleTheta.MonoThetaEnv.Iso.map_theta	shell
-Iut.EtaleTheta.MonoThetaEnv.inner_le	shell
-Iut.EtaleTheta.MonoThetaEnv.topGroup	shell
+Iut.EtaleTheta.MonoThetaEnv.Iso.map_D	def
+Iut.EtaleTheta.MonoThetaEnv.Iso.map_theta	def
+Iut.EtaleTheta.MonoThetaEnv.inner_le	def
+Iut.EtaleTheta.MonoThetaEnv.topGroup	def
 Iut.FlexData.equation	baseline
 Iut.FlexData.lam_mul	baseline
 Iut.FlexData.lam_sq	baseline

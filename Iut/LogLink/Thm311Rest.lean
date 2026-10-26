@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.LogLink.Thm311LGP
-import Iut.EtaleTheta.CyclotomicRigidity
+import Iut.EtaleTheta.Env.Inputs
 
 /-!
 # Theorem 3.11(iii) of IUT III (Θ-link compatibility) in the log-theta-lattice model
@@ -48,15 +48,20 @@ with the `ℝ_{>0}`-orbits of the isomorphisms `n,mC^⊩_△ ≅ D^⊩(n,mD^⊢_
   **`biCoric_square`** (Θ-links of different rows inducing the same coric isomorphism commute
   with the vertical isomorphisms); `BiCoricKummer.ofLattice` (every lattice carries such data).
 * **(c)** (`MonoThetaKummer`: Frobenius-like mono-theta environments `envF (n, m) w` at the bad
-  places, étale-like ones `envD n w`, Kummer isomorphisms of environments and the
-  isomorphisms `perm n w` of the étale-picture, using P16's abelian environments
-  `EtaleTheta.Env`): the transport `horizMap` along a horizontal arrow carries the cyclotomic
+  places, étale-like ones `envD n w`, the inputs of the cyclotomic rigidity algorithm of each
+  environment, Kummer isomorphisms of environments and the isomorphisms `perm n w` of the
+  étale-picture; the environments are the nonabelian mono-theta environments
+  `EtaleTheta.MonoThetaEnv` of [EtTh], Def. 2.13(ii), with the algorithm of [EtTh], Cor. 2.19(i)
+  from `EtaleTheta/Env/CycRigidity.lean`): if the Kummer and permutation isomorphisms respect the
+  inputs (`MonoThetaKummer.Compatible`; for the genuine environments this is [EtTh],
+  Cor. 2.18(i)), the transport `horizMap` along a horizontal arrow carries the cyclotomic
   rigidity isomorphism of `n,mHT` to that of `n+1,mHT` (**`isCyc_horizMap`**), also after
-  composing with *arbitrary* automorphisms of the domain and codomain
+  composing with *arbitrary* automorphisms of the domain and codomain respecting the inputs
   (**`isCyc_horizMap_aut`**), and likewise along the vertical arrows (`isCyc_vertMap`); if the
-  étale-like environment is the model one (a rigidification `r`), the output at every vertex of
-  the column is the natural isomorphism `l·c ↦ −red(l·c)`, **independent of the Kummer class `ρ`
-  of the coordinate** (`isCyc_of_rigid`). The theta values themselves (the generators
+  étale-like environment is rigidified by an isomorphism `r` with the model environment
+  `Env.modelEnv` over `G_K`, the output at every vertex of the column is the natural isomorphism
+  `s^alg(l) ↦ η(l)⁻¹` (`−η` on `l·Δ_Θ`), **independent of the Kummer classes of the
+  environment** (`isCyc_of_rigid`). The theta values themselves (the generators
   `{q_v^{j²}}_j` of the splitting monoids) are fixed by the Kummer isomorphisms of an
   LGP-lattice (`LGPLattice.kum_gen`, used in `Thm311LGP.splitCoric`).
 * **(c), (d), stabilization**: Θ-links are permuted by arbitrary automorphisms of the domain and
@@ -94,9 +99,12 @@ with the `ℝ_{>0}`-orbits of the isomorphisms `n,mC^⊩_△ ≅ D^⊩(n,mD^⊢_
   carry tempered Frobenioids, and the `D^⊢`-strip reconstruction is only in `StripKummer.lean`).
   The natural isomorphisms `F^{⊢×μ}_△ ≅ F^{⊢×μ}_env` are arbitrary isomorphisms (identities in
   P19's model).
-* The environments are P16's **abelian** environments (the geometric theta quotient); the
-  projective systems, discrete rigidity along them and the evaluation maps (the Kummer classes of
-  the theta values as functions on the environments) are not recorded here.
+* The environments are abstract mono-theta environments with the inputs of the algorithm as
+  data; the genuine environments of the theaters (IUT II, Prop. 1.1–1.5) and the reconstruction
+  of the inputs ([EtTh], Cor. 2.18(i)) are MR23 / MR15 Layer B. The projective systems,
+  discrete rigidity along them (`EtaleTheta.Env.discreteRigidity_env`) and the evaluation maps
+  (the Kummer classes of the theta values as functions on the environments) are not recorded
+  here.
 * (d): the `κ`-coric functions, `π_1^{κ-sol}(D^⊛)` and the cyclotomic rigidity of IUT I,
   Example 5.1(v) are not formalised; only the interaction of `F_mod^×` with the unit portions.
 * Theorem 1.5(v): `D^⊩(D^⊢)` is not constructed from a `D^⊢`-strip; the collections are modelled
@@ -249,35 +257,31 @@ end BiCoricKummer
 /-! ### (c): mono-theta environments and cyclotomic rigidity -/
 
 open EtaleTheta in
-/-- The identity isomorphism of an abelian mono-theta environment. -/
-def envIsoRefl (E : Env.{0}) : Env.Iso E E where
-  e := AddEquiv.refl _
-  map_D γ := by
-    have : (AddEquiv.refl E.carrier).trans (γ.trans (AddEquiv.refl E.carrier).symm) = γ := by
-      ext; rfl
-    rw [this]
-  map_S := by
-    ext x
-    simp
-
-open EtaleTheta in
 variable (D) in
 /-- **Kummer data of mono-theta environments** along a log-theta-lattice (IUT III,
 Proposition 2.1(ii), (iii); Theorem 3.11(iii)(c)): at each bad place, Frobenius-like
 environments of the vertices (from the tempered Frobenioids of `n,mHT`), étale-like ones of the
-columns (from `n,◦HT^{D-Θ^{±ell}NF}`), Kummer isomorphisms of environments, and the isomorphisms
-`n,◦R ≅ n+1,◦R` induced by the permutation symmetries of the étale-picture. -/
+columns (from `n,◦HT^{D-Θ^{±ell}NF}`), the inputs of the cyclotomic rigidity algorithm of each
+environment (the preimages of the subquotients of [EtTh], Cor. 2.18(i)), Kummer isomorphisms of
+environments, and the isomorphisms `n,◦R ≅ n+1,◦R` induced by the permutation symmetries of the
+étale-picture. The environments are the (nonabelian) mono-theta environments `MonoThetaEnv` of
+[EtTh], Def. 2.13(ii). -/
 structure MonoThetaKummer where
   /-- The Frobenius-like mono-theta environments of `n,mHT` at `w ∈ V^bad`. -/
-  envF : ℤ × ℤ → ∀ w : FinitePlace D.Fmod, w ∈ D.VBad → Env.{0}
+  envF : ℤ × ℤ → ∀ w : FinitePlace D.Fmod, w ∈ D.VBad → MonoThetaEnv.{0}
   /-- The étale-like mono-theta environments of `n,◦HT^{D-Θ^{±ell}NF}`. -/
-  envD : ℤ → ∀ w : FinitePlace D.Fmod, w ∈ D.VBad → Env.{0}
+  envD : ℤ → ∀ w : FinitePlace D.Fmod, w ∈ D.VBad → MonoThetaEnv.{0}
+  /-- The inputs of the cyclotomic rigidity algorithm of the Frobenius-like environments. -/
+  inF : ∀ (a : ℤ × ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad),
+    MonoThetaEnv.Inputs (envF a w hw)
+  /-- The inputs of the cyclotomic rigidity algorithm of the étale-like environments. -/
+  inD : ∀ (n : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad), MonoThetaEnv.Inputs (envD n w hw)
   /-- The Kummer isomorphisms of mono-theta environments. -/
   kum : ∀ (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad),
-    Env.Iso (envF (n, m) w hw) (envD n w hw)
+    MonoThetaEnv.Iso (envF (n, m) w hw) (envD n w hw)
   /-- The isomorphisms induced by the permutation symmetries of the étale-picture. -/
   perm : ∀ (n : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad),
-    Env.Iso (envD n w hw) (envD (n + 1) w hw)
+    MonoThetaEnv.Iso (envD n w hw) (envD (n + 1) w hw)
 
 namespace MonoThetaKummer
 
@@ -285,70 +289,111 @@ open EtaleTheta
 
 variable (M : MonoThetaKummer D)
 
-/-- **The trivial mono-theta Kummer data** of one environment (identity isomorphisms): the data
-are not vacuous. -/
-def const (D : InitialThetaData.{0}) (E : Env.{0}) : MonoThetaKummer D where
+/-- The Kummer and permutation isomorphisms **respect the inputs** of the cyclotomic rigidity
+algorithm. For the genuine environments this holds for every isomorphism, since the inputs are
+reconstructed by the functorial algorithm of [EtTh], Cor. 2.18(i) (a Layer-B obligation of MR15,
+`Env/Transport.lean`); here it is a hypothesis of the theorems below. -/
+def Compatible : Prop :=
+  (∀ (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad),
+    (M.kum n m w hw).Respects (M.inF (n, m) w hw) (M.inD n w hw)) ∧
+  ∀ (n : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad),
+    (M.perm n w hw).Respects (M.inD n w hw) (M.inD (n + 1) w hw)
+
+/-- **The trivial mono-theta Kummer data** of one environment with inputs (identity
+isomorphisms): the data are not vacuous. -/
+def const (D : InitialThetaData.{0}) (E : MonoThetaEnv.{0}) (I : MonoThetaEnv.Inputs E) :
+    MonoThetaKummer D where
   envF _ _ _ := E
   envD _ _ _ := E
-  kum _ _ _ _ := envIsoRefl E
-  perm _ _ _ := envIsoRefl E
+  inF _ _ _ := I
+  inD _ _ _ := I
+  kum _ _ _ _ := MonoThetaEnv.Iso.refl E
+  perm _ _ _ := MonoThetaEnv.Iso.refl E
+
+/-- The trivial mono-theta Kummer data are compatible. -/
+theorem const_compatible (D : InitialThetaData.{0}) (E : MonoThetaEnv.{0})
+    (I : MonoThetaEnv.Inputs E) : (const D E I).Compatible :=
+  ⟨fun _ _ _ _ => MonoThetaEnv.Iso.respects_refl I, fun _ _ _ => MonoThetaEnv.Iso.respects_refl I⟩
 
 /-- **The transport along a horizontal arrow** `(n, m) → (n + 1, m)`: Kummer isomorphism,
 permutation symmetry of the étale-picture, inverse Kummer isomorphism. -/
 def horizMap (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad) :
-    (M.envF (n, m) w hw).carrier → (M.envF (n + 1, m) w hw).carrier :=
+    (M.envF (n, m) w hw).G → (M.envF (n + 1, m) w hw).G :=
   fun t => (M.kum (n + 1) m w hw).e.symm ((M.perm n w hw).e ((M.kum n m w hw).e t))
 
 /-- **The transport along the vertical arrows** of a column, through the étale-like
 environment. -/
 def vertMap (n m m' : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad) :
-    (M.envF (n, m) w hw).carrier → (M.envF (n, m') w hw).carrier :=
+    (M.envF (n, m) w hw).G → (M.envF (n, m') w hw).G :=
   fun t => (M.kum n m' w hw).e.symm ((M.kum n m w hw).e t)
 
-/-- Transport of the cyclotomic rigidity relation through the inverse of an isomorphism. -/
-theorem isCyc_symm {E E' : Env.{0}} (f : Env.Iso E E') (t x : E'.carrier) :
-    E.IsCyc (f.e.symm t) (f.e.symm x) ↔ E'.IsCyc t x := by
-  rw [← f.isCyc_iff, AddEquiv.apply_symm_apply, AddEquiv.apply_symm_apply]
+variable {M}
 
 /-- **Theorem 3.11(iii)(c), cyclotomic rigidity along the horizontal arrows**: the transport
 along a horizontal arrow carries the cyclotomic rigidity isomorphism of the environment of
 `n,mHT` exactly onto that of `n+1,mHT`. -/
-theorem isCyc_horizMap (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad)
-    (t x : (M.envF (n, m) w hw).carrier) :
-    (M.envF (n + 1, m) w hw).IsCyc (M.horizMap n m w hw t) (M.horizMap n m w hw x) ↔
-      (M.envF (n, m) w hw).IsCyc t x := by
-  rw [horizMap, horizMap, isCyc_symm, (M.perm n w hw).isCyc_iff, (M.kum n m w hw).isCyc_iff]
+theorem isCyc_horizMap (hM : M.Compatible) (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad)
+    (t x : (M.envF (n, m) w hw).G) :
+    (M.inF (n + 1, m) w hw).IsCyc (M.horizMap n m w hw t) (M.horizMap n m w hw x) ↔
+      (M.inF (n, m) w hw).IsCyc t x := by
+  rw [horizMap, horizMap, MonoThetaEnv.Iso.isCyc_inputs_symm _ (hM.1 (n + 1) m w hw),
+    (M.perm n w hw).isCyc_inputs_iff (hM.2 n w hw),
+    (M.kum n m w hw).isCyc_inputs_iff (hM.1 n m w hw)]
 
 /-- **Stabilization by arbitrary automorphisms** (Theorem 3.11(iii)(c)): the compatibility holds
 after composing with arbitrary automorphisms `α` of the domain and `β` of the codomain of the
-horizontal arrow. -/
-theorem isCyc_horizMap_aut (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad)
-    (α : Env.Iso (M.envF (n, m) w hw) (M.envF (n, m) w hw))
-    (β : Env.Iso (M.envF (n + 1, m) w hw) (M.envF (n + 1, m) w hw))
-    (t x : (M.envF (n, m) w hw).carrier) :
-    (M.envF (n + 1, m) w hw).IsCyc (β.e (M.horizMap n m w hw (α.e t)))
+horizontal arrow (respecting the inputs; for the genuine environments, every automorphism). -/
+theorem isCyc_horizMap_aut (hM : M.Compatible) (n m : ℤ) (w : FinitePlace D.Fmod)
+    (hw : w ∈ D.VBad)
+    (α : MonoThetaEnv.Iso (M.envF (n, m) w hw) (M.envF (n, m) w hw))
+    (β : MonoThetaEnv.Iso (M.envF (n + 1, m) w hw) (M.envF (n + 1, m) w hw))
+    (hα : α.Respects (M.inF (n, m) w hw) (M.inF (n, m) w hw))
+    (hβ : β.Respects (M.inF (n + 1, m) w hw) (M.inF (n + 1, m) w hw))
+    (t x : (M.envF (n, m) w hw).G) :
+    (M.inF (n + 1, m) w hw).IsCyc (β.e (M.horizMap n m w hw (α.e t)))
         (β.e (M.horizMap n m w hw (α.e x))) ↔
-      (M.envF (n, m) w hw).IsCyc t x := by
-  rw [β.isCyc_iff, isCyc_horizMap, α.isCyc_iff]
+      (M.inF (n, m) w hw).IsCyc t x := by
+  rw [β.isCyc_inputs_iff hβ, isCyc_horizMap hM, α.isCyc_inputs_iff hα]
 
 /-- Cyclotomic rigidity along the vertical arrows of a column. -/
-theorem isCyc_vertMap (n m m' : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad)
-    (t x : (M.envF (n, m) w hw).carrier) :
-    (M.envF (n, m') w hw).IsCyc (M.vertMap n m m' w hw t) (M.vertMap n m m' w hw x) ↔
-      (M.envF (n, m) w hw).IsCyc t x := by
-  rw [vertMap, vertMap, isCyc_symm, (M.kum n m w hw).isCyc_iff]
+theorem isCyc_vertMap (hM : M.Compatible) (n m m' : ℤ) (w : FinitePlace D.Fmod)
+    (hw : w ∈ D.VBad) (t x : (M.envF (n, m) w hw).G) :
+    (M.inF (n, m') w hw).IsCyc (M.vertMap n m m' w hw t) (M.vertMap n m m' w hw x) ↔
+      (M.inF (n, m) w hw).IsCyc t x := by
+  rw [vertMap, vertMap, MonoThetaEnv.Iso.isCyc_inputs_symm _ (hM.1 n m' w hw),
+    (M.kum n m w hw).isCyc_inputs_iff (hM.1 n m w hw)]
 
+open scoped commutatorElement in
 /-- **The output at every vertex is the natural isomorphism of cyclotomes**, if the étale-like
-environment of the column is rigidified by an isomorphism `r` with P16's model environment:
-`t ↔ x` iff `t`, `x` correspond to `(0, l·y, 0)`, `(−red(l·y), 0, 0)`. The right-hand side does
-not involve the Kummer class `ρ` of the coordinate. -/
-theorem isCyc_of_rigid {Mg : Type} [AddCommGroup Mg] [IsAddTorsionFree Mg] {l : ℤ} {μ : Type}
-    [AddCommGroup μ] (hμ : AddMonoid.IsTorsion μ) {red ρ : Mg →+ μ} (n m : ℤ)
-    (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad) (r : Env.Iso (M.envD n w hw) (model Mg l μ red ρ))
-    (t x : (M.envF (n, m) w hw).carrier) :
-    (M.envF (n, m) w hw).IsCyc t x ↔ ∃ y : Mg, r.e ((M.kum n m w hw).e t) = (0, l • y, 0) ∧
-      r.e ((M.kum n m w hw).e x) = (-red (l • y), 0, 0) := by
-  rw [← (M.kum n m w hw).isCyc_iff, ← r.isCyc_iff, model_isCyc hμ]
+environment of the column is rigidified by an isomorphism `r` with the model environment
+`Env.modelEnv` over `G_K` (respecting the inputs): `t ↔ x` iff `t`, `x` correspond to
+`s^alg(l)`, `η(l)⁻¹` for some `l ∈ L` ([EtTh], Cor. 2.19(i)). The right-hand side does not
+involve the Kummer classes `Kum` of the environment. The hypotheses on the theta setting are
+those of `Env.cyclotomicRigidity_env_padic` (Layer-B obligations of MR15). -/
+theorem isCyc_of_rigid (hM : M.Compatible) {p : ℕ} [Fact p.Prime]
+    {E : IntermediateField ℚ_[p] (PadicAlgCl p)} [FiniteDimensional ℚ_[p] E]
+    {PX μ : Type} [Group PX] [CommGroup μ] [TopologicalSpace PX] [IsTopologicalGroup PX]
+    [TopologicalSpace μ] [DiscreteTopology μ] [Finite μ]
+    {aug : PX →* Frobenioid.PAdicGalois.GK p E} {ψ : Frobenioid.PAdicGalois.GK p E →* MulAut μ}
+    {Kum : Subgroup (Frobenioid.PAdicGalois.GK p E → μ)} {PY PYdd : Subgroup PX} [PY.Normal]
+    {hle : PYdd ≤ PY} {hψ : IsOpen ((Env.act aug ψ).ker : Set PX)}
+    {hKum : ∀ κ ∈ Kum, EtaleTheta.IsCocycle ψ κ} {η : PYdd → μ}
+    {hη : EtaleTheta.IsCocycle (Env.actDD aug ψ PYdd) η}
+    (hPY : Envelope.FISlim PY) (hsurj : ∀ σ, ∃ h ∈ PY, aug h = σ)
+    {L Kθ : Subgroup PX} (hKL : Kθ ≤ L) (hLdd : L ≤ PYdd) (hLg : ∀ l ∈ L, aug l = 1)
+    (hη13 : ∀ k (hk : k ∈ PYdd), k ∈ Kθ → η ⟨k, hk⟩ = 1)
+    (hL : Subgroup.closure {c | c ∈ L ∧ ∃ a b, aug a = 1 ∧ b ∈ PY ∧ aug b = 1 ∧ c = ⁅a, b⁆} ⊔
+      Kθ = L)
+    (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad)
+    (r : MonoThetaEnv.Iso (M.envD n w hw) (Env.modelEnv aug ψ Kum hle hψ hKum hη))
+    (hr : r.Respects (M.inD n w hw) (Env.modelInputs aug ψ Kum hle hψ hKum hη L Kθ))
+    (t x : (M.envF (n, m) w hw).G) :
+    (M.inF (n, m) w hw).IsCyc t x ↔ ∃ l : PYdd, (l : PX) ∈ L ∧
+      r.e ((M.kum n m w hw).e t) = Env.algSection aug ψ hle l ∧
+      r.e ((M.kum n m w hw).e x) = Env.inlY aug ψ PY (η l)⁻¹ := by
+  rw [← (M.kum n m w hw).isCyc_inputs_iff (hM.1 n m w hw)]
+  exact Env.isCyc_of_respects_padic aug ψ Kum hle hψ hKum hη hPY hsurj L Kθ hKL hLdd hLg hη13 hL
+    _ r hr _ _
 
 end MonoThetaKummer
 
@@ -538,12 +583,14 @@ structure Thm311iii (L : LogThetaLattice D) (B : BiCoricKummer L) (M : MonoTheta
       (ThetaLinkIso.unitEquiv _ _ θ)
   /-- (c) Cyclotomic rigidity of the mono-theta environments is compatible with the horizontal
   arrows, after arbitrary automorphisms of domain and codomain. -/
-  c_cyc : ∀ (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad)
-    (α : EtaleTheta.Env.Iso (M.envF (n, m) w hw) (M.envF (n, m) w hw))
-    (β : EtaleTheta.Env.Iso (M.envF (n + 1, m) w hw) (M.envF (n + 1, m) w hw))
-    (t x : (M.envF (n, m) w hw).carrier),
-      (M.envF (n + 1, m) w hw).IsCyc (β.e (M.horizMap n m w hw (α.e t)))
-          (β.e (M.horizMap n m w hw (α.e x))) ↔ (M.envF (n, m) w hw).IsCyc t x
+  c_cyc : M.Compatible → ∀ (n m : ℤ) (w : FinitePlace D.Fmod) (hw : w ∈ D.VBad)
+    (α : EtaleTheta.MonoThetaEnv.Iso (M.envF (n, m) w hw) (M.envF (n, m) w hw))
+    (β : EtaleTheta.MonoThetaEnv.Iso (M.envF (n + 1, m) w hw) (M.envF (n + 1, m) w hw)),
+    α.Respects (M.inF (n, m) w hw) (M.inF (n, m) w hw) →
+    β.Respects (M.inF (n + 1, m) w hw) (M.inF (n + 1, m) w hw) →
+    ∀ t x : (M.envF (n, m) w hw).G,
+      (M.inF (n + 1, m) w hw).IsCyc (β.e (M.horizMap n m w hw (α.e t)))
+          (β.e (M.horizMap n m w hw (α.e x))) ↔ (M.inF (n, m) w hw).IsCyc t x
   /-- (c), (d) The Θ-links are stabilized by arbitrary automorphisms of domain and codomain. -/
   cd_stable : ∀ (n m : ℤ) (f : (L.H (n, m)).Iso (L.H (n, m)))
     (g : (L.H (n + 1, m)).Iso (L.H (n + 1, m))), Function.Bijective (ThetaLinkIso.congr f g)
@@ -563,7 +610,7 @@ theorem thm311iii_model (L : LogThetaLattice D) (B : BiCoricKummer L) (M : MonoT
   a_kummer := B.kum_comm
   a_biCoric := B.biCoric_square
   b_env n m := ⟨B.horizEnv_bijective n m, B.horizEnv_eq n m⟩
-  c_cyc := M.isCyc_horizMap_aut
+  c_cyc := MonoThetaKummer.isCyc_horizMap_aut
   cd_stable _ _ f g := thetaLink_congr_bijective f g
   cd_labels a σ := labels_realized (L.H a) σ
   d_fmod hx hfin hinf w := fmodOxMu_eq_one hx hfin hinf w
