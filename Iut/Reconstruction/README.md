@@ -196,6 +196,14 @@ and the arithmetic of `𝒪_Kˣ` turns the function `n ↦ [Kˣ : (Kˣ)ⁿ]` int
   `quotientComapEquiv` (`Π_{U_X}/Π_{U_V} ≃ Π/Π_V`), **`cuspidalizationEquiv'`** (step (b):
   `Π_{U_X} ≃ Π_{U_V} ⋊^out (Π/Π_V)` compatibly with the projections, for center-free
   `Π_{U_V}`). Step (a) (chains and the relative Grothendieck conjecture) is a deep input.
+* `Cusp/GaloisConj.lean`, `Cusp/HemiGenuine.lean` (MR8, done) — the bridge from curves-jacobian's
+  Galois-form hemi-elliptic orbicurve to iut's genuine orbicurves: `galConj` (Galois groups of
+  isomorphic fields, Krull-continuous; inertia groups correspond), `pi1Congr` (transport of
+  `H ⧸ ⟨⟨S⟩⟩`), `hemiOmegaEquiv` (`k(E)^alg ≃ K(Ē)^alg`), **`genuinePi1HemiEquiv`**
+  (`(pmQuotient (oncePunctured E)).genuinePi1 ≃ₜ* Π_C` of `hemiData E`; `genuinePi1CFEquiv` for
+  `OrbicurveData.CF`), `genuinePi1HemiXEquiv` (`Π_X`), `genuinePi1Cover_hemi` (`genuinePi1Cover`
+  of `X → C` is `orbiIncl`), `genuinePi1HemiEtaleEquiv` (the étale `π₁` of `[Spec R / A]`, the
+  group of `hemiCoreChain`).
 * `Cusp/HemiCuspidal.lean` (MR8, done) — Cor. 3.3 (iii) with base `X = C_{F_mod}`, the
   hemi-elliptic orbicurve of curves-jacobian's Galois form (`hemiData E'`, `E'/F_mod` with
   `j(E') ∉ {0, 1728}`, e.g. `WeierstrassCurve.ofJ j`): `fibreSubgroup_hemiFillN`

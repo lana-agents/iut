@@ -346,9 +346,11 @@ import Iut.Reconstruction.Cusp.CuspDataIso
 import Iut.Reconstruction.Cusp.CuspTransgression
 import Iut.Reconstruction.Cusp.Elliptic
 import Iut.Reconstruction.Cusp.EtLocChainIso
+import Iut.Reconstruction.Cusp.GaloisConj
 import Iut.Reconstruction.Cusp.HemiCoreBaseChange
 import Iut.Reconstruction.Cusp.HemiCoreRing
 import Iut.Reconstruction.Cusp.HemiCuspidal
+import Iut.Reconstruction.Cusp.HemiGenuine
 import Iut.Reconstruction.Cusp.HemiInvConj
 import Iut.Reconstruction.Cusp.HemiSelfComm
 import Iut.Reconstruction.Cusp.OutSemidirect
