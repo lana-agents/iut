@@ -18,11 +18,12 @@ route R-alg (`MR14-plan.md`), `ι` is `[-1]` on `E_Q`, `Q = s^N`; pulled back al
 * `thetaLevel_inv`: `f_N(Ü⁻¹) = -f_N(Ü)` for even `N` (`Θ̈(Ü⁻¹) = -Θ̈(Ü)`, [EtTh] Prop. 1.4(ii));
 * **`levelData_inv`**: `[-1]^*` fixes `x_Q∘ψ`, sends `y_Q∘ψ` to `-y_Q∘ψ - x_Q∘ψ` (so it preserves
   the function field `K(x_Q∘ψ, y_Q∘ψ)` of `Ÿ'_N`), and **`[-1]^* F_N = -F_N`**: the unit `η_N`
-  is fixed up to the unit `-1` of the field of constants (the cohomological form
-  `κ_n(ι^*η_N) = κ_n(-1)·κ_n(η_N)` is not yet stated).
+  is fixed up to the unit `-1` of the field of constants.
 
-The lift of `[-1]^*` to an automorphism of `Ω` normalising `Π_{Ÿ'_N}` and its action on
-`H¹(Π_{Ÿ'_N}, μ_n)` are the next step (see the MR14 plan, run-5 hand-off).
+The cohomological form (the lift `σ` of `[-1]^*` to `Ω`, `MulByNInversion.lean`, and the
+conjugation of Kummer classes, `KummerConj.lean`) is the inversion conjunct of
+`exists_etaleThetaSystem` (`ThetaClassSystem.lean`): conjugation by `σ` on `H¹(Π_{Ÿ'_N}, μ_n)`
+sends `κ_n(η_N)` to `κ_n(-1)·κ_n(η_N)`.
 -/
 
 open Polynomial

@@ -191,8 +191,10 @@ import Iut.EtaleTheta.Env.Tower
 import Iut.EtaleTheta.Env.Transport
 import Iut.EtaleTheta.Heisenberg
 import Iut.EtaleTheta.KummerClass
+import Iut.EtaleTheta.KummerConj
 import Iut.EtaleTheta.MonoTheta
 import Iut.EtaleTheta.MulByNGalois
+import Iut.EtaleTheta.MulByNInversion
 import Iut.EtaleTheta.RigidSystems
 import Iut.EtaleTheta.TateElliptic
 import Iut.EtaleTheta.TateFunctionField

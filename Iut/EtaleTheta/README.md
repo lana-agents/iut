@@ -348,8 +348,16 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   `L'_j ≤ L'_{j'}` and `res κ_n(η_j) = κ_n(η_{j'})` for `n ∣ N_j` (`LevelTransition`).
 * [EtTh] Prop. 1.5(iii), inversion part, function fields (`ThetaLevelInversion.lean`): values of
   `[-1]^* = negYAlgEquiv` (`hasTateValue_negY`), `f_N(Ü⁻¹) = -f_N(Ü)` (`thetaLevel_inv`), and
-  `levelData_inv`: `[-1]^*` preserves `K(x_Q∘ψ, y_Q∘ψ)` and sends `F_N` to `-F_N`. The lift to `Ω`
-  and the action on `H¹(Π_{Ÿ'_N}, μ_n)` are not done yet.
+  `levelData_inv`: `[-1]^*` preserves `K(x_Q∘ψ, y_Q∘ψ)` and sends `F_N` to `-F_N`.
+* **[EtTh] Prop. 1.5(iii), inversion part, cohomological form** (MR14 run 6).
+  `MulByNInversion.lean`: `[-1]^*` commutes with `[m]^*` (`negE_comp_pb`, through the generic
+  point), and **`exists_negAut`**: an automorphism `σ ∈ Gal(Ω/K(τ))` with
+  `σ ∘ φ_m = φ_m ∘ [-1]^*` (`AlgHom.liftNormal` of `negLift : L_m → Ω`). `KummerConj.lean`: for
+  `σ` normalising `H` and `H_L`, conjugation preserves the inertia elements and `⟨⟨S⟩⟩`
+  (`conj_mem_S`, `conj_mem_ambientKernel`), induces `conjPi` on `Π_U` and `conjH1` on
+  `H¹(Π_U, μ_n)` (`c ↦ σ·c(σ⁻¹ · σ)`), and **`conjH1_kummerMap`**: `conjH1 σ (κ_n(u)) = κ_n(σu)`;
+  `InversionAt`, `inversionAt_of`. `exists_etaleThetaSystem` now also gives, at every level, a
+  lift `σ_j` of `[-1]^*` with `conjH1 σ_j (κ_n(η_j)) = κ_n(-1)·κ_n(η_j)` for all `n`.
 
 ## Scope decisions
 

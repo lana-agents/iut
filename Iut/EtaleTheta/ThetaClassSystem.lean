@@ -4,6 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.EtaleTheta.ThetaLevelSystem
+import Iut.EtaleTheta.ThetaLevelInversion
+import Iut.EtaleTheta.KummerConj
+import Iut.EtaleTheta.MulByNInversion
 
 /-!
 # The étale theta classes `κ_n(η_N)` as a projective system (MR14, run 5)
@@ -21,7 +24,10 @@ function fields of the levels `Ÿ'_{N_j}` of [EtTh], §1, route R-alg of `MR14-p
   `EtaleThetaAtPoint`);
 * **compatibility in `N`**: if `N_{j'} = N_j·M` with `M` even, then `L'_j ≤ L'_{j'}`, so
   `Π_{Ÿ'_{N_{j'}}} ≤ Π_{Ÿ'_{N_j}}`, and for `n ∣ N_j` the restriction of `κ_n(η_j)` to
-  `Π_{Ÿ'_{N_{j'}}}` is `κ_n(η_{j'})`.
+  `Π_{Ÿ'_{N_{j'}}}` is `κ_n(η_{j'})`;
+* **inversion** ([EtTh] Prop. 1.5(iii)): at every level there is `σ_j ∈ Gal(Ω/K(τ))` lying over
+  `[-1]` (`σ_j ∘ φ = φ ∘ [-1]^*` on `K(E)`, `φ = mulByNEmb E (2N_j)`) such that conjugation by
+  `σ_j` on `H¹(Π_{Ÿ'_{N_j}}, μ_n)` sends `κ_n(η_j)` to `κ_n(-1)·κ_n(η_j)` (`InversionAt`).
 
 So for each `n` the classes `κ_n(η_j)` (`n ∣ N_j`) define one class on `Π_Ÿ = ⋂_j Π_{Ÿ'_{N_j}}`:
 this is the étale theta class `η̈^Θ` mod `n` of [EtTh], Prop. 1.3 (as the Kummer class of `Θ̈`,
@@ -200,6 +206,10 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
       (∀ (j : ℕ) (u : Kˣ) (hu : OffOrbit t u)
         (hψ : evalTate t h12 hu (psiN t.tateCurve (2 * (2 * (j + 1)))) ≠ 0),
         EtaleThetaAtPoint h12 (2 * (j + 1)) (L j) (hL j) (η j) u hu hψ) ∧
+      (∀ j, ∃ σ : Ω ≃ₐ[K₀ K τ] Ω,
+        (∀ g : TateField t, σ (mulByNEmb t.tateCurve (2 * (2 * (j + 1))) g) =
+          mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (negE t.tateCurve g)) ∧
+        InversionAt (transcendental_tau t.tateCurve) (hL j) (η j) σ) ∧
       ∀ j j' M : ℕ, 2 * (j' + 1) = 2 * (j + 1) * M → Even M →
         LevelTransition (transcendental_tau t.tateCurve) (hL j) (hL j') (η j) (η j')
           (2 * (j + 1)) := by
@@ -237,9 +247,35 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
   choose η hη using fun j => exists_unit_of_cover (2 * (2 * (j + 1))) (L j) (hL j) (hFL j)
     (hF0 j) (hb j) (hb' j)
   refine ⟨L, hL, fun j => hemiL_le_adjoin _ _ (hmul j), η,
-    fun j => etale_adjoin_image _ _ (hmul j), fun j => ?_, fun j j' M hjM hevM => ?_⟩
+    fun j => etale_adjoin_image _ _ (hmul j), fun j => ?_, fun j => ?_,
+    fun j j' M hjM hevM => ?_⟩
   · exact etaleThetaClass_points (by omega) (L j) (hL j) (adjoin_image_le_mulByNField _ _ _)
       (η j) ((hη j).trans (congrArg _ (hb j).symm)) (hpt j)
+  -- the inversion `ι` at the level `j` ([EtTh] Prop. 1.5(iii))
+  · obtain ⟨σ, hσ⟩ := exists_negAut t.tateCurve (2 * (2 * (j + 1)))
+    obtain ⟨hX, hY, hFneg⟩ := levelData_inv (h12 := h12) h2 hs (N := 2 * (j + 1)) (by omega)
+      ⟨j + 1, by ring⟩ (hval j)
+    have hσ' : ∀ g : TateField t, σ (mulByNEmb t.tateCurve (2 * (2 * (j + 1))) g) =
+        mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (negT t g) := hσ
+    refine ⟨σ, hσ, inversionAt_of _ (hL j) (η j) σ (fun x hx => ?_) ?_⟩
+    · have hle : (IntermediateField.adjoin (K₀ K τ)
+          (mulByNEmb t.tateCurve (2 * (2 * (j + 1))) '' {gX j, gY j})).map
+            (σ : Ω →ₐ[K₀ K τ] Ω) ≤ L j := by
+        rw [IntermediateField.adjoin_map, IntermediateField.adjoin_le_iff]
+        have hmX : mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (gX j) ∈ L j :=
+          IntermediateField.subset_adjoin _ _ ⟨gX j, by simp, rfl⟩
+        have hmY : mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (gY j) ∈ L j :=
+          IntermediateField.subset_adjoin _ _ ⟨gY j, by simp, rfl⟩
+        rintro _ ⟨_, ⟨g, hg, rfl⟩, rfl⟩
+        rcases hg with rfl | rfl
+        · change σ _ ∈ L j
+          rw [hσ', hX]
+          exact hmX
+        · change σ _ ∈ L j
+          rw [hσ', hY, map_sub, map_neg]
+          exact sub_mem (neg_mem hmY) hmX
+      exact hle ⟨x, hx, rfl⟩
+    · rw [hη j, hσ', hFneg, map_neg]
   -- the transition `j → j'`
   have hM : 0 < M := by
     rcases Nat.eq_zero_or_pos M with h | h
