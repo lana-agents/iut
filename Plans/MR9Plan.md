@@ -778,3 +778,35 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Process: iut pushes go through `~/iut-push.sh` (rule 16); the slot queue was ~1 h per Lean job
   at night, so batch fixes; the trust audit rejects the standalone word "constant" also in
   docstrings (rule 15).
+
+* 2026-10-26 (MR9 track agent, lead christian-aa, session g): worktree `~/mr8-iut` (lent by MR8),
+  branch `mr9-g`, no pin change. New files `Thm19/DecompIso.lean`, `Thm19/RecPoints.lean`; `hAbs`
+  split in `HodgeTheater/DStarDescent.lean`.
+  * **Functoriality of Thm 1.9 (a) (`DecompIso`)**: `ptDecomps Ω C hc` (the `Π_U`-conjugates of the
+    decomposition groups `arithDecomp W` of places `W` centred on `U_Ω` that are cusp places of some
+    nonempty open `U_X ⊆ U`, i.e. of the closed points of `U`); `exists_map_cor38Fill_commensurator`
+    (cj `cor37c` along `cor38Fill`: `Comm(I_W) ↦ s·D_W·s⁻¹`); generic `map_conj_eq_of_commensurator`;
+    **`map_mem_ptDecomps`** (an isomorphism of cuspidal extensions `Π_U ≅ Π_{U'}`, `U'` over another
+    number field, maps `ptDecomps U` into `ptDecomps U'`: the Cor 3.8 lift `φU : Π_{U_X} ≃ Π_{U'_X}`
+    of `BelyiCuspSpec` (d) lies over `G_K ≃ G_{K'}` up to conjugation (cj `exists_pr_cor38Fill₃`), so
+    it preserves cusps (`arithmeticExtIso'`, [AbsTopI] Lemma 4.5 (v)) and commensurators; the killed
+    cusp `I_W` goes to a killed cusp, i.e. a place centred on `U'` (cj `false_of_le_ker`); then
+    Cor 3.7 (c) for `U'`); **`map_ptDecomps_eq`**, **`map_ptDecomps_eq'`** (any compatible
+    `Π_U ≃ₜ* Π_{U'}`, `G_K ≃ₜ* G_{K'}`), **`map_ptDecomps_eq_of_belyi`** (strictly Belyi type with a
+    Galois Belyi cover, only debt `hDGC`). New cj imports: `Cusp.FillCuspClasses`, `Cusp.DupFillMatch`.
+  * **Points from `U_x` (`RecPoints`)**: `ValEvalData.Iso.U_injective`,
+    **`ofFunctionField.exists_mem_U_notMem_U`** (`P ≠ Q` ⇒ some `f` with `f(P) = 1`, `f ∉ U_Q`:
+    `f = 1 + g − g(P)`, `g = x⁻¹` with `x` vanishing only at `Q`, weil-curves `exists_zero_only_at`),
+    `ofFunctionField.U_injective`, **`recTriple_U_injective`** (the points of the reconstructed triple
+    are determined by their `U_x`, which `mem_U_recTriple_iff` reads off from `s_x^*`).
+  * **`hAbs` reduced (`DStarDescent`)**: named statements **`CKStrictSemiAbs`** ([AbsTopI] Cor. 2.8 (ii)
+    for NF, `Topics in Absolute Anabelian Geometry I.txt` l.1348–1379: automorphisms of `π₁(C_K)` map
+    `Δ_{C_K}` into itself; its proof there uses the very elasticity of `G_K`, [AbsTopI] Thm 1.7 (iii),
+    l.712, via Prop 2.5 (ii)) and **`CKSemiAbsConj`** (the conclusion of `hAbs` for automorphisms
+    preserving `Δ_{C_K}`, i.e. over some `ψ ∈ Aut(G_K)`); **`hAbs_of`**: `hAbs` follows from the two.
+    `CKSemiAbsConj` is the MR9 target: [AbsTopIII] Rem 1.9.5 (i) (l.2249–2260) notes that the
+    functoriality of Thm 1.9 in isomorphisms yields the profinite absolute Grothendieck conjecture over
+    number fields; applied to `Π_{X_K} ⊆ Π_{C_K}` (IUT I Rem 3.1.2 (ii), l.4169–4179) it gives a
+    field automorphism `σ` of `F̄ = K̄_NF` with `ψ = conj σ` and a `σ`-semilinear automorphism of the
+    NF-function field of `X_K`, so `σ(j) = j`, `σ ∈ Gal(F̄/F_mod)`. Existing consumers keep their
+    `hAbs` argument; feed them `hAbs_of D h₁ h₂`.

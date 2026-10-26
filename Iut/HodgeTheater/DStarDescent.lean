@@ -30,6 +30,10 @@ This file records that input as the named hypothesis `hAbs` and derives the reco
   III.txt` l.2109–2196; MR9) shows that this automorphism is conjugation by a lift `σ̃` of a field
   automorphism `σ` with `C_K^σ ≅ C_K`, i.e. `σ(j) = j`, i.e. `σ̃ ∈ Gal(F̄/F_mod)`
   (`F_mod = ℚ(j)`);
+* **`hAbs_of`**: `hAbs` follows from two smaller named statements, `CKStrictSemiAbs` ([AbsTopI]
+  Cor. 2.8 (ii): automorphisms preserve `Δ_{C_K}`) and `CKSemiAbsConj` (the same conclusion for
+  automorphisms preserving `Δ_{C_K}`, i.e. over an automorphism `ψ` of `G_K`; the functoriality of
+  [AbsTopIII] Thm. 1.9 over `ψ`, MR9);
 * **`piCK_aut_eq_conj`**: under `hAbs` (and the existing inputs `hDGC`, `hj`), every continuous
   automorphism of `π₁(C_K)` is the restriction of conjugation by a unique element of
   `π₁(C_{F_mod})` (existence: self-commensuration `piCmod_selfComm`; uniqueness: `π₁(C_{F_mod})` is
@@ -201,6 +205,43 @@ theorem piCK_conj_aut (γ : piCmod D) :
       right_inv := hab
       map_mul' := hmul }
   exact ⟨⟨m, continuous_of_conj D ha', continuous_of_conj D hb'⟩, ha'⟩
+
+/-- **Strict semi-absoluteness of the automorphisms of `π₁(C_K)`** ([AbsTopI] Cor. 2.8 (ii),
+`Topics in Absolute Anabelian Geometry I.txt` l.1348–1379, for a number field: an isomorphism of
+arithmetic fundamental groups satisfies `φ(Δ₁) = Δ₂`; the proof there uses that `G_K` is very
+elastic, [AbsTopI] Thm. 1.7 (iii), via Prop. 2.5 (ii)), as a **named statement**: every continuous
+automorphism of `π₁(C_K)` maps the geometric subgroup `Δ_{C_K} = ker(π₁(C_K) → Gal(F̄/F_mod))`
+into itself. -/
+def CKStrictSemiAbs : Prop :=
+  ∀ α : piCK D ≃ₜ* piCK D, ∀ x,
+    piCmodPr D (piCKToCmod D x) = 1 → piCmodPr D (piCKToCmod D (α x)) = 1
+
+/-- **The semi-absolute form of `hAbs`**, as a **named statement** (the MR9 target): every
+continuous automorphism of `π₁(C_K)` preserving the geometric subgroup `Δ_{C_K}` acts on the image
+of `π₁(C_K)` in `Gal(F̄/F_mod)` by conjugation by an element of `Gal(F̄/F_mod)`. This is what the
+functoriality of [AbsTopIII] Thm. 1.9 (`Topics in Absolute Anabelian Geometry III.txt`
+l.2109–2196; Rem. 1.9.5 (i), l.2249–2260), applied to `Π_{X_K} ⊆ Π_{C_K}` (IUT I, Rem. 3.1.2 (ii),
+the Θ-approach), gives: an automorphism over `ψ ∈ Aut(G_K)` induces a field automorphism `σ` of
+the reconstructed `K̄_NF = F̄` with `ψ = conj(σ)` and a `σ`-semilinear automorphism of the
+NF-portion of the function field of `X_K`, so `σ(j) = j` and `σ ∈ Gal(F̄/F_mod)`. Its
+group-theoretic input over `ψ` is what `Reconstruction/Thm19/DecompIso.lean` starts to transport
+(decomposition groups of points, step (a)). -/
+def CKSemiAbsConj : Prop :=
+  ∀ α : piCK D ≃ₜ* piCK D,
+    (∀ x, piCmodPr D (piCKToCmod D (α x)) = 1 ↔ piCmodPr D (piCKToCmod D x) = 1) →
+      ∃ g : GalG (Fmod D) D.Fbar, ∀ x,
+        piCmodPr D (piCKToCmod D (α x)) = g * piCmodPr D (piCKToCmod D x) * g⁻¹
+
+/-- **`hAbs` from the two named statements**: strict semi-absoluteness ([AbsTopI] Cor. 2.8 (ii),
+`CKStrictSemiAbs`) and the semi-absolute form (`CKSemiAbsConj`, [AbsTopIII] Thm. 1.9
+functoriality). Applying `CKStrictSemiAbs` to `α` and `α⁻¹` shows that `α` maps `Δ_{C_K}` onto
+itself. -/
+theorem hAbs_of (h₁ : CKStrictSemiAbs D) (h₂ : CKSemiAbsConj D) (α : piCK D ≃ₜ* piCK D) :
+    ∃ g : GalG (Fmod D) D.Fbar, ∀ x,
+      piCmodPr D (piCKToCmod D (α x)) = g * piCmodPr D (piCKToCmod D x) * g⁻¹ :=
+  h₂ α fun x => ⟨fun hx => by
+    have h := h₁ α.symm (α x) hx
+    rwa [ContinuousMulEquiv.symm_apply_apply] at h, h₁ α x⟩
 
 /-- **Every continuous automorphism of `π₁(C_K)` is conjugation by a unique element of
 `π₁(C_{F_mod})`**, given the absolute anabelian input `hAbs` (the named debt of this file: `α`

@@ -435,6 +435,7 @@ import Iut.Reconstruction.Thm19.ArithBridgeDecomp
 import Iut.Reconstruction.Thm19.ArithBridgeGk
 import Iut.Reconstruction.Thm19.CuspPrincipal
 import Iut.Reconstruction.Thm19.CuspSync
+import Iut.Reconstruction.Thm19.DecompIso
 import Iut.Reconstruction.Thm19.NFAdditive
 import Iut.Reconstruction.Thm19.NFColimit
 import Iut.Reconstruction.Thm19.NFDecomp
@@ -448,6 +449,7 @@ import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Thm19.NFTransition
 import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
+import Iut.Reconstruction.Thm19.RecPoints
 import Iut.Reconstruction.Thm19.RecRange
 import Iut.Reconstruction.Thm19.StageJac
 import Iut.Reconstruction.Thm19.StageNF
