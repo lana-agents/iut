@@ -43,7 +43,9 @@ Results:
   surjectivity half of Cor. 2.18(iv) enters as the hypothesis `hlift` (every automorphism of
   `Π_Y` induced by an automorphism of the model of level `0` is induced at every level; in
   [EtTh] it comes from the functorial algorithm of Cor. 2.18(ii) applied to automorphisms of
-  `Π_X̲` — a Layer-B obligation, MR15 plan).
+  `Π_X̲` — a Layer-B obligation, MR15 plan). `Env/Lift.lean` (`restrictPY_mem_range`) proves the
+  levelwise lifting for every automorphism of the theta data that preserves `Π_Y̲`, `Π_Ÿ̲`, the
+  Kummer cocycles and the class of `η` up to Kummer classes and admissible shifts.
 -/
 
 namespace Iut.EtaleTheta.Env

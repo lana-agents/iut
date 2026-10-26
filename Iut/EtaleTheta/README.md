@@ -487,6 +487,13 @@ the MR15 plan.
   **`discreteRigidity_env`**: every projective system of environments levelwise isomorphic to
   the models is isomorphic to the model system. The finite kernels are proved; the surjectivity
   half of Cor. 2.18(iv) enters as `hlift` (Layer B: Cor. 2.18(ii) functorial algorithm).
+* `Env/Lift.lean` — **functoriality of the model environment** in isomorphisms of theta data
+  (`mapX`, `kumMap`, `map_DY`, `image_thetaSubgroups_mapY`, **`mapIso`**, lying over `φ` on
+  `Π_Y`), and the lifting statement behind the surjectivity half of Cor. 2.18(iv):
+  **`exists_aut_autPY_eq`** / `restrictPY_mem_range` — an automorphism of the theta data that
+  preserves `Π_Y`, `Π_Ÿ`, the Kummer cocycles and the class of `η` up to a Kummer class and an
+  admissible shift is induced by an automorphism of the model environment. This reduces `hlift`
+  of `discreteRigidity_env` to the Layer-B facts Cor. 2.18(i) and Cor. 2.19(iii)/Thm. 1.10.
 * `Env/Padic.lean` — Cor. 2.19(i) and the kernel statement over `G = G_K` without the
   center-freeness hypothesis (`cyclotomicRigidity_env_padic`, `cyclotomicRigidity_envAut_padic`,
   `ker_autPY_inlY_eq_padic`).

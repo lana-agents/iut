@@ -180,6 +180,7 @@ import Iut.EtaleTheta.Env.AutKernel
 import Iut.EtaleTheta.Env.BiTheta
 import Iut.EtaleTheta.Env.CycRigidity
 import Iut.EtaleTheta.Env.Envelope
+import Iut.EtaleTheta.Env.Lift
 import Iut.EtaleTheta.Env.Model
 import Iut.EtaleTheta.Env.Padic
 import Iut.EtaleTheta.Env.PiX

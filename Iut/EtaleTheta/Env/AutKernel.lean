@@ -33,10 +33,10 @@ shell-#29 debt, lead decision 2026-10-26):
   Cor. 2.18(iv)): an element of the kernel acting trivially on `μ` (which is what Cor. 2.19(i),
   `cyclotomicRigidity_envAut`, gives) is `inn(ζ) ∘ α_δ` for some `ζ ∈ μ` and a shifting
   automorphism `α_δ` (`Shift.lean`) by a cocycle `δ` on `Π_Y̲` that is trivial on `Π_Ÿ̲`;
-  `cocycle_trivialOn_coset`, `cocycle_trivialOn_sq`, `cocycle_trivialOn_fixed`: such a `δ` is
-  the same on all of a coset of `Π_Ÿ̲`, so for `[Π_Y̲ : Π_Ÿ̲] = 2` it is determined by its value `c` at
-  one `t ∈ Π_Y̲ ∖ Π_Ÿ̲`; `c · t(c) = 1` and `c` is fixed by `Π_Ÿ̲` — i.e. `δ ∈ Hom(Π_Y̲/Π_Ÿ̲, μ)`
-  for `t` geometric (`c² = 1`), of order 1 or 2 for `μ = μ_N`, `N` odd or even.
+  `cocycle_trivialOn_coset`, `cocycle_trivialOn_sq`, `cocycle_trivialOn_fixed`: such a `δ`
+  takes one value on each coset of `Π_Ÿ̲`, so for `[Π_Y̲ : Π_Ÿ̲] = 2` it is determined by its
+  value `c` at one `t ∈ Π_Y̲ ∖ Π_Ÿ̲`; `c · t(c) = 1` and `c` is fixed by `Π_Ÿ̲` — i.e.
+  `δ ∈ Hom(Π_Y̲/Π_Ÿ̲, μ)` for `t` geometric (`c² = 1`), of order 1 or 2 for `μ = μ_N`.
 -/
 
 namespace Iut.EtaleTheta.Env
