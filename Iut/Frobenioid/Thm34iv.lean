@@ -132,13 +132,12 @@ lemma u_comp_of_baseId {Y : Model Φ₂ B₂ divB₂} (a b : Y ⟶ Y) (ha : a.ba
     (hb₁ : b.deg = 1) : (a ≫ b).u = b.u + a.u := by
   simp [ha, hb₁]
 
-omit [IsConnected D₂] in
-include hD₁ hB₁ hD₂ hB₂ in
+omit [IsConnected D₂] [TotallyEpimorphic D₁] [TotallyEpimorphic D₂] in
 /-- **The Frobenius degree is preserved** if `C₁` has a unit of infinite order and `D₂` is
-slim. -/
-theorem degFr_map_eq (hD : IsSlim D₂) (hnt : HasNonTorsionUnit divB₁) {X Y : Model Φ₁ B₁ divB₁}
+slim, for any equivalence matching the morphism types (`TypeCorresp`). -/
+theorem degFr_map_eq_of_typeCorresp (c : TypeCorresp F) (hD : IsSlim D₂)
+    (hnt : HasNonTorsionUnit divB₁) {X Y : Model Φ₁ B₁ divB₁}
     (φ : X ⟶ Y) : degFr 𝐏₂ (F.map φ) = degFr 𝐏₁ φ := by
-  have c := typeCorresp hD₁ hB₁ hD₂ hB₂ F
   obtain ⟨σ, hσ⟩ := exists_degHom F (fun _ _ φ h => (c.linear φ).1 h)
   rw [hσ]
   suffices h : ∀ d : ℕ+, σ d = d from h _
@@ -199,6 +198,14 @@ theorem degFr_map_eq (hD : IsSlim D₂) (hnt : HasNonTorsionUnit divB₁) {X Y :
   · have h0 : ((σ d : ℕ) - d) • u = 0 := by
       simp [sub_nsmul _ hlt.le, hk]
     exact hinf _ (Nat.sub_pos_of_lt hlt) h0
+
+omit [IsConnected D₂] in
+include hD₁ hB₁ hD₂ hB₂ in
+/-- **The Frobenius degree is preserved** if `C₁` has a unit of infinite order and `D₂` is
+slim. -/
+theorem degFr_map_eq (hD : IsSlim D₂) (hnt : HasNonTorsionUnit divB₁) {X Y : Model Φ₁ B₁ divB₁}
+    (φ : X ⟶ Y) : degFr 𝐏₂ (F.map φ) = degFr 𝐏₁ φ :=
+  degFr_map_eq_of_typeCorresp F (typeCorresp hD₁ hB₁ hD₂ hB₂ F) hD hnt φ
 
 end Degree
 

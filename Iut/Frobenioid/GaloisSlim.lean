@@ -88,14 +88,6 @@ lemma proj_mk {N : OpenNormalSubgroup G} (K : OrbitObj G)
 
 section Slim
 
-variable [CompactSpace G] [TotallyDisconnectedSpace G] [T2Space G]
-
-omit [T2Space G] in
-/-- In a profinite group, every open set containing `1` contains an open normal subgroup. -/
-lemma exists_ons_le {U : Set G} (hU : IsOpen U) (h1 : (1 : G) ∈ U) :
-    ∃ N : OpenNormalSubgroup G, (N : Set G) ⊆ U :=
-  ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hU h1
-
 variable (A : OrbitObj G) (η : Over.forget A ≅ Over.forget A)
 
 /-- `N ≤ H` as an object of `B(G)⁰_{G/H}` via the projection. -/
@@ -107,13 +99,13 @@ noncomputable def overN (N : OpenNormalSubgroup G) (hN : (N.toSubgroup : Subgrou
 noncomputable def mN (N : OpenNormalSubgroup G) (hN : (N.toSubgroup : Subgroup G) ≤ A.H) : G :=
   ((η.hom.app (overN A N hN)).toFun (QuotientGroup.mk 1)).out
 
-omit [IsTopologicalGroup G] [CompactSpace G] [TotallyDisconnectedSpace G] [T2Space G] in
+omit [IsTopologicalGroup G] in
 lemma app_mk (N : OpenNormalSubgroup G) (hN : (N.toSubgroup : Subgroup G) ≤ A.H) (g : G) :
     (η.hom.app (overN A N hN)).toFun (QuotientGroup.mk g) =
       QuotientGroup.mk (g * mN A η N hN) :=
   OrbitHom.apply_mk_of_eq _ (QuotientGroup.out_eq' _).symm g
 
-omit [IsTopologicalGroup G] [CompactSpace G] [TotallyDisconnectedSpace G] [T2Space G] in
+omit [IsTopologicalGroup G] in
 /-- Compatibility of the `m_N` along projections. -/
 lemma mN_compat {N N' : OpenNormalSubgroup G} (hN : (N.toSubgroup : Subgroup G) ≤ A.H)
     (hN' : (N'.toSubgroup : Subgroup G) ≤ A.H) (hle : (N'.toSubgroup : Subgroup G) ≤ N) :
@@ -133,7 +125,7 @@ lemma mN_compat {N N' : OpenNormalSubgroup G} (hN : (N.toSubgroup : Subgroup G) 
   rw [one_mul, one_mul] at this
   exact this.symm
 
-omit [IsTopologicalGroup G] [CompactSpace G] [TotallyDisconnectedSpace G] [T2Space G] in
+omit [IsTopologicalGroup G] in
 /-- The `m_N` commute with `H` modulo `N`. -/
 lemma mN_comm (N : OpenNormalSubgroup G) (hN : (N.toSubgroup : Subgroup G) ≤ A.H) {x : G}
     (hx : x ∈ A.H) :
@@ -164,7 +156,6 @@ abbrev Idx : Type u := {N : OpenNormalSubgroup G // (N.toSubgroup : Subgroup G) 
 def coset (i : Idx A) : Set G :=
   {m | (QuotientGroup.mk m : G ⧸ i.1.toSubgroup) = QuotientGroup.mk (mN A η i.1 i.2)}
 
-omit [CompactSpace G] [TotallyDisconnectedSpace G] [T2Space G] in
 lemma isClosed_coset (i : Idx A) : IsClosed (coset A η i) := by
   have hc : IsClosed ((i.1.toSubgroup : Subgroup G) : Set G) :=
     Subgroup.isClosed_of_isOpen _ i.1.isOpen
@@ -174,6 +165,14 @@ lemma isClosed_coset (i : Idx A) : IsClosed (coset A η i) := by
     rw [eq_comm, QuotientGroup.eq]
   rw [this]
   exact hc.preimage (by fun_prop)
+
+variable [CompactSpace G] [TotallyDisconnectedSpace G] [T2Space G]
+
+omit [T2Space G] in
+/-- In a profinite group, every open set containing `1` contains an open normal subgroup. -/
+lemma exists_ons_le {U : Set G} (hU : IsOpen U) (h1 : (1 : G) ∈ U) :
+    ∃ N : OpenNormalSubgroup G, (N : Set G) ⊆ U :=
+  ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hU h1
 
 omit [T2Space G] in
 /-- **A common point `m` of all cosets `m_N N`** (compactness). -/
