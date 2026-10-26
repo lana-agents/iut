@@ -321,22 +321,22 @@ local notation "𝐏₂" => toElem Φ₂ B₂ divB₂
 variable (F : Model Φ₁ B₁ divB₁ ⥤ Model Φ₂ B₂ divB₂) (hF : F.FullyFaithful)
 
 /-- `Aut_C(X) ≅ Aut_C(F X)` for a fully faithful `F`. -/
-noncomputable abbrev autEquiv (X : Model Φ₁ B₁ divB₁) : Aut X ≃* Aut (F.obj X) :=
+noncomputable abbrev autEquivFF (X : Model Φ₁ B₁ divB₁) : Aut X ≃* Aut (F.obj X) :=
   hF.autMulEquivOfFullyFaithful X
 
 variable {F}
 
 /-- The induced isomorphism `Aut_C(X)/O^×(X) ≅ Aut_C(F X)/O^×(F X)` when `F` matches the units. -/
 noncomputable def quotAutEquiv {X : Model Φ₁ B₁ divB₁}
-    (hU : ∀ a : Aut X, a ∈ unitsAut X ↔ autEquiv F hF X a ∈ unitsAut (F.obj X)) :
+    (hU : ∀ a : Aut X, a ∈ unitsAut X ↔ autEquivFF F hF X a ∈ unitsAut (F.obj X)) :
     Aut X ⧸ unitsAut X ≃* Aut (F.obj X) ⧸ unitsAut (F.obj X) :=
-  QuotientGroup.congr _ _ (autEquiv F hF X) (by
+  QuotientGroup.congr _ _ (autEquivFF F hF X) (by
     ext b
     constructor
     · rintro ⟨a, ha, rfl⟩
       exact (hU a).1 ha
     · intro hb
-      refine ⟨(autEquiv F hF X).symm b, (hU _).2 (by simpa using hb), by simp⟩)
+      refine ⟨(autEquivFF F hF X).symm b, (hU _).2 (by simpa using hb), by simp⟩)
 
 /-- **[FrdI], Corollary 5.7(iii),(iv)** (for objects of model Frobenioids): a fully faithful functor
 which matches `O^×`, maps base-identity endomorphisms of Frobenius type to such, and changes
@@ -344,12 +344,12 @@ Frobenius degrees by an automorphism `ρ` of `ℕ_{≥1}` maps a base-Frobenius 
 the base-Frobenius pair `(F ∘ σ ∘ (F_*)^{-1}, F ∘ φ ∘ ρ^{-1})` of `F(X)`. -/
 theorem isBaseFrobPair_map {X : Model Φ₁ B₁ divB₁} {σ : Aut X ⧸ unitsAut X →* Aut X}
     {φ : ℕ+ → (X ⟶ X)} (h : IsBaseFrobPair X σ φ)
-    (hU : ∀ a : Aut X, a ∈ unitsAut X ↔ autEquiv F hF X a ∈ unitsAut (F.obj X))
+    (hU : ∀ a : Aut X, a ∈ unitsAut X ↔ autEquivFF F hF X a ∈ unitsAut (F.obj X))
     (hfr : ∀ e : X ⟶ X, IsBaseIdentity 𝐏₁ e → IsFrobeniusType 𝐏₁ e →
       IsBaseIdentity 𝐏₂ (F.map e) ∧ IsFrobeniusType 𝐏₂ (F.map e))
     (ρ : ℕ+ ≃* ℕ+) (hρ : ∀ e : X ⟶ X, (F.map e).deg = ρ e.deg) :
     IsBaseFrobPair (F.obj X)
-      (((autEquiv F hF X).toMonoidHom.comp σ).comp (quotAutEquiv hF hU).symm.toMonoidHom)
+      (((autEquivFF F hF X).toMonoidHom.comp σ).comp (quotAutEquiv hF hU).symm.toMonoidHom)
       (fun n => F.map (φ (ρ.symm n))) := by
   obtain ⟨hsec, h1, hmul, hφ, hcomm⟩ := h
   refine ⟨fun q => ?_, ?_, fun m n => ?_, fun n => ⟨?_, hfr _ (hφ _).2.1 (hφ _).2.2⟩,
@@ -358,7 +358,7 @@ theorem isBaseFrobPair_map {X : Model Φ₁ B₁ divB₁} {σ : Aut X ⧸ unitsA
     simp only [MonoidHom.coe_comp, MulEquiv.coe_toMonoidHom, Function.comp_apply,
       MulEquiv.symm_apply_apply]
     have key : ∀ a : Aut X, quotAutEquiv hF hU (QuotientGroup.mk a) =
-        QuotientGroup.mk (autEquiv F hF X a) := fun a => rfl
+        QuotientGroup.mk (autEquivFF F hF X a) := fun a => rfl
     rw [← key, hsec]
   · change F.map (φ (ρ.symm 1)) = 𝟙 _
     rw [map_one, h1, F.map_id]
@@ -384,17 +384,17 @@ theorem isBaseFrobPair_map_fsm (hD₁ : IsFSMType D₁) (hB₁ : HasAllTorsion B
     [F.IsEquivalence] {X : Model Φ₁ B₁ divB₁} {σ : Aut X ⧸ unitsAut X →* Aut X}
     {φ : ℕ+ → (X ⟶ X)} (h : IsBaseFrobPair X σ φ) :
     ∃ (hU : ∀ a : Aut X, a ∈ unitsAut X ↔
-        autEquiv F (Functor.FullyFaithful.ofFullyFaithful F) X a ∈ unitsAut (F.obj X))
+        autEquivFF F (Functor.FullyFaithful.ofFullyFaithful F) X a ∈ unitsAut (F.obj X))
       (ρ : ℕ+ ≃* ℕ+),
       IsBaseFrobPair (F.obj X)
-        (((autEquiv F (Functor.FullyFaithful.ofFullyFaithful F) X).toMonoidHom.comp σ).comp
+        (((autEquivFF F (Functor.FullyFaithful.ofFullyFaithful F) X).toMonoidHom.comp σ).comp
           (quotAutEquiv (Functor.FullyFaithful.ofFullyFaithful F) hU).symm.toMonoidHom)
         (fun n => F.map (φ (ρ.symm n))) := by
   have c := typeCorresp_fsm hD₁ hB₁ hΦ₁ hG₁ hD₂ hB₂ hΦ₂ hG₂ F
   obtain ⟨-, -, -, -, -, -, -, ρ, hρ⟩ :=
     thm34_fsm_preservesFrobeniusStructure hD₁ hB₁ hΦ₁ hG₁ hD₂ hB₂ hΦ₂ hG₂ F
   have hU : ∀ a : Aut X, a ∈ unitsAut X ↔
-      autEquiv F (Functor.FullyFaithful.ofFullyFaithful F) X a ∈ unitsAut (F.obj X) := by
+      autEquivFF F (Functor.FullyFaithful.ofFullyFaithful F) X a ∈ unitsAut (F.obj X) := by
     intro a
     rw [mem_unitsAut_iff_ounits, mem_unitsAut_iff_ounits]
     exact mem_ounits_iff_fsm hD₁ hB₁ hΦ₁ hG₁ hD₂ hB₂ hΦ₂ hG₂ hS₁ hS₂ F a.hom
