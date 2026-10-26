@@ -91,9 +91,22 @@ omit [Category.{v'} D'] in
 /-- The objects over equal objects of the base. -/
 def Model.overEquivOfEq {T₁ T₂ : D} (h : T₁ = T₂) :
     (Model.over (Φ := Φ) (B := B) (divB := divB) T₁).FullSubcategory ≌
-      (Model.over (Φ := Φ) (B := B) (divB := divB) T₂).FullSubcategory := by
-  subst h
-  exact CategoryTheory.Equivalence.refl
+      (Model.over (Φ := Φ) (B := B) (divB := divB) T₂).FullSubcategory where
+  functor := ObjectProperty.lift _ (ObjectProperty.ι _) fun X => X.2.trans h
+  inverse := ObjectProperty.lift _ (ObjectProperty.ι _) fun X => X.2.trans h.symm
+  unitIso := Iso.refl _
+  counitIso := Iso.refl _
+  functor_unitIso_comp _ := ObjectProperty.hom_ext _ (Category.comp_id _)
+
+omit [Category.{v'} D'] in
+@[simp] lemma Model.overEquivOfEq_functor_obj {T₁ T₂ : D} (h : T₁ = T₂)
+    (X : (Model.over (Φ := Φ) (B := B) (divB := divB) T₁).FullSubcategory) :
+    ((Model.overEquivOfEq h).functor.obj X).obj = X.obj := rfl
+
+omit [Category.{v'} D'] in
+@[simp] lemma Model.overEquivOfEq_functor_map {T₁ T₂ : D} (h : T₁ = T₂)
+    {X Y : (Model.over (Φ := Φ) (B := B) (divB := divB) T₁).FullSubcategory} (f : X ⟶ Y) :
+    ((Model.overEquivOfEq h).functor.map f).hom = f.hom := rfl
 
 /-- `comapFunctor` on the objects over `T`. -/
 def Model.comapOver (T : D') :
@@ -149,6 +162,51 @@ def Model.comapOverEquiv :
   (Model.comapOver P hP T).asEquivalence
 
 end Comap
+
+/-! ### Functors of model Frobenioids over a fixed base -/
+
+section MapData
+
+variable {D' : Type u'} [Category.{v'} D'] {D : Type u} [Category.{v} D]
+  {Φ Φ' : DivMonoid.{w} D} {B B' : GrpOn.{w} D}
+  {divB : DivHom B Φ.toGrpOn} {divB' : DivHom B' Φ'.toGrpOn}
+  (c : ∀ A, Φ.obj A →+ Φ'.obj A)
+  (hc : ∀ {A A' : D} (f : A ⟶ A') (x : Φ.obj A'), c A (Φ.pb f x) = Φ'.pb f (c A' x))
+  (hpos : ∀ A (x : Φ.obj A), x ∈ Φ.pos A → c A x ∈ Φ'.pos A)
+  (cb : ∀ A, B.obj A →+ B'.obj A)
+  (hcb : ∀ {A A' : D} (f : A ⟶ A') (u : B.obj A'), cb A (B.pb f u) = B'.pb f (cb A' u))
+  (hdiv : ∀ A (u : B.obj A), divB'.app A (cb A u) = c A (divB.app A u))
+
+/-- **The functor of model Frobenioids induced by maps of the data** `Φ → Φ'`, `B → B'`
+(natural, positive, compatible with `Div_B`): the identity on the base, `c` on divisors and `cb`
+on rational functions (e.g. the realification, [FrdI], Proposition 5.3). -/
+def Model.mapFunctor : Model Φ B divB ⥤ Model Φ' B' divB' where
+  obj X := ⟨X.base, c _ X.α⟩
+  map {X Y} φ := Model.mk' φ.deg φ.base (c _ φ.div) (hpos _ _ φ.div_mem) (cb _ φ.u) (by
+    change (φ.deg : ℕ) • c X.base X.α + c X.base φ.div =
+      Φ'.pb φ.base (c Y.base Y.α) + divB'.app X.base (cb X.base φ.u)
+    rw [hdiv, ← hc, ← map_nsmul, ← map_add, ← map_add, φ.rel])
+  map_id X := Model.hom_ext rfl rfl (map_zero _) (map_zero _)
+  map_comp {X Y Z} φ ψ := by
+    refine Model.hom_ext rfl rfl ?_ ?_
+    · simp only [Model.mk'_div, Model.comp_div, Model.mk'_base, Model.mk'_deg, map_add,
+        map_nsmul, hc]
+    · simp only [Model.mk'_u, Model.comp_u, Model.mk'_base, Model.mk'_deg, map_add,
+        map_nsmul, hcb]
+
+variable (P : D' ⥤ D) (hP : ∀ {A B : D'} (f : A ⟶ B), IsFSM f → IsFSM (P.map f))
+
+/-- **`mapFunctor` commutes with the change of base** `comapFunctor`. -/
+theorem Model.mapFunctor_comapFunctor :
+    Model.mapFunctor (Φ := Φ.comap P hP) (Φ' := Φ'.comap P hP) (B := B.comap P hP)
+        (B' := B'.comap P hP) (divB := divB.comap P hP) (divB' := divB'.comap P hP)
+        (fun A => c (P.obj A)) (fun f x => hc (P.map f) x) (fun A x hx => hpos (P.obj A) x hx)
+        (fun A => cb (P.obj A)) (fun f u => hcb (P.map f) u) (fun A u => hdiv (P.obj A) u) ⋙
+      Model.comapFunctor P hP =
+    Model.comapFunctor P hP ⋙ Model.mapFunctor c hc hpos cb hcb hdiv :=
+  rfl
+
+end MapData
 
 /-! ### `B(Γ)⁰ ⥤ B(G)⁰` -/
 

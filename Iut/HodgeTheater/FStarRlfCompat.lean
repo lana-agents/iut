@@ -16,7 +16,9 @@ Frobenioid of [FrdI] Ex 6.3 over the one-morphism base:
 
 * `castG_eTop_symm`, `realifyU_uTop`: the divisor and rational-function components agree
   (`castG ∘ eTop⁻¹ = τ^* ∘ castDiv` and the same on `F_mod^×`, `τ = fixTopEquiv`);
-* **`modToRlfIso : modEquiv.functor ⋙ modToRlf ≅ realify ⋙ modRlfEquiv.functor`**.
+* **`modToRlfIso : modEquiv.functor ⋙ modToRlf ≅ realify ⋙ modRlfEquiv.functor`**;
+* over IUT's base `†D^⊛`: **`modToRlfStarIso : starModEquivC.functor ⋙ modToRlfStar ≅
+  realify ⋙ modRlfStarEquiv.functor`** (from `modToRlfIso` and `starModToRlfIso'`).
 -/
 
 namespace Iut
@@ -104,6 +106,15 @@ noncomputable def modToRlfIso :
           smul_zero, add_zero, map_zero, zero_add]
         erw [eqToHom_refl, (bRlfGal (Fmod D) D.Fbar).pb_id]
         exact Subtype.ext (realifyU_uTop (E := D.Fbar) φ.u))
+
+/-- **The realification `F^⊛_mod → F^⊛R_mod` over IUT's base `†D^⊛` is the realification of
+`C(F_mod)`** (IUT II Cor 4.7 (i), [FrdI] Prop 5.3):
+`starModEquivC ⋙ modToRlfStar ≅ realify ⋙ modRlfStarEquiv`. -/
+noncomputable def modToRlfStarIso :
+    (starModEquivC D).functor ⋙ modToRlfStar D ≅
+      GlobalFrobenioid.realify (Fmod D) ⋙ (modRlfStarEquiv D).functor :=
+  Functor.isoWhiskerLeft (modEquiv D).functor (starModToRlfIso' D) ≪≫
+    Functor.isoWhiskerRight (modToRlfIso D) (starRlfModEquiv D).inverse
 
 end HodgeTheater
 
