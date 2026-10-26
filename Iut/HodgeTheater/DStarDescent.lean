@@ -196,6 +196,84 @@ theorem piCK_aut_eq_conj (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIs
   calc δ = δ * (δ⁻¹ * γ) := by rw [h1, mul_one]
     _ = γ := by group
 
+/-- The covering `π₁(C̲_K) ↪ π₁(C_K)` (IUT I, Def. 3.1 (d)) as a continuous homomorphism. -/
+def piCKuToCK : D.orb.CKu.genuinePi1 →ₜ* piCK D :=
+  ⟨D.orb.pi1CKu_to_CK, D.orb.pi1CKu_to_CK_isOpenEmbedding.continuous⟩
+
+/-- **The embedding `π₁(†D^⊚) = π₁(C̲_K) ↪ π₁(C_K)` is unique up to conjugation** (the analogue
+of `piCKuToCmod_unique` one step lower; IUT I, Example 5.1 (i), [AbsTopII] Cor. 3.3 (i) via the
+self-commensuration `piCmod_selfComm`): if an open embedding `f : π₁(C̲_K) ↪ π₁(C_K)` has, after
+`π₁(C_K) ↪ π₁(C_{F_mod}) ↠ Gal(F̄/F_mod)`, the composite of the covering `piCKuToCK` conjugated by
+`g ∈ Gal(F̄/F_mod)`, then `f` is the covering followed by the automorphism `α` of `π₁(C_K)` given by
+conjugation by an element `γ ∈ π₁(C_{F_mod})` lying over `g`; `γ` is unique (`isSlim_piCmod`).
+For `g ∈ Gal(F̄/K)` such `γ` lies in `π₁(C_K) = pr⁻¹(Gal(F̄/K))` and `α` is inner; the
+identification of the image of `π₁(C_K)` with `pr⁻¹(Gal(F̄/K))` is not formalised here
+(`genuine_CF_emb` records only openness, normality and the index). -/
+theorem piCKuToCK_unique (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
+    (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F))
+    (f : D.orb.CKu.genuinePi1 →* piCK D) (hf : IsOpenEmbedding f) (g : GalG (Fmod D) D.Fbar)
+    (hg : ∀ x, piCmodPr D (piCKToCmod D (f x)) =
+      g * piCmodPr D (piCKToCmod D (piCKuToCK D x)) * g⁻¹) :
+    ∃! γ : piCmod D, piCmodPr D γ = g ∧
+      ∃ α : piCK D ≃ₜ* piCK D, (∀ y, piCKToCmod D (α y) = γ * piCKToCmod D y * γ⁻¹) ∧
+        ∀ x, f x = α (piCKuToCK D x) := by
+  have hι := isOpenEmbedding_piCKToCmod D
+  have h₀ : IsOpenEmbedding (piCKuToCK D) := D.orb.pi1CKu_to_CK_isOpenEmbedding
+  let f₁ : D.orb.CKu.genuinePi1 →ₜ* piCmod D := (piCKToCmod D).comp (piCKuToCK D)
+  let f₂ : D.orb.CKu.genuinePi1 →ₜ* piCmod D := (piCKToCmod D).comp ⟨f, hf.continuous⟩
+  have hf₁ : IsOpenEmbedding f₁ := by
+    have e : ⇑f₁ = piCKToCmod D ∘ piCKuToCK D := rfl
+    rw [e]
+    exact hι.comp h₀
+  have hf₂ : IsOpenEmbedding f₂ := by
+    have e : ⇑f₂ = piCKToCmod D ∘ f := rfl
+    rw [e]
+    exact hι.comp hf
+  have hsc := piCmod_selfComm D hDGC hj D.orb.CKu.genuinePi1 f₁ f₂ hf₁.injective
+    hf₁.isOpen_range hf₂.injective hf₂.isOpen_range g hg
+  obtain ⟨γ, hγ⟩ := hsc
+  -- `γ` lies over `g`: `g⁻¹ · pr γ` centralises the open subgroup `pr(f₁(π₁(C̲_K)))`
+  have hpr : piCmodPr D γ = g := by
+    let p : piCmod D →ₜ* GalG (Fmod D) D.Fbar := ⟨piCmodPr D, continuous_piCmodPr D⟩
+    have hp : IsOpen (Set.range p) := by
+      rw [show Set.range p = Set.univ from (piCmodPr_surjective D).range_eq]
+      exact isOpen_univ
+    have h1 : g⁻¹ * piCmodPr D γ = 1 := eq_one_of_commute_open₄
+      (isSlim_galoisGroup_numberField (Fmod D) D.Fbar) p hp
+      (U := (f₁ : D.orb.CKu.genuinePi1 →* piCmod D).range) (z := g⁻¹ * piCmodPr D γ)
+      hf₁.isOpen_range fun u hu => by
+        obtain ⟨x, rfl⟩ := hu
+        have e1 := hg x
+        have e2 : piCmodPr D (f₂ x) = piCmodPr D γ * piCmodPr D (f₁ x) * (piCmodPr D γ)⁻¹ := by
+          rw [hγ x, map_mul, map_mul, map_inv]
+        change g⁻¹ * piCmodPr D γ * p (f₁ x) = p (f₁ x) * (g⁻¹ * piCmodPr D γ)
+        have e : g * piCmodPr D (f₁ x) * g⁻¹ =
+            piCmodPr D γ * piCmodPr D (f₁ x) * (piCmodPr D γ)⁻¹ := e1.symm.trans e2
+        calc g⁻¹ * piCmodPr D γ * piCmodPr D (f₁ x)
+            = g⁻¹ * (piCmodPr D γ * piCmodPr D (f₁ x) * (piCmodPr D γ)⁻¹) * piCmodPr D γ := by
+              group
+          _ = g⁻¹ * (g * piCmodPr D (f₁ x) * g⁻¹) * piCmodPr D γ := by rw [e]
+          _ = piCmodPr D (f₁ x) * (g⁻¹ * piCmodPr D γ) := by group
+    calc piCmodPr D γ = g * (g⁻¹ * piCmodPr D γ) := by group
+      _ = g := by rw [h1, mul_one]
+  obtain ⟨α, hα⟩ := piCK_conj_aut D γ
+  refine ⟨γ, ⟨hpr, α, hα, fun x => hι.injective ?_⟩, fun δ ⟨_, β, hβ, hfβ⟩ => ?_⟩
+  · rw [hα]
+    exact hγ x
+  -- uniqueness: `δ⁻¹ γ` centralises the open subgroup `f₁(π₁(C̲_K))` of the slim `π₁(C_{F_mod})`
+  have hδ : ∀ x, f₂ x = δ * f₁ x * δ⁻¹ := fun x => by
+    change piCKToCmod D (f x) = δ * piCKToCmod D (piCKuToCK D x) * δ⁻¹
+    rw [hfβ x, hβ]
+  have h1 : δ⁻¹ * γ = 1 := eq_one_of_commute_open₄ (isSlim_piCmod D) f₁ hf₁.isOpen_range
+    (U := ⊤) isOpen_univ fun x _ => by
+      have e : δ * f₁ x * δ⁻¹ = γ * f₁ x * γ⁻¹ := (hδ x).symm.trans (hγ x)
+      calc δ⁻¹ * γ * f₁ x
+          = δ⁻¹ * (γ * f₁ x * γ⁻¹) * γ := by group
+        _ = δ⁻¹ * (δ * f₁ x * δ⁻¹) * γ := by rw [e]
+        _ = f₁ x * (δ⁻¹ * γ) := by group
+  calc δ = δ * (δ⁻¹ * γ) := by rw [h1, mul_one]
+    _ = γ := by group
+
 /-- The continuous automorphisms of a topological group, as a subgroup of `MulAut`. -/
 def contAut (G : Type*) [Group G] [TopologicalSpace G] : Subgroup (MulAut G) where
   carrier := {α | Continuous α ∧ Continuous α.symm}

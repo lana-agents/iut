@@ -374,6 +374,7 @@ import Iut.Reconstruction.Cusp.GaloisConj
 import Iut.Reconstruction.Cusp.HemiCoreBaseChange
 import Iut.Reconstruction.Cusp.HemiCoreRing
 import Iut.Reconstruction.Cusp.HemiCuspDecomp
+import Iut.Reconstruction.Cusp.HemiCuspDecompC
 import Iut.Reconstruction.Cusp.HemiCuspidal
 import Iut.Reconstruction.Cusp.HemiGenuine
 import Iut.Reconstruction.Cusp.HemiGenuineField
