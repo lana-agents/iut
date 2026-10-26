@@ -288,8 +288,11 @@ import Iut.Frobenioid.SaturationGen
 import Iut.Frobenioid.SaturationTransport
 import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered
+import Iut.Frobenioid.Tempered.BaseFrob
 import Iut.Frobenioid.Tempered.BaseRecon
 import Iut.Frobenioid.Tempered.Birat
+import Iut.Frobenioid.Tempered.FracPair
+import Iut.Frobenioid.Tempered.PiTpONS
 import Iut.Frobenioid.Tempered.Thm34Temp
 import Iut.Frobenioid.TemperedBase
 import Iut.Frobenioid.Theoreticity
