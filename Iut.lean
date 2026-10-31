@@ -442,6 +442,7 @@ import Iut.Reconstruction.Thm19.CuspSync
 import Iut.Reconstruction.Thm19.CycloBridge
 import Iut.Reconstruction.Thm19.CycloIso
 import Iut.Reconstruction.Thm19.DecompIso
+import Iut.Reconstruction.Thm19.LimCongr
 import Iut.Reconstruction.Thm19.NFAdditive
 import Iut.Reconstruction.Thm19.NFColimit
 import Iut.Reconstruction.Thm19.NFDecomp

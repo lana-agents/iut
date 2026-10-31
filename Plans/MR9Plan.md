@@ -899,3 +899,43 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `jacDivFree_numberField`), `range_decompToPi_eq_map_decompH`, `piBridge_mem_arithDecomp_iff`,
     **`placeOfF_eq_of_arithDecomp_le_conj`** (the same for curves-jacobian's `arithDecomp` in
     `arithmeticExt`).
+  * **Generic tools for item 3 (new file `Thm19/LimCongr.lean`):** `limLift`, **`mulEquivOfCocones`**
+    (`lim→ F ≃* lim→ G` over different directed index sets from two compatible cocones that are
+    mutually inverse on generators; no monotone map of index sets needed), and
+    **`ContH1.map_conj_eq_self`** (inner automorphisms act trivially on `H¹`; needed because the
+    Belyi lifts of [AbsTopII] Cor 3.8 and the bridges are only unique up to conjugation).
+* Hand-off 2026-10-31 (MR9 track agent, session h, lead christian-41): commits `CycloIso`,
+  `CycloBridge`, `PointDecomp` (+ shell-lint allowlist for 9 curves-jacobian definition-structures
+  now in the closure), `LimCongr` + this hand-off, pushed via `~/iut-push.sh` (hashes in
+  ~/session2-status.md). Worktree `~/mr8-iut`, branch `mr9-g`, no pin change.
+  **Decisions recorded:** `CKStrictSemiAbs` stays a named literature debt (elasticity of `G_K`,
+  separate project); MR8's item 8 (`Π_{X_K} ⊆ Π_{C_K}`, IUT I Rem 3.1.2 (i), l.4155–4168: `Δ_X` by
+  the explicit algorithm of [EtTh] §2 / [AbsAnab] Lemma 1.1.4 (i), and the decomposition groups at
+  the nonzero cusps, whose image in `Π_{C_K}/Δ_X` is that of `Π_{X_K}`) is step 5 below.
+  Done this session: item 2 (cyclotome over `ψ`, genus `≥ 1`), item 1 for rational points of `U`.
+  Next, in order:
+  1. **Item 1 for closed points** (needed by item 3): `D_y ⊆ γ D_x γ⁻¹ ⇒ x = y` for closed points of
+     `U` over a number field. Route: pass to `K₁ ⊇ κ(x), κ(y)`; in the Galois model `piRes :
+     Π_{U_{K₁}} ↪ Π_U` (cj `LocAn/ThmCConstExt`, image `pr⁻¹(G_{K₁})`) and a `RatPoint` of
+     `constExt K₁ D` at `W`, then [LocAn] Thm C for `constExt K₁ D`. Obstacle: cj's generic
+     `placeOfF_eq_of_ratSectionGk_conj` needs `hdivJ`/`hperf`/`hfin`/`hg` for
+     `baseChange (constExt K₁ D)` (a `GaloisData` over `kbar K₁ Ω`), known only for
+     `baseChange (curveGaloisData k hτ)`; either transport them (Pic/`weilDual` along
+     `F(baseChange (constExt K₁ D)) ≅ F(baseChange D)` — `StageJac.picStageEquiv` does the `Pic`
+     part) or use the arithmetic side with `HypCurve.bc K₁` (cj `Cusp/HypBaseChange`; then the
+     `_curve` versions apply, but `arithmeticExt (C.bc K₁) ≅ pr⁻¹(G_{K₁}) ⊆ arithmeticExt C` is not
+     in cj). `hKF` for the stage `(K₁, t)` is `isKummerFaithfulJac_stage_curve_numberField`.
+  2. **Item 3 (stages over `ψ`)**, using 1: (a) cofinality of stages `(K₁, t₀)` with `t₀ ∈ D.L`
+     (coordinate over `k`; take `t₀` regular exactly where `t` and the coefficients of the minimal
+     polynomial of `t′` over `L` are, iterating `exists_stage_ge`/`exists_smul_add_mem_imp`);
+     (b) `stage D K₁ t₀ = constExt K₁ (newData D t₀)` and `newData (curveGaloisData k hτ) (coordT τ₀)
+     = curveGaloisData k hτ₀` (both `H` are fixing subgroups of the same `L`); (c) `chartOne τ₀ ≤
+     chartOne τ ↔ t ∈ chartRing k t₀` (`mem_chartOne_iff`); (d) stage isos from `BelyiCuspSpec` (d)
+     through `piBridge` of `subCurve C (chartOne τ₀)`, restricted to `pr⁻¹(G_{K₁})` via `piRes`,
+     coefficients from `cycloIso` of `U` (compatible because the lifts lie over `Φ` via
+     `cor38Fill`); compatibility with the transitions up to conjugation (`map_conj_eq_self`), the
+     image open `U'_X₂` identified by 1 + `map_ptDecomps_eq'`; (e) `mulEquivOfCocones`.
+  3. Items 4–5 as in the session-g hand-off (residues/`P_V`/tests transport → `recTriple ≅
+     recTriple′` → `ringEquivOfIso`; `Π_{X_K} ⊆ Π_{C_K}`; close `CKSemiAbsConj`).
+  Debts unchanged: `hDGC` (MR7), `φ`/`ResCuspInput` of `SurfaceIndex.lean`, `JacDivFree` outside
+  number fields / `p`-adic fields, `CKStrictSemiAbs`. New restriction: `cycloIso` needs genus `≥ 1`.
