@@ -878,3 +878,24 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     and all its stages (same compactification); genus `0` would need the passage to a cover of
     genus `≥ 2` of Thm 1.9 (b).
 
+  * **Dependency found (session h): item 3 needs item 1.** The stage isomorphisms come from
+    `BelyiCuspSpec` (d) (`Π_{U_X} ≃ Π_{U'_X₂}` lifting `Φ`), which only asserts that *some*
+    `U'_X₂ ⊆ U'` exists. For the colimit one needs the assignment `U_X ↦ U'_X₂` to be monotone
+    (transition maps), i.e. `U' ∖ U'_X₂` must be *the* set of closed points whose decomposition
+    groups are the `Φ`-images of those of `U ∖ U_X`; this is exactly the injectivity "distinct
+    closed points have non-conjugate decomposition groups" (item 1) together with
+    `map_ptDecomps_eq'`. Constant-field extensions are group-theoretic already in the Galois
+    model: curves-jacobian `piRes : Π_{U_K} ↪ Π_U` with image `pr⁻¹(G_K)` (`LocAn/ThmCConstExt`),
+    and every stage is dominated by one of the form `(U_X)_{K₁}` with `U_X ⊆ U` over `k`.
+  * **Item 1, rational points (new file `Thm19/PointDecomp.lean`).** [GalSect] Thm 1.3 (i)
+    (`Galois Sections.txt` l.265–266, "follows … formally from [Mzk1], Theorem C", l.280–281;
+    [AbsTopIII] l.3547 identifies NF-points with conjugacy classes of decomposition groups):
+    `piToGk_ratSectionGk`, `ratSectionGk_mem_range`, `exists_ratSectionGk_eq` (the section of a
+    rational point of `U` has image `D_x`), `exists_conj_of_forall_exists'` (group theory, copy of
+    curves-jacobian `SectionBridge.exists_conj_of_forall_exists`, whose module is outside the
+    closure), **`placeOfF_eq_of_range_decompToPi_le_conj`** (`D_y ⊆ γ D_x γ⁻¹ ⇒ x = y` for
+    `x, y ∈ U(k)`, number field, compactification of genus `≠ 0` with a rational point; via
+    curves-jacobian [LocAn] Thm C `placeOfF_eq_of_ratSectionGk_conj_curve` and
+    `jacDivFree_numberField`), `range_decompToPi_eq_map_decompH`, `piBridge_mem_arithDecomp_iff`,
+    **`placeOfF_eq_of_arithDecomp_le_conj`** (the same for curves-jacobian's `arithDecomp` in
+    `arithmeticExt`).

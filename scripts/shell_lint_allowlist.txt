@@ -1690,3 +1690,15 @@ CurvesJacobian.Cusp.OpenInjOver.toG_hom	def
 # mod-l^k cyclotomic characters have no finite exponent on open subgroups"; predicate class with instances (number
 # fields at l = 3, cycNoExponent_padic); a definition, not a shell.
 CurvesJacobian.CuspChar.CycNoExponent.exists_ne	def
+# 2026-10-31 (MR9 session h): curves-jacobian structures reached through `LocAn.DeltaXEquiv` (imported by
+# Thm19/CycloIso.lean). All are defining conditions of notions: `IsArithRep` (Kummer representative of a divisor
+# mod n), `IsGeomAut` (normalises H, fixes k̄), `OverGk` (endomorphism of Π_X over G_k), `IsBilin` (bilinearity).
+CurvesJacobian.LocAn.ArithChern.IsArithRep.loc	def
+CurvesJacobian.LocAn.ArithChern.IsArithRep.toKummerInv	def
+CurvesJacobian.LocAn.JacInput.IsGeomAut.conj_inv_mem	def
+CurvesJacobian.LocAn.JacInput.IsGeomAut.conj_mem	def
+CurvesJacobian.LocAn.JacInput.IsGeomAut.fix_kbar	def
+CurvesJacobian.LocAn.SemiAb.OverGk.continuous_toHom	def
+CurvesJacobian.LocAn.SemiAb.OverGk.piXToGk_toHom	def
+CurvesJacobian.LocAn.ThetaClass.IsBilin.mul_left	def
+CurvesJacobian.LocAn.ThetaClass.IsBilin.mul_right	def
