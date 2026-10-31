@@ -70,6 +70,11 @@ def GkStable : Prop :=
   ∀ (ρ : Gk k Ω) (c : K), ∃ c' : K,
     ρ ⟨algebraMap K Ω c, algebraMap_mem_kbar c⟩ = ⟨algebraMap K Ω c', algebraMap_mem_kbar c'⟩
 
+variable {K} in
+lemma GkLiftsTo.mono {K' : IntermediateField k Ω} [Algebra.IsAlgebraic k K'] (hle : K ≤ K')
+    {A : ValuationSubring Ω} (h : GkLiftsTo D K A) : GkLiftsTo D K' A :=
+  fun g hg => h g fun c => hg ⟨c, hle c.2⟩
+
 /-! ### Places with `G_K ⊆ pr(D_A)` are rational points of `U_K` -/
 
 /-- **The residues of `F_K` at `A` lie in `K`** if `G_K ⊆ pr(D_A)`. -/
@@ -300,8 +305,10 @@ stable under `G_k`: if `A ⊇ k`, `κ(A)` is algebraic over `k` and the residue 
 theorem exists_gkLiftsTo (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k Ω c ∈ A)
     (hint : letI := resAlg A hk; Algebra.IsIntegral k (ResidueField A))
     (hfin : letI := resAlg A hk;
-      FiniteDimensional k (Decomposition.pointField (F D) A hk (fun _ => rfl))) :
-    ∃ (K : IntermediateField k Ω) (_ : FiniteDimensional k K), GkStable K ∧ GkLiftsTo D K A := by
+      FiniteDimensional k (Decomposition.pointField (F D) A hk (fun _ => rfl)))
+    (K' : IntermediateField k Ω) [FiniteDimensional k K'] :
+    ∃ (K : IntermediateField k Ω) (_ : FiniteDimensional k K), K' ≤ K ∧ GkStable K ∧
+      GkLiftsTo D K A := by
   letI : Algebra k (ResidueField A) := resAlg A hk
   haveI : Algebra.IsIntegral k (ResidueField A) := hint
   have hkres : ∀ c : k, residue A ⟨algebraMap k Ω c, hk c⟩ = algebraMap k (ResidueField A) c :=
@@ -312,7 +319,16 @@ theorem exists_gkLiftsTo (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k
   set P₀ : IntermediateField k (kbar k Ω) := P.map (e.symm : ResidueField A →ₐ[k] kbar k Ω)
   haveI : FiniteDimensional k P₀ :=
     LinearEquiv.finiteDimensional (IntermediateField.equivMap P _).toLinearEquiv
-  set N : IntermediateField k (kbar k Ω) := IntermediateField.normalClosure k P₀ (kbar k Ω)
+  set K'' : IntermediateField k (kbar k Ω) := K'.comap (kbar k Ω).val
+  haveI : FiniteDimensional k K'' := by
+    let ι : K'' →ₗ[k] K' :=
+      { toFun x := ⟨(x : kbar k Ω), x.2⟩
+        map_add' _ _ := rfl
+        map_smul' _ _ := rfl }
+    exact FiniteDimensional.of_injective ι fun x y h => Subtype.ext (Subtype.ext
+      (congrArg (fun z : K' => (z : Ω)) h))
+  set N : IntermediateField k (kbar k Ω) :=
+    IntermediateField.normalClosure k ↥(P₀ ⊔ K'') (kbar k Ω)
   haveI : FiniteDimensional k N := inferInstance
   haveI : Normal k N := inferInstance
   set K : IntermediateField k Ω := N.map (kbar k Ω).val
@@ -326,7 +342,11 @@ theorem exists_gkLiftsTo (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k
     · exact fun hy => ⟨y, hy, rfl⟩
   have hKN : ∀ c : K, (⟨algebraMap K Ω c, algebraMap_mem_kbar c⟩ : kbar k Ω) ∈ N := fun c =>
     (hmemK ⟨_, algebraMap_mem_kbar c⟩).1 c.2
-  refine ⟨K, hKfin, fun ρ c => ?_, fun g hg => ?_⟩
+  refine ⟨K, hKfin, fun x hx => ?_, fun ρ c => ?_, fun g hg => ?_⟩
+  · -- `K' ⊆ K`
+    have hxk : x ∈ kbar k Ω := algebraMap_mem_kbar (K := K') ⟨x, hx⟩
+    exact (hmemK ⟨x, hxk⟩).2 (IntermediateField.le_normalClosure (P₀ ⊔ K'')
+      (le_sup_right (a := P₀) (show (⟨x, hxk⟩ : kbar k Ω) ∈ K'' from hx)))
   · -- stability: `N` is normal over `k`
     have hρ := (IntermediateField.normal_iff_forall_map_le' (F := k) (K := N)).1 inferInstance ρ
     have h1 : ρ ⟨algebraMap K Ω c, algebraMap_mem_kbar c⟩ ∈ N := hρ ⟨_, hKN c, rfl⟩
@@ -339,7 +359,8 @@ theorem exists_gkLiftsTo (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k
       (e.symm.trans (g.trans e)) fun a ha => by
         have hP : residue A ⟨_, ha⟩ ∈ P := ⟨a, ha, rfl⟩
         have hP₀ : e.symm (residue A ⟨_, ha⟩) ∈ N := by
-          have := IntermediateField.le_normalClosure P₀ ⟨_, hP, rfl⟩
+          have := IntermediateField.le_normalClosure (P₀ ⊔ K'')
+            (le_sup_left (b := K'') (show e.symm (residue A ⟨_, ha⟩) ∈ P₀ from ⟨_, hP, rfl⟩))
           exact this
         rw [AlgEquiv.trans_apply, AlgEquiv.trans_apply, hgN _ hP₀, AlgEquiv.apply_symm_apply]
     refine ⟨σ, AlgEquiv.ext fun y => (kbarResidue A hk).injective ?_⟩
@@ -496,5 +517,241 @@ theorem mem_iff_of_arithDecomp_le_conj (σ₀ : Spec (CommRingCat.of K) ⟶ C.Xb
   rw [he, map_mul, map_mul, map_inv, ContinuousMulEquiv.apply_symm_apply]
 
 end Arith
+
+/-! ### Closed-point data of places of `Ω` nontrivial on `F` -/
+
+section PointData
+
+/-- **Residue fields under algebraic extensions** (the argument of curves-jacobian
+`SectionBridge.isIntegral_residueField_of_rational`, whose module is not in the import closure
+here): if `Ω` is algebraic over `E` and every residue of `E ∩ A` comes from `k`, then `κ(A)` is
+algebraic over `k`. -/
+theorem isIntegral_residueField_of_rational' {Ω E k : Type u} [Field Ω] [Field E] [Field k]
+    [Algebra E Ω] [Algebra.IsAlgebraic E Ω] (A : ValuationSubring Ω) [Algebra k (ResidueField A)]
+    (hrat : ∀ (a : E) (ha : algebraMap E Ω a ∈ A),
+      ∃ c : k, residue A ⟨_, ha⟩ = algebraMap k (ResidueField A) c) :
+    Algebra.IsIntegral k (ResidueField A) := by
+  classical
+  refine ⟨fun y ↦ ?_⟩
+  obtain ⟨b, rfl⟩ := residue_surjective y
+  obtain ⟨p, hp0, hpb⟩ := Algebra.IsAlgebraic.isAlgebraic (R := E) (b : Ω)
+  obtain ⟨i₀, hi₀, hmax⟩ := p.support.exists_max_image
+    (fun i ↦ A.valuation (algebraMap E Ω (p.coeff i))) (Polynomial.nonempty_support_iff.2 hp0)
+  set c₀ : E := p.coeff i₀ with hc₀def
+  have hc₀ : c₀ ≠ 0 := Polynomial.mem_support_iff.1 hi₀
+  have hv₀ : A.valuation (algebraMap E Ω c₀) ≠ 0 := by
+    rw [Ne, Valuation.zero_iff, map_eq_zero_iff _ (algebraMap E Ω).injective]
+    exact hc₀
+  have hd : ∀ i, algebraMap E Ω (p.coeff i / c₀) ∈ A := by
+    intro i
+    rw [← A.valuation_le_one_iff, map_div₀, map_div₀]
+    by_cases hi : i ∈ p.support
+    · exact (div_le_one₀ (zero_lt_iff.2 hv₀)).2 (hmax i hi)
+    · rw [Polynomial.notMem_support_iff.1 hi, map_zero, map_zero, zero_div]
+      exact zero_le
+  choose c hc using fun i ↦ hrat (p.coeff i / c₀) (hd i)
+  let r : Polynomial k := ∑ i ∈ p.support, Polynomial.monomial i (c i)
+  have hr0 : r ≠ 0 := by
+    intro h
+    have h1 : r.coeff i₀ = c i₀ := by
+      simp only [r, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial]
+      rw [Finset.sum_eq_single i₀ (fun j _ hj ↦ if_neg hj) (fun h ↦ absurd hi₀ h), if_pos rfl]
+    rw [h, Polynomial.coeff_zero] at h1
+    have h2 := hc i₀
+    rw [← h1, map_zero] at h2
+    have h3 : (⟨algebraMap E Ω (p.coeff i₀ / c₀), hd i₀⟩ : A) = 1 := by
+      apply Subtype.ext
+      change algebraMap E Ω (p.coeff i₀ / c₀) = 1
+      rw [← hc₀def, div_self hc₀, map_one]
+    rw [h3, map_one] at h2
+    exact one_ne_zero h2
+  refine (show IsAlgebraic k (residue A b) from ⟨r, hr0, ?_⟩).isIntegral
+  have hsum : (∑ i ∈ p.support, (⟨algebraMap E Ω (p.coeff i / c₀), hd i⟩ : A) * b ^ i) = 0 := by
+    apply Subtype.ext
+    simp only [AddSubmonoidClass.coe_finsetSum, ZeroMemClass.coe_zero]
+    change ∑ i ∈ p.support, algebraMap E Ω (p.coeff i / c₀) * (b : Ω) ^ i = 0
+    have : (Polynomial.aeval (b : Ω) p) =
+        ∑ i ∈ p.support, algebraMap E Ω (p.coeff i) * (b : Ω) ^ i := by
+      rw [Polynomial.aeval_def, Polynomial.eval₂_eq_sum, Polynomial.sum_def]
+    have h2 : ∑ i ∈ p.support, algebraMap E Ω (p.coeff i / c₀) * (b : Ω) ^ i =
+        (Polynomial.aeval (b : Ω) p) * (algebraMap E Ω c₀)⁻¹ := by
+      rw [this, Finset.sum_mul]
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      rw [map_div₀]
+      ring
+    rw [h2, hpb, zero_mul]
+  have := congrArg (residue A) hsum
+  rw [map_zero, map_sum] at this
+  rw [← this, map_sum]
+  simp only [Polynomial.aeval_monomial, map_mul, map_pow, hc]
+
+variable {k Ω : Type u} [Field k] [Field Ω] [Algebra k Ω] {t : Ω}
+  {D : Pi1.Orbifold.GaloisData k t} [CharZero k] [IsGalois (K₀ k t) Ω] [IsAlgClosed Ω]
+
+attribute [local instance] CurvesJacobian.isFunctionField_F
+
+variable (D) in
+/-- **The place `A ∩ F` of `F`** below a place `A ⊇ k` of `Ω` nontrivial on `F`. -/
+def placeBelow (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k Ω c ∈ A)
+    (hne : ∃ f : F D, (f : Ω) ∉ A) : WeilCurves.FunctionField.Place k (F D) :=
+  ⟨A.comap (algebraMap (F D) Ω), fun h => by
+      obtain ⟨f, hf⟩ := hne
+      have : f ∈ A.comap (algebraMap (F D) Ω) := h ▸ ValuationSubring.mem_top _
+      exact hf this,
+    fun c => by
+      rw [ValuationSubring.mem_comap, ← IsScalarTower.algebraMap_apply]
+      exact hk c⟩
+
+variable (D) in
+/-- `O_{A ∩ F} → κ(A)`. -/
+def resBelow (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k Ω c ∈ A)
+    (hne : ∃ f : F D, (f : Ω) ∉ A) : (placeBelow D A hk hne).1 →+* ResidueField A :=
+  (residue A).comp ((algebraMap (F D) Ω).restrict (placeBelow D A hk hne).1 A fun _ hx => hx)
+
+instance isLocalHom_resBelow (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k Ω c ∈ A)
+    (hne : ∃ f : F D, (f : Ω) ∉ A) : IsLocalHom (resBelow D A hk hne) := by
+  refine ⟨fun a ha => ?_⟩
+  by_contra hna
+  have h1 : (a : F D) ∈ (placeBelow D A hk hne).1.nonunits :=
+    ValuationSubring.mem_nonunits_iff_exists_mem_maximalIdeal.2 ⟨a.2, hna⟩
+  rw [ValuationSubring.mem_nonunits_iff_or] at h1
+  have h2 : algebraMap (F D) Ω (a : F D) ∈ A.nonunits := by
+    rw [ValuationSubring.mem_nonunits_iff_or]
+    rcases h1 with h | h
+    · left
+      rw [h, map_zero]
+    · right
+      intro h'
+      apply h
+      change algebraMap (F D) Ω (a : F D)⁻¹ ∈ A
+      rwa [map_inv₀]
+  obtain ⟨hA, hmA⟩ := ValuationSubring.mem_nonunits_iff_exists_mem_maximalIdeal.1 h2
+  apply ha.ne_zero
+  exact (residue_eq_zero_iff _).2 hmA
+
+/-- **`κ(A ∩ F)` is finite over `k`** (it is the image of the residue field of the place
+`A ∩ F` of the function field `F`, weil-curves). -/
+theorem finiteDimensional_pointField (A : ValuationSubring Ω)
+    (hk : ∀ c : k, algebraMap k Ω c ∈ A) (hne : ∃ f : F D, (f : Ω) ∉ A) :
+    letI := resAlg A hk
+    FiniteDimensional k (Decomposition.pointField (F D) A hk (fun _ => rfl)) := by
+  letI := resAlg A hk
+  set P := placeBelow D A hk hne
+  let φ : P.ResidueField →ₐ[k] ResidueField A :=
+    { IsLocalRing.ResidueField.lift (resBelow D A hk hne) with
+      commutes' := fun c => IsLocalRing.ResidueField.lift_residue_apply _ _ }
+  have hle : Subalgebra.toSubmodule
+      (Decomposition.pointField (F D) A hk (fun _ => rfl)).toSubalgebra ≤
+      LinearMap.range φ.toLinearMap := by
+    rintro _ ⟨a, ha, rfl⟩
+    exact ⟨P.residue ⟨a, ha⟩,
+      IsLocalRing.ResidueField.lift_residue_apply (resBelow D A hk hne) ⟨a, ha⟩⟩
+  haveI : FiniteDimensional k (LinearMap.range φ.toLinearMap) := inferInstance
+  exact Submodule.finiteDimensional_of_le hle
+
+/-- **`κ(A)` is algebraic over `k`** for a place `A ⊇ k` of `Ω` nontrivial on `F` (algebraic over
+the finite extension `κ(A ∩ F)` of `k`). -/
+theorem isIntegral_residueField_of_ne (A : ValuationSubring Ω)
+    (hk : ∀ c : k, algebraMap k Ω c ∈ A) (hne : ∃ f : F D, (f : Ω) ∉ A) :
+    letI := resAlg A hk; Algebra.IsIntegral k (ResidueField A) := by
+  letI := resAlg A hk
+  set P := Decomposition.pointField (F D) A hk (fun _ => rfl)
+  haveI : FiniteDimensional k P := finiteDimensional_pointField A hk hne
+  haveI : Algebra.IsAlgebraic (F D) Ω := Algebra.IsAlgebraic.tower_top (K := K₀ k t) (F D)
+  haveI : Algebra.IsIntegral P (ResidueField A) :=
+    isIntegral_residueField_of_rational' (E := F D) A fun a ha => ⟨⟨_, a, ha, rfl⟩, rfl⟩
+  exact Algebra.IsIntegral.trans P
+
+/-- **Every place `A ⊇ k` of `Ω` nontrivial on `F` satisfies `G_K ⊆ pr(D_A)`** for a finite
+extension `K` of `k` stable under `G_k` (the closed-point data of `exists_gkLiftsTo`). -/
+theorem exists_gkLiftsTo_of_ne (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k Ω c ∈ A)
+    (hne : ∃ f : F D, (f : Ω) ∉ A) (K' : IntermediateField k Ω) [FiniteDimensional k K'] :
+    ∃ (K : IntermediateField k Ω) (_ : FiniteDimensional k K), K' ≤ K ∧ GkStable K ∧
+      GkLiftsTo D K A :=
+  exists_gkLiftsTo A hk (isIntegral_residueField_of_ne A hk hne)
+    (finiteDimensional_pointField A hk hne) K'
+
+end PointData
+
+/-! ### Closed points, final form -/
+
+section Final
+
+variable {k : Type u} [Field k] [CharZero k] {X : Scheme.{u}} [X.Over (Spec (.of k))]
+  [IsCurveOver k X] [IsIntegral X] {τ : X.functionField} {hτ : Transcendental k τ}
+  [IsGalois (K₀ k (coordT τ)) (FFClosure X)] [CharZero (FFClosure X)]
+
+set_option synthInstance.maxHeartbeats 400000 in
+-- `Inv` on the quotient group `Π_U` is found slowly
+/-- **[GalSect] Thm 1.3 (i) for closed points of `U`** (Galois model, number field `k`, `X`
+proper of genus `≠ 0` with a rational point): let `A`, `B` be places of `Ω` containing `k` and
+`t`, nontrivial on the function field `F` (i.e. above closed points of `U`). If `D_B ⊆ γ D_A γ⁻¹`
+for some `γ ∈ Π_U`, then `A ∩ F = B ∩ F`: `A` and `B` lie over the same closed point of `U`. -/
+theorem mem_iff_of_decomp_le_conj [NumberField k]
+    (σ : Spec (CommRingCat.of k) ⟶ X)
+    (hσ : σ ≫ (X ↘ Spec (CommRingCat.of k)) = 𝟙 (Spec (CommRingCat.of k)))
+    (hg : CurvesJacobian.curveGenus k X ≠ 0)
+    {A B : ValuationSubring (FFClosure X)}
+    (hkA : ∀ c : k, algebraMap k (FFClosure X) c ∈ A)
+    (hkB : ∀ c : k, algebraMap k (FFClosure X) c ∈ B)
+    (hneA : ∃ f : F (curveGaloisData k hτ), (f : FFClosure X) ∉ A)
+    (hneB : ∃ f : F (curveGaloisData k hτ), (f : FFClosure X) ∉ B)
+    (htA : coordT τ ∈ A) (htB : coordT τ ∈ B) (γ : Pi (curveGaloisData k hτ))
+    (h : ∀ d ∈ (decompToPi (curveGaloisData k hτ) B).range,
+      ∃ d' ∈ (decompToPi (curveGaloisData k hτ) A).range, d = γ * d' * γ⁻¹)
+    (f : F (curveGaloisData k hτ)) : (f : FFClosure X) ∈ A ↔ (f : FFClosure X) ∈ B := by
+  obtain ⟨K₁, _, -, -, hK₁⟩ := exists_gkLiftsTo_of_ne A hkA hneA ⊥
+  obtain ⟨K, _, hle, hKst, hKB⟩ := exists_gkLiftsTo_of_ne B hkB hneB K₁
+  exact mem_iff_of_range_decompToPi_le_conj σ hσ hg hKst hkA hkB
+    (isIntegral_residueField_of_ne A hkA hneA) (isIntegral_residueField_of_ne B hkB hneB)
+    (hK₁.mono hle) hKB htA htB γ h f
+
+end Final
+
+/-! ### Closed points, arithmetic final form -/
+
+section ArithFinal
+
+variable {K : Type u} [Field K] [NumberField K] {Ω : Type u} [Field Ω] [Algebra K Ω]
+  [IsAlgClosed Ω] [Algebra.IsAlgebraic K Ω] [CharZero Ω] {C : HypCurve K}
+  [hc : Fact (C.U : Set C.Xbar)ᶜ.Nonempty]
+
+attribute [local instance] isIntegral_Xbar nonempty_U
+
+variable {τ : C.Xbar.functionField} (hτ : Transcendental K τ)
+  [IsGalois (K₀ K (coordT τ)) (FFClosure C.Xbar)] (hU : C.U = chartOne K C.Xbar τ)
+  [CharZero (FFClosure C.Xbar)]
+
+set_option synthInstance.maxHeartbeats 400000 in
+-- `Inv` on the quotient group `Π_U` is found slowly
+include hU in
+/-- **[GalSect] Thm 1.3 (i) for closed points of `U`, arithmetic form** (curves-jacobian's
+`arithDecomp`; number field `K`, compactification of genus `≠ 0` with a rational point): for
+places `A`, `B ⊇ K` of `Ω` with `t` regular and nontrivial on `F` (above closed points of `U`),
+if `D_B ⊆ g D_A g⁻¹` for some `g ∈ Π_U`, then `A ∩ F = B ∩ F`. -/
+theorem mem_iff_of_arithDecomp_le_conj' (σ₀ : Spec (CommRingCat.of K) ⟶ C.Xbar)
+    (hσ₀ : σ₀ ≫ (C.Xbar ↘ Spec (CommRingCat.of K)) = 𝟙 (Spec (CommRingCat.of K)))
+    (hg : CurvesJacobian.curveGenus K C.Xbar ≠ 0)
+    {A B : ValuationSubring (FFClosure C.Xbar)}
+    (hkA : ∀ c : K, algebraMap K (FFClosure C.Xbar) c ∈ A)
+    (hkB : ∀ c : K, algebraMap K (FFClosure C.Xbar) c ∈ B)
+    (hneA : ∃ f : F (curveGaloisData K hτ), (f : FFClosure C.Xbar) ∉ A)
+    (hneB : ∃ f : F (curveGaloisData K hτ), (f : FFClosure C.Xbar) ∉ B)
+    (htA : coordT τ ∈ A) (htB : coordT τ ∈ B) (g : (arithmeticExt Ω C hc.out).Pi)
+    (h : ∀ e : (arithmeticExt Ω C hc.out).Pi, e ∈ arithDecomp Ω C hc.out
+        (B.comap ((σc (Ω := Ω) (C := C)).symm :
+          FFClosure (geomCurve Ω C) →+* FFClosure C.Xbar)) →
+      ∃ e' : (arithmeticExt Ω C hc.out).Pi, e' ∈ arithDecomp Ω C hc.out
+        (A.comap ((σc (Ω := Ω) (C := C)).symm :
+          FFClosure (geomCurve Ω C) →+* FFClosure C.Xbar)) ∧ e = g * e' * g⁻¹)
+    (f : F (curveGaloisData K hτ)) :
+    (f : FFClosure C.Xbar) ∈ A ↔ (f : FFClosure C.Xbar) ∈ B := by
+  obtain ⟨K₁, _, -, -, hK₁⟩ := exists_gkLiftsTo_of_ne A hkA hneA ⊥
+  obtain ⟨K₂, _, hle, hKst, hKB⟩ := exists_gkLiftsTo_of_ne B hkB hneB K₁
+  exact mem_iff_of_arithDecomp_le_conj hτ hU σ₀ hσ₀ hg hKst hkA hkB
+    (isIntegral_residueField_of_ne A hkA hneA) (isIntegral_residueField_of_ne B hkB hneB)
+    (hK₁.mono hle) hKB htA htB g h f
+
+end ArithFinal
 
 end Iut.Reconstruction.Thm19
