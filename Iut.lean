@@ -172,6 +172,8 @@ import Iut.Cor312.ThetaData.TwoTorsion
 import Iut.Cor312.ThetaData.UltrametricSqrt
 import Iut.Cor312.ThetaData.ValuationTransfer
 import Iut.Cor312.ThetaData.VariableChangePoint
+import Iut.EtaleTheta.CurveDivisorAux
+import Iut.EtaleTheta.CuspCount
 import Iut.EtaleTheta.CyclotomicEnvelope
 import Iut.EtaleTheta.DiscreteRigidity
 import Iut.EtaleTheta.Env.AutKernel
@@ -204,6 +206,12 @@ import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClassSystem
 import Iut.EtaleTheta.ThetaCohomology
+import Iut.EtaleTheta.ThetaCuspInertia
+import Iut.EtaleTheta.ThetaCuspIsogeny
+import Iut.EtaleTheta.ThetaCuspLevelFn
+import Iut.EtaleTheta.ThetaCuspMain
+import Iut.EtaleTheta.ThetaCuspOrder
+import Iut.EtaleTheta.ThetaCuspPoints
 import Iut.EtaleTheta.ThetaDivision
 import Iut.EtaleTheta.ThetaIsogeny
 import Iut.EtaleTheta.ThetaLevel
@@ -220,6 +228,7 @@ import Iut.EtaleTheta.ThetaRigidity
 import Iut.EtaleTheta.ThetaTempered
 import Iut.EtaleTheta.ThetaTemperedClass
 import Iut.EtaleTheta.ThetaTemperedPoint
+import Iut.EtaleTheta.ThetaTranslate
 import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
 import Iut.Frobenioid.Angular.Category

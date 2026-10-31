@@ -243,6 +243,18 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `b ∈ k^×`, the class on the decomposition group is the Kummer cocycle of `b`); concrete
   **`exists_thetaClassTemp_points`**: at every Tate point `u`, the Kummer cocycle of `Θ̈(u^{N_j})`.
 
+* (11e) Cusps of the levels ([EtTh] Prop. 1.4(i), 1.3 at finite level; `MR14-plan.md` run 10):
+  `ThetaCuspMain.lean` **`thetaLevel_cusp_orders`**: on `E_Q` (`Q = s^N`, `N` even) the theta
+  level function `f_N` has order `1` at the cusps `±s^a` (`0 < a < N`) and `1 - N` at `O`, `-1`
+  (so `≡ 1 mod N` at every cusp of `Ÿ'_N`), and the poles of `R = φ^*x_q` are exactly the `2N`
+  points of `cuspSet` — given `R ≠ 0` and that `f` is a unit where `R` is regular (both to be
+  supplied on the étale side, plan step B). Ingredients: `ThetaCuspOrder.lean` (Tate's theorem
+  with degree bounds, closed points of Tate points), `ThetaCuspPoints.lean` (`cuspSet`),
+  `ThetaCuspLevelFn.lean`, `ThetaCuspIsogeny.lean` (translation invariance of `R`),
+  `ThetaTranslate.lean` (values of translations), generic `CurveDivisorAux.lean`,
+  `CuspCount.lean`. `ThetaCuspInertia.lean`: `κ_n(v)` on cusp inertia is the tame character
+  when `ord ≡ 1 mod n` (ckt `evalTriv_kummerMap`).
+
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
 `ArithEnv.lean` ([EtTh] Prop. 2.14(i) in the abelian arithmetic model), `ModelAut.lean` and
