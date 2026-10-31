@@ -977,3 +977,39 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     **`mem_iff_of_arithDecomp_le_conj'`** (hypotheses only `k, t ∈ A`, `A ∩ F ≠ F`), and for the
     places of `ptDecomps`: `ptPlace_data`, **`mem_iff_of_ptPlace_arithDecomp_le_conj`** (if
     `D_{W₂} ⊆ g D_{W₁} g⁻¹` then `σc⁻¹W₁ ∩ F = σc⁻¹W₂ ∩ F`). Item 1 is complete for closed points.
+* Hand-off 2026-10-31 (MR9 track agent, session i, lead christian-41): merged iut 444ee1b
+  (`ConstExtThmC`, `ClosedPointDecomp`), f1c50d6 (closed-point data, `ptDecomps` form) and this
+  hand-off (hash in ~/session2-status.md). Worktree `~/mr8-iut`, branch `mr9-g`, no pin
+  change, no cj change (route (a) needed no cj-internal API). No WIP.
+  **Done:** item 1 for closed points, completely: `mem_iff_of_ptPlace_arithDecomp_le_conj` says that
+  two places of `ptDecomps` whose decomposition groups satisfy `D_{W₂} ⊆ g D_{W₁} g⁻¹` lie over the
+  same closed point of `U` (number field, genus `≠ 0`, rational point on `X̄`; for `X_K = E ∖ {O}`
+  the origin is the rational point).
+  **Not started:** item 3 (stages over `ψ`), items 4–5. Next, in order:
+  1. **Item 3 (a)–(c)**, small lemmas in the Galois model: (b) `newData (curveGaloisData k hτ)
+     (coordT τ₀) = curveGaloisData k hτ₀` (both `H` are `fixingSubgroup` of the same field
+     `imageL`, `curveGaloisData_L`; prove by `GaloisData` ext on `H`, `HL`) and `stage D K₁ t₀ =
+     constExt K₁ (newData D t₀)` (`stage` is `newData (constExt K D)`, NFTransition l.464);
+     (c) `chartOne τ₀ ≤ chartOne τ ↔ coordT τ ∈ chartRing k (coordT τ₀)` (cj `mem_chartOne_iff`
+     is stalk-wise, `ChartOfOpen.lean` l.123; needs stalk ↔ chartRing at the places centred on
+     `chartOne τ₀`); (a) cofinality of stages with `t₀ ∈ D.L` (`exists_stage_ge`).
+  2. **Item 3 (d)**, the core: for `U_X = chartOne τ₀ ⊆ U`, `BelyiCuspSpec` (d)
+     (`Reconstruction/Cusp/BelyiSpec.lean` l.140–154) gives `U'_X₂ ⊆ U'` and `φU : Π_{U_X} ≃ Π_{U'_X₂}`
+     over `Φ` via `cor38Fill`. Identify `U' ∖ U'_X₂`: its closed points are those whose
+     decomposition groups are `Φ`-images of those of `U ∖ U_X` (`map_ptDecomps_eq'` gives `⊇`
+     up to conjugation; injectivity is now `mem_iff_of_ptPlace_arithDecomp_le_conj`). Then
+     restrict `φU` to `pr⁻¹(G_{K₁})` (`piRes`, `mem_range_piRes_iff`) for the stage
+     `(K₁, t₀)` through `piBridge` of `subCurve C (chartOne τ₀)`, with coefficients by `cycloIso`;
+     compatibility with transitions up to conjugation (`ContH1.map_conj_eq_self`, `BelyiCuspSpec`
+     (e), l.155–161: lifts agreeing after `cor38Fill` differ by an inner automorphism).
+  3. (e) `mulEquivOfCocones` (`LimCongr`) for `H1Lim D ≃* H1Lim D'`; then items 4–5 as in the
+     session-g hand-off.
+  Debts unchanged: `hDGC` (MR7), `φ`/`ResCuspInput` of `SurfaceIndex.lean`, `JacDivFree` outside
+  number fields / `p`-adic fields, `CKStrictSemiAbs`; `cycloIso` and now item 1 need genus `≥ 1`
+  (Thm C via the Jacobian; genus `0` would use cj `ThmCGenusZero*`, not wired here).
+  Decisions for the lead: (i) item 1's closed-point theorem assumes a rational point `σ₀` on `X̄`
+  (cj's `jacDivFree_numberField'` and `isDivFreeOver_curve` are stated with one); fine for
+  `X_K = E ∖ {O}`, but general `U` would need either base change to a field with a point (more
+  constExt work) or cj's `JacDivFree` without a point — keep the hypothesis? (ii) item 3 (d) needs
+  substantial cj-side reading (`cor38Fill`, `piBridge` for `subCurve`); worth giving it a full
+  session on its own.
