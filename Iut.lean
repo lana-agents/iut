@@ -439,6 +439,7 @@ import Iut.Reconstruction.Thm19.ArithBridgeDecomp
 import Iut.Reconstruction.Thm19.ArithBridgeGk
 import Iut.Reconstruction.Thm19.CuspPrincipal
 import Iut.Reconstruction.Thm19.CuspSync
+import Iut.Reconstruction.Thm19.CycloBridge
 import Iut.Reconstruction.Thm19.CycloIso
 import Iut.Reconstruction.Thm19.DecompIso
 import Iut.Reconstruction.Thm19.NFAdditive
