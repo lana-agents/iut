@@ -5,6 +5,7 @@ Authors: LANA Project
 -/
 import Iut.EtaleTheta.ThetaTemperedClass
 import TemperedFundamentalGroups.SemistableReduction.CompositeValuation
+import TemperedFundamentalGroups.Andre.TateCuspInertia
 
 /-!
 # The tempered étale theta class on decomposition groups of points (MR14, runs 8–9, R4)
@@ -20,16 +21,16 @@ preserving `V` acts on every fibre by `t ↦ σ ∘ t`. When `V` is centred on a
 (a composite of a place `A` over the point with a valuation of the residue field over `O`), this
 is the decomposition group of the point (for the base point `V`).
 
-* Generic (`tempered-fundamental-groups` only): **`temperedPi1Map_galoisToTempered`**
-  (`galoisToTempered` is natural in maps of orbifolds) and `character_galoisToTempered`
-  (Galois elements lie in `Π^tp_Y`).
+* Generic, now in `tempered-fundamental-groups` (`Tempered/CuspInertia.lean`,
+  `Andre/TateCuspInertia.lean`): `temperedPi1Map_galoisToTempered` (`galoisToTempered` is natural
+  in maps of orbifolds), `character_galoisToTempered` (Galois elements lie in `Π^tp_Y`) and
+  `exists_le_comap_eq`; here only `galoisToTempered_mem_piY`.
 * The class on Galois elements: for `σ ∈ D_V` fixing `L 0` and `L j`, `galoisToTempered σ ∈ Π^tp_Ÿ`
   (`galoisToTempered_mem_piYddotX`), `toLevel j (galoisToTempered σ)` is the Galois element of
   the level `j` (`toLevel_galoisToTempered`), and **`classAt_galois`**: every representative of
   `classAt η j n` is, on these elements, `σ ↦ σ(α)/α` up to a coboundary (`α^n = η_j`).
-* Places: `exists_le_comap_eq` (a base point `V ≤ A` over `O` inside a place `A`),
-  `mem_place_iff` (Galois elements preserving `V` preserve `A`, when the residue field of `A` is
-  algebraic over `k`: `exists_monic_lt_one`, `exists_mul_mem`), `exists_kummer_close` (Kummer
+* Places: `mem_place_iff` (Galois elements preserving `V` preserve `A`, when the residue field
+  of `A` is algebraic over `k`: `exists_monic_lt_one`, `exists_mul_mem`), `exists_kummer_close` (Kummer
   cocycles of units congruent mod `𝔪_A` differ by a coboundary; residue characteristic `0`).
 * **`classAt_place`**, `classAt_place_mul`: if `η_j` is integral at `A` with residue `b ∈ k^×`,
   the class restricted to the decomposition group is the Kummer cocycle of `b`
@@ -50,50 +51,6 @@ universe u
 
 namespace Iut.EtaleTheta
 
-/-! ### Naturality of the Galois elements -/
-
-section Naturality
-
-variable {K : Type u} [Field K] {O : ValuationSubring K}
-  {R : Type u} [CommRing R] [Algebra K R] {A : Type u} [Group A] [MulSemiringAction A R]
-  {R' : Type u} [CommRing R'] [Algebra K R'] [Algebra R R'] [IsScalarTower K R R']
-  {A' : Type u} [Group A'] [MulSemiringAction A' R'] (μ : OrbMap R A R' A')
-  {Ω : Type u} [Field Ω] [Algebra K Ω] [Algebra R Ω] [IsScalarTower K R Ω]
-  [Algebra R' Ω] [IsScalarTower K R' Ω] [IsScalarTower R R' Ω]
-  {V : ValuationSubring Ω} (hV : V.comap (algebraMap K Ω) = O)
-
-/-- An `R'`-automorphism of `Ω` preserving `V` is an `R`-automorphism preserving `V`. -/
-def decompRestrict (σ : decompositionGroup R' V) : decompositionGroup R V :=
-  ⟨(σ : Ω ≃ₐ[R'] Ω).restrictScalars R, fun x => σ.2 x⟩
-
-@[simp]
-theorem decompRestrict_apply (σ : decompositionGroup R' V) (x : Ω) :
-    ((decompRestrict σ : decompositionGroup R V) : Ω ≃ₐ[R] Ω) x = (σ : Ω ≃ₐ[R'] Ω) x := rfl
-
-/-- **`galoisToTempered` is natural** in maps of orbifolds: the image of the Galois element of
-`σ` in `Π^tp([Spec R'/A'])` is the Galois element of `σ` in `Π^tp([Spec R/A])`. -/
-theorem temperedPi1Map_galoisToTempered (σ : decompositionGroup R' V) :
-    temperedPi1Map μ V hV (galoisToTempered O R' A' hV σ) =
-      galoisToTempered O R A hV (decompRestrict σ) := by
-  apply FibreAut.ext
-  intro X x
-  induction x using Quotient.inductionOn with
-  | h q =>
-    rw [temperedPi1Map_app]
-    change TempObj.bcFibreEquiv μ V hV X
-        ((galoisToTempered O R' A' hV σ).app (X.baseChange μ)
-          (Quotient.mk _ (TempObj.bcPreExt μ V hV X q))) = _
-    rw [galoisToTempered_app_mk, galoisToTempered_app_mk]
-    change Quotient.mk'' (TempObj.bcPreRes μ V hV X _) = Quotient.mk'' _
-    congr 1
-    apply Subtype.ext
-    refine Prod.ext ?_ rfl
-    ext y
-    change (σ : Ω ≃ₐ[R'] Ω) (X.Lv.L.bcExt μ q.1.1 (X.Lv.L.bcι μ y)) = (σ : Ω ≃ₐ[R'] Ω) (q.1.1 y)
-    rw [← FiniteLevel.bcRes_apply, FiniteLevel.bcRes_bcExt]
-
-end Naturality
-
 /-! ### Galois elements lie in `Π^tp_Y` -/
 
 section CharacterGalois
@@ -103,18 +60,6 @@ variable {K : Type u} [Field K] {O : ValuationSubring K}
   [MulSemiringAction A R] [Subsingleton A]
   {Ω : Type u} [Field Ω] [Algebra K Ω] [Algebra R Ω] [IsScalarTower K R Ω]
   {V : ValuationSubring Ω} (hV : V.comap (algebraMap K Ω) = O) (T : TateObject.Data O R)
-
-/-- **Galois elements lie in `Π^tp_Y`**: they act trivially on the fibre of `Y` (its level is `R`
-itself). (As `TateObjectDouble.character_galois`, for any Tate data.) -/
-theorem character_galoisToTempered (σ : decompositionGroup R V) :
-    TateObject.character (A := A) T V hV (galoisToTempered O R A hV σ) = 1 := by
-  refine FibreAut.deckCharacterFun_eq (TateObject.X₀ (A := A) T) (TateObject.deck T)
-    (TateObject.basePoint T V hV) (TateObject.isDeckTorsor T V hV) ?_
-  rw [FibreAut.deckAct_one]
-  change (TateObject.basePoint T V hV : (tempFibre O R A V hV).obj (TateObject.X₀ (A := A) T)) =
-    ⟦TempObj.preGalois hV (TateObject.X₀ (A := A) T) σ σ.2 _⟧
-  exact congrArg (Quotient.mk _) (Subtype.ext (Prod.ext
-    ((TateObject.subsingleton_fibre (A := A)).elim _ _) rfl))
 
 theorem galoisToTempered_mem_piY (σ : decompositionGroup R V) :
     galoisToTempered O R A hV σ ∈ TateObject.piY (A := A) T V hV :=
@@ -261,31 +206,6 @@ section Place
 open TemperedFundamentalGroups.SemistableReduction
 
 variable {k Ω : Type u} [Field k] [Field Ω] [Algebra k Ω]
-
-/-- **A base point inside a place**: for a place `A ⊇ k` and a valuation subring `O ⊆ k` there
-is a valuation subring `V ≤ A` of `Ω` with `V ∩ k = O` (a composite of `A` with a valuation of
-its residue field over `O`, `CompositeValuation.exists_le_dominates`). -/
-theorem exists_le_comap_eq (A : ValuationSubring Ω) (hk : ∀ c : k, algebraMap k Ω c ∈ A)
-    (O : ValuationSubring k) :
-    ∃ V : ValuationSubring Ω, V ≤ A ∧ V.comap (algebraMap k Ω) = O := by
-  obtain ⟨R, hRA, hOR, hm⟩ := CompositeValuation.exists_le_dominates A
-    ((algebraMap k Ω).comp O.subtype) (fun a => hk a)
-  refine ⟨R, hRA, ?_⟩
-  ext c
-  rw [ValuationSubring.mem_comap]
-  refine ⟨fun hc => ?_, fun hc => hOR ⟨c, hc⟩⟩
-  by_contra hcO
-  have hc0 : c ≠ 0 := by rintro rfl; exact hcO O.zero_mem
-  have hinv : c⁻¹ ∈ O := (O.mem_or_inv_mem c).resolve_left hcO
-  have hlt : O.valuation c⁻¹ < 1 := by
-    rw [CentreGerms.valuation_lt_one_iff_inv, inv_inv]
-    exact .inr hcO
-  have h1 := hm ⟨c⁻¹, hinv⟩ ((O.valuation_lt_one_iff _).2 hlt)
-  rw [CentreGerms.valuation_lt_one_iff_inv] at h1
-  rcases h1 with h | h
-  · exact inv_ne_zero hc0 ((algebraMap k Ω).injective (by simpa using h))
-  · apply h
-    simpa [map_inv₀] using hc
 
 variable {A V : ValuationSubring Ω}
 
