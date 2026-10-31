@@ -254,6 +254,12 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `ThetaTranslate.lean` (values of translations), generic `CurveDivisorAux.lean`,
   `CuspCount.lean`. `ThetaCuspInertia.lean`: `κ_n(v)` on cusp inertia is the tame character
   when `ord ≡ 1 mod n` (ckt `evalTriv_kummerMap`).
+  `ThetaCuspTame.lean` (step B, étale): **`exists_etaleThetaSystem_cuspTame`** — the system of
+  `exists_etaleThetaSystem` (same construction) together with `CuspTameAt` (conclusion-only Prop
+  def): at every cusp place `W` (`τ ∉ W`) of every level and `n ∣ N_j`, `κ_n(η_j)` on `I_W ∩ H` is
+  the Kummer character of a uniformiser of `W ∩ L_j` (the tame character mod `n`). Via
+  `ι : K(E_Q) → Ω` (`pullbackT`, `ι f = η_j`, `ι R = τ`), `exists_placeOf_comap`,
+  `cuspTameAt_level`.
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 

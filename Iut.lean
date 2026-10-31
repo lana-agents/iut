@@ -212,6 +212,7 @@ import Iut.EtaleTheta.ThetaCuspLevelFn
 import Iut.EtaleTheta.ThetaCuspMain
 import Iut.EtaleTheta.ThetaCuspOrder
 import Iut.EtaleTheta.ThetaCuspPoints
+import Iut.EtaleTheta.ThetaCuspTame
 import Iut.EtaleTheta.ThetaDivision
 import Iut.EtaleTheta.ThetaIsogeny
 import Iut.EtaleTheta.ThetaLevel
