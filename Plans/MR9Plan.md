@@ -946,3 +946,32 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
 - (ii) Genus ≥ 1 for `cycloIso` is accepted: IUT uses it for X_K = E ∖ {O} and its stages. The docstring must say genus 0 is not covered.
 - The 9 cj structures added to the shell-lint allowlist in 467aa7b (IsArithRep, IsGeomAut, OverGk, IsBilin) are accepted as definitions of notions.
 - Order for session i: item 1 for closed points, then item 3 (the five parts), then items 4–5.
+
+* 2026-10-31 (MR9 track agent, lead christian-41, session i): worktree `~/mr8-iut`, branch `mr9-g`.
+  **Item 1 for closed points done, route (a)** (lead decision (i)): no cj change, no pin bump.
+  * **`Thm19/ConstExtThmC.lean`** — [LocAn] Thm C over `U_K = constExt K (curveGaloisData k hτ)`.
+    Semilinear transport along cj's `picTr`/`weilPairing_tr` (`F(baseChange (constExt K D)) ≅
+    F(baseChange D)` is the identity of `Ω`, semilinear for `K̄ ≅ k̄`): `deg_divTr`, `deg_picTr`,
+    `exists_nsmul_eq_of_tr` (divisibility of `J(k̄)`), `finite_picTorsion_of_tr`,
+    `weilPairing_nondegenerate_of_tr`, `weilDual_bijective_of_tr`, `ell_divTr`, **`genus_eq_of_tr`**
+    (genus invariant under semilinear isomorphisms, via `lift_rank_eq_of_equiv_equiv`);
+    `mem_F_baseChange_constExt_iff`, `fBcConstExt`, `kbarConstExt`; **`isKummerFaithfulJac_constExt`**
+    (from `IsDivFreeOver D K`, via `picEquivS_picMap` as `isKummerFaithfulJac_stage`);
+    `mem_range_of_isAlgebraic_F_constExt` (`K` is the field of constants of `U_K`), hence
+    `Fact (Surjective (piJ1ToGk (constExt K D)))`; **`placeOfF_eq_of_ratSectionGk_conj_constExt`**
+    (number field `k`, genus `≠ 0`, rational point).
+  * **`Thm19/ClosedPointDecomp.lean`** — closed points. `GkLiftsTo D K A` (`G_K ⊆ pr(D_A)`, i.e.
+    `κ(x) ⊆ K`), `GkStable K`; `ratPointConstExt` (such `A` is a rational point of `U_K`;
+    generalises cj `exists_residue_eq_constExt`); `piRes_decompToPi`, `exists_piRes_decompToPi_eq`
+    (`D_A(U_K) = D_A(U) ∩ pr⁻¹(G_K)`); conjugate places `σ • A` (`hk_smul`, `isIntegral_smul`,
+    `conj_mem_range_decompToPi_smul`, `gkLiftsTo_smul`); **`mem_iff_of_range_decompToPi_le`**
+    (`D_B ⊆ D_A` ⇒ `A ∩ F = B ∩ F`), **`mem_iff_of_range_decompToPi_le_conj`** (`D_B ⊆ γ D_A γ⁻¹`,
+    `γ ∈ Π_U`, `K` stable), **`exists_gkLiftsTo`** (a place with `κ(A)` algebraic and `κ(A ∩ F)`
+    finite has such a `K`: normal closure of `κ(A ∩ F)` in `k̄`, ckt
+    `exists_decompositionMap_eq_of_fixes`), **`mem_iff_of_arithDecomp_le_conj`** (arithmetic form
+    for curves-jacobian's `arithDecomp` through `piBridge`). [GalSect] Thm 1.3 (i) checked in
+    `Galois Sections.txt` l.265–266, 280–281.
+  * Remaining for item 1 (needed by item 3 (d)): for the places `W` of `ptDecomps` (cusp places of
+    an open `U_X ⊆ U`, centred on `U`), the closed-point data `hk`, `κ(W)` algebraic, `κ(W ∩ F)`
+    finite over `K` and `t ∈ W` after `σc` (the NF-point data of the session-g hand-off), to feed
+    `exists_gkLiftsTo` and `mem_iff_of_arithDecomp_le_conj`.
