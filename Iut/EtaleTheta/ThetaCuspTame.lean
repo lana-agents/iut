@@ -12,7 +12,8 @@ import Iut.EtaleTheta.ThetaCuspInertia
 
 [EtTh] Prop. 1.3 in the finite-level form of `ThetaCuspInertia.lean` (the restriction of
 `κ_n(η_N)` to the inertia group of every cusp of the level is the tame character mod `n`), for the
-levels and units of `exists_etaleThetaSystem`.
+levels and units of the étale theta system; the system theorem `exists_etaleThetaSystem` itself
+is stated and proved here.
 
 * **B1, the pullback** `ι = φ ∘ j : K(E_Q) → K(E_q) → Ω` (`Q = s^N`, `φ = mulByNEmb (2N)`):
   `coordLift` (`K[E_Q] → L` from a point `(x₀, y₀)` of `E_Q` over `L`, `AdjoinRoot.lift`),
@@ -30,8 +31,9 @@ levels and units of `exists_etaleThetaSystem`.
 * **B3**: `CuspTameAt` (conclusion-only Prop, like `InversionAt`): a uniformiser `π` of `W ∩ F`
   with `κ_n(η)(σ) = σ(π^{1/n})/π^{1/n}` on `I_W ∩ H`; `cuspTameAt_of_order` (generic: from
   `ord_p f ≡ 1 mod n`, with `evalTriv_kummerMap_eq_tame`), **`cuspTameAt_level`** (one level), and
-  **`exists_etaleThetaSystem_cuspTame`** (the conclusions of `exists_etaleThetaSystem`, same
-  construction, together with `CuspTameAt` at every level, every cusp place and every `n ∣ N_j`).
+  **`exists_etaleThetaSystem`** (the étale theta system of `ThetaClassSystem.lean`: levels,
+  units, points, inversion, transitions, together with `CuspTameAt` at every level, every cusp
+  place and every `n ∣ N_j`).
 -/
 
 open Polynomial IsDedekindDomain
@@ -559,11 +561,11 @@ variable {t : TateParameter K}
 local notation "Ω" => FFClosure (curveE t.tateCurve)
 local notation "τ" => coordT (xN t.tateCurve)
 
-/-- **The étale theta system with cusp inertia**: the conclusions of `exists_etaleThetaSystem`
-(same construction) and, at every level `j`, every place `W ⊇ K` of `Ω` with `τ ∉ W` (a cusp of
-`Ÿ'_{N_j}`) and every `n ∣ N_j`, `κ_n(η_j)` restricted to `I_W ∩ H` is the tame character of `W`
-(`CuspTameAt`, `cuspTameAt_level`). -/
-theorem exists_etaleThetaSystem_cuspTame (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) {s : Kˣ}
+/-- **The étale theta classes form a projective system** (module docstring of
+`ThetaClassSystem.lean`), **with cusp inertia**: at every level `j`, every place `W ⊇ K` of `Ω`
+with `τ ∉ W` (a cusp of `Ÿ'_{N_j}`) and every `n ∣ N_j`, `κ_n(η_j)` restricted to `I_W ∩ H` is
+the tame character of `W` (`CuspTameAt`, `cuspTameAt_level`). -/
+theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) {s : Kˣ}
     (hs : s ^ 2 = t.q) :
     haveI : t.tateCurve.IsElliptic := t.tateCurve_isElliptic h12
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)

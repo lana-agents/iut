@@ -254,9 +254,8 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `ThetaTranslate.lean` (values of translations), generic `CurveDivisorAux.lean`,
   `CuspCount.lean`. `ThetaCuspInertia.lean`: `κ_n(v)` on cusp inertia is the tame character
   when `ord ≡ 1 mod n` (ckt `evalTriv_kummerMap`).
-  `ThetaCuspTame.lean` (step B, étale): **`exists_etaleThetaSystem_cuspTame`** — the system of
-  `exists_etaleThetaSystem` (same construction) together with `CuspTameAt` (conclusion-only Prop
-  def): at every cusp place `W` (`τ ∉ W`) of every level and `n ∣ N_j`, `κ_n(η_j)` on `I_W ∩ H` is
+  `ThetaCuspTame.lean` (step B, étale): **`exists_etaleThetaSystem`** (moved here from
+  `ThetaClassSystem.lean` in run 11) now also gives `CuspTameAt` (conclusion-only Prop def): at every cusp place `W` (`τ ∉ W`) of every level and `n ∣ N_j`, `κ_n(η_j)` on `I_W ∩ H` is
   the Kummer character of a uniformiser of `W ∩ L_j` (the tame character mod `n`). Via
   `ι : K(E_Q) → Ω` (`pullbackT`, `ι f = η_j`, `ι R = τ`), `exists_placeOf_comap`,
   `cuspTameAt_level`.
@@ -367,8 +366,9 @@ Group-theoretic layer of [EtTh] §1 for **arbitrary** topological groups (not mo
   `Ÿ'_{NM} → Ÿ'_N` (`levelData_transition`: `[M]^*` maps the generators of `Ÿ'_N` into the
   function field of `Ÿ'_{NM}` and `F_{NM} = [M]^*F_N · G^N`, from `thetaLevel_mul`), nested levels
   (`levelField_mono`), and the naturality of `continuous-kummer-theory`'s Kummer map under a
-  change of level (`resPi`, `resPi_kummerMap`). `ThetaClassSystem.lean`:
-  **`exists_etaleThetaSystem`** — levels `L'_j` (`N_j = 2(j+1)`), étale over `X`, with units
+  change of level (`resPi`, `resPi_kummerMap`). `ThetaClassSystem.lean` (ingredients) and
+  `ThetaCuspTame.lean` (statement): **`exists_etaleThetaSystem`** — levels `L'_j`
+  (`N_j = 2(j+1)`), étale over `X`, with units
   `η_j`, the point statement at every level, and for `N_{j'} = N_j·M`, `M` even:
   `L'_j ≤ L'_{j'}` and `res κ_n(η_j) = κ_n(η_{j'})` for `n ∣ N_j` (`LevelTransition`).
 * [EtTh] Prop. 1.5(iii), inversion part, function fields (`ThetaLevelInversion.lean`): values of

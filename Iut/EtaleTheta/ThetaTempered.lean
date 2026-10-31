@@ -3,7 +3,7 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
-import Iut.EtaleTheta.ThetaClassSystem
+import Iut.EtaleTheta.ThetaCuspTame
 import TemperedFundamentalGroups.Tempered.Kummer
 import TemperedFundamentalGroups.Andre.TateObjectIsogeny
 

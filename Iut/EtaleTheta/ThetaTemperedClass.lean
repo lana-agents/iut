@@ -501,7 +501,7 @@ theorem exists_thetaClassTemp (V : ValuationSubring Ω) (hV : V.comap (algebraMa
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       ThetaClassCompatible (ht := transcendental_tau t.tateCurve) (LX := (hemiData t.tateCurve).L)
         (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η := by
-  obtain ⟨L, hL, h₁, η, het, hpt, -, -, htr⟩ := exists_etaleThetaSystem h2 h12 hs
+  obtain ⟨L, hL, h₁, η, het, hpt, -, -, htr, -⟩ := exists_etaleThetaSystem h2 h12 hs
   haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
   haveI het' : ∀ j, Algebra.Etale (DX t).R
       (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R := fun j =>
