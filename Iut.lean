@@ -289,6 +289,7 @@ import Iut.Frobenioid.SaturationGen
 import Iut.Frobenioid.SaturationTransport
 import Iut.Frobenioid.TateTheta
 import Iut.Frobenioid.Tempered
+import Iut.Frobenioid.Tempered.AutBase
 import Iut.Frobenioid.Tempered.BaseFrob
 import Iut.Frobenioid.Tempered.BaseRecon
 import Iut.Frobenioid.Tempered.BiKummer
@@ -299,8 +300,10 @@ import Iut.Frobenioid.Tempered.FracPair
 import Iut.Frobenioid.Tempered.Hull
 import Iut.Frobenioid.Tempered.KummerTransport
 import Iut.Frobenioid.Tempered.PiTpONS
+import Iut.Frobenioid.Tempered.SplitFrob
 import Iut.Frobenioid.Tempered.ThetaEnv
 import Iut.Frobenioid.Tempered.ThetaEnvModel
+import Iut.Frobenioid.Tempered.ThetaMonoid
 import Iut.Frobenioid.Tempered.Thm34Temp
 import Iut.Frobenioid.Tempered.TwistEquiv
 import Iut.Frobenioid.TemperedBase

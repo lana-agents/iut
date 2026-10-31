@@ -1702,3 +1702,8 @@ CurvesJacobian.LocAn.SemiAb.OverGk.continuous_toHom	def
 CurvesJacobian.LocAn.SemiAb.OverGk.piXToGk_toHom	def
 CurvesJacobian.LocAn.ThetaClass.IsBilin.mul_left	def
 CurvesJacobian.LocAn.ThetaClass.IsBilin.mul_right	def
+# 2026-10-31 (MR18 phase 2 run 5): [FrdI] Def. 2.3 (characteristic splittings of a model Frobenioid), a definition.
+Iut.Frobenioid.Model.IsCharSplitting.exists_split	def
+Iut.Frobenioid.Model.IsCharSplitting.le	def
+Iut.Frobenioid.Model.IsCharSplitting.pb_mem	def
+Iut.Frobenioid.Model.IsCharSplitting.split_unique	def
