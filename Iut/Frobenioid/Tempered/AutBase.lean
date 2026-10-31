@@ -51,6 +51,10 @@ The proof follows the structure indicated in the text. Writing `F` (after the tr
   `(1, f, 0, 0)`, and both are compared with the base-Frobenius pair through commutative squares
   of pre-steps.
 
+* `Model.addHom_eq_id_of_fix`: the divisor step of the proof (identity on principal divisors and
+  compatibility with the cuspidal / non-cuspidal decomposition give the identity on `Φ^gp` when
+  every divisor has a positive multiple that is a sum of such components).
+
 The hypotheses `hdiv` (identity on divisor monoids) and `hunit` (identity on rational functions)
 are the inputs supplied in [IUTchI] by [EtTh] for the genuine tempered Frobenioid; the surjectivity
 half of Corollary 5.3(iv) uses [AbsTopIII], Theorem 1.9.
@@ -552,6 +556,28 @@ theorem nonempty_iso_id_of_over_id
       (cOf_preStep F ε hε hdeg hunit)).symm⟩
 
 end OverId
+
+/-! ### The divisor monoid ([IUTchI], Corollary 5.3(iv), proof, divisor step) -/
+
+/-- **Identity on divisors from identity on principal divisors** ([IUTchI], Corollary 5.3(iv),
+proof: "by considering the non-cuspidal portion of the divisor of the Frobenioid-theoretic theta
+function and its conjugates [...] In a similar vein, since any divisor of degree zero on an elliptic
+curve that is supported on the torsion points of the elliptic curve admits a positive multiple which
+is principal, [...] `α` also induces the identity on the cuspidal elements"): let `ρ` be an additive
+endomorphism of a torsion-free group `G` (`Φ^gp`) commuting with the cuspidal and non-cuspidal
+projections `π_c`, `π_n`, and fixing a subgroup `H` (the principal divisors). If every `x` has a
+positive multiple of the form `π_c(h₁) + π_n(h₂)` with `h₁, h₂ ∈ H`, then `ρ = id`. -/
+theorem addHom_eq_id_of_fix {G : Type*} [AddCommGroup G]
+    (htf : ∀ (n : ℕ) (x : G), 0 < n → n • x = 0 → x = 0) (ρ πc πn : G →+ G)
+    (hc : ∀ x, ρ (πc x) = πc (ρ x)) (hn : ∀ x, ρ (πn x) = πn (ρ x)) (H : AddSubgroup G)
+    (hH : ∀ h ∈ H, ρ h = h)
+    (hgen : ∀ x, ∃ n : ℕ, 0 < n ∧ ∃ h₁ ∈ H, ∃ h₂ ∈ H, n • x = πc h₁ + πn h₂) (x : G) :
+    ρ x = x := by
+  obtain ⟨n, hn0, h₁, hh₁, h₂, hh₂, e⟩ := hgen x
+  have hρ : ρ (n • x) = n • x := by rw [e, map_add, hc, hn, hH _ hh₁, hH _ hh₂]
+  rw [map_nsmul] at hρ
+  have := htf n (ρ x - x) hn0 (by rw [smul_sub, hρ, sub_self])
+  exact sub_eq_zero.1 this
 
 end Model
 

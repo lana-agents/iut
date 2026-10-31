@@ -3,6 +3,7 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
+import Iut.Frobenioid.Tempered.Hull
 import Iut.Frobenioid.Tempered.SplitFrob
 
 /-!
@@ -53,6 +54,10 @@ acting through `act : Π →* AddMonoid.End M`, a `Π`-stable subgroup `U` — t
 * `Model.thetaPsi`, `Model.thetaPsiInf`: `Ψ_{F^Θ, α}`, `∞Ψ_{F^Θ, α}` at `T_A` for `Θ ∈ B(A)`;
   `Model.psiCns`: `Ψ_C = O^⊿(T_A)`, `Aut`-stable (`Model.baseAct_mem_orhdSub_iff`); for a hull the
   monoid `Ψ_{C_v}` is the image of `psiCns` of `C^bs-fld` (`Iut/Frobenioid/Tempered/Hull.lean`);
+* **`Ψ_{C_v}`** (`Model.psiHull`): `O^⊿` of the hull `C_v = C^bs-fld` realised in `B`;
+  `Model.mem_psiHull_iff`: `Ψ_{C_v}(A) = {b : Div(b) ∈ Φ^bs-fld(A)}`; stable under pull-back;
+  `Model.mem_bsFld_mapUnit_iff`: transported by every equivalence preserving base-field-theoretic
+  morphisms ([EtTh], Corollary 3.8(i),(ii), an explicit hypothesis `hbs`);
 * **category-theoreticity** ([IUTchII], Example 3.2(i), "reconstructed category-theoretically from
   `F_v`"; [IUTchI], Example 3.2(vi)(e)): for an equivalence `F : C₁ ⥤ C₂` matching pre-steps and
   base-equivalent pairs (e.g. any equivalence over slim bases of FSM-type, `Model.preStep_iff_fsm`,
@@ -387,6 +392,47 @@ lemma pb_mem_thetaPsi {Y Y' : Model Φ B divB} (f : Y'.base ⟶ Y.base) (Θ : B.
 
 end Act
 
+/-! ### `Ψ_{C_v}` for a base-field-theoretic hull ([IUTchII], Example 3.2(ii)) -/
+
+section Hull
+
+variable {D : Type u} [Category.{v} D]
+variable {Φ Φ' : DivMonoid.{w} D} {B B' : GrpOn.{w} D} {divB : DivHom B Φ.toGrpOn}
+  {divB' : DivHom B' Φ'.toGrpOn}
+variable (ιΦ : DivHom Φ'.toGrpOn Φ.toGrpOn) (ιB : DivHom B' B)
+
+/-- **`Ψ_{C_v} = O^⊿_{C_v}(−)`** realised in `O^×((−)^birat) = B(−)` of `C` through `ι_B`
+(`C_v = C^bs-fld` the hull of `Iut/Frobenioid/Tempered/Hull.lean`). -/
+def psiHull (A : D) : AddSubmonoid (B.obj A) := (Model.orhdSub divB' A).map (ιB.app A)
+
+variable {ιΦ ιB}
+
+/-- **`Ψ_{C_v}(A) = {b ∈ O^×(T^÷_A) : Div(b) ∈ Φ^bs-fld(A)}`** for `F = B ×_{Φ^gp} Φ'^gp`
+([EtTh], Definition 3.6(ii)(b),(iv)). -/
+theorem mem_psiHull_iff
+    (hdiv : ∀ A x, divB.app A (ιB.app A x) = ιΦ.app A (divB'.app A x))
+    (hιΦ : ∀ A, Function.Injective (ιΦ.app A))
+    (hfib : ∀ A (b : B.obj A) (y : Φ'.obj A), divB.app A b = ιΦ.app A y →
+      ∃ b' : B'.obj A, ιB.app A b' = b) {A : D} (b : B.obj A) :
+    b ∈ psiHull (divB' := divB') ιB A ↔ ∃ y ∈ Φ'.pos A, divB.app A b = ιΦ.app A y := by
+  constructor
+  · rintro ⟨b', hb', rfl⟩
+    exact ⟨divB'.app A b', hb', hdiv A b'⟩
+  · rintro ⟨y, hy, e⟩
+    obtain ⟨b', rfl⟩ := hfib A b y e
+    refine ⟨b', ?_, rfl⟩
+    change divB'.app A b' ∈ Φ'.pos A
+    rw [hιΦ A ((hdiv A b').symm.trans e)]
+    exact hy
+
+/-- `Ψ_{C_v}` is stable under pull-back (hence under the action of `Aut`). -/
+lemma pb_mem_psiHull {A A' : D} (f : A ⟶ A') {b : B.obj A'}
+    (hb : b ∈ psiHull (divB' := divB') ιB A') : B.pb f b ∈ psiHull (divB' := divB') ιB A := by
+  obtain ⟨b', hb', rfl⟩ := hb
+  exact ⟨B'.pb f b', Model.pb_mem_orhdSub f hb', ιB.natural f b'⟩
+
+end Hull
+
 /-! ### Category-theoreticity -/
 
 section Transport
@@ -514,6 +560,46 @@ include hbe in
 theorem map_psiCns (Y : Model Φ₁ B₁ divB₁) (x : B₁.obj Y.base) :
     x ∈ psiCns Y ↔ mapUnit F hpre x ∈ psiCns (F.obj Y) :=
   mem_orhdSub_mapUnit_iff F hpre hbe x
+
+variable {Φ₁' : DivMonoid.{w} D₁} {Φ₂' : DivMonoid.{w} D₂} {ιΦ₁ : DivHom Φ₁'.toGrpOn Φ₁.toGrpOn}
+  {ιΦ₂ : DivHom Φ₂'.toGrpOn Φ₂.toGrpOn}
+
+include hbe in
+/-- **Category-theoreticity of `Ψ_{C_v}`** ([IUTchII], Example 3.2(ii); [IUTchI], Example 3.2(iii)):
+if `F` preserves base-field-theoretic morphisms (in both directions; [EtTh], Corollary 3.8(i),(ii)),
+`F^birat` maps `{b : Div(b) ∈ Φ^bs-fld}` at `Y` onto the same set at `F Y`. -/
+theorem mem_bsFld_mapUnit_iff
+    (hpos₁ : ∀ A x, x ∈ Φ₁'.pos A → ιΦ₁.app A x ∈ Φ₁.pos A)
+    (hpos₂ : ∀ A x, x ∈ Φ₂'.pos A → ιΦ₂.app A x ∈ Φ₂.pos A)
+    (hbs : ∀ ⦃X Y : Model Φ₁ B₁ divB₁⦄ (φ : X ⟶ Y), IsBsFld ιΦ₁ φ ↔ IsBsFld ιΦ₂ (F.map φ))
+    {Y : Model Φ₁ B₁ divB₁} (b : B₁.obj Y.base) :
+    (∃ y ∈ Φ₁'.pos Y.base, divB₁.app _ b = ιΦ₁.app _ y) ↔
+      ∃ y ∈ Φ₂'.pos (F.obj Y).base, divB₂.app _ (mapUnit F hpre b) = ιΦ₂.app _ y := by
+  constructor
+  · rintro ⟨y, hy, e⟩
+    let g : Y ⟶ Y := mk1 (𝟙 _) (divB₁.app _ b) (by rw [e]; exact hpos₁ _ _ hy) b (by simp)
+    have hg : IsBsFld ιΦ₁ g := ⟨y, hy, e.symm⟩
+    obtain ⟨y', hy', e'⟩ := (hbs g).1 hg
+    have hu : (F.map g).u = mapUnit F hpre b := map_u_of_baseId F hpre hbe g rfl rfl
+    have hb := map_base_of_baseId F hbe g rfl
+    have h1 : (F.map g).deg = 1 := ((hpre g).1 (isPreStep_mk1 _ _ _ _ _)).1
+    refine ⟨y', hy', ?_⟩
+    rw [e', div_eq_divB_u (F.map g) hb h1, hu]
+  · rintro ⟨y', hy', e'⟩
+    let g' : F.obj Y ⟶ F.obj Y := mk1 (𝟙 _) (divB₂.app _ (mapUnit F hpre b))
+      (by rw [e']; exact hpos₂ _ _ hy') (mapUnit F hpre b) (by simp)
+    let g : Y ⟶ Y := F.preimage g'
+    have hFg : F.map g = g' := F.map_preimage g'
+    have hgb : g.base = 𝟙 _ := by
+      refine (hbe g (𝟙 Y)).2 ?_
+      rw [hFg, F.map_id]; rfl
+    have hg1 : g.deg = 1 := ((hpre g).2 (by rw [hFg]; exact isPreStep_mk1 _ _ _ _ _)).1
+    have hu := map_u_of_baseId F hpre hbe g hg1 hgb
+    rw [hFg] at hu
+    have hgu : g.u = b := mapUnit_injective F hpre hbe Y hu.symm
+    obtain ⟨y, hy, e⟩ := (hbs g).2 (by rw [hFg]; exact ⟨y', hy', e'.symm⟩)
+    refine ⟨y, hy, ?_⟩
+    rw [← hgu, ← div_eq_divB_u g hgb hg1, e]
 
 end Transport
 
