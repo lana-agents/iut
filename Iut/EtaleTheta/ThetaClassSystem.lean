@@ -21,7 +21,8 @@ function fields of the levels `Ÿ'_{N_j}` of [EtTh], §1, route R-alg of `MR14-p
 * `coordRing L_X → coordRing L'_j` is étale (`L_X = K(E)`, `X = E ∖ {O}`);
 * at every Tate point `u` with `ψ_{2N_j}(u) ≠ 0` there is a `K`-rational point of `Ÿ'_{N_j}` over
   `u` at which `s_x^* κ_n(η_j) = κ_n(Θ̈(u^{N_j}))` for `n ∣ N_j` ([EtTh] Prop. 1.4(iii) at points,
-  `EtaleThetaAtPoint`);
+  `EtaleThetaAtPoint`), and `η_j` is integral there with residue `f_{N_j}(u^{N_j})`
+  (`ThetaValueAt`, used for the tempered point statement of `ThetaTemperedPoint.lean`);
 * **compatibility in `N`**: if `N_{j'} = N_j·M` with `M` even, then `L'_j ≤ L'_{j'}`, so
   `Π_{Ÿ'_{N_{j'}}} ≤ Π_{Ÿ'_{N_j}}`, and for `n ∣ N_j` the restriction of `κ_n(η_j)` to
   `Π_{Ÿ'_{N_{j'}}}` is `κ_n(η_{j'})`;
@@ -206,6 +207,9 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
       (∀ (j : ℕ) (u : Kˣ) (hu : OffOrbit t u)
         (hψ : evalTate t h12 hu (psiN t.tateCurve (2 * (2 * (j + 1)))) ≠ 0),
         EtaleThetaAtPoint h12 (2 * (j + 1)) (L j) (hL j) (η j) u hu hψ) ∧
+      (∀ (j : ℕ) (u : Kˣ) (hu : OffOrbit t u)
+        (hψ : evalTate t h12 hu (psiN t.tateCurve (2 * (2 * (j + 1)))) ≠ 0),
+        ThetaValueAt h12 (2 * (j + 1)) (by omega) (L j) (hL j) (η j) u hu hψ) ∧
       (∀ j, ∃ σ : Ω ≃ₐ[K₀ K τ] Ω,
         (∀ g : TateField t, σ (mulByNEmb t.tateCurve (2 * (2 * (j + 1))) g) =
           mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (negE t.tateCurve g)) ∧
@@ -247,9 +251,11 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
   choose η hη using fun j => exists_unit_of_cover (2 * (2 * (j + 1))) (L j) (hL j) (hFL j)
     (hF0 j) (hb j) (hb' j)
   refine ⟨L, hL, fun j => hemiL_le_adjoin _ _ (hmul j), η,
-    fun j => etale_adjoin_image _ _ (hmul j), fun j => ?_, fun j => ?_,
+    fun j => etale_adjoin_image _ _ (hmul j), fun j => ?_, fun j => ?_, fun j => ?_,
     fun j j' M hjM hevM => ?_⟩
   · exact etaleThetaClass_points (by omega) (L j) (hL j) (adjoin_image_le_mulByNField _ _ _)
+      (η j) ((hη j).trans (congrArg _ (hb j).symm)) (hpt j)
+  · exact thetaValueAt_points (by omega) (L j) (hL j) (adjoin_image_le_mulByNField _ _ _)
       (η j) ((hη j).trans (congrArg _ (hb j).symm)) (hpt j)
   -- the inversion `ι` at the level `j` ([EtTh] Prop. 1.5(iii))
   · obtain ⟨σ, hσ⟩ := exists_negAut t.tateCurve (2 * (2 * (j + 1)))

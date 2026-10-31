@@ -385,6 +385,50 @@ theorem etaleThetaClass_points [hE : t.tateCurve.IsElliptic] {N : ℕ} [hN2 : Ne
   exact ⟨hU, x, hτ, hmem, hres, fun n _ hn =>
     ratSection_kummer_eq hN L' hL' η x hτ hη (hmem b) (hres b) hval hU n hn⟩
 
+/-- **The value of the theta level unit at a Tate point** (a `Prop` def used only as a
+conclusion, like `EtaleThetaAtPoint`): `Θ̈(u^N) ≠ 0`, and there is a `K`-rational point `x` of the
+Galois model `fieldData L'` over the Tate point `u` (residues of functions on `L_{2N}` are their
+values at `u`) at which `η` is integral with residue `f_N(u^N)`. -/
+def ThetaValueAt [t.tateCurve.IsElliptic] (h12 : (12 : K) ≠ 0) (N : ℕ) [NeZero (2 * N)]
+    (hN : 0 < N) (L' : IntermediateField (K₀ K τ) Ω)
+    (hL' : IsOpen (L'.fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
+    (η : units (fieldData (transcendental_tau t.tateCurve) L' hL')) (u : Kˣ) (hu : OffOrbit t u)
+    (hψ : evalTate t h12 hu (psiN t.tateCurve (2 * N)) ≠ 0) : Prop :=
+  etaleTheta t (u ^ N) ≠ 0 ∧
+    ∃ (x : RatPoint (fieldData (transcendental_tau t.tateCurve) L' hL'))
+      (hmem : ∀ b : coverRingN t.tateCurve (2 * N),
+        mulByNEmb t.tateCurve (2 * N) (algebraMap _ _ b) ∈ x.A)
+      (hηA : ((((η : (F (fieldData (transcendental_tau t.tateCurve) L' hL'))ˣ) :
+        F (fieldData (transcendental_tau t.tateCurve) L' hL')) : Ω)) ∈ x.A),
+      (∀ b : coverRingN t.tateCurve (2 * N), residue x.A ⟨_, hmem b⟩ =
+        algebraMap K (ResidueField x.A) (evalCover (2 * N) hu hψ b)) ∧
+      residue x.A ⟨_, hηA⟩ = algebraMap K (ResidueField x.A) (thetaLevel t N hN (u ^ N))
+
+/-- The values of the theta level unit at Tate points (from the same data as
+`etaleThetaClass_points`). -/
+theorem thetaValueAt_points [t.tateCurve.IsElliptic] {N : ℕ} [NeZero (2 * N)] (hN : 0 < N)
+    {h12 : (12 : K) ≠ 0} (L' : IntermediateField (K₀ K τ) Ω)
+    (hL' : IsOpen (L'.fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
+    (hle : L' ≤ mulByNField t.tateCurve (2 * N))
+    (η : units (fieldData (transcendental_tau t.tateCurve) L' hL'))
+    {b : coverRingN t.tateCurve (2 * N)}
+    (hη : ((((η : (F (fieldData (transcendental_tau t.tateCurve) L' hL'))ˣ) :
+      F (fieldData (transcendental_tau t.tateCurve) L' hL')) : Ω)) =
+        mulByNEmb t.tateCurve (2 * N) (algebraMap _ _ b))
+    (hpt : ∀ (u : Kˣ) (hu : OffOrbit t u)
+      (hψ : evalTate t h12 hu (psiN t.tateCurve (2 * N)) ≠ 0),
+        etaleTheta t (u ^ N) ≠ 0 ∧ evalCover (2 * N) hu hψ b = thetaLevel t N hN (u ^ N)) :
+    ∀ (u : Kˣ) (hu : OffOrbit t u) (hψ : evalTate t h12 hu (psiN t.tateCurve (2 * N)) ≠ 0),
+      ThetaValueAt h12 N hN L' hL' η u hu hψ := by
+  intro u hu hψ
+  obtain ⟨hU, hval⟩ := hpt u hu hψ
+  obtain ⟨x, -, hmem, hres⟩ := exists_ratPoint_tate (2 * N) hu hψ L' hL' hle
+  have hηA : ((((η : (F (fieldData (transcendental_tau t.tateCurve) L' hL'))ˣ) :
+      F (fieldData (transcendental_tau t.tateCurve) L' hL')) : Ω)) ∈ x.A := hη ▸ hmem b
+  refine ⟨hU, x, hmem, hηA, hres, ?_⟩
+  have e : (⟨_, hηA⟩ : x.A) = ⟨_, hmem b⟩ := Subtype.ext hη
+  rw [e, hres b, hval]
+
 /-- **[EtTh] Prop. 1.3/1.4(iii), étale version at the level `Ÿ'_N`** (route R-alg). For even `N`
 there are an intermediate field `L' ⊆ Ω` (the function field of `Ÿ'_N`, finite over `K(τ)`,
 `L_X ≤ L'`) with `coordRing L_X → coordRing L'` étale, and a unit `η` of `Ÿ'_N`

@@ -219,6 +219,7 @@ import Iut.EtaleTheta.ThetaQuotient
 import Iut.EtaleTheta.ThetaRigidity
 import Iut.EtaleTheta.ThetaTempered
 import Iut.EtaleTheta.ThetaTemperedClass
+import Iut.EtaleTheta.ThetaTemperedPoint
 import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
 import Iut.Frobenioid.Angular.Category

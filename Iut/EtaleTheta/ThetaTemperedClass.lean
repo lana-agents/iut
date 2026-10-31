@@ -136,7 +136,15 @@ variable (V hV) in
 /-- **`Π^tp_Ÿ ⊆ Π^tp_X`**: the stabilizer of a point of the fibre of `Y ×_X Ÿ'_2`, i.e.
 `Π^tp_Y ∩ Π^tp_{Ÿ'_2}` (`Y → X` the `ℤ`-covering of the special fibre of the Tate model of `T`,
 `TateObject.piY`; `Ÿ` is the component of `Y ×_X Ÿ'_2` through the base point: [EtTh] §1,
-`Ü² = U`, `Ÿ'_2 = E_q` in the coordinate `Ü`). -/
+`Ü² = U`, `Ÿ'_2 = E_q` in the coordinate `Ü`).
+
+Comparison with [EtTh] (text l.962–981, l.1300–1305, l.1727–1766; `MR14-plan.md`, "D13 check"):
+[EtTh] defines `Ÿ := Y_2`, the finite covering of `Y` with `Gal(Y_2/Y) ≅ μ_2` (as `√q ∈ K`), and
+places it in the tower `Ÿ → Ẍ → X` of Prop. 1.8 with `Ẍ → X` the `[2]`-covering, which is
+`Ÿ'_2` here (`L 0`, `N_0 = 2`). Hence `Π^tp_Ÿ ⊆ Π^tp_Y ∩ Π^tp_Ẍ`; this intersection is a proper
+subgroup of `Π^tp_Y` (`Π^tp_X/Π^tp_Ẍ ≅ (ℤ/2)²` is not a quotient of `Π^tp_X/Π^tp_Y ≅ ℤ`), and
+`[Π^tp_Y : Π^tp_Ÿ] = 2`, so the two agree. `Ÿ → Y` is finite; the `ℤ`-coverings are `Y → X` and
+`Ÿ → Ẍ`. (This comparison is an argument recorded in the plan, not a Lean proof.) -/
 def piYddotX : Subgroup (TempPi (fieldData ht LX hLX) O V hV) :=
   TateObject.piY (A := (fieldData ht LX hLX).A) T V hV ⊓
     (temperedPi1Map (muL ht hLX (L 0) (hL 0)) V hV).range
@@ -493,7 +501,7 @@ theorem exists_thetaClassTemp (V : ValuationSubring Ω) (hV : V.comap (algebraMa
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       ThetaClassCompatible (ht := transcendental_tau t.tateCurve) (LX := (hemiData t.tateCurve).L)
         (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η := by
-  obtain ⟨L, hL, h₁, η, het, hpt, -, htr⟩ := exists_etaleThetaSystem h2 h12 hs
+  obtain ⟨L, hL, h₁, η, het, hpt, -, -, htr⟩ := exists_etaleThetaSystem h2 h12 hs
   haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
   haveI het' : ∀ j, Algebra.Etale (DX t).R
       (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R := fun j =>
