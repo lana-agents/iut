@@ -329,7 +329,7 @@ theorem cusp_ordInfty_ge (h2 : ‖(2 : K)‖ = 1) (hev : Even N)
 /-! ### Zeros at the points `±s^a` -/
 
 omit [CompleteSpace K] [IsUltrametricDist K] in
-theorem norm_s_lt_one (hs : s ^ 2 = t.q) : ‖(s : K)‖ < 1 := by
+theorem norm_s_lt_one_of_sq (hs : s ^ 2 = t.q) : ‖(s : K)‖ < 1 := by
   have := t.norm_lt_one
   rw [← hs, Units.val_pow_eq_pow_val, norm_pow] at this
   exact (pow_lt_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).mp this
@@ -352,7 +352,7 @@ theorem offOrbit_sign_pow (hs : s ^ 2 = t.q) (hT : T.q = s ^ N) {ε : Kˣ}
   have hr0 : ‖(s : K)‖ ≠ 0 := norm_ne_zero_iff.mpr hs0
   have e : ‖(s : K)‖ ^ ((N : ℤ) * n + a) = 1 := by
     rw [zpow_add₀ hr0, zpow_mul, zpow_natCast, zpow_natCast]; exact this
-  have := eq_zero_of_norm_zpow hs0 (norm_s_lt_one hs) e
+  have := eq_zero_of_norm_zpow hs0 (norm_s_lt_one_of_sq hs) e
   rcases le_or_gt 0 n with h | h <;> nlinarith
 
 omit [T.tateCurve.IsElliptic] in
@@ -377,7 +377,7 @@ theorem etaleTheta_tatePow_sign_pow_ne_zero (hs : s ^ 2 = t.q) {ε : Kˣ}
   have hs0 : (s : K) ≠ 0 := s.ne_zero
   have e : ‖(s : K)‖ ^ (((a * 2 : ℕ) : ℤ)) = ‖(s : K)‖ ^ (((2 * N : ℕ) : ℤ) * k) := by
     rw [zpow_mul, zpow_natCast, zpow_natCast, pow_mul, pow_mul]; exact this
-  have := zpow_right_injective₀ (norm_pos_iff.mpr hs0) (norm_s_lt_one hs).ne e
+  have := zpow_right_injective₀ (norm_pos_iff.mpr hs0) (norm_s_lt_one_of_sq hs).ne e
   push_cast at this
   rcases le_or_gt k 0 with h | h <;> nlinarith
 
