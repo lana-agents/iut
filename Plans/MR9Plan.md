@@ -849,3 +849,12 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   a separate Galois-cohomology project) or goes to a Galois-groups track; (ii) whether MR9 should
   first do item 1 (points, Galois model) or items 2–3 (cyclotome and stages over `ψ`), which are
   independent.
+
+* 2026-10-31 (MR9 track agent, lead christian-41, session h): worktree `~/mr8-iut`, branch `mr9-g`.
+  **Lead decisions (on the two questions of the session-g hand-off):** (i) `CKStrictSemiAbs`
+  ([AbsTopI] Cor 2.8 (ii), whose proof needs the very elasticity of `G_K`, [Mzk11]) stays a named
+  literature debt of `DStarDescent`; MR9 does not attempt it. (ii) Order of the chain to
+  `CKSemiAbsConj`: first items 2–3 (cyclotome over `ψ` via `arithmeticExtIso'` + `CuspSync`; stages
+  over `ψ` via the `BelyiCuspSpec` (d) lifts, then `H1Lim ≃ H1Lim′`), then item 1 (points, Galois
+  model), then items 4–5 (residues / `P_V` / Prop 1.8 transport → `recTriple ≅ recTriple′` →
+  `ringEquivOfIso`; `Π_{X_K} ⊆ Π_{C_K}`; close `CKSemiAbsConj`).
