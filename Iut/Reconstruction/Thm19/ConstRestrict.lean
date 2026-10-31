@@ -126,7 +126,7 @@ variable {k Ω : Type u} [Field k] [Field Ω] [Algebra k Ω] {t : Ω}
   (e : Pi D ≃ₜ* Pi D') (ψ : Gk k Ω ≃* Gk k' Ω')
   (he : ∀ p, piToGk D' (e p) = ψ (piToGk D p)) (hs : Function.Surjective (piToGk D))
 
-lemma compactSpace_pi : CompactSpace (Pi D) := by
+lemma compactSpace_piGal : CompactSpace (Pi D) := by
   haveI : CompactSpace D.H := GaloisPi1.compactSpace_of_isClosed _ D.isClosed_H
   exact Quotient.compactSpace
 
@@ -148,7 +148,7 @@ include he hs in
 is used). -/
 lemma isClosed_map_gkFix (K : IntermediateField k Ω) :
     IsClosed ((gkFix K).map ψ.toMonoidHom : Set (Gk k' Ω')) := by
-  haveI := compactSpace_pi (D := D)
+  haveI := compactSpace_piGal (D := D)
   rw [map_gkFix_eq e ψ he hs K]
   have hc : IsCompact (piToGk D ⁻¹' (gkFix K : Set (Gk k Ω))) :=
     ((isClosed_gkFix K).preimage (continuous_piToGk D)).isCompact
