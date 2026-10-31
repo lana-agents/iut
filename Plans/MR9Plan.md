@@ -1013,3 +1013,9 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   constExt work) or cj's `JacDivFree` without a point — keep the hypothesis? (ii) item 3 (d) needs
   substantial cj-side reading (`cor38Fill`, `piBridge` for `subCurve`); worth giving it a full
   session on its own.
+
+### Lead decisions after session i (2026-10-31, christian-41)
+- (1) A rational point on X̄ stays a standing hypothesis. It holds for X_K = E ∖ {O} and its stages (O and the cusps). The general case is not pursued;
+  the docstrings must say so.
+- (2) Genus ≥ 1 for item 1 is accepted, consistent with `cycloIso`. Genus 0 (`ThmCGenusZero*`) is not wired in.
+- (3) Session j is devoted to item 3: first (a)–(c), then the core (d), then (e) `mulEquivOfCocones`. Items 4–5 come after.
