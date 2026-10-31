@@ -939,3 +939,10 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
      recTriple′` → `ringEquivOfIso`; `Π_{X_K} ⊆ Π_{C_K}`; close `CKSemiAbsConj`).
   Debts unchanged: `hDGC` (MR7), `φ`/`ResCuspInput` of `SurfaceIndex.lean`, `JacDivFree` outside
   number fields / `p`-adic fields, `CKStrictSemiAbs`. New restriction: `cycloIso` needs genus `≥ 1`.
+
+### Lead decisions after session h (2026-10-31, christian-41)
+- (i) Closed points use route (a): transport cj's Thm C hypotheses (divisibility, Weil pairing, finite torsion) to `baseChange (constExt K₁ D)`
+  inside iut, using `picStageEquiv`. No cj track and no pin bump. Fall back to (b) only if (a) turns out to need cj-internal API; record why.
+- (ii) Genus ≥ 1 for `cycloIso` is accepted: IUT uses it for X_K = E ∖ {O} and its stages. The docstring must say genus 0 is not covered.
+- The 9 cj structures added to the shell-lint allowlist in 467aa7b (IsArithRep, IsGeomAut, OverGk, IsBilin) are accepted as definitions of notions.
+- Order for session i: item 1 for closed points, then item 3 (the five parts), then items 4–5.
