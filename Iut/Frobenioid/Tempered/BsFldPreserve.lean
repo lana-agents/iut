@@ -20,8 +20,8 @@ Theorem 3.4(iv), Corollary 4.11(ii)). By Proposition 3.4(ii) (`O^⊿_L ≅ B₀ 
 elements of `O^⊿` come from the base field `L`) "a pre-step of `C_i` is base-field-theoretic if
 and only if its image `A → B` in `C^pf_i` may be written as a [filtered] projective limit in the
 category `(C^pf_i)^{coa-pre}_B` of pre-steps `A' → B` that are abstractly equivalent to an
-endomorphism that belongs to `O^⊿(−)`"; finally `Ψ` preserves the factorization of a morphism into a morphism of
-Frobenius type, a pre-step and a pull-back morphism.
+endomorphism that belongs to `O^⊿(−)`"; finally `Ψ` preserves the factorization of a morphism
+into a morphism of Frobenius type, a pre-step and a pull-back morphism.
 
 ## Formalisation
 
