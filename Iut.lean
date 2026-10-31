@@ -455,6 +455,7 @@ import Iut.Reconstruction.Thm19.ArithBridgeDecomp
 import Iut.Reconstruction.Thm19.ArithBridgeGk
 import Iut.Reconstruction.Thm19.ClosedPointDecomp
 import Iut.Reconstruction.Thm19.ConstExtThmC
+import Iut.Reconstruction.Thm19.ConstRestrict
 import Iut.Reconstruction.Thm19.CuspPrincipal
 import Iut.Reconstruction.Thm19.CuspSync
 import Iut.Reconstruction.Thm19.CycloBridge
@@ -477,6 +478,7 @@ import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
 import Iut.Reconstruction.Thm19.RecPoints
 import Iut.Reconstruction.Thm19.RecRange
+import Iut.Reconstruction.Thm19.StageGeom
 import Iut.Reconstruction.Thm19.StageJac
 import Iut.Reconstruction.Thm19.StageNF
 import Iut.Reconstruction.Transfer
