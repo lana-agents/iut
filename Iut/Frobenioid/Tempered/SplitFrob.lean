@@ -55,8 +55,8 @@ objects and linear morphisms) such that `τ(A)` maps bijectively onto `O^⊿(A)^
 * **Functoriality** (`SplitModel.mapFunctor`): an equivalence `e : E₁ ⥤ E₂` with natural additive
   isomorphisms `U₁(A) ≅ U₂(e A)` induces an equivalence `SplitModel U₁ ⥤ SplitModel U₂` over `e`
   mapping the standard splitting to the standard splitting, and compatible with the realisations
-  for `θ₁ ↦ θ₂` (`SplitModel.realize_mapFunctor`).
-* **[IUTchI], Example 3.2(v)** (`SplitModel.exampleEquiv`, `SplitModel.example_realize`): for a
+  for `θ₁ ↦ θ₂` (`Model.realize_splitTransport` in `Tempered/SplitTransport.lean`).
+* **[IUTchI], Example 3.2(v)** (`SplitModel.exampleEquiv`, `SplitModel.exampleMonEquiv_q`): for a
   model Frobenioid `C` over `D`, the inclusion `j : D^⊢ ⥤ D`, the functor `jΘ : D^⊢ ⥤ D`
   (`A ↦ Ÿ × A`) with the natural projection `pr : jΘ ⟶ j`, a natural family `q̲` on `j` and `Θ` on
   `jΘ`, and the hypothesis that `pr^*` is bijective on units (the base field of `Ÿ_v` is `K_v`,

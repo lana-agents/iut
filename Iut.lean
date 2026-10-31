@@ -304,13 +304,16 @@ import Iut.Frobenioid.Tempered.BaseFrob
 import Iut.Frobenioid.Tempered.BaseRecon
 import Iut.Frobenioid.Tempered.BiKummer
 import Iut.Frobenioid.Tempered.Birat
+import Iut.Frobenioid.Tempered.BsFldPreserve
 import Iut.Frobenioid.Tempered.EnvChoice
 import Iut.Frobenioid.Tempered.EnvTransport
 import Iut.Frobenioid.Tempered.FracPair
 import Iut.Frobenioid.Tempered.Hull
+import Iut.Frobenioid.Tempered.HullEquiv
 import Iut.Frobenioid.Tempered.KummerTransport
 import Iut.Frobenioid.Tempered.PiTpONS
 import Iut.Frobenioid.Tempered.SplitFrob
+import Iut.Frobenioid.Tempered.SplitTransport
 import Iut.Frobenioid.Tempered.ThetaEnv
 import Iut.Frobenioid.Tempered.ThetaEnvModel
 import Iut.Frobenioid.Tempered.ThetaMonoid

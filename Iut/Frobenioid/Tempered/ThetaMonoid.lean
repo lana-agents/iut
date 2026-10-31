@@ -57,7 +57,8 @@ acting through `act : Π →* AddMonoid.End M`, a `Π`-stable subgroup `U` — t
 * **`Ψ_{C_v}`** (`Model.psiHull`): `O^⊿` of the hull `C_v = C^bs-fld` realised in `B`;
   `Model.mem_psiHull_iff`: `Ψ_{C_v}(A) = {b : Div(b) ∈ Φ^bs-fld(A)}`; stable under pull-back;
   `Model.mem_bsFld_mapUnit_iff`: transported by every equivalence preserving base-field-theoretic
-  morphisms ([EtTh], Corollary 3.8(i),(ii), an explicit hypothesis `hbs`);
+  morphisms ([EtTh], Corollary 3.8(i),(ii), the hypothesis `hbs`, discharged over slim bases of
+  FSM-type in `Model.mem_bsFld_mapUnit_iff_fsm`, `Iut/Frobenioid/Tempered/BsFldPreserve.lean`);
 * **category-theoreticity** ([IUTchII], Example 3.2(i), "reconstructed category-theoretically from
   `F_v`"; [IUTchI], Example 3.2(vi)(e)): for an equivalence `F : C₁ ⥤ C₂` matching pre-steps and
   base-equivalent pairs (e.g. any equivalence over slim bases of FSM-type, `Model.preStep_iff_fsm`,
