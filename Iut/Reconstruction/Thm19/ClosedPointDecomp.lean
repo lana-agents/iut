@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Reconstruction.Thm19.ConstExtThmC
+import Iut.Reconstruction.Thm19.CycloBridge
+import Iut.Reconstruction.Thm19.DecompIso
 
 /-!
 # [AbsTopIII] Thm 1.9 (a): closed points of `U` are determined by their decomposition groups
@@ -32,7 +34,15 @@ i.e. `κ(x) ⊆ K`):
   is stable under `G_k` (e.g. normal over `k`);
 * **`exists_gkLiftsTo`**: every place `A ⊇ k` with `κ(A)` algebraic and `κ(A ∩ F)` finite over `k`
   (a closed point) satisfies `G_K ⊆ pr(D_A)` for some finite `K ⊆ k̄` stable under `G_k` (the
-  normal closure of `κ(A ∩ F)`; continuous-kummer-theory `exists_decompositionMap_eq_of_fixes`).
+  normal closure of `κ(A ∩ F)`; continuous-kummer-theory `exists_decompositionMap_eq_of_fixes`),
+  containing any given finite `K′`;
+* `placeBelow`, `finiteDimensional_pointField`, `isIntegral_residueField_of_ne`,
+  `exists_gkLiftsTo_of_ne`: every place `A ⊇ k` nontrivial on `F` has these closed-point data;
+* **`mem_iff_of_decomp_le_conj`**, **`mem_iff_of_arithDecomp_le_conj'`**: [GalSect] Thm 1.3 (i)
+  for closed points with only `k, t ∈ A` and `A ∩ F ≠ F` as hypotheses (Galois model,
+  `arithDecomp`);
+* `ptPlace_data`, **`mem_iff_of_ptPlace_arithDecomp_le_conj`**: the same for the places of
+  `ptDecomps` (`Thm19/DecompIso.lean`: cusp places of opens `U_X ⊆ U`, centred on `U_Ω`).
 -/
 
 open CategoryTheory AlgebraicGeometry Pi1 Pi1.Orbifold KummerTheory KummerTheory.Curve
@@ -753,5 +763,104 @@ theorem mem_iff_of_arithDecomp_le_conj' (σ₀ : Spec (CommRingCat.of K) ⟶ C.X
     (hK₁.mono hle) hKB htA htB g h f
 
 end ArithFinal
+
+/-! ### The places of `ptDecomps` -/
+
+section PtDecomps
+
+variable {K : Type u} [Field K] [NumberField K] {Ω : Type u} [Field Ω] [Algebra K Ω]
+  [IsAlgClosed Ω] [Algebra.IsAlgebraic K Ω] [CharZero Ω] {C : HypCurve K}
+  [hc : Fact (C.U : Set C.Xbar)ᶜ.Nonempty]
+
+attribute [local instance] isIntegral_Xbar nonempty_U algFF
+
+variable {τ : C.Xbar.functionField} (hτ : Transcendental K τ)
+  [IsGalois (K₀ K (coordT τ)) (FFClosure C.Xbar)] (hU : C.U = chartOne K C.Xbar τ)
+  [CharZero (FFClosure C.Xbar)]
+
+lemma comap_comap_σc (W : ValuationSubring (FFClosure (geomCurve Ω C))) :
+    (W.comap ((σc (Ω := Ω) (C := C)) : FFClosure C.Xbar →+* FFClosure (geomCurve Ω C))).comap
+      ((σc (Ω := Ω) (C := C)).symm : FFClosure (geomCurve Ω C) →+* FFClosure C.Xbar) = W := by
+  ext x
+  simp only [ValuationSubring.mem_comap, RingHom.coe_coe, RingEquiv.apply_symm_apply]
+
+lemma mem_F_curveGaloisData_of_mem_L {x : FFClosure C.Xbar}
+    (hx : x ∈ (curveGaloisData K hτ).L) : x ∈ F (curveGaloisData K hτ) :=
+  (IntermediateField.mem_fixedField_iff _ _).2 fun _ hσ =>
+    (IntermediateField.mem_fixingSubgroup_iff _ _).1 hσ x (by
+      rw [curveGaloisData_L] at hx
+      exact hx)
+
+include hU in
+/-- **Closed-point data of the places of `ptDecomps`**: a place `W` of `K(X̄_Ω)^alg` centred on
+`U_Ω` which is a cusp place of some open `U_X ⊆ U` gives, through `σc`, a place `A` of
+`K(X̄)^alg` containing `K` and `t`, nontrivial on `F`. -/
+theorem ptPlace_data (UX : C.Xbar.Opens) (hUX : UX ≤ C.U) (hne : (UX : Set C.Xbar).Nonempty)
+    (W : ValuationSubring (FFClosure (geomCurve Ω C)))
+    (hW : IsCuspPlace Ω (subCurve C UX hUX hne) (compl_nonempty_of_le hUX hc.out) W)
+    (hWU : IsCentredOnU Ω C W) :
+    (∀ c : K, algebraMap K (FFClosure C.Xbar) c ∈
+        W.comap ((σc (Ω := Ω) (C := C)) : FFClosure C.Xbar →+* FFClosure (geomCurve Ω C))) ∧
+      (∃ f : F (curveGaloisData K hτ), (f : FFClosure C.Xbar) ∉
+        W.comap ((σc (Ω := Ω) (C := C)) : FFClosure C.Xbar →+* FFClosure (geomCurve Ω C))) ∧
+      coordT τ ∈
+        W.comap ((σc (Ω := Ω) (C := C)) : FFClosure C.Xbar →+* FFClosure (geomCurve Ω C)) := by
+  have hmem : ∀ y, y ∈ W.comap ((σc (Ω := Ω) (C := C)) : FFClosure C.Xbar →+*
+      FFClosure (geomCurve Ω C)) ↔ σc (Ω := Ω) (C := C) y ∈ W := fun _ => Iff.rfl
+  refine ⟨fun c => ?_, ?_, ?_⟩
+  · rw [hmem, ← σc_symm_algebraMap_K (Ω := Ω) (C := C) c, RingEquiv.apply_symm_apply]
+    exact hW.1 _
+  · -- `W ≠ ⊤`, so `σc⁻¹ W ≠ ⊤`, so it is nontrivial on `F` (`Ω` is integral over `F`)
+    obtain ⟨a, ha⟩ := not_forall.1 hW.2
+    by_contra hall
+    push Not at hall
+    haveI : Algebra.IsAlgebraic (F (curveGaloisData K hτ)) (FFClosure C.Xbar) :=
+      Algebra.IsAlgebraic.tower_top (K := K₀ K (coordT τ)) (F (curveGaloisData K hτ))
+    apply ha
+    rw [← RingEquiv.apply_symm_apply (σc (Ω := Ω) (C := C))
+      (secEmb Ω (subCurve C UX hUX hne) _ a)]
+    exact mem_of_isIntegral_map _ (algebraMap (F (curveGaloisData K hτ)) (FFClosure C.Xbar))
+      hall (RingHom.id _) (fun _ => rfl)
+      (Algebra.IsIntegral.isIntegral (R := F (curveGaloisData K hτ)) _)
+  · obtain ⟨a₀, ha₀⟩ := (mem_range_germ_iff hτ hU τ).2 (isIntegral_algebraMap
+      (R := Algebra.adjoin K {τ}) (A := C.Xbar.functionField)
+      (x := ⟨τ, Algebra.subset_adjoin rfl⟩))
+    have h1 := ((isCentredOn_geomOpen_iff Ω C hc.out W).1 hWU).2 a₀
+    rw [hmem]
+    change σc (Ω := Ω) (C := C) (algebraMap C.Xbar.functionField (FFClosure C.Xbar) τ) ∈ W
+    rw [← ha₀, ← σc_symm_secEmb (Ω := Ω) (C := C) a₀, RingEquiv.apply_symm_apply]
+    exact h1
+
+set_option synthInstance.maxHeartbeats 400000 in
+-- `Inv` on the quotient group `Π_U` is found slowly
+include hU in
+/-- **Distinct closed points of `U` have non-conjugate decomposition groups** ([GalSect]
+Thm 1.3 (i), `ptDecomps` form; number field `K`, compactification of genus `≠ 0` with a rational
+point): if the decomposition groups `arithDecomp W₁`, `arithDecomp W₂` of two places of
+`ptDecomps` (cusp places of opens `U_X, U_Y ⊆ U`, centred on `U_Ω`) satisfy
+`D_{W₂} ⊆ g D_{W₁} g⁻¹`, then `W₁` and `W₂` lie over the same closed point of `U`. -/
+theorem mem_iff_of_ptPlace_arithDecomp_le_conj (σ₀ : Spec (CommRingCat.of K) ⟶ C.Xbar)
+    (hσ₀ : σ₀ ≫ (C.Xbar ↘ Spec (CommRingCat.of K)) = 𝟙 (Spec (CommRingCat.of K)))
+    (hg : CurvesJacobian.curveGenus K C.Xbar ≠ 0)
+    (U₁ : C.Xbar.Opens) (hU₁ : U₁ ≤ C.U) (hne₁ : (U₁ : Set C.Xbar).Nonempty)
+    (U₂ : C.Xbar.Opens) (hU₂ : U₂ ≤ C.U) (hne₂ : (U₂ : Set C.Xbar).Nonempty)
+    {W₁ W₂ : ValuationSubring (FFClosure (geomCurve Ω C))}
+    (hW₁ : IsCuspPlace Ω (subCurve C U₁ hU₁ hne₁) (compl_nonempty_of_le hU₁ hc.out) W₁)
+    (hW₂ : IsCuspPlace Ω (subCurve C U₂ hU₂ hne₂) (compl_nonempty_of_le hU₂ hc.out) W₂)
+    (hW₁U : IsCentredOnU Ω C W₁) (hW₂U : IsCentredOnU Ω C W₂)
+    (g : (arithmeticExt Ω C hc.out).Pi)
+    (h : ∀ e : (arithmeticExt Ω C hc.out).Pi, e ∈ arithDecomp Ω C hc.out W₂ →
+      ∃ e' : (arithmeticExt Ω C hc.out).Pi, e' ∈ arithDecomp Ω C hc.out W₁ ∧ e = g * e' * g⁻¹)
+    (f : F (curveGaloisData K hτ)) :
+    σc (Ω := Ω) (C := C) (f : FFClosure C.Xbar) ∈ W₁ ↔
+      σc (Ω := Ω) (C := C) (f : FFClosure C.Xbar) ∈ W₂ := by
+  obtain ⟨hk₁, hn₁, ht₁⟩ := ptPlace_data hτ hU U₁ hU₁ hne₁ W₁ hW₁ hW₁U
+  obtain ⟨hk₂, hn₂, ht₂⟩ := ptPlace_data hτ hU U₂ hU₂ hne₂ W₂ hW₂ hW₂U
+  refine mem_iff_of_arithDecomp_le_conj' hτ hU σ₀ hσ₀ hg hk₁ hk₂ hn₁ hn₂ ht₁ ht₂ g
+    (fun e he => ?_) f
+  rw [comap_comap_σc] at he ⊢
+  exact h e he
+
+end PtDecomps
 
 end Iut.Reconstruction.Thm19

@@ -971,7 +971,9 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `exists_decompositionMap_eq_of_fixes`), **`mem_iff_of_arithDecomp_le_conj`** (arithmetic form
     for curves-jacobian's `arithDecomp` through `piBridge`). [GalSect] Thm 1.3 (i) checked in
     `Galois Sections.txt` l.265–266, 280–281.
-  * Remaining for item 1 (needed by item 3 (d)): for the places `W` of `ptDecomps` (cusp places of
-    an open `U_X ⊆ U`, centred on `U`), the closed-point data `hk`, `κ(W)` algebraic, `κ(W ∩ F)`
-    finite over `K` and `t ∈ W` after `σc` (the NF-point data of the session-g hand-off), to feed
-    `exists_gkLiftsTo` and `mem_iff_of_arithDecomp_le_conj`.
+  * Closed-point data (follow-up commit): `placeBelow`, `finiteDimensional_pointField` (`κ(A ∩ F)`
+    finite: image of the residue field of the place `A ∩ F`, weil-curves), `isIntegral_residueField_of_ne`
+    (`κ(A)` algebraic), `exists_gkLiftsTo_of_ne`; final forms **`mem_iff_of_decomp_le_conj`**,
+    **`mem_iff_of_arithDecomp_le_conj'`** (hypotheses only `k, t ∈ A`, `A ∩ F ≠ F`), and for the
+    places of `ptDecomps`: `ptPlace_data`, **`mem_iff_of_ptPlace_arithDecomp_le_conj`** (if
+    `D_{W₂} ⊆ g D_{W₁} g⁻¹` then `σc⁻¹W₁ ∩ F = σc⁻¹W₂ ∩ F`). Item 1 is complete for closed points.
