@@ -1019,3 +1019,77 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   the docstrings must say so.
 - (2) Genus ≥ 1 for item 1 is accepted, consistent with `cycloIso`. Genus 0 (`ThmCGenusZero*`) is not wired in.
 - (3) Session j is devoted to item 3: first (a)–(c), then the core (d), then (e) `mulEquivOfCocones`. Items 4–5 come after.
+
+* 2026-10-31 (MR9 track agent, lead christian-41, session j): worktree `~/mr8-iut`, branch `mr9-g`,
+  no pin change, no cj change. Item 3 (stages over `ψ`), parts (a)–(c) done, (d) started.
+  * **`Thm19/StageGeom.lean`** (merged 6622c22): (b) `newData_curveGaloisData`
+    (`newData (curveGaloisData k hτ) (coordT τ₀) = curveGaloisData k hτ₀`, both `H = H_L` fix the
+    image of `K(X)`; `galoisData_ext`), `fixes_L_constExt_iff`, **`stage_eq_constExt_newData`**
+    (`t′ ∈ L` ⇒ `stage D K₁ t′ = constExt K₁ (newData D t′)`); `mem_chartRing_iff_of_isAlgebraic`
+    (integrality over `K₁[t′]` = over `k[t′]`); (a) `exists_coord_regular` (a coordinate `z ∈ F`
+    regular wherever finitely many functions are, iterating `exists_smul_add_mem_imp`),
+    `mem_of_coeffs_mem`, **`exists_stage_ge_coord`** (every stage `(K₁, t′)` lies below a stage
+    `(K₁, z)` with `z ∈ L`: `z` regular at `t` and at the coefficients of the minimal polynomial of
+    `t′` over `L`; simpler than the compositum route of the session-i hand-off); (c)
+    **`chartOne_le_iff`** (`chartOne τ₀ ≤ chartOne τ ↔ coordT τ ∈ chartRing k (coordT τ₀)`, both
+    directions, `mem_chartOne_iff` + `curvePlaceEquiv` + extension of valuation rings).
+  * **`Thm19/ConstRestrict.lean`** (merged 6622c22): `gkFix K = G_K ⊆ G_k`, `fieldOf H`,
+    `gkFix_fieldOf` (closed `H`, infinite Galois theory), `finiteDimensional_fieldOf` (open `H`);
+    for `e : Π_U ≃ₜ* Π_{U'}` over `ψ : G_k ≃* G_{k'}` (exactly, `piToGk' ∘ e = ψ ∘ piToGk`):
+    `ψ(G_K)` is closed (image of a compact set; no continuity of `ψ` needed) and open,
+    **`constField e ψ K`** (`G_{K'} = ψ(G_K)`, finite over `k'`) and **`constIso e ψ K :
+    Π_{U_K} ≃ₜ* Π_{U'_{K'}}`** with `piRes ∘ constIso = e ∘ piRes`.
+  * **`Thm19/BelyiLift.lean`** (this hand-off's push): `IsCor38Lift Φ φ` (`φ : Π_V ≃ₜ* Π_{V₂}`
+    lies over `Φ` through `cor38Fill`, some base points), `exists_isCor38Lift` (`BelyiCuspSpec`
+    (d)), `IsCor38Lift.symm`, `.exists_pr`, `.iso` (isomorphism of cuspidal extensions,
+    `arithmeticExtIso'`), `arithInertia_le_ker_cor38Fill_iff` (a cusp of `V` is killed in `Π_U`
+    iff centred on `U_Ω`), **`IsCor38Lift.exists_cusp`** (cusps `I_W ↦ I_{W₂}`, centred on `U`
+    iff centred on `U'`, `Φ(D_W) ~ D_{W₂}`; factored out of `map_mem_ptDecomps`);
+    `ffEmb_subCurve` (`ι` independent of the open), `isCentredOnU_subCurve_iff`, `SamePt`,
+    `SamePt.isCentredOnU_iff`, `isCentredOnU_of_comap_eq`, `isCuspPlace_of_not_isCentredOnU`,
+    `isCentredOnU_mono`, **`samePt_of_arithDecomp_conj`** (item 1 in `SamePt` form).
+* Hand-off 2026-10-31 (MR9 track agent, session j, lead christian-41): merged iut 6622c22
+  (`StageGeom`, `ConstRestrict`) and the push of `BelyiLift` + this hand-off (hash in
+  ~/session2-status.md). WIP: branch `wip-mr9-j` (local, in `~/mr8-iut`), file
+  `Iut/Reconstruction/Thm19/BelyiMono.lean` (not in `Iut.lean`): **`IsCor38Lift.le_of_le`**
+  (lifts are monotone in the open: `V ⊆ V♮` ⇒ `V₂ ⊆ V₂♮`; proof complete except that it calls
+  curves-jacobian `LocAn.exists_isCuspPlace_comap_eq` — a place over a point `x ∉ U` that is a
+  cusp place — whose module `CurvesJacobian.LocAn.SectionBridgeCusp` is not in iut's closure; either
+  import it (check the shell-lint allowlist) or reprove it, it needs `mem_of_germ_mem_stalkVS`).
+  Next steps for item 3 (d)–(e), in order (the math is worked out; sizes are guesses):
+  1. finish `le_of_le` (above, ~40 lines).
+  2. **Fill composition (L0, ~80 lines)**: for `V ⊆ V♮ ⊆ U`, `∃ c, cor38Fill_{V♮→U} ∘
+     cor38Fill_{V→V♮} = conj c ∘ cor38Fill_{V→U}` (note `subCurve (subCurve C V♮) V` is
+     `subCurve C V` definitionally); tools: pi1 `fundamentalGroupMap_comp`, cj
+     `fundamentalGroupMap_autContinuousMulEquivOfIso`, `autContinuousMulEquivOfIso_self`
+     (automorphism of a fiber functor acts by conjugation).
+  3. **Compatibility of lifts (L3, ~250 lines)**: for lifts `φ` on `V`, `φ♮` on `V♮ ⊇ V`, fills
+     `f`, `f₂`: `∃ m, f₂ ∘ φ = conj m ∘ φ♮ ∘ f`. (i) killed cusps correspond: `W` centred on `V♮`
+     iff `W₂` centred on `V₂♮` (as in `le_of_le`, item 1 on both sides); (ii) hence
+     `φ(ker f) = ker f₂` (cj `ker_fillMap_eq_closure_killedCusps₂` + `ker_cor38Fill₂`);
+     (iii) `f₂ ∘ φ = θ ∘ φ♮ ∘ f` with `θ` a continuous automorphism of `Π_{V₂♮}` (same kernels,
+     compact → Hausdorff); (iv) by L0 and the lift equations `cor38Fill ∘ θ = conj d ∘ cor38Fill`;
+     correct by a preimage of `d` and apply `BelyiCuspSpec` (e) for `C₂` ⇒ `θ` inner.
+  4. **Galois fill vs arithmetic fill (L5, ~200 lines)**: `∃ c, cor38Fill (piBridge_V x) =
+     c · piBridge_U (piT x) · c⁻¹` for the Galois-model fill `piT : Π(curveGaloisData hτ_V) →
+     Π(curveGaloisData hτ)`; via `piBridge_mk`, cj `fillMap_arithAction`, `arithAction_fillCurve`,
+     `castFill`; `σc` of `subCurve` and of `C` differ by an element of `Gal(K(X̄)^alg/K(X̄)) = H`
+     (both are `K(X̄)`-isomorphisms, `ffEmb` is independent of the open), which acts by an inner
+     automorphism of `Π_U`.
+  5. **Normalisation over `ψ` and constant fields**: transport each lift to the Galois model
+     (`bridgeIso` of `h.iso`), compose with an inner automorphism so that it lies over
+     `ψ = gkIso Φ` exactly; then every comparison element `m` above has `pr m` central in `G_{K'}`,
+     hence `pr m = 1` (slimness of `G_K`, cj `isSlim_Gk`) and conjugation by `m` preserves every
+     `Π_{V_{K₁'}}`. Restrict by `constIso` (one `K₁' = constField ψ K₁` for all opens); coefficients
+     `zHatRes ∘ cycloIso ∘ zHatRes` (`cycloIso_smul` gives equivariance; the action on `Ẑ(1)` only
+     depends on `piToGk`).
+  6. **(e) Assembly**: cocone `H1S D s → H1Lim D'` via a geometric stage above `s`
+     (`exists_stage_ge_coord`, `stage_eq_constExt_newData`, `chartOne_le_iff`), well defined and
+     compatible by 3 + `ContH1.map_conj_eq_self`; the reverse cocone from the lifts of `Φ⁻¹`;
+     mutually inverse because `Λ'_{V₂} ∘ Λ_V` is a lift of the identity, hence (L3 with `Φ = id`)
+     conjugate to the identification of the two coordinates of the same open (`le_of_le` both
+     ways); then `mulEquivOfCocones`.
+  Decisions for the lead: (i) import cj `LocAn.SectionBridgeCusp` into iut (only for
+  `exists_isCuspPlace_comap_eq`) or reprove it in iut? (ii) item 3 needs ≈ 1000 more lines
+  (steps 1–6); keep it at full priority before items 4–5, or first do item 4 for a fixed open
+  (residues, `P_V`, Prop 1.8 tests at the base stage), which does not need the colimit?
