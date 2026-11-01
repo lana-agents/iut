@@ -497,6 +497,7 @@ import Iut.Reconstruction.Thm19.ConstExtThmC
 import Iut.Reconstruction.Thm19.ConstGk
 import Iut.Reconstruction.Thm19.ConstInertia
 import Iut.Reconstruction.Thm19.ConstRestrict
+import Iut.Reconstruction.Thm19.CuspDecomp
 import Iut.Reconstruction.Thm19.CuspPrincipal
 import Iut.Reconstruction.Thm19.CuspSync
 import Iut.Reconstruction.Thm19.CycloBridge
@@ -536,7 +537,6 @@ import Iut.Reconstruction.Thm19.StageJac
 import Iut.Reconstruction.Thm19.StageLift
 import Iut.Reconstruction.Thm19.StageNF
 import Iut.Reconstruction.Thm19.StagePiJ
-import Iut.Reconstruction.Thm19.CuspDecomp
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
 import Iut.Reconstruction.Uchida.FunctionField
