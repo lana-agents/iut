@@ -199,10 +199,11 @@ The abelian environments `Env` and their algorithm were superseded by the nonabe
 * (10b) `TemperedFrobenioidData Π` on `B^temp(Π)⁰` (replacing the earlier interface with a
   realization functor into `TempObj` and assumed connectedness/total epimorphicity);
   `isFrobenioid`.
-* (10c) `thetaData χ` (divisors pulled back from the `ℤ`-chain of components of `Y`; theta
-  monomial divisors `a + b·j + c·j²`), `thetaData_isFrobenioid`; `divTheta = -j²`,
-  `pb_deck_divTheta` (divisor form of Prop. 1.4(ii)).
-* (10d) `tateThetaData T V hV` for `Π^tp_X = temperedPi1` of the Tate curve and
+* (10c) `thetaData χ hs` (MR18 T7b: `Φ₀` = `PrimeDiv.divMonoid` on the elliptic prime set
+  `ℤ ⊕ Cusps` with `ℚ`-coefficients; theta monomial divisors `(a + b·j + c·j²)/2`, `-c` at the
+  cusps), `thetaData_isFrobenioid`; `divTheta` = the genuine divisor of `Θ̈`
+  (`-j²/2`, `1` at the cusps), `pb_deck_divTheta` (divisor form of Prop. 1.4(ii)).
+* (10d) `tateThetaData T V hV hs` for `Π^tp_X = temperedPi1` of the Tate curve and
   `χ = TateObject.character`; `tateThetaData_isFrobenioid`; `tateY` (its subgroup is `Π^tp_Y`
   of (6a)).
 

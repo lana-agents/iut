@@ -32,6 +32,10 @@ the spectral norm only depends on the minimal polynomial (`minpoly.algHom_eq`). 
 * `PadicEmbed.completeSpace_of_finiteDimensional`, `PadicEmbed.isUltrametricDist`: a finite
   normed extension of `ℚ_p` satisfies the standing hypotheses `[CompleteSpace L]`,
   `[IsUltrametricDist L]` of `RatFunBase.lean`.
+* `PadicEmbed.exists_norm_eq_rpow_padicAlgCl`, `PadicEmbed.exists_norm_eq_rpow_padicComplex`:
+  the value groups of `\bar{ℚ}_p` and `ℂ_p` lie in `p^ℚ` (spectral norm = `|a₀|^{1/d}` for the
+  minimal polynomial; density of `\bar{ℚ}_p` in `ℂ_p` and the ultrametric inequality). This is the
+  hypothesis `ValueGroupRat` of `EllDiv.lean` for `ℂ_p` (`valueGroupRat_padicComplex`).
 -/
 
 namespace Iut.Frobenioid.BAn.PadicEmbed
@@ -89,5 +93,37 @@ theorem norm_algHom_padicComplex (ψ : L →ₐ[ℚ_[p]] ℂ_[p]) (x : L) : ‖�
   have hy : minpoly ℚ_[p] y = minpoly ℚ_[p] x :=
     (IntermediateField.minpoly_eq y).trans (minpoly.algHom_eq ψ ψ.injective x)
   exact congrArg spectralValue hy
+
+/-! ### The value groups of `\bar{ℚ}_p` and `ℂ_p` are `p^ℚ` -/
+
+variable (p)
+
+/-- Every nonzero element of the algebraic closure of `ℚ_[p]` has norm in `p ^ ℚ`. -/
+theorem exists_norm_eq_rpow_padicAlgCl (x : PadicAlgCl p) (hx : x ≠ 0) :
+    ∃ m : ℚ, ‖x‖ = (p : ℝ) ^ (m : ℝ) := by
+  have hint : IsIntegral ℚ_[p] x := Algebra.IsIntegral.isIntegral x
+  have hc : (minpoly ℚ_[p] x).coeff 0 ≠ 0 := minpoly.coeff_zero_ne_zero hint hx
+  refine ⟨(-((minpoly ℚ_[p] x).coeff 0).valuation : ℚ) / (minpoly ℚ_[p] x).natDegree, ?_⟩
+  have hp : (0 : ℝ) < p := Nat.cast_pos.mpr (Fact.out : p.Prime).pos
+  rw [← PadicAlgCl.spectralNorm_eq, spectralNorm.spectralNorm_eq_norm_coeff_zero_rpow,
+    Padic.norm_eq_zpow_neg_valuation hc, ← Real.rpow_intCast, ← Real.rpow_mul hp.le]
+  push_cast
+  ring_nf
+
+/-- Every nonzero element of `ℂ_[p]` has norm in `p ^ ℚ`. -/
+theorem exists_norm_eq_rpow_padicComplex (x : ℂ_[p]) (hx : x ≠ 0) :
+    ∃ m : ℚ, ‖x‖ = (p : ℝ) ^ (m : ℝ) := by
+  have hpos : 0 < ‖x‖ := norm_pos_iff.mpr hx
+  obtain ⟨y, hy⟩ : ∃ y : PadicAlgCl p, dist x y < ‖x‖ :=
+    (UniformSpace.Completion.denseRange_coe.exists_dist_lt x hpos)
+  have hyx : ‖(y : ℂ_[p]) - x‖ < ‖x‖ := by rwa [← dist_eq_norm, dist_comm]
+  have hy0 : y ≠ 0 := by
+    rintro rfl
+    simp at hyx
+  obtain ⟨m, hm⟩ := exists_norm_eq_rpow_padicAlgCl p y hy0
+  refine ⟨m, ?_⟩
+  have h := IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm hyx.ne'
+  rw [add_sub_cancel, max_eq_left hyx.le, PadicComplex.norm_extends] at h
+  rw [← h, hm]
 
 end Iut.Frobenioid.BAn.PadicEmbed

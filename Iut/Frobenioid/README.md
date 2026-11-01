@@ -57,11 +57,13 @@ challenge or by `Iut/Concrete/*`.
        `OrbitHom.bijective_of_isFSM` (monomorphisms are injective);
      - (c2) `TemperedFrobenioidData Π` (`Φ₀`, `B₀`, `div₀` on `B^temp(Π)⁰`) and
        `TemperedFrobenioidData.isFrobenioid` without further hypotheses;
-     - (c3) for a character `χ : Π → ℤ`: `divMonoid χ` (invariant `ℤ`-valued divisors on
-       `(Π/H) × ℤ`, the special-fibre divisors pulled back from the `ℤ`-chain of components of
-       `Y`), `thetaGrp χ` (divisors `a + b·j + c·j²` of the theta monomials `√q^a Ü^b Θ̈^{-c}`),
-       `thetaData χ`, `thetaData_isFrobenioid`;
-     - (c4) on `Y = Π/ker χ`: `divTheta = -j²`, `divU = j`, and the functional equation
+     - (c3) for a character `χ : Π → ℤ` and the analytic model `Ÿ_∞ = 𝔾_m^an` (Tate parameter
+       `t`, `s² = q`): `ellDivMonoid χ hs` = `PrimeDiv.divMonoid` on the elliptic prime set
+       `ℤ ⊕ Cusps` with `ℚ`-coefficients, `ord(q) = 1` (MR18 T7b, `Tempered/EllDiv.lean`),
+       `thetaGrp χ hs` (divisors `(a + b·j + c·j²)/2`, `-c` at the cusps, of the theta monomials
+       `q^{a/2} Ü^b Θ̈^{-c}`), `thetaData χ hs`, `thetaData_isFrobenioid`;
+     - (c4) on `Y = Π/ker χ`: `divTheta`, `divU`, `divOne` are the genuine divisors
+       (`BAn.ellDiv`) of `Θ̈`, `Ü`, `q^{1/2}`, and the functional equation
        `pb_deck_divTheta` (divisor form of [EtTh], Prop. 1.4(ii));
      - (c5) `tateThetaData`: the instance for `Π = temperedPi1` of the Tate curve and
        `χ = TateObject.character` (`tempered-fundamental-groups`), with
