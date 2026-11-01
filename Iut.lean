@@ -224,6 +224,7 @@ import Iut.EtaleTheta.ThetaLevelRational
 import Iut.EtaleTheta.ThetaLevelSystem
 import Iut.EtaleTheta.ThetaLevelUnit
 import Iut.EtaleTheta.ThetaProp13
+import Iut.EtaleTheta.ThetaKerTheta
 import Iut.EtaleTheta.ThetaPullback
 import Iut.EtaleTheta.ThetaQuotIsogeny
 import Iut.EtaleTheta.ThetaQuotient

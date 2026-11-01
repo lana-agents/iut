@@ -281,6 +281,13 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   level), **`classAt_deltaTheta`**, `classAt_cusp_surjective`, concrete
   **`exists_thetaClassTemp_deltaTheta`**: `thetaClassTemp η n` on `I_x ↠ Δ_Θ` is `proj_n ∘ e`, and
   onto `μ_n`. Not done: the class comes from `(Π^tp_Y)^Θ` (MR15's `hη13`).
+* (11i) `ThetaKerTheta.lean` (**[EtTh] Prop. 1.3, "the class comes from `(Π^tp_Y)^Θ`", reduced to
+  a Heisenberg condition**, MR14 run 14): `thetaKernelTemp` (`Kθ = Ker(Δ^tp_X ↠ Δ_X^Θ)`),
+  `thetaKernel_fixes` (field automorphisms: if the commutators of `Δ` fix `B` (F1) and
+  `σ(η) ∈ k̄·B^n·η` for `σ ∈ Δ` (F2), then `[[Δ, Δ], Δ]` fixes `η^{1/n}`),
+  `ambientKernel_le_ambientKernel_level`, **`classAt_eq_one_of_thetaKernel`** (generic levels:
+  under C1, (F1), (F2) at the level `j`, the theta class is `1` on `Π^tp_Ÿ ∩ Kθ`; the form of
+  MR15's `hη13`). Not done: (F1), (F2) for the theta system (`MR14-plan.md`, run 14).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
