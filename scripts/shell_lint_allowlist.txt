@@ -200,6 +200,12 @@ Iut.Frobenioid.FracIdealHom.integral	def
 Iut.Reconstruction.Thm19.GStage.fin	def
 Iut.Reconstruction.Thm19.GStage.hτ₀	def
 Iut.Reconstruction.Thm19.GStage.htV	def
+Iut.Reconstruction.LiftData.gal	def
+Iut.Reconstruction.LiftData.hb	def
+Iut.Reconstruction.LiftData.he	def
+Iut.Reconstruction.LiftData.htV	def
+Iut.Reconstruction.LiftData.hυ	def
+Iut.Reconstruction.LiftData.hφ	def
 Iut.Reconstruction.Thm19.StageIdx.fin	def
 Iut.Reconstruction.Thm19.StageIdx.ht'	def
 Iut.Reconstruction.Thm19.StageIdx.htV	def

@@ -497,6 +497,7 @@ import Iut.Reconstruction.Thm19.CycloIso
 import Iut.Reconstruction.Thm19.DecompIso
 import Iut.Reconstruction.Thm19.GeomLim
 import Iut.Reconstruction.Thm19.LimCongr
+import Iut.Reconstruction.Thm19.LimIso
 import Iut.Reconstruction.Thm19.NFAdditive
 import Iut.Reconstruction.Thm19.NFColimit
 import Iut.Reconstruction.Thm19.NFDecomp
