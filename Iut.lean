@@ -228,6 +228,7 @@ import Iut.EtaleTheta.ThetaQuotient
 import Iut.EtaleTheta.ThetaRigidity
 import Iut.EtaleTheta.ThetaTempered
 import Iut.EtaleTheta.ThetaTemperedClass
+import Iut.EtaleTheta.ThetaTemperedCusp
 import Iut.EtaleTheta.ThetaTemperedPoint
 import Iut.EtaleTheta.ThetaTranslate
 import Iut.EtaleTheta.ThetaValues

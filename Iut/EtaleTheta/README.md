@@ -206,7 +206,7 @@ The abelian environments `Env` and their algorithm were superseded by the nonabe
   `χ = TateObject.character`; `tateThetaData_isFrobenioid`; `tateY` (its subgroup is `Π^tp_Y`
   of (6a)).
 
-### (11) The étale theta class on `Π^tp_Ÿ` (`ThetaTempered.lean`, `ThetaTemperedClass.lean`, `ThetaTemperedPoint.lean`) — done modulo C1
+### (11) The étale theta class on `Π^tp_Ÿ` (`ThetaTempered.lean`, `ThetaTemperedClass.lean`, `ThetaTemperedPoint.lean`, `ThetaTemperedCusp.lean`) — done modulo C1
 
 The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted on 2026-10-26
 (MR14 run 7). The class is now built from the tempered fundamental group itself:
@@ -236,9 +236,10 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `piYddotX` is the [EtTh] `Π^tp_Ÿ` (`Ÿ = Y_2`, `[Π^tp_Y : Π^tp_Ÿ] = 2`, `Π^tp_Ẍ/Π^tp_Ÿ ≅ ℤ`):
   argued in `MR14-plan.md` ("D13 check", ET l.962–981, 1727–1766), not a Lean proof.
 * (11d) `ThetaTemperedPoint.lean` ([EtTh] Prop. 1.4(iii) at points, tempered, under C1):
-  `galoisToTempered` is natural in maps of orbifolds and lands in `Π^tp_Ÿ` for Galois elements
+  `galoisToTempered` (naturality `temperedPi1Map_galoisToTempered` and `exists_le_comap_eq` now
+  in `tempered-fundamental-groups`, `Tempered/CuspInertia.lean`) lands in `Π^tp_Ÿ` for Galois elements
   fixing `L 0`; **`classAt_galois`** (the class on Galois elements is `σ ↦ σα/α`, `α^n = η_j`);
-  places and base points inside them (`exists_le_comap_eq`, `mem_place_iff`,
+  places and base points inside them (`mem_place_iff`,
   `exists_kummer_close`); **`classAt_place`** (`ClassAtPoint`: at a place where `η_j` has residue
   `b ∈ k^×`, the class on the decomposition group is the Kummer cocycle of `b`); concrete
   **`exists_thetaClassTemp_points`**: at every Tate point `u`, the Kummer cocycle of `Θ̈(u^{N_j})`.
@@ -259,6 +260,15 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   the Kummer character of a uniformiser of `W ∩ L_j` (the tame character mod `n`). Via
   `ι : K(E_Q) → Ω` (`pullbackT`, `ι f = η_j`, `ι R = τ`), `exists_placeOf_comap`,
   `cuspTameAt_level`.
+* (11f) `ThetaTemperedCusp.lean` ([EtTh] Prop. 1.4(i) at the cusp, tempered, under C1; MR14 run 12):
+  for a base point `V ≤ W` the inertia group `I_W` of `tempered-fundamental-groups`
+  (`inertiaGroup`, `inertiaToTempered`) lands in `Π^tp_Ÿ` for elements fixing `L 0`
+  (`inertiaToTempered_mem_piYddotX`, `toLevel_inertiaToTempered`); **`classAt_inertia`**:
+  `classAt η j n` on these elements is `κ_n(η_j)` on `I_W ∩ H_j`; **`classAt_cuspTame`**
+  (`ClassAtCusp`, conclusion-only Prop def: the Kummer character of a uniformiser), also through
+  ckt's `inertiaZHatEquiv : I_W ∩ H_j ≃ₜ* Ẑ(1)` (`ClassAtCusp.exists_inertiaZHatEquiv`); concrete
+  **`exists_thetaClassTemp_cusps`**: at every place `W` over the cusp (`τ ∉ W`), every base point
+  `V ≤ W` and `n ∣ N_j`.
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
