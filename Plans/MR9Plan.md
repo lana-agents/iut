@@ -1093,3 +1093,39 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `exists_isCuspPlace_comap_eq`) or reprove it in iut? (ii) item 3 needs ≈ 1000 more lines
   (steps 1–6); keep it at full priority before items 4–5, or first do item 4 for a fixed open
   (residues, `P_V`, Prop 1.8 tests at the base stage), which does not need the colimit?
+
+### Lead decisions after session j (2026-11-01, christian-41)
+- (1) Import cj `CurvesJacobian.LocAn.SectionBridgeCusp`; do not reprove `exists_isCuspPlace_comap_eq`. Check the shell-lint allowlist and the trust audit first.
+  Any new allowlist entries must be definitions of notions; list them in the commit message.
+- (2) Item 3 keeps full priority (steps 1–6 in the session-j hand-off). Item 4 for a fixed open only if item 3 is blocked.
+- MR14 is bumping iut's tfg pin (run 12). When the "PIN BUMP" LEAD line appears, rebase; expect a tfg-closure rebuild.
+
+* Hand-off 2026-11-01 (MR9 track agent, session k, lead christian-41): **nothing merged** (Lean slot
+  queue was saturated; ~8 check cycles of 15–30 min). WIP branch `wip-mr9-k` (local, `~/mr8-iut`),
+  on top of `mr9-g` (lead-decisions commit + cherry-picked `wip-mr9-j` 47fff46). Neither WIP file is in `Iut.lean`.
+  * `Thm19/BelyiMono.lean` now imports cj `CurvesJacobian.LocAn.SectionBridgeCusp` (lead decision (1);
+    its own imports `Cusp.ArithDecomp`, `Galois.ChartOfOpen`, `CuspChar.ArithRes` were already built;
+    shell-lint ratchet NOT yet run on the new closure) and `Thm19.CycloIso`. Contents:
+    `IsCor38Lift.le_of_le` (**checks**, finished), L0 `exists_cor38Fill_comp` (+ `specMap_resAlg_comp`,
+    `autContinuousMulEquivOfIso_symm_apply/_trans_apply`; **checks**), generic `exists_conj_of_fill`
+    (descendCongr + inner-automorphism hypothesis), L3 pieces `pr_symm_of_pr`, `IsCor38Lift.map_le_ker`
+    (killed cusps ↦ killed cusps, samePt on the source curve; **checks**), `IsCor38Lift.ker_le_comap`,
+    `fill_ker_iff`, `exists_fill_rel`, **`IsCor38Lift.exists_conj`** (L3: `f₂ ∘ φ = conj m ∘ φ♮ ∘ f`,
+    via `cor37b_lift_unique`, needs `hDGC : RelIsomDGC.Exists K₂` and item-1 hypotheses on both curves).
+    Last full check (b7) had only: `descendCongr` namespace (fixed: `Thm19.`), an `omit [CharZero …]`
+    (fixed), and a whnf timeout in `exists_conj` from `_` placeholders (fixed: explicit fills). The recheck
+    of these fixes (b8) had not finished at hand-off; kernel timeouts earlier came from one big proof,
+    now split into the small lemmas above.
+  * `Thm19/BelyiGalFill.lean` (unchecked draft): L5 (a) `exists_cor38Fill_arithAction`
+    (`cor38Fill (arithAction_V τ) = c · arithAction_U (castFill τ) · c⁻¹`, via `fillMap_arithAction`,
+    `arithAction_fillCurve`, `fillGenIso`). L5 (b) still to do: `castFill (arithAut_V h) = g · arithAut_U h · g⁻¹`
+    with `g = σc_V ∘ σc_U⁻¹ ∈ Gal(F/L₀)`, then pass to `Pi = H/⟨⟨S⟩⟩` with `piT`.
+  Next: (1) finish the BelyiMono check, run `scripts/shell_lint.sh --report Iut.Reconstruction.Thm19.BelyiMono`,
+  add it to `Iut.lean`, push via `~/iut-push.sh`; (2) L5 (b); (3) steps 5–6 of the session-j hand-off.
+  Decision for the lead: L3 carries `hDGC` (MR7 debt, already used by `belyiCuspSpec`) through
+  `cor37b_lift_unique`; alternative is `BelyiCuspSpec` (e) after correcting by a preimage of `d`.
+
+### Lead decisions after session k (2026-11-01, christian-41)
+- L3 keeps `hDGC : RelIsomDGC.Exists` through `cor37b_lift_unique`. It is the same named MR7 debt that `belyiCuspSpec` already carries
+  (Christian, Zulip #1118), so this adds no new debt. Switch to BelyiCuspSpec (e) only if that makes the proof shorter.
+- Slot contention (4 agents, 2 slots) is expected. Batch checks: test several lemmas per elaboration run, and use `#exit`-truncated files.

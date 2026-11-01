@@ -462,6 +462,7 @@ import Iut.Reconstruction.Thm19.ArithBridge
 import Iut.Reconstruction.Thm19.ArithBridgeDecomp
 import Iut.Reconstruction.Thm19.ArithBridgeGk
 import Iut.Reconstruction.Thm19.BelyiLift
+import Iut.Reconstruction.Thm19.BelyiMono
 import Iut.Reconstruction.Thm19.ClosedPointDecomp
 import Iut.Reconstruction.Thm19.ConstExtThmC
 import Iut.Reconstruction.Thm19.ConstRestrict
