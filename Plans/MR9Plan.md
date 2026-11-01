@@ -1371,3 +1371,54 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
      Kummer-faithfulness `isKummerFaithfulJac_stage_curve_numberField`), and `LiftData.S (PU) = PU`.
   Steps 4 (`RecRange` tests via `map_ptDecomps_eq'`) and 5 (`recTriple N ≅ recTriple N'`) not started.
   Decision for the lead: none blocking. Estimate for (a)–(c): 2 sessions.
+
+* Hand-off 2026-11-01 (MR9 track agent, session p, lead christian-41): worktree `~/mr8-iut`, branch `mr9-n`.
+  Item 4 step 3 (a) is done, plus the place/inertia matching needed for (c). Pushed via `~/iut-push.sh`
+  (validation + comparator rc=0; hashes in ~/session2-status.md):
+  * c4d3fee **`Thm19/CuspDecomp.lean`**: generic `range_decompToPi_eq_map_decompH'`,
+    `ratPoint_exists_piToGk_decompToPi` (`D_x ↠ G_k` for rational points, cusps included), `map_piRes_inertiaH`,
+    `map_piRes_decompH`, **`commensurator_inertiaH_constExt`**, **`commensurator_inertiaH_curve`** (`Comm(I_W) = D_W`
+    at cusp places, `commensurator_arithInertia` along `piBridge`), `GStage.commensurator_inertiaH`, `map_conj_inertiaH`
+    (`b I_W b⁻¹ = I_{τW}`), `map_map_eq_of_comm`; **`LiftData.exists_map_inertiaH_e`**,
+    **`LiftData.exists_map_inertiaH_constIso`** (subgroup *equalities* `E(I_W) = I_{W''}`, stronger than the pointwise
+    `MapsCuspInertia`), **`LiftData.map_decompH_constIso`** (`E(D_W) = D_{W''}`), `LiftData.gkLiftsTo`,
+    `LiftData.cuspPoint` (image of a `K₁`-rational cusp is `ψ(K₁)`-rational, via `ratPointConstExt`),
+    generic **`diffClass_sectionCongr_eq_one`** (matching decomposition groups ⇒ trivial difference class of `t_x`),
+    `etaDiv_mapDomain'`/**`eta_mapDomain'`** (sections matched on the support only), and
+    **`LiftData.exists_cusp_tSection`** (step (a): for a `K₁`-rational cusp `x` a `ψ(K₁)`-rational cusp `y` with
+    `E(I_x) = I_y` and `diffClass (sectionCongr (t_x)) (t_y) = 1`), **`LiftData.eta_mapDomain'`**.
+    Design note: `β` is not a global function (non-cusp rational points would need Belyi cuspidalization);
+    `eta_mapDomain'` only needs `hβ` on `f.support`, so in (c) take `β x := if h : cusp x then (exists_cusp_tSection
+    x h).choose else y₀` with `y₀` the image of any point of the support (the case `f = 0` is trivial).
+  * (second push) **`Thm19/PlaceConj.lean`**: `exists_transPlace_eq_of_comap_eq`, **`exists_conj_inertiaH_of_comap_eq`**
+    (same place of `F` ⇒ conjugate inertia), **`mem_iff_of_map_inertiaH_eq`** (equal inertia over the same place of `F`
+    + `Comm(I_W) = D_W` ⇒ same place of `Ω_U`), `kernel_fix_F_constExt`, `comap_eq_of_map_inertiaH_eq_curve`
+    (curves-jacobian `comap_ffEmb_eq_of_arithInertia_conj` along `piBridge`), **`GStage.comap_eq_of_conj_inertiaH`**
+    (conjugate inertia ⇒ same place of `F_{K₁}`: the stage is not a curve over `K₁`, the proof goes through `Π_V`,
+    `Comm = D` and `ker(H ↠ Π_V)` fixing `F_{K₁}`), **`LiftData.comap_eq_iff`** (the stage isomorphism matches
+    "same place of `F_{K₁}`" for cusps with the same for the image cusps), `LiftData.exists_map_inertiaH_e_symm`,
+    `LiftData.map_inertiaH_constIso_of_e`, **`LiftData.exists_map_inertiaH_constIso_symm`** (every cusp inertia group
+    of the target stage is the image of one of the source), `mapDomain_apply_eq_of_iff`, `ratDivF_apply_eq_of_iff`,
+    **`divAt_ratDivF_eq_of_iff`** (the `divAt` half of (b)).
+  No new debts, no allowlist entries.
+  **Next.**
+  (b-i) *`χ(tameGen p) = tameGen p'`* (the only missing input of (c)). Findings: `cycloIso Φ = natIsoHatK' ∘ mxCongr ∘
+     natIsoHatK⁻¹` (CycloIso:457) and `natIsoHatK` is levelwise `natIsoBar`, characterised by `taut ↦ c₁(deg 1)`
+     (not group-theoretic). With `syncEquivBar_inertiaToCusp` (CuspSync:326) the claim becomes
+     `mxCongr (syncEquivBar_x (inertiaToCusp σ)) = syncEquivBar_{x'} (inertiaToCusp σ')`, i.e. **functoriality of the
+     synchronisation of [AbsTopIII] Prop 1.4 (ii)** (T3 l.1771–1802). Route: by `IsCuspPushout.mk_eq_natIso_syncEquiv`
+     (CJ SyncZHat:200) `natIso` cancels and `sync_x mod n` is *the* `s : I_x ≅ M_X/n` whose pushout of
+     `1 → I_x → Δ^{c-cn}_{U_x} → Δ_X → 1` has class `taut_n` (uniqueness: `s' = u s`, the class scales by `u`, `taut_n`
+     has order `n`); transport needs `Φ ⇒ Δ^{c-cn}_{U_x} ≅ Δ^{c-cn}_{U'_{x'}}` compatible with `deltaBarCongr`, i.e. a
+     bridge from the Galois model `Π_U` (over `k`) to curves-jacobian's `π₁ᵉᵗ(U_x)` over `k̄` (`barData`, `genericL`,
+     `inertiaToCusp`), plus naturality of `taut`. At the stages also `tameGen` of `constExt` vs base (`F_{K₁}/F`
+     unramified) and `constCyclo`/`cycloVχ` (`zHatRes`). Estimate 1000–1500 lines, 2–3 sessions.
+  (c) *`LiftData.S (P_V) = P_{V'}`* given (b-i): at a stage with all cusps `K₁`-rational, `mem_PU_iff_principal` on both
+     sides (target `hrat` from `exists_map_inertiaH_constIso_symm` + `gkLiftsTo`), principality by `eta_eq_one_iff_principal`
+     with `isKummerFaithfulJac_stage_curve_numberField` and `LiftData.eta_mapDomain'`, residues by the residue formula at
+     `p' = (W'', E σ)` (`evalTriv_h1Congr`) with `W''` from `exists_map_inertiaH_constIso(_symm)`, `divAt_ratDivF_eq_of_iff`
+     and `LiftData.comap_eq_iff`; non-cusp `p'`: `res_eq_one_of_mem` and `divAt = 0`.
+  Steps 4 (`RecRange` tests via `map_ptDecomps_eq'`) and 5 (`recTriple N ≅ recTriple N'`) not started (both need (c)).
+  **Decision for the lead:** (b-i) is a self-contained, large piece (functoriality of Prop 1.4 (ii)). Either keep it in
+  MR9 (2–3 sessions before (c)), or let (c)/steps 4–5 proceed in parallel with an honestly named hypothesis
+  `hsync : ∀ p p', … → χ (tameGen p) = tameGen p'` recorded as a debt here, discharged later by (b-i).

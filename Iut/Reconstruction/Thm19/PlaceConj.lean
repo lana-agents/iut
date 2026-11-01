@@ -27,7 +27,10 @@ Geometry III.txt` l.2153–2157) along the stage isomorphisms (MR9 item 4, step 
   and **`GStage.comap_eq_of_conj_inertiaH`**: cusps of a geometric stage with conjugate inertia
   groups lie over the same place of `F_{K₁}` (the converse of `exists_conj_inertiaH_of_comap_eq`);
 * **`LiftData.comap_eq_iff`**: the stage isomorphism matches "same place of `F_{K₁}`" for cusps
-  with "same place of `F_{ψ(K₁)}`" for their image cusps.
+  with "same place of `F_{ψ(K₁)}`" for their image cusps;
+* `LiftData.exists_map_inertiaH_e_symm`, `LiftData.map_inertiaH_constIso_of_e`,
+  **`LiftData.exists_map_inertiaH_constIso_symm`**: every cuspidal inertia group of the target
+  stage is the image of one of the source stage.
 -/
 
 open CategoryTheory AlgebraicGeometry Pi1 Pi1.Orbifold KummerTheory KummerTheory.Curve
@@ -113,7 +116,8 @@ theorem mem_iff_of_map_inertiaH_eq (W₁ W₂ : ValuationSubring Ω)
   rw [AlgEquiv.apply_symm_apply] at h3
   exact h3
 
-/-- **`ker(H ↠ Π_U)` fixes `F_{K₁}`** (it comes from the kernel of the extension of the field of constants,
+/-- **`ker(H ↠ Π_U)` fixes `F_{K₁}`** (it comes from the kernel of the extension of the field of
+constants,
 `ambientKernel_le_map_constExt`, whose elements fix `F_{K₁} = Ω^{H_{K₁}}`). -/
 lemma kernel_fix_F_constExt (K₁ : IntermediateField k Ω) [FiniteDimensional k K₁] {κ : D.H}
     (hκ : κ ∈ GaloisPi1.kernel D.H D.S) {z : Ω} (hz : z ∈ F (constExt K₁ D)) :
@@ -360,6 +364,89 @@ theorem LiftData.comap_eq_iff (L : LiftData hτ hU hτ₂ hU₂ Φ g)
     obtain ⟨γ, hγ⟩ := exists_conj_inertiaH_of_comap_eq W₁'' W₂'' hF
     exact GStage.comap_eq_of_conj_inertiaH Ω hτ hU g W₁ W₂ hW₁ hW₂ _
       (map_conj_of_map_eq _ (map_symm_eq_of_map_eq _ h₁) (map_symm_eq_of_map_eq _ h₂) hγ)
+
+set_option maxHeartbeats 1600000 in
+-- the quotients `Π_V` unify slowly
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_V` are found slowly
+/-- **Every cuspidal inertia group of the target is the image under the normalised lift of one of
+the source** (`IsCor38Lift.exists_map_inertiaH_galLift_symm`, `map_conj_inertiaH`). -/
+theorem LiftData.exists_map_inertiaH_e_symm (L : LiftData hτ hU hτ₂ hU₂ Φ g)
+    (W'' : ValuationSubring (FFClosure C₂.Xbar)) (hW'' : W'' ∈ CuspW (k := K₂) (t := coordT L.υ)) :
+    ∃ W ∈ CuspW (k := K) (t := coordT g.τ₀),
+      ((inertiaH (curveGaloisData K g.hτ₀) W).map
+          (QuotientGroup.mk' (GaloisPi1.kernel (curveGaloisData K g.hτ₀).H
+            (curveGaloisData K g.hτ₀).S))).map L.e.toMulEquiv.toMonoidHom =
+        (inertiaH (curveGaloisData K₂ L.hυ) W'').map
+          (QuotientGroup.mk' (GaloisPi1.kernel (curveGaloisData K₂ L.hυ).H
+            (curveGaloisData K₂ L.hυ).S)) := by
+  obtain ⟨b, hb⟩ := L.hb
+  obtain ⟨τb, rfl⟩ := QuotientGroup.mk_surjective b
+  obtain ⟨W, hW, hEq⟩ := L.hφ.exists_map_inertiaH_galLift_symm Φ g.hτ₀ rfl L.hυ rfl L.φ
+    (transPlace ((τb⁻¹ : (curveGaloisData K₂ L.hυ).H) :
+      FFClosure C₂.Xbar ≃ₐ[K₀ K₂ (coordT L.υ)] FFClosure C₂.Xbar) W'')
+    (transPlace_mem_CuspW hW'' _)
+  refine ⟨W, hW, ?_⟩
+  have hcomp : L.e.toMulEquiv.toMonoidHom =
+      (MulAut.conj ((τb : (curveGaloisData K₂ L.hυ).H) :
+        Pi (curveGaloisData K₂ L.hυ))).toMonoidHom.comp
+        (galLift (Ω := Ω) (Ω₂ := Ω₂) g.hτ₀ rfl L.hυ rfl L.φ).toMulEquiv.toMonoidHom :=
+    MonoidHom.ext fun x => hb x
+  have e : transPlace ((τb : (curveGaloisData K₂ L.hυ).H) :
+      FFClosure C₂.Xbar ≃ₐ[K₀ K₂ (coordT L.υ)] FFClosure C₂.Xbar)
+      (transPlace ((τb⁻¹ : (curveGaloisData K₂ L.hυ).H) :
+        FFClosure C₂.Xbar ≃ₐ[K₀ K₂ (coordT L.υ)] FFClosure C₂.Xbar) W'') = W'' := by
+    have h := transPlace_inv_transPlace ((τb⁻¹ : (curveGaloisData K₂ L.hυ).H) :
+      FFClosure C₂.Xbar ≃ₐ[K₀ K₂ (coordT L.υ)] FFClosure C₂.Xbar) W''
+    rwa [Subgroup.coe_inv, inv_inv] at h
+  rw [hcomp, ← Subgroup.map_map, hEq, map_conj_inertiaH τb, e]
+
+set_option maxHeartbeats 1600000 in
+-- the quotients `Π_V` unify slowly
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_V` are found slowly
+/-- **From the normalised lift to the stage isomorphism**: if `e(I_W) = I_{W''}` in `Π_V`, then
+`constIso e (I_W) = I_{W''}` at the stages (`piRes_constIso`, `map_piRes_inertiaH`). -/
+theorem LiftData.map_inertiaH_constIso_of_e (L : LiftData hτ hU hτ₂ hU₂ Φ g)
+    (W : ValuationSubring (FFClosure C.Xbar)) (hW : W ∈ CuspW (k := K) (t := coordT g.τ₀))
+    (W'' : ValuationSubring (FFClosure C₂.Xbar)) (hW'' : W'' ∈ CuspW (k := K₂) (t := coordT L.υ))
+    (hEq : ((inertiaH (curveGaloisData K g.hτ₀) W).map
+          (QuotientGroup.mk' (GaloisPi1.kernel (curveGaloisData K g.hτ₀).H
+            (curveGaloisData K g.hτ₀).S))).map L.e.toMulEquiv.toMonoidHom =
+        (inertiaH (curveGaloisData K₂ L.hυ) W'').map
+          (QuotientGroup.mk' (GaloisPi1.kernel (curveGaloisData K₂ L.hυ).H
+            (curveGaloisData K₂ L.hυ).S))) :
+    ((inertiaH g.data W).map (QuotientGroup.mk' (GaloisPi1.kernel g.data.H g.data.S))).map
+        (constIso L.e (gkIso hτ hU hτ₂ hU₂ Φ) L.he_gk (piToGk_surjective_curve g.hτ₀)
+          g.K).toMulEquiv.toMonoidHom =
+      (inertiaH L.tgt.data W'').map
+        (QuotientGroup.mk' (GaloisPi1.kernel L.tgt.data.H L.tgt.data.S)) := by
+  apply Subgroup.map_injective (piRes_injective (K := L.tgt.K) (curveGaloisData K₂ L.hυ))
+  refine (map_map_eq_of_comm _ _ _ (piRes g.K (curveGaloisData K g.hτ₀))
+    L.e.toMulEquiv.toMonoidHom fun p => piRes_constIso L.e (gkIso hτ hU hτ₂ hU₂ Φ) L.he_gk
+      (piToGk_surjective_curve g.hτ₀) g.K p).trans ?_
+  refine (congrArg (fun S => S.map L.e.toMulEquiv.toMonoidHom)
+    (map_piRes_inertiaH g.K hW.1)).trans ?_
+  exact hEq.trans (map_piRes_inertiaH L.tgt.K hW''.1).symm
+
+set_option maxHeartbeats 1600000 in
+-- the quotients `Π_V` unify slowly
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_V` are found slowly
+/-- **Every cuspidal inertia group of the target stage is the image of one of the source stage**
+under the stage isomorphism. -/
+theorem LiftData.exists_map_inertiaH_constIso_symm (L : LiftData hτ hU hτ₂ hU₂ Φ g)
+    (W'' : ValuationSubring (FFClosure C₂.Xbar))
+    (hW'' : W'' ∈ CuspW (k := L.tgt.K) (t := coordT L.υ)) :
+    ∃ W ∈ CuspW (k := g.K) (t := coordT g.τ₀),
+      ((inertiaH g.data W).map (QuotientGroup.mk' (GaloisPi1.kernel g.data.H g.data.S))).map
+          (constIso L.e (gkIso hτ hU hτ₂ hU₂ Φ) L.he_gk (piToGk_surjective_curve g.hτ₀)
+            g.K).toMulEquiv.toMonoidHom =
+        (inertiaH L.tgt.data W'').map
+          (QuotientGroup.mk' (GaloisPi1.kernel L.tgt.data.H L.tgt.data.S)) := by
+  have hW₀ := mem_CuspW_of_constExt L.tgt.K hW''
+  obtain ⟨W, hW, hEq⟩ := L.exists_map_inertiaH_e_symm W'' hW₀
+  exact ⟨W, mem_CuspW_constExt _ hW, L.map_inertiaH_constIso_of_e W hW W'' hW₀ hEq⟩
 
 end Stage
 
