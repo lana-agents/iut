@@ -318,6 +318,7 @@ import Iut.Frobenioid.Tempered.EllB
 import Iut.Frobenioid.Tempered.EllDescent
 import Iut.Frobenioid.Tempered.EllDiv
 import Iut.Frobenioid.Tempered.EllGal
+import Iut.Frobenioid.Tempered.EllRad
 import Iut.Frobenioid.Tempered.EllTheta
 import Iut.Frobenioid.Tempered.EnvChoice
 import Iut.Frobenioid.Tempered.EnvTransport

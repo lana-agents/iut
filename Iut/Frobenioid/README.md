@@ -74,6 +74,13 @@ challenge or by `Iut/Concrete/*`.
        action defined over `L` (`IsLRat φ hφ γ`), `radBL` = the elements of `B(G/H)` coming
        from `Mero L`, `radDataL`, `radDataL_isFrobenioid`, **`radDivL_eq_zero_iff`** (kernel
        `O_L^×`), `gal_rv_radBL` (fixed by `Gal(Ω/L)`);
+     - (c4'''') `Tempered/EllRad.lean` (radical layer `n > 1`): the group `ExtGalDeck t R` of all
+       extensions of the Galois × deck action to a radical field `R ⊇ Mero K` (onto `GalDeck t`
+       for `R` an algebraic closure, `extRes_surjective`; kernel `Gal(R/Mero K)`, `ext_one_iff`:
+       the extension is not canonical, so `G` acts through an explicit `γ : G →* ExtGalDeck t R`),
+       **`actCompat_galDeckRad`**, `radDataRad`; `l`-th roots of `Θ̈` (`rEllDiv_thetaRoot`,
+       `thetaRoot_pow_smul`, `deck_thetaRoot`: Prop 1.4(ii) on roots); `L`-radicals `IsLRad`,
+       `radBRadL`, `radDataRadL`, **`radDivRadL_eq_zero_iff`** (kernel: `yⁿ ∈ O_L^×`);
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;
