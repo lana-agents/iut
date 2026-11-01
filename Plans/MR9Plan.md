@@ -1129,3 +1129,59 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
 - L3 keeps `hDGC : RelIsomDGC.Exists` through `cor37b_lift_unique`. It is the same named MR7 debt that `belyiCuspSpec` already carries
   (Christian, Zulip #1118), so this adds no new debt. Switch to BelyiCuspSpec (e) only if that makes the proof shorter.
 - Slot contention (4 agents, 2 slots) is expected. Batch checks: test several lemmas per elaboration run, and use `#exit`-truncated files.
+
+* Hand-off 2026-11-01 (MR9 track agent, session l, lead christian-41): worktree `~/mr8-iut`, branch
+  `wip-mr9-k` (rebased on main after the tfg PIN BUMP e17ff29). Merged (all via `~/iut-push.sh`,
+  validation + comparator rc=0; hashes in ~/session2-status.md):
+  * 06ca6b7 **`Thm19/BelyiMono.lean`** in `Iut.lean` (session-k WIP: `IsCor38Lift.le_of_le`, L0
+    `exists_cor38Fill_comp`, L3 `IsCor38Lift.exists_conj` with `hDGC`); imports cj
+    `LocAn.SectionBridgeCusp`; shell lint `--report` on its closure: 598 Prop fields, **no new allowlist
+    entries**. (The session-k `b8.log` held only `rc=0` and finished 11 s after the last edit, so it was
+    not taken as a check; the module was rebuilt with `lake build --wfail`: clean.)
+  * 498b4c8 **`Thm19/BelyiGalFill.lean`** (L5): (a) `exists_cor38Fill_arithAction` checked; (b)
+    `closureCmp = σc_V ∘ σc_U⁻¹ ∈ Gal(K(X̄_Ω)^alg/L₀)`, `castFill_arithAut`
+    (`castFill (σc_V h σc_V⁻¹) = g · σc_U h σc_U⁻¹ · g⁻¹`, stated as an `@Eq` in the group over
+    `arithFF Ω C`); **`exists_cor38Fill_piBridge`**: `cor38Fill ∘ piBridge_V = conj c ∘ piBridge_U ∘ piT`
+    for `V = chartOne τ₀ ⊆ U = chartOne τ`; instance `isGalois_subCurve`.
+  * 2855784 **`Thm19/StageIso.lean`** (step 5, generic): `h1Congr` (H¹ along `e : P ≃ₜ* P'` and equivariant
+    `χ`), `zHatResEquiv`, `smul_eq_of_piToGk_eq` (Π_U acts on Ẑ(1) through G_k), `piToGk_piT`,
+    `constCyclo`, **`constH1Iso`**: `H¹(Π_{U_K}, Ẑ(1)) ≃* H¹(Π_{U'_{K'}}, Ẑ(1))` for `e` over `ψ`,
+    `G_{K'} = ψ(G_K)`.
+  * **`Thm19/StageLift.lean`** (step 5, Galois models): `piT_surjective_curve`; `galLift`
+    (`piBridge_{V₂}⁻¹ ∘ φ ∘ piBridge_V`); **`IsCor38Lift.exists_galLift_rel`**
+    (`piT' ∘ galLift = conj d ∘ bridgeIso Φ ∘ piT`); **`IsCor38Lift.exists_galNormal`** (after an inner
+    automorphism `piT' ∘ e = bridgeIso Φ ∘ piT` **exactly**), `piToGk_of_piT_eq` (normalised lifts lie
+    over `gkIso Φ` exactly); `cycloV` (= `zT' ∘ cycloIso ∘ zT⁻¹`), `cycloV_smul`; **`stageH1Iso`**
+    (the stage isomorphism at a geometric stage `V_{K₁}`: `constH1Iso` with `ψ = gkIso Φ`);
+    **`exists_galLift_conj`** (L3 in the Galois models, from `IsCor38Lift.exists_conj` and L5 on the
+    curves `(X̄, V♮)`), **`piToGk_eq_one_of_conj`** (the comparison element `m` of two normalised lifts
+    has `pr(m) = 1`: its image in `Π_{U'}` is central, `G_{K'}` slim by cj `isSlim_Gk`).
+  Several proofs need `maxHeartbeats 1600000` (quotients `Π_V` and the coefficients of the base change
+  unify slowly; same as `ArithBridge.piBridge_mk`).
+  **Next (step 6, assembly; ≈ 400–600 lines), in order:**
+  1. *Geometric stages.* For `s : StageIdx D` choose (`exists_stage_ge_coord`) `g = (s.K, coordT τ₀) ≥ s`,
+     `τ₀ ∈ K(X̄)`; identify `g.data = constExt s.K (curveGaloisData K hτ₀)`
+     (`stage_eq_constExt_newData`, `newData_curveGaloisData`; transport `H1S D g` by an `Eq.rec`
+     `MulEquiv`); `V := chartOne τ₀ ≤ U` (`chartOne_le_iff`).
+  2. *Target stage.* Lift of `Φ` on `V` (`exists_isCor38Lift`, needs `hS : BelyiCuspSpec`), coordinate
+     `υ` of `V₂` (`exists_coord` for `subCurve C₂ V₂`), normalised `e` (`exists_galNormal`), stage
+     `s' = (constField (gkIso Φ) s.K, coordT υ)` of `D'` (`ht'` from `L_le_L_constExt` +
+     `coordT_mem_curveGaloisData_L`; `htV` from `V₂ ≤ U'` via `chartOne_le_iff` +
+     `mem_chartRing_iff_of_isAlgebraic`); `Λ_s := H1Lim.mk s' ∘ stageH1Iso ∘ resS (s ≤ g)`.
+  3. *Compatibility* (`hφ` of `mulEquivOfCocones`): for geometric `g ≤ g'` combine
+     `IsCor38Lift.le_of_le`, `IsCor38Lift.exists_conj` → `exists_galLift_conj` → (normalisations)
+     `piT' ∘ e' = conj m ∘ e ∘ piT` with `piToGk m = 1` (`piToGk_eq_one_of_conj`); then conjugation by
+     `m` preserves `Π_{V₂,K₁'}` and acts trivially on Ẑ(1) (`smul_eq_of_piToGk_eq`), so
+     `ContH1.map_conj_eq_self` gives the compatibility; also needed: `constIso` commutes with the
+     field-extension transitions `K₁ ⊆ K₁'` (`piRes` of `piRes`), and a lemma `resS ∘ constH1Iso =
+     constH1Iso ∘ resS` (a first attempt `resKH1_constH1Iso` timed out in `change`; prove it by
+     `ContH1.induction_on` + `rewrite`, no `change`). Independence of the choices (lift, `υ`) is the
+     same argument with `V = V♮`.
+  4. *Reverse cocone* from `Φ.symm`; mutual inverses: `Λ'_{V₂} ∘ Λ_V` is induced by a lift of the identity,
+     hence conjugate to the identification (L3 with `Φ = id`, `le_of_le` both ways); `mulEquivOfCocones`.
+  Hypotheses carried (unchanged debts): `hDGC` (MR7), rational point `σ₀` on `X̄` and genus `≥ 1`
+  (item 1, `cycloIso`), `hS : BelyiCuspSpec`.
+  No decision needed for step 6 itself. Question for the lead: `StageIdx` uses arbitrary coordinates
+  `t′ ∈ L_K`; step 6 only ever needs geometric ones (`t′ ∈ K(X̄)`). Restricting the colimit to geometric
+  stages (cofinal by `exists_stage_ge_coord`) would remove the `Eq.rec` transports of step 6.1 but
+  needs a comparison `H1Lim` ≃ geometric `H1Lim` (≈ 100 lines). OK to do that if it is shorter?

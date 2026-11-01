@@ -499,6 +499,7 @@ import Iut.Reconstruction.Thm19.RecRange
 import Iut.Reconstruction.Thm19.StageGeom
 import Iut.Reconstruction.Thm19.StageIso
 import Iut.Reconstruction.Thm19.StageJac
+import Iut.Reconstruction.Thm19.StageLift
 import Iut.Reconstruction.Thm19.StageNF
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
