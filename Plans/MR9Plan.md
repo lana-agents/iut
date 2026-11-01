@@ -1289,3 +1289,11 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Decision for the lead: none blocking. Question: step 3 needs the `t_x`/`Π_J` side of Prop 1.6 (ii) to be
   functorial; is MR8 (item 8, `Π_{X_K} ⊆ Π_{C_K}`) or another track already transporting `Δ_X`
   commutators / `Π_J` along `arithmeticExt` isomorphisms (`deltaXCongr` in CycloIso covers `Δ_X` only)?
+  * Addendum (session n, third push): **`Thm19/ResIso.lean`** — item 4 step 1 at the level of `U`
+    (for an isomorphism `Φ` of the `arithmeticExt` themselves): **`exists_map_inertiaH_bridgeIso`**
+    (cusp place `W` ↦ cusp place `W'` with `bridgeIso Φ (I_W ∩ H) = I_{W'} ∩ H'`, from
+    `Φ.cusps_map` + `mem_cusps_iff_piBridge` + `isCuspPlace_comap_iff`) and
+    **`exists_res_h1Congr_bridgeIso`** (`res_{p'}(h1Congr η) = χ(res_p η)`). For the stages, apply
+    these to the isomorphism `IsCor38Lift.iso` (BelyiLift, [AbsTopI] Lemma 4.5 (v)) of the lift `φ`
+    on `V`, then pass through `e = conj b ∘ galLift φ` (`ContH1.map_conj_eq_self`) and `piRes`
+    (constant-field extension). Next: steps 2–5 above.

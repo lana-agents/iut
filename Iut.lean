@@ -515,6 +515,7 @@ import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
 import Iut.Reconstruction.Thm19.RecPoints
 import Iut.Reconstruction.Thm19.RecRange
+import Iut.Reconstruction.Thm19.ResIso
 import Iut.Reconstruction.Thm19.ResTransport
 import Iut.Reconstruction.Thm19.StageCompat
 import Iut.Reconstruction.Thm19.StageGeom
