@@ -1191,3 +1191,50 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   is worth it: transports have caused most of the elaboration timeouts on other tracks. Go back to all stages only if the comparison turns out much
   longer than 100 lines.
 - Redo resS ∘ constH1Iso = constH1Iso ∘ resS with rewrite/calc, not change.
+
+* Hand-off 2026-11-01 (MR9 track agent, session m, lead christian-41): worktree `~/mr8-iut`.
+  Lead decision after session l followed: the colimit is restricted to **geometric stages**.
+  **Pushed (via `~/iut-push.sh`, hash in ~/session2-status.md):**
+  * `Thm19/GeomLim.lean`: `limOf`, `limOf_f`, `limLift_limOf`; `resT_trans` (`resT_resT` with the
+    composed proof arguments, usable by `rw`), `piT_self`, `resT_self`; **`GStage k hτ`** (geometric
+    stages `(K₁, τ₀)`, `coordT τ ∈ chartRing k (coordT τ₀)`; three Prop fields `fin`, `hτ₀`, `htV`
+    added to the shell-lint allowlist as `def`, like `StageIdx`), directed (through `StageIdx` and
+    `exists_stage_ge_coord`), `GStage.data = constExt K₁ (curveGaloisData k hτ₀)` on the nose,
+    `toStage`, `toStage_data`, `toStage_le_iff`, `exists_ge_toStage` (cofinality); `H1G`, `resG`,
+    **`GLim k hτ`**, and **`h1LimEquivG : H1Lim (curveGaloisData k hτ) ≃* GLim k hτ`** (~100 lines
+    of comparison, as estimated).
+  * `Thm19/StageCompat.lean` (generic): **`h1Congr_resT_conj`** (stage isos commute with
+    transitions when the group isos do up to conjugation by an element acting trivially on `Ẑ(1)`;
+    `ContH1.map_conj_eq_self`), `h1Congr_h1Congr`, **`h1Congr_eq_resT`**; `gkFix_anti`,
+    `constField_mono`, `le_constField_symm` (`K ⊆ ψ⁻¹ψ(K)`), `piRes_piT`, `smul_eq_self_of_piToGk`.
+  **WIP, branch `wip-mr9-m` (local, `~/mr8-iut`, commit baa05c9), file `Thm19/LimIso.lean` (not in
+  `Iut.lean`):** `CycloEquivariant`, `LiftData` (lift `φ` on `chartOne τ₀`, image `chartOne υ`,
+  normalised `e`), `LiftData.nonempty` (BelyiCuspSpec + `exists_coord` + `exists_galNormal`),
+  `tgt`, `cycloVχ`, `cycloVχ_smul`, `LiftData.S` — **all checked**; `LiftData.le_tgt`,
+  `nonempty_fillIso₂`, **`LiftData.exists_conj_e`** (`piT' ∘ e₂ = conj M ∘ e ∘ piT`, `pr M = 1`) —
+  **checked**; then unchecked drafts: `exists_conj_const` (restriction to `constExt`),
+  `cycloVχ_zT`, `LiftData.compat`, `LiftData.inv`, `LiftData.inv_S_S`, cocones `coc`,
+  `coc_compat`, `coc_inv`, `gLimEquiv`, `h1LimEquiv`, `h1LimCycloEquiv` (the full step-6 assembly
+  is written; the mutual-inverse argument uses `L.inv` (φ⁻¹, e⁻¹) and the compatibility lemma
+  for `Φ⁻¹` with coefficients `χU⁻¹`, so no functoriality of `cycloCongr` is needed).
+  **Elaboration pitfalls found (important for the next session):**
+  1. `chartOne` is an `abbrev`: never let unification see `chartOne …` against
+     `(subCurve C V …).U`/`.Xbar.Opens`; pass the opens explicitly (`nonempty_fillIso₂`), else
+     the elaborator hangs for > 30 min without hitting heartbeats.
+  2. `rw` with a coercion-headed pattern (`f x` for bundled `f`) runs `isDefEq` against every
+     coercion in the goal and times out on these types; use term-mode `Eq.trans`/`congrArg` with
+     explicit `have` statements (see `GeomLim.toG_compat`).
+  3. Prop arguments of type `x ∈ F (constExt …)`/`H ≤ HL` given by lemmas stated for
+     `L.tgt.data` time out against the unfolded `constExt` form (`exists_conj_const`, line with
+     `GStage.F_mono (L.le_tgt …)`): state such lemmas with the same syntactic form as the use
+     site (e.g. use `L.tgt.data` everywhere, or prove the inclusion by a lambda in place).
+  4. Do not wrap `variable` in `set_option … in` (the variables disappear); hide instance-heavy
+     hypothesis types in a `def` (`CycloEquivariant`).
+  5. `lake env lean` output appears only at the end; bisect with `#exit` files (≤ 10 min each).
+  **Next:** (1) fix `exists_conj_const` (pitfall 3), check `cycloVχ_zT` (a `simp` version hit a
+  kernel deterministic timeout; the current version rewrites with explicit `zHatRes_zHatRes`),
+  `compat`, the `Inv` and `Assembly` sections; add `LimIso` to `Iut.lean`, push. (2) item 4
+  (residues, `P_U`, Prop 1.8 tests transported, `recTriple N ≅ recTriple N'`).
+  Debts carried by `h1LimCycloEquiv` (unchanged, all named): `BelyiCuspSpec` on both sides (MR8),
+  `RelIsomDGC.Exists` for `K` and `K₂` (MR7), rational points and genus `≠ 0` on both sides
+  (item 1), genus `≥ 1` (`cycloIso`). No decision needed.
