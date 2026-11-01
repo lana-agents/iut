@@ -492,6 +492,7 @@ import Iut.Reconstruction.Thm19.BelyiLift
 import Iut.Reconstruction.Thm19.BelyiMono
 import Iut.Reconstruction.Thm19.ClosedPointDecomp
 import Iut.Reconstruction.Thm19.ConstExtThmC
+import Iut.Reconstruction.Thm19.ConstInertia
 import Iut.Reconstruction.Thm19.ConstRestrict
 import Iut.Reconstruction.Thm19.CuspPrincipal
 import Iut.Reconstruction.Thm19.CuspSync

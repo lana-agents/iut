@@ -1304,8 +1304,11 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     `transPlace τ W = {x | τ⁻¹x ∈ W}`, `conj_mem_inertia`, `conj_mem_inertiaH`, `transPlace_mem_CuspW`,
     **`conj_mem_map_inertiaH`** (`b (I_W ∩ H) b⁻¹ ⊆ I_{τW} ∩ H` in `Π_U` for `b = [τ]`), so the
     normalised `e = conj b ∘ galLift φ` maps cusp inertia into cusp inertia (lift `b` to `H` by
-    `QuotientGroup.mk_surjective`). **Remaining for step 1 at the stages**: (ii) the constant-field
-    extension: inertia of `constExt K₁ D` at `W` restricts (`piRes`) into that of `D`
-    (`mem_range_piRes_iff`); (iii) the residues of `LiftData.S` by `exists_res_h1Congr_bridgeIso`-style
+    `QuotientGroup.mk_surjective`). Sixth push: **`Thm19/ConstInertia.lean`** — (ii)
+    `hRes_mem_inertiaH`, **`piRes_mem_map_inertiaH`** (`piRes` maps the cusp inertia of `U_{K₁}` into
+    that of `U`; the converse direction, inertia of `U` inside `piRes(Π_{U_{K₁}})` lifting to `U_{K₁}`,
+    is still to do: an inertia element fixes `k̄ ⊇ K₁` (`inertia_fix_algebraic`, CuspSync) so it lies in
+    the range by `mem_range_piRes_iff`). **Remaining for step 1 at the stages**: the converse in (ii),
+    then (iii) the residues of `LiftData.S` by `exists_res_h1Congr_bridgeIso`-style
     reasoning with `evalTriv_h1Congr` (the coefficient `cycloVχ` is used directly, no `map_conj_eq_self`
     needed since residues evaluate at single elements).
