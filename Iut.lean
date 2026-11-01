@@ -497,6 +497,7 @@ import Iut.Reconstruction.Thm19.CycloIso
 import Iut.Reconstruction.Thm19.DecompIso
 import Iut.Reconstruction.Thm19.GeomLim
 import Iut.Reconstruction.Thm19.LimCongr
+import Iut.Reconstruction.Thm19.LimEquiv
 import Iut.Reconstruction.Thm19.LimIso
 import Iut.Reconstruction.Thm19.NFAdditive
 import Iut.Reconstruction.Thm19.NFColimit
@@ -514,6 +515,7 @@ import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
 import Iut.Reconstruction.Thm19.RecPoints
 import Iut.Reconstruction.Thm19.RecRange
+import Iut.Reconstruction.Thm19.ResTransport
 import Iut.Reconstruction.Thm19.StageCompat
 import Iut.Reconstruction.Thm19.StageGeom
 import Iut.Reconstruction.Thm19.StageIso

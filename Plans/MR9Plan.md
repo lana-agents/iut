@@ -1238,3 +1238,54 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Debts carried by `h1LimCycloEquiv` (unchanged, all named): `BelyiCuspSpec` on both sides (MR8),
   `RelIsomDGC.Exists` for `K` and `K₂` (MR7), rational points and genus `≠ 0` on both sides
   (item 1), genus `≥ 1` (`cycloIso`). No decision needed.
+
+* Hand-off 2026-11-01 (MR9 track agent, session n, lead christian-41): worktree `~/mr8-iut`, branch
+  `mr9-n` (the session-m WIP `wip-mr9-m` 6d5d178 is superseded; LimIso was rebased over the tfg PIN BUMP
+  e967aa6). **Item 3 (step 6) is finished.** Pushed via `~/iut-push.sh` (validation + comparator rc=0;
+  hashes in ~/session2-status.md):
+  * a6e64ac **`Thm19/LimIso.lean`**: `LiftData` (+6 allowlist entries, all `def`), `LiftData.nonempty`,
+    `tgt`, `cycloVχ`, `LiftData.S`, `le_tgt`, `exists_conj_e`, **`exists_conj_const`** (pitfall 3 fixed:
+    stated with `g.data`, `L.tgt.data` and `GStage.F_mono (g := …) (g' := …)`, i.e. exactly the form
+    `resG` unfolds to; the old statement unified `GStage.data ?g` against `constExt (constField …) …`
+    and timed out), `constCyclo_cycloVχ`, `cycloVχ_zT` (term-mode `zHatRes_zHatRes` chains, no `simp`),
+    **`LiftData.compat`** (`h1Congr_resT_conj` with all `D`s and proof arguments passed by name).
+  * second push (this hand-off): **`Thm19/LimEquiv.lean`**: `symm_smul_of_smul` (calc, no `rw`),
+    `symm_eq_conj_symm` (plain group theory), `LiftData.he_inv`, `LiftData.hb_inv`, `LiftData.inv`
+    (fields given by lemmas), **`LiftData.inv_S_S`**, `coc`, `coc_apply`, `coc_compat`, `coc_inv`
+    (explicit `Eq.trans` chain through `limLift_limOf`, no defeq of `limLift … (coc …)` against
+    `limOf …`), **`gLimEquiv : GLim K hτ ≃* GLim K₂ hτ₂`**, **`h1LimEquiv : H1Lim D ≃* H1Lim D'`**,
+    **`h1LimCycloEquiv`** (cyclotome `cycloIso Φ`). Debts carried (unchanged, named): `BelyiCuspSpec`
+    on both sides (MR8), `RelIsomDGC.Exists` for `K` and `K₂` (MR7), rational points and genus `≠ 0`
+    on both compactifications (item 1), genus `≥ 1` (`cycloIso`).
+    **`Thm19/ResTransport.lean`** (item 4, generic start): `smul_eq_self_of_h1Congr`,
+    **`evalTriv_h1Congr`** (`(h1Congr e χ η)(e σ) = χ(η(σ))` for `σ` acting trivially),
+    `evalTrivHom_h1Congr` (restriction to `I` and to `e(I)`).
+  Elaboration lessons (in addition to the session-m pitfalls): split a file whose test run approaches
+  15 min (LimIso alone takes ~3 min in `lake build`, but `lake env lean` of LimIso + assembly hit the
+  cap); `fun _ _ h => resG h` without an expected type does not elaborate (`limOf (F := H1G (hτ := hτ))`);
+  `G.symm b⁻¹` inside `rw [map_inv]` is rewritten first — write `G.symm (b⁻¹)`.
+  **Next: item 4** ([AbsTopIII] Thm 1.9 (c), (d), l.2153–2178; `P_U` by Prop 1.6 (ii), (iii),
+  l.1993–2012; tests of Prop 1.8, l.2065–2100). Steps, in order:
+  1. *Inertia along the stage isomorphisms.* For lift data `L`, the normalised `e : Π_V ≃ Π_{V₂}` maps the
+     cuspidal inertia `I_W ∩ H` (curves-jacobian `InertiaIndex`) onto cuspidal inertia: `φ` carries cusp
+     decomposition groups to cusp decomposition groups ([AbsTopI] Lemma 4.5 (v); used in `DecompIso` via
+     `arithmeticExtIso'`), and `piBridge`/`isCuspPlace_comap_iff` (CycloBridge) translate between
+     `arithmeticExt` cusps and Galois-model inertia; `e = conj b ∘ galLift φ`. Output: a bijection
+     `InertiaIndex (V_{K₁}) ≃ InertiaIndex (V₂_{K₁'})` up to conjugation, compatible with `e`.
+  2. *Residues.* With `evalTriv_h1Congr` and `ContH1.map_conj_eq_self`: `res ∘ LiftData.S = χ ∘ res`
+     reindexed by 1; hence `ker res` and `(K^×)^∧` (Prop 1.6 (iii)) correspond.
+  3. *`P_V`.* At stages with rational cusps, `mem_PU_iff_eta_curve_numberField` (CuspPrincipal) reads
+     `P_V` from residues + degree + `η_f = 1` (the sections `t_x` of Prop 1.6 (ii) in `Π_J`, i.e. the
+     decomposition groups of rational points and `Π_X ↠ Π_{J}`). Transport needs: `e` maps `Δ_X`, its
+     commutator, and the decomposition groups of rational points (`map_ptDecomps_eq'`, PointDecomp)
+     compatibly. This is the largest piece (estimate 600–900 lines over 2–3 sessions).
+  4. *Tests of Prop 1.8* (`RecRange`: `IsNFStageTest`, `IsNFStageConstTest`): for curves over number
+     fields every closed point is an NF-point; `restrictClosed` at decomposition groups transports by
+     `map_ptDecomps_eq'` + `evalTriv`-type lemmas for restriction to decomposition groups; then
+     `mem_kummerNFRange_iff_curve` on both sides gives `h1LimCycloEquiv (kummerNFRange N) = kummerNFRange N'`
+     (needs the comparison `H1Lim` ↔ `GLim` to commute with `H1Lim.mk` at geometric stages: `ofG_toG`).
+  5. `ord`, `U_x` (`RecOrd`, `mem_U_recTriple_iff`, `recTriple_U_injective`) ⇒ `recTriple N ≅ recTriple N'`
+     ⇒ `ringEquivOfIso`.
+  Decision for the lead: none blocking. Question: step 3 needs the `t_x`/`Π_J` side of Prop 1.6 (ii) to be
+  functorial; is MR8 (item 8, `Π_{X_K} ⊆ Π_{C_K}`) or another track already transporting `Δ_X`
+  commutators / `Π_J` along `arithmeticExt` isomorphisms (`deltaXCongr` in CycloIso covers `Δ_X` only)?
