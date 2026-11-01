@@ -305,6 +305,9 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `σ ∈ Gal(Ω/L_X)`; `exists_etaleThetaSystem` moved here, with this as a new conjunct);
   concrete **`exists_thetaClassTemp_thetaKernel`** (`ThetaKerTheta.lean`): for the theta system,
   under C1 only, `classAt η j n` is `1` on `Π^tp_Ÿ ∩ Kθ`, which is MR15's `hη13` (obligation 8).
+  **`exists_thetaClassTemp_prop13`** (MR15 run 4, decision D25): all conclusions for ONE theta
+  system (Prop. 1.3 on `Kθ` under C1; cusp inertia onto `μ_n` under `InertiaFixesLevel (L 0)`;
+  Prop. 1.3 on `Δ_Θ` under `CuspInertiaWeil`).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
@@ -600,3 +603,14 @@ the MR15 plan.
   `Π^tp_Y` (`mem_range_inl_iff_piY`, `apply_mem_range_inl_iff_piY`) now take `FISlim Π^tp_Y`
   (finite `μ`) instead of `VerticialTempSlim`; discharge path `TempSlim.centralizer_eq_bot_of_
   denseRange` (tfg, MR13 D4) + `Π^tp_Y ↪ Π̂_Y` (M2-GEA) + slimness of `Π̂_Y` (MR2).
+* `Env/ThetaSystem.lean` (MR15 run 4, **Layer B**) — the abstract setting instantiated with the
+  genuine tempered objects for `X = E_q ∖ {O}` (`Δ_Θ`, i.e. without the `l`-torsion level `X̲`):
+  `PX = Π^tp_X`, `augT : Π^tp_X → G_k`, `psiMu` (cyclotomic character `G_k → Aut μ_n(Ω)`, open
+  kernel), `PY = Π^tp_Y`, `PYdd = Π^tp_Ŷ`, `thetaL` (`Π^tp_Ÿ ∩` preimage of `Δ_Θ`), `thetaK`
+  (`Π^tp_Ÿ ∩ Kθ`), `contCocycles` (Kummer cocycles), `repCocycle`, **`thetaEnv`** (model environment
+  of a class on `Π^tp_Ÿ`); **`cyclotomicRigidity_thetaEnv`**, `ker_autPY_inlY_eq_thetaEnv`
+  (generic levels) and **`exists_thetaEnv_rigidity`** (Tate curve): Cor. 2.19(i) and the
+  `μ_n`-part of Cor. 2.18(iv) for the theta class, with `hη13` (obligation 8) and `hηL`
+  (obligation 11) discharged by MR14's Prop. 1.3; remaining named hypotheses: C1, `FISlim Π^tp_Y`,
+  `G_k` center-free, `Π^tp_Y ↠ G_k`, Prop. 2.12(i)-type generation, `InertiaFixesLevel (L 0)`,
+  `CuspInertiaWeil`.
