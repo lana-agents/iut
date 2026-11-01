@@ -269,6 +269,18 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   ckt's `inertiaZHatEquiv : I_W ∩ H_j ≃ₜ* Ẑ(1)` (`ClassAtCusp.exists_inertiaZHatEquiv`); concrete
   **`exists_thetaClassTemp_cusps`**: at every place `W` over the cusp (`τ ∉ W`), every base point
   `V ≤ W` and `n ∣ N_j`.
+* (11g) `ThetaDelta.lean` (G5a/G5b; MR14 run 13): `deltaH D = H ∩ Gal(Ω/k̄(t))` (`mem_deltaH_iff`),
+  `deltaPi D = Ker(Π_U ↠ G_k)`, its theta quotient `deltaTheta D`, **`thetaSubD D` = `Δ_Θ`** (image
+  of `[Δ_U, Δ_U]`, central), `inertiaH_le_deltaH` (`I_W ∩ H ≤ Δ`), `inertiaToTheta`. **Debt G5c + G5d**
+  (owner PI1TOP/MR13): `CuspInertiaWeil D` (with `WeilTameAt`), a `Prop` def used only as a named
+  hypothesis: `e : Δ_Θ ≃* Ẑ(1)` with cusp inertia `↠ Δ_Θ` and `e` = tame character
+  (`CuspInertiaWeil.exists_tame`, `.injective`).
+* (11h) `ThetaProp13.lean` (**[EtTh] Prop. 1.3 on `Δ_Θ`**, tempered, under C1, `CuspInertiaWeil`
+  and the debt `InertiaFixesLevel (L 0)` (`Ÿ'_2 → X` unramified over the cusp; owner MR14)):
+  `ambientKernel_le_level`, `inertia_fixes_level` (C1 ⇒ the cusp inertia of `Ÿ` fixes every
+  level), **`classAt_deltaTheta`**, `classAt_cusp_surjective`, concrete
+  **`exists_thetaClassTemp_deltaTheta`**: `thetaClassTemp η n` on `I_x ↠ Δ_Θ` is `proj_n ∘ e`, and
+  onto `μ_n`. Not done: the class comes from `(Π^tp_Y)^Θ` (MR15's `hη13`).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
