@@ -1317,3 +1317,57 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   (`LiftData.nonempty`), never assumed, so it is not a shell.
 - Π_J / Δ_X-commutator transport along arithmeticExt isomorphisms: no other track owns it (MR8 is paused; MR8 item 8 moved here), so MR9 builds it as part of
   item 4 step 3, extending `deltaXCongr`.
+
+* Hand-off 2026-11-01 (MR9 track agent, session o, lead christian-41): worktree `~/mr8-iut`, branch `mr9-n`.
+  Item 4 steps 1 (iii) and 2 are done; step 3 has its generic transport layer. Pushed via `~/iut-push.sh`
+  (validation + comparator rc=0; hashes in ~/session2-status.md):
+  * 4fadbbc **`Thm19/ResKer.lean`** (generic Galois models): `evalTriv_one`, **`res_eq_one_of_mem`** (residues
+    at places over `U` vanish, the inertia lies in `GaloisPi1.kernel` through `D.S`), **`mem_ker_res_iff`**
+    (`ker res` = vanishing at the cusps), the predicate **`MapsCuspInertia f`** (every `σ ∈ I_W ∩ H`, `W ∈ CuspW`,
+    is sent to the class of some `σ' ∈ I_{W'} ∩ H'`, `W' ∈ CuspW'`; a Prop-valued `def`, not a structure),
+    **`exists_res_h1Congr`**, **`h1Congr_mem_ker_res_iff`**, **`h1Congr_mem_range_constMapZHat_iff`**
+    (Prop 1.6 (iii) `ker_res` on both sides), `mem_CuspW_of_constExt`, `mem_CuspW_constExt`,
+    **`mapsCuspInertia_constIso`**, `mapsCuspInertia_constIso_symm` (via `ConstInertia`), `piRes_constIso_symm`.
+    **`Thm19/ResStage.lean`**: `bridgeIso_bridgeIso_symm`, **`exists_map_inertiaH_bridgeIso_symm`** (via
+    `Φ.symm`), `IsCor38Lift.exists_map_inertiaH_galLift_symm`, **`LiftData.mapsCuspInertia_e`**,
+    **`LiftData.mapsCuspInertia_e_symm`** (`e = conj b ∘ galLift φ`), **`LiftData.exists_res_S`**
+    (step 1 (iii): residues of `LiftData.S` at cusps, coefficient `constCyclo ψ (cycloVχ χU)`),
+    **`LiftData.S_mem_ker_res_iff`**, **`LiftData.S_mem_range_constMapZHat_iff`** (step 2).
+  * second push (see status file) **`Thm19/PiJCongr.lean`** (generic; the Π_J / Δ_X-commutator transport of the
+    lead decision after session n): **`piUToPiX_eq_one_iff_of_maps`** (the `hfill` input of `piXCongr` from
+    `MapsCuspInertia` both ways), for `X : Π_X ≃ₜ* Π_{X'}` over `ψ : G_k ≃ₜ* G_{k'}`:
+    `mem_deltaX_iff_of_piX`, **`mem_commClosure_iff_of_piX`**, **`piJ1Congr`**, `piJ1ToGk_piJ1Congr`,
+    `deltaXIso`, **`deltaAbCongr`** (+ `deltaAbToPiJ1_deltaAbCongr`, **`deltaAbCongr_smul`**),
+    `sectionCongr` (`J ∘ s ∘ ψ⁻¹`), **`h1Congr_diffClass`**, `h1Congr_etaWith`, `diffClass_eq_of_conj`,
+    `eta_zero`, **`etaDiv_mapDomain`**, **`eta_mapDomain`** (`η_{β_* f} = h1Congr (η_f)` for `deg f = 0`, given
+    `hβ : ∀ x, diffClass (sectionCongr X ψ hX (tSection x)) (tSection (β x)) = 1`).
+    **`Thm19/ConstGk.lean`**: `galRestrict_kbar_injective`, `piToGk_constExt_eq_one_iff`, **`gkConstIso`**
+    (`G_K ≃ₜ* G_{ψ(K)}`, descent of `constIso`, continuous for free), `piToGk_constIso`.
+    **`Thm19/StagePiJ.lean`**: instance `GStage.instFactPiJ1`, **`LiftData.gk`**, `LiftData.piToGk_e`,
+    **`LiftData.piX`**, `LiftData.piXToGk_piX`, **`LiftData.piJ1`**, **`LiftData.deltaAb`**,
+    **`LiftData.eta_mapDomain`**.
+  No new debts, no allowlist entries.
+  **Next (item 4 step 3, remaining; then steps 4, 5):**
+  (a) *The point map `β` on rational cusps of a stage.* For a `K₁`-rational cusp `x` (RatPoint with
+     `coordT τ₀ ∉ x.A`) the cusp place `W = x.A` gives, by `LiftData.mapsCuspInertia_e`/`mapsCuspInertia_constIso`, a cusp
+     place `W'` of the target with `constIso (I_W) ⊆ I_{W'}`. Decomposition groups: `commensurator_arithInertia`
+     (CJ `Cusp/ArithDecomp.lean:169`, [AbsTopI] Lemma 4.5 (vi)) + `map_commensurator_mulEquiv` (DecompIso:91) +
+     `map_decompH_piBridge` (ArithBridgeDecomp:91) carry `D_W` to a conjugate of `D_{W'}` (this needs the Galois-model
+     form at the stage, through `piRes`: `piRes_decompToPi`, `exists_piRes_decompToPi_eq` in ClosedPointDecomp:154/165).
+     Rationality of `W'`: no Galois-model lemma "image of `D_W` in `G_K` is all of `G_K` ⇒ RatPoint" exists;
+     `ratPointConstExt` (ClosedPointDecomp:127) builds a RatPoint of `constExt` from `GkLiftsTo` and works at cusps.
+     Then `exists_conj_of_forall_exists'` (PointDecomp:57) on `Π_X` and its image in `Π_{J¹}` give `hβ` via
+     `diffClass_eq_one_of_conj`; `exists_tSection_conj` (CJ `Kummer/TSectionPlace.lean:71`) handles RatPoints over the
+     same place.
+  (b) *Tame generators.* `HasResidues η (ratDivF f)` uses `tameGen p`; no lemma `χ (tameGen p) = tameGen p'` exists.
+     Route: `syncEquivBar_inertiaToCusp` (CuspSync:326, Thm 1.9 (b)) characterises `tameGen p` by the
+     synchronisation; need `mxHatCongr (deltaBarCongr) ∘ syncEquivBar = syncEquivBar' ∘ Φ` on `I_x`
+     (`IsCuspPushout.mk_eq_natIso_syncEquiv`, CJ `Kummer/SyncZHat.lean:200`; `natIsoBar_unique`,
+     `Kummer/SyncBaseChange.lean:236`), with `χU = cycloIso Φ`. Also a standalone `divAt (ratDivF f) p =` (sum of `f`
+     over the RatPoints at the place of `p`) from `idxPlace_eq` (CuspSync:105) — `placeOfF` is not injective on
+     RatPoints, so state it with that sum.
+  (c) Then `mem_PU_iff_principal`/`eta_eq_one_iff_principal` at stages with rational cusps (the stage is
+     `constExt`, not `curveGaloisData` of a curve over `K₁`: use the general `mem_PU_iff_principal` + the stage
+     Kummer-faithfulness `isKummerFaithfulJac_stage_curve_numberField`), and `LiftData.S (PU) = PU`.
+  Steps 4 (`RecRange` tests via `map_ptDecomps_eq'`) and 5 (`recTriple N ≅ recTriple N'`) not started.
+  Decision for the lead: none blocking. Estimate for (a)–(c): 2 sessions.

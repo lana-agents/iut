@@ -494,6 +494,7 @@ import Iut.Reconstruction.Thm19.BelyiLift
 import Iut.Reconstruction.Thm19.BelyiMono
 import Iut.Reconstruction.Thm19.ClosedPointDecomp
 import Iut.Reconstruction.Thm19.ConstExtThmC
+import Iut.Reconstruction.Thm19.ConstGk
 import Iut.Reconstruction.Thm19.ConstInertia
 import Iut.Reconstruction.Thm19.ConstRestrict
 import Iut.Reconstruction.Thm19.CuspPrincipal
@@ -518,6 +519,7 @@ import Iut.Reconstruction.Thm19.NFPoints
 import Iut.Reconstruction.Thm19.NFShrink
 import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Thm19.NFTransition
+import Iut.Reconstruction.Thm19.PiJCongr
 import Iut.Reconstruction.Thm19.PointDecomp
 import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
@@ -533,6 +535,7 @@ import Iut.Reconstruction.Thm19.StageIso
 import Iut.Reconstruction.Thm19.StageJac
 import Iut.Reconstruction.Thm19.StageLift
 import Iut.Reconstruction.Thm19.StageNF
+import Iut.Reconstruction.Thm19.StagePiJ
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
 import Iut.Reconstruction.Uchida.FunctionField
