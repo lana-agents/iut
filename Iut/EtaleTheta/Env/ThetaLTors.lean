@@ -25,6 +25,17 @@ import Iut.EtaleTheta.Env.ThetaTower
   `η̈^Θ` up to an `(O_K^×)^l`-multiple"). That such a `cX` exists for the theta class is
   [EtTh] Prop. 2.2(ii) + the text l.2938–2945 (via Prop. 1.5(ii)); it is a Layer-B debt
   (`MR15-plan.md`, obligation 13).
+
+  **Caveat: `hcXr` does not determine `cX`.** Two cocycles with `hcXr` differ by a cocycle that
+  is trivial on `Π^tp_Ÿ`; so `hcXr` says nothing about `cX` in the `lℤ`-direction (on lifts of a
+  generator of `Π^tp_X̿/Π^tp_Y ≅ lℤ`, the deck group of `Y → X̿`). The theorems below hold for
+  *every* `cX` with `hcXr`. **The `cX` of [EtTh]:** for a splitting `s` of `D̲_x ↠ G_K`,
+  `cX(γ) = [γ] · s(γ|_{G_K})⁻¹ ∈ Δ̲_Θ ≅ μ_l`, where `[γ]` is the image of `γ` in
+  `Π̲_X̿/Im(s_ι) ≅ D̲_x` (Prop. 2.2(ii)); it kills `Im(s_ι)`. By l.2938–2945 its restriction to
+  `Π^tp_Ÿ` is the theta class mod `l` up to the Kummer class of a unit `u ∈ O_K^×`. Splittings
+  form a torsor under `H¹(G_K, Δ̲_Θ) ≅ K^×/(K^×)^l`, and replacing `s` by its translate by
+  `u⁻¹` multiplies that restriction by `κ(u)⁻¹`. So for a suitable `s`, [EtTh]'s `cX` satisfies
+  `hcXr` for a representative of the theta class of `ThetaTemperedClass.lean` itself.
 * `Y̲ = Y ×_X̿ X̲`, `Ÿ̲ = Ÿ ×_X̿ X̲` (l.2925–2931: the composites of `Y, Ÿ → C` with `C̲ → C`,
   degree `l` over `Y, Ÿ`): **`piYU = Π^tp_Y ∩ Π^tp_X̲`**, **`piYddU = Π^tp_Ÿ ∩ Π^tp_X̲`**,
   as subgroups of `Π^tp_X̲` (the ambient group of the environments of `X̲`).
@@ -49,10 +60,13 @@ import Iut.EtaleTheta.Env.ThetaTower
 * `discreteRigidity_thetaEnvU`: [EtTh] Cor. 2.19(ii) for the projective system of the
   environments of `X̲` (levels `N_n = (n+1)!`, root classes from compatible representatives of
   the theta classes mod `N_{n+l}`).
-* `exists_thetaRoot_inputs` (the Tate curve): for the theta system of
+* `exists_thetaRep_inputs` (the Tate curve): for the theta system of
   `exists_thetaClassTemp_prop13`, the inputs `hr13` (Prop. 1.3, modulo C1) and the surjectivity
   of the root class on `thetaLU` (modulo C1, `InertiaFixesLevel (L 0)`, `CuspInertiaWeil`) and the
   `l`-th root property `rootClass_pow` for the theta classes.
+* `exists_thetaEnvU_rigidity` (the Tate curve): all conclusions for `X̲` (`EnvUConclusions`: the
+  `l`-th root property, Cor. 2.19(i), the `μ`-part of Cor. 2.18(iv)) for one theta system, via the
+  generic `envUConclusions_of` applied to `exists_thetaRep_inputs`.
 -/
 
 open scoped commutatorElement
@@ -222,7 +236,9 @@ variable {l : ℕ} [NeZero l] {cX : piXdd V hV T l → Mu l Ω}
 
 include hcX in
 /-- **`Π^tp_X̲ ⊆ Π^tp_X̿`** ([EtTh] Prop. 2.2(ii), Def. 2.3): the kernel of the cocycle
-`cX : Π^tp_X̿ → μ_l` encoding the splitting of `D̲_x ↠ G_K`. -/
+`cX : Π^tp_X̿ → μ_l` encoding the splitting of `D̲_x ↠ G_K`. `cX` is data. The compatibility
+`hcXr` used below does not pin it down in the `lℤ`-direction; [EtTh]'s `cX` is the projection to
+`Δ̲_Θ` along the splitting (see the module docstring, "Caveat"). -/
 def piXu : Subgroup PXg := (cocycleKer hcX).map (piXdd V hV T l).subtype
 
 theorem mem_piXu_iff {γ : PXg} :
@@ -543,6 +559,60 @@ theorem ker_autPY_inlY_eq_thetaEnvU (hPY : Envelope.FISlim (piYU hcX))
   obtain ⟨g, hg, hgm⟩ := exists_rootCocycle_eq hcX r hcXr hrL m⁻¹
   exact ⟨g, hg, by rw [hgm, inv_inv]⟩
 
+/-! #### All conclusions for `X̲` at once (generic "inputs ⇒ conclusions") -/
+
+/-- **The conclusions of [EtTh] §2 for the environment of `X̲`**, for a representative `r` of a
+class mod `lN` whose reduction mod `N` is `y`, and a proposition `P` (the extra hypotheses
+under which `r` is surjective on `Π|_{Δ_Θ}`):
+
+* (`l`-th root, [EtTh] l.2958–2962) `(η̈^Θ̲)^l = y|_{Π^tp_Ÿ̲}`;
+* under the named hypotheses `hPY`, `hG`, `hsurj`, `hLgen`: the cyclotomic rigidity
+  (Cor. 2.19(i), `cyclotomicRigidity_thetaEnvU`) and, under `P`, the triviality on `μ_N` of the
+  automorphisms over the identity of `Π^tp_Y̲` (`ker_autPY_inlY_eq_thetaEnvU`).
+
+A `def`, so that the concrete statement (`exists_thetaEnvU_rigidity`) is checked against it by
+`exact` without unfolding. -/
+def EnvUConclusions (y : ContH1 PYddg (Mu N Ω)) (P : Prop) : Prop :=
+  rootClass hcX r hcXr ^ l =
+      ContH1.map (toPYdd hL hcX) (continuous_toPYdd hL hcX) (MonoidHom.id _) continuous_id
+        (toPYdd_smul hL hcX) y ∧
+    ∀ (hPY : Envelope.FISlim (piYU hcX))
+      (_ : ∀ τ : Gk k Ω, (∀ σ, τ * σ = σ * τ) → τ = 1)
+      (_ : ∀ σ : Gk k Ω, ∃ h ∈ piYU hcX, augU hcX h = σ)
+      (_ : Subgroup.closure {c | c ∈ thetaLU hL hcX ∧ ∃ a b, augU hcX a = 1 ∧ b ∈ piYU hcX ∧
+        augU hcX b = 1 ∧ c = ⁅a, b⁆} ⊔ thetaKU hL hcX = thetaLU hL hcX),
+      (∀ {M : MonoThetaEnv.{u}} (f : MonoThetaEnv.Iso M (thetaEnvU hcX r hcXr))
+        {Lsub Ksub Dsub : Subgroup M.G}
+        (_ : Lsub.map f.hom = rightSub (augU hcX) (psiMu N) (piYU hcX) (thetaLU hL hcX))
+        (_ : Ksub.map f.hom = rightSub (augU hcX) (psiMu N) (piYU hcX) (thetaKU hL hcX))
+        (_ : Dsub.map f.hom = geomSub (augU hcX) (psiMu N) (piYU hcX)) (t m : M.G),
+        M.IsCyc Lsub Ksub Dsub t m ↔ ∃ g : piYddU hL hcX, (g : piXu hcX) ∈ thetaLU hL hcX ∧
+          f.e t = algSection (augU hcX) (psiMu N) (piYddU_le_piYU hL hcX) g ∧
+          f.e m = inlY (augU hcX) (psiMu N) (piYU hcX) (rootCocycle hcX r hcXr g)⁻¹) ∧
+      (P → ∀ {a : CategoryTheory.Aut (thetaEnvU hcX r hcXr)},
+        a ∈ (autPY (augU hcX) (psiMu N) (contCocycles (psiMu N)) (piYddU_le_piYU hL hcX)
+          (isOpen_ker_act_augU hcX N) (isCocycle_of_mem_contCocycles _)
+          (isCocycle_rootCocycle hcX r hcXr) hPY).ker → ∀ m : Mu N Ω,
+        autE (augU hcX) (psiMu N) (contCocycles (psiMu N)) (piYddU_le_piYU hL hcX)
+          (isOpen_ker_act_augU hcX N) (isCocycle_of_mem_contCocycles _)
+          (isCocycle_rootCocycle hcX r hcXr) a (inlY (augU hcX) (psiMu N) (piYU hcX) m) =
+          inlY (augU hcX) (psiMu N) (piYU hcX) m)
+
+/-- **Inputs ⇒ conclusions for `X̲`**: the reduction `y` of `[r]` mod `N`, Prop. 1.3 (`hr13`) and,
+under `P`, the surjectivity of `r` on `Π|_{Δ_Θ}` (`hrL`) give `EnvUConclusions`. -/
+theorem envUConclusions_of {y : ContH1 PYddg (Mu N Ω)}
+    (hy : transTemp T hL (Dvd.intro_left l rfl : N ∣ l * N) (ContH1.mk r) = y)
+    (hr13 : ∀ γ : PYddg, (γ : PXg) ∈ thetaK T hL → r γ = 1) {P : Prop}
+    (hrL : P → ∀ m : Mu (l * N) Ω, ∃ γ : PYddg, (γ : PXg) ∈ thetaL T hL ∧ r γ = m) :
+    EnvUConclusions hcX r hcXr y P :=
+  ⟨(rootClass_pow hcX r hcXr).trans (congrArg (ContH1.map (toPYdd hL hcX)
+      (continuous_toPYdd hL hcX) (MonoidHom.id _) continuous_id (toPYdd_smul hL hcX)) hy),
+    fun hPY hG hsurj hLgen =>
+      ⟨fun f _ _ _ hLs hKs hDs t m =>
+        cyclotomicRigidity_thetaEnvU hcX r hcXr hPY hG hsurj hLgen hr13 f hLs hKs hDs t m,
+      fun hP _ ha m =>
+        ker_autPY_inlY_eq_thetaEnvU hcX r hcXr hPY hG hsurj hLgen hr13 (hrL hP) ha m⟩⟩
+
 /-! #### The projective system of environments of `X̲` ([EtTh] Cor. 2.19(ii)) -/
 
 variable (rs : ∀ n, ContH1.cocycles (piYddotX V hV T hL) (Mu (l * levelN n) Ω))
@@ -767,6 +837,50 @@ theorem exists_thetaRep_inputs :
       inertiaToTempered_mem_thetaL hk hVW σ (hL0 σ) hσΘ, ?_⟩
     rw [← ContH1.evalTriv_mk _ (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 σ) n) r, hr]
     exact hσ
+
+set_option maxHeartbeats 1000000 in
+-- unifying with `exists_thetaRep_inputs` (concrete Tate-curve levels) is slow
+include h2 in
+/-- **[EtTh] §2 for `X̲` and `l·Δ_Θ`, for one étale theta system of the Tate curve** (all
+conclusions in one existential; consumed by MR23). For the theta system of
+`exists_thetaRep_inputs`, every base point `V` over `O`, under C1, every `l, N ≥ 1`, every
+representative `r` of the theta class mod `lN` on `Π^tp_Ÿ` and every splitting cocycle
+`cX : Π^tp_X̿ → μ_l` with `hcXr` (this defines `X̲`; existence of `cX`: obligation 13):
+`EnvUConclusions` with `y` = the theta class mod `N` and `P` = "`V` lies under a place `W` over the
+cusp, and the debts `InertiaFixesLevel (L 0)`, `CuspInertiaWeil` hold". That is: the `l`-th root
+property `(η̈^Θ̲)^l = η̈^Θ|_{Ÿ̲}` mod `N`; under `hPY`, `hG`, `hsurj`, `hLgen` (for `X̲`) the
+cyclotomic rigidity of Cor. 2.19(i) (Prop. 1.3 input discharged modulo C1); and under `P` the
+triviality on `μ_N` of the automorphisms over the identity of `Π^tp_Y̲`. -/
+theorem exists_thetaEnvU_rigidity :
+    ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
+      (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
+      (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
+      (_ : ∀ j, Algebra.Etale (Iut.EtaleTheta.DX t).R
+        (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
+      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
+      ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
+      ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
+        (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (l N : ℕ) [NeZero l] [NeZero N]
+        (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu (l * N) Ω)),
+        ContH1.mk r = thetaClassTemp η hC1 (l * N) →
+        ∀ {cX : piXdd V hV (tateDataX O hO hs h12) l → Mu l Ω}
+          (hcX : IsCocycle (actDD (augT DXc O V hV) (psiMu l)
+            (piXdd V hV (tateDataX O hO hs h12) l)) cX)
+          (hcXr : ∀ (γ : piYddotX V hV (tateDataX O hO hs h12) hL)
+            (h : (γ : TempPi DXc O V hV) ∈ piXdd V hV (tateDataX O hO hs h12) l),
+            cX ⟨γ, h⟩ = Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ)),
+          EnvUConclusions hcX r hcXr (thetaClassTemp η hC1 N)
+            (∃ (W : ValuationSubring Ω) (_ : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W ∧ V ≤ W ∧
+              InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W ∧
+              CuspInertiaWeil (DXc)) := by
+  refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
+    Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
+      ⟨h.1, fun V hV hC1 l N _ _ r hr {_} hcX hcXr => ?_⟩
+  obtain ⟨hr13, hrL⟩ := h.2.2 V hV hC1 (l * N) r hr
+  exact envUConclusions_of hcX r hcXr
+    ((congrArg (transTemp (tateDataX O hO hs h12) hL (Dvd.intro_left l rfl : N ∣ l * N)) hr).trans
+      ((h.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))
+    hr13 fun ⟨W, hk, hτ, hVW, hL0, hG5⟩ => hrL W hk hτ hVW hL0 hG5
 
 end Concrete
 

@@ -633,3 +633,7 @@ the MR15 plan.
   representatives mod `l·N_n`); `fiSlim_piYU`, `surj_piYU` (`FISlim`/`↠ G_k` for `Y̲` from those for `Y`); Tate
   curve: **`exists_thetaRep_inputs`** (`hr13`, `hrL` for every representative of the theta class). Debt: the
   existence of `cX` extending the mod-`l` theta cocycle (Prop. 2.2(ii) + [EtTh] l.2938–2945, MR15 obligation 13).
+  Run 6: docstring caveat (`hcXr` does not determine `cX` in the `lℤ`-direction; [EtTh]'s `cX` is the projection to
+  `Δ̲_Θ` along the splitting of `D̲_x`); **`EnvUConclusions`** / **`envUConclusions_of`** (generic "inputs ⇒
+  conclusions" for `X̲`: `l`-th root, Cor. 2.19(i), `μ`-part of Cor. 2.18(iv)) and the concrete
+  **`exists_thetaEnvU_rigidity`** (one theta system of the Tate curve, all conclusions for `X̲` in one existential).
