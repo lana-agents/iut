@@ -212,7 +212,8 @@ ET l.2272–2282, tempered form, under C1): for the system of `exists_thetaClass
 place `W ⊇ K` of `Ω` with `τ ∉ W` (a place over the cusp of `X = E_q ∖ {O}`) there are base
 points `V ≤ W` over `O`, and for each of them, under C1 and for every `n ∣ N_j`, the class
 `classAt η j n` (`= thetaClassTemp η n` by `ThetaClassCompatible`) on the inertia elements of
-`W` in `Π^tp_Ÿ` is the Kummer character of a uniformiser of `W` (`ClassAtCusp`). -/
+`W` in `Π^tp_Ÿ` is the Kummer character of a uniformiser of `W` (`ClassAtCusp`). Also: the
+level `L 0` lies in the source `L_2` of `[2]` (used for `InertiaFixesLevel`, `ThetaProp13.lean`). -/
 theorem exists_thetaClassTemp_cusps :
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
       (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
@@ -223,19 +224,20 @@ theorem exists_thetaClassTemp_cusps :
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
           (LX := (hemiData t.tateCurve).L) (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η) ∧
-      ∀ (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W →
+      (∀ (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W →
         (∃ V : ValuationSubring Ω, V ≤ W ∧ V.comap (algebraMap K Ω) = O) ∧
         ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (hVW : V ≤ W)
           (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (j n : ℕ) [NeZero n],
           n ∣ 2 * (j + 1) →
-          ClassAtCusp V hV (tateDataX O hO hs h12) hL η hC1 j n hk hVW := by
-  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, -⟩ := exists_etaleThetaSystem h2 h12 hs
+          ClassAtCusp V hV (tateDataX O hO hs h12) hL η hC1 j n hk hVW) ∧
+      L 0 ≤ mulByNField t.tateCurve 2 := by
+  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, -, hL02⟩ := exists_etaleThetaSystem h2 h12 hs
   haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
   haveI het' : ∀ j, Algebra.Etale (DX t).R
       (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R := fun j =>
     etale_fieldData (transcendental_tau t.tateCurve) (hemiL_open t) (L j) (hL j) (het j)
   refine ⟨L, hL, hX, het', η, htr, fun V hV => thetaClassCompatible_tate h12 hs O hO V hV htr,
-    fun W hk hτ => ⟨exists_le_comap_eq W hk O, fun V hV hVW hC1 j n _ hn => ?_⟩⟩
+    fun W hk hτ => ⟨exists_le_comap_eq W hk O, fun V hV hVW hC1 j n _ hn => ?_⟩, hL02⟩
   exact classAt_cuspTame η hC1 j n hk hVW (hcusp j W hk hτ n hn)
 
 end Main

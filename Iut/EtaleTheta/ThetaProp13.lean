@@ -6,6 +6,7 @@ Authors: LANA Project
 import Iut.EtaleTheta.ThetaTemperedCusp
 import Iut.EtaleTheta.ThetaDelta
 import Iut.EtaleTheta.KummerConj
+import Iut.EtaleTheta.MulByTwoInertia
 
 /-!
 # [EtTh] Prop. 1.3 on `Δ_Θ`: the theta class restricted to `Δ_Θ` is the identity (MR14, run 13)
@@ -22,8 +23,9 @@ onto `Δ_Θ ⊆ Δ_X^Θ`) the restriction to `Δ_Θ` is the restriction to the c
 * **`inertia_fixes_level`**: under C1, every inertia element `σ ∈ I_W` fixing `L 0` (i.e. lying
   in `Π^tp_Ÿ`) fixes every level `L j` (its image in `Π^tp_Ÿ ≤ Π^tp_{Ÿ'_{N_j}}` comes from the
   level, and `⟨⟨S_X⟩⟩ ⊆ Gal(Ω/L j)`): the cusps of `Ÿ` are unramified in all levels.
-* `InertiaFixesLevel`: the hypothesis that `I_W ∩ H_X` fixes `L 0` (`Ÿ'_2 → X`, i.e. the
-  isogeny `[2]`, is unramified over the cusp) — **a debt** (`MR14-plan.md`, run 13; owner MR14).
+* `InertiaFixesLevel`: the property that `I_W ∩ H_X` fixes `L 0` (`Ÿ'_2 → X`, i.e. the
+  isogeny `[2]`, is unramified over the cusp); a hypothesis of the generic theorems, **proved for
+  the concrete system** (`inertiaFixesLevel_of_le_mulByNField_two`, MR14 run 16; formerly a debt).
 * **`classAt_deltaTheta`** (generic [EtTh] Prop. 1.3 on `Δ_Θ`): given the debt
   `WeilTameAt` (G5c + G5d, `ThetaDelta.lean`) at `W`, C1, `InertiaFixesLevel (L 0)` and
   `ClassAtCusp` at the level `j`, for every `σ ∈ I_W ∩ H_X` the class `classAt η j n` at the
@@ -32,7 +34,7 @@ onto `Δ_Θ ⊆ Δ_X^Θ`) the restriction to `Δ_Θ` is the restriction to the c
 * Concrete: **`exists_thetaClassTemp_deltaTheta`** — for the system of `exists_thetaClassTemp`,
   under `CuspInertiaWeil` for `X = E_q ∖ {O}`: there is `e : Δ_Θ ≃* Ẑ(1)` (the natural
   isomorphism of the debt) such that at every cusp place `W`, the cusp inertia maps onto `Δ_Θ`,
-  and, for every base point `V ≤ W`, under C1 and `InertiaFixesLevel (L 0)`, **the theta class
+  `I_W ∩ H_X` fixes `L 0` (proved), and, for every base point `V ≤ W`, under C1, **the theta class
   `thetaClassTemp η n` restricted to the cusp inertia `I_x ≅ Δ_Θ` is `proj_n ∘ e`** for every `n`.
 
 The other half of Prop. 1.3 (the class comes from `(Π^tp_Y)^Θ`, i.e. vanishes on
@@ -145,7 +147,7 @@ theorem exists_inertiaX (τ : inertiaH (fieldData ht LX hLX) W) :
 variable (η : ∀ j, units (fieldData ht (L j) (hL j)))
 
 /-- **[EtTh] Prop. 1.3 on `Δ_Θ`, at one cusp and one level** (generic): under the debt
-`WeilTameAt` (G5c + G5d) for `e : Δ_Θ ≃* Ẑ(1)` at the cusp place `W`, C1, the debt
+`WeilTameAt` (G5c + G5d) for `e : Δ_Θ ≃* Ẑ(1)` at the cusp place `W`, C1, the hypothesis
 `InertiaFixesLevel (L 0)` and `ClassAtCusp` at the level `j`, for every `σ ∈ I_W` over `X`:
 `σ` maps into `Δ_Θ ⊆ Δ_X^Θ`, and `classAt η j n` at the image of `σ` in `Π^tp_Ÿ` is the `n`-th
 component of `e(σ)`. -/
@@ -243,16 +245,31 @@ section Main
 variable [t.tateCurve.IsElliptic] (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) {s : Kˣ}
   (hs : s ^ 2 = t.q) (O : ValuationSubring K) (hO : ∀ x : K, x ∈ O ↔ ‖x‖ ≤ 1)
 
+omit [CompleteSpace K] [IsUltrametricDist K] in
+/-- **`InertiaFixesLevel` for the subfields of `L_2`** (MR14 run 16; formerly a debt): at a place
+`W ⊇ K` over the cusp (`τ ∉ W`), `I_W ∩ H_X` fixes every `L' ≤ L_2 = mulByNField E 2`, since the
+isogeny `[2]` is unramified over the cusp (`fix_mulByNField_two`, `MulByTwoInertia.lean`). -/
+theorem inertiaFixesLevel_of_le_mulByNField_two {L' : IntermediateField (K₀ K τ) Ω}
+    (hL' : L' ≤ mulByNField t.tateCurve 2) {W : ValuationSubring Ω}
+    (hk : ∀ c : K, algebraMap K Ω c ∈ W) (hτ : τ ∉ W) :
+    InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) L' W := by
+  intro σ x hx
+  exact fix_mulByNField_two t.tateCurve
+    (σ := ((galoisToH (σ : Ω ≃ₐ[(DX t).R] Ω) : (DX t).H) : Ω ≃ₐ[K₀ K τ] Ω))
+    (fun z hz => fixes_L (σ : Ω ≃ₐ[(DX t).R] Ω) (by rw [fieldData_L]; exact hz)) hk hτ
+    (fun z hz => (mem_inertiaGroup.1 σ.2).1 z hz) x (hL' hx)
+
 set_option maxHeartbeats 2000000 in
 -- destructuring `exists_thetaClassTemp_cusps` (concrete Tate-curve levels) is slow to unify
 include h2 in
 /-- **[EtTh] Prop. 1.3 on `Δ_Θ`** (tempered form, ET l.1137–1270 with ET l.2272–2274), under the
-debt `CuspInertiaWeil` (G5c + G5d, owner PI1TOP/MR13) for `X = E_q ∖ {O}`, C1 and the debt
-`InertiaFixesLevel (L 0)`: there is an isomorphism `e : Δ_Θ ≃* Ẑ(1)` (`Δ_Θ ⊆ Δ_X^Θ`) such that,
+debt `CuspInertiaWeil` (G5c + G5d, owner PI1TOP/MR13) for `X = E_q ∖ {O}` and C1 (the former
+debt `InertiaFixesLevel (L 0)` is now part of the conclusion, `hL0`): there is an isomorphism
+`e : Δ_Θ ≃* Ẑ(1)` (`Δ_Θ ⊆ Δ_X^Θ`) such that,
 for the system of `exists_thetaClassTemp`, at every place `W ⊇ K` of `Ω` over the cusp
 (`τ ∉ W`):
 * the cusp inertia `I_W ∩ H_X` maps onto `Δ_Θ` (`I_x ↠ Δ_Θ`);
-* for every base point `V ≤ W` over `O` (such `V` exist), under C1 and `InertiaFixesLevel`, every
+* for every base point `V ≤ W` over `O` (such `V` exist), under C1, every
   `σ ∈ I_W` maps into `Δ_Θ`, and **the étale theta class `thetaClassTemp η n` at the image of `σ`
   in `Π^tp_Ÿ` is the `n`-th component of `e(σ̄)`** for every `n ≥ 1`: the restriction of the theta
   class to `Δ_Θ` (realised by `I_x ⊆ Π^tp_Ÿ`) is the natural isomorphism `Δ_Θ ⊗ ℤ/n ≅ μ_n`;
@@ -267,43 +284,47 @@ theorem exists_thetaClassTemp_deltaTheta
       (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
       (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
       (_ : ∀ j, Algebra.Etale (DX t).R (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
-      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
+      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))
+      (hL0 : ∀ (W : ValuationSubring Ω), (∀ c : K, algebraMap K Ω c ∈ W) → τ ∉ W →
+        InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
           (LX := (hemiData t.tateCurve).L) (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η) ∧
-      ∀ (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W →
+      ∀ (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W) (hτ : τ ∉ W),
         (∀ δ ∈ thetaSubD (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
             (hemiL_open t)), ∃ σ, inertiaToTheta _ hk σ = δ) ∧
         (∃ V : ValuationSubring Ω, V ≤ W ∧ V.comap (algebraMap K Ω) = O) ∧
         ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (hVW : V ≤ W)
-          (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL)
-          (hL0 : InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W),
+          (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL),
           (∀ σ : inertiaGroup (DX t).R W,
             ∃ hσ : inertiaToTheta _ hk (inertiaX σ) ∈ thetaSubD (fieldData
                 (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L (hemiL_open t)),
               ∀ (n : ℕ) [NeZero n],
-                ContH1.evalTriv ⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 σ)⟩
-                    (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 σ) n)
+                ContH1.evalTriv ⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩
+                    (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 W hk hτ σ) n)
                     (thetaClassTemp η hC1 n) =
                   ZHatOne.proj (⟨n, Nat.cast_ne_zero.mpr (NeZero.ne n)⟩ :
                     KummerIndex (F (fieldData (transcendental_tau t.tateCurve)
                       (hemiData t.tateCurve).L (hemiL_open t)))) (e ⟨_, hσ⟩)) ∧
           ∀ (n : ℕ) [NeZero n] (ζ : Mu n Ω), ∃ σ : inertiaGroup (DX t).R W,
-            ContH1.evalTriv ⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 σ)⟩
-                (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 σ) n)
+            ContH1.evalTriv ⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩
+                (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 W hk hτ σ) n)
                 (thetaClassTemp η hC1 n) = ζ := by
   obtain ⟨e, he⟩ := hG5
-  obtain ⟨L, hL, hX, het, η, htr, hcomp, hcusp⟩ := exists_thetaClassTemp_cusps h2 h12 hs O hO
-  refine ⟨e, L, hL, hX, het, η, htr, hcomp, fun W hk hτ => ⟨(he W hk hτ).1, (hcusp W hk hτ).1,
-    fun V hV hVW hC1 hL0 => ⟨fun σ => ?_, fun n _ ζ => ?_⟩⟩⟩
+  obtain ⟨L, hL, hX, het, η, htr, hcomp, hcusp, hL02⟩ := exists_thetaClassTemp_cusps h2 h12 hs O hO
+  have hL0 : ∀ (W : ValuationSubring Ω), (∀ c : K, algebraMap K Ω c ∈ W) → τ ∉ W →
+      InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W :=
+    fun W hk hτ => inertiaFixesLevel_of_le_mulByNField_two hL02 hk hτ
+  refine ⟨e, L, hL, hX, het, η, hL0, htr, hcomp, fun W hk hτ => ⟨(he W hk hτ).1,
+    (hcusp W hk hτ).1, fun V hV hVW hC1 => ⟨fun σ => ?_, fun n _ ζ => ?_⟩⟩⟩
   · obtain ⟨hσ, -⟩ := (he W hk hτ).2 (inertiaX σ)
     refine ⟨hσ, fun n _ => ?_⟩
-    obtain ⟨hσ', H⟩ := classAt_deltaTheta η hC1 (n - 1) n hk hVW (he W hk hτ).2 hL0
+    obtain ⟨hσ', H⟩ := classAt_deltaTheta η hC1 (n - 1) n hk hVW (he W hk hτ).2 (hL0 W hk hτ)
       ((hcusp W hk hτ).2 V hV hVW hC1 (n - 1) n
         ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩) σ
     exact H
-  · exact classAt_cusp_surjective η hC1 (n - 1) n hk hVW hL0
+  · exact classAt_cusp_surjective η hC1 (n - 1) n hk hVW (hL0 W hk hτ)
       ((hcusp W hk hτ).2 V hV hVW hC1 (n - 1) n
         ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩) ζ
 

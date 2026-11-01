@@ -200,6 +200,7 @@ import Iut.EtaleTheta.MonoTheta
 import Iut.EtaleTheta.MulByNGalois
 import Iut.EtaleTheta.MulByNInversion
 import Iut.EtaleTheta.MulByNTorsion
+import Iut.EtaleTheta.MulByTwoInertia
 import Iut.EtaleTheta.RigidSystems
 import Iut.EtaleTheta.TateElliptic
 import Iut.EtaleTheta.TateFunctionField

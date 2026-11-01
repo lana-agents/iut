@@ -49,7 +49,8 @@ Remaining hypotheses (Layer-B debts, `MR15-plan.md`): C1 (`LevelsDominated`, MR1
 `FISlim (piY …)` (obligation 1, M2-GEA + MR2), center-freeness of `G_k` (`hG`; for `k` a finite
 extension of `ℚ_p` this is `PAdicGalois.isSlimGroup`, once `Gk k Ω` is identified with
 `GK p E`), `Π^tp_Y ↠ G_k` (`hsurj`, obligation 5), the Prop. 2.12(i)-type generation `hL`, and,
-for `hηL`, the debts `CuspInertiaWeil` (G5c+G5d) and `InertiaFixesLevel (L 0)` of MR14.
+for `hηL`, the debt `CuspInertiaWeil` (G5c+G5d) (MR14 run 16 discharged
+`InertiaFixesLevel (L 0)`).
 -/
 
 open scoped commutatorElement
@@ -459,7 +460,7 @@ of the étale theta system** (`X = E_q ∖ {O}`, `Δ_Θ`; Layer B). For the thet
   subgroups, the algorithmic isomorphism of cyclotomes is `s^alg(l) ↦ θ_n(l)⁻¹` on
   `L = Π^tp_Ÿ ∩ (preimage of Δ_Θ)`. Obligation 8 (`hη13`) is discharged here by MR14's Prop. 1.3;
 * (**no automorphisms on `μ_n`**) if `V` lies under a place `W` over the cusp, then under the
-  debts `InertiaFixesLevel (L 0)` and `CuspInertiaWeil`, automorphisms of `thetaEnv` over the
+  debt `CuspInertiaWeil`, automorphisms of `thetaEnv` over the
   identity of `Π^tp_Y` act trivially on `μ_n`. Obligation 11 (`hηL`) is discharged here by the
   cusp inertia (`classAt_cusp_surjective`, `classAt_deltaTheta`).
 
@@ -507,7 +508,6 @@ theorem exists_thetaEnv_rigidity :
                 (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV)
                 (ContH1.evalTriv l (smul_eq_of_mem_thetaL hl n) (thetaClassTemp η hC1 n))⁻¹) ∧
         ∀ (W : ValuationSubring Ω) (_ : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W → V ≤ W →
-          InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W →
           CuspInertiaWeil (DXc) →
           ∀ {a : CategoryTheory.Aut
               (thetaEnv (tateDataX O hO hs h12) hL n (thetaClassTemp η hC1 n))},
@@ -524,7 +524,7 @@ theorem exists_thetaEnv_rigidity :
                   (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV) m) =
               inlY (augT DXc O V hV) (psiMu n)
                 (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV) m) := by
-  obtain ⟨L, hL, hX, het, η, htr, hcomp, hker, hcusp, hdelta⟩ :=
+  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
   refine ⟨L, hL, hX, het, η, htr, hcomp, fun V hV hC1 n _ hPY hG hsurj hLgen => ?_⟩
   have hdvd : n ∣ 2 * (n - 1 + 1) :=
@@ -532,13 +532,13 @@ theorem exists_thetaEnv_rigidity :
   have hx13 := hker V hV hC1 (n - 1) n hdvd
   refine ⟨fun f _ _ _ hLs hKs hDs t' m =>
     cyclotomicRigidity_thetaEnv n hPY hG hsurj hLgen hx13 f hLs hKs hDs t' m,
-    fun W hk hτ hVW hL0 hG5 a ha m => ?_⟩
+    fun W hk hτ hVW hG5 a ha m => ?_⟩
   obtain ⟨e, he⟩ := hdelta hG5
   refine ker_autPY_inlY_eq_thetaEnv n hPY hG hsurj hLgen hx13 (fun m => ?_) ha m
-  obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW hC1 hL0 n m
-  obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW hC1 hL0 σ
-  exact ⟨⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 σ)⟩,
-    inertiaToTempered_mem_thetaL hk hVW σ (hL0 σ) hσΘ, hσ⟩
+  obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW hC1 n m
+  obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW hC1 σ
+  exact ⟨⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩,
+    inertiaToTempered_mem_thetaL hk hVW σ (hL0 W hk hτ σ) hσΘ, hσ⟩
 
 end Concrete
 

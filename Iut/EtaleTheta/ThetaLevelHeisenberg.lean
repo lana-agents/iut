@@ -370,6 +370,53 @@ variable {t : TateParameter K}
 local notation "Ω" => FFClosure (curveE t.tateCurve)
 local notation "τ" => coordT (xN t.tateCurve)
 
+omit [CompleteSpace K] [IsUltrametricDist K] [CharZero K] in
+/-- The Tate parameter `s^N` of the level `N = 2` is `q` itself. -/
+theorem sqrtPow_eq_self {t : TateParameter K} {s : Kˣ} (hs : s ^ 2 = t.q) {N : ℕ} (hN : 0 < N)
+    (h : N = 2) : sqrtPow hs N hN = t := by
+  subst h
+  cases t
+  simp only [sqrtPow, TateParameter.mk.injEq]
+  exact hs
+
+/-- **The level `Ÿ'_2` is the source of `[2]`**: the coordinates `x_Q∘ψ`, `y_Q∘ψ` of the level
+`N = 2` (`Q = s² = q`) of `exists_levelData` are `[2]^*x`, `[2]^*y`. -/
+theorem levelData_two_eq_pb (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) [t.tateCurve.IsElliptic]
+    {s : Kˣ} (hs : s ^ 2 = t.q) {N : ℕ} (hN : 0 < N) (hN2 : N = 2) {gX gY F : TateField t}
+    (hval : ∀ (u : Kˣ) (hu : OffOrbit t u), OffOrbit t (u ^ (2 * N)) →
+      HasTateValue t h12 gX hu ((sqrtPow hs N hN).X (u ^ N)) ∧
+      HasTateValue t h12 gY hu ((sqrtPow hs N hN).Y (u ^ N)) ∧
+      HasTateValue t h12 F hu (thetaLevel t N hN (u ^ N))) :
+    gX = pb t.tateCurve 2 (algebraMap (TateRing t) (TateField t) (xE t.tateCurve)) ∧
+      gY = pb t.tateCurve 2 (algebraMap (TateRing t) (TateField t) (yE t.tateCurve)) := by
+  subst hN2
+  rw [sqrtPow_eq_self hs hN rfl] at hval
+  have hD₀ : psiN t.tateCurve 4 * psiN t.tateCurve 2 ≠ 0 :=
+    mul_ne_zero (psiN_ne_zero_of_neZero _ _) (psiN_ne_zero_of_neZero _ _)
+  have good : ∀ (u : Kˣ) (hu : OffOrbit t u),
+      evalTate t h12 hu (psiN t.tateCurve 4 * psiN t.tateCurve 2) ≠ 0 →
+      OffOrbit t (u ^ (2 * 2)) ∧ ∃ hum : OffOrbit t (u ^ 2), ∀ a : TateRing t,
+        HasTateValue t h12 (algebraMap _ (TateField t) (mulByNHom t.tateCurve 2 a)) hu
+          (evalTate t h12 hum a) := by
+    intro u hu h0
+    rw [map_mul] at h0
+    exact ⟨(hasTateValue_mulByNHom (h12 := h12) 4 h2 hu (left_ne_zero_of_mul h0)).1,
+      hasTateValue_mulByNHom (h12 := h12) 2 h2 hu (right_ne_zero_of_mul h0)⟩
+  refine ⟨eq_of_hasTateValue (h12 := h12) hD₀ (G := fun u => t.X (u ^ 2))
+      (fun u hu h0 => (hval u hu (good u hu h0).1).1) (fun u hu h0 => ?_),
+    eq_of_hasTateValue (h12 := h12) hD₀ (G := fun u => t.Y (u ^ 2))
+      (fun u hu h0 => (hval u hu (good u hu h0).1).2.1) (fun u hu h0 => ?_)⟩
+  · obtain ⟨hum, hv⟩ := (good u hu h0).2
+    rw [← algebraMap_mulByNHom_eq_pb]
+    refine (hv _).congr ?_
+    change evalTate t h12 hum (mkT t (C X)) = _
+    rw [evalTate_mk_C, eval_X]
+  · obtain ⟨hum, hv⟩ := (good u hu h0).2
+    rw [← algebraMap_mulByNHom_eq_pb]
+    refine (hv _).congr ?_
+    change evalTate t h12 hum (mkT t X) = _
+    rw [evalTate_mk_Y]
+
 /-- **The étale theta classes form a projective system** (module docstring of
 `ThetaClassSystem.lean`), **with cusp inertia and the translation formula**: at every level `j`,
 every place `W ⊇ K` of `Ω`
@@ -401,7 +448,7 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
       (∀ (j : ℕ) (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W →
         ∀ (n : ℕ) [NeZero n], n ∣ 2 * (j + 1) →
           CuspTameAt (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)) (η j) W hk n) ∧
-      ∀ (j n : ℕ), n ∣ 2 * (j + 1) →
+      (∀ (j n : ℕ), n ∣ 2 * (j + 1) →
         L j ≤ mulByNField t.tateCurve (2 * (2 * (j + 1))) ∧
         ∀ σ : Ω ≃ₐ[K₀ K τ] Ω, (∀ z ∈ (hemiData t.tateCurve).L, σ z = z) →
           ∃ (c : K), ∃ h ∈ mulByNField t.tateCurve (2 * (2 * (j + 1))),
@@ -409,7 +456,8 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
                 F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω)) =
               algebraMap K Ω c * h ^ n *
                 (((η j : (F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
-                  F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω) := by
+                  F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω)) ∧
+      L 0 ≤ mulByNField t.tateCurve 2 := by
   haveI : t.tateCurve.IsElliptic := t.tateCurve_isElliptic h12
   choose gX gY F hF hmul hunit hval using fun j : ℕ =>
     exists_levelData (t := t) h12 h2 hs (N := 2 * (j + 1)) (by omega) ⟨j + 1, by ring⟩
@@ -446,7 +494,7 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
   refine ⟨L, hL, fun j => hemiL_le_adjoin _ _ (hmul j), η,
     fun j => etale_adjoin_image _ _ (hmul j), fun j => ?_, fun j => ?_, fun j => ?_,
     fun j j' M hjM hevM => ?_, fun j W hk hτ n _ hn => ?_, fun j n hn =>
-      ⟨adjoin_image_le_mulByNField _ _ _, fun σ hσ => ?_⟩⟩
+      ⟨adjoin_image_le_mulByNField _ _ _, fun σ hσ => ?_⟩, ?_⟩
   · exact etaleThetaClass_points (by omega) (L j) (hL j) (adjoin_image_le_mulByNField _ _ _)
       (η j) ((hη j).trans (congrArg _ (hb j).symm)) (hpt j)
   · exact thetaValueAt_points (by omega) (L j) (hL j) (adjoin_image_le_mulByNField _ _ _)
@@ -485,6 +533,17 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
   · haveI : NeZero (2 * (2 * (j + 1))) := ⟨by omega⟩
     rw [hη j]
     exact translation_level h2 h12 hs (by omega) ⟨j + 1, by ring⟩ (hmul j) (hval j) hn σ hσ
+  -- `L 0` is the source of `[2]`
+  · obtain ⟨hgX, hgY⟩ := levelData_two_eq_pb h2 h12 hs (N := 2 * (0 + 1)) (by omega) rfl (hval 0)
+    have hc : ∀ f, mulByNEmb t.tateCurve (2 * (2 * (0 + 1))) (pb t.tateCurve 2 f) =
+        mulByNEmb t.tateCurve 2 f := fun f =>
+      AlgHom.congr_fun (mulByNEmb_comp_pb_mul t.tateCurve 2 2) f
+    change IntermediateField.adjoin _ _ ≤ _
+    rw [IntermediateField.adjoin_le_iff]
+    rintro _ ⟨g, hg, rfl⟩
+    rcases hg with rfl | rfl
+    · rw [hgX, hc]; exact ⟨_, rfl⟩
+    · rw [hgY, hc]; exact ⟨_, rfl⟩
   -- the transition `j → j'`
   have hM : 0 < M := by
     rcases Nat.eq_zero_or_pos M with h | h

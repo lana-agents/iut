@@ -524,7 +524,7 @@ theorem exists_thetaClassTemp_thetaKernel :
             thetaKernelTemp (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
               (hemiL_open t)) O V hV),
           ContH1.evalTriv γ (thetaKernelTemp_smul_mu hγ n) (classAt η hC1 j n) = 1 := by
-  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, -, hF⟩ := exists_etaleThetaSystem h2 h12 hs
+  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, -, hF, -⟩ := exists_etaleThetaSystem h2 h12 hs
   haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
   haveI het' : ∀ j, Algebra.Etale (DX t).R
       (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R := fun j =>
@@ -549,7 +549,7 @@ include h2 in
 * (Prop. 1.3, "the class comes from `(Π^tp_Y)^Θ`", under C1 only) `classAt η j n` vanishes on
   `Π^tp_Ÿ ∩ Kθ`;
 * at every place `W ⊇ K` over the cusp there are base points `V ≤ W` over `O`, and for each,
-  under C1 and the debt `InertiaFixesLevel (L 0)`, the theta class maps the cusp inertia onto
+  under C1, the theta class maps the cusp inertia onto
   `μ_n`;
 * under the debt `CuspInertiaWeil` (G5c+G5d): there is `e : Δ_Θ ≃* Ẑ(1)` such that the cusp
   inertia maps onto `Δ_Θ`, every cusp inertia element maps into `Δ_Θ`, and the theta class on it
@@ -559,7 +559,9 @@ theorem exists_thetaClassTemp_prop13 :
       (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
       (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
       (_ : ∀ j, Algebra.Etale (DX t).R (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
-      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
+      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))
+      (hL0 : ∀ (W : ValuationSubring Ω), (∀ c : K, algebraMap K Ω c ∈ W) → τ ∉ W →
+        InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
@@ -573,37 +575,35 @@ theorem exists_thetaClassTemp_prop13 :
             thetaKernelTemp (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
               (hemiL_open t)) O V hV),
           ContH1.evalTriv γ (thetaKernelTemp_smul_mu hγ n) (classAt η hC1 j n) = 1) ∧
-      (∀ (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W →
+      (∀ (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W) (hτ : τ ∉ W),
         (∃ V : ValuationSubring Ω, V ≤ W ∧ V.comap (algebraMap K Ω) = O) ∧
         ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (hVW : V ≤ W)
           (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL)
-          (hL0 : InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W)
           (n : ℕ) [NeZero n] (ζ : Mu n Ω), ∃ σ : inertiaGroup (DX t).R W,
-            ContH1.evalTriv ⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 σ)⟩
-                (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 σ) n)
+            ContH1.evalTriv ⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩
+                (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 W hk hτ σ) n)
                 (thetaClassTemp η hC1 n) = ζ) ∧
       (CuspInertiaWeil (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
           (hemiL_open t)) →
         ∃ (e : thetaSubD (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
             (hemiL_open t)) ≃* ZHatOne (F (fieldData (transcendental_tau t.tateCurve)
               (hemiData t.tateCurve).L (hemiL_open t))) Ω),
-        ∀ (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W →
+        ∀ (W : ValuationSubring Ω) (hk : ∀ c : K, algebraMap K Ω c ∈ W) (hτ : τ ∉ W),
           (∀ δ ∈ thetaSubD (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
               (hemiL_open t)), ∃ σ, inertiaToTheta _ hk σ = δ) ∧
           ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (hVW : V ≤ W)
             (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL)
-            (hL0 : InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W)
             (σ : inertiaGroup (DX t).R W),
             ∃ hσ : inertiaToTheta _ hk (inertiaX σ) ∈ thetaSubD (fieldData
                 (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L (hemiL_open t)),
               ∀ (n : ℕ) [NeZero n],
-                ContH1.evalTriv ⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 σ)⟩
-                    (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 σ) n)
+                ContH1.evalTriv ⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩
+                    (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 W hk hτ σ) n)
                     (thetaClassTemp η hC1 n) =
                   ZHatOne.proj (⟨n, Nat.cast_ne_zero.mpr (NeZero.ne n)⟩ :
                     KummerIndex (F (fieldData (transcendental_tau t.tateCurve)
                       (hemiData t.tateCurve).L (hemiL_open t)))) (e ⟨_, hσ⟩)) := by
-  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, hF⟩ := exists_etaleThetaSystem h2 h12 hs
+  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, hF, hL02⟩ := exists_etaleThetaSystem h2 h12 hs
   haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
   haveI het' : ∀ j, Algebra.Etale (DX t).R
       (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R := fun j =>
@@ -615,9 +615,13 @@ theorem exists_thetaClassTemp_prop13 :
     fun W hk hτ V hV hVW hC1 n _ => classAt_cuspTame η hC1 (n - 1) n hk hVW
       (hcusp (n - 1) W hk hτ n
         ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩)
-  refine ⟨L, hL, hX, het', η, htr, fun V hV => thetaClassCompatible_tate h12 hs O hO V hV htr,
+  have hL0 : ∀ (W : ValuationSubring Ω), (∀ c : K, algebraMap K Ω c ∈ W) → τ ∉ W →
+      InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W :=
+    fun W hk hτ => inertiaFixesLevel_of_le_mulByNField_two hL02 hk hτ
+  refine ⟨L, hL, hX, het', η, hL0, htr,
+    fun V hV => thetaClassCompatible_tate h12 hs O hO V hV htr,
     fun V hV hC1 j n _ hn γ hγ => ?_, fun W hk hτ => ⟨exists_le_comap_eq W hk O,
-      fun V hV hVW hC1 hL0 n _ ζ => classAt_cusp_surjective η hC1 (n - 1) n hk hVW hL0
+      fun V hV hVW hC1 n _ ζ => classAt_cusp_surjective η hC1 (n - 1) n hk hVW (hL0 W hk hτ)
         (hcc W hk hτ V hV hVW hC1 n) ζ⟩, fun hG5 => ?_⟩
   · obtain ⟨hLB, hF2⟩ := hF j n hn
     refine classAt_eq_one_of_thetaKernel η hC1 j n _ hLB (fun σ hσ ρ hρ x hx => ?_)
@@ -628,10 +632,10 @@ theorem exists_thetaClassTemp_prop13 :
     · obtain ⟨c, h, hh, e⟩ := hF2 σ (deltaAut_fix_hemiL hσ)
       exact ⟨algebraMap K Ω c, isAlgebraic_algebraMap c, h, hh, e⟩
   · obtain ⟨e, he⟩ := hG5
-    refine ⟨e, fun W hk hτ => ⟨(he W hk hτ).1, fun V hV hVW hC1 hL0 σ => ?_⟩⟩
+    refine ⟨e, fun W hk hτ => ⟨(he W hk hτ).1, fun V hV hVW hC1 σ => ?_⟩⟩
     obtain ⟨hσ, -⟩ := (he W hk hτ).2 (inertiaX σ)
     refine ⟨hσ, fun n _ => ?_⟩
-    obtain ⟨hσ', H⟩ := classAt_deltaTheta η hC1 (n - 1) n hk hVW (he W hk hτ).2 hL0
+    obtain ⟨hσ', H⟩ := classAt_deltaTheta η hC1 (n - 1) n hk hVW (he W hk hτ).2 (hL0 W hk hτ)
       (hcc W hk hτ V hV hVW hC1 n) σ
     exact H
 

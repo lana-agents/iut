@@ -277,8 +277,10 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   (owner PI1TOP/MR13): `CuspInertiaWeil D` (with `WeilTameAt`), a `Prop` def used only as a named
   hypothesis: `e : Δ_Θ ≃* Ẑ(1)` with cusp inertia `↠ Δ_Θ` and `e` = tame character
   (`CuspInertiaWeil.exists_tame`, `.injective`).
-* (11h) `ThetaProp13.lean` (**[EtTh] Prop. 1.3 on `Δ_Θ`**, tempered, under C1, `CuspInertiaWeil`
-  and the debt `InertiaFixesLevel (L 0)` (`Ÿ'_2 → X` unramified over the cusp; owner MR14)):
+* (11h) `ThetaProp13.lean` (**[EtTh] Prop. 1.3 on `Δ_Θ`**, tempered, under C1 and `CuspInertiaWeil`;
+  the former debt `InertiaFixesLevel (L 0)` (`Ÿ'_2 → X` unramified over the cusp) is proved since
+  MR14 run 16: `MulByTwoInertia.lean`, `fix_mulByNField_two` (Hensel-type lemma for the duplication
+  relation `Φ₂(a) = τΨ₂Sq(a)`), `levelData_two_eq_pb` (`L 0 ≤ L_2`), `inertiaFixesLevel_of_le_mulByNField_two`):
   `ambientKernel_le_level`, `inertia_fixes_level` (C1 ⇒ the cusp inertia of `Ÿ` fixes every
   level), **`classAt_deltaTheta`**, `classAt_cusp_surjective`, concrete
   **`exists_thetaClassTemp_deltaTheta`**: `thetaClassTemp η n` on `I_x ↠ Δ_Θ` is `proj_n ∘ e`, and
@@ -306,7 +308,7 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   concrete **`exists_thetaClassTemp_thetaKernel`** (`ThetaKerTheta.lean`): for the theta system,
   under C1 only, `classAt η j n` is `1` on `Π^tp_Ÿ ∩ Kθ`, which is MR15's `hη13` (obligation 8).
   **`exists_thetaClassTemp_prop13`** (MR15 run 4, decision D25): all conclusions for ONE theta
-  system (Prop. 1.3 on `Kθ` under C1; cusp inertia onto `μ_n` under `InertiaFixesLevel (L 0)`;
+  system (Prop. 1.3 on `Kθ` under C1; cusp inertia onto `μ_n`;
   Prop. 1.3 on `Δ_Θ` under `CuspInertiaWeil`).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
@@ -612,8 +614,7 @@ the MR15 plan.
   (generic levels) and **`exists_thetaEnv_rigidity`** (Tate curve): Cor. 2.19(i) and the
   `μ_n`-part of Cor. 2.18(iv) for the theta class, with `hη13` (obligation 8) and `hηL`
   (obligation 11) discharged by MR14's Prop. 1.3; remaining named hypotheses: C1, `FISlim Π^tp_Y`,
-  `G_k` center-free, `Π^tp_Y ↠ G_k`, Prop. 2.12(i)-type generation, `InertiaFixesLevel (L 0)`,
-  `CuspInertiaWeil`.
+  `G_k` center-free, `Π^tp_Y ↠ G_k`, Prop. 2.12(i)-type generation, `CuspInertiaWeil`.
 * `Env/ThetaTower.lean` (MR15 run 4, **Layer B**) — [EtTh] **Cor. 2.19(ii)** for the theta environments: levels
   `levelN n = (n+1)!`, reductions `Mu.transition`; tower data discharged: `transition_psiMu` (hred),
   `transition_surjective` (hs), `ker_transition` (hker), **`contCocycles_eq_map`** (hKumRed: continuous cocycles

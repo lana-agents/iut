@@ -62,7 +62,7 @@ import Iut.EtaleTheta.Env.ThetaTower
   the theta classes mod `N_{n+l}`).
 * `exists_thetaRep_inputs` (the Tate curve): for the theta system of
   `exists_thetaClassTemp_prop13`, the inputs `hr13` (Prop. 1.3, modulo C1) and the surjectivity
-  of the root class on `thetaLU` (modulo C1, `InertiaFixesLevel (L 0)`, `CuspInertiaWeil`) and the
+  of the root class on `thetaLU` (modulo C1, `CuspInertiaWeil`) and the
   `l`-th root property `rootClass_pow` for the theta classes.
 * `exists_thetaEnvU_rigidity` (the Tate curve): all conclusions for `X̲` (`EnvUConclusions`: the
   `l`-th root property, Cor. 2.19(i), the `μ`-part of Cor. 2.18(iv)) for one theta system, via the
@@ -792,8 +792,8 @@ theta system of `exists_thetaClassTemp_prop13`, every base point `V` over `O`, u
 `n ≥ 1` and every representative `r` of the theta class mod `n` on `Π^tp_Ÿ`:
 
 * (`hr13`, [EtTh] Prop. 1.3) `r = 1` on `Π^tp_Ÿ ∩ Kθ` (MR14, modulo C1 only);
-* (`hrL`) if `V` lies under a place `W` over the cusp, then under the debts
-  `InertiaFixesLevel (L 0)` and `CuspInertiaWeil`, `r` maps `Π^tp_Ÿ ∩ (preimage of Δ_Θ)` onto
+* (`hrL`) if `V` lies under a place `W` over the cusp, then under the debt
+  `CuspInertiaWeil`, `r` maps `Π^tp_Ÿ ∩ (preimage of Δ_Θ)` onto
   `μ_n` (cusp inertia).
 
 With `n = l·N`, these are the inputs `hr13`, `hrL` of `cyclotomicRigidity_thetaEnvU` and
@@ -817,25 +817,25 @@ theorem exists_thetaRep_inputs :
         (∀ γ : piYddotX V hV (tateDataX O hO hs h12) hL,
           (γ : TempPi DXc O V hV) ∈ thetaK (tateDataX O hO hs h12) hL → r γ = 1) ∧
         ∀ (W : ValuationSubring Ω) (_ : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W → V ≤ W →
-          InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W →
           CuspInertiaWeil (DXc) →
           ∀ m : Mu n Ω, ∃ γ : piYddotX V hV (tateDataX O hO hs h12) hL,
             (γ : TempPi DXc O V hV) ∈ thetaL (tateDataX O hO hs h12) hL ∧ r γ = m := by
-  obtain ⟨L, hL, hX, het, η, htr, hcomp, hker, hcusp, hdelta⟩ :=
+  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
   refine ⟨L, hL, hX, het, η, htr, hcomp, fun V hV hC1 n _ r hr => ⟨fun γ hγ => ?_,
-    fun W hk hτ hVW hL0 hG5 m => ?_⟩⟩
+    fun W hk hτ hVW hG5 m => ?_⟩⟩
   · have hdvd : n ∣ 2 * (n - 1 + 1) :=
       ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩
     have h := hker V hV hC1 (n - 1) n hdvd γ hγ.2
     rw [← ContH1.evalTriv_mk γ (thetaKernelTemp_smul_mu hγ.2 n) r]
     exact (congrArg _ hr).trans h
   · obtain ⟨e, he⟩ := hdelta hG5
-    obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW hC1 hL0 n m
-    obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW hC1 hL0 σ
-    refine ⟨⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 σ)⟩,
-      inertiaToTempered_mem_thetaL hk hVW σ (hL0 σ) hσΘ, ?_⟩
-    rw [← ContH1.evalTriv_mk _ (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 σ) n) r, hr]
+    obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW hC1 n m
+    obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW hC1 σ
+    refine ⟨⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩,
+      inertiaToTempered_mem_thetaL hk hVW σ (hL0 W hk hτ σ) hσΘ, ?_⟩
+    rw [← ContH1.evalTriv_mk _ (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 W hk hτ σ) n) r,
+      hr]
     exact hσ
 
 set_option maxHeartbeats 1000000 in
