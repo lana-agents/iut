@@ -316,6 +316,7 @@ import Iut.Frobenioid.Tempered.HullEquiv
 import Iut.Frobenioid.Tempered.KummerTransport
 import Iut.Frobenioid.Tempered.PadicEmbed
 import Iut.Frobenioid.Tempered.PiTpONS
+import Iut.Frobenioid.Tempered.PrimeDiv
 import Iut.Frobenioid.Tempered.RatFunAnnulus
 import Iut.Frobenioid.Tempered.RatFunBase
 import Iut.Frobenioid.Tempered.RatFunConst
