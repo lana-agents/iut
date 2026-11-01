@@ -476,4 +476,69 @@ theorem classAt_eq_one_of_thetaKernel (hC1 : LevelsDominated V hV T hL) (j n : �
 
 end Main
 
+/-! ### The concrete system: the class comes from `(Π^tp_Y)^Θ` -/
+
+section Concrete
+
+variable {K : Type u} [NormedField K] [CompleteSpace K] [IsUltrametricDist K] [CharZero K]
+  {t : TateParameter K}
+
+local notation "Ω" => FFClosure (curveE t.tateCurve)
+local notation "τ" => coordT (xN t.tateCurve)
+
+variable [t.tateCurve.IsElliptic] (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) {s : Kˣ}
+  (hs : s ^ 2 = t.q) (O : ValuationSubring K) (hO : ∀ x : K, x ∈ O ↔ ‖x‖ ≤ 1)
+
+omit [CompleteSpace K] [IsUltrametricDist K] in
+theorem deltaAut_fix_hemiL {σ : Ω ≃ₐ[K₀ K τ] Ω}
+    (hσ : σ ∈ deltaAut (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
+      (hemiL_open t))) : ∀ z ∈ (hemiData t.tateCurve).L, σ z = z := by
+  obtain ⟨h, -⟩ := mem_deltaAut_iff.mp hσ
+  exact (IntermediateField.mem_fixingSubgroup_iff _ _).mp h
+
+set_option maxHeartbeats 2000000 in
+-- destructuring `exists_etaleThetaSystem` (concrete Tate-curve levels) is slow to unify
+include h2 in
+/-- **[EtTh] Prop. 1.3, "the class comes from `(Π^tp_Y)^Θ`", for the theta system** (tempered,
+under C1 only): for the system of `exists_thetaClassTemp`, for every base point `V` over `O`,
+under C1, every level `j` and `n ∣ N_j`, the class `classAt η j n` (`= thetaClassTemp η n`)
+evaluates to `1` on `Π^tp_Ÿ ∩ Kθ`, `Kθ = Ker(Δ^tp_X ↠ Δ_X^Θ)`. This is MR15's `hη13`
+(obligation 8): (F1) is `commutator_fix_mulByNField` for `B = L_{2N_j}`, (F2) is the translation
+formula of `exists_etaleThetaSystem` (`translation_level`). -/
+theorem exists_thetaClassTemp_thetaKernel :
+    ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
+      (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
+      (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
+      (_ : ∀ j, Algebra.Etale (DX t).R (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
+      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
+      ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
+      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
+          (LX := (hemiData t.tateCurve).L) (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η) ∧
+      ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
+        (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (j n : ℕ) [NeZero n],
+        n ∣ 2 * (j + 1) →
+        ∀ (γ : piYddotX V hV (tateDataX O hO hs h12) hL)
+          (hγ : (γ : TempPi (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
+              (hemiL_open t)) O V hV) ∈
+            thetaKernelTemp (fieldData (transcendental_tau t.tateCurve) (hemiData t.tateCurve).L
+              (hemiL_open t)) O V hV),
+          ContH1.evalTriv γ (thetaKernelTemp_smul_mu hγ n) (classAt η hC1 j n) = 1 := by
+  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, -, hF⟩ := exists_etaleThetaSystem h2 h12 hs
+  haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
+  haveI het' : ∀ j, Algebra.Etale (DX t).R
+      (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R := fun j =>
+    etale_fieldData (transcendental_tau t.tateCurve) (hemiL_open t) (L j) (hL j) (het j)
+  refine ⟨L, hL, hX, het', η, htr, fun V hV => thetaClassCompatible_tate h12 hs O hO V hV htr,
+    fun V hV hC1 j n _ hn γ hγ => ?_⟩
+  obtain ⟨hLB, hF2⟩ := hF j n hn
+  refine classAt_eq_one_of_thetaKernel η hC1 j n _ hLB (fun σ hσ ρ hρ x hx => ?_)
+    (fun σ hσ => ?_) γ hγ
+  · exact commutator_fix_mulByNField t.tateCurve _ (deltaAut_fix_hemiL hσ) (deltaAut_fix_hemiL hρ)
+      (fun z hz => deltaAut_fix_algebraic hσ hz) (fun z hz => deltaAut_fix_algebraic hρ hz) x hx
+  · obtain ⟨c, h, hh, e⟩ := hF2 σ (deltaAut_fix_hemiL hσ)
+    exact ⟨algebraMap K Ω c, isAlgebraic_algebraMap c, h, hh, e⟩
+
+end Concrete
+
 end Iut.EtaleTheta

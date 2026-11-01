@@ -288,7 +288,22 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `σ(η) ∈ k̄·B^n·η` for `σ ∈ Δ` (F2), then `[[Δ, Δ], Δ]` fixes `η^{1/n}`),
   `ambientKernel_le_ambientKernel_level`, **`classAt_eq_one_of_thetaKernel`** (generic levels:
   under C1, (F1), (F2) at the level `j`, the theta class is `1` on `Π^tp_Ÿ ∩ Kθ`; the form of
-  MR15's `hη13`). Not done: (F1), (F2) for the theta system (`MR14-plan.md`, run 14).
+  MR15's `hη13`). (F1), (F2) for the theta system: (11j).
+* (11j) **(F1), (F2) for the theta system and the concrete `hη13`** (MR14 run 15):
+  `MulByNTorsion.lean` (**`commutator_fix_mulByNField`**: if `σ, ρ` fix `L_X` and everything
+  algebraic over `K`, then `⁅σ, ρ⁆` fixes `L_m`; the point `P` with `m·P = (τ, y_X)` moves by
+  `m`-torsion, whose coordinates are algebraic, so `σ ↦ σP − P` is a homomorphism);
+  `ThetaLevelEmbed.lean` (**`eq_cand_of_eq`**, `eq_baseAut_of_eq`: every `K`-algebra map
+  `K(E_Q) → L` fixing `R = φ^*x_q` is `ι ∘ t_w` or `ι ∘ t_w ∘ [-1]^*` for one of the `2N` kernel
+  points `w = ±s^a`, by an elementary root count (`exists_finset_of_eq`, even/odd parts of `R`)
+  against the `4N` distinct candidates; with `R_y = φ^*y_q`, `transT_Ry_eq`, `negT_Ry_eq`);
+  `ThetaTransFactor.lean` (**`exists_transFactor`**: `H_w(u) = u^{-2ak}Θ̈_{q^N}(u^N)^k /
+  Θ̈_{q^N}(w u^N)^k ∈ K(E_q)` by Tate's theorem); `ThetaLevelHeisenberg.lean`
+  (`thetaLevel_cuspElt_mul`, **`pullbackT_transT_level`**: `j(t_w^* f_N) = c_w H_w^n F_N`,
+  **`translation_level`**: `σ(η) = c·h^n·η` with `c ∈ K`, `h ∈ L_{2N}` for every
+  `σ ∈ Gal(Ω/L_X)`; `exists_etaleThetaSystem` moved here, with this as a new conjunct);
+  concrete **`exists_thetaClassTemp_thetaKernel`** (`ThetaKerTheta.lean`): for the theta system,
+  under C1 only, `classAt η j n` is `1` on `Π^tp_Ÿ ∩ Kθ`, which is MR15's `hη13` (obligation 8).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 

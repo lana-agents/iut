@@ -196,6 +196,7 @@ import Iut.EtaleTheta.KummerConj
 import Iut.EtaleTheta.MonoTheta
 import Iut.EtaleTheta.MulByNGalois
 import Iut.EtaleTheta.MulByNInversion
+import Iut.EtaleTheta.MulByNTorsion
 import Iut.EtaleTheta.RigidSystems
 import Iut.EtaleTheta.TateElliptic
 import Iut.EtaleTheta.TateFunctionField
@@ -218,7 +219,9 @@ import Iut.EtaleTheta.ThetaDivision
 import Iut.EtaleTheta.ThetaIsogeny
 import Iut.EtaleTheta.ThetaKerTheta
 import Iut.EtaleTheta.ThetaLevel
+import Iut.EtaleTheta.ThetaLevelEmbed
 import Iut.EtaleTheta.ThetaLevelGalois
+import Iut.EtaleTheta.ThetaLevelHeisenberg
 import Iut.EtaleTheta.ThetaLevelInversion
 import Iut.EtaleTheta.ThetaLevelKummer
 import Iut.EtaleTheta.ThetaLevelRational
@@ -233,6 +236,7 @@ import Iut.EtaleTheta.ThetaTempered
 import Iut.EtaleTheta.ThetaTemperedClass
 import Iut.EtaleTheta.ThetaTemperedCusp
 import Iut.EtaleTheta.ThetaTemperedPoint
+import Iut.EtaleTheta.ThetaTransFactor
 import Iut.EtaleTheta.ThetaTranslate
 import Iut.EtaleTheta.ThetaValues
 import Iut.EtaleTheta.Wall
