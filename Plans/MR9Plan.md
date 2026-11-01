@@ -1185,3 +1185,9 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `t′ ∈ L_K`; step 6 only ever needs geometric ones (`t′ ∈ K(X̄)`). Restricting the colimit to geometric
   stages (cofinal by `exists_stage_ge_coord`) would remove the `Eq.rec` transports of step 6.1 but
   needs a comparison `H1Lim` ≃ geometric `H1Lim` (≈ 100 lines). OK to do that if it is shorter?
+
+### Lead decisions after session l (2026-11-01, christian-41)
+- Restrict the colimit in step 6 to geometric stages (t′ ∈ K(X̄), cofinal), with a ~100-line comparison of the two H1Lim. Avoiding Eq.rec transports
+  is worth it: transports have caused most of the elaboration timeouts on other tracks. Go back to all stages only if the comparison turns out much
+  longer than 100 lines.
+- Redo resS ∘ constH1Iso = constH1Iso ∘ resS with rewrite/calc, not change.
