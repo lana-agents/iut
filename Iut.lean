@@ -189,6 +189,7 @@ import Iut.EtaleTheta.Env.Prop214
 import Iut.EtaleTheta.Env.Reduction
 import Iut.EtaleTheta.Env.Shift
 import Iut.EtaleTheta.Env.ThetaSystem
+import Iut.EtaleTheta.Env.ThetaTower
 import Iut.EtaleTheta.Env.Tower
 import Iut.EtaleTheta.Env.Transport
 import Iut.EtaleTheta.Heisenberg

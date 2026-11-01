@@ -614,3 +614,10 @@ the MR15 plan.
   (obligation 11) discharged by MR14's Prop. 1.3; remaining named hypotheses: C1, `FISlim Π^tp_Y`,
   `G_k` center-free, `Π^tp_Y ↠ G_k`, Prop. 2.12(i)-type generation, `InertiaFixesLevel (L 0)`,
   `CuspInertiaWeil`.
+* `Env/ThetaTower.lean` (MR15 run 4, **Layer B**) — [EtTh] **Cor. 2.19(ii)** for the theta environments: levels
+  `levelN n = (n+1)!`, reductions `Mu.transition`; tower data discharged: `transition_psiMu` (hred),
+  `transition_surjective` (hs), `ker_transition` (hker), **`contCocycles_eq_map`** (hKumRed: continuous cocycles
+  `G_k → μ_m` lift to `μ_n`, via `kummer_surjective`, `h1Transition_kummer`, `exists_lift_cocycle`), **`compatRep`**
+  / `compatRep_red` (hηred: compatible representatives of a compatible system of classes), `finiteIndex_piYddotX`
+  (`[Π^tp_Y : Π^tp_Ÿ] < ∞`), `transTemp_thetaClassTemp_levelN`; `thetaTower`, `thetaTower_model` (level `n` model =
+  `thetaEnv` of `x n`), **`discreteRigidity_thetaEnv`** (remaining named hypotheses: `FISlim Π^tp_Y`, `hlift`).
