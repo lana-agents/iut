@@ -90,6 +90,19 @@ challenge or by `Iut/Concrete/*`.
        stable-model components), `compEquiv`; cusps `cuspMap` under the explicit hypothesis
        **`CuspDecompFix`** (T7c debt); **`tatePrimeMap`** `TateCompC ⊕ CuspSet → EllPrime t`,
        `Π^tp`-equivariant (`tatePrimeMap_smul`, `_tateGalDeck`, `_lift`);
+     - (c4'''''') `Tempered/TateMero.lean`: Tate's `x(U)`, `y(U)` (`xU`, `yU`) and `x(Ü²)`, `y(Ü²)`
+       (`xM`, `yM`) in `Mero K` with the Weierstrass equation (`yM_sq_add`); **`tateRingHom`**
+       `K[E_t] ↪ Mero K` (injective via the values at the Tate points) and **`tateFieldHom`**
+       `K(E_t) → Mero K`; deck invariance `scale_xM`, `scale_yM`; the `2`-torsion point `U = s`
+       (`two_Y_s_add_X_s`); the analytic Kummer function `kumM t s = θ(-Ü²/s)/(Ü θ(-Ü²))` with
+       **`kumM_sq`** (`β·kumM² = x(Ü²) - X(s)`), `scale_neg_one_kumM`, `scale_s_kumM`;
+       `Entire.eq_zero_of_offOrbit` (identity principle off `q^ℤ`). `Tempered/EllTateAn.lean`:
+       **`deckHom_tateDeck_kumM`** (`tateDeck g` acts on `√(x - e)` by the `ℤ/2`-part of
+       `character₂ g`), `deckHom_tateDeck_tateFieldHom` (it fixes `K(E_t)`), **`galois_kummer`**
+       (decomposition-group elements: the Galois action on `√c` is the analytic deck action),
+       `character₂_galois_fix`; `dataToR`, `dataRingHom` (the curve of `D` in `R` and in
+       `Mero K`, `dataToR_c`, `dataRingHom_c`); `gammaMero`, `isTateLift_gammaMero` (genuine Tate
+       lift on `RR = Mero K`);
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;

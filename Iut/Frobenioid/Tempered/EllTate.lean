@@ -84,9 +84,11 @@ of `|U| = 1`, fixed by the base point of the fibre functor). Consequently:
 
 ## Explicit inputs and debts (T7c)
 
-* The comparison of the schematic Tate curve of tfg with the analytic `Ü`-model (`Π^tp` acting on
-  `Ÿ_∞ = 𝔾_m^an`) is not formalised: `tateDeck` is *defined* by the deck formula found above, and
-  `σ` (the image of `Π^tp_X → G_F` in `IsoAut t`) is an explicit input. `hσ` (σ fixes `s`) holds
+* `tateDeck` is *defined* by the deck formula found above (consumers may use only what is proved
+  about it). Its comparison with the analytic `Ü`-model is proved on the function field of `X'`
+  (`EllTateAn`: `K(E_t) ⊆ Mero K`, `√(x - e) ∈ Mero K`); the comparison of all tempered
+  coverings (`Π^tp` acting on `Ÿ_∞ = 𝔾_m^an`) is not formalised, and `σ` (the image of
+  `Π^tp_X → G_F` in `IsoAut t`) is an explicit input. `hσ` (σ fixes `s`) holds
   when `s ∈ φ(F)`, which tfg's `DoubleData` (the `2`-torsion point `√q` is `F`-rational) forces.
 * A lift `γ` of `tateGalDeck σ hσ` with nontrivial `ℤ/2`-part does not factor through
   `ℤ × ℤ/2` when `K` is algebraically closed (an involution of `R` fixing `K ∋ √-1` would have a
@@ -232,8 +234,19 @@ variable {F : Type u} [Field F] {O : ValuationSubring F}
   (V : ValuationSubring Ω) (hV : V.comap (algebraMap F Ω) = O)
   [IsReduced R] (D : TateObject.DoubleData O R) (sΩ : Ω) (hsΩ : sΩ ^ 2 = algebraMap R Ω D.c)
 
-/-- **The deck part of the action of `Π^tp_X` on `Ÿ_∞`**: `character₂` followed by
-`(n, ε) ↦ (-1)^ε s^{-n}`. -/
+/-- **The deck part `Π^tp_X → Deck t`, defined by a formula**: `character₂` followed by
+`(n, ε) ↦ (-1)^ε s^{-n}`.
+
+This is a *definition*, not a theorem that it is the action of `Π^tp_X` on `Ÿ_∞ = 𝔾_m^an`: no
+consumer may treat it as "the action on `𝔾_m^an`" beyond what is proved about it (rule 4). The
+proved comparison (`EllTateAn`) is on the function field of `X' = E_t(√(x - e))` inside
+`Mero K`: `tateDeck g` fixes the image of `K(E_t)` and multiplies the analytic `√(x - e)` by
+`(-1)^ε`, where `ε` (the `ℤ/2`-part of `character₂ g`) is the action of `g` on the fibre
+`{±√c}` of `X'`; for elements of the decomposition group this is their Galois action on `√c`.
+The `ℤ`-part acts trivially on `X'`, and its sign `-χ` is a convention matching tfg's sheet
+orientation with Tate's `U` (module docstring): [EtTh] fixes `Π^tp_X ↠ ℤ` only "up to
+composition with an element of `Aut(ℤ) = {±1}`" (l.445–447). The identification of all tempered
+coverings of the analytic and the schematic Tate curve is not formalised. -/
 def tateDeck {s : Kˣ} (hs : (s : K) ^ 2 = t.q) : temperedPi1 O R A V hV →* Deck t :=
   (tateDeckOfChar hs).comp (character₂ (A := A) D V hV sΩ hsΩ)
 
