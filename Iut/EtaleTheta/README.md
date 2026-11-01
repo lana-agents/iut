@@ -638,3 +638,8 @@ the MR15 plan.
   `Δ̲_Θ` along the splitting of `D̲_x`); **`EnvUConclusions`** / **`envUConclusions_of`** (generic "inputs ⇒
   conclusions" for `X̲`: `l`-th root, Cor. 2.19(i), `μ`-part of Cor. 2.18(iv)) and the concrete
   **`exists_thetaEnvU_rigidity`** (one theta system of the Tate curve, all conclusions for `X̲` in one existential).
+  **`exists_cX_of_invariant`** (obligation 13 reduced to the `μ_2 × lℤ`-invariance of `θ mod l` on `Π^tp_Ÿ` and the
+  structure `Π^tp_Ÿ ⊴ Π^tp_X̿`, `[Π^tp_Y : Π^tp_Ÿ] = 2`, `χ(g) = l`), via
+* `Env/CocycleExtend.lean` (MR15 run 6) — pure group theory: **`exists_cocycle_extend`** (a cocycle on `H ⊴ G` whose
+  conjugates by an involution direction `e` and a `ℤ`-direction `g` are cohomologous to it extends to `G`, coefficients
+  of odd exponent; via homomorphic sections of `M ⋊ G`, `exists_ext_two`, `exists_hom_extend_int`), `divChar`.

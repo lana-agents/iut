@@ -3,6 +3,7 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
+import Iut.EtaleTheta.Env.CocycleExtend
 import Iut.EtaleTheta.Env.ThetaTower
 
 /-!
@@ -64,6 +65,10 @@ import Iut.EtaleTheta.Env.ThetaTower
   `exists_thetaClassTemp_prop13`, the inputs `hr13` (Prop. 1.3, modulo C1) and the surjectivity
   of the root class on `thetaLU` (modulo C1, `CuspInertiaWeil`) and the
   `l`-th root property `rootClass_pow` for the theta classes.
+* `exists_cX_of_invariant` (obligation 13, reduced): if `Π^tp_Ÿ ⊴ Π^tp_X̿`, `e ∈ Π^tp_Y ∖ Π^tp_Ÿ`
+  with `Π^tp_Y = Π^tp_Ÿ ∪ Π^tp_Ÿ e`, `χ(g) = l`, and the conjugates of `r mod l` by `e` and `g` are
+  cohomologous to `r mod l` (the `μ_2 × lℤ`-invariance of `θ mod l`, Prop. 1.5(iii)), then a
+  splitting cocycle `cX` with `hcXr` exists (`CocycleExtend.lean`, `l` odd).
 * `exists_thetaEnvU_rigidity` (the Tate curve): all conclusions for `X̲` (`EnvUConclusions`: the
   `l`-th root property, Cor. 2.19(i), the `μ`-part of Cor. 2.18(iv)) for one theta system, via the
   generic `envUConclusions_of` applied to `exists_thetaRep_inputs`.
@@ -705,6 +710,75 @@ theorem discreteRigidity_thetaEnvU [((piYddotX V hV T hL).subgroupOf
     (hS : ∀ n, Nonempty (S.X n ≅ (thetaTowerU hcX rs hrs hcX0 hPYU).model n)) : S.IsoModel :=
   haveI := finiteIndex_piYddU (V := V) (hV := hV) (T := T) (hL := hL) hcX
   discreteRigidity_env (hlift := hlift) (S := S) (hS := hS)
+
+/-! #### Obligation 13: the splitting cocycle from the invariance of the theta class mod `l` -/
+
+omit [IsGalois (K₀ k t) Ω] [CharZero k] [IsAlgClosed Ω] [NeZero l] in
+theorem dvd_character_piXdd (x : piXdd V hV T l) :
+    (l : ℤ) ∣ Multiplicative.toAdd
+      (TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV x) := by
+  obtain ⟨n, hn⟩ := Subgroup.mem_zpowers_iff.1 x.2
+  refine ⟨n, ?_⟩
+  rw [← hn, toAdd_zpow, toAdd_ofAdd, smul_eq_mul, mul_comm]
+
+/-- The mod-`l` reduction of `r` on `Π^tp_Ÿ`. -/
+def redCocycle (γ : PYddg) : Mu l Ω := Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ)
+
+theorem isCocycle_redCocycle :
+    IsCocycle (actDD augg (psiMu (k := k) (Ω := Ω) l) PYddg) (redCocycle (l := l) r) := by
+  intro a b
+  rw [redCocycle, isCocycle_coe_cocycles (l * N) r a b, map_mul]
+  exact congrArg _ (transition_psiMu _ _ _)
+
+/-- **Obligation 13, reduced to the invariance of the theta class mod `l`** ([EtTh]
+Prop. 2.2(ii), l.2938–2945). Let `e ∈ Π^tp_Y ∖ Π^tp_Ÿ` (`[Π^tp_Y : Π^tp_Ÿ] = 2`) and `g` with
+`χ(g) = l` (a generator of `Π^tp_X̿/Π^tp_Y ≅ lℤ`), and assume that `Π^tp_Ÿ` is normal in
+`Π^tp_X̿`. If the conjugates of `r mod l` by `e` and by `g` are cohomologous to `r mod l` (with
+coboundaries of `me`, `mg`: the `μ_2 × lℤ`-invariance of `θ mod l`, Prop. 1.5(iii)), and `l` is
+odd, then a splitting cocycle `cX` with `hcXr` exists (`exists_cocycle_extend`). -/
+theorem exists_cX_of_invariant (hl : Odd l)
+    (hHn : ∀ x ∈ piXdd V hV T l, ∀ h ∈ PYddg, x * h * x⁻¹ ∈ PYddg)
+    {e g : PXg} (heY : e ∈ PYg) (he : e ∉ PYddg) (he2 : e * e ∈ PYddg)
+    (hidx : ∀ y ∈ PYg, y ∈ PYddg ∨ y * e⁻¹ ∈ PYddg)
+    (hg : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV g =
+      Multiplicative.ofAdd (l : ℤ))
+    (me mg : Mu l Ω)
+    (hce : ∀ (h : PXg) (hh : h ∈ PYddg),
+      redCocycle r ⟨e * h * e⁻¹, hHn e (piY_le_piXdd l heY) h hh⟩ =
+        me * act augg (psiMu l) e (redCocycle r ⟨h, hh⟩) *
+          (act augg (psiMu l) (e * h * e⁻¹) me)⁻¹)
+    (hcg : ∀ (h : PXg) (hh : h ∈ PYddg),
+      redCocycle r ⟨g * h * g⁻¹, hHn g (by
+        change _ ∈ Subgroup.zpowers _; rw [hg]; exact Subgroup.mem_zpowers _) h hh⟩ =
+        mg * act augg (psiMu l) g (redCocycle r ⟨h, hh⟩) *
+          (act augg (psiMu l) (g * h * g⁻¹) mg)⁻¹) :
+    ∃ (cX : piXdd V hV T l → Mu l Ω)
+      (_ : IsCocycle (actDD augg (psiMu (k := k) (Ω := Ω) l) (piXdd V hV T l)) cX),
+      ∀ (γ : PYddg) (h : (γ : PXg) ∈ piXdd V hV T l),
+        cX ⟨γ, h⟩ = Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ) := by
+  have hl0 : (l : ℤ) ≠ 0 := by exact_mod_cast NeZero.ne l
+  set χ := divChar ((TemperedFundamentalGroups.TateObject.character
+    (A := (fieldData ht LX hLX).A) T V hV).comp (piXdd V hV T l).subtype) (l : ℤ)
+    (dvd_character_piXdd (l := l)) with hχ
+  have hker : ∀ x : piXdd V hV T l, x ∈ χ.ker ↔ (x : PXg) ∈ PYg := fun x => by
+    rw [MonoidHom.mem_ker, hχ, divChar_eq_one_iff hl0]
+    exact Iff.rfl
+  set H := (piYddotX V hV T hL).subgroupOf (piXdd V hV T l) with hHdef
+  have hHn' : H.Normal := ⟨fun n hn x => hHn x.1 x.2 n.1 hn⟩
+  have hgdd : g ∈ piXdd V hV T l := by
+    change _ ∈ Subgroup.zpowers _; rw [hg]; exact Subgroup.mem_zpowers _
+  have heg : e ∈ piXdd V hV T l := piY_le_piXdd l heY
+  have hM : ∀ m : Mu l Ω, m ^ l = 1 := fun m => Mu.ext (by rw [map_pow, Mu.val_pow_n, map_one])
+  obtain ⟨C, hC, hCH⟩ := exists_cocycle_extend (φ := actDD augg (psiMu (k := k) (Ω := Ω) l)
+      (piXdd V hV T l)) hl hM H hHn' χ
+    (fun x hx => (hker x).2 (piYddotX_le_piY T hL hx))
+    (e := ⟨e, heg⟩) (g := ⟨g, hgdd⟩) he ((hker _).2 heY) he2
+    (fun y hy => hidx y.1 ((hker y).1 hy))
+    (divChar_eq_ofAdd_one hl0 _ hg)
+    (fun h => redCocycle r ⟨h.1.1, h.2⟩)
+    (fun a b => isCocycle_redCocycle r ⟨a.1.1, a.2⟩ ⟨b.1.1, b.2⟩)
+    me mg (fun h hh => hce h.1 hh) (fun h hh => hcg h.1 hh)
+  exact ⟨C, hC, fun γ h => hCH ⟨⟨γ, h⟩, γ.2⟩⟩
 
 end Levels
 
