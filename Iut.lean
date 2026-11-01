@@ -497,6 +497,7 @@ import Iut.Reconstruction.Thm19.CycloIso
 import Iut.Reconstruction.Thm19.DecompIso
 import Iut.Reconstruction.Thm19.GalInertia
 import Iut.Reconstruction.Thm19.GeomLim
+import Iut.Reconstruction.Thm19.InertiaConj
 import Iut.Reconstruction.Thm19.LimCongr
 import Iut.Reconstruction.Thm19.LimEquiv
 import Iut.Reconstruction.Thm19.LimIso

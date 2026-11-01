@@ -1300,10 +1300,11 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   * Addendum (session n, fourth push): **`Thm19/GalInertia.lean`**:
     **`IsCor38Lift.exists_map_inertiaH_galLift`** — `galLift φ` carries `I_W ∩ H` (cusp place `W` of
     `V = chartOne τ₀`) onto `I_{W'} ∩ H'` (cusp place `W'` of `V₂ = chartOne υ`), via `IsCor38Lift.iso`
-    and `exists_map_inertiaH_bridgeIso`. **Remaining for step 1 at the stages**: (i) conjugation:
-    `b (I_{W'} ∩ H') b⁻¹ = I_{b̃W'} ∩ H'` for a lift `b̃ ∈ H'` of `b` (inertia of a translated place; not
-    found in pi1/ckt, needs a short lemma on `GaloisPi1.inertia` and `ValuationSubring.map`), so the
-    normalised `e = conj b ∘ galLift φ` maps cusp inertia to cusp inertia; (ii) the constant-field
+    and `exists_map_inertiaH_bridgeIso`. Fifth push: **`Thm19/InertiaConj.lean`** — (i) conjugation:
+    `transPlace τ W = {x | τ⁻¹x ∈ W}`, `conj_mem_inertia`, `conj_mem_inertiaH`, `transPlace_mem_CuspW`,
+    **`conj_mem_map_inertiaH`** (`b (I_W ∩ H) b⁻¹ ⊆ I_{τW} ∩ H` in `Π_U` for `b = [τ]`), so the
+    normalised `e = conj b ∘ galLift φ` maps cusp inertia into cusp inertia (lift `b` to `H` by
+    `QuotientGroup.mk_surjective`). **Remaining for step 1 at the stages**: (ii) the constant-field
     extension: inertia of `constExt K₁ D` at `W` restricts (`piRes`) into that of `D`
     (`mem_range_piRes_iff`); (iii) the residues of `LiftData.S` by `exists_res_h1Congr_bridgeIso`-style
     reasoning with `evalTriv_h1Congr` (the coefficient `cycloVχ` is used directly, no `map_conj_eq_self`
