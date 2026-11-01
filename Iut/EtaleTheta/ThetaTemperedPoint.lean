@@ -30,8 +30,9 @@ is the decomposition group of the point (for the base point `V`).
   the level `j` (`toLevel_galoisToTempered`), and **`classAt_galois`**: every representative of
   `classAt η j n` is, on these elements, `σ ↦ σ(α)/α` up to a coboundary (`α^n = η_j`).
 * Places: `mem_place_iff` (Galois elements preserving `V` preserve `A`, when the residue field
-  of `A` is algebraic over `k`: `exists_monic_lt_one`, `exists_mul_mem`), `exists_kummer_close` (Kummer
-  cocycles of units congruent mod `𝔪_A` differ by a coboundary; residue characteristic `0`).
+  of `A` is algebraic over `k`: `exists_monic_lt_one`, `exists_mul_mem`), `exists_kummer_close`
+  (Kummer cocycles of units congruent mod `𝔪_A` differ by a coboundary; residue characteristic
+  `0`).
 * **`classAt_place`**, `classAt_place_mul`: if `η_j` is integral at `A` with residue `b ∈ k^×`,
   the class restricted to the decomposition group is the Kummer cocycle of `b`
   (`ClassAtPoint`, a `Prop` def used only as a conclusion).
