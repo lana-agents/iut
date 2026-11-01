@@ -216,6 +216,7 @@ import Iut.EtaleTheta.ThetaCuspTame
 import Iut.EtaleTheta.ThetaDelta
 import Iut.EtaleTheta.ThetaDivision
 import Iut.EtaleTheta.ThetaIsogeny
+import Iut.EtaleTheta.ThetaKerTheta
 import Iut.EtaleTheta.ThetaLevel
 import Iut.EtaleTheta.ThetaLevelGalois
 import Iut.EtaleTheta.ThetaLevelInversion
@@ -224,7 +225,6 @@ import Iut.EtaleTheta.ThetaLevelRational
 import Iut.EtaleTheta.ThetaLevelSystem
 import Iut.EtaleTheta.ThetaLevelUnit
 import Iut.EtaleTheta.ThetaProp13
-import Iut.EtaleTheta.ThetaKerTheta
 import Iut.EtaleTheta.ThetaPullback
 import Iut.EtaleTheta.ThetaQuotIsogeny
 import Iut.EtaleTheta.ThetaQuotient
