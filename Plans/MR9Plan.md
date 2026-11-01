@@ -1297,3 +1297,14 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     these to the isomorphism `IsCor38Lift.iso` (BelyiLift, [AbsTopI] Lemma 4.5 (v)) of the lift `φ`
     on `V`, then pass through `e = conj b ∘ galLift φ` (`ContH1.map_conj_eq_self`) and `piRes`
     (constant-field extension). Next: steps 2–5 above.
+  * Addendum (session n, fourth push): **`Thm19/GalInertia.lean`**:
+    **`IsCor38Lift.exists_map_inertiaH_galLift`** — `galLift φ` carries `I_W ∩ H` (cusp place `W` of
+    `V = chartOne τ₀`) onto `I_{W'} ∩ H'` (cusp place `W'` of `V₂ = chartOne υ`), via `IsCor38Lift.iso`
+    and `exists_map_inertiaH_bridgeIso`. **Remaining for step 1 at the stages**: (i) conjugation:
+    `b (I_{W'} ∩ H') b⁻¹ = I_{b̃W'} ∩ H'` for a lift `b̃ ∈ H'` of `b` (inertia of a translated place; not
+    found in pi1/ckt, needs a short lemma on `GaloisPi1.inertia` and `ValuationSubring.map`), so the
+    normalised `e = conj b ∘ galLift φ` maps cusp inertia to cusp inertia; (ii) the constant-field
+    extension: inertia of `constExt K₁ D` at `W` restricts (`piRes`) into that of `D`
+    (`mem_range_piRes_iff`); (iii) the residues of `LiftData.S` by `exists_res_h1Congr_bridgeIso`-style
+    reasoning with `evalTriv_h1Congr` (the coefficient `cycloVχ` is used directly, no `map_conj_eq_self`
+    needed since residues evaluate at single elements).
