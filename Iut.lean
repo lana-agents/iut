@@ -496,6 +496,7 @@ import Iut.Reconstruction.Thm19.RecOrd
 import Iut.Reconstruction.Thm19.RecPoints
 import Iut.Reconstruction.Thm19.RecRange
 import Iut.Reconstruction.Thm19.StageGeom
+import Iut.Reconstruction.Thm19.StageIso
 import Iut.Reconstruction.Thm19.StageJac
 import Iut.Reconstruction.Thm19.StageNF
 import Iut.Reconstruction.Transfer
