@@ -63,7 +63,13 @@ challenge or by `Iut/Concrete/*`.
        and `Y = Π/ker χ` with its deck transformations, `ofDiv` (`Tempered.lean`);
      - (c4) `Tempered/EllB.lean` (MR18 T10 preparation): `radData` (`B₀` = `H`-fixed
        log-meromorphic radicals, `radDiv`, kernel `O_K^×` `radDiv_eq_zero_iff`) with the
-       `G`-actions on `P` and `R` as explicit inputs (`ActCompat`; `actCompat_deck`);
+       `G`-actions on `P` (`π : G →* Perm (ℤ ⊕ Cusps)`, `PrimeAct π`) and `R` as explicit inputs
+       (`ActCompat`; `actCompat_deck`);
+     - (c4'') `Tempered/EllGal.lean`: the Galois × deck group `GalDeck t = Deck t ⋊ IsoAut t`
+       (`IsoAut t`: isometric automorphisms fixing `q`, containing `Gal(Ω/L)` = `galL φ`;
+       `σ(s) = ±s`, `gal_s_eq`), its action `f ↦ σ(f)(c⁻¹·Ü)` on `Mero K` (`galDeckHom`) and on
+       `ℤ ⊕ Cusps`, `ellDiv_galDeck` (`div(x • f) = div f ∘ x⁻¹`) and **`actCompat_galDeck`**:
+       `ActCompat` holds for every `γ : G →* GalDeck t` (the genuine analytic instance);
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;

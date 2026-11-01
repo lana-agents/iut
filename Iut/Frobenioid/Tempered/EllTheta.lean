@@ -60,7 +60,8 @@ abbrev ThetaR : Type u := DeckMero (chiDeck χ hs)
 Ex 3.9): `Φ₀` the `ℚ`-divisors on the elliptic prime set, `B₀` the fixed log-meromorphic
 functions on `Ÿ_∞ = 𝔾_m^an` under the deck action, `div₀` their divisor. -/
 abbrev thetaData : TemperedFrobenioidData G :=
-  radData s (chiDeck χ hs) (ThetaR χ hs) hval hs (actCompat_deckMero hval hs)
+  radData s ((Deck.permHom t).comp (chiDeck χ hs)) (ThetaR χ hs) hval hs
+    (actCompat_deckMero (ρ := chiDeck χ hs) hval hs)
 
 /-- **The theta tempered Frobenioid is a Frobenioid.** -/
 theorem thetaData_isFrobenioid :
@@ -118,8 +119,8 @@ theorem div_thetaElt (f : Mero K) (hf : IsLogMero t f) :
   funext ⟨x, p⟩
   induction x using QuotientGroup.induction_on with
   | H g =>
-    change radDivFun s (chiDeck χ hs) χ.ker (show ThetaR χ hs from f)
-      (QuotientGroup.mk g, p) = _
+    change radDivFun s ((Deck.permHom t).comp (chiDeck χ hs)) χ.ker
+      (show ThetaR χ hs from f) (QuotientGroup.mk g, p) = _
     rw [radDivFun_mk (actCompat_deckMero (G := G) (ρ := chiDeck χ hs) hval hs) hf.1
       ⟨1, one_pos, f, (pow_one _).symm⟩ (isLogRad_thetaR hs hf)
       (fun _ hh => smul_thetaR_of_mem_ker χ hs hh _)]

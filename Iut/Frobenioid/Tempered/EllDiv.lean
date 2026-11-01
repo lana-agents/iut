@@ -55,9 +55,10 @@ At a cusp the coefficient is the order of vanishing.
   `div y = div(yⁿ)/n`, `rEllDiv_mul`), and the `l`-th roots of `Θ̈` (`rEllDiv_thetaDd_root`).
 * `ellDiv_eq_zero_iff`, `ellDiv_nonneg_iff`: [EtTh] Prop 3.4(ii) in this form for
   log-meromorphic functions (`IsLogMero`).
-* `PrimeVia ρ`: `EllPrime t` with the action of a group `G` through a homomorphism
-  `ρ : G →* Deck t` (the explicit T7c input, until `tempered-fundamental-groups` provides the
-  `Π^tp`-set of components and cusps).
+* `PrimeAct π`: `EllPrime t` with the action of a group `G` through a permutation action
+  `π : G →* Perm (EllPrime t)` (the explicit T7c input, until `tempered-fundamental-groups`
+  provides the `Π^tp`-set of components and cusps); `PrimeVia ρ` for `π` through the deck
+  group, `ρ : G →* Deck t`.
 -/
 
 noncomputable section
@@ -666,13 +667,27 @@ end Rad
 
 /-! ### The action of a group through the deck transformations -/
 
-/-- **`EllPrime t` as a `G`-set through `ρ : G →* Deck t`.** The homomorphism `ρ` is the explicit
-input standing for the action of `Π^tp` on the components and cusps of `Ÿ_∞` (MR18 T7c: to be
-identified with `tempered-fundamental-groups`' `temperedPi1` once it provides that set). -/
-def PrimeVia {G : Type*} [Group G] (_ρ : G →* Deck t) : Type _ := EllPrime t
+/-- **`EllPrime t` as a `G`-set through a permutation action `π : G →* Perm (EllPrime t)`.**
+The homomorphism `π` is the explicit input standing for the action of `Π^tp` on the components
+and cusps of `Ÿ_∞` (MR18 T7c: to be identified with `tempered-fundamental-groups`' `temperedPi1`
+once it provides that set); the genuine analytic actions factor through the deck group
+(`PrimeVia`) or the Galois × deck group (`EllGal.lean`). -/
+def PrimeAct {G : Type*} [Group G] (_π : G →* Equiv.Perm (EllPrime t)) : Type _ := EllPrime t
 
-instance {G : Type*} [Group G] (ρ : G →* Deck t) : MulAction G (PrimeVia ρ) :=
-  MulAction.compHom (EllPrime t) ρ
+instance {G : Type*} [Group G] (π : G →* Equiv.Perm (EllPrime t)) : MulAction G (PrimeAct π) :=
+  MulAction.compHom (EllPrime t) π
+
+lemma PrimeAct.smul_def {G : Type*} [Group G] (π : G →* Equiv.Perm (EllPrime t)) (g : G)
+    (p : PrimeAct π) :
+    g • p = (show PrimeAct π from (π g (show EllPrime t from p) : EllPrime t)) := rfl
+
+variable (t) in
+/-- The deck group as permutations of the elliptic prime set. -/
+abbrev Deck.permHom : Deck t →* Equiv.Perm (EllPrime t) := MulAction.toPermHom _ _
+
+/-- **`EllPrime t` as a `G`-set through `ρ : G →* Deck t`.** -/
+abbrev PrimeVia {G : Type*} [Group G] (ρ : G →* Deck t) : Type _ :=
+  PrimeAct ((Deck.permHom t).comp ρ)
 
 lemma PrimeVia.smul_def {G : Type*} [Group G] (ρ : G →* Deck t) (g : G) (p : PrimeVia ρ) :
     g • p = (show PrimeVia ρ from (ρ g • (show EllPrime t from p) : EllPrime t)) := rfl

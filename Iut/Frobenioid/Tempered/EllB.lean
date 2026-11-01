@@ -22,20 +22,23 @@ with the divisor `rEllDiv` (`EllDiv.lean`) transported to `Φ^gp(G/H)` =
 
 ## Explicit inputs (MR18 T7c / T10 obligations)
 
-* `ρ : G →* Deck t`: the action of `G = Π^tp` on the prime set `P` (`PrimeVia ρ`);
+* `π : G →* Equiv.Perm (EllPrime t)`: the action of `G = Π^tp` on the prime set `P`
+  (`PrimeAct π`; through the deck group `π = Deck.permHom ∘ ρ`, through the Galois × deck group
+  `π = galDeckPerm ∘ γ`, `EllGal.lean`);
 * `[MulSemiringAction G R]`: the action of `G` on the radical layer (Galois and deck
   transformations; its extension from `Mero K` to the algebraic closure is not canonical);
-* `hact : ActCompat t s ρ R`: the two actions are compatible — `G` maps log-meromorphic radicals
-  to log-meromorphic radicals and transports divisors along `ρ`. This is a hypothesis on the
+* `hact : ActCompat t s π R`: the two actions are compatible — `G` maps log-meromorphic radicals
+  to log-meromorphic radicals and transports divisors along `π`. This is a hypothesis on the
   input data, to be discharged when the actions are constructed (T7c). For the deck action
   `deckAction ρ` of `G` on the unramified layer `R = Mero K` it is a theorem
-  (`actCompat_deck`, from `ellDiv_scale`).
+  (`actCompat_deck`, from `ellDiv_scale`), and for the Galois × deck action as well
+  (`actCompat_galDeck`, `EllGal.lean`).
 
 ## Main definitions and results
 
-* `radB t s ρ R : GrpOn (OrbitObj G)` with `radB.obj (G/H)` the `H`-fixed log-meromorphic
+* `radB t s π R : GrpOn (OrbitObj G)` with `radB.obj (G/H)` the `H`-fixed log-meromorphic
   radicals (additively), pull-backs `y ↦ g₀ • y` along `G/H → G/H'`, `gH ↦ g g₀ H'`;
-* `radDiv : DivHom (radB …) (PrimeDiv.divMonoid G (PrimeVia ρ) ℚ).toGrpOn`, **the divisor map**;
+* `radDiv : DivHom (radB …) (PrimeDiv.divMonoid G (PrimeAct π) ℚ).toGrpOn`, **the divisor map**;
 * `radData : TemperedFrobenioidData G`, `radData_isFrobenioid`;
 * `radDiv_eq_zero_iff`: **the kernel of the divisor map is `O_K^×`** ([EtTh] Prop 3.4(ii), on
   the radical layer, `K` algebraically closed): the genuine version of the arbitrary unit group
@@ -54,7 +57,8 @@ universe u
 
 variable {K : Type u} [NontriviallyNormedField K] [CompleteSpace K] [IsUltrametricDist K]
   (t : TateParameter K) (s : Kˣ)
-  {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (ρ : G →* Deck t)
+  {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+  (π : G →* Equiv.Perm (EllPrime t))
   (R : Type u) [Field R] [Algebra (Mero K) R] [MulSemiringAction G R]
 
 variable {R} in
@@ -63,12 +67,12 @@ variable {R} in
 def IsLogRad (y : R) : Prop :=
   ∀ α : Kˣ, (¬ ∃ k : ℤ, (α : K) ^ 2 = (t.q : K) ^ k) → Mero.rord y α = 0
 
-/-- **The compatibility of the actions of `G` on `R` and on `P = PrimeVia ρ`** (explicit input):
+/-- **The compatibility of the actions of `G` on `R` and on `P = PrimeAct π`** (explicit input):
 `g` maps nonzero log-meromorphic radicals to such, and `div(g • y) = div(y) ∘ g⁻¹`. -/
 def ActCompat : Prop :=
   ∀ (g : G) (y : R), y ≠ 0 → Mero.IsRad K y → IsLogRad t y →
     Mero.IsRad K (g • y) ∧ IsLogRad t (g • y) ∧
-      ∀ p : PrimeVia ρ, rEllDiv t s (g • y) p = rEllDiv t s y (show EllPrime t from g⁻¹ • p)
+      ∀ p : PrimeAct π, rEllDiv t s (g • y) p = rEllDiv t s y (show EllPrime t from g⁻¹ • p)
 
 /-! ### Elementary facts -/
 
@@ -147,7 +151,7 @@ lemma smul_rep_fix {A B : OrbitObj G} (f : A ⟶ B) {y : R} (hy : ∀ h ∈ B.H,
     hy _ (conj_rep_mem f hh)]
 
 /-- The pull-back `B(G/H') → B(G/H)`, `y ↦ g₀ • y`. -/
-def radPb (hact : ActCompat t s ρ R) {A B : OrbitObj G} (f : A ⟶ B) :
+def radPb (hact : ActCompat t s π R) {A B : OrbitObj G} (f : A ⟶ B) :
     radSub t (R := R) B.H →* radSub t (R := R) A.H where
   toFun u := ⟨Units.map (MulSemiringAction.toRingHom G R (rep f)).toMonoidHom u, by
     obtain ⟨h1, h2, -⟩ := hact (rep f) ((u : Rˣ) : R) (u.1.ne_zero) u.2.1 u.2.2.1
@@ -155,8 +159,8 @@ def radPb (hact : ActCompat t s ρ R) {A B : OrbitObj G} (f : A ⟶ B) :
   map_one' := Subtype.ext (Units.ext (smul_one _))
   map_mul' u v := Subtype.ext (Units.ext (smul_mul' _ _ _))
 
-lemma coe_radPb (hact : ActCompat t s ρ R) {A B : OrbitObj G} (f : A ⟶ B)
-    (u : radSub t (R := R) B.H) : ((radPb s ρ hact f u : Rˣ) : R) = rep f • ((u : Rˣ) : R) :=
+lemma coe_radPb (hact : ActCompat t s π R) {A B : OrbitObj G} (f : A ⟶ B)
+    (u : radSub t (R := R) B.H) : ((radPb s π hact f u : Rˣ) : R) = rep f • ((u : Rˣ) : R) :=
   rfl
 
 /-- The underlying element of `R` of an element of `B(G/H)`. -/
@@ -181,9 +185,9 @@ lemma rv_injective {H : Subgroup G} : Function.Injective (rv (t := t) (R := R) (
 
 variable (R) in
 /-- **The group-like monoid `B`** on `B^temp(G)⁰` (written additively). -/
-def radB (hact : ActCompat t s ρ R) : GrpOn.{u} (OrbitObj G) where
+def radB (hact : ActCompat t s π R) : GrpOn.{u} (OrbitObj G) where
   obj A := Additive (radSub t (R := R) A.H)
-  pb f := (radPb s ρ hact f).toAdditive
+  pb f := (radPb s π hact f).toAdditive
   pb_id A x := by
     apply rv_injective
     change rep (𝟙 A) • rv x = _
@@ -224,25 +228,25 @@ def radB (hact : ActCompat t s ρ R) : GrpOn.{u} (OrbitObj G) where
 
 /-! ### The divisor map -/
 
-variable {s ρ}
+variable {s π}
 
-lemma rEllDiv_smul_of_fix (hact : ActCompat t s ρ R) {H : Subgroup G} {y : R} (hy0 : y ≠ 0)
+lemma rEllDiv_smul_of_fix (hact : ActCompat t s π R) {H : Subgroup G} {y : R} (hy0 : y ≠ 0)
     (hr : Mero.IsRad K y) (hl : IsLogRad t y) (hfix : ∀ h ∈ H, h • y = y) {h : G} (hh : h ∈ H)
-    (p : PrimeVia ρ) :
+    (p : PrimeAct π) :
     rEllDiv t s y (show EllPrime t from h • p) = rEllDiv t s y (show EllPrime t from p) := by
   have := (hact h⁻¹ y hy0 hr hl).2.2 p
   rw [hfix _ (H.inv_mem hh), inv_inv] at this
   exact this.symm
 
-variable (s ρ) in
+variable (s π) in
 /-- The divisor of `y` as a function on `(G/H) × P`: `(gH, p) ↦ div(y)(g⁻¹ • p)`. -/
-def radDivFun (H : Subgroup G) (y : R) : (G ⧸ H) × PrimeVia ρ → ℚ :=
+def radDivFun (H : Subgroup G) (y : R) : (G ⧸ H) × PrimeAct π → ℚ :=
   fun z => rEllDiv t s y (show EllPrime t from (Quotient.out z.1)⁻¹ • z.2)
 
-lemma radDivFun_mk (hact : ActCompat t s ρ R) {H : Subgroup G} {y : R} (hy0 : y ≠ 0)
+lemma radDivFun_mk (hact : ActCompat t s π R) {H : Subgroup G} {y : R} (hy0 : y ≠ 0)
     (hr : Mero.IsRad K y) (hl : IsLogRad t y) (hfix : ∀ h ∈ H, h • y = y) (g : G)
-    (p : PrimeVia ρ) :
-    radDivFun s ρ H y (QuotientGroup.mk g, p) = rEllDiv t s y (show EllPrime t from g⁻¹ • p) := by
+    (p : PrimeAct π) :
+    radDivFun s π H y (QuotientGroup.mk g, p) = rEllDiv t s y (show EllPrime t from g⁻¹ • p) := by
   obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul H g
   change rEllDiv t s y (show EllPrime t from (Quotient.out (QuotientGroup.mk g : G ⧸ H))⁻¹ • p) = _
   rw [hh, mul_inv_rev, mul_smul]
@@ -251,17 +255,17 @@ lemma radDivFun_mk (hact : ActCompat t s ρ R) {H : Subgroup G} {y : R} (hy0 : y
 variable (hval : ValueGroupRat t) (hs : (s : K) ^ 2 = t.q)
 
 include hval hs in
-variable (s ρ R) in
+variable (s π R) in
 /-- **The divisor map `B → Φ^gp`** of the radical layer, into
-`PrimeDiv.divMonoid G (PrimeVia ρ) ℚ`. -/
-def radDiv (hact : ActCompat t s ρ R) :
-    DivHom (radB s ρ R hact) (PrimeDiv.divMonoid G (PrimeVia ρ) ℚ).toGrpOn where
-  app A := AddMonoidHom.mk' (fun u => ⟨radDivFun s ρ A.H (rv u),
+`PrimeDiv.divMonoid G (PrimeAct π) ℚ`. -/
+def radDiv (hact : ActCompat t s π R) :
+    DivHom (radB s π R hact) (PrimeDiv.divMonoid G (PrimeAct π) ℚ).toGrpOn where
+  app A := AddMonoidHom.mk' (fun u => ⟨radDivFun s π A.H (rv u),
     fun g z => by
       obtain ⟨x, p⟩ := z
       induction x using QuotientGroup.induction_on with
       | H g' =>
-        change radDivFun s ρ A.H (rv u) (QuotientGroup.mk (g * g'), g • p) = _
+        change radDivFun s π A.H (rv u) (QuotientGroup.mk (g * g'), g • p) = _
         rw [radDivFun_mk hact (rv_ne_zero u) (rv_isRad u) (rv_isLogRad u) (rv_fix u),
           radDivFun_mk hact (rv_ne_zero u) (rv_isRad u) (rv_isLogRad u) (rv_fix u), mul_inv_rev,
           mul_smul, inv_smul_smul]⟩)
@@ -278,26 +282,26 @@ def radDiv (hact : ActCompat t s ρ R) :
     | H g =>
       have hfix := smul_rep_fix f (rv_fix x)
       obtain ⟨h1, h2, h3⟩ := hact (rep f) (rv x) (rv_ne_zero x) (rv_isRad x) (rv_isLogRad x)
-      change radDivFun s ρ A.H (rep f • rv x) (QuotientGroup.mk g, p) =
-        radDivFun s ρ B.H (rv x) (f.toFun (QuotientGroup.mk g), p)
+      change radDivFun s π A.H (rep f • rv x) (QuotientGroup.mk g, p) =
+        radDivFun s π B.H (rv x) (f.toFun (QuotientGroup.mk g), p)
       rw [radDivFun_mk hact ((smul_ne_zero_iff_ne _).mpr (rv_ne_zero x)) h1 h2 hfix, h3,
         apply_mk_rep, radDivFun_mk hact (rv_ne_zero x) (rv_isRad x) (rv_isLogRad x) (rv_fix x),
         mul_inv_rev, mul_smul]
 
 include hval hs in
-variable (s ρ R) in
+variable (s π R) in
 /-- **The tempered Frobenioid of the radical layer** (B-an): `Φ₀` the `ℚ`-divisors on the
 elliptic prime set, `B₀` the fixed log-meromorphic radicals, `div₀ = radDiv`. -/
-def radData (hact : ActCompat t s ρ R) : TemperedFrobenioidData G where
-  Φ₀ := PrimeDiv.divMonoid G (PrimeVia ρ) ℚ
-  B₀ := radB s ρ R hact
-  div₀ := radDiv s ρ R hval hs hact
+def radData (hact : ActCompat t s π R) : TemperedFrobenioidData G where
+  Φ₀ := PrimeDiv.divMonoid G (PrimeAct π) ℚ
+  B₀ := radB s π R hact
+  div₀ := radDiv s π R hval hs hact
 
 /-- **It is a Frobenioid.** -/
-theorem radData_isFrobenioid (hact : ActCompat t s ρ R) :
-    IsFrobenioid (Model.toElem (radData s ρ R hval hs hact).Φ₀ (radData s ρ R hval hs hact).B₀
-      (radData s ρ R hval hs hact).div₀) :=
-  (radData s ρ R hval hs hact).isFrobenioid
+theorem radData_isFrobenioid (hact : ActCompat t s π R) :
+    IsFrobenioid (Model.toElem (radData s π R hval hs hact).Φ₀ (radData s π R hval hs hact).B₀
+      (radData s π R hval hs hact).div₀) :=
+  (radData s π R hval hs hact).isFrobenioid
 
 /-! ### The kernel of the divisor map is `O_K^×` -/
 
@@ -355,17 +359,17 @@ theorem rEllDiv_eq_zero_iff [IsAlgClosed K] {y : R} (hy0 : y ≠ 0) (hy : Mero.I
 
 /-- **The kernel of the divisor map `B(G/H) → Φ^gp(G/H)` is `O_K^×`** ([EtTh] Def 3.3, Prop
 3.4(ii)): the genuine form of the unit group `U` of `TateTheta.lean`. -/
-theorem radDiv_eq_zero_iff [IsAlgClosed K] (hact : ActCompat t s ρ R) {A : OrbitObj G}
-    (x : (radB s ρ R hact).obj A) :
-    (radDiv s ρ R hval hs hact).app A x = 0 ↔
+theorem radDiv_eq_zero_iff [IsAlgClosed K] (hact : ActCompat t s π R) {A : OrbitObj G}
+    (x : (radB s π R hact).obj A) :
+    (radDiv s π R hval hs hact).app A x = 0 ↔
       ∃ c : K, ‖c‖ = 1 ∧ rv x = Mero.ι R (Mero.const c) := by
   rw [← rEllDiv_eq_zero_iff hval hs (rv_ne_zero x) (rv_isRad x) (rv_isLogRad x)]
   constructor
   · intro h
     funext p
-    have := congrArg (fun v : PrimeDiv.divGp G (PrimeVia ρ) ℚ A => v.1
-      (QuotientGroup.mk 1, show PrimeVia ρ from p)) h
-    change radDivFun s ρ A.H (rv x) (QuotientGroup.mk 1, _) = 0 at this
+    have := congrArg (fun v : PrimeDiv.divGp G (PrimeAct π) ℚ A => v.1
+      (QuotientGroup.mk 1, show PrimeAct π from p)) h
+    change radDivFun s π A.H (rv x) (QuotientGroup.mk 1, _) = 0 at this
     rw [radDivFun_mk hact (rv_ne_zero x) (rv_isRad x) (rv_isLogRad x) (rv_fix x), inv_one,
       one_smul] at this
     exact this
@@ -374,11 +378,13 @@ theorem radDiv_eq_zero_iff [IsAlgClosed K] (hact : ActCompat t s ρ R) {A : Orbi
     funext ⟨z, p⟩
     induction z using QuotientGroup.induction_on with
     | H g =>
-      change radDivFun s ρ A.H (rv x) (QuotientGroup.mk g, p) = 0
+      change radDivFun s π A.H (rv x) (QuotientGroup.mk g, p) = 0
       rw [radDivFun_mk hact (rv_ne_zero x) (rv_isRad x) (rv_isLogRad x) (rv_fix x), h]
       rfl
 
 /-! ### The deck action on `Mero K` satisfies `ActCompat` (the unramified, geometric case) -/
+
+variable (ρ : G →* Deck t)
 
 namespace Mero
 
@@ -409,7 +415,6 @@ def scaleEquiv (c : Kˣ) : Mero K ≃+* Mero K :=
 lemma scaleEquiv_apply (c : Kˣ) (x : Mero K) : scaleEquiv c x = Mero.scale c x := rfl
 
 omit [IsTopologicalGroup G] in
-variable (ρ) in
 /-- `g ↦ (f ↦ f(ρ(g)⁻¹·Ü))`. -/
 def deckHom : G →* RingAut (Mero K) where
   toFun g := scaleEquiv (((ρ g)⁻¹ : Deck t) : Kˣ)
@@ -419,7 +424,6 @@ def deckHom : G →* RingAut (Mero K) where
     rw [scaleEquiv_apply, RingAut.mul_apply, scaleEquiv_apply, scaleEquiv_apply,
       Mero.scale_scale, map_mul, mul_inv_rev, Subgroup.coe_mul]
 
-variable (ρ) in
 /-- **The deck action of `G` on `Mero K` through `ρ`**: `(g • f)(Ü) = f(ρ(g)⁻¹·Ü)`. -/
 abbrev deckAction : MulSemiringAction G (Mero K) := MulSemiringAction.compHom (Mero K) (deckHom ρ)
 
@@ -427,7 +431,8 @@ include hval hs in
 omit [IsTopologicalGroup G] in
 /-- **`ActCompat` holds for the deck action on the unramified layer `R = Mero K`** (by
 `ellDiv_scale`): the explicit input of `radB` is satisfiable in the geometric case. -/
-theorem actCompat_deck : letI := deckAction ρ; ActCompat t s ρ (Mero K) := by
+theorem actCompat_deck :
+    letI := deckAction ρ; ActCompat t s ((Deck.permHom t).comp ρ) (Mero K) := by
   letI := deckAction ρ
   intro g y hy0 _ hl
   set c : Kˣ := (((ρ g)⁻¹ : Deck t) : Kˣ)
@@ -465,6 +470,7 @@ instance : MulSemiringAction G (DeckMero ρ) := deckAction ρ
 include hval hs in
 omit [IsTopologicalGroup G] in
 /-- `ActCompat` for `DeckMero ρ` (`actCompat_deck`). -/
-theorem actCompat_deckMero : ActCompat t s ρ (DeckMero ρ) := actCompat_deck hval hs
+theorem actCompat_deckMero : ActCompat t s ((Deck.permHom t).comp ρ) (DeckMero ρ) :=
+  actCompat_deck hval hs ρ
 
 end Iut.Frobenioid.BAn
