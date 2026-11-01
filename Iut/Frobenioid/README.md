@@ -81,6 +81,15 @@ challenge or by `Iut/Concrete/*`.
        **`actCompat_galDeckRad`**, `radDataRad`; `l`-th roots of `Θ̈` (`rEllDiv_thetaRoot`,
        `thetaRoot_pow_smul`, `deck_thetaRoot`: Prop 1.4(ii) on roots); `L`-radicals `IsLRad`,
        `radBRadL`, `radDataRadL`, **`radDivRadL_eq_zero_iff`** (kernel: `yⁿ ∈ O_L^×`);
+     - (c4''''') `Tempered/EllTate.lean` (T7c, iut side; tfg ≥ 9550c1f): `IsTateParam φ D t`
+       (Tate's `E_t` is the curve of `TateObject.Data D`), **`IsTateParam.unique`**; the deck part
+       `tateDeck : Π^tp_X →* Deck t` (`(n, ε) ↦ (-1)^ε s^{-n}` on `character₂`, **`idx_tateDeck`**:
+       index `-χ`, sheet orientation checked numerically), `tateGalDeck σ hσ` (explicit Galois
+       part), `IsTateLift`; a genuine `gammaChi τ : Π^tp_X →* ExtGalDeck t R` through `χ`
+       (`exists_genLift`, `gammaChiRadData`); `TateCompC` (only the `C`-sheets of `Bool × ℤ` are
+       stable-model components), `compEquiv`; cusps `cuspMap` under the explicit hypothesis
+       **`CuspDecompFix`** (T7c debt); **`tatePrimeMap`** `TateCompC ⊕ CuspSet → EllPrime t`,
+       `Π^tp`-equivariant (`tatePrimeMap_smul`, `_tateGalDeck`, `_lift`);
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;
