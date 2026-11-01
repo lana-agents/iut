@@ -70,6 +70,10 @@ challenge or by `Iut/Concrete/*`.
        `σ(s) = ±s`, `gal_s_eq`), its action `f ↦ σ(f)(c⁻¹·Ü)` on `Mero K` (`galDeckHom`) and on
        `ℤ ⊕ Cusps`, `ellDiv_galDeck` (`div(x • f) = div f ∘ x⁻¹`) and **`actCompat_galDeck`**:
        `ActCompat` holds for every `γ : G →* GalDeck t` (the genuine analytic instance);
+     - (c4''') `Tempered/EllDescent.lean` (`L`-descent): `GrpOn.sub`, `DivHom.restrict`; for an
+       action defined over `L` (`IsLRat φ hφ γ`), `radBL` = the elements of `B(G/H)` coming
+       from `Mero L`, `radDataL`, `radDataL_isFrobenioid`, **`radDivL_eq_zero_iff`** (kernel
+       `O_L^×`), `gal_rv_radBL` (fixed by `Gal(Ω/L)`);
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;

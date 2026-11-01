@@ -314,6 +314,7 @@ import Iut.Frobenioid.Tempered.BiKummer
 import Iut.Frobenioid.Tempered.Birat
 import Iut.Frobenioid.Tempered.BsFldPreserve
 import Iut.Frobenioid.Tempered.EllB
+import Iut.Frobenioid.Tempered.EllDescent
 import Iut.Frobenioid.Tempered.EllDiv
 import Iut.Frobenioid.Tempered.EllGal
 import Iut.Frobenioid.Tempered.EllTheta
