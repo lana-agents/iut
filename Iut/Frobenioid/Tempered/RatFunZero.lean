@@ -29,7 +29,8 @@ zero of `f` (`f` is `|f|₁`-Lipschitz on the unit circle).
 * `polyE` (polynomials as entire series), `width_prod_lin`, `norm_eval_prod_lin`,
   `exists_unit_root_close`.
 * `exists_zero_of_lo_lt_hi_one`, `exists_zero_of_lo_lt_hi` (**Newton polygon zero existence**).
-* `lo_eq_hi_of_no_zero`, `exists_lo_const`, `eq_smul_mono_of_ne_zero` (**zero-free ⇒ `a·Uᵏ`**).
+* `lo_eq_hi_of_no_zero`, `lo_eq_of_no_edge` (annulus form), `exists_lo_const`,
+  `eq_smul_mono_of_ne_zero` (**zero-free ⇒ `a·Uᵏ`**).
 -/
 
 noncomputable section
@@ -649,28 +650,32 @@ theorem lo_eq_hi_of_no_zero {f : Entire K} (hf : f ≠ 0) (hz : ∀ u : Kˣ, (f 
     (lo_le_hi (Entire.isEntire_coeff f) (Entire.coeff_ne_zero hf) (norm_pos_iff.mpr u₀.ne_zero)) h)
   exact hz u hu
 
-/-- **No edges on the value-group radii ⇒ one dominant index.** (Uses that the value group of
-the algebraically closed `K` is divisible, to place a tie radius between two radii with different
-dominant indices.) -/
-theorem exists_lo_const {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0)
-    (h : ∀ u : Kˣ, lo c ‖(u : K)‖ = hi c ‖(u : K)‖) (u v : Kˣ) :
-    lo c ‖(u : K)‖ = lo c ‖(v : K)‖ := by
+/-- **No edges on the value-group radii of an annulus ⇒ one dominant index there.** (Uses that the
+value group of the algebraically closed `K` is divisible, to place a tie radius between two radii
+with different dominant indices.) -/
+theorem lo_eq_of_no_edge {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {u₀ v₀ : Kˣ}
+    (h₀ : ‖(u₀ : K)‖ ≤ ‖(v₀ : K)‖)
+    (hI : ∀ w : Kˣ, ‖(u₀ : K)‖ ≤ ‖(w : K)‖ → ‖(w : K)‖ ≤ ‖(v₀ : K)‖ →
+      lo c ‖(w : K)‖ = hi c ‖(w : K)‖) :
+    lo c ‖(u₀ : K)‖ = lo c ‖(v₀ : K)‖ := by
   have hpos : ∀ u : Kˣ, 0 < ‖(u : K)‖ := fun u => norm_pos_iff.mpr u.ne_zero
+  set I : Kˣ → Prop := fun w => ‖(u₀ : K)‖ ≤ ‖(w : K)‖ ∧ ‖(w : K)‖ ≤ ‖(v₀ : K)‖ with hIdef
+  have h : ∀ w : Kˣ, I w → lo c ‖(w : K)‖ = hi c ‖(w : K)‖ := fun w hw => hI w hw.1 hw.2
   -- the unique dominant index at a value-group radius
-  have hdom : ∀ (u : Kˣ) n, n ≠ lo c ‖(u : K)‖ →
-      tnorm c ‖(u : K)‖ n < tnorm c ‖(u : K)‖ (lo c ‖(u : K)‖) := fun u n hn => by
+  have hdom : ∀ (u : Kˣ), I u → ∀ n, n ≠ lo c ‖(u : K)‖ →
+      tnorm c ‖(u : K)‖ n < tnorm c ‖(u : K)‖ (lo c ‖(u : K)‖) := fun u hu n hn => by
     rw [tnorm_lo hc hc0 (hpos u)]
     refine tnorm_lt_of_notMem hc hc0 (hpos u) fun hm => hn (le_antisymm ?_
       (le_lo_of_mem hc hc0 (hpos u) hm))
-    rw [h u]; exact le_hi_of_mem hc hc0 (hpos u) hm
-  have hmono : ∀ u v : Kˣ, ‖(u : K)‖ < ‖(v : K)‖ → lo c ‖(u : K)‖ ≤ lo c ‖(v : K)‖ :=
-    fun u v huv => by rw [h u]; exact hi_le_lo hc hc0 (hpos u) huv
-  have key : ∀ d : ℕ, ∀ u v : Kˣ, ‖(u : K)‖ < ‖(v : K)‖ →
+    rw [h u hu]; exact le_hi_of_mem hc hc0 (hpos u) hm
+  have hmono : ∀ u v : Kˣ, I u → ‖(u : K)‖ < ‖(v : K)‖ → lo c ‖(u : K)‖ ≤ lo c ‖(v : K)‖ :=
+    fun u v hu huv => by rw [h u hu]; exact hi_le_lo hc hc0 (hpos u) huv
+  have key : ∀ d : ℕ, ∀ u v : Kˣ, I u → I v → ‖(u : K)‖ < ‖(v : K)‖ →
       lo c ‖(v : K)‖ - lo c ‖(u : K)‖ = d → d = 0 := by
     intro d
     induction d using Nat.strong_induction_on with
     | _ d ih =>
-      intro u v huv hd
+      intro u v hu hv huv hd
       by_contra hd0
       have hr₁ := hpos u
       have hr₂ := hpos v
@@ -696,13 +701,13 @@ theorem exists_lo_const {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0)
         rw [hab, zpow_add₀ hr.ne', zpow_natCast]
       have hba : b ≠ a := by omega
       have e1 : ‖c b‖ * r₁ ^ d < ‖c a‖ := by
-        have this : tnorm c r₁ b < tnorm c r₁ a := hdom u b hba
+        have this : tnorm c r₁ b < tnorm c r₁ a := hdom u hu b hba
         simp only [tnorm] at this
         rw [hpow r₁ hr₁] at this
         have hpa := zpow_pos hr₁ a
         exact lt_of_mul_lt_mul_right (by linarith) hpa.le
       have e2 : ‖c a‖ < ‖c b‖ * r₂ ^ d := by
-        have this : tnorm c r₂ a < tnorm c r₂ b := hdom v a hba.symm
+        have this : tnorm c r₂ a < tnorm c r₂ b := hdom v hv a hba.symm
         simp only [tnorm] at this
         rw [hpow r₂ hr₂] at this
         have hpa := zpow_pos hr₂ a
@@ -717,14 +722,15 @@ theorem exists_lo_const {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0)
         simp only [tnorm]
         rw [hpow ρ hρ0, hρd]
         field_simp
-      have ham : a ≤ lo c ρ := hmono u xu hr₁ρ
-      have hmb : lo c ρ ≤ b := hmono xu v hρr₂
+      have hxu : I xu := ⟨hu.1.trans hr₁ρ.le, hρr₂.le.trans hv.2⟩
+      have ham : a ≤ lo c ρ := hmono u xu hu hr₁ρ
+      have hmb : lo c ρ ≤ b := hmono xu v hxu hρr₂
       have hma : lo c ρ ≠ a := by
         intro hma
         have hmem : b ∈ domSet c ρ := by
           change tnorm c ρ b = gnorm c ρ; rw [htie, ← hma]; exact tnorm_lo hc hc0 hρ0
         have h1 := le_hi_of_mem hc hc0 hρ0 hmem
-        have h2 : hi c ρ = lo c ρ := (h xu).symm
+        have h2 : hi c ρ = lo c ρ := (h xu hxu).symm
         omega
       have hmb' : lo c ρ ≠ b := by
         intro hmb'
@@ -733,20 +739,25 @@ theorem exists_lo_const {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0)
         have := le_lo_of_mem hc hc0 hρ0 hmem
         omega
       have hlt : (lo c ρ - a).toNat < d := by omega
-      have := ih _ hlt u xu hr₁ρ (by change lo c ρ - a = _; omega)
+      have := ih _ hlt u xu hu hxu hr₁ρ (by change lo c ρ - a = _; omega)
       omega
-  rcases lt_trichotomy ‖(u : K)‖ ‖(v : K)‖ with huv | huv | huv
-  · have h2 := hmono u v huv
+  rcases h₀.lt_or_eq with huv | huv
+  · have hu : I u₀ := ⟨le_rfl, h₀⟩
+    have hv : I v₀ := ⟨h₀, le_rfl⟩
+    have h2 := hmono u₀ v₀ hu huv
     have h4 := Int.toNat_of_nonneg (sub_nonneg.mpr h2)
-    have h3 := key _ u v huv h4.symm
+    have h3 := key _ u₀ v₀ hu hv huv h4.symm
     rw [h3] at h4
     omega
   · rw [huv]
-  · have h2 := hmono v u huv
-    have h4 := Int.toNat_of_nonneg (sub_nonneg.mpr h2)
-    have h3 := key _ v u huv h4.symm
-    rw [h3] at h4
-    omega
+
+/-- **No edges on the value-group radii ⇒ one dominant index** (global form). -/
+theorem exists_lo_const {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0)
+    (h : ∀ u : Kˣ, lo c ‖(u : K)‖ = hi c ‖(u : K)‖) (u v : Kˣ) :
+    lo c ‖(u : K)‖ = lo c ‖(v : K)‖ := by
+  rcases le_total ‖(u : K)‖ ‖(v : K)‖ with huv | huv
+  · exact lo_eq_of_no_edge hc hc0 huv fun w _ _ => h w
+  · exact (lo_eq_of_no_edge hc hc0 huv fun w _ _ => h w).symm
 
 /-- **A zero-free entire Laurent series over an algebraically closed field is `a·Uᵏ`.** -/
 theorem eq_smul_mono_of_ne_zero {f : Entire K} (hf : f ≠ 0)

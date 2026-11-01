@@ -112,6 +112,16 @@ lemma IsEntire.tendsto_tnorm {c : ℤ → K} (hc : IsEntire c) {r : ℝ} (hr : 0
     ← zpow_neg, tnorm]
   nlinarith [norm_nonneg (c n)]
 
+/-- **Convergence at the radius `r`**: the term norms `‖cₙ‖ rⁿ` tend to `0`. A family converging
+at two radii converges on the closed annulus between them (`ConvAt.of_le_of_le`); entire families
+converge at every radius (`IsEntire.convAt`). The Gauss norm theory below only uses convergence at
+the radius in question, so it applies verbatim to Laurent series on annuli
+(`RatFunAnnulus.lean`). -/
+def ConvAt (c : ℤ → K) (r : ℝ) : Prop := Tendsto (tnorm c r) cofinite (𝓝 0)
+
+lemma IsEntire.convAt {c : ℤ → K} (hc : IsEntire c) {r : ℝ} (hr : 0 < r) : ConvAt c r :=
+  hc.tendsto_tnorm hr
+
 lemma IsEntire.bddAbove {c : ℤ → K} (hc : IsEntire c) {r : ℝ} (hr : 0 < r) :
     BddAbove (Set.range (tnorm c r)) :=
   (hc.tendsto_tnorm hr).bddAbove_range_of_cofinite
@@ -119,42 +129,69 @@ lemma IsEntire.bddAbove {c : ℤ → K} (hc : IsEntire c) {r : ℝ} (hr : 0 < r)
 /-- **The Gauss norm** `|f|_r = supₙ ‖cₙ‖ rⁿ`. -/
 def gnorm (c : ℤ → K) (r : ℝ) : ℝ := ⨆ n, tnorm c r n
 
-lemma le_gnorm {c : ℤ → K} (hc : IsEntire c) {r : ℝ} (hr : 0 < r) (n : ℤ) :
-    tnorm c r n ≤ gnorm c r :=
-  le_ciSup (hc.bddAbove hr) n
-
 lemma gnorm_le {c : ℤ → K} {r : ℝ} {C : ℝ} (h : ∀ n, tnorm c r n ≤ C) : gnorm c r ≤ C :=
   ciSup_le h
 
-lemma gnorm_nonneg {c : ℤ → K} (hc : IsEntire c) {r : ℝ} (hr : 0 < r) : 0 ≤ gnorm c r :=
-  (tnorm_nonneg c hr 0).trans (le_gnorm hc hr 0)
+namespace ConvAt
 
-lemma gnorm_pos {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r : ℝ} (hr : 0 < r) :
-    0 < gnorm c r := by
+variable {c : ℤ → K} {r : ℝ}
+
+lemma bddAbove (hc : ConvAt c r) : BddAbove (Set.range (tnorm c r)) :=
+  Tendsto.bddAbove_range_of_cofinite hc
+
+lemma le_gnorm (hc : ConvAt c r) (n : ℤ) : tnorm c r n ≤ gnorm c r :=
+  le_ciSup hc.bddAbove n
+
+lemma gnorm_nonneg (hc : ConvAt c r) (hr : 0 < r) : 0 ≤ gnorm c r :=
+  (tnorm_nonneg c hr 0).trans (hc.le_gnorm 0)
+
+lemma gnorm_pos (hc : ConvAt c r) (hc0 : c ≠ 0) (hr : 0 < r) : 0 < gnorm c r := by
   obtain ⟨n, hn⟩ := Function.ne_iff.mp hc0
-  exact (tnorm_pos hr hn).trans_le (le_gnorm hc hr n)
+  exact (tnorm_pos hr hn).trans_le (hc.le_gnorm n)
 
-lemma exists_tnorm_eq_gnorm {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r : ℝ} (hr : 0 < r) :
+lemma exists_tnorm_eq_gnorm (hc : ConvAt c r) (hc0 : c ≠ 0) (hr : 0 < r) :
     ∃ n, tnorm c r n = gnorm c r := by
   obtain ⟨n₀, hn₀⟩ := Function.ne_iff.mp hc0
-  obtain ⟨n, hn⟩ := exists_max_of_tendsto (hc.tendsto_tnorm hr) (tnorm_pos hr hn₀)
-  exact ⟨n, le_antisymm (le_gnorm hc hr n) (gnorm_le hn)⟩
+  obtain ⟨n, hn⟩ := exists_max_of_tendsto hc (tnorm_pos hr hn₀)
+  exact ⟨n, le_antisymm (hc.le_gnorm n) (gnorm_le hn)⟩
+
+/-- A family that converges at `r₁` and at `r₂` converges at every radius in between. -/
+lemma of_le_of_le {r₁ r₂ : ℝ} (h₁ : ConvAt c r₁) (h₂ : ConvAt c r₂) (hr₁ : 0 < r₁)
+    (h1 : r₁ ≤ r) (h2 : r ≤ r₂) : ConvAt c r := by
+  have hr : 0 < r := hr₁.trans_le h1
+  refine squeeze_zero (fun n => tnorm_nonneg c hr n) (fun n => ?_) (by simpa using h₁.add h₂)
+  have key : r ^ n ≤ r₁ ^ n + r₂ ^ n := by
+    rcases Int.eq_nat_or_neg n with ⟨m, rfl | rfl⟩
+    · have := pow_le_pow_left₀ hr.le h2 m
+      simp only [zpow_natCast]
+      linarith [pow_pos hr₁ m]
+    · have := inv_anti₀ (pow_pos hr₁ m) (pow_le_pow_left₀ hr₁.le h1 m)
+      simp only [zpow_neg, zpow_natCast]
+      linarith [inv_pos.mpr (pow_pos (hr₁.trans_le (h1.trans h2)) m)]
+  simp only [tnorm]
+  nlinarith [norm_nonneg (c n)]
+
+end ConvAt
+
+lemma le_gnorm {c : ℤ → K} (hc : IsEntire c) {r : ℝ} (hr : 0 < r) (n : ℤ) :
+    tnorm c r n ≤ gnorm c r :=
+  (hc.convAt hr).le_gnorm n
+
+lemma gnorm_nonneg {c : ℤ → K} (hc : IsEntire c) {r : ℝ} (hr : 0 < r) : 0 ≤ gnorm c r :=
+  (hc.convAt hr).gnorm_nonneg hr
+
+lemma gnorm_pos {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r : ℝ} (hr : 0 < r) :
+    0 < gnorm c r :=
+  (hc.convAt hr).gnorm_pos hc0 hr
+
+lemma exists_tnorm_eq_gnorm {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r : ℝ} (hr : 0 < r) :
+    ∃ n, tnorm c r n = gnorm c r :=
+  (hc.convAt hr).exists_tnorm_eq_gnorm hc0 hr
 
 /-! ### Dominant indices -/
 
 /-- The set of dominant indices at radius `r`. -/
 def domSet (c : ℤ → K) (r : ℝ) : Set ℤ := {n | tnorm c r n = gnorm c r}
-
-lemma domSet_finite {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r : ℝ} (hr : 0 < r) :
-    (domSet c r).Finite := by
-  refine (Filter.eventually_cofinite.mp ((hc.tendsto_tnorm hr).eventually
-    (gt_mem_nhds (gnorm_pos hc hc0 hr)))).subset fun n hn => ?_
-  simp only [domSet, Set.mem_setOf_eq] at hn ⊢
-  exact not_lt.mpr hn.ge
-
-lemma domSet_nonempty {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r : ℝ} (hr : 0 < r) :
-    (domSet c r).Nonempty :=
-  exists_tnorm_eq_gnorm hc hc0 hr
 
 /-- The **lowest dominant index** at radius `r`. -/
 def lo (c : ℤ → K) (r : ℝ) : ℤ := sInf (domSet c r)
@@ -162,10 +199,21 @@ def lo (c : ℤ → K) (r : ℝ) : ℤ := sInf (domSet c r)
 /-- The **highest dominant index** at radius `r`. -/
 def hi (c : ℤ → K) (r : ℝ) : ℤ := sSup (domSet c r)
 
+namespace ConvAt
+
 section Dom
 
-variable {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r : ℝ} (hr : 0 < r)
+variable {c : ℤ → K} {r : ℝ} (hc : ConvAt c r) (hc0 : c ≠ 0) (hr : 0 < r)
 include hc hc0 hr
+
+lemma domSet_finite : (domSet c r).Finite := by
+  refine (Filter.eventually_cofinite.mp (hc.eventually
+    (gt_mem_nhds (hc.gnorm_pos hc0 hr)))).subset fun n hn => ?_
+  simp only [domSet, Set.mem_setOf_eq] at hn ⊢
+  exact not_lt.mpr hn.ge
+
+lemma domSet_nonempty : (domSet c r).Nonempty :=
+  hc.exists_tnorm_eq_gnorm hc0 hr
 
 lemma lo_mem : lo c r ∈ domSet c r :=
   Int.csInf_mem (domSet_nonempty hc hc0 hr) (domSet_finite hc hc0 hr).bddBelow
@@ -184,7 +232,7 @@ lemma le_hi_of_mem {n : ℤ} (hn : n ∈ domSet c r) : n ≤ hi c r :=
   le_csSup (domSet_finite hc hc0 hr).bddAbove hn
 
 lemma tnorm_lt_of_notMem {n : ℤ} (hn : n ∉ domSet c r) : tnorm c r n < gnorm c r :=
-  lt_of_le_of_ne (le_gnorm hc hr n) hn
+  lt_of_le_of_ne (hc.le_gnorm n) hn
 
 lemma tnorm_lt_of_lt_lo {n : ℤ} (hn : n < lo c r) : tnorm c r n < gnorm c r :=
   tnorm_lt_of_notMem hc hc0 hr fun h => (le_lo_of_mem hc hc0 hr h).not_gt hn
@@ -198,13 +246,13 @@ lemma coeff_lo_ne_zero : c (lo c r) ≠ 0 := by
   intro h
   have := tnorm_lo hc hc0 hr
   rw [tnorm, h, norm_zero, zero_mul] at this
-  exact (gnorm_pos hc hc0 hr).ne this
+  exact (hc.gnorm_pos hc0 hr).ne this
 
 lemma coeff_hi_ne_zero : c (hi c r) ≠ 0 := by
   intro h
   have := tnorm_hi hc hc0 hr
   rw [tnorm, h, norm_zero, zero_mul] at this
-  exact (gnorm_pos hc hc0 hr).ne this
+  exact (hc.gnorm_pos hc0 hr).ne this
 
 /-- Characterisation of the lowest dominant index. -/
 lemma lo_eq_of {n : ℤ} (hn : tnorm c r n = gnorm c r)
@@ -222,87 +270,191 @@ lemma hi_eq_of {n : ℤ} (hn : tnorm c r n = gnorm c r)
 
 end Dom
 
+end ConvAt
+
+section Dom
+
+variable {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r : ℝ} (hr : 0 < r)
+include hc hc0 hr
+
+lemma domSet_finite : (domSet c r).Finite := (hc.convAt hr).domSet_finite hc0 hr
+
+lemma domSet_nonempty : (domSet c r).Nonempty := (hc.convAt hr).domSet_nonempty hc0 hr
+
+lemma lo_mem : lo c r ∈ domSet c r := (hc.convAt hr).lo_mem hc0 hr
+
+lemma hi_mem : hi c r ∈ domSet c r := (hc.convAt hr).hi_mem hc0 hr
+
+lemma tnorm_lo : tnorm c r (lo c r) = gnorm c r := (hc.convAt hr).tnorm_lo hc0 hr
+
+lemma tnorm_hi : tnorm c r (hi c r) = gnorm c r := (hc.convAt hr).tnorm_hi hc0 hr
+
+lemma le_lo_of_mem {n : ℤ} (hn : n ∈ domSet c r) : lo c r ≤ n :=
+  (hc.convAt hr).le_lo_of_mem hc0 hr hn
+
+lemma le_hi_of_mem {n : ℤ} (hn : n ∈ domSet c r) : n ≤ hi c r :=
+  (hc.convAt hr).le_hi_of_mem hc0 hr hn
+
+lemma tnorm_lt_of_notMem {n : ℤ} (hn : n ∉ domSet c r) : tnorm c r n < gnorm c r :=
+  (hc.convAt hr).tnorm_lt_of_notMem hc0 hr hn
+
+lemma tnorm_lt_of_lt_lo {n : ℤ} (hn : n < lo c r) : tnorm c r n < gnorm c r :=
+  (hc.convAt hr).tnorm_lt_of_lt_lo hc0 hr hn
+
+lemma tnorm_lt_of_hi_lt {n : ℤ} (hn : hi c r < n) : tnorm c r n < gnorm c r :=
+  (hc.convAt hr).tnorm_lt_of_hi_lt hc0 hr hn
+
+lemma lo_le_hi : lo c r ≤ hi c r := (hc.convAt hr).lo_le_hi hc0 hr
+
+lemma coeff_lo_ne_zero : c (lo c r) ≠ 0 := (hc.convAt hr).coeff_lo_ne_zero hc0 hr
+
+lemma coeff_hi_ne_zero : c (hi c r) ≠ 0 := (hc.convAt hr).coeff_hi_ne_zero hc0 hr
+
+/-- Characterisation of the lowest dominant index. -/
+lemma lo_eq_of {n : ℤ} (hn : tnorm c r n = gnorm c r)
+    (hlt : ∀ m < n, tnorm c r m < gnorm c r) : lo c r = n :=
+  (hc.convAt hr).lo_eq_of hc0 hr hn hlt
+
+/-- Characterisation of the highest dominant index. -/
+lemma hi_eq_of {n : ℤ} (hn : tnorm c r n = gnorm c r)
+    (hlt : ∀ m, n < m → tnorm c r m < gnorm c r) : hi c r = n :=
+  (hc.convAt hr).hi_eq_of hc0 hr hn hlt
+
+end Dom
+
 /-! ### Convexity: `r < s ⇒ hi_r ≤ lo_s` -/
 
 lemma tnorm_mul_ratio (c : ℤ → K) {r s : ℝ} (hr : 0 < r) (n : ℤ) :
     tnorm c s n = tnorm c r n * (s / r) ^ n := by
   rw [tnorm, tnorm, div_zpow, mul_assoc, mul_div_cancel₀ _ (zpow_ne_zero n hr.ne')]
 
-/-- **Convexity of the Newton polygon.** -/
-theorem hi_le_lo {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r s : ℝ} (hr : 0 < r)
-    (hrs : r < s) : hi c r ≤ lo c s := by
+/-- **Convexity of the Newton polygon** (for a family converging at both radii). -/
+theorem ConvAt.hi_le_lo {c : ℤ → K} {r s : ℝ} (hcr : ConvAt c r) (hcs : ConvAt c s) (hc0 : c ≠ 0)
+    (hr : 0 < r) (hrs : r < s) : hi c r ≤ lo c s := by
   have hs : 0 < s := hr.trans hrs
   have hq : 1 < s / r := (one_lt_div hr).mpr hrs
-  refine le_csInf (domSet_nonempty hc hc0 hs) fun m hm => ?_
+  refine le_csInf (hcs.domSet_nonempty hc0 hs) fun m hm => ?_
   by_contra hlt
   push Not at hlt
-  have hpos := tnorm_pos hr (coeff_hi_ne_zero hc hc0 hr)
+  have hpos := tnorm_pos hr (hcr.coeff_hi_ne_zero hc0 hr)
   have h1 : tnorm c s m < tnorm c s (hi c r) := by
     rw [tnorm_mul_ratio c hr m, tnorm_mul_ratio c hr (hi c r)]
     calc tnorm c r m * (s / r) ^ m ≤ tnorm c r (hi c r) * (s / r) ^ m := by
           refine mul_le_mul_of_nonneg_right ?_ (zpow_pos (by linarith) _).le
-          rw [tnorm_hi hc hc0 hr]; exact le_gnorm hc hr m
+          rw [hcr.tnorm_hi hc0 hr]; exact hcr.le_gnorm m
       _ < tnorm c r (hi c r) * (s / r) ^ (hi c r) :=
           mul_lt_mul_of_pos_left (zpow_lt_zpow_right₀ hq hlt) hpos
-  exact (h1.trans_le (le_gnorm hc hs _)).ne hm
+  exact (h1.trans_le (hcs.le_gnorm _)).ne hm
+
+/-- **Convexity of the Newton polygon.** -/
+theorem hi_le_lo {c : ℤ → K} (hc : IsEntire c) (hc0 : c ≠ 0) {r s : ℝ} (hr : 0 < r)
+    (hrs : r < s) : hi c r ≤ lo c s :=
+  (hc.convAt hr).hi_le_lo (hc.convAt (hr.trans hrs)) hc0 hr hrs
 
 /-! ### The Gauss lemma -/
 
-section Gauss
-
-variable {c d : ℤ → K}
-
-lemma tnorm_mul_tnorm (r : ℝ) (hr : 0 < r) (l m : ℤ) :
+lemma tnorm_mul_tnorm {c d : ℤ → K} (r : ℝ) (hr : 0 < r) (l m : ℤ) :
     tnorm c r (l - m) * tnorm d r m = ‖c (l - m) * d m‖ * r ^ l := by
   rw [tnorm, tnorm, norm_mul]
   have : r ^ l = r ^ (l - m) * r ^ m := by rw [← zpow_add₀ hr.ne', sub_add_cancel]
   rw [this]; ring
 
-lemma tendsto_conv_family (hc : IsEntire c) (hd : IsEntire d) {r : ℝ} (hr : 0 < r) (l : ℤ) :
+namespace ConvAt
+
+section Gauss
+
+variable {c d : ℤ → K} {r : ℝ}
+
+lemma tendsto_conv_family (hc : ConvAt c r) (hd : ConvAt d r) (hr : 0 < r) (l : ℤ) :
     Tendsto (fun m => tnorm c r (l - m) * tnorm d r m) cofinite (𝓝 0) := by
-  obtain ⟨B, hB⟩ := hc.bddAbove hr
+  obtain ⟨B, hB⟩ := hc.bddAbove
   have hB' : ∀ n, tnorm c r n ≤ B := fun n => hB ⟨n, rfl⟩
-  have hB0 : 0 ≤ B := (tnorm_nonneg c hr 0).trans (hB' 0)
   refine squeeze_zero (fun m => mul_nonneg (tnorm_nonneg c hr _) (tnorm_nonneg d hr m))
     (fun m => mul_le_mul_of_nonneg_right (hB' _) (tnorm_nonneg d hr m)) ?_
-  simpa using (hd.tendsto_tnorm hr).const_mul B
+  simpa using hd.const_mul B
 
-lemma summable_conv_family (hc : IsEntire c) (hd : IsEntire d) (l : ℤ) :
+lemma summable_conv_family (hc : ConvAt c r) (hd : ConvAt d r) (hr : 0 < r) (l : ℤ) :
     Summable fun m => c (l - m) * d m := by
   refine NonarchimedeanAddGroup.summable_of_tendsto_cofinite_zero ?_
   rw [tendsto_zero_iff_norm_tendsto_zero]
-  refine (tendsto_conv_family hc hd one_pos l).congr fun m => ?_
-  rw [tnorm_mul_tnorm 1 one_pos, one_zpow, mul_one]
+  have hrl : 0 < r ^ l := zpow_pos hr l
+  have h := (tendsto_conv_family hc hd hr l).div_const (r ^ l)
+  rw [zero_div] at h
+  refine h.congr fun m => ?_
+  rw [tnorm_mul_tnorm r hr, mul_div_cancel_right₀ _ hrl.ne']
 
-lemma tnorm_conv_le (hc : IsEntire c) (hd : IsEntire d) {r : ℝ} (hr : 0 < r) (l : ℤ) :
+lemma tnorm_conv_le (hc : ConvAt c r) (hd : ConvAt d r) (hr : 0 < r) (l : ℤ) :
     tnorm (conv c d) r l ≤ gnorm c r * gnorm d r := by
   have hrl : 0 < r ^ l := zpow_pos hr l
   have hC : 0 ≤ gnorm c r * gnorm d r / r ^ l :=
-    div_nonneg (mul_nonneg (gnorm_nonneg hc hr) (gnorm_nonneg hd hr)) hrl.le
+    div_nonneg (mul_nonneg (hc.gnorm_nonneg hr) (hd.gnorm_nonneg hr)) hrl.le
   have h : ‖conv c d l‖ ≤ gnorm c r * gnorm d r / r ^ l := by
     refine IsUltrametricDist.norm_tsum_le_of_forall_le_of_nonneg hC fun m => ?_
     rw [le_div_iff₀ hrl, ← tnorm_mul_tnorm r hr]
-    exact mul_le_mul (le_gnorm hc hr _) (le_gnorm hd hr m) (tnorm_nonneg d hr m)
-      (gnorm_nonneg hc hr)
+    exact mul_le_mul (hc.le_gnorm _) (hd.le_gnorm m) (tnorm_nonneg d hr m)
+      (hc.gnorm_nonneg hr)
   rw [tnorm]
   exact (le_div_iff₀ hrl).mp h
 
+/-- The product of two families converging at `r` converges at `r`. -/
+theorem conv (hc : ConvAt c r) (hd : ConvAt d r) (hr : 0 < r) : ConvAt (BAn.conv c d) r := by
+  obtain ⟨B, hB⟩ := hc.bddAbove
+  obtain ⟨B', hB'⟩ := hd.bddAbove
+  have hcB : ∀ n, tnorm c r n ≤ B := fun n => hB ⟨n, rfl⟩
+  have hdB : ∀ n, tnorm d r n ≤ B' := fun n => hB' ⟨n, rfl⟩
+  have hB0 : 0 ≤ B := (tnorm_nonneg c hr 0).trans (hcB 0)
+  have hB0' : 0 ≤ B' := (tnorm_nonneg d hr 0).trans (hdB 0)
+  have key : ∀ ε > 0, ∀ᶠ l in cofinite, tnorm (BAn.conv c d) r l ≤ ε := by
+    intro ε hε
+    set δ := ε / (B + B' + 1)
+    have hδ : 0 < δ := div_pos hε (by linarith)
+    have hFc := Filter.eventually_cofinite.mp (hc.eventually (gt_mem_nhds hδ))
+    have hFd := Filter.eventually_cofinite.mp (hd.eventually (gt_mem_nhds hδ))
+    have hfin := (hFc.prod hFd).image fun p : ℤ × ℤ => p.1 + p.2
+    refine Filter.eventually_cofinite.mpr (hfin.subset fun l hl => ?_)
+    simp only [Set.mem_setOf_eq, not_le] at hl
+    by_contra hnot
+    apply hl.not_ge
+    have hrl : 0 < r ^ l := zpow_pos hr l
+    have h : ‖BAn.conv c d l‖ ≤ ε / r ^ l := by
+      refine IsUltrametricDist.norm_tsum_le_of_forall_le_of_nonneg (div_nonneg hε.le hrl.le)
+        fun m => ?_
+      rw [le_div_iff₀ hrl, ← tnorm_mul_tnorm r hr]
+      by_cases h1 : tnorm c r (l - m) < δ
+      · calc tnorm c r (l - m) * tnorm d r m ≤ δ * B' :=
+              mul_le_mul h1.le (hdB m) (tnorm_nonneg d hr m) hδ.le
+          _ ≤ ε := by
+              rw [div_mul_eq_mul_div, div_le_iff₀ (by linarith)]; nlinarith
+      · by_cases h2 : tnorm d r m < δ
+        · calc tnorm c r (l - m) * tnorm d r m ≤ B * δ :=
+                mul_le_mul (hcB _) h2.le (tnorm_nonneg d hr m) hB0
+            _ ≤ ε := by
+                rw [mul_div_assoc', div_le_iff₀ (by linarith)]; nlinarith
+        · exact absurd ⟨(l - m, m), ⟨h1, h2⟩, by simp⟩ hnot
+    rw [tnorm]
+    exact (le_div_iff₀ hrl).mp h
+  refine tendsto_order.2 ⟨fun a ha => Eventually.of_forall fun l =>
+    ha.trans_le (tnorm_nonneg _ hr l), fun a ha => ?_⟩
+  by_cases ha0 : 0 < a
+  · exact (key (a / 2) (half_pos ha0)).mono fun l hl => hl.trans_lt (half_lt_self ha0)
+  · exact absurd ha (not_lt.mpr (not_lt.mp ha0))
+
 /-- Strict bound below the lowest (or above the highest) index of a product. -/
-lemma tnorm_conv_lt (hc : IsEntire c) (hd : IsEntire d) (hc0 : c ≠ 0) (hd0 : d ≠ 0)
-    {r : ℝ} (hr : 0 < r) (l : ℤ)
+lemma tnorm_conv_lt (hc : ConvAt c r) (hd : ConvAt d r) (hc0 : c ≠ 0) (hd0 : d ≠ 0)
+    (hr : 0 < r) (l : ℤ)
     (hl : ∀ m, tnorm c r (l - m) < gnorm c r ∨ tnorm d r m < gnorm d r) :
-    tnorm (conv c d) r l < gnorm c r * gnorm d r := by
-  have hA := gnorm_pos hc hc0 hr
-  have hB := gnorm_pos hd hd0 hr
+    tnorm (BAn.conv c d) r l < gnorm c r * gnorm d r := by
+  have hA := hc.gnorm_pos hc0 hr
+  have hB := hd.gnorm_pos hd0 hr
   have hrl : 0 < r ^ l := zpow_pos hr l
   have hpt : ∀ m, tnorm c r (l - m) * tnorm d r m < gnorm c r * gnorm d r := fun m => by
     rcases hl m with h | h
-    · exact mul_lt_mul_of_lt_of_le_of_nonneg_of_pos h (le_gnorm hd hr m) (tnorm_nonneg c hr _) hB
-    · exact mul_lt_mul_of_le_of_lt_of_nonneg_of_pos (le_gnorm hc hr _) h (tnorm_nonneg d hr m)
+    · exact mul_lt_mul_of_lt_of_le_of_nonneg_of_pos h (hd.le_gnorm m) (tnorm_nonneg c hr _) hB
+    · exact mul_lt_mul_of_le_of_lt_of_nonneg_of_pos (hc.le_gnorm _) h (tnorm_nonneg d hr m)
         hA
   obtain ⟨C, hCA, hC⟩ := exists_lt_bound (tendsto_conv_family hc hd hr l) (mul_pos hA hB) hpt
   have hC0 : 0 ≤ C := (mul_nonneg (tnorm_nonneg c hr _) (tnorm_nonneg d hr 0)).trans (hC 0)
-  have h : ‖conv c d l‖ ≤ C / r ^ l := by
+  have h : ‖BAn.conv c d l‖ ≤ C / r ^ l := by
     refine IsUltrametricDist.norm_tsum_le_of_forall_le_of_nonneg (div_nonneg hC0 hrl.le)
       fun m => ?_
     rw [le_div_iff₀ hrl, ← tnorm_mul_tnorm r hr]
@@ -311,71 +463,105 @@ lemma tnorm_conv_lt (hc : IsEntire c) (hd : IsEntire d) (hc0 : c ≠ 0) (hd0 : d
   exact ((le_div_iff₀ hrl).mp h).trans_lt hCA
 
 /-- The dominant term of a product. -/
-lemma tnorm_conv_eq (hc : IsEntire c) (hd : IsEntire d) {r : ℝ} (hr : 0 < r) (a b : ℤ)
+lemma tnorm_conv_eq (hc : ConvAt c r) (hd : ConvAt d r) (hr : 0 < r) (a b : ℤ)
     (ha : tnorm c r a = gnorm c r) (hb : tnorm d r b = gnorm d r)
     (hl : ∀ m, m ≠ b → tnorm c r (a + b - m) < gnorm c r ∨ tnorm d r m < gnorm d r)
     (hA : 0 < gnorm c r) (hB : 0 < gnorm d r) :
-    tnorm (conv c d) r (a + b) = gnorm c r * gnorm d r := by
+    tnorm (BAn.conv c d) r (a + b) = gnorm c r * gnorm d r := by
   have hrl : 0 < r ^ (a + b) := zpow_pos hr _
   have hdom : ∀ m, m ≠ b → ‖c (a + b - m) * d m‖ < ‖c (a + b - b) * d b‖ := fun m hm => by
     rw [← mul_lt_mul_iff_of_pos_right hrl, ← tnorm_mul_tnorm r hr, ← tnorm_mul_tnorm r hr,
       add_sub_cancel_right, ha, hb]
     rcases hl m hm with h | h
-    · exact mul_lt_mul_of_lt_of_le_of_nonneg_of_pos h (le_gnorm hd hr m) (tnorm_nonneg c hr _) hB
-    · exact mul_lt_mul_of_le_of_lt_of_nonneg_of_pos (le_gnorm hc hr _) h (tnorm_nonneg d hr m)
+    · exact mul_lt_mul_of_lt_of_le_of_nonneg_of_pos h (hd.le_gnorm m) (tnorm_nonneg c hr _) hB
+    · exact mul_lt_mul_of_le_of_lt_of_nonneg_of_pos (hc.le_gnorm _) h (tnorm_nonneg d hr m)
         hA
-  have h := IsUltrametricDist.norm_tsum_eq_of_dominant (summable_conv_family hc hd (a + b)) hdom
-  rw [tnorm, conv, h, ← tnorm_mul_tnorm r hr, add_sub_cancel_right, ha, hb]
+  have h := IsUltrametricDist.norm_tsum_eq_of_dominant (summable_conv_family hc hd hr (a + b))
+    hdom
+  rw [tnorm, BAn.conv, h, ← tnorm_mul_tnorm r hr, add_sub_cancel_right, ha, hb]
 
-variable (hc : IsEntire c) (hd : IsEntire d) (hc0 : c ≠ 0) (hd0 : d ≠ 0) {r : ℝ} (hr : 0 < r)
+variable (hc : ConvAt c r) (hd : ConvAt d r) (hc0 : c ≠ 0) (hd0 : d ≠ 0) (hr : 0 < r)
 include hc hd hc0 hd0 hr
 
 lemma tnorm_conv_lo :
-    tnorm (conv c d) r (lo c r + lo d r) = gnorm c r * gnorm d r := by
-  refine tnorm_conv_eq hc hd hr _ _ (tnorm_lo hc hc0 hr) (tnorm_lo hd hd0 hr) (fun m hm => ?_)
-    (gnorm_pos hc hc0 hr) (gnorm_pos hd hd0 hr)
+    tnorm (BAn.conv c d) r (lo c r + lo d r) = gnorm c r * gnorm d r := by
+  refine tnorm_conv_eq hc hd hr _ _ (hc.tnorm_lo hc0 hr) (hd.tnorm_lo hd0 hr) (fun m hm => ?_)
+    (hc.gnorm_pos hc0 hr) (hd.gnorm_pos hd0 hr)
   rcases lt_or_gt_of_ne hm with h | h
-  · exact Or.inr (tnorm_lt_of_lt_lo hd hd0 hr h)
-  · exact Or.inl (tnorm_lt_of_lt_lo hc hc0 hr (by omega))
+  · exact Or.inr (hd.tnorm_lt_of_lt_lo hd0 hr h)
+  · exact Or.inl (hc.tnorm_lt_of_lt_lo hc0 hr (by omega))
 
 lemma tnorm_conv_hi :
-    tnorm (conv c d) r (hi c r + hi d r) = gnorm c r * gnorm d r := by
-  refine tnorm_conv_eq hc hd hr _ _ (tnorm_hi hc hc0 hr) (tnorm_hi hd hd0 hr) (fun m hm => ?_)
-    (gnorm_pos hc hc0 hr) (gnorm_pos hd hd0 hr)
+    tnorm (BAn.conv c d) r (hi c r + hi d r) = gnorm c r * gnorm d r := by
+  refine tnorm_conv_eq hc hd hr _ _ (hc.tnorm_hi hc0 hr) (hd.tnorm_hi hd0 hr) (fun m hm => ?_)
+    (hc.gnorm_pos hc0 hr) (hd.gnorm_pos hd0 hr)
   rcases lt_or_gt_of_ne hm with h | h
-  · exact Or.inl (tnorm_lt_of_hi_lt hc hc0 hr (by omega))
-  · exact Or.inr (tnorm_lt_of_hi_lt hd hd0 hr h)
+  · exact Or.inl (hc.tnorm_lt_of_hi_lt hc0 hr (by omega))
+  · exact Or.inr (hd.tnorm_lt_of_hi_lt hd0 hr h)
 
-/-- **Gauss lemma**: `|fg|_r = |f|_r |g|_r`. -/
-theorem gnorm_conv : gnorm (conv c d) r = gnorm c r * gnorm d r :=
+/-- **Gauss lemma** at one radius: `|fg|_r = |f|_r |g|_r`. -/
+theorem gnorm_conv : gnorm (BAn.conv c d) r = gnorm c r * gnorm d r :=
   le_antisymm (gnorm_le (tnorm_conv_le hc hd hr))
-    ((tnorm_conv_lo hc hd hc0 hd0 hr).symm.le.trans (le_gnorm (hc.conv hd) hr _))
+    ((tnorm_conv_lo hc hd hc0 hd0 hr).symm.le.trans ((hc.conv hd hr).le_gnorm _))
 
-theorem conv_ne_zero : conv c d ≠ 0 := by
+theorem conv_ne_zero : BAn.conv c d ≠ 0 := by
   intro h
   have := tnorm_conv_lo hc hd hc0 hd0 hr
   rw [h, tnorm, Pi.zero_apply, norm_zero, zero_mul] at this
-  exact (mul_pos (gnorm_pos hc hc0 hr) (gnorm_pos hd hd0 hr)).ne this
+  exact (mul_pos (hc.gnorm_pos hc0 hr) (hd.gnorm_pos hd0 hr)).ne this
 
 /-- The lowest dominant index is additive. -/
-theorem lo_conv : lo (conv c d) r = lo c r + lo d r := by
-  refine lo_eq_of (hc.conv hd) (conv_ne_zero hc hd hc0 hd0 hr) hr ?_ fun m hm => ?_
+theorem lo_conv : lo (BAn.conv c d) r = lo c r + lo d r := by
+  refine (hc.conv hd hr).lo_eq_of (conv_ne_zero hc hd hc0 hd0 hr) hr ?_ fun m hm => ?_
   · rw [tnorm_conv_lo hc hd hc0 hd0 hr, gnorm_conv hc hd hc0 hd0 hr]
   · rw [gnorm_conv hc hd hc0 hd0 hr]
     refine tnorm_conv_lt hc hd hc0 hd0 hr m fun k => ?_
     by_cases hk : k < lo d r
-    · exact Or.inr (tnorm_lt_of_lt_lo hd hd0 hr hk)
-    · exact Or.inl (tnorm_lt_of_lt_lo hc hc0 hr (by omega))
+    · exact Or.inr (hd.tnorm_lt_of_lt_lo hd0 hr hk)
+    · exact Or.inl (hc.tnorm_lt_of_lt_lo hc0 hr (by omega))
 
 /-- The highest dominant index is additive. -/
-theorem hi_conv : hi (conv c d) r = hi c r + hi d r := by
-  refine hi_eq_of (hc.conv hd) (conv_ne_zero hc hd hc0 hd0 hr) hr ?_ fun m hm => ?_
+theorem hi_conv : hi (BAn.conv c d) r = hi c r + hi d r := by
+  refine (hc.conv hd hr).hi_eq_of (conv_ne_zero hc hd hc0 hd0 hr) hr ?_ fun m hm => ?_
   · rw [tnorm_conv_hi hc hd hc0 hd0 hr, gnorm_conv hc hd hc0 hd0 hr]
   · rw [gnorm_conv hc hd hc0 hd0 hr]
     refine tnorm_conv_lt hc hd hc0 hd0 hr m fun k => ?_
     by_cases hk : hi d r < k
-    · exact Or.inr (tnorm_lt_of_hi_lt hd hd0 hr hk)
-    · exact Or.inl (tnorm_lt_of_hi_lt hc hc0 hr (by omega))
+    · exact Or.inr (hd.tnorm_lt_of_hi_lt hd0 hr hk)
+    · exact Or.inl (hc.tnorm_lt_of_hi_lt hc0 hr (by omega))
+
+end Gauss
+
+end ConvAt
+
+section Gauss
+
+variable {c d : ℤ → K}
+
+lemma summable_conv_family (hc : IsEntire c) (hd : IsEntire d) (l : ℤ) :
+    Summable fun m => c (l - m) * d m :=
+  (hc.convAt one_pos).summable_conv_family (hd.convAt one_pos) one_pos l
+
+lemma tnorm_conv_le (hc : IsEntire c) (hd : IsEntire d) {r : ℝ} (hr : 0 < r) (l : ℤ) :
+    tnorm (conv c d) r l ≤ gnorm c r * gnorm d r :=
+  (hc.convAt hr).tnorm_conv_le (hd.convAt hr) hr l
+
+variable (hc : IsEntire c) (hd : IsEntire d) (hc0 : c ≠ 0) (hd0 : d ≠ 0) {r : ℝ} (hr : 0 < r)
+include hc hd hc0 hd0 hr
+
+/-- **Gauss lemma**: `|fg|_r = |f|_r |g|_r`. -/
+theorem gnorm_conv : gnorm (conv c d) r = gnorm c r * gnorm d r :=
+  (hc.convAt hr).gnorm_conv (hd.convAt hr) hc0 hd0 hr
+
+theorem conv_ne_zero : conv c d ≠ 0 := (hc.convAt hr).conv_ne_zero (hd.convAt hr) hc0 hd0 hr
+
+/-- The lowest dominant index is additive. -/
+theorem lo_conv : lo (conv c d) r = lo c r + lo d r :=
+  (hc.convAt hr).lo_conv (hd.convAt hr) hc0 hd0 hr
+
+/-- The highest dominant index is additive. -/
+theorem hi_conv : hi (conv c d) r = hi c r + hi d r :=
+  (hc.convAt hr).hi_conv (hd.convAt hr) hc0 hd0 hr
 
 end Gauss
 
