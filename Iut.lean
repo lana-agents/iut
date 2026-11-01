@@ -309,6 +309,7 @@ import Iut.Frobenioid.Tempered.BaseRecon
 import Iut.Frobenioid.Tempered.BiKummer
 import Iut.Frobenioid.Tempered.Birat
 import Iut.Frobenioid.Tempered.BsFldPreserve
+import Iut.Frobenioid.Tempered.EllB
 import Iut.Frobenioid.Tempered.EllDiv
 import Iut.Frobenioid.Tempered.EnvChoice
 import Iut.Frobenioid.Tempered.EnvTransport

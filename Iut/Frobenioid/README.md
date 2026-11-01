@@ -65,6 +65,9 @@ challenge or by `Iut/Concrete/*`.
      - (c4) on `Y = Π/ker χ`: `divTheta`, `divU`, `divOne` are the genuine divisors
        (`BAn.ellDiv`) of `Θ̈`, `Ü`, `q^{1/2}`, and the functional equation
        `pb_deck_divTheta` (divisor form of [EtTh], Prop. 1.4(ii));
+     - (c4') `Tempered/EllB.lean` (MR18 T10 preparation): `radData` (`B₀` = `H`-fixed
+       log-meromorphic radicals, `radDiv`, kernel `O_K^×` `radDiv_eq_zero_iff`) with the
+       `G`-actions on `P` and `R` as explicit inputs (`ActCompat`; `actCompat_deck`);
      - (c5) `tateThetaData`: the instance for `Π = temperedPi1` of the Tate curve and
        `χ = TateObject.character` (`tempered-fundamental-groups`), with
        `tateThetaData_isFrobenioid`.
