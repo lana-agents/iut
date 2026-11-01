@@ -326,6 +326,7 @@ import Iut.Frobenioid.Tempered.RatFunGauss
 import Iut.Frobenioid.Tempered.RatFunMero
 import Iut.Frobenioid.Tempered.RatFunOrd
 import Iut.Frobenioid.Tempered.RatFunRad
+import Iut.Frobenioid.Tempered.RatFunRadL
 import Iut.Frobenioid.Tempered.RatFunTheta
 import Iut.Frobenioid.Tempered.RatFunZero
 import Iut.Frobenioid.Tempered.SplitFrob
