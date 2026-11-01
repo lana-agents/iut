@@ -193,6 +193,47 @@ theorem continuous_smul_mu_kbar (n : ℕ) [NeZero n] (y : Mu n (kbar k Ω)) :
   exact (continuous_of_discreteTopology (f := ⇑(muEquiv (k := k) (Ω := Ω) n).symm)).comp
     (continuous_psiMu_apply n _)
 
+omit [CharZero k] [IsAlgClosed Ω] in
+/-- A continuous cocycle `G_k → μ_n(Ω)` (an element of `contCocycles (psiMu n)`), transported to
+`μ_n(k̄)` along `muEquiv`: an element of ckt's `ContH1.cocycles (Gk k Ω) (Mu n (kbar k Ω))`. -/
+def toKbarCocycle {n : ℕ} [NeZero n] (κ : Gk k Ω → Mu n Ω) (hκ : IsCocycle (psiMu n) κ)
+    (hκc : Continuous κ) : ContH1.cocycles (Gk k Ω) (Mu n (kbar k Ω)) :=
+  ContH1.mkCocycle (fun σ => (muEquiv (k := k) (Ω := Ω) n).symm (κ σ))
+    ((continuous_of_discreteTopology (f := ⇑(muEquiv (k := k) (Ω := Ω) n).symm)).comp hκc)
+    fun σ τ => by
+      simp only [hκ σ τ, map_mul, muEquiv_symm_psiMu]
+      exact mul_comm _ _
+
+/-- **`contCocycles` are Kummer cocycles** (Kummer theory, ckt `kummer_surjective`, i.e.
+`kummerEquiv : k^×/(k^×)^n ≃* H¹(G_k, μ_n)`): the class of every continuous cocycle
+`G_k → μ_n(Ω)` (transported to `μ_n(k̄)`) is the Kummer class of some `a ∈ k^×`. -/
+theorem exists_kummer_of_mem_contCocycles {n : ℕ} [NeZero n] {κ : Gk k Ω → Mu n Ω}
+    (hκ : κ ∈ contCocycles (psiMu (k := k) (Ω := Ω) n)) :
+    ∃ a : kˣ, ContH1.mk (toKbarCocycle κ hκ.1 hκ.2) = kummer n k (kbar k Ω) a := by
+  haveI : NeZero ((n : ℕ) : k) := ⟨Nat.cast_ne_zero.2 (NeZero.ne n)⟩
+  obtain ⟨a, ha⟩ := kummer_surjective n k (kbar k Ω) (ContH1.mk (toKbarCocycle κ hκ.1 hκ.2))
+  exact ⟨a, ha.symm⟩
+
+/-- **Every Kummer class is represented in `contCocycles`** (the converse of
+`exists_kummer_of_mem_contCocycles`): for `a ∈ k^×` some element of `contCocycles (psiMu n)`
+represents `κ_n(a)`. -/
+theorem exists_mem_contCocycles_kummer {n : ℕ} [NeZero n] (a : kˣ) :
+    ∃ (κ : Gk k Ω → Mu n Ω) (hκ : κ ∈ contCocycles (psiMu (k := k) (Ω := Ω) n)),
+      ContH1.mk (toKbarCocycle κ hκ.1 hκ.2) = kummer n k (kbar k Ω) a := by
+  haveI : NeZero ((n : ℕ) : k) := ⟨Nat.cast_ne_zero.2 (NeZero.ne n)⟩
+  let c : ContH1.cocycles (Gk k Ω) (Mu n (kbar k Ω)) := Quotient.out (kummer n k (kbar k Ω) a)
+  have h1 : IsCocycle (psiMu (k := k) (Ω := Ω) n) fun σ => muEquiv n (c σ) := fun σ τ => by
+    simp only [ContH1.isMulCocycle₁ c σ τ, map_mul, ← psiMu_muEquiv]
+    exact mul_comm _ _
+  have h2 : Continuous fun σ => muEquiv (k := k) (Ω := Ω) n (c σ) :=
+    (continuous_of_discreteTopology (f := ⇑(muEquiv (k := k) (Ω := Ω) n))).comp
+      (ContH1.continuous c)
+  refine ⟨fun σ => muEquiv n (c σ), ⟨h1, h2⟩, ?_⟩
+  have e : toKbarCocycle (fun σ => muEquiv (k := k) (Ω := Ω) n (c σ)) h1 h2 = c :=
+    Subtype.ext (funext fun σ => (muEquiv (k := k) (Ω := Ω) n).symm_apply_apply (c σ))
+  rw [e]
+  exact Quotient.out_eq _
+
 /-- **Every continuous cocycle `G_k → μ_m` lifts to `μ_n`** (`m ∣ n`) on the nose: its class is a
 Kummer class (`kummer_surjective`, Hilbert 90), Kummer classes are compatible with the
 reductions (`h1Transition_kummer`), and a cohomologous lift is adjusted by a coboundary

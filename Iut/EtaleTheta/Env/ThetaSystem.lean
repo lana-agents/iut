@@ -221,8 +221,12 @@ theorem smul_eq_of_mem_thetaSubTemp {γ : TempPi D O V hV} (hγ : γ ∈ thetaSu
   rw [← act_augT_psiMu D O V hV n γ ζ]
   simp [act, augT_eq_one_of_mem_thetaSubTemp hγ]
 
-/-- **The Kummer cocycles**: all continuous cocycles `G → μ` (for `G = G_k`, `μ = μ_n`, these
-represent the Kummer classes of `k^×`, `k^×/(k^×)^n ≅ H¹(G_k, μ_n)`). -/
+/-- **The Kummer cocycles**: all continuous cocycles `G → μ`. For `G = G_k`, `μ = μ_n(Ω)` and
+`ψ = psiMu n` these are exactly the representatives of the Kummer classes of `k^×`, by Kummer
+theory `k^×/(k^×)^n ≃* H¹(G_k, μ_n)` (ckt `KummerTheory.kummer_surjective` /
+`KummerTheory.kummerEquiv`): `exists_kummer_of_mem_contCocycles` (every element represents a
+Kummer class `κ_n(a)`, `a ∈ k^×`) and `exists_mem_contCocycles_kummer` (every Kummer class has a
+representative here), both in `Env/ThetaTower.lean`. -/
 def contCocycles {G μ : Type u} [Group G] [TopologicalSpace G] [CommGroup μ] [TopologicalSpace μ]
     [IsTopologicalGroup μ] (ψ : G →* MulAut μ) : Subgroup (G → μ) where
   carrier := {κ | IsCocycle ψ κ ∧ Continuous κ}

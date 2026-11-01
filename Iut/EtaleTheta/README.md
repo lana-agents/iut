@@ -621,3 +621,15 @@ the MR15 plan.
   / `compatRep_red` (hηred: compatible representatives of a compatible system of classes), `finiteIndex_piYddotX`
   (`[Π^tp_Y : Π^tp_Ÿ] < ∞`), `transTemp_thetaClassTemp_levelN`; `thetaTower`, `thetaTower_model` (level `n` model =
   `thetaEnv` of `x n`), **`discreteRigidity_thetaEnv`** (remaining named hypotheses: `FISlim Π^tp_Y`, `hlift`).
+  Run 5: `toKbarCocycle`, **`exists_kummer_of_mem_contCocycles`** / **`exists_mem_contCocycles_kummer`** (`contCocycles` =
+  the Kummer cocycles of `k^×`, via ckt `kummer_surjective`).
+* `Env/ThetaLTors.lean` (MR15 run 5, **Layer B item 9**) — the `l`-torsion curves of [EtTh] Prop. 2.2 / Def. 2.5(i) and
+  the `l`-th root of the theta class: `cocycleKer` (kernel of a cocycle), **`piXdd`** (`Π^tp_X̿ = χ⁻¹(lℤ)`, `χ` the
+  `ℤ`-character of `Y → X`), **`piXu`** (`Π^tp_X̲` = kernel of a splitting cocycle `cX : Π^tp_X̿ → μ_l`), `piYU`, `piYddU`
+  (`Π^tp_Y̲`, `Π^tp_Ÿ̲` inside `Π^tp_X̲`), `thetaLU` (`Π|_{l·Δ_Θ}`), `thetaKU`; **`rootCocycle`** / **`rootClass`**
+  (`η̈^Θ̲ mod N ∈ H¹(Π^tp_Ÿ̲, μ_N)`), **`rootClass_pow`** (`(η̈^Θ̲)^l = η̈^Θ|_Ÿ̲`); `thetaEnvU`,
+  **`cyclotomicRigidity_thetaEnvU`** (Cor. 2.19(i) for `X̲`, `l·Δ_Θ`), `ker_autPY_inlY_eq_thetaEnvU`, `thetaTowerU`,
+  `finiteIndex_piYddU`, **`discreteRigidity_thetaEnvU`** (Cor. 2.19(ii) for `X̲`); `rootReps` (compatible
+  representatives mod `l·N_n`); `fiSlim_piYU`, `surj_piYU` (`FISlim`/`↠ G_k` for `Y̲` from those for `Y`); Tate
+  curve: **`exists_thetaRep_inputs`** (`hr13`, `hrL` for every representative of the theta class). Debt: the
+  existence of `cX` extending the mod-`l` theta cocycle (Prop. 2.2(ii) + [EtTh] l.2938–2945, MR15 obligation 13).
