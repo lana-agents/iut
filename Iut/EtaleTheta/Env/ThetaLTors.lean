@@ -847,7 +847,7 @@ conclusions in one existential; consumed by MR23). For the theta system of
 representative `r` of the theta class mod `lN` on `Π^tp_Ÿ` and every splitting cocycle
 `cX : Π^tp_X̿ → μ_l` with `hcXr` (this defines `X̲`; existence of `cX`: obligation 13):
 `EnvUConclusions` with `y` = the theta class mod `N` and `P` = "`V` lies under a place `W` over the
-cusp, and the debts `InertiaFixesLevel (L 0)`, `CuspInertiaWeil` hold". That is: the `l`-th root
+cusp, and the debt `CuspInertiaWeil` holds". That is: the `l`-th root
 property `(η̈^Θ̲)^l = η̈^Θ|_{Ÿ̲}` mod `N`; under `hPY`, `hG`, `hsurj`, `hLgen` (for `X̲`) the
 cyclotomic rigidity of Cor. 2.19(i) (Prop. 1.3 input discharged modulo C1); and under `P` the
 triviality on `μ_N` of the automorphisms over the identity of `Π^tp_Y̲`. -/
@@ -871,7 +871,6 @@ theorem exists_thetaEnvU_rigidity :
             cX ⟨γ, h⟩ = Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ)),
           EnvUConclusions hcX r hcXr (thetaClassTemp η hC1 N)
             (∃ (W : ValuationSubring Ω) (_ : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W ∧ V ≤ W ∧
-              InertiaFixesLevel (transcendental_tau t.tateCurve) (hemiL_open t) (L 0) W ∧
               CuspInertiaWeil (DXc)) := by
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
     Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
@@ -880,7 +879,7 @@ theorem exists_thetaEnvU_rigidity :
   exact envUConclusions_of hcX r hcXr
     ((congrArg (transTemp (tateDataX O hO hs h12) hL (Dvd.intro_left l rfl : N ∣ l * N)) hr).trans
       ((h.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))
-    hr13 fun ⟨W, hk, hτ, hVW, hL0, hG5⟩ => hrL W hk hτ hVW hL0 hG5
+    hr13 fun ⟨W, hk, hτ, hVW, hG5⟩ => hrL W hk hτ hVW hG5
 
 end Concrete
 
