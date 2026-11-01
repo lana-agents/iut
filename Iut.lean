@@ -179,6 +179,7 @@ import Iut.EtaleTheta.DiscreteRigidity
 import Iut.EtaleTheta.Env.AutKernel
 import Iut.EtaleTheta.Env.BiTheta
 import Iut.EtaleTheta.Env.CocycleExtend
+import Iut.EtaleTheta.Env.CuspBasePoint
 import Iut.EtaleTheta.Env.CycRigidity
 import Iut.EtaleTheta.Env.Envelope
 import Iut.EtaleTheta.Env.Inputs

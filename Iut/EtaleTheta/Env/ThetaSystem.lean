@@ -6,6 +6,7 @@ Authors: LANA Project
 import Iut.EtaleTheta.ThetaKerTheta
 import Iut.EtaleTheta.Env.AutKernel
 import Iut.EtaleTheta.Env.Prop214
+import Iut.EtaleTheta.Env.CuspBasePoint
 
 /-!
 # The model environment of the étale theta system ([EtTh], Cor. 2.19(i), Layer B)
@@ -48,9 +49,12 @@ the form in which MR14 provides the étale theta class). The transport to `X̲, 
 Remaining hypotheses (Layer-B debts, `MR15-plan.md`): C1 (`LevelsDominated`, MR14/MR12),
 `FISlim (piY …)` (obligation 1, M2-GEA + MR2), center-freeness of `G_k` (`hG`; for `k` a finite
 extension of `ℚ_p` this is `PAdicGalois.isSlimGroup`, once `Gk k Ω` is identified with
-`GK p E`), `Π^tp_Y ↠ G_k` (`hsurj`, obligation 5), the Prop. 2.12(i)-type generation `hL`, and,
-for `hηL`, the debt `CuspInertiaWeil` (G5c+G5d) (MR14 run 16 discharged
-`InertiaFixesLevel (L 0)`).
+`GK p E`), the Prop. 2.12(i)-type generation `hL`, and, for `hηL`, the debt `CuspInertiaWeil`
+(G5c+G5d) (MR14 run 16 discharged `InertiaFixesLevel (L 0)`). `Π^tp_Y ↠ G_k` (`hsurj`,
+obligation 5) is discharged at base points over a `k`-rational point (`surj_augT_of_ratPoint`,
+tfg `Kummer.exists_mem_ker_character_piToGk_eq`); for the Tate curve these are supplied over the
+cusp (`Env/CuspBasePoint.lean`), so the concrete theorem only asks that `V` lie over a rational
+point (for Cor. 2.19(i)) or under a place over the cusp (for Cor. 2.18(iv)).
 -/
 
 open scoped commutatorElement
@@ -317,6 +321,17 @@ theorem smul_eq_of_mem_thetaL {γ : PYddg} (hγ : (γ : PXg) ∈ thetaL T hL) (n
     (ζ : Mu n Ω) : γ • ζ = ζ :=
   smul_eq_of_mem_thetaSubTemp hγ.2 n ζ
 
+omit [hX : ∀ j, Fact (LX ≤ L j)] in
+variable (T) in
+/-- **`Π^tp_Y ↠ G_k` at a base point over a `k`-rational point** (Layer-B obligation 5, the
+hypothesis `hsurj`): if `V ≤ A` for a `k`-rational point `A` of `X` (a `RatPoint`) and `O` is a
+complete discrete valuation ring, every `g ∈ G_k` is the image of an element of `Π^tp_Y`, namely
+of a Galois element of the base point (tfg `Kummer.exists_mem_ker_character_piToGk_eq`, MR13).
+For `X = E_q ∖ {O}` such base points are supplied over the cusp (`Env/CuspBasePoint.lean`). -/
+theorem surj_augT_of_ratPoint [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O]
+    (x : RatPoint DXg) (hVx : V ≤ x.A) : ∀ σ : Gk k Ω, ∃ h ∈ PYg, augg h = σ := fun g =>
+  Kummer.exists_mem_ker_character_piToGk_eq DXg O V hV x.A x.hk x.hkres x.hrat rfl hVx T g
+
 variable (n : ℕ) [NeZero n]
 
 theorem isCocycle_repCocycle_theta (x : ContH1 PYddg (Mu n Ω)) :
@@ -349,8 +364,9 @@ theorem repCocycle_eq_one_of_thetaK {x : ContH1 PYddg (Mu n Ω)}
 `M` is carried to `s^alg(l) ↦ x(l)⁻¹` on `L = Π^tp_Ÿ ∩ (preimage of Δ_Θ)`.
 
 Named hypotheses (Layer-B debts): `hPY` (`FISlim Π^tp_Y`, obligation 1), `hG` (`G_k`
-center-free), `hsurj` (`Π^tp_Y ↠ G_k`, obligation 5), `hLgen` (Prop. 2.12(i)-type generation of
-`L` by `Kθ` and geometric commutators). -/
+center-free), `hsurj` (`Π^tp_Y ↠ G_k`, obligation 5; holds at a rational base point,
+`surj_augT_of_ratPoint`), `hLgen` (Prop. 2.12(i)-type generation of `L` by `Kθ` and geometric
+commutators). -/
 theorem cyclotomicRigidity_thetaEnv (hPY : Envelope.FISlim PYg)
     (hG : ∀ τ : Gk k Ω, (∀ σ, τ * σ = σ * τ) → τ = 1)
     (hsurj : ∀ σ : Gk k Ω, ∃ h ∈ PYg, augg h = σ)
@@ -447,6 +463,7 @@ local notation "DXc" => fieldData (transcendental_tau t.tateCurve) (hemiData t.t
 
 variable [t.tateCurve.IsElliptic] (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) {s : Kˣ}
   (hs : s ^ 2 = t.q) (O : ValuationSubring K) (hO : ∀ x : K, x ∈ O ↔ ‖x‖ ≤ 1)
+  [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O]
 
 set_option maxHeartbeats 4000000 in
 -- destructuring `exists_thetaClassTemp_prop13` (concrete Tate-curve levels) is slow to unify
@@ -455,17 +472,21 @@ include h2 in
 of the étale theta system** (`X = E_q ∖ {O}`, `Δ_Θ`; Layer B). For the theta system of
 `exists_thetaClassTemp_prop13` and every base point `V` over `O`, under C1:
 
-* (**cyclotomic rigidity**) for every `n ≥ 1`, the model environment `thetaEnv` of the theta class
-  `thetaClassTemp η n` satisfies Cor. 2.19(i): for any `M ≅ thetaEnv` respecting the input
-  subgroups, the algorithmic isomorphism of cyclotomes is `s^alg(l) ↦ θ_n(l)⁻¹` on
-  `L = Π^tp_Ÿ ∩ (preimage of Δ_Θ)`. Obligation 8 (`hη13`) is discharged here by MR14's Prop. 1.3;
+* (**cyclotomic rigidity**) if `V` lies over a `K`-rational point (`V ≤ x.A` for a `RatPoint` `x`;
+  e.g. under a place over the cusp, `cuspRatPoint`, `exists_basePoint_cusp`), for every `n ≥ 1`,
+  the model environment `thetaEnv` of the theta class `thetaClassTemp η n` satisfies
+  Cor. 2.19(i): for any `M ≅ thetaEnv` respecting the input subgroups, the algorithmic
+  isomorphism of cyclotomes is `s^alg(l) ↦ θ_n(l)⁻¹` on `L = Π^tp_Ÿ ∩ (preimage of Δ_Θ)`.
+  Obligation 8 (`hη13`) is discharged here by MR14's Prop. 1.3;
 * (**no automorphisms on `μ_n`**) if `V` lies under a place `W` over the cusp, then under the
   debt `CuspInertiaWeil`, automorphisms of `thetaEnv` over the
   identity of `Π^tp_Y` act trivially on `μ_n`. Obligation 11 (`hηL`) is discharged here by the
   cusp inertia (`classAt_cusp_surjective`, `classAt_deltaTheta`).
 
-The remaining hypotheses are the Layer-B debts `hPY` (`FISlim Π^tp_Y`), `hG` (`G_K`
-center-free), `hsurj` (`Π^tp_Y ↠ G_K`) and `hLgen` (Prop. 2.12(i)-type generation). -/
+`O` is a complete discrete valuation ring (`K` a local field). Obligation 5 (`hsurj`,
+`Π^tp_Y ↠ G_K`) is discharged here by the rational base point (`surj_augT_of_ratPoint`). The
+remaining hypotheses are the Layer-B debts `hPY` (`FISlim Π^tp_Y`), `hG` (`G_K` center-free)
+and `hLgen` (Prop. 2.12(i)-type generation). -/
 theorem exists_thetaEnv_rigidity :
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
       (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
@@ -481,14 +502,12 @@ theorem exists_thetaEnv_rigidity :
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (n : ℕ) [NeZero n]
         (hPY : Envelope.FISlim (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV))
         (_ : ∀ τ' : Gk K Ω, (∀ σ, τ' * σ = σ * τ') → τ' = 1)
-        (_ : ∀ σ : Gk K Ω, ∃ h ∈ TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV,
-          augT DXc O V hV h = σ)
         (_ : Subgroup.closure {c | c ∈ thetaL (tateDataX O hO hs h12) hL ∧ ∃ a b,
             augT DXc O V hV a = 1 ∧
             b ∈ TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV ∧
             augT DXc O V hV b = 1 ∧ c = ⁅a, b⁆} ⊔ thetaK (tateDataX O hO hs h12) hL =
           thetaL (tateDataX O hO hs h12) hL),
-        (∀ {M : MonoThetaEnv.{u}}
+        ((∃ x : RatPoint (DXc), V ≤ x.A) → ∀ {M : MonoThetaEnv.{u}}
           (f : MonoThetaEnv.Iso M (thetaEnv (tateDataX O hO hs h12) hL n (thetaClassTemp η hC1 n)))
           {Lsub Ksub Dsub : Subgroup M.G}
           (_ : Lsub.map f.hom = rightSub (augT DXc O V hV) (psiMu n)
@@ -526,15 +545,18 @@ theorem exists_thetaEnv_rigidity :
                 (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV) m) := by
   obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
-  refine ⟨L, hL, hX, het, η, htr, hcomp, fun V hV hC1 n _ hPY hG hsurj hLgen => ?_⟩
+  refine ⟨L, hL, hX, het, η, htr, hcomp, fun V hV hC1 n _ hPY hG hLgen => ?_⟩
   have hdvd : n ∣ 2 * (n - 1 + 1) :=
     ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩
   have hx13 := hker V hV hC1 (n - 1) n hdvd
-  refine ⟨fun f _ _ _ hLs hKs hDs t' m =>
-    cyclotomicRigidity_thetaEnv n hPY hG hsurj hLgen hx13 f hLs hKs hDs t' m,
-    fun W hk hτ hVW hG5 a ha m => ?_⟩
+  refine ⟨fun hx => ?_, fun W hk hτ hVW hG5 a ha m => ?_⟩
+  · obtain ⟨x, hVx⟩ := hx
+    exact fun f _ _ _ hLs hKs hDs t' m => cyclotomicRigidity_thetaEnv n hPY hG
+      (surj_augT_of_ratPoint (tateDataX O hO hs h12) x hVx) hLgen hx13 f hLs hKs hDs t' m
   obtain ⟨e, he⟩ := hdelta hG5
-  refine ker_autPY_inlY_eq_thetaEnv n hPY hG hsurj hLgen hx13 (fun m => ?_) ha m
+  refine ker_autPY_inlY_eq_thetaEnv n hPY hG
+    (surj_augT_of_ratPoint (tateDataX O hO hs h12) (cuspRatPoint hk hτ) hVW) hLgen hx13
+    (fun m => ?_) ha m
   obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW hC1 n m
   obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW hC1 σ
   exact ⟨⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩,

@@ -71,7 +71,8 @@ import Iut.EtaleTheta.Env.ThetaTower
   splitting cocycle `cX` with `hcXr` exists (`CocycleExtend.lean`, `l` odd).
 * `exists_thetaEnvU_rigidity` (the Tate curve): all conclusions for `X̲` (`EnvUConclusions`: the
   `l`-th root property, Cor. 2.19(i), the `μ`-part of Cor. 2.18(iv)) for one theta system, via the
-  generic `envUConclusions_of` applied to `exists_thetaRep_inputs`.
+  generic `envUConclusions_of` applied to `exists_thetaRep_inputs`; `Π^tp_Y ↠ G_k` (obligation 5)
+  holds at base points under a place over the cusp (`surj_augT_of_ratPoint`, `cuspRatPoint`).
 -/
 
 open scoped commutatorElement
@@ -468,9 +469,9 @@ subgroups, the algorithmic isomorphism of cyclotomes is carried to `s^alg(g) ↦
 Inputs: `hr13` (Prop. 1.3: `r = 1` on `Π^tp_Ÿ ∩ Kθ`; for the theta class from MR14, modulo C1).
 Named hypotheses (Layer-B debts): `hPY` (`FISlim Π^tp_Y̲`; follows from `FISlim Π^tp_Y`,
 obligation 1, by `fiSlim_piYU`), `hG` (`G_k` center-free; discharged for `k/ℚ_p` finite by
-`gk_center_free_padic`), `hsurj` (`Π^tp_Y̲ ↠ G_k`; follows from `Π^tp_Y ↠ G_k`, obligation 5, and
-the surjectivity `hrL` of `r` on `Π|_{Δ_Θ}` by `surj_piYU`), `hLgen` (Prop. 2.12(i)-type
-generation). -/
+`gk_center_free_padic`), `hsurj` (`Π^tp_Y̲ ↠ G_k`; follows from `Π^tp_Y ↠ G_k`, obligation 5,
+which holds at a rational base point by `surj_augT_of_ratPoint`, and the surjectivity `hrL` of
+`r` on `Π|_{Δ_Θ}` by `surj_piYU`), `hLgen` (Prop. 2.12(i)-type generation). -/
 theorem cyclotomicRigidity_thetaEnvU (hPY : Envelope.FISlim (piYU hcX))
     (hG : ∀ τ : Gk k Ω, (∀ σ, τ * σ = σ * τ) → τ = 1)
     (hsurj : ∀ σ : Gk k Ω, ∃ h ∈ piYU hcX, augU hcX h = σ)
@@ -571,9 +572,11 @@ class mod `lN` whose reduction mod `N` is `y`, and a proposition `P` (the extra 
 under which `r` is surjective on `Π|_{Δ_Θ}`):
 
 * (`l`-th root, [EtTh] l.2958–2962) `(η̈^Θ̲)^l = y|_{Π^tp_Ÿ̲}`;
-* under the named hypotheses `hPY`, `hG`, `hsurj`, `hLgen`: the cyclotomic rigidity
-  (Cor. 2.19(i), `cyclotomicRigidity_thetaEnvU`) and, under `P`, the triviality on `μ_N` of the
-  automorphisms over the identity of `Π^tp_Y̲` (`ker_autPY_inlY_eq_thetaEnvU`).
+* under the named hypotheses `hPY`, `hG`, `hLgen` and `P`: the cyclotomic rigidity
+  (Cor. 2.19(i), `cyclotomicRigidity_thetaEnvU`) and the triviality on `μ_N` of the
+  automorphisms over the identity of `Π^tp_Y̲` (`ker_autPY_inlY_eq_thetaEnvU`). Both need
+  `Π^tp_Y̲ ↠ G_k`, which follows from `Π^tp_Y ↠ G_k` and the surjectivity of `r` on `Π|_{Δ_Θ}`
+  (`surj_piYU`), both available under `P`.
 
 A `def`, so that the concrete statement (`exists_thetaEnvU_rigidity`) is checked against it by
 `exact` without unfolding. -/
@@ -583,9 +586,8 @@ def EnvUConclusions (y : ContH1 PYddg (Mu N Ω)) (P : Prop) : Prop :=
         (toPYdd_smul hL hcX) y ∧
     ∀ (hPY : Envelope.FISlim (piYU hcX))
       (_ : ∀ τ : Gk k Ω, (∀ σ, τ * σ = σ * τ) → τ = 1)
-      (_ : ∀ σ : Gk k Ω, ∃ h ∈ piYU hcX, augU hcX h = σ)
       (_ : Subgroup.closure {c | c ∈ thetaLU hL hcX ∧ ∃ a b, augU hcX a = 1 ∧ b ∈ piYU hcX ∧
-        augU hcX b = 1 ∧ c = ⁅a, b⁆} ⊔ thetaKU hL hcX = thetaLU hL hcX),
+        augU hcX b = 1 ∧ c = ⁅a, b⁆} ⊔ thetaKU hL hcX = thetaLU hL hcX), P →
       (∀ {M : MonoThetaEnv.{u}} (f : MonoThetaEnv.Iso M (thetaEnvU hcX r hcXr))
         {Lsub Ksub Dsub : Subgroup M.G}
         (_ : Lsub.map f.hom = rightSub (augU hcX) (psiMu N) (piYU hcX) (thetaLU hL hcX))
@@ -594,7 +596,7 @@ def EnvUConclusions (y : ContH1 PYddg (Mu N Ω)) (P : Prop) : Prop :=
         M.IsCyc Lsub Ksub Dsub t m ↔ ∃ g : piYddU hL hcX, (g : piXu hcX) ∈ thetaLU hL hcX ∧
           f.e t = algSection (augU hcX) (psiMu N) (piYddU_le_piYU hL hcX) g ∧
           f.e m = inlY (augU hcX) (psiMu N) (piYU hcX) (rootCocycle hcX r hcXr g)⁻¹) ∧
-      (P → ∀ {a : CategoryTheory.Aut (thetaEnvU hcX r hcXr)},
+      (∀ {a : CategoryTheory.Aut (thetaEnvU hcX r hcXr)},
         a ∈ (autPY (augU hcX) (psiMu N) (contCocycles (psiMu N)) (piYddU_le_piYU hL hcX)
           (isOpen_ker_act_augU hcX N) (isCocycle_of_mem_contCocycles _)
           (isCocycle_rootCocycle hcX r hcXr) hPY).ker → ∀ m : Mu N Ω,
@@ -604,19 +606,23 @@ def EnvUConclusions (y : ContH1 PYddg (Mu N Ω)) (P : Prop) : Prop :=
           inlY (augU hcX) (psiMu N) (piYU hcX) m)
 
 /-- **Inputs ⇒ conclusions for `X̲`**: the reduction `y` of `[r]` mod `N`, Prop. 1.3 (`hr13`) and,
-under `P`, the surjectivity of `r` on `Π|_{Δ_Θ}` (`hrL`) give `EnvUConclusions`. -/
+under `P`, `Π^tp_Y ↠ G_k` (`hsurj`) and the surjectivity of `r` on `Π|_{Δ_Θ}` (`hrL`) give
+`EnvUConclusions`. -/
 theorem envUConclusions_of {y : ContH1 PYddg (Mu N Ω)}
     (hy : transTemp T hL (Dvd.intro_left l rfl : N ∣ l * N) (ContH1.mk r) = y)
     (hr13 : ∀ γ : PYddg, (γ : PXg) ∈ thetaK T hL → r γ = 1) {P : Prop}
+    (hsurj : P → ∀ σ : Gk k Ω, ∃ h ∈ PYg, augg h = σ)
     (hrL : P → ∀ m : Mu (l * N) Ω, ∃ γ : PYddg, (γ : PXg) ∈ thetaL T hL ∧ r γ = m) :
     EnvUConclusions hcX r hcXr y P :=
   ⟨(rootClass_pow hcX r hcXr).trans (congrArg (ContH1.map (toPYdd hL hcX)
       (continuous_toPYdd hL hcX) (MonoidHom.id _) continuous_id (toPYdd_smul hL hcX)) hy),
-    fun hPY hG hsurj hLgen =>
+    fun hPY hG hLgen hP =>
       ⟨fun f _ _ _ hLs hKs hDs t m =>
-        cyclotomicRigidity_thetaEnvU hcX r hcXr hPY hG hsurj hLgen hr13 f hLs hKs hDs t m,
-      fun hP _ ha m =>
-        ker_autPY_inlY_eq_thetaEnvU hcX r hcXr hPY hG hsurj hLgen hr13 (hrL hP) ha m⟩⟩
+        cyclotomicRigidity_thetaEnvU hcX r hcXr hPY hG
+          (surj_piYU hcX r hcXr (hsurj hP) (hrL hP)) hLgen hr13 f hLs hKs hDs t m,
+      fun {_} ha m =>
+        ker_autPY_inlY_eq_thetaEnvU hcX r hcXr hPY hG
+          (surj_piYU hcX r hcXr (hsurj hP) (hrL hP)) hLgen hr13 (hrL hP) ha m⟩⟩
 
 /-! #### The projective system of environments of `X̲` ([EtTh] Cor. 2.19(ii)) -/
 
@@ -914,6 +920,7 @@ theorem exists_thetaRep_inputs :
 
 set_option maxHeartbeats 1000000 in
 -- unifying with `exists_thetaRep_inputs` (concrete Tate-curve levels) is slow
+variable [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] in
 include h2 in
 /-- **[EtTh] §2 for `X̲` and `l·Δ_Θ`, for one étale theta system of the Tate curve** (all
 conclusions in one existential; consumed by MR23). For the theta system of
@@ -922,9 +929,12 @@ representative `r` of the theta class mod `lN` on `Π^tp_Ÿ` and every splitting
 `cX : Π^tp_X̿ → μ_l` with `hcXr` (this defines `X̲`; existence of `cX`: obligation 13):
 `EnvUConclusions` with `y` = the theta class mod `N` and `P` = "`V` lies under a place `W` over the
 cusp, and the debt `CuspInertiaWeil` holds". That is: the `l`-th root
-property `(η̈^Θ̲)^l = η̈^Θ|_{Ÿ̲}` mod `N`; under `hPY`, `hG`, `hsurj`, `hLgen` (for `X̲`) the
-cyclotomic rigidity of Cor. 2.19(i) (Prop. 1.3 input discharged modulo C1); and under `P` the
-triviality on `μ_N` of the automorphisms over the identity of `Π^tp_Y̲`. -/
+property `(η̈^Θ̲)^l = η̈^Θ|_{Ÿ̲}` mod `N`; under `hPY`, `hG`, `hLgen` (for `X̲`) and `P` the
+cyclotomic rigidity of Cor. 2.19(i) (Prop. 1.3 input discharged modulo C1) and the triviality on
+`μ_N` of the automorphisms over the identity of `Π^tp_Y̲`. `O` is a complete discrete valuation
+ring. Obligation 5 (`Π^tp_Y ↠ G_k`) is discharged under `P`: the place `W` over the cusp is a
+`K`-rational point (`cuspRatPoint`, `surj_augT_of_ratPoint`); with the cusp inertia this gives
+`Π^tp_Y̲ ↠ G_k` (`surj_piYU`). Base points as in `P` exist (`exists_basePoint_cusp`). -/
 theorem exists_thetaEnvU_rigidity :
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
       (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
@@ -953,7 +963,8 @@ theorem exists_thetaEnvU_rigidity :
   exact envUConclusions_of hcX r hcXr
     ((congrArg (transTemp (tateDataX O hO hs h12) hL (Dvd.intro_left l rfl : N ∣ l * N)) hr).trans
       ((h.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))
-    hr13 fun ⟨W, hk, hτ, hVW, hG5⟩ => hrL W hk hτ hVW hG5
+    hr13 (fun ⟨W, hk, hτ, hVW, _⟩ => surj_augT_of_ratPoint (tateDataX O hO hs h12)
+      (cuspRatPoint hk hτ) hVW) fun ⟨W, hk, hτ, hVW, hG5⟩ => hrL W hk hτ hVW hG5
 
 end Concrete
 

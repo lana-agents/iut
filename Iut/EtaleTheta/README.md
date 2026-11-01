@@ -614,7 +614,8 @@ the MR15 plan.
   (generic levels) and **`exists_thetaEnv_rigidity`** (Tate curve): Cor. 2.19(i) and the
   `μ_n`-part of Cor. 2.18(iv) for the theta class, with `hη13` (obligation 8) and `hηL`
   (obligation 11) discharged by MR14's Prop. 1.3; remaining named hypotheses: C1, `FISlim Π^tp_Y`,
-  `G_k` center-free, `Π^tp_Y ↠ G_k`, Prop. 2.12(i)-type generation, `CuspInertiaWeil`.
+  `G_k` center-free, Prop. 2.12(i)-type generation, `CuspInertiaWeil` (`Π^tp_Y ↠ G_k` discharged in run 7 at
+  rational base points, `surj_augT_of_ratPoint`).
 * `Env/ThetaTower.lean` (MR15 run 4, **Layer B**) — [EtTh] **Cor. 2.19(ii)** for the theta environments: levels
   `levelN n = (n+1)!`, reductions `Mu.transition`; tower data discharged: `transition_psiMu` (hred),
   `transition_surjective` (hs), `ker_transition` (hker), **`contCocycles_eq_map`** (hKumRed: continuous cocycles
@@ -643,3 +644,12 @@ the MR15 plan.
 * `Env/CocycleExtend.lean` (MR15 run 6) — pure group theory: **`exists_cocycle_extend`** (a cocycle on `H ⊴ G` whose
   conjugates by an involution direction `e` and a `ℤ`-direction `g` are cohomologous to it extends to `G`, coefficients
   of odd exponent; via homomorphic sections of `M ⋊ G`, `exists_ext_two`, `exists_hom_extend_int`), `divChar`.
+* `Env/CuspBasePoint.lean` (MR15 run 7, **obligation 5**) — the cusp of `E_q` is a `K`-rational point of `X`: for a
+  place `W ⊇ K` of `Ω` with `τ ∉ W`, `W ∩ K(E)` is the place at infinity (`comap_embE_eq_ordInfty`, elliptic-curves
+  `eq_ordInftyValuationSubring`), residues there lie in `K` (`hrat_cusp`, `exists_const_ordInfty_sub_pos`), so
+  **`cuspRatPoint`** is a `RatPoint` of `DX`; **`exists_basePoint_cusp`** (such `W` and base points `V ≤ W` over any
+  `O` exist; tfg `exists_comap_eq`, `exists_le_comap_eq`). With `surj_augT_of_ratPoint` (`Env/ThetaSystem.lean`;
+  tfg `Kummer.exists_mem_ker_character_piToGk_eq`, `O` a complete DVR) the hypothesis `hsurj` (`Π^tp_Y ↠ G_k`) is
+  gone from `exists_thetaEnv_rigidity` (Cor. 2.19(i) now asks `V ≤ x.A` for a `RatPoint` `x`; Cor. 2.18(iv) gets it
+  from its place over the cusp) and from `exists_thetaEnvU_rigidity` (`EnvUConclusions` now: both conclusions under
+  `P`, `Π^tp_Y̲ ↠ G_k` by `surj_piYU`).
