@@ -452,4 +452,19 @@ theorem actCompat_deck : letI := deckAction ρ; ActCompat t s ρ (Mero K) := by
       ellDiv t s y (ρ g⁻¹ • (show EllPrime t from p))
     rw [map_inv]
 
+/-- **`Mero K` with the deck action of `G` through `ρ`** (`deckAction ρ`), as a type, so that
+`radB`/`radData` can be applied to it with instance arguments. -/
+def DeckMero {G : Type u} [Group G] (_ρ : G →* Deck t) : Type u := Mero K
+
+instance : Field (DeckMero ρ) := inferInstanceAs (Field (Mero K))
+
+instance : Algebra (Mero K) (DeckMero ρ) := inferInstanceAs (Algebra (Mero K) (Mero K))
+
+instance : MulSemiringAction G (DeckMero ρ) := deckAction ρ
+
+include hval hs in
+omit [IsTopologicalGroup G] in
+/-- `ActCompat` for `DeckMero ρ` (`actCompat_deck`). -/
+theorem actCompat_deckMero : ActCompat t s ρ (DeckMero ρ) := actCompat_deck hval hs
+
 end Iut.Frobenioid.BAn

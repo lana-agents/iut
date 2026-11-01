@@ -60,14 +60,16 @@ challenge or by `Iut/Concrete/*`.
      - (c3) for a character `χ : Π → ℤ` and the analytic model `Ÿ_∞ = 𝔾_m^an` (Tate parameter
        `t`, `s² = q`): `ellDivMonoid χ hs` = `PrimeDiv.divMonoid` on the elliptic prime set
        `ℤ ⊕ Cusps` with `ℚ`-coefficients, `ord(q) = 1` (MR18 T7b, `Tempered/EllDiv.lean`),
-       `thetaGrp χ hs` (divisors `(a + b·j + c·j²)/2`, `-c` at the cusps, of the theta monomials
-       `q^{a/2} Ü^b Θ̈^{-c}`), `thetaData χ hs`, `thetaData_isFrobenioid`;
-     - (c4) on `Y = Π/ker χ`: `divTheta`, `divU`, `divOne` are the genuine divisors
-       (`BAn.ellDiv`) of `Θ̈`, `Ü`, `q^{1/2}`, and the functional equation
-       `pb_deck_divTheta` (divisor form of [EtTh], Prop. 1.4(ii));
-     - (c4') `Tempered/EllB.lean` (MR18 T10 preparation): `radData` (`B₀` = `H`-fixed
+       and `Y = Π/ker χ` with its deck transformations, `ofDiv` (`Tempered.lean`);
+     - (c4) `Tempered/EllB.lean` (MR18 T10 preparation): `radData` (`B₀` = `H`-fixed
        log-meromorphic radicals, `radDiv`, kernel `O_K^×` `radDiv_eq_zero_iff`) with the
        `G`-actions on `P` and `R` as explicit inputs (`ActCompat`; `actCompat_deck`);
+     - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
+       `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
+       `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;
+       the former theta-monomial divisor group is the image of the theta monomials
+       (`isThetaShape_div_thetaMono`, `eq_div_thetaMono_of_isThetaShape`); [EtTh] Prop 1.4(ii)
+       in `B₀(Y)` (`pb_deck_bTheta`) and in divisor form (`div_pb_deck_bTheta`);
      - (c5) `tateThetaData`: the instance for `Π = temperedPi1` of the Tate curve and
        `χ = TateObject.character` (`tempered-fundamental-groups`), with
        `tateThetaData_isFrobenioid`.
@@ -94,7 +96,7 @@ challenge or by `Iut/Concrete/*`.
 | 3(a') `δ_A` iso | `GlobalPic.lean` | `ker_degArith_le` (Dirichlet + finite class group), `picDeg_injective`, `picDegEquiv` (Thm 6.4(i)), `GlobalRealified.nonempty_iso_iff_degree_eq` |
 | 3(b) `p`-adic | `PAdic.lean` | `PAdic.isFrobenioid`, `PAdic.orhdEquiv` (`O^▷ = 𝒪 \ 0`), `PAdic.ounitsEquiv` (`O^× = 𝒪^×`), `PAdic.nonempty_iso` |
 | 3(d) archimedean | `Arch.lean` | `Arch.isFrobenioid`, `Arch.orhd_iff` (`O^▷ = {0 < |u| ≤ 1}`), `Arch.ounits_iff` (`O^× = {|u| = 1}`) |
-| 3(c) tempered | `TemperedBase.lean`, `Tempered.lean`, `TateTheta.lean` | `OrbitObj.isConnected`, `OrbitObj.totallyEpimorphic`, `OrbitHom.bijective_of_isFSM`, `TemperedFrobenioidData.isFrobenioid`, `thetaData_isFrobenioid`, `pb_deck_divTheta`, `tateThetaData_isFrobenioid`; units in `B₀`: `unitThetaData_isFrobenioid`, `ker_unitThetaDiv` (kernel of the divisor map = units); `tateY_H` (`Y` has subgroup `Π^tp_Y = TateObject.piY`), `mem_tateY_H_iff` |
+| 3(c) tempered | `TemperedBase.lean`, `Tempered.lean`, `TateTheta.lean` | `OrbitObj.isConnected`, `OrbitObj.totallyEpimorphic`, `OrbitHom.bijective_of_isFSM`, `TemperedFrobenioidData.isFrobenioid`, `thetaData_isFrobenioid`, `pb_deck_bTheta`, `div_pb_deck_bTheta`, `tateThetaData_isFrobenioid` (`Tempered/EllTheta.lean`); kernel of the divisor map = `O_K^×`: `BAn.radDiv_eq_zero_iff`; `tateY_H` (`Y` has subgroup `Π^tp_Y = TateObject.piY`), `mem_tateY_H_iff` |
 | 4 category-theoreticity | `Theoreticity.lean` | statements `PreservesFrobeniusStructure`, `PreservesBase`; `scale_preserves`, `endZeroEquiv`, `inducedDegAut` |
 | 6 Thm 3.4 (MR16) | `Invariance.lean`, `ModelTypes.lean`, `Thm34.lean`, `Thm34Base.lean`, `Thm34iv.lean`, `Thm34Rlf.lean`, `GaloisBase.lean`, `GaloisSlim.lean` | see "Category-theoreticity (MR16)" below: `Model.thm34_preservesFrobeniusStructure`, `Model.thm34_preservesBase`, `Model.degFr_map_eq`, `Model.mem_orhd_iff`, `OrbitObj.baseHyp`, `OrbitObj.isSlim`, `Model.thm34_galois`, `Model.thm34_galois_preservesBase`, `GlobalRealified.thm34` |
 | 9 Thm 6.4(ii) (MR16) | `Thm64.lean` | `GlobalRealified.thm64ii` (`δ_{F X}([τ_X z]) = deg(Ψ)·δ_X([z])` on Frobenius-trivial `X`), `degOf_pos`, `picMap_mk`, `picDeg_picMap`, `degOf_unique`, `degree_map` (`deg(F X) = deg(Ψ)·deg X` for `deg X ≥ 0`), `isFrobeniusTrivial_iff` (Frobenius-trivial = degree `0`), `isFrobeniusTrivial_map`, `thm34_deg_id` (`Ψ_{ℕ≥1} = id`) |

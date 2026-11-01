@@ -199,11 +199,12 @@ The abelian environments `Env` and their algorithm were superseded by the nonabe
 * (10b) `TemperedFrobenioidData Π` on `B^temp(Π)⁰` (replacing the earlier interface with a
   realization functor into `TempObj` and assumed connectedness/total epimorphicity);
   `isFrobenioid`.
-* (10c) `thetaData χ hs` (MR18 T7b: `Φ₀` = `PrimeDiv.divMonoid` on the elliptic prime set
-  `ℤ ⊕ Cusps` with `ℚ`-coefficients; theta monomial divisors `(a + b·j + c·j²)/2`, `-c` at the
-  cusps), `thetaData_isFrobenioid`; `divTheta` = the genuine divisor of `Θ̈`
-  (`-j²/2`, `1` at the cusps), `pb_deck_divTheta` (divisor form of Prop. 1.4(ii)).
-* (10d) `tateThetaData T V hV hs` for `Π^tp_X = temperedPi1` of the Tate curve and
+* (10c) `thetaData χ hval hs` (`Frobenioid/Tempered/EllTheta.lean`; MR18: `Φ₀` =
+  `PrimeDiv.divMonoid` on the elliptic prime set `ℤ ⊕ Cusps` with `ℚ`-coefficients, `B₀` = the
+  fixed log-meromorphic functions on `𝔾_m^an` under the deck action, kernel `O_K^×`),
+  `thetaData_isFrobenioid`; `bTheta = Θ̈ ∈ B₀(Y)` with divisor `-j²/2`, `1` at the cusps;
+  `pb_deck_bTheta` (Prop. 1.4(ii) in `B₀`), `div_pb_deck_bTheta` (divisor form).
+* (10d) `tateThetaData T V hV hval hs` for `Π^tp_X = temperedPi1` of the Tate curve and
   `χ = TateObject.character`; `tateThetaData_isFrobenioid`; `tateY` (its subgroup is `Π^tp_Y`
   of (6a)).
 
@@ -324,9 +325,9 @@ on 2026-10-26 (MR15 run 3); they are superseded by the nonabelian versions in `E
 
 ### (14) Tempered Frobenioid refinements (`Iut/Frobenioid/TateTheta.lean`) — done (partial)
 
-* `unitThetaGrp χ U`, `unitThetaDiv`, `unitThetaData`: `B₀ = U × {theta-monomial divisors}`
-  with the units `U` (in [EtTh]: `O_K^×`); `ker_unitThetaDiv`: the kernel of `B₀ → Φ₀^gp` is
-  exactly `U` ([EtTh], Def. 3.3); `unitThetaData_isFrobenioid`.
+* The former `unitThetaData` (`B₀ = U × {theta-monomial divisors}`, `U` arbitrary) is replaced
+  by `thetaData` of (10c), whose divisor map has kernel exactly `O_K^×` ([EtTh], Def. 3.3,
+  Prop. 3.4(ii): `BAn.radDiv_eq_zero_iff`).
 * `tateY_H`, `mem_tateY_H_iff`: the object `Y` of the tempered Frobenioid of the Tate curve has
   subgroup `Π^tp_Y` (6a), the stabilizer of the base point of the fibre of `X₀`.
 * Not done: separating the components of `Y_H ×_X Y` (needs verticial subgroups, not provided by
