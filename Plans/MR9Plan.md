@@ -1311,3 +1311,9 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     **Remaining for step 1 at the stages**: (iii) the residues of `LiftData.S` by `exists_res_h1Congr_bridgeIso`-style
     reasoning with `evalTriv_h1Congr` (the coefficient `cycloVχ` is used directly, no `map_conj_eq_self`
     needed since residues evaluate at single elements).
+
+### Lead decisions after session n (2026-11-01, christian-41)
+- The 6 `LiftData` allowlist entries (gal, hb, he, htV, hυ, hφ) are accepted. `LiftData` is data plus its defining properties, and it is constructed
+  (`LiftData.nonempty`), never assumed, so it is not a shell.
+- Π_J / Δ_X-commutator transport along arithmeticExt isomorphisms: no other track owns it (MR8 is paused; MR8 item 8 moved here), so MR9 builds it as part of
+  item 4 step 3, extending `deltaXCongr`.
