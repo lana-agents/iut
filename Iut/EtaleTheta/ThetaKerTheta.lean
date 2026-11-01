@@ -603,7 +603,7 @@ theorem exists_thetaClassTemp_prop13 :
                   ZHatOne.proj (⟨n, Nat.cast_ne_zero.mpr (NeZero.ne n)⟩ :
                     KummerIndex (F (fieldData (transcendental_tau t.tateCurve)
                       (hemiData t.tateCurve).L (hemiL_open t)))) (e ⟨_, hσ⟩)) := by
-  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, hF, hL02⟩ := exists_etaleThetaSystem h2 h12 hs
+  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, hF, hL02, -⟩ := exists_etaleThetaSystem h2 h12 hs
   haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
   haveI het' : ∀ j, Algebra.Etale (DX t).R
       (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R := fun j =>

@@ -231,7 +231,7 @@ theorem exists_thetaClassTemp_cusps :
           n ∣ 2 * (j + 1) →
           ClassAtCusp V hV (tateDataX O hO hs h12) hL η hC1 j n hk hVW) ∧
       L 0 ≤ mulByNField t.tateCurve 2 := by
-  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, -, hL02⟩ := exists_etaleThetaSystem h2 h12 hs
+  obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, -, hL02, -⟩ := exists_etaleThetaSystem h2 h12 hs
   haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
   haveI het' : ∀ j, Algebra.Etale (DX t).R
       (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R := fun j =>

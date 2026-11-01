@@ -210,6 +210,7 @@ import Iut.EtaleTheta.TateMulByN
 import Iut.EtaleTheta.TempSlimPiY
 import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.TemperedDouble
+import Iut.EtaleTheta.TemperedLevelGalois
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClassSystem
 import Iut.EtaleTheta.ThetaCohomology
@@ -232,6 +233,7 @@ import Iut.EtaleTheta.ThetaLevelInversion
 import Iut.EtaleTheta.ThetaLevelKummer
 import Iut.EtaleTheta.ThetaLevelRational
 import Iut.EtaleTheta.ThetaLevelSystem
+import Iut.EtaleTheta.ThetaLevelTranslation
 import Iut.EtaleTheta.ThetaLevelUnit
 import Iut.EtaleTheta.ThetaProp13
 import Iut.EtaleTheta.ThetaPullback

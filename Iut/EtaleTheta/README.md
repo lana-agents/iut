@@ -310,6 +310,16 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   **`exists_thetaClassTemp_prop13`** (MR15 run 4, decision D25): all conclusions for ONE theta
   system (Prop. 1.3 on `Kθ` under C1; cusp inertia onto `μ_n`;
   Prop. 1.3 on `Δ_Θ` under `CuspInertiaWeil`).
+* (11k) **MR15 obligation 13 inputs (MR14 run 17)**: `ThetaLevelTranslation.lean` ([EtTh]
+  Prop. 1.5(iii) mod `l` at the level: **`exists_transFactorLevel`** (the `l`-th root
+  `H = U^{-2b}(Θ̈_{q^N}(U)/Θ̈_{q^N}(wU))^{N/l}` of the translation factor is in `K(E_Q)`, `a = lb`),
+  **`transT_level_pow`** (`t_w f = d^l H^l f`); the translation homomorphism **`transHom`**
+  (`σ ∘ ι = ι ∘ t_w`, `σ ↦ w ∈ K^×/Q^ℤ`), `transHom_eq_one_of`, `dvd_of_mk_cuspElt_eq`;
+  at the levels `level_stable`, `transHom_level_eq_one`, **`transHom_level_pow`**;
+  `exists_etaleThetaSystem` moved here, with the homomorphisms `w_j` as a new last conjunct);
+  `ThetaLevelHeisenberg.lean` (`exists_levelEmb`); `TemperedLevelGalois.lean` (tempered Galois
+  correspondence **`mem_range_muL_iff`**, `mem_range_muL_iff_forall`, **`normal_range_muL`**,
+  **`normal_piYddotX`**: `Π^tp_Ÿ ⊴ Π^tp_X`; `piY_not_le_range_muL`).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
