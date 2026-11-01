@@ -663,3 +663,9 @@ the MR15 plan.
   gone from `exists_thetaEnv_rigidity` (Cor. 2.19(i) now asks `V ≤ x.A` for a `RatPoint` `x`; Cor. 2.18(iv) gets it
   from its place over the cusp) and from `exists_thetaEnvU_rigidity` (`EnvUConclusions` now: both conclusions under
   `P`, `Π^tp_Y̲ ↠ G_k` by `surj_piYU`).
+* `Env/ThetaConjModL.lean`, `Env/ThetaConjTemp.lean` (MR15 run 7, **obligation 13c(iii)**, reductions) — étale:
+  `contH1_pow_eq_one`, `kummerMap_pow_eq_one`, **`conjH1_kummerMap_of_pow`** (`σ(η) = z^l·η` ⇒ `κ_l(η)` is
+  `conjH1 σ`-invariant); tempered: `conjSub`, **`conjH1Sub`** (conjugation on `H¹` of a normalised subgroup),
+  `exists_coboundary_of_conjH1Sub`, `exists_hce_of_invariant` and **`exists_cX_of_classInvariant`** (obligation 13
+  from 13a, 13b and the class-level invariance of `θ mod l` under conjugation by `e` and `g`). Open: the tempered
+  transport of `conjH1_kummerMap_of_pow` to `Π^tp_Ÿ` (needs 13c(i) `w_j` and MR14's 13c(ii)).
