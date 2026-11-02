@@ -237,6 +237,7 @@ import Iut.EtaleTheta.ThetaLevelGalois
 import Iut.EtaleTheta.ThetaLevelHeisenberg
 import Iut.EtaleTheta.ThetaLevelInversion
 import Iut.EtaleTheta.ThetaLevelKummer
+import Iut.EtaleTheta.ThetaLevelQuot
 import Iut.EtaleTheta.ThetaLevelRational
 import Iut.EtaleTheta.ThetaLevelSystem
 import Iut.EtaleTheta.ThetaLevelTranslation

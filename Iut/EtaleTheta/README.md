@@ -349,6 +349,16 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `χ̂`. `TemperedLevelTwo.lean`: Theorem B for `tateDataX` (`exists_character_ne_one_tateDataX`)
   and `exists_charN_eq_one_tateDataX`; `exists_thetaEnvU_rigidity_cX` no longer assumes `g₁`
   (new hypotheses: perfect residue field, residue characteristic `p`).
+* (11p) **Debt C1 restated as (Z_{N_j}) (TFGD run 3, lead decision D-T5)**: `ThetaLevelQuot.lean`
+  (new): the level coordinates `levelCoords j` of `Ÿ'_{N_j}` (unique by their Tate values,
+  `eq_levelCoords`), the level **`levelQN j = K(E_{q^{N_j}})`** (image under `ι = φ ∘ j` of the
+  fixed field of the translation by `U = −1` on `K(E_Q)`, `Q = s^{N_j}`; étale over `L_X`), the
+  generic `mem_sup_adjoin_fixed` and **`adjoin_levelCoords_le`** (`L_j ≤ M ⊔ levelQN j` when
+  `φ_2(x) ∈ M`). `exists_etaleThetaSystem` gains the conjunct `L j ≤ L 0 ⊔ levelQN j`.
+  `TemperedLevelTwo.lean`: the named geometric input **`ZM j`** (`Π^tp_Y ≤ Π^tp_{K(E_{q^{N_j}})}`)
+  and **`levelsDominated_of_zM`**; `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`,
+  `exists_thetaEnvU_rigidity` and `exists_thetaEnvU_rigidity_cX` gain the conjunct
+  `(∀ j, ZM j V hV) → LevelsDominated V hV …` (C1 for their system from (Z_{N_j})).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 

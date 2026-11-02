@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.EtaleTheta.ThetaLevelHeisenberg
+import Iut.EtaleTheta.ThetaLevelQuot
 
 /-!
 # [EtTh] Prop. 1.5(iii) mod `l` at the levels, and the translation homomorphism (MR14, run 17)
@@ -815,6 +816,7 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
                 (((η j : (F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
                   F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω)) ∧
       L 0 ≤ mulByNField t.tateCurve 2 ∧
+      (∀ j, L j ≤ L 0 ⊔ levelQN h2 h12 hs j) ∧
       ∃ w : ∀ j, (hemiData t.tateCurve).L.fixingSubgroup →*
           Kˣ ⧸ (sqrtPow hs (2 * (j + 1)) (by omega)).qpowers,
         (∀ j (σ : (hemiData t.tateCurve).L.fixingSubgroup),
@@ -955,10 +957,27 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
         exact e
     choose w hw1 hw2 hw3 hw4 using hW'
     exact ⟨w, hw1, hw2, hw3, hw4⟩
+  -- `L_j ≤ L_0 ⊔ K(E_{q^{N_j}})` (TFGD run 3, `adjoin_levelCoords_le`)
+  have hsup : ∀ j, L j ≤ L 0 ⊔ levelQN h2 h12 hs j := by
+    intro j
+    obtain ⟨e1, e2⟩ := eq_levelCoords h2 h12 hs j (gX := gX j) (gY := gY j)
+      (fun u hu hum => ⟨(hval j u hu hum).1, (hval j u hu hum).2.1⟩)
+    have hx0 : mulByNEmb t.tateCurve 2
+        (algebraMap (TateRing t) (TateField t) (xE t.tateCurve)) ∈ L 0 := by
+      obtain ⟨hgX, -⟩ := levelData_two_eq_pb h2 h12 hs (N := 2 * (0 + 1)) (by omega) rfl (hval 0)
+      have hc : ∀ f, mulByNEmb t.tateCurve (2 * (2 * (0 + 1))) (pb t.tateCurve 2 f) =
+          mulByNEmb t.tateCurve 2 f := fun f =>
+        AlgHom.congr_fun (mulByNEmb_comp_pb_mul t.tateCurve 2 2) f
+      have hm : mulByNEmb t.tateCurve (2 * (2 * (0 + 1))) (gX 0) ∈ L 0 :=
+        IntermediateField.subset_adjoin _ _ ⟨gX 0, by simp, rfl⟩
+      rwa [hgX, hc] at hm
+    have h := adjoin_levelCoords_le h2 h12 hs j hx0
+    rw [← e1, ← e2] at h
+    exact h
   refine ⟨L, hL, fun j => hemiL_le_adjoin _ _ (hmul j), η,
     fun j => etale_adjoin_image _ _ (hmul j), fun j => ?_, fun j => ?_, fun j => ?_,
     fun j j' M hjM hevM => ?_, fun j W hk hτ n _ hn => ?_, fun j n hn =>
-      ⟨adjoin_image_le_mulByNField _ _ _, fun σ hσ => ?_⟩, ?_, hW⟩
+      ⟨adjoin_image_le_mulByNField _ _ _, fun σ hσ => ?_⟩, ?_, hsup, hW⟩
   · exact etaleThetaClass_points (by omega) (L j) (hL j) (adjoin_image_le_mulByNField _ _ _)
       (η j) ((hη j).trans (congrArg _ (hb j).symm)) (hpt j)
   · exact thetaValueAt_points (by omega) (L j) (hL j) (adjoin_image_le_mulByNField _ _ _)

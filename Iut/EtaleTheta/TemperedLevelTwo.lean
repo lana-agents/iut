@@ -30,6 +30,10 @@ input (Z_2) `Π^tp_Y ≤ Π^tp_{L_2}` (`TFGD-plan.md`, lead decision D-T1), for 
 * **`ZTwo`** (the named geometric input (Z_2)): `Π^tp_Y ≤ Π^tp_{L_2}` for the Tate data
   `tateDataX`; **`piYIndexTwoAt_zero_of_zTwo`**: (Z_2) implies Z_0 for every system of levels
   with `L 0 ≤ L_{[2]}` (`piYIndexTwoAt_zero_of_quadratic`).
+* (TFGD run 3, lead decision D-T5) **`ZM j`** (the named geometric input (Z_{N_j})):
+  `Π^tp_Y ≤ Π^tp_{K(E_{q^{N_j}})}` for the level `levelQN j` of `ThetaLevelQuot.lean`;
+  **`levelsDominated_of_zM`**: (Z_{N_j}) for all `j` implies C1 (`LevelsDominated`) for every
+  system with `L j ≤ L 0 ⊔ K(E_{q^{N_j}})`.
 * **Debt 13a** (lead decision D-T2): `exists_character_ne_one_tateDataX` (Theorem B of
   `tempered-fundamental-groups` for `tateDataX`: `b₆ = a₆/q` is a unit, `Δ ≠ 0`, `x`
   transcendental; `O` a complete DVR of mixed characteristic with perfect residue field) and
@@ -232,6 +236,38 @@ theorem piYIndexTwoAt_zero_of_zTwo {V : ValuationSubring Ω} {hV : V.comap (alge
   exact piYIndexTwoAt_zero_of_quadratic (isOpen_levelTwo h2 h12) hZ α hα
     fun σ hσ e => (IntermediateField.mem_fixingSubgroup_iff _ _).2 fun z hz =>
       hgen σ hσ e z (hL02 hz)
+
+/-! ### Debt C1 as the domination statements (Z_{N_j}) (TFGD run 3) -/
+
+instance fact_hemiL_le_levelQN (j : ℕ) : Fact ((hemiData t.tateCurve).L ≤ levelQN h2 h12 hs j) :=
+  ⟨hemiL_le_levelQN h2 h12 hs j⟩
+
+instance etale_levelQN_fieldData (j : ℕ) : Algebra.Etale (DX t).R
+    (fieldData (transcendental_tau t.tateCurve) (levelQN h2 h12 hs j)
+      (isOpen_levelQN h2 h12 hs j)).R :=
+  etale_fieldData (transcendental_tau t.tateCurve) (hemiL_open t) _ _ (etale_levelQN h2 h12 hs j)
+
+/-- **The geometric input (Z_{N_j})** (named; owner TFGD/tfg, `TFGD-plan.md`, lead decision
+D-T5): the `ℤ`-covering `Y → X` of the Tate model dominates the cyclic cover
+`E_{q^{N_j}} → E_q`, `v ↦ v` (`N_j = 2(j+1)`), i.e. `Π^tp_Y ≤ Π^tp_{K(E_{q^{N_j}})}` for the
+base point `V` (`levelQN`). Geometrically: the special fibre of `E_{q^N}` (`π = s`) is the
+`2N`-gon over the `2`-gon, a quotient of the universal `ℤ`-chain (`piY_le_range_of_hom`). -/
+def ZM (j : ℕ) (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) : Prop :=
+  TateObject.piY (A := (DX t).A) (tateDataX O hO hs h12) V hV ≤
+    (temperedPi1Map (muL (transcendental_tau t.tateCurve) (hemiL_open t) (levelQN h2 h12 hs j)
+      (isOpen_levelQN h2 h12 hs j)) V hV).range
+
+/-- **C1 from (Z_{N_j})**: for every system of levels with `L j ≤ L 0 ⊔ K(E_{q^{N_j}})`
+(`exists_etaleThetaSystem`, `adjoin_levelCoords_le`), the inputs (Z_{N_j}) for all `j` give
+`LevelsDominated` (`levelsDominated_of`). -/
+theorem levelsDominated_of_zM {V : ValuationSubring Ω} {hV : V.comap (algebraMap K Ω) = O}
+    (hZ : ∀ j, ZM h2 h12 O hO hs j V hV) {L : ℕ → IntermediateField (K₀ K τ) Ω}
+    {hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω))}
+    [∀ j, Fact ((hemiData t.tateCurve).L ≤ L j)]
+    [∀ j, Algebra.Etale (DX t).R (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R]
+    (hsup : ∀ j, L j ≤ L 0 ⊔ levelQN h2 h12 hs j) :
+    LevelsDominated V hV (tateDataX O hO hs h12) hL :=
+  levelsDominated_of (isOpen_levelQN h2 h12 hs) hZ hsup
 
 /-! ### Theorem B for the Tate data of `X`, and debt 13a for the normalised character -/
 

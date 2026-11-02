@@ -337,7 +337,8 @@ representative `r` of the theta class mod `lN` on `Π^tp_Ÿ`, there is a splitti
 `cX : Π^tp_X̿ → μ_l` with `hcXr` (`exists_cX_of_moves`, at the level `j = 2l − 1`), and
 `EnvUConclusions` hold for the curve `X̲` it defines. Debt 13a is discharged (TFGD run 2):
 `Π^tp_X̿ = χ̂⁻¹(lℤ)` for the normalised character `χ̂` (`TateObject.charN`), and `g₁` with
-`χ̂(g₁) = 1` comes from Theorem B (`exists_charN_eq_one_tateDataX`). -/
+`χ̂(g₁) = 1` comes from Theorem B (`exists_charN_eq_one_tateDataX`). C1 for the system follows
+from the geometric inputs (Z_{N_j}) (`ZM`, second conjunct; TFGD run 3). -/
 theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
     (hpm : (p : O) ∈ IsLocalRing.maximalIdeal O) :
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
@@ -347,6 +348,8 @@ theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
         (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
       (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
+      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        (∀ j, ZM h2 h12 O hO hs j V hV) → LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL),
         ZTwo h2 h12 O hO hs V hV →
@@ -364,7 +367,7 @@ theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
               CuspInertiaWeil (DXc)) := by
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
     Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
-      ⟨h.1, fun V hV hC1 hZ2 l N _ _ hl r hr => ?_⟩
+      ⟨h.1, h.2.2.2.2.1, fun V hV hC1 hZ2 l N _ _ hl r hr => ?_⟩
   obtain ⟨hZ, hmv⟩ := h.2.2.1 V hV hZ2
   obtain ⟨g₁, hg₁⟩ := exists_charN_eq_one_tateDataX h12 O hO hs p hp hpm V hV
   have hlj : 2 * l ∣ 2 * (2 * l - 1 + 1) := by
@@ -378,7 +381,7 @@ theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
       rw [IsScalarTower.algebraMap_apply K (K₀ K τ) Ω]
       exact (L (2 * l - 1)).algebraMap_mem _)
     hZ hg₁ r hr
-  obtain ⟨hr13, hrL⟩ := h.2.2.2.2 V hV hC1 (l * N) r hr
+  obtain ⟨hr13, hrL⟩ := h.2.2.2.2.2 V hV hC1 (l * N) r hr
   exact ⟨cX, hcX, hcXr, envUConclusions_of hcX r hcXr
     ((congrArg (transTemp (tateDataX O hO hs h12) hL (Dvd.intro_left l rfl : N ∣ l * N)) hr).trans
       ((h.2.2.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))

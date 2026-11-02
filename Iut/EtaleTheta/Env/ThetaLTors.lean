@@ -949,6 +949,8 @@ theorem exists_thetaRep_inputs :
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
           (LX := (hemiData t.tateCurve).L) (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η) ∧
+      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        (∀ j, ZM h2 h12 O hO hs j V hV) → LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (n : ℕ) [NeZero n]
         (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu n Ω)),
@@ -959,9 +961,10 @@ theorem exists_thetaRep_inputs :
           CuspInertiaWeil (DXc) →
           ∀ m : Mu n Ω, ∃ γ : piYddotX V hV (tateDataX O hO hs h12) hL,
             (γ : TempPi DXc O V hV) ∈ thetaL (tateDataX O hO hs h12) hL ∧ r γ = m := by
-  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta, hstab, hmove⟩ :=
+  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta, hstab, hmove, hzm⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
-  refine ⟨L, hL, hX, het, η, htr, hstab, hmove, hcomp, fun V hV hC1 n _ r hr => ⟨fun γ hγ => ?_,
+  refine ⟨L, hL, hX, het, η, htr, hstab, hmove, hcomp, hzm,
+    fun V hV hC1 n _ r hr => ⟨fun γ hγ => ?_,
     fun W hk hτ hVW hG5 m => ?_⟩⟩
   · have hdvd : n ∣ 2 * (n - 1 + 1) :=
       ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩
@@ -1002,6 +1005,8 @@ theorem exists_thetaEnvU_rigidity :
         (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
       (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
+      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        (∀ j, ZM h2 h12 O hO hs j V hV) → LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (l N : ℕ) [NeZero l] [NeZero N]
         (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu (l * N) Ω)),
@@ -1017,8 +1022,8 @@ theorem exists_thetaEnvU_rigidity :
               CuspInertiaWeil (DXc)) := by
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
     Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
-      ⟨h.1, fun V hV hC1 l N _ _ r hr {_} hcX hcXr => ?_⟩
-  obtain ⟨hr13, hrL⟩ := h.2.2.2.2 V hV hC1 (l * N) r hr
+      ⟨h.1, h.2.2.2.2.1, fun V hV hC1 l N _ _ r hr {_} hcX hcXr => ?_⟩
+  obtain ⟨hr13, hrL⟩ := h.2.2.2.2.2 V hV hC1 (l * N) r hr
   exact envUConclusions_of hcX r hcXr
     ((congrArg (transTemp (tateDataX O hO hs h12) hL (Dvd.intro_left l rfl : N ∣ l * N)) hr).trans
       ((h.2.2.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))
