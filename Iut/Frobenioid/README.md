@@ -126,6 +126,10 @@ challenge or by `Iut/Concrete/*`.
        **`tateFrobK`** (`radDataL` for `G = Π^tp_X` with the Tate action: the tempered Frobenioid
        data over `k` on the unramified layer), `tateFrobK_isFrobenioid`,
        `tateFrobK_div_eq_zero_iff` (kernel `O_k^×`), `tateFrobK_gal`;
+       `Tempered/TateThetaK.lean`: `objYdd` (`Ÿ`, `isOpen_piYddot`), **`thetaEltK`** (log-meromorphic
+       functions defined over `k` are elements of `B₀(Ÿ)` of `tateFrobK`), **`bThetaK`** (`Θ̈`,
+       `map_thetaDdK`), `bUK`, `bOneK`; [EtTh] Prop 1.4(ii) for the Tate action:
+       **`galDeckHom_tateGalDeckK_thetaDd`** (`g ↦ (-1)^ε (-1)^n s^{-n²} Ü^{-2n} Θ̈`), `gal_thetaDd`;
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;
