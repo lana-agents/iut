@@ -212,6 +212,7 @@ import Iut.EtaleTheta.TateFunctionField
 import Iut.EtaleTheta.TateMulByN
 import Iut.EtaleTheta.TempSlimPiY
 import Iut.EtaleTheta.TemperedCovering
+import Iut.EtaleTheta.TemperedDomination
 import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.TemperedLevelGalois
 import Iut.EtaleTheta.TemperedLevelTrans

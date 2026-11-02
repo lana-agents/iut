@@ -328,6 +328,13 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   **`piYddotX_index`** (`e² ∈ Π^tp_Ÿ`, `Π^tp_Y = Π^tp_Ÿ ∪ Π^tp_Ÿ e`), **`of_mem_piXdd`** (lifts of
   `γ ∈ Π^tp_X̿` move `η_j` by `l`-th powers, from Z and `χ(g₁) = 1`); `exists_thetaClassTemp_prop13`
   (`ThetaKerTheta.lean`) gains the conjuncts `σ(L_j) ⊆ L_j` and this tempered 13c(i).
+* (11m) **Reductions of the debts C1, Z_0, 13a (TFGD run 1)**: `TemperedDomination.lean` (new):
+  `piY_le_range_of_hom` ((Z_M) `Π^tp_Y ≤ Π^tp_{R'}` from an object over `X₀` and `Spec R'`, injective on
+  fibres over `X₀`), `range_muL_antitone`, `inf_range_muL_le`, `indexTwo_of_quadratic`,
+  **`piYIndexTwoAt_zero_of_quadratic`** (Z_0 from (Z_2) and `L 0` quadratic over `L_mid`),
+  **`levelsDominated_of`** (C1 from (Z_M) and `L j ≤ L 0 ⊔ L' j`), `exists_eq_ofAdd_one_of_isCoprime`
+  (13a from two coprime values of `χ`). No new hypotheses; the geometric input left is (Z_M)
+  (`TFGD-plan.md`).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
