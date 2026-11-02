@@ -1627,3 +1627,15 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   inclusion first); `let g'' : GStage := ⟨…⟩` breaks instance search (`IsGalois (K₀ …)`) — introduce it with
   `obtain ⟨g'', …⟩ : ∃ g'', …`. Debts unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational
   points / genus `≠ 0` (item 1), `CKStrictSemiAbs`. Decisions for the lead: none.
+
+* Addendum 2026-11-02 (MR9 track agent, session t, lead christian-aa): **piece H merged.**
+  `Thm19/KummerRangeIso.lean` (session-s WIP, fixed): the hang was `h1LimEquiv_symm_ofG` — the first
+  `congrArg … (toG_ofG g y)` made Lean unify `h1LimEquivG.symm.symm x` with `limLift … x` through
+  `mulEquivOfCocones` (> 15 min). Fixed by `h1LimEquiv_symm_apply` (`MulEquiv.symm_trans_apply`,
+  `MulEquiv.symm_symm`) and the chain through `h1LimEquivG_ofG` (as in the forward `h1LimEquiv_ofG`).
+  The range theorems are now `Exists.elim` chains with `Eq.subst (motive := …)` and generic lemmas
+  **`LiftData.ofG_S_mem_kummerNFRange`** / **`LiftData.ofG_S_symm_mem_kummerNFRange`** (any lift data);
+  `h1LimCycloEquiv_ofG`, `h1LimCycloEquiv_symm_ofG` in use-site form. Whole file 29 s, module build 79 s.
+  **`map_kummerNFRange_h1LimCycloEquiv`**: `(kummerNFRange N).map (h1LimCycloEquiv …) = kummerNFRange N₂`.
+  Bisection lesson: time each declaration with `#exit`-truncated copies and `sorry`'d predecessors in
+  parallel (two slots); slot waiting inflates the wall time, measure inside the slot.

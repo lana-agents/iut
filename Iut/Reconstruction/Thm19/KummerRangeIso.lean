@@ -18,7 +18,10 @@ isomorphism `Φ` of the arithmetic fundamental groups (cyclotome `cycloIso Φ`,
 
 * `tameBridge_cycloIso_symm`: `(cycloIso Φ).symm` carries tame generators along `Φ.symm`, hence
   `TameCompat` for the lift data of `Φ.symm` (`LiftData.tameCompat_of_tameBridge`);
-* `gLimEquiv_symm_mk`, **`h1LimEquiv_symm_ofG`**: the inverse on the classes of geometric stages;
+* `gLimEquiv_symm_mk`, `h1LimEquiv_symm_apply`, **`h1LimEquiv_symm_ofG`**: the inverse on the
+  classes of geometric stages; `h1LimCycloEquiv_ofG`, `h1LimCycloEquiv_symm_ofG` for `cycloIso Φ`;
+* `LiftData.ofG_S_mem_kummerNFRange`, `LiftData.ofG_S_symm_mem_kummerNFRange`: for any lift data at
+  a stage with rational cusps, `[L.tgt, L.S κ(v)] ∈ kummerNFRange` (G, `S_mem_PU`, A);
 * **`h1LimCycloEquiv_mem_kummerNFRange`**, **`h1LimCycloEquiv_symm_mem_kummerNFRange`**: a class of
   `kummerNFRange` is `ofG g (κ v)` at a stage with rational cusps (`exists_ratStage_of_mem`, B), is
   sent to `ofG L.tgt (L.S κ v)` (`h1LimEquiv_ofG`, C), a class of `P_{V'}`
@@ -118,19 +121,33 @@ lemma gLimEquiv_symm_mk (hDGC : RelIsomDGC.Exists K₂) (hDGC₁ : RelIsomDGC.Ex
 
 set_option synthInstance.maxHeartbeats 400000 in
 -- the group structures on the quotients `Π_V` and their actions are found slowly
-/-- **The inverse of `h1LimEquiv` on a geometric stage**: `[g₂, y] ↦ [L'.tgt, L'.S y]` for the
-chosen lift data `L'` of `Φ.symm`. -/
+lemma h1LimEquiv_symm_apply (hDGC : RelIsomDGC.Exists K₂) (hDGC₁ : RelIsomDGC.Exists K)
+    (x : H1Lim (curveGaloisData K₂ hτ₂)) :
+    (h1LimEquiv χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁).symm x =
+      h1LimEquivG.symm ((gLimEquiv χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁).symm
+        (h1LimEquivG x)) :=
+  (MulEquiv.symm_trans_apply _ _ x).trans (congrArg h1LimEquivG.symm
+    ((MulEquiv.symm_trans_apply _ _ x).trans
+      (congrArg (gLimEquiv χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁).symm
+        (congrFun (congrArg DFunLike.coe (MulEquiv.symm_symm (h1LimEquivG (k := K₂) (hτ := hτ₂))))
+          x))))
+
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_V` and their actions are found slowly
 theorem h1LimEquiv_symm_ofG (hDGC : RelIsomDGC.Exists K₂) (hDGC₁ : RelIsomDGC.Exists K)
     (g : GStage K₂ hτ₂) (y : H1G g) :
     (h1LimEquiv χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁).symm (ofG g y) =
       ofG (LiftData.choose (hτ := hτ₂) (hU := hU₂) (hτ₂ := hτ) (hU₂ := hU) Φ.symm hS₂ g).tgt
         ((LiftData.choose (hτ := hτ₂) (hU := hU₂) (hτ₂ := hτ) (hU₂ := hU) Φ.symm hS₂ g).S
           χU.symm (symm_smul_of_smul χU hχU) y) :=
-  (congrArg (fun z => h1LimEquivG.symm
-      ((gLimEquiv χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁).symm z)) (toG_ofG g y)).trans
-    ((congrArg h1LimEquivG.symm
-      (gLimEquiv_symm_mk χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁ g y)).trans
-      ((MulEquiv.symm_apply_eq _).2 (toG_ofG _ _).symm))
+  (h1LimEquiv_symm_apply χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁ (ofG g y)).trans
+    ((congrArg (fun z => h1LimEquivG.symm
+      ((gLimEquiv χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁).symm z))
+      (h1LimEquivG_ofG g y)).trans
+      ((congrArg h1LimEquivG.symm
+        (gLimEquiv_symm_mk χU hχU hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁ g y)).trans
+        (h1LimEquivG_symm_mk _ _)))
+
 
 end Inverse
 
@@ -146,31 +163,84 @@ variable (hS : BelyiCuspSpec Ω C hc.out) (hS₂ : BelyiCuspSpec Ω₂ C₂ hc�
   (hDGC : RelIsomDGC.Exists K₂) (hDGC₁ : RelIsomDGC.Exists K)
   (N : NFModel (curveGaloisData K hτ)) (N₂ : NFModel (curveGaloisData K₂ hτ₂))
 
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_V` and their actions are found slowly
+/-- `h1LimCycloEquiv` on a geometric stage (`h1LimEquiv_ofG` for `cycloIso Φ`). -/
+lemma h1LimCycloEquiv_ofG (g : GStage K hτ) (y : H1G g) :
+    h1LimCycloEquiv hτ hU hτ₂ hU₂ Φ hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁ (ofG g y) =
+      ofG (LiftData.choose Φ hS g).tgt ((LiftData.choose Φ hS g).S
+        (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ) y) :=
+  h1LimEquiv_ofG (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ) hS σ₀ hσ₀ hg σ₂ hσ₂
+    hg₂ hS₂ hDGC hDGC₁ g y
+
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_V` and their actions are found slowly
+/-- The inverse of `h1LimCycloEquiv` on a geometric stage (`h1LimEquiv_symm_ofG`). -/
+lemma h1LimCycloEquiv_symm_ofG (g : GStage K₂ hτ₂) (y : H1G g) :
+    (h1LimCycloEquiv hτ hU hτ₂ hU₂ Φ hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁).symm (ofG g y) =
+      ofG (LiftData.choose (hτ := hτ₂) (hU := hU₂) (hτ₂ := hτ) (hU₂ := hU) Φ.symm hS₂ g).tgt
+        ((LiftData.choose (hτ := hτ₂) (hU := hU₂) (hτ₂ := hτ) (hU₂ := hU) Φ.symm hS₂ g).S
+          (cycloIso hτ hU hτ₂ hU₂ Φ).symm
+          (symm_smul_of_smul _ (cycloIso_smul hτ hU hτ₂ hU₂ Φ)) y) :=
+  h1LimEquiv_symm_ofG (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ) hS σ₀ hσ₀ hg
+    σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁ g y
+
 set_option maxHeartbeats 1600000 in
 -- the quotients `Π_V` and the classes at two stages unify slowly
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_V` and their actions are found slowly
+include hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC in
+/-- At a stage with rational cusps carrying a unit that is not an algebraic number, the image
+`[L.tgt, L.S κ(v)]` of a Kummer class lies in `kummerNFRange` (G, `S_mem_PU_cycloIso`, A). -/
+theorem LiftData.ofG_S_mem_kummerNFRange {g : GStage K hτ} (L : LiftData hτ hU hτ₂ hU₂ Φ g)
+    (hrat : ∀ P : Place g.K (F g.data), IsCuspPlaceF P → ∃ x : RatPoint g.data, placeOfF x = P)
+    (v f₀ : units g.data)
+    (hf₀ : ¬ IsAlgebraic ℚ (((f₀ : (F g.data)ˣ) : F g.data) : FFClosure C.Xbar)) :
+    ofG L.tgt (L.S (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ)
+      (kummerMapZHat g.data v)) ∈ kummerNFRange N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂) :=
+  (L.S_kummer_pow (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ) σ₀ hσ₀ hg σ₂ hσ₂
+    hg₂ hDGC hS hrat L.tameCompat_cycloIso v f₀ hf₀).elim fun _ hM => hM.2.elim fun _ hw' =>
+      ofG_mem_kummerNFRange N₂ σ₂ hσ₂ _ (L.S_mem_PU_cycloIso σ₀ hσ₀ σ₂ hσ₂ hrat
+        (kummerMapZHat g.data v) ⟨v, rfl⟩) hM.1 hw'
+
+set_option maxHeartbeats 1600000 in
+-- the quotients `Π_V` and the classes at two stages unify slowly
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_V` and their actions are found slowly
+include hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC₁ in
+/-- The same for the lift data of `Φ.symm` and `(cycloIso Φ).symm` (`tameBridge_cycloIso_symm`). -/
+theorem LiftData.ofG_S_symm_mem_kummerNFRange {g : GStage K₂ hτ₂}
+    (L : LiftData hτ₂ hU₂ hτ hU Φ.symm g)
+    (hrat : ∀ P : Place g.K (F g.data), IsCuspPlaceF P → ∃ x : RatPoint g.data, placeOfF x = P)
+    (v f₀ : units g.data)
+    (hf₀ : ¬ IsAlgebraic ℚ (((f₀ : (F g.data)ˣ) : F g.data) : FFClosure C₂.Xbar)) :
+    ofG L.tgt (L.S (cycloIso hτ hU hτ₂ hU₂ Φ).symm
+      (symm_smul_of_smul _ (cycloIso_smul hτ hU hτ₂ hU₂ Φ)) (kummerMapZHat g.data v)) ∈
+      kummerNFRange N (mem_range_of_isAlgebraic_F K hτ) :=
+  (L.S_kummer_pow (cycloIso hτ hU hτ₂ hU₂ Φ).symm
+    (symm_smul_of_smul _ (cycloIso_smul hτ hU hτ₂ hU₂ Φ)) σ₂ hσ₂ hg₂ σ₀ hσ₀ hg hDGC₁ hS₂ hrat
+    (L.tameCompat_of_tameBridge _ (tameBridge_cycloIso_symm hτ hU hτ₂ hU₂ Φ)) v f₀ hf₀).elim
+    fun _ hM => hM.2.elim fun _ hw' =>
+      ofG_mem_kummerNFRange N σ₀ hσ₀ _ (L.S_mem_PU _ _ σ₂ hσ₂ σ₀ hσ₀ hrat
+        (L.tameCompat_of_tameBridge _ (tameBridge_cycloIso_symm hτ hU hτ₂ hU₂ Φ))
+        (kummerMapZHat g.data v) ⟨v, rfl⟩) hM.1 hw'
+
 set_option synthInstance.maxHeartbeats 400000 in
 -- the group structures on the quotients `Π_V` and their actions are found slowly
 /-- **`h1LimCycloEquiv` maps `kummerNFRange` into `kummerNFRange`** (B, C, G, A). -/
 theorem h1LimCycloEquiv_mem_kummerNFRange {ξ : H1Lim (curveGaloisData K hτ)}
     (hξ : ξ ∈ kummerNFRange N (mem_range_of_isAlgebraic_F K hτ)) :
     h1LimCycloEquiv hτ hU hτ₂ hU₂ Φ hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁ ξ ∈
-      kummerNFRange N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂) := by
-  obtain ⟨g, v, f₀, hrat, rfl, hf₀⟩ := exists_ratStage_of_mem N hξ
-  have e := h1LimEquiv_ofG (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ) hS σ₀ hσ₀
-    hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁ g (kummerMapZHat g.data v)
-  change h1LimEquiv (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ) hS σ₀ hσ₀ hg σ₂
-    hσ₂ hg₂ hS₂ hDGC hDGC₁ (ofG g (kummerMapZHat g.data v)) ∈ _
-  rw [e]
-  set L : LiftData hτ hU hτ₂ hU₂ Φ g := LiftData.choose Φ hS g
-  obtain ⟨M, hM, w', hw'⟩ := L.S_kummer_pow (cycloIso hτ hU hτ₂ hU₂ Φ)
-    (cycloIso_smul hτ hU hτ₂ hU₂ Φ) σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hS hrat L.tameCompat_cycloIso v f₀
-    hf₀
-  exact ofG_mem_kummerNFRange N₂ σ₂ hσ₂ _ (L.S_mem_PU_cycloIso σ₀ hσ₀ σ₂ hσ₂ hrat
-    (kummerMapZHat g.data v) ⟨v, rfl⟩) hM
-    hw'
+      kummerNFRange N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂) :=
+  (exists_ratStage_of_mem N hξ).elim fun g hgx => hgx.elim fun v hv => hv.elim fun f₀ h =>
+    Eq.subst (motive := fun z => h1LimCycloEquiv hτ hU hτ₂ hU₂ Φ hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC
+        hDGC₁ z ∈ kummerNFRange N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂)) h.2.1
+      (Eq.subst (motive := fun z => z ∈ kummerNFRange N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂))
+        (h1LimCycloEquiv_ofG hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁ g
+          (kummerMapZHat g.data v)).symm
+        ((LiftData.choose Φ hS g).ofG_S_mem_kummerNFRange hS σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC N₂
+          h.1 v f₀ h.2.2))
 
-set_option maxHeartbeats 1600000 in
--- the quotients `Π_V` and the classes at two stages unify slowly
 set_option synthInstance.maxHeartbeats 400000 in
 -- the group structures on the quotients `Π_V` and their actions are found slowly
 /-- **The inverse of `h1LimCycloEquiv` maps `kummerNFRange` into `kummerNFRange`** (B, C, G, A for
@@ -178,21 +248,15 @@ set_option synthInstance.maxHeartbeats 400000 in
 theorem h1LimCycloEquiv_symm_mem_kummerNFRange {ξ : H1Lim (curveGaloisData K₂ hτ₂)}
     (hξ : ξ ∈ kummerNFRange N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂)) :
     (h1LimCycloEquiv hτ hU hτ₂ hU₂ Φ hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁).symm ξ ∈
-      kummerNFRange N (mem_range_of_isAlgebraic_F K hτ) := by
-  obtain ⟨g, v, f₀, hrat, rfl, hf₀⟩ := exists_ratStage_of_mem N₂ hξ
-  have e := h1LimEquiv_symm_ofG (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ) hS
-    σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hS₂ hDGC hDGC₁ g (kummerMapZHat g.data v)
-  change (h1LimEquiv (cycloIso hτ hU hτ₂ hU₂ Φ) (cycloIso_smul hτ hU hτ₂ hU₂ Φ) hS σ₀ hσ₀ hg σ₂
-    hσ₂ hg₂ hS₂ hDGC hDGC₁).symm (ofG g (kummerMapZHat g.data v)) ∈ _
-  rw [e]
-  set L : LiftData hτ₂ hU₂ hτ hU Φ.symm g := LiftData.choose Φ.symm hS₂ g
-  have hT : L.TameCompat (cycloIso hτ hU hτ₂ hU₂ Φ).symm :=
-    L.tameCompat_of_tameBridge _ (tameBridge_cycloIso_symm hτ hU hτ₂ hU₂ Φ)
-  obtain ⟨M, hM, w', hw'⟩ := L.S_kummer_pow (cycloIso hτ hU hτ₂ hU₂ Φ).symm
-    (symm_smul_of_smul _ (cycloIso_smul hτ hU hτ₂ hU₂ Φ)) σ₂ hσ₂ hg₂ σ₀ hσ₀ hg hDGC₁ hS₂ hrat hT
-    v f₀ hf₀
-  exact ofG_mem_kummerNFRange N σ₀ hσ₀ _ (L.S_mem_PU _ _ σ₂ hσ₂ σ₀ hσ₀ hrat hT
-    (kummerMapZHat g.data v) ⟨v, rfl⟩) hM hw'
+      kummerNFRange N (mem_range_of_isAlgebraic_F K hτ) :=
+  (exists_ratStage_of_mem N₂ hξ).elim fun g hgx => hgx.elim fun v hv => hv.elim fun f₀ h =>
+    Eq.subst (motive := fun z => (h1LimCycloEquiv hτ hU hτ₂ hU₂ Φ hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC
+        hDGC₁).symm z ∈ kummerNFRange N (mem_range_of_isAlgebraic_F K hτ)) h.2.1
+      (Eq.subst (motive := fun z => z ∈ kummerNFRange N (mem_range_of_isAlgebraic_F K hτ))
+        (h1LimCycloEquiv_symm_ofG hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁ g
+          (kummerMapZHat g.data v)).symm
+        ((LiftData.choose (hτ := hτ₂) (hU := hU₂) (hτ₂ := hτ) (hU₂ := hU) Φ.symm hS₂
+          g).ofG_S_symm_mem_kummerNFRange hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC₁ N h.1 v f₀ h.2.2))
 
 /-- **[AbsTopIII] Thm 1.9 (d) is functorial in `Φ`**: the isomorphism `h1LimCycloEquiv` of the
 colimits `lim→_V H¹(Π_V, Ẑ(1))` maps the image `kummerNFRange` of `K^×_{Z_NF}` onto that of
@@ -201,13 +265,12 @@ points, genus `≠ 0`). -/
 theorem map_kummerNFRange_h1LimCycloEquiv :
     (kummerNFRange N (mem_range_of_isAlgebraic_F K hτ)).map
         (h1LimCycloEquiv hτ hU hτ₂ hU₂ Φ hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁).toMonoidHom =
-      kummerNFRange N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂) := by
-  apply le_antisymm
-  · rintro _ ⟨ξ, hξ, rfl⟩
-    exact h1LimCycloEquiv_mem_kummerNFRange hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁ N N₂ hξ
-  · intro ξ hξ
-    exact ⟨_, h1LimCycloEquiv_symm_mem_kummerNFRange hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁ N N₂
-      hξ, MulEquiv.apply_symm_apply _ _⟩
+      kummerNFRange N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂) :=
+  le_antisymm
+    (fun _ ⟨_, hξ, hξe⟩ => hξe ▸
+      h1LimCycloEquiv_mem_kummerNFRange hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁ N N₂ hξ)
+    (fun _ hξ => ⟨_, h1LimCycloEquiv_symm_mem_kummerNFRange hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC
+      hDGC₁ N N₂ hξ, MulEquiv.apply_symm_apply _ _⟩)
 
 end Range
 

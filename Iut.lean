@@ -528,6 +528,7 @@ import Iut.Reconstruction.Thm19.GeomLim
 import Iut.Reconstruction.Thm19.InertiaConj
 import Iut.Reconstruction.Thm19.KummerLift
 import Iut.Reconstruction.Thm19.KummerRangeG
+import Iut.Reconstruction.Thm19.KummerRangeIso
 import Iut.Reconstruction.Thm19.LimCongr
 import Iut.Reconstruction.Thm19.LimEquiv
 import Iut.Reconstruction.Thm19.LimIso
