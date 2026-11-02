@@ -335,6 +335,13 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   **`levelsDominated_of`** (C1 from (Z_M) and `L j ≤ L 0 ⊔ L' j`), `exists_eq_ofAdd_one_of_isCoprime`
   (13a from two coprime values of `χ`). No new hypotheses; the geometric input left is (Z_M)
   (`TFGD-plan.md`).
+* (11n) **Debt Z_0 restated as (Z_2) (TFGD run 2, lead decision D-T1)**: `TemperedLevelTwo.lean`
+  (new): the level `levelTwo t h2 h12 = K(E_{q²})` (image in the source of `[2]` of the fixed
+  field of the translation by the Tate point `u = −1`, `E_q/⟨−1⟩ ≅ E_{q²}`), étale over `L_X`, with
+  `L_{[2]} = L_2(α)`, `σ α = ±α` (`exists_quadratic_levelTwoField`); the named geometric input
+  **`ZTwo`** (`Π^tp_Y ≤ Π^tp_{L_2}`) and **`piYIndexTwoAt_zero_of_zTwo`** ((Z_2) ⇒ Z_0 for every
+  system with `L 0 ≤ L_{[2]}`). `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs` and
+  MR15's `exists_thetaEnvU_rigidity_cX` now take `ZTwo` instead of `PiYIndexTwoAt … 0`.
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 

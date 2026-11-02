@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.EtaleTheta.ThetaProp13
-import Iut.EtaleTheta.TemperedLevelTrans
+import Iut.EtaleTheta.TemperedLevelTwo
 
 /-!
 # [EtTh] Prop. 1.3: the theta class comes from `(Π^tp_Y)^Θ` — the reduction to a Heisenberg
@@ -557,10 +557,12 @@ include h2 in
   is the `n`-th component of `e` (Prop. 1.3 on `Δ_Θ`);
 * (MR15 obligation 13b, run 18) `Gal(Ω/L_X)` maps every level into itself (so
   `normal_piYddotX` applies);
-* (MR15 obligation 13c(i)+(ii), [EtTh] Prop. 1.5(iii) mod `l`, run 18) under C1 and the debt
-  Z at `j = 0` (`PiYIndexTwoAt`, `[Π^tp_Y : Π^tp_Ÿ] ≤ 2`), given `g₁` with `χ(g₁) = 1` (MR15 13a):
-  for `l` odd with `2l ∣ N_j`, every lift `σ ∈ Gal(Ω/L_X)` of the image of `γ ∈ Π^tp_X` with
-  `χ(γ) = l·m` moves `η_j` by an `l`-th power, `σ η_j = (d·y)^l·η_j` (`d ∈ K`, `y ∈ L_j`). -/
+* (TFGD run 2) under the geometric input (Z_2) (`ZTwo`, `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`): Z at
+  `j = 0` (`PiYIndexTwoAt`, `[Π^tp_Y : Π^tp_Ÿ] ≤ 2`, `piYIndexTwoAt_zero_of_zTwo`), and
+  (MR15 obligation 13c(i)+(ii), [EtTh] Prop. 1.5(iii) mod `l`, run 18) under C1, given `g₁` with
+  `χ(g₁) = 1` (MR15 13a): for `l` odd with `2l ∣ N_j`, every lift `σ ∈ Gal(Ω/L_X)` of the
+  image of `γ ∈ Π^tp_X` with `χ(γ) = l·m` moves `η_j` by an `l`-th power,
+  `σ η_j = (d·y)^l·η_j` (`d ∈ K`, `y ∈ L_j`). -/
 theorem exists_thetaClassTemp_prop13 :
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
       (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
@@ -611,9 +613,9 @@ theorem exists_thetaClassTemp_prop13 :
                     KummerIndex (F (fieldData (transcendental_tau t.tateCurve)
                       (hemiData t.tateCurve).L (hemiL_open t)))) (e ⟨_, hσ⟩)) ∧
       (∀ j, ∀ σ ∈ (hemiData t.tateCurve).L.fixingSubgroup, ∀ x ∈ L j, σ x ∈ L j) ∧
-      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (j l : ℕ), Odd l →
-        2 * l ∣ 2 * (j + 1) → LevelsDominated V hV (tateDataX O hO hs h12) hL →
-        PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 →
+      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        ZTwo h2 h12 O hO hs V hV → PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 ∧
+        ∀ (j l : ℕ), Odd l → 2 * l ∣ 2 * (j + 1) → LevelsDominated V hV (tateDataX O hO hs h12) hL →
         ∀ (g₁ : TempPi (DX t) O V hV),
           TemperedFundamentalGroups.TateObject.character (A := (DX t).A)
             (tateDataX O hO hs h12) V hV g₁ = Multiplicative.ofAdd (1 : ℤ) →
@@ -645,7 +647,8 @@ theorem exists_thetaClassTemp_prop13 :
     fun V hV hC1 j n _ hn γ hγ => ?_, fun W hk hτ => ⟨exists_le_comap_eq W hk O,
       fun V hV hVW hC1 n _ ζ => classAt_cusp_surjective η hC1 (n - 1) n hk hVW (hL0 W hk hτ)
         (hcc W hk hτ V hV hVW hC1 n) ζ⟩, fun hG5 => ?_, hw2,
-    fun V hV j l hl hlN hC1 hZ g₁ hg₁ γ m hγ σ hσ => ?_⟩
+    fun V hV hZ2 => ⟨piYIndexTwoAt_zero_of_zTwo h2 h12 O hO hs hZ2 hL02,
+      fun j l hl hlN hC1 g₁ hg₁ γ m hγ σ hσ => ?_⟩⟩
   · obtain ⟨hLB, hF2⟩ := hF j n hn
     refine classAt_eq_one_of_thetaKernel η hC1 j n _ hLB (fun σ hσ ρ hρ x hx => ?_)
       (fun σ hσ => ?_) γ hγ
@@ -666,7 +669,8 @@ theorem exists_thetaClassTemp_prop13 :
         (((η j : (F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
           F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω) l) l
       (fun σ ρ τ' h hτ' => hw4 j l hl hlN σ ρ τ' h hτ')
-      (piYIndexTwoAt_of_levelsDominated hZ hC1 j) hg₁ hγ σ hσ
+      (piYIndexTwoAt_of_levelsDominated (piYIndexTwoAt_zero_of_zTwo h2 h12 O hO hs hZ2 hL02)
+        hC1 j) hg₁ hγ σ hσ
 
 end Concrete
 

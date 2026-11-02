@@ -33,8 +33,8 @@ mod `l`).
   with `e ∈ Π^tp_Y ∖ Π^tp_Ÿ` and MR14's `piYddotX_index`) and `Π^tp_Y ⊆ Π^tp_Ÿ`
   (`exists_cX_of_invariant_ker`); the `lℤ`-direction is `g = g₁^l`.
 * **`exists_thetaEnvU_rigidity_cX`** (concrete): `exists_thetaEnvU_rigidity` with `cX` produced
-  instead of assumed, for the theta system of `exists_thetaRep_inputs`, under C1, debt Z at
-  `j = 0` and 13a (`g₁`).
+  instead of assumed, for the theta system of `exists_thetaRep_inputs`, under C1, the geometric
+  input (Z_2) (`ZTwo`, which gives debt Z at `j = 0`; TFGD run 2) and 13a (`g₁`).
 -/
 
 open CategoryTheory AlgebraicGeometry Polynomial Belyi Belyi.P1 Belyi.Anabelian Pi1.Orbifold
@@ -326,9 +326,10 @@ set_option maxHeartbeats 1000000 in
 variable [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] in
 include h2 in
 /-- **[EtTh] §2 for `X̲`, with the splitting cocycle constructed** (obligation 13 discharged
-modulo C1, MR14's debt Z and 13a): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
-For the theta system of `exists_thetaRep_inputs`, every base point `V` over `O`, under C1, debt
-Z at `j = 0` (`PiYIndexTwoAt … 0`, `[Π^tp_Y : Π^tp_Ÿ] ≤ 2`; owner MR14/tfg) and 13a (`g₁` with
+modulo C1, (Z_2) and 13a): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
+For the theta system of `exists_thetaRep_inputs`, every base point `V` over `O`, under C1, the
+geometric input (Z_2) (`ZTwo`, `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`, which gives debt Z at `j = 0`,
+`[Π^tp_Y : Π^tp_Ÿ] ≤ 2`; owner TFGD/tfg) and 13a (`g₁` with
 `χ(g₁) = 1`; owner tfg), every odd `l`, every `N ≥ 1` and every representative `r` of the theta
 class mod `lN` on `Π^tp_Ÿ`, there is a splitting cocycle `cX : Π^tp_X̿ → μ_l` with `hcXr`
 (`exists_cX_of_moves`, at the level `j = 2l − 1`), and `EnvUConclusions` hold for the curve `X̲`
@@ -343,7 +344,7 @@ theorem exists_thetaEnvU_rigidity_cX :
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL),
-        PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 →
+        ZTwo h2 h12 O hO hs V hV →
         ∀ (g₁ : TempPi DXc O V hV),
           TemperedFundamentalGroups.TateObject.character (A := (DXc).A)
             (tateDataX O hO hs h12) V hV g₁ = Multiplicative.ofAdd (1 : ℤ) →
@@ -361,14 +362,15 @@ theorem exists_thetaEnvU_rigidity_cX :
               CuspInertiaWeil (DXc)) := by
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
     Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
-      ⟨h.1, fun V hV hC1 hZ g₁ hg₁ l N _ _ hl r hr => ?_⟩
+      ⟨h.1, fun V hV hC1 hZ2 g₁ hg₁ l N _ _ hl r hr => ?_⟩
+  obtain ⟨hZ, hmv⟩ := h.2.2.1 V hV hZ2
   have hlj : 2 * l ∣ 2 * (2 * l - 1 + 1) := by
     rw [Nat.sub_add_cancel (by have := NeZero.ne l; omega)]
     exact Dvd.intro_left 2 rfl
   obtain ⟨cX, hcX, hcXr⟩ := exists_cX_of_moves hC1 h.1 h.2.1 hl
     ((Dvd.intro_left 2 rfl).trans hlj)
     (fun γ m hγ σ hσ => by
-      obtain ⟨d, y, hy, e⟩ := h.2.2.1 V hV (2 * l - 1) l hl hlj hC1 hZ g₁ hg₁ γ m hγ σ hσ
+      obtain ⟨d, y, hy, e⟩ := hmv (2 * l - 1) l hl hlj hC1 g₁ hg₁ γ m hγ σ hσ
       refine ⟨algebraMap K Ω d * y, mul_mem ?_ hy, e⟩
       rw [IsScalarTower.algebraMap_apply K (K₀ K τ) Ω]
       exact (L (2 * l - 1)).algebraMap_mem _)

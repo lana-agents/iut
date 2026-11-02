@@ -931,9 +931,9 @@ theorem exists_thetaRep_inputs :
       (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       (∀ j, ∀ σ ∈ (hemiData t.tateCurve).L.fixingSubgroup, ∀ x ∈ L j, σ x ∈ L j) ∧
-      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (j l : ℕ), Odd l →
-        2 * l ∣ 2 * (j + 1) → LevelsDominated V hV (tateDataX O hO hs h12) hL →
-        PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 →
+      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        ZTwo h2 h12 O hO hs V hV → PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 ∧
+        ∀ (j l : ℕ), Odd l → 2 * l ∣ 2 * (j + 1) → LevelsDominated V hV (tateDataX O hO hs h12) hL →
         ∀ (g₁ : TempPi DXc O V hV),
           TemperedFundamentalGroups.TateObject.character (A := (DXc).A)
             (tateDataX O hO hs h12) V hV g₁ = Multiplicative.ofAdd (1 : ℤ) →
