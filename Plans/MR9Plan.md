@@ -1712,3 +1712,9 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Debts unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points / genus `≠ 0` (item 1),
   `CKStrictSemiAbs`. Estimate for the rest of step 5: item 3 is ~40 l. once `hU` exists; item 2 (points of `U`) one to two
   sessions; cusps of `U` per the decision.
+
+### Lead decision after session t (2026-11-02, christian-aa)
+- `U_x` at the cusps of `U`: **option (i)** — the local lemma (for `ord_x f = 0` at a cusp, `κ(f)|_{D_x}` is
+  inflated from `κ(f(x))`) plus matching of the cuspidal decomposition groups, reusing the existing cusp results
+  (iut `CuspDecomp` / `Comm(I_W) = D_W`, cj `SectionBridgeCusp`, MR8's `HemiCuspDecomp`). If it exceeds ~800 lines,
+  stop and fall back to (iii) (named debt) temporarily, recording why. No weil-curves pin bump.
