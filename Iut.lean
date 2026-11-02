@@ -355,7 +355,9 @@ import Iut.Frobenioid.Tempered.RatFunTheta
 import Iut.Frobenioid.Tempered.RatFunZero
 import Iut.Frobenioid.Tempered.SplitFrob
 import Iut.Frobenioid.Tempered.SplitTransport
+import Iut.Frobenioid.Tempered.TateGalMero
 import Iut.Frobenioid.Tempered.TateMero
+import Iut.Frobenioid.Tempered.TateStab
 import Iut.Frobenioid.Tempered.ThetaEnv
 import Iut.Frobenioid.Tempered.ThetaEnvModel
 import Iut.Frobenioid.Tempered.ThetaMonoid

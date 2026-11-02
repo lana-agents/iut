@@ -103,6 +103,19 @@ challenge or by `Iut/Concrete/*`.
        `character₂_galois_fix`; `dataToR`, `dataRingHom` (the curve of `D` in `R` and in
        `Mero K`, `dataToR_c`, `dataRingHom_c`); `gammaMero`, `isTateLift_gammaMero` (genuine Tate
        lift on `RR = Mero K`);
+     - (c4''''''') `Tempered/TateStab.lean`: the converses of the deck invariance —
+       **`mem_qpowers_of_scale_xU_yU`** (`U ↦ C·U` fixing `x(U)`, `y(U)` forces `C ∈ q^ℤ`, via
+       tate-curves-theta `class_eq_or_inv_of_X_eq` and `2y + x ≠ 0`),
+       **`scale_comp_tateFieldHom_iff`** (`Ü ↦ c·Ü` fixes `K(E_t)` iff `c ∈ Deck t`),
+       **`scale_fix_X'_iff`** (it fixes `K(E_t)` and `√(x - e)` iff `c ∈ s^ℤ`), `kumM_ne_zero`.
+       `Tempered/TateGalMero.lean`: `σ ∈ IsoAut t` commutes with Tate's series
+       (`IsoAut.map_X`, `map_Y`, `map_theta`, `map_a₄`, `map_a₆`), fixes `x(Ü²)`, `y(Ü²)`
+       (`gal_xM`, `gal_yM`) and `√(x - e)` when `σ(s) = s` (`gal_kumM`); `tateRingGal`,
+       `tateFieldGal` (`σ` on `K[E_t]`, `K(E_t)`); **`gal_comp_tateFieldHom`** (Galois
+       equivariance of `K(E_t) → Mero K`), `galDeckHom_tateFieldHom`; **`gal_dataRingHom`**
+       (`σ` fixing `φ(F)` fixes the `F`-curve of `D`); **`galDeckHom_tateGalDeck_kumM`**,
+       **`galDeckHom_tateGalDeck_tateFieldHom`** (the Tate action of `Π^tp_X` on
+       `K(X') ⊆ Mero K`: `σ(g)_*` on `K(E_t)`, the sign of `character₂ g` on `√(x - e)`);
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;
