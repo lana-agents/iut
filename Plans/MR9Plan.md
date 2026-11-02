@@ -1434,3 +1434,15 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `constCyclo (cycloVχ χU)` sends `tameGen p` to `tameGen p'` whenever `[σ'] = constIso e [σ]` at cusps. For
   `χU = cycloIso Φ` this is the functoriality of the synchronisations of [AbsTopIII] Prop 1.4 (ii) (T3 l.1771–1802),
   i.e. item (b-i); to be discharged there.
+* Addendum (session q, second push): item (b-i) started (scoping: a read-only helper, route below). **`Thm19/SyncGroupTheoretic.lean`**
+  (written by a session-q helper): (S1) `h2EquivAny_comap`, `eZ_h2Triv`, **`mxModMap_phi0`** (relator values are natural
+  in the group); (S2) **`proj_syncEquiv_cuspHat`** (the level-`n` value of curves-jacobian's `syncEquiv` at
+  `Θ⁻¹(cuspHat)` is `(phi0 Θ₀)⁻¹` for every pair of orientations `Θ`, `Θ₀` compatible with the filling: the
+  synchronisation is group-theoretic, T3 l.1800–1803); (S3) `monoidHom_eq_of_cuspHat`, `eq_syncEquiv_of_cuspHat`,
+  `eq_syncEquiv_of_proj`; **`mxHatCongr_syncEquiv`** and **`mxHatCongr_syncEquivBar`** (transport: for isomorphisms
+  `Ξ : Δ_{U_x} ≃ Δ_{U'_{x'}}`, `Ξ₀ : Δ_X ≃ Δ_{X'}` compatible with the fillings and with `Ξ(I_x) = I_{x'}`,
+  `mxHatCongr Ξ₀ ∘ sync_x = sync_{x'} ∘ Ξ`). **`Thm19/DeltaUEquiv.lean`**: `deltaUEquivPiBc : Δ_U ≃ₜ* Π_{U_{k̄}}` (as
+  curves-jacobian `deltaXEquivPiBc`, with `S` in place of `SAll`), `chartBar`, `SU_chartBar`, `rhoBarU_spec`,
+  **`deltaUEquivBar : Δ_U ≃ₜ* π₁ᵉᵗ(U_{k̄})`**. **`Thm19/DeltaUCongr.lean`**: `deltaUCongr`, **`deltaBarUCongr`**
+  (`π₁ᵉᵗ(U_{k̄}) ≃ₜ* π₁ᵉᵗ(U'_{k̄})` from `Φ`), `deltaXEquivBar_fill`, **`deltaBarCongr_fill`** (compatible with the
+  fillings and `deltaBarCongr`).
