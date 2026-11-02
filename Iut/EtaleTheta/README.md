@@ -359,6 +359,14 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   and **`levelsDominated_of_zM`**; `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`,
   `exists_thetaEnvU_rigidity` and `exists_thetaEnvU_rigidity_cX` gain the conjunct
   `(∀ j, ZM j V hV) → LevelsDominated V hV …` (C1 for their system from (Z_{N_j})).
+* (11q) **`ZTwo` unified into `ZM 0` (TFGD run 4, lead decision D-T7)**: the separate level
+  `levelTwo`/`levelTwoField` and the input `ZTwo` are deleted; `ThetaLevelQuot.lean` gains the
+  generic `exists_quadratic_of_involution`, `exists_iota_xy(_of)` (`φ_2(x), φ_2(y) ∈ ι(K(E_Q))`) and
+  **`exists_quadratic_levelQN`** (`L_{[2]}` is fixed by the subgroup of `Π_{levelQN j}` fixing some
+  `α` with `σα = ±α`); `TemperedLevelTwo.lean`: **`piYIndexTwoAt_zero_of_zM`** (Z_0 from any
+  `ZM j`). The consumers (`exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`,
+  `exists_thetaEnvU_rigidity_cX`) take `ZM 0` in place of `ZTwo`: the only geometric inputs left
+  for Z_0 and C1 are the `ZM j`.
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 

@@ -79,6 +79,34 @@ theorem mem_sup_adjoin_fixed {K B Ω F : Type*} [Field K] [Field B] [Field Ω] [
   rw [hf, map_add, map_mul, map_sub, map_sub]
   exact add_mem (hfix _ hc₀) (mul_mem (hfix _ hc₁) (sub_mem hzM' (sub_mem (hfix _ hw) hzM')))
 
+/-- **`ι(F)` is quadratic over `ι(F^ρ)`** for an involution `ρ ≠ 1` of `F` (`2 ≠ 0`): there is
+`α ∈ ι(F)` such that every `σ` fixing `ι(F^ρ)` sends `α ↦ ±α`, and fixes `ι(F)` if it fixes `α`
+(`α = ι(z − ρz)`; every `f` is `c₀ + c₁·(z − ρz)` with `ρ c_i = c_i`). -/
+theorem exists_quadratic_of_involution {K B Ω F : Type*} [Field K] [Field B] [Field Ω] [Field F]
+    [Algebra K B] [Algebra B Ω] [Algebra K Ω] [IsScalarTower K B Ω] [Algebra K F]
+    (ι : F →ₐ[K] Ω) (ρ : F ≃ₐ[K] F) (hρρ : ∀ f, ρ (ρ f) = f) (h2 : (2 : F) ≠ 0)
+    {z : F} (hz : ρ z ≠ z) :
+    ∃ α : Ω, ∀ σ : Ω ≃ₐ[B] Ω, (∀ c, ρ c = c → σ (ι c) = ι c) →
+      (σ α = α ∨ σ α = -α) ∧ (σ α = α → ∀ f, σ (ι f) = ι f) := by
+  set a := z - ρ z with ha
+  have ha0 : a ≠ 0 := sub_ne_zero.2 (Ne.symm hz)
+  have hρa : ρ a = -a := by rw [ha, map_sub, hρρ]; ring
+  refine ⟨ι a, fun σ hfix => ⟨?_, fun hσa f => ?_⟩⟩
+  · have hsq : σ (ι a) ^ 2 = ι a ^ 2 := by
+      rw [← map_pow, ← map_pow, hfix _ (by rw [map_pow, hρa, neg_sq])]
+    exact sq_eq_sq_iff_eq_or_eq_neg.1 hsq
+  · set c₀ := (f + ρ f) / 2
+    set c₁ := (f - ρ f) / (2 * a)
+    have hc₀ : ρ c₀ = c₀ := by
+      simp only [c₀, map_div₀, map_add, hρρ, map_ofNat]; ring
+    have hc₁ : ρ c₁ = c₁ := by
+      simp only [c₁, map_div₀, map_sub, map_mul, hρa, hρρ, map_ofNat]
+      field_simp
+      ring
+    have hf : f = c₀ + c₁ * a := by
+      simp only [c₀, c₁]; field_simp; ring
+    rw [hf, map_add, map_mul, map_add, map_mul, hfix _ hc₀, hfix _ hc₁, hσa]
+
 end Generic
 
 /-! ### Units of norm one and the Tate coordinates -/
@@ -362,7 +390,113 @@ theorem etale_levelQN (j : ℕ) :
     (ringMap τ (hemiL_le_levelQN h2 h12 hs j)).toRingHom.Etale :=
   etale_of_le_mulByNField t.tateCurve _ _ (levelQN_le_mulByNField h2 h12 hs j)
 
-/-! ### `L_j ≤ M ⊔ K(E_{q^{N_j}})` -/
+/-! ### `L_j ≤ M ⊔ K(E_{q^{N_j}})` and `L_{[2]} ⊆ K(Ÿ'_{N_j})` quadratic over `K(E_{q^{N_j}})` -/
+
+/-- **`φ_2(x)` and `φ_2(y)` lie in `ι(K(E_Q))`** (`ι = φ_{2N}∘pullbackT`, `N = 2M`, `Q = s^N`):
+the elements `z_x`, `z_y ∈ K(E_Q)` with values `X_q(U)`, `Y_q(U)` (`exists_poly_quotX/Y`) have
+`ι z_x = φ_2(x)`, `ι z_y = φ_2(y)`, and `t_{-1} z_x ≠ z_x` (values at `U = ±2`). -/
+theorem exists_iota_xy_of {N : ℕ} (hN : 0 < N) (M : ℕ) (hNM : N = 2 * M) (hM : 0 < M)
+    [NeZero N] [NeZero (2 * N)] [(sqrtPow hs N hN).tateCurve.IsElliptic] {gX gY : TateField t}
+    (hval : LevelVals h12 hs hN gX gY) (hpt : IsTPoint (sqrtPow hs N hN) gX gY)
+    (htr : Transcendental K gX) :
+    ∃ zx zy : TateField (sqrtPow hs N hN),
+      transT h12 (offOrbit_neg_one _ h2) zx ≠ zx ∧
+      mulByNEmb t.tateCurve (2 * N) (pullbackT gX gY hpt htr zx) =
+        mulByNEmb t.tateCurve 2 (algebraMap (TateRing t) (TateField t) (xE t.tateCurve)) ∧
+      mulByNEmb t.tateCurve (2 * N) (pullbackT gX gY hpt htr zy) =
+        mulByNEmb t.tateCurve 2 (algebraMap (TateRing t) (TateField t) (mkT t Polynomial.X)) := by
+  have hTq : (sqrtPow hs N hN).q = t.q ^ M := by
+    rw [sqrtPow_q, ← hs, ← pow_mul, hNM]
+  have hD : psiN t.tateCurve (2 * N) * psiN t.tateCurve N ≠ 0 :=
+    mul_ne_zero (psiN_ne_zero_of_neZero _ _) (psiN_ne_zero_of_neZero _ _)
+  -- the elements `z_x`, `z_y` with values `X_q(U)`, `Y_q(U)`
+  obtain ⟨A₁, B₁, A₂, B₂, hA⟩ :=
+    exists_poly_quotX (T := t) (T' := (sqrtPow hs N hN)) (M := M) hM hTq h12
+  obtain ⟨C₁, D₁, C₂, D₂, hC⟩ :=
+    exists_poly_quotY (T := t) (T' := (sqrtPow hs N hN)) (M := M) hM hTq h12
+  set z := algebraMap _ (TateField (sqrtPow hs N hN)) (polyXY (sqrtPow hs N hN) A₁ B₁) /
+    algebraMap _ (TateField (sqrtPow hs N hN)) (polyXY (sqrtPow hs N hN) A₂ B₂) with hzdef
+  set zy := algebraMap _ (TateField (sqrtPow hs N hN)) (polyXY (sqrtPow hs N hN) C₁ D₁) /
+    algebraMap _ (TateField (sqrtPow hs N hN)) (polyXY (sqrtPow hs N hN) C₂ D₂) with hzydef
+  have hzv : ∀ (v : Kˣ) (hv : OffOrbit (sqrtPow hs N hN) v), OffOrbit t v →
+      HasTateValue (sqrtPow hs N hN) h12 z hv (t.X v) := by
+    intro v hv hvt
+    obtain ⟨hd, he⟩ := hA v hv
+    have hθ := theta_neg_ne_zero t hvt
+    refine ((HasTateValue.ofRing hv _).div (HasTateValue.ofRing hv _)
+      (by rw [evalTate_polyXY]; exact hd.mpr hθ)).congr ?_
+    rw [evalTate_polyXY, evalTate_polyXY, he hθ]
+  have hzyv : ∀ (v : Kˣ) (hv : OffOrbit (sqrtPow hs N hN) v), OffOrbit t v →
+      HasTateValue (sqrtPow hs N hN) h12 zy hv (t.Y v) := by
+    intro v hv hvt
+    obtain ⟨hd, he⟩ := hC v hv
+    have hθ := theta_neg_ne_zero t hvt
+    refine ((HasTateValue.ofRing hv _).div (HasTateValue.ofRing hv _)
+      (by rw [evalTate_polyXY]; exact hd.mpr hθ)).congr ?_
+    rw [evalTate_polyXY, evalTate_polyXY, he hθ]
+  have hjz : (pullbackT gX gY hpt htr) z =
+      pb t.tateCurve N (algebraMap (TateRing t) (TateField t) (xE t.tateCurve)) := by
+    refine eq_of_hasTateValue (h12 := h12) hD (G := fun u => t.X (u ^ N))
+      (fun u hu h0 => ?_) (fun u hu h0 => ?_)
+    · rw [map_mul] at h0
+      obtain ⟨hum2, -⟩ := hasTateValue_mulByNHom (h12 := h12) (2 * N) h2 hu (left_ne_zero_of_mul h0)
+      obtain ⟨hum, -⟩ := hasTateValue_pb (h12 := h12) h2 N hu (right_ne_zero_of_mul h0)
+      exact hasTateValue_pullbackT hpt htr _ (hval u hu hum2).1 (hval u hu hum2).2
+        (hzv _ (offOrbit_sqrt_pow hs (sqrtPow hs N hN) rfl hum2) hum)
+    · rw [map_mul] at h0
+      obtain ⟨hum, hpb⟩ := hasTateValue_pb (h12 := h12) h2 N hu (right_ne_zero_of_mul h0)
+      exact hpb _ _ (HasTateValue.x hum)
+  have hjzy : (pullbackT gX gY hpt htr) zy =
+      pb t.tateCurve N (algebraMap (TateRing t) (TateField t) (mkT t Polynomial.X)) := by
+    refine eq_of_hasTateValue (h12 := h12) hD (G := fun u => t.Y (u ^ N))
+      (fun u hu h0 => ?_) (fun u hu h0 => ?_)
+    · rw [map_mul] at h0
+      obtain ⟨hum2, -⟩ := hasTateValue_mulByNHom (h12 := h12) (2 * N) h2 hu (left_ne_zero_of_mul h0)
+      obtain ⟨hum, -⟩ := hasTateValue_pb (h12 := h12) h2 N hu (right_ne_zero_of_mul h0)
+      exact hasTateValue_pullbackT hpt htr _ (hval u hu hum2).1 (hval u hu hum2).2
+        (hzyv _ (offOrbit_sqrt_pow hs (sqrtPow hs N hN) rfl hum2) hum)
+    · rw [map_mul] at h0
+      obtain ⟨hum, hpb⟩ := hasTateValue_pb (h12 := h12) h2 N hu (right_ne_zero_of_mul h0)
+      exact hpb _ _ (HasTateValue.y hum)
+  haveI : NeZero (2 : ℕ) := ⟨by norm_num⟩
+  have hcomp := mulByNEmb_comp_pb_eq (t := t) (m := 2) (r := N) (m' := 2 * N) (by rw [mul_comm])
+  refine ⟨z, zy, ?_, ?_, ?_⟩
+  · -- `t_{-1} z ≠ z`: the values at `U = 2` and `U = -2` differ
+    intro hfix
+    have hn2 : ‖((twoU h2 : Kˣ) : K)‖ = 1 := by simpa using h2
+    have hn2' : ‖((twoU h2 * -1 : Kˣ) : K)‖ = 1 := by simpa using h2
+    have h2T : OffOrbit (sqrtPow hs N hN) (twoU h2) :=
+      offOrbit_of_norm_one (sqrtPow hs N hN) hn2 (by norm_num)
+    have h2t : OffOrbit t (twoU h2) := offOrbit_of_norm_one t hn2 (by norm_num)
+    have hm2T : OffOrbit (sqrtPow hs N hN) (twoU h2 * -1) :=
+      offOrbit_of_norm_one (sqrtPow hs N hN) hn2' (by norm_num)
+    have hm2t : OffOrbit t (twoU h2 * -1) := offOrbit_of_norm_one t hn2' (by norm_num)
+    have hxT : (sqrtPow hs N hN).X (twoU h2) ≠ (sqrtPow hs N hN).X (-1) :=
+      X_ne_X_of_norm_one h12 h2 (sqrtPow hs N hN) h2T (offOrbit_neg_one (sqrtPow hs N hN) h2) hn2
+        norm_neg_one_val (by norm_num) (by norm_num)
+    have hv1 := hzv _ h2T h2t
+    have hv2 := hasTateValue_trans h2 h2T (offOrbit_neg_one (sqrtPow hs N hN) h2) hm2T hxT z _
+      (hzv _ hm2T hm2t)
+    rw [hfix] at hv2
+    exact X_ne_X_of_norm_one h12 h2 t h2t hm2t hn2 hn2' (by norm_num) (by norm_num)
+      (hv1.unique hv2)
+  · rw [hjz, ← AlgHom.comp_apply, hcomp]
+  · rw [hjzy, ← AlgHom.comp_apply, hcomp]
+
+
+theorem exists_iota_xy (j : ℕ)
+    [(sqrtPow hs (2 * (j + 1)) (Nat.mul_pos two_pos j.succ_pos)).tateCurve.IsElliptic] :
+    ∃ zx zy : TateField (sqrtPow hs (2 * (j + 1)) (Nat.mul_pos two_pos j.succ_pos)),
+      transT h12 (offOrbit_neg_one _ h2) zx ≠ zx ∧
+      mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (pullbackT (levelCoords h2 h12 hs j).1
+        (levelCoords h2 h12 hs j).2 (isTPoint_levelCoords h2 h12 hs j)
+        (transcendental_levelCoords h2 h12 hs j) zx) =
+        mulByNEmb t.tateCurve 2 (algebraMap (TateRing t) (TateField t) (xE t.tateCurve)) ∧
+      mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (pullbackT (levelCoords h2 h12 hs j).1
+        (levelCoords h2 h12 hs j).2 (isTPoint_levelCoords h2 h12 hs j)
+        (transcendental_levelCoords h2 h12 hs j) zy) =
+        mulByNEmb t.tateCurve 2 (algebraMap (TateRing t) (TateField t) (mkT t Polynomial.X)) :=
+  exists_iota_xy_of h2 h12 hs _ (j + 1) rfl j.succ_pos (levelCoords_spec h2 h12 hs j).2 _ _
 
 /-- **The level `Ÿ'_{N_j}` lies in `M ⊔ K(E_{q^{N_j}})`** whenever `φ_2(x) ∈ M` (`M = L_0`, the
 source of `[2]`): `z ∈ K(E_Q)` with values `X_q(U)` has `ι z = φ_2(x)` and `t_{-1} z ≠ z`. -/
@@ -376,63 +510,15 @@ theorem adjoin_levelCoords_le (j : ℕ) {M : IntermediateField (K₀ K τ) Ω}
   set T := sqrtPow hs N hN with hTdef
   set gX := (levelCoords h2 h12 hs j).1
   set gY := (levelCoords h2 h12 hs j).2
-  have hval := (levelCoords_spec h2 h12 hs j).2
   set hpt := isTPoint_levelCoords h2 h12 hs j
   set htr := transcendental_levelCoords h2 h12 hs j
   set jj := pullbackT gX gY hpt htr with hjjdef
   set ι : TateField T →ₐ[K] Ω := (mulByNEmb t.tateCurve (2 * N)).comp jj with hιdef
   set ρ := transT h12 (offOrbit_neg_one T h2) with hρdef
-  have hTq : T.q = t.q ^ (j + 1) := by
-    rw [hTdef, sqrtPow_q, ← hs, ← pow_mul]
-  -- the element `z` with values `X_q(U)`
-  obtain ⟨A₁, B₁, A₂, B₂, hA⟩ :=
-    exists_poly_quotX (T := t) (T' := T) (M := j + 1) (by omega) hTq h12
-  set z := algebraMap _ (TateField T) (polyXY T A₁ B₁) /
-    algebraMap _ (TateField T) (polyXY T A₂ B₂) with hzdef
-  have hzv : ∀ (v : Kˣ) (hv : OffOrbit T v), OffOrbit t v → HasTateValue T h12 z hv (t.X v) := by
-    intro v hv hvt
-    obtain ⟨hd, he⟩ := hA v hv
-    have hθ := theta_neg_ne_zero t hvt
-    refine ((HasTateValue.ofRing hv _).div (HasTateValue.ofRing hv _)
-      (by rw [evalTate_polyXY]; exact hd.mpr hθ)).congr ?_
-    rw [evalTate_polyXY, evalTate_polyXY, he hθ]
-  -- `ι z = φ_2(x)`
-  have hjz : jj z = pb t.tateCurve N (algebraMap (TateRing t) (TateField t) (xE t.tateCurve)) := by
-    have hD : psiN t.tateCurve (2 * N) * psiN t.tateCurve N ≠ 0 :=
-      mul_ne_zero (psiN_ne_zero_of_neZero _ _) (psiN_ne_zero_of_neZero _ _)
-    refine eq_of_hasTateValue (h12 := h12) hD (G := fun u => t.X (u ^ N))
-      (fun u hu h0 => ?_) (fun u hu h0 => ?_)
-    · rw [map_mul] at h0
-      obtain ⟨hum2, -⟩ := hasTateValue_mulByNHom (h12 := h12) (2 * N) h2 hu (left_ne_zero_of_mul h0)
-      obtain ⟨hum, -⟩ := hasTateValue_pb (h12 := h12) h2 N hu (right_ne_zero_of_mul h0)
-      exact hasTateValue_pullbackT hpt htr _ (hval u hu hum2).1 (hval u hu hum2).2
-        (hzv _ (offOrbit_sqrt_pow hs T rfl hum2) hum)
-    · rw [map_mul] at h0
-      obtain ⟨hum, hpb⟩ := hasTateValue_pb (h12 := h12) h2 N hu (right_ne_zero_of_mul h0)
-      exact hpb _ _ (HasTateValue.x hum)
+  obtain ⟨z, -, hρz, hιz', -⟩ := exists_iota_xy h2 h12 hs j
   have hιz : ι z ∈ M := by
-    haveI : NeZero (2 : ℕ) := ⟨by norm_num⟩
-    rw [hιdef, AlgHom.comp_apply, hjz, ← AlgHom.comp_apply,
-      mulByNEmb_comp_pb_eq (m := 2) (r := N) (m' := 2 * N) (by ring)]
-    exact hM
-  -- `t_{-1} z ≠ z`: the values at `U = 2` and `U = -2` differ
-  have hρz : ρ z ≠ z := by
-    intro hfix
-    have hn2 : ‖((twoU h2 : Kˣ) : K)‖ = 1 := by simpa using h2
-    have hn2' : ‖((twoU h2 * -1 : Kˣ) : K)‖ = 1 := by simpa using h2
-    have h2T : OffOrbit T (twoU h2) := offOrbit_of_norm_one T hn2 (by norm_num)
-    have h2t : OffOrbit t (twoU h2) := offOrbit_of_norm_one t hn2 (by norm_num)
-    have hm2T : OffOrbit T (twoU h2 * -1) := offOrbit_of_norm_one T hn2' (by norm_num)
-    have hm2t : OffOrbit t (twoU h2 * -1) := offOrbit_of_norm_one t hn2' (by norm_num)
-    have hxT : T.X (twoU h2) ≠ T.X (-1) :=
-      X_ne_X_of_norm_one h12 h2 T h2T (offOrbit_neg_one T h2) hn2 norm_neg_one_val
-        (by norm_num) (by norm_num)
-    have hv1 := hzv _ h2T h2t
-    have hv2 := hasTateValue_trans h2 h2T (offOrbit_neg_one T h2) hm2T hxT z _ (hzv _ hm2T hm2t)
-    rw [← hρdef, hfix] at hv2
-    exact X_ne_X_of_norm_one h12 h2 t h2t hm2t hn2 hn2' (by norm_num) (by norm_num)
-      (hv1.unique hv2)
-  -- conclusion
+    rw [hιdef, AlgHom.comp_apply]
+    exact hιz' ▸ hM
   have key : ∀ f, ι f ∈ M ⊔ levelQN h2 h12 hs j := by
     intro f
     have h2F : (2 : TateField T) ≠ 0 := by
@@ -452,6 +538,53 @@ theorem adjoin_levelCoords_le (j : ℕ) {M : IntermediateField (K₀ K τ) Ω}
     rwa [hιdef, AlgHom.comp_apply, hjjdef, pullbackT_genX] at this
   · have := key (algebraMap (TateRing T) (TateField T) (mkT T Polynomial.X))
     rwa [hιdef, AlgHom.comp_apply, hjjdef, pullbackT_genY] at this
+
+/-- **`L_{[2]}` is fixed by the index-`2` subgroup of `Π_{K(E_{q^{N_j}})}`**: there is `α ∈ Ω`
+such that every `σ` fixing `levelQN j = K(E_{q^{N_j}})` sends `α ↦ ±α`, and fixes
+`L_{[2]} = φ_2(K(E_q))` if it fixes `α` (`α = ι(z − t_{-1}z)`, `exists_quadratic_adjoin_fixed`;
+`φ_2(x), φ_2(y) ∈ ι(K(E_Q))` by `exists_iota_xy`). -/
+theorem exists_quadratic_levelQN (j : ℕ) :
+    ∃ α : Ω, (∀ σ ∈ (levelQN h2 h12 hs j).fixingSubgroup, σ α = α ∨ σ α = -α) ∧
+      ∀ σ ∈ (levelQN h2 h12 hs j).fixingSubgroup, σ α = α →
+        ∀ z ∈ mulByNField t.tateCurve 2, σ z = z := by
+  haveI := isElliptic_sqrtPow h12 hs j
+  obtain ⟨zx, zy, hρz, hx, hy⟩ := exists_iota_xy h2 h12 hs j
+  have h2F : (2 : TateField (sqrtPow hs (2 * (j + 1)) (Nat.mul_pos two_pos j.succ_pos))) ≠ 0 := by
+    have h := (algebraMap K (TateField (sqrtPow hs (2 * (j + 1))
+      (Nat.mul_pos two_pos j.succ_pos)))).injective.ne (two_ne_zero (α := K))
+    rwa [map_ofNat, map_zero] at h
+  obtain ⟨α, H⟩ := exists_quadratic_of_involution (B := K₀ K τ)
+    ((mulByNEmb t.tateCurve (2 * (2 * (j + 1)))).comp
+      (pullbackT (levelCoords h2 h12 hs j).1 (levelCoords h2 h12 hs j).2
+        (isTPoint_levelCoords h2 h12 hs j) (transcendental_levelCoords h2 h12 hs j)))
+    (transT h12 (offOrbit_neg_one _ h2)) (transT_transT_negOne h2 h12 _) h2F hρz
+  have hfix : ∀ σ ∈ (levelQN h2 h12 hs j).fixingSubgroup, ∀ c,
+      transT h12 (offOrbit_neg_one _ h2) c = c →
+      σ (mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (pullbackT (levelCoords h2 h12 hs j).1
+        (levelCoords h2 h12 hs j).2 (isTPoint_levelCoords h2 h12 hs j)
+        (transcendental_levelCoords h2 h12 hs j) c)) =
+      mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (pullbackT (levelCoords h2 h12 hs j).1
+        (levelCoords h2 h12 hs j).2 (isTPoint_levelCoords h2 h12 hs j)
+        (transcendental_levelCoords h2 h12 hs j) c) :=
+    fun σ hσ c hc => (IntermediateField.mem_fixingSubgroup_iff _ _).1 hσ _
+      (IntermediateField.subset_adjoin _ _ ⟨_, ⟨c, hc, rfl⟩, rfl⟩)
+  refine ⟨α, fun σ hσ => (H σ (hfix σ hσ)).1, fun σ hσ hσα => ?_⟩
+  have hι := (H σ (hfix σ hσ)).2 hσα
+  have hext : ((σ : Ω ≃ₐ[K₀ K τ] Ω).toAlgHom.restrictScalars K).comp
+      (mulByNEmb t.tateCurve 2) = mulByNEmb t.tateCurve 2 := by
+    refine algHom_ext_genXY ?_ ?_
+    · change σ (mulByNEmb t.tateCurve 2
+        (algebraMap (TateRing t) (TateField t) (xE t.tateCurve))) = _
+      have h1 := hι zx
+      rw [AlgHom.comp_apply, hx] at h1
+      exact h1
+    · change σ (mulByNEmb t.tateCurve 2
+        (algebraMap (TateRing t) (TateField t) (mkT t Polynomial.X))) = _
+      have h1 := hι zy
+      rw [AlgHom.comp_apply, hy] at h1
+      exact h1
+  rintro _ ⟨f, rfl⟩
+  exact DFunLike.congr_fun hext f
 
 end Level
 

@@ -34,8 +34,9 @@ mod `l`).
   (`exists_cX_of_invariant_ker`); the `lℤ`-direction is `g = g₁^l`.
 * **`exists_thetaEnvU_rigidity_cX`** (concrete): `exists_thetaEnvU_rigidity` with `cX` produced
   instead of assumed, for the theta system of `exists_thetaRep_inputs`, under C1, the geometric
-  input (Z_2) (`ZTwo`, which gives debt Z at `j = 0`; TFGD run 2); 13a (`g₁` with `χ̂(g₁) = 1`
-  for the normalised character `χ̂ = TateObject.charN`) from Theorem B.
+  input `ZM 0` ((Z_2), `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`, which gives debt Z at `j = 0`; TFGD
+  runs 2, 4); 13a (`g₁` with `χ̂(g₁) = 1` for the normalised character
+  `χ̂ = TateObject.charN`) from Theorem B.
 -/
 
 open CategoryTheory AlgebraicGeometry Polynomial Belyi Belyi.P1 Belyi.Anabelian Pi1.Orbifold
@@ -331,7 +332,7 @@ include h2 in
 modulo C1 and (Z_2)): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
 For the theta system of `exists_thetaRep_inputs`, `O` a complete discrete valuation ring of mixed
 characteristic `(0, p)` with perfect residue field, every base point `V` over `O`, under C1 and
-the geometric input (Z_2) (`ZTwo`, `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`, which gives debt Z at `j = 0`,
+the geometric input (Z_2) (`ZM 0`, `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`, which gives debt Z at `j = 0`,
 `[Π^tp_Y : Π^tp_Ÿ] ≤ 2`; owner TFGD/tfg), every odd `l`, every `N ≥ 1` and every
 representative `r` of the theta class mod `lN` on `Π^tp_Ÿ`, there is a splitting cocycle
 `cX : Π^tp_X̿ → μ_l` with `hcXr` (`exists_cX_of_moves`, at the level `j = 2l − 1`), and
@@ -352,7 +353,7 @@ theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
         (∀ j, ZM h2 h12 O hO hs j V hV) → LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL),
-        ZTwo h2 h12 O hO hs V hV →
+        ZM h2 h12 O hO hs 0 V hV →
         ∀ (l N : ℕ) [NeZero l] [NeZero N], Odd l →
         ∀ (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu (l * N) Ω)),
         ContH1.mk r = thetaClassTemp η hC1 (l * N) →
