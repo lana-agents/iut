@@ -23,8 +23,8 @@ both sides:
   closed point of the target stage at which the restrictions of `η` and `L.S η` vanish together;
 * **`LiftData.isNFKummerTest_S`**: the test of Prop 1.8 (i) is carried along `L.S`;
 * **`LiftData.S_kummer_pow`** (piece G): at a stage with rational cusps, some positive power of
-  `L.S κ(w)` is a Kummer class (for `w` constant, `κ(w) = κ(w f₀) κ(f₀)⁻¹` with a unit `f₀` that is
-  not an algebraic number).
+  `L.S κ(w)` is a Kummer class (for `w` in the field of constants, `κ(w) = κ(w f₀) κ(f₀)⁻¹`
+  with a unit `f₀` that is not an algebraic number).
 -/
 
 open CategoryTheory AlgebraicGeometry Pi1 Pi1.Orbifold KummerTheory KummerTheory.Curve
@@ -295,7 +295,8 @@ set_option synthInstance.maxHeartbeats 400000 in
 include σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC in
 /-- **Piece G: Kummer classes along the stage isomorphism.** At a stage with rational cusps
 carrying a unit `f₀` that is not an algebraic number, some positive power of `L.S κ(w)` is a
-Kummer class, for every unit `w` (for `w` constant: `κ(w) = κ(w f₀) κ(f₀)⁻¹`). -/
+Kummer class, for every unit `w` (for `w` in the field of constants:
+`κ(w) = κ(w f₀) κ(f₀)⁻¹`). -/
 theorem LiftData.S_kummer_pow (hS : BelyiCuspSpec Ω C hc.out) (L : LiftData hτ hU hτ₂ hU₂ Φ g)
     (hrat : ∀ P : Place g.K (F g.data), IsCuspPlaceF P → ∃ x : RatPoint g.data, placeOfF x = P)
     (hT : L.TameCompat χU) (w f₀ : units g.data)
