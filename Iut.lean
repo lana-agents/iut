@@ -214,6 +214,7 @@ import Iut.EtaleTheta.TempSlimPiY
 import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.TemperedDomination
 import Iut.EtaleTheta.TemperedDouble
+import Iut.EtaleTheta.TemperedFourGonInput
 import Iut.EtaleTheta.TemperedLevelGalois
 import Iut.EtaleTheta.TemperedLevelTrans
 import Iut.EtaleTheta.TemperedLevelTwo

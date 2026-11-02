@@ -1716,3 +1716,32 @@ Iut.Frobenioid.Model.IsCharSplitting.exists_split	def
 Iut.Frobenioid.Model.IsCharSplitting.le	def
 Iut.Frobenioid.Model.IsCharSplitting.pb_mem	def
 Iut.Frobenioid.Model.IsCharSplitting.split_unique	def
+# 2026-11-02 (TFGD run 6, tfg pin af5bdf9): the 4-gon model of E_{q²} (tfg Andre/TateFourGon*). `FourGon.Rels` (a prime
+# contains the five model equations), `FourGon.Hyp` (the conditions on a space over P⁴_O under which the 4-gon Decomp is
+# built; constructed by tfg `FourGon.hyp`) and `FourGon.Input` (the model data of E_{q²} → E_q; constructed in iut
+# `zM_zero` from `exists_fourGonInput`) are defining conditions/data bundles, never assumed: `def`.
+TemperedFundamentalGroups.FourGon.Hyp.b₆_mem	def
+TemperedFundamentalGroups.FourGon.Hyp.continuous	def
+TemperedFundamentalGroups.FourGon.Hyp.nonvanish	def
+TemperedFundamentalGroups.FourGon.Hyp.rels	def
+TemperedFundamentalGroups.FourGon.Hyp.special	def
+TemperedFundamentalGroups.FourGon.Hyp.two	def
+TemperedFundamentalGroups.FourGon.Hyp.γ_unit	def
+TemperedFundamentalGroups.FourGon.Hyp.ε_mem	def
+TemperedFundamentalGroups.FourGon.Hyp.π_mem	def
+TemperedFundamentalGroups.FourGon.Input.b₆'_mem	def
+TemperedFundamentalGroups.FourGon.Input.eq₁	def
+TemperedFundamentalGroups.FourGon.Input.eq₂	def
+TemperedFundamentalGroups.FourGon.Input.q₃	def
+TemperedFundamentalGroups.FourGon.Input.q₄	def
+TemperedFundamentalGroups.FourGon.Input.q₅	def
+TemperedFundamentalGroups.FourGon.Input.two_unit	def
+TemperedFundamentalGroups.FourGon.Input.vx	def
+TemperedFundamentalGroups.FourGon.Input.vy	def
+TemperedFundamentalGroups.FourGon.Input.γ_unit	def
+TemperedFundamentalGroups.FourGon.Input.ε_mem	def
+TemperedFundamentalGroups.FourGon.Rels.cub₁	def
+TemperedFundamentalGroups.FourGon.Rels.cub₂	def
+TemperedFundamentalGroups.FourGon.Rels.q₃	def
+TemperedFundamentalGroups.FourGon.Rels.q₄	def
+TemperedFundamentalGroups.FourGon.Rels.q₅	def

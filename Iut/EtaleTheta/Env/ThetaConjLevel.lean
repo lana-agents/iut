@@ -33,10 +33,9 @@ mod `l`).
   with `e ∈ Π^tp_Y ∖ Π^tp_Ÿ` and MR14's `piYddotX_index`) and `Π^tp_Y ⊆ Π^tp_Ÿ`
   (`exists_cX_of_invariant_ker`); the `lℤ`-direction is `g = g₁^l`.
 * **`exists_thetaEnvU_rigidity_cX`** (concrete): `exists_thetaEnvU_rigidity` with `cX` produced
-  instead of assumed, for the theta system of `exists_thetaRep_inputs`, under C1, the geometric
-  input `ZM 0` ((Z_2), `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`, which gives debt Z at `j = 0`; TFGD
-  runs 2, 4); 13a (`g₁` with `χ̂(g₁) = 1` for the normalised character
-  `χ̂ = TateObject.charN`) from Theorem B.
+  instead of assumed, for the theta system of `exists_thetaRep_inputs`, under C1 (debt Z at
+  `j = 0` from (Z_2) = `zM_zero`, `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`; TFGD runs 2, 4, 6); 13a (`g₁`
+  with `χ̂(g₁) = 1` for the normalised character `χ̂ = TateObject.charN`) from Theorem B.
 -/
 
 open CategoryTheory AlgebraicGeometry Polynomial Belyi Belyi.P1 Belyi.Anabelian Pi1.Orbifold
@@ -329,11 +328,11 @@ variable [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O
   [PerfectField (IsLocalRing.ResidueField O)] in
 include h2 in
 /-- **[EtTh] §2 for `X̲`, with the splitting cocycle constructed** (obligation 13 discharged
-modulo C1 and (Z_2)): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
+modulo C1): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
 For the theta system of `exists_thetaRep_inputs`, `O` a complete discrete valuation ring of mixed
-characteristic `(0, p)` with perfect residue field, every base point `V` over `O`, under C1 and
-the geometric input (Z_2) (`ZM 0`, `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`, which gives debt Z at `j = 0`,
-`[Π^tp_Y : Π^tp_Ÿ] ≤ 2`; owner TFGD/tfg), every odd `l`, every `N ≥ 1` and every
+characteristic `(0, p)` with perfect residue field, every base point `V` over `O`, under C1
+(debt Z at `j = 0`, `[Π^tp_Y : Π^tp_Ÿ] ≤ 2`, is discharged by (Z_2) = `zM_zero`,
+`Π^tp_Y ≤ Π^tp_{K(E_{q²})}`), every odd `l`, every `N ≥ 1` and every
 representative `r` of the theta class mod `lN` on `Π^tp_Ÿ`, there is a splitting cocycle
 `cX : Π^tp_X̿ → μ_l` with `hcXr` (`exists_cX_of_moves`, at the level `j = 2l − 1`), and
 `EnvUConclusions` hold for the curve `X̲` it defines. Debt 13a is discharged (TFGD run 2):
@@ -353,7 +352,6 @@ theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
         (∀ j, ZM h2 h12 O hO hs j V hV) → LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL),
-        ZM h2 h12 O hO hs 0 V hV →
         ∀ (l N : ℕ) [NeZero l] [NeZero N], Odd l →
         ∀ (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu (l * N) Ω)),
         ContH1.mk r = thetaClassTemp η hC1 (l * N) →
@@ -368,8 +366,8 @@ theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
               CuspInertiaWeil (DXc)) := by
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
     Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
-      ⟨h.1, h.2.2.2.2.1, fun V hV hC1 hZ2 l N _ _ hl r hr => ?_⟩
-  obtain ⟨hZ, hmv⟩ := h.2.2.1 V hV hZ2
+      ⟨h.1, h.2.2.2.2.1, fun V hV hC1 l N _ _ hl r hr => ?_⟩
+  obtain ⟨hZ, hmv⟩ := h.2.2.1 V hV
   obtain ⟨g₁, hg₁⟩ := exists_charN_eq_one_tateDataX h12 O hO hs p hp hpm V hV
   have hlj : 2 * l ∣ 2 * (2 * l - 1 + 1) := by
     rw [Nat.sub_add_cancel (by have := NeZero.ne l; omega)]

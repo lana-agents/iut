@@ -367,6 +367,14 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `ZM j`). The consumers (`exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`,
   `exists_thetaEnvU_rigidity_cX`) take `ZM 0` in place of `ZTwo`: the only geometric inputs left
   for Z_0 and C1 are the `ZM j`.
+* (11r) **(Z_2) = `ZM 0` proved (TFGD runs 4–6)**: `TemperedFourGonInput.lean` (new): Vélu for
+  `E_{q²} → E_q` as splitting of the Tate series (`velu_X`, `velu_Y`), the translation relations by
+  the `2`-torsion point (`addT_rels`), the norms of the coefficients, **`exists_fourGonInput`**
+  (`x₁, y₁, x₂, y₂ ∈ K[E_{q²}]` with the `ℙ⁴`-model relations and the deck-swap fibre property)
+  and **`zM_zero`** (with tfg's `FourGon.exists_object`, the `4`-gon model of `E_{q²}` over the
+  Tate `2`-gon, and `piY_le_range_of_hom`). The `ZM 0` hypotheses of
+  `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`, `exists_thetaEnvU_rigidity_cX` are
+  removed (Z_0 is discharged); C1 still takes `∀ j, ZM j`.
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
