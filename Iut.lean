@@ -190,6 +190,7 @@ import Iut.EtaleTheta.Env.PiX
 import Iut.EtaleTheta.Env.Prop214
 import Iut.EtaleTheta.Env.Reduction
 import Iut.EtaleTheta.Env.Shift
+import Iut.EtaleTheta.Env.ThetaConjLevel
 import Iut.EtaleTheta.Env.ThetaConjModL
 import Iut.EtaleTheta.Env.ThetaConjTemp
 import Iut.EtaleTheta.Env.ThetaLTors

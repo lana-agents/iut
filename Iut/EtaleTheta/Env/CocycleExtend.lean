@@ -442,6 +442,31 @@ theorem exists_cocycle_extend {l : ℕ} (hl : Odd l) (hM : ∀ m : M, m ^ l = 1)
   change (S h).left = c h
   rw [hST _ (hHχ h.2), hTH _ h.2, secH_of_mem h.2]
 
+/-- **Extension when `H = Ker χ`** (the case `[Ker χ : H] = 1` of `exists_cocycle_extend`): if
+the `g`-conjugate of a cocycle `c` on `H = Ker χ ⊴ G`, `χ g = 1`, is cohomologous to `c`,
+then `c` extends to a cocycle on `G` (no condition on `M`). -/
+theorem exists_cocycle_extend_ker (H : Subgroup G) (hHn : H.Normal) (χ : G →* Multiplicative ℤ)
+    (hHχ : H ≤ χ.ker) (hχH : ∀ y ∈ χ.ker, y ∈ H) {g : G} (hg : χ g = Multiplicative.ofAdd 1)
+    (c : H → M) (hc : IsCocycle (φ.comp H.subtype) c) (mg : M)
+    (hcg : ∀ (h : G) (hh : h ∈ H), c ⟨g * h * g⁻¹, hHn.conj_mem h hh g⟩ =
+      mg * φ g (c ⟨h, hh⟩) * (φ (g * h * g⁻¹) mg)⁻¹) :
+    ∃ C : G → M, IsCocycle φ C ∧ ∀ h : H, C h = c h := by
+  have hG0 : Compat c (⟨mg, g⟩ : M ⋊[φ] G) g := by
+    intro x hx
+    rw [secH_of_mem hx, secH_of_mem (hHn.conj_mem x hx g)]
+    ext
+    · simp only [mul_left, inv_left, mul_right]
+      rw [hcg x hx, ← MulAut.mul_apply, ← map_mul, map_inv]
+    · simp
+  obtain ⟨S, hSr, hST⟩ := exists_hom_extend_int χ hg (secH c)
+    (fun x hx y hy => secH_mul hc (hχH x hx) (hχH y hy))
+    (fun x hx => secH_right (hχH x hx)) ⟨mg, g⟩ rfl
+    (fun x hx => hG0 x (hχH x hx))
+  obtain ⟨hδ, -⟩ := eq_sectionOf S hSr
+  refine ⟨fun x => (S x).left, hδ, fun h => ?_⟩
+  change (S h).left = c h
+  rw [hST _ (hHχ h.2), secH_of_mem h.2]
+
 end Main
 
 end Iut.EtaleTheta.Env

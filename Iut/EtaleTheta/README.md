@@ -675,5 +675,12 @@ the MR15 plan.
   `contH1_pow_eq_one`, `kummerMap_pow_eq_one`, **`conjH1_kummerMap_of_pow`** (`σ(η) = z^l·η` ⇒ `κ_l(η)` is
   `conjH1 σ`-invariant); tempered: `conjSub`, **`conjH1Sub`** (conjugation on `H¹` of a normalised subgroup),
   `exists_coboundary_of_conjH1Sub`, `exists_hce_of_invariant` and **`exists_cX_of_classInvariant`** (obligation 13
-  from 13a, 13b and the class-level invariance of `θ mod l` under conjugation by `e` and `g`). Open: the tempered
-  transport of `conjH1_kummerMap_of_pow` to `Π^tp_Ÿ` (needs 13c(i) `w_j` and MR14's 13c(ii)).
+  from 13a, 13b and the class-level invariance of `θ mod l` under conjugation by `e` and `g`).
+* `Env/ThetaConjLevel.lean` (MR15 run 8, **obligation 13c(iii)**, done) — `piRes_level_injective` (`Π_{L'} → Π_X`
+  injective for an étale level), **`conjH1Sub_resLevel`** (tempered conjugation of restricted level classes = étale
+  `conjH1` by a lift `σ`), **`conjH1Sub_classAt_of_pow`** (invariance of `κ^tp_l(η_j)|_{Π^tp_Ÿ}` when `σ(η_j) = z^l η_j`),
+  **`exists_cX_of_moves`** (obligation 13 from MR14's tempered translation formula, debt Z and `g₁`, both cases
+  `[Π^tp_Y : Π^tp_Ÿ] ∈ {1, 2}`; with `exists_cX_of_invariant_ker` (`Env/ThetaLTors.lean`) and
+  `exists_cocycle_extend_ker` (`Env/CocycleExtend.lean`) for the index-1 case), and the concrete
+  **`exists_thetaEnvU_rigidity_cX`** (`exists_thetaEnvU_rigidity` with `∃ cX` produced, under C1, debt Z at `j = 0`
+  and 13a). `exists_thetaRep_inputs` now also carries MR14's stability and translation conjuncts.

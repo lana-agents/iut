@@ -786,6 +786,45 @@ theorem exists_cX_of_invariant (hl : Odd l)
     me mg (fun h hh => hce h.1 hh) (fun h hh => hcg h.1 hh)
   exact ⟨C, hC, fun γ h => hCH ⟨⟨γ, h⟩, γ.2⟩⟩
 
+/-- **Obligation 13 when `Π^tp_Y ⊆ Π^tp_Ÿ`** (the case `[Π^tp_Y : Π^tp_Ÿ] = 1`, complementary to
+`exists_cX_of_invariant`): only the `lℤ`-direction `g` (`χ(g) = l`) is needed
+(`exists_cocycle_extend_ker`). -/
+theorem exists_cX_of_invariant_ker
+    (hHn : ∀ x ∈ piXdd V hV T l, ∀ h ∈ PYddg, x * h * x⁻¹ ∈ PYddg)
+    (hYY : ∀ y ∈ PYg, y ∈ PYddg) {g : PXg}
+    (hg : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV g =
+      Multiplicative.ofAdd (l : ℤ))
+    (mg : Mu l Ω)
+    (hcg : ∀ (h : PXg) (hh : h ∈ PYddg),
+      redCocycle r ⟨g * h * g⁻¹, hHn g (by
+        change _ ∈ Subgroup.zpowers _; rw [hg]; exact Subgroup.mem_zpowers _) h hh⟩ =
+        mg * act augg (psiMu l) g (redCocycle r ⟨h, hh⟩) *
+          (act augg (psiMu l) (g * h * g⁻¹) mg)⁻¹) :
+    ∃ (cX : piXdd V hV T l → Mu l Ω)
+      (_ : IsCocycle (actDD augg (psiMu (k := k) (Ω := Ω) l) (piXdd V hV T l)) cX),
+      ∀ (γ : PYddg) (h : (γ : PXg) ∈ piXdd V hV T l),
+        cX ⟨γ, h⟩ = Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ) := by
+  have hl0 : (l : ℤ) ≠ 0 := by exact_mod_cast NeZero.ne l
+  set χ := divChar ((TemperedFundamentalGroups.TateObject.character
+    (A := (fieldData ht LX hLX).A) T V hV).comp (piXdd V hV T l).subtype) (l : ℤ)
+    (dvd_character_piXdd (l := l)) with hχ
+  have hker : ∀ x : piXdd V hV T l, x ∈ χ.ker ↔ (x : PXg) ∈ PYg := fun x => by
+    rw [MonoidHom.mem_ker, hχ, divChar_eq_one_iff hl0]
+    exact Iff.rfl
+  set H := (piYddotX V hV T hL).subgroupOf (piXdd V hV T l) with hHdef
+  have hHn' : H.Normal := ⟨fun n hn x => hHn x.1 x.2 n.1 hn⟩
+  have hgdd : g ∈ piXdd V hV T l := by
+    change _ ∈ Subgroup.zpowers _; rw [hg]; exact Subgroup.mem_zpowers _
+  obtain ⟨C, hC, hCH⟩ := exists_cocycle_extend_ker (φ := actDD augg (psiMu (k := k) (Ω := Ω) l)
+      (piXdd V hV T l)) H hHn' χ
+    (fun x hx => (hker x).2 (piYddotX_le_piY T hL hx))
+    (fun y hy => hYY y.1 ((hker y).1 hy)) (g := ⟨g, hgdd⟩)
+    (divChar_eq_ofAdd_one hl0 _ hg)
+    (fun h => redCocycle r ⟨h.1.1, h.2⟩)
+    (fun a b => isCocycle_redCocycle r ⟨a.1.1, a.2⟩ ⟨b.1.1, b.2⟩)
+    mg (fun h hh => hcg h.1 hh)
+  exact ⟨C, hC, fun γ h => hCH ⟨⟨γ, h⟩, γ.2⟩⟩
+
 end Levels
 
 /-! ### Root representatives along the levels -/
@@ -876,6 +915,10 @@ theta system of `exists_thetaClassTemp_prop13`, every base point `V` over `O`, u
   `CuspInertiaWeil`, `r` maps `Π^tp_Ÿ ∩ (preimage of Δ_Θ)` onto
   `μ_n` (cusp inertia).
 
+The system also carries MR14's stability `σ(L_j) ⊆ L_j` and the tempered translation formula
+(run 18, [EtTh] Prop. 1.5(iii) mod `l`), the inputs of obligation 13
+(`exists_cX_of_moves`, `Env/ThetaConjLevel.lean`).
+
 With `n = l·N`, these are the inputs `hr13`, `hrL` of `cyclotomicRigidity_thetaEnvU` and
 `ker_autPY_inlY_eq_thetaEnvU`; the `l`-th root property of the root class is `rootClass_pow` with
 `transTemp_thetaClassTemp` (compatibility of the theta classes in `n`). -/
@@ -887,6 +930,20 @@ theorem exists_thetaRep_inputs :
         (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
       (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
+      (∀ j, ∀ σ ∈ (hemiData t.tateCurve).L.fixingSubgroup, ∀ x ∈ L j, σ x ∈ L j) ∧
+      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (j l : ℕ), Odd l →
+        2 * l ∣ 2 * (j + 1) → LevelsDominated V hV (tateDataX O hO hs h12) hL →
+        PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 →
+        ∀ (g₁ : TempPi DXc O V hV),
+          TemperedFundamentalGroups.TateObject.character (A := (DXc).A)
+            (tateDataX O hO hs h12) V hV g₁ = Multiplicative.ofAdd (1 : ℤ) →
+        ∀ (γ : TempPi DXc O V hV) (m : ℤ),
+          TemperedFundamentalGroups.TateObject.character (A := (DXc).A)
+            (tateDataX O hO hs h12) V hV γ = Multiplicative.ofAdd ((l : ℤ) * m) →
+        ∀ σ : (DXc).H, (σ : Pi (DXc)) = tempToPi DXc O V hV γ →
+          MovesByPow (L j) (σ : Ω ≃ₐ[K₀ K τ] Ω)
+            (((η j : (F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
+              F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω) l) ∧
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
           (LX := (hemiData t.tateCurve).L) (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η) ∧
@@ -900,9 +957,9 @@ theorem exists_thetaRep_inputs :
           CuspInertiaWeil (DXc) →
           ∀ m : Mu n Ω, ∃ γ : piYddotX V hV (tateDataX O hO hs h12) hL,
             (γ : TempPi DXc O V hV) ∈ thetaL (tateDataX O hO hs h12) hL ∧ r γ = m := by
-  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta, -⟩ :=
+  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta, hstab, hmove⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
-  refine ⟨L, hL, hX, het, η, htr, hcomp, fun V hV hC1 n _ r hr => ⟨fun γ hγ => ?_,
+  refine ⟨L, hL, hX, het, η, htr, hstab, hmove, hcomp, fun V hV hC1 n _ r hr => ⟨fun γ hγ => ?_,
     fun W hk hτ hVW hG5 m => ?_⟩⟩
   · have hdvd : n ∣ 2 * (n - 1 + 1) :=
       ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩
@@ -959,10 +1016,10 @@ theorem exists_thetaEnvU_rigidity :
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
     Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
       ⟨h.1, fun V hV hC1 l N _ _ r hr {_} hcX hcXr => ?_⟩
-  obtain ⟨hr13, hrL⟩ := h.2.2 V hV hC1 (l * N) r hr
+  obtain ⟨hr13, hrL⟩ := h.2.2.2.2 V hV hC1 (l * N) r hr
   exact envUConclusions_of hcX r hcXr
     ((congrArg (transTemp (tateDataX O hO hs h12) hL (Dvd.intro_left l rfl : N ∣ l * N)) hr).trans
-      ((h.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))
+      ((h.2.2.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))
     hr13 (fun ⟨W, hk, hτ, hVW, _⟩ => surj_augT_of_ratPoint (tateDataX O hO hs h12)
       (cuspRatPoint hk hτ) hVW) fun ⟨W, hk, hτ, hVW, hG5⟩ => hrL W hk hτ hVW hG5
 
