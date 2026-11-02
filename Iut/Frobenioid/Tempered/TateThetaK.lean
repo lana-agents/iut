@@ -24,6 +24,9 @@ deck part is `tateDeckOfChar 1 = 1` and its Galois part fixes `k`. Hence:
   `bUK` (`Ü`), `bOneK` (`q^{1/2} = s ∈ k`): the theta function and the coordinate are elements of
   `B₀(Ÿ)` of the tempered Frobenioid over `k` ([EtTh] Ex 3.9(iv): `Φ^ell_α` is rational because of
   the theta functions, l.6176–6204; Prop 1.4(i) for the zeros of `Θ̈`).
+* **`div_thetaEltK`**: the divisor of `thetaEltK z` at `(gΠ^tp_Ÿ, p)` is `div(f)(g⁻¹ • p)`;
+  **`div_bThetaK_inl`** (`-(a + χ(g))²/2` on the component `a`), `div_bThetaK_inr` (`1` at the
+  cusps): [EtTh] Prop 1.4(i) in `B₀(Ÿ)` over `k`.
 * **[EtTh] Prop 1.4(ii) for the Tate action** (l.1324–1328): `gal_thetaDd` (`Θ̈` has `σ`-fixed
   coefficients), `scale_tateDeckOfChar_thetaDd`, **`galDeckHom_tateGalDeckK_thetaDd`**: `g ∈ Π^tp_X`
   maps `Θ̈` to `(-1)^ε (-1)^n s^{-n²} Ü^{-2n} Θ̈`, `(n, ε) = character₂ g`.
@@ -172,6 +175,52 @@ lemma isLogMero_map_s :
 /-- **`q^{1/2} = s ∈ B₀(Ÿ)`** of the tempered Frobenioid over `k`. -/
 def bOneK : (tateFrobK DG V hV hι D sΩ hsΩ hval hs hs₀).B₀.obj (objYdd DG V hV D sΩ hsΩ) :=
   thetaEltK DG V hV hι D sΩ hsΩ hval hs hs₀ _ (isLogMero_map_s hs₀)
+
+/-- **The divisor of `thetaEltK z` in `tateFrobK`**: at the point `(g Π^tp_Ÿ, p)` it is the
+divisor of `f = z ⊗ K` at `g⁻¹ • p` (`g` acting on the elliptic prime set through the Tate
+action). -/
+theorem div_thetaEltK (z : Mero k)
+    (hz : IsLogMero t (Mero.map (algebraMap k K) norm_algebraMap_k z))
+    (g : TempPi DG O V hV)
+    (p : PrimeAct ((galDeckPerm t).comp
+      (tateGalDeckK (DG := DG) (V := V) (hV := hV) hι D sΩ hsΩ hs hs₀))) :
+    ((tateFrobK DG V hV hι D sΩ hsΩ hval hs hs₀).div₀.app (objYdd DG V hV D sΩ hsΩ)
+        (thetaEltK DG V hV hι D sΩ hsΩ hval hs hs₀ z hz)).1 (QuotientGroup.mk g, p) =
+      ellDiv t s (Mero.map (algebraMap k K) norm_algebraMap_k z)
+        (show EllPrime t from g⁻¹ • p) := by
+  change radDivFun s _ _ (rv (thetaEltK DG V hV hι D sΩ hsΩ hval hs hs₀ z hz).1)
+    (QuotientGroup.mk g, p) = _
+  rw [radDivFun_mk (actCompat_galDeck _ hval hs) (rv_ne_zero _) (rv_isRad _) (rv_isLogRad _)
+    (rv_fix _)]
+  exact congrFun (rEllDiv_ι (R := GalDeckMero
+    (tateGalDeckK (DG := DG) (V := V) (hV := hV) hι D sΩ hsΩ hs hs₀)) hval hs hz.1) _
+
+lemma bThetaK_eq :
+    bThetaK DG V hV hι D sΩ hsΩ hval hs hs₀ =
+      thetaEltK DG V hV hι D sΩ hsΩ hval hs hs₀ _ (isLogMero_map_thetaDdK hs hs₀) := rfl
+
+lemma map_ofE_thetaDdK :
+    Mero.map (algebraMap k K) norm_algebraMap_k
+      (Mero.ofE (thetaDd (tateParamK (q_of_s hs hs₀)))) = Mero.ofE (thetaDd t) := by
+  rw [Mero.map_ofE, map_thetaDdK]
+
+/-- **The divisor of `Θ̈ ∈ B₀(Ÿ)` on the components** ([EtTh] Prop 1.4(i)): at `(g Π^tp_Ÿ, a)` it
+is `-(a + χ(g))²/2` (`χ` the character of `Y`). -/
+theorem div_bThetaK_inl (h2 : (2 : K) ≠ 0) (g : TempPi DG O V hV) (a : ℤ) :
+    ((tateFrobK DG V hV hι D sΩ hsΩ hval hs hs₀).div₀.app (objYdd DG V hV D sΩ hsΩ)
+        (bThetaK DG V hV hι D sΩ hsΩ hval hs hs₀)).1 (QuotientGroup.mk g, Sum.inl a) =
+      -(((a + Multiplicative.toAdd (character (A := DG.A) D.toData V hV g) : ℤ) : ℚ) ^ 2) / 2 := by
+  rw [bThetaK_eq, div_thetaEltK, map_ofE_thetaDdK hs hs₀, ellDiv_thetaDd h2 hs]
+  change (Sum.elim (fun a : ℤ => -((a : ℚ) ^ 2) / 2) fun _ => 1 : EllPrime t → ℚ)
+    (Sum.inl (a + Deck.idx (tateDeck V hV D sΩ hsΩ hs g⁻¹))) = _
+  rw [Sum.elim_inl, idx_tateDeck, map_inv, toAdd_inv, neg_neg]
+
+/-- **The divisor of `Θ̈ ∈ B₀(Ÿ)` at the cusps is `1`** ([EtTh] Prop 1.4(i)). -/
+theorem div_bThetaK_inr (h2 : (2 : K) ≠ 0) (g : TempPi DG O V hV) (α : Cusp t) :
+    ((tateFrobK DG V hV hι D sΩ hsΩ hval hs hs₀).div₀.app (objYdd DG V hV D sΩ hsΩ)
+        (bThetaK DG V hV hι D sΩ hsΩ hval hs hs₀)).1 (QuotientGroup.mk g, Sum.inr α) = 1 := by
+  rw [bThetaK_eq, div_thetaEltK, map_ofE_thetaDdK hs hs₀, ellDiv_thetaDd h2 hs]
+  rfl
 
 end Elts
 
