@@ -526,7 +526,9 @@ import Iut.Reconstruction.Thm19.InertiaConj
 import Iut.Reconstruction.Thm19.LimCongr
 import Iut.Reconstruction.Thm19.LimEquiv
 import Iut.Reconstruction.Thm19.LimIso
+import Iut.Reconstruction.Thm19.LimOfG
 import Iut.Reconstruction.Thm19.NFAdditive
+import Iut.Reconstruction.Thm19.NFCanon
 import Iut.Reconstruction.Thm19.NFColimit
 import Iut.Reconstruction.Thm19.NFDecomp
 import Iut.Reconstruction.Thm19.NFDirectLimit
@@ -541,6 +543,7 @@ import Iut.Reconstruction.Thm19.PUStage
 import Iut.Reconstruction.Thm19.PiJCongr
 import Iut.Reconstruction.Thm19.PlaceConj
 import Iut.Reconstruction.Thm19.PointDecomp
+import Iut.Reconstruction.Thm19.RatCusps
 import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
 import Iut.Reconstruction.Thm19.RecPoints

@@ -1516,3 +1516,11 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     element condition alone would need "cuspidal inertia groups meeting nontrivially are equal".
   Debts now: `TameCompat` gone; unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points /
   genus `≠ 0` of both compactifications (item 1), `CKStrictSemiAbs`.
+* Addendum (session r, second push): item 4 step 4 started (scoping by a session-r helper, plan in the hand-off
+  below). **`Thm19/NFCanon.lean`**: over a number field `k̄ = k̄_NF`, so `kbarNF_eq_bot`, the canonical
+  **`nfModelNF`** (`F_NF = F k̄`), **`NFModel.mem_FNF_iff_numberField`** (every NF-model is the canonical one: no
+  correspondence of `N`, `N'` is needed for Thm 1.9 (d) along `Φ`), **`StageIdx.isNF_numberField`** (every
+  stage is an NF-stage). **`Thm19/RatCusps.lean`**: **`exists_ratCusps`** (after a finite extension of the field
+  of constants every cusp is rational), **`GStage.exists_ge_ratCusps`** (geometric stages with rational cusps are
+  cofinal — the hypothesis `hrat` of `S_mem_PU_cycloIso`). **`Thm19/LimOfG.lean`**: `gLimEquiv_mk`,
+  **`h1LimEquiv_ofG`** (`h1LimEquiv [g, y] = [L.tgt, L.S y]` for `L = LiftData.choose Φ hS g`).
