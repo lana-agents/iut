@@ -14,6 +14,10 @@ stages):
 
 * `LiftData.hfill`, `gStage_cuspSep`, `LiftData.cuspSep`:
   the inputs of `cycloCongr_tameGen_of_cusps` for the normalised lift `L.e`;
+* `TameBridge hτ hU hτ₂ hU₂ Φ χU` (the Prop-valued def "`χU` maps the tame generator of a cusp to
+  that of the cusp matched by `bridgeIso Φ`"), **`tameBridge_cycloIso`**;
+  `LiftData.cycloVχ_of_tameBridge`, `LiftData.tameCompat_of_tameBridge`: the results below for
+  every `χU` with `TameBridge` (used for `(cycloIso Φ).symm` along `Φ.symm`);
 * **`LiftData.cycloVχ_cycloIso`**: the coefficients `cycloVχ (cycloIso Φ)` of the stage are the
   cyclotome `cycloCongr L.e` (at a cusp `W` of `U`, every element of `Ẑ(1)` is a tame generator
   `θ_{(W, σ)}`, `tameChar_surjective`; both isomorphisms send it to the tame generator of the image
@@ -80,18 +84,54 @@ lemma LiftData.cuspSep (L : LiftData hτ hU hτ₂ hU₂ Φ g) : CuspSep (curveG
   cuspSep_curve Ω₂ (C := subCurve C₂ (chartOne K₂ C₂.Xbar L.υ) (chartOne_le_U hτ₂ hU₂ L.hυ L.htV)
     (chartOne_ne L.υ)) L.hυ rfl
 
+variable (hτ hU hτ₂ hU₂ Φ) in
+/-- **`χU` carries tame generators of cusps matched by `bridgeIso Φ`**: for cusps `p`, `p'` of `U`,
+`U'` with `bridgeIso Φ (I_p) = I_{p'}` and `bridgeIso Φ [σ_p] = [σ_{p'}]`, `χU (θ_p) = θ_{p'}`.
+Proved for `cycloIso Φ` (`tameBridge_cycloIso`) and for `(cycloIso Φ).symm` along `Φ.symm`
+(`tameBridge_cycloIso_symm`, `Thm19/KummerLift.lean`); used only as an explicit argument of the
+generic forms below. -/
+def TameBridge (χU : ZHatOne (F (curveGaloisData K hτ)) (FFClosure C.Xbar) ≃ₜ*
+    ZHatOne (F (curveGaloisData K₂ hτ₂)) (FFClosure C₂.Xbar)) : Prop :=
+  ∀ (p : InertiaIndex (curveGaloisData K hτ)) (p' : InertiaIndex (curveGaloisData K₂ hτ₂)),
+    coordT τ ∉ p.1.1 → coordT τ₂ ∉ p'.1.1 →
+    (inertiaPi (curveGaloisData K hτ) p.1.1).map
+        (bridgeIso hτ hU hτ₂ hU₂ Φ).toMulEquiv.toMonoidHom =
+      inertiaPi (curveGaloisData K₂ hτ₂) p'.1.1 →
+    bridgeIso hτ hU hτ₂ hU₂ Φ ((p.1.2 : (curveGaloisData K hτ).H) : Pi (curveGaloisData K hτ)) =
+      ((p'.1.2 : (curveGaloisData K₂ hτ₂).H) : Pi (curveGaloisData K₂ hτ₂)) →
+    χU (tameGen p) = tameGen p'
+
 variable [Fact (0 < (CurvesJacobian.curveGenus K C.Xbar).toNat)]
   [Fact (0 < (CurvesJacobian.curveGenus K₂ C₂.Xbar).toNat)]
+
+set_option maxHeartbeats 1600000 in
+-- the quotients `Π_U`, the modules `M_X` and `Ẑ(1)` unify slowly
+set_option synthInstance.maxHeartbeats 400000 in
+-- the group structures on the quotients `Π_U` are found slowly
+variable (hτ hU hτ₂ hU₂ Φ) in
+/-- **`cycloIso Φ` carries tame generators to tame generators** (`cycloCongr_tameGen_of_cusps` for
+`bridgeIso Φ`, `cuspSep_curve` on both sides). -/
+theorem tameBridge_cycloIso : TameBridge hτ hU hτ₂ hU₂ Φ (cycloIso hτ hU hτ₂ hU₂ Φ) :=
+  fun p p' hp hp' hWB hσB =>
+    cycloCongr_tameGen_of_cusps (bridgeIso hτ hU hτ₂ hU₂ Φ) (bridgeIso_fill hτ hU hτ₂ hU₂ Φ)
+      (gkIso hτ hU hτ₂ hU₂ Φ) (bridgeIso_gk hτ hU hτ₂ hU₂ Φ)
+      (fun W hW => exists_map_inertiaH_bridgeIso hτ hU hτ₂ hU₂ Φ W hW)
+      (fun W hW => exists_map_inertiaH_bridgeIso_symm hτ hU hτ₂ hU₂ Φ W hW)
+      (cuspSep_curve Ω hτ hU) (cuspSep_curve Ω₂ hτ₂ hU₂) p p' hp hp' hWB hσB
 
 set_option maxHeartbeats 3200000 in
 -- the quotients `Π_U`, `Π_V`, the modules `M_X` and `Ẑ(1)` unify slowly
 set_option synthInstance.maxHeartbeats 400000 in
 -- the group structures on the quotients `Π_V` are found slowly
-/-- **The coefficients of the stage are the cyclotome of the normalised lift**:
-`cycloVχ (cycloIso Φ) = cycloCongr L.e`. -/
-theorem LiftData.cycloVχ_cycloIso (L : LiftData hτ hU hτ₂ hU₂ Φ g)
+/-- **The coefficients of the stage are the cyclotome of the normalised lift**, for any `χU`
+carrying tame generators along `bridgeIso Φ` (`TameBridge`):
+`cycloVχ χU = cycloCongr L.e`. -/
+theorem LiftData.cycloVχ_of_tameBridge
+    (χU : ZHatOne (F (curveGaloisData K hτ)) (FFClosure C.Xbar) ≃ₜ*
+      ZHatOne (F (curveGaloisData K₂ hτ₂)) (FFClosure C₂.Xbar))
+    (hR : TameBridge hτ hU hτ₂ hU₂ Φ χU) (L : LiftData hτ hU hτ₂ hU₂ Φ g)
     (z : ZHatOne (F (curveGaloisData K g.hτ₀)) (FFClosure C.Xbar)) :
-    cycloVχ (cycloIso hτ hU hτ₂ hU₂ Φ) g.hτ₀ L.hυ z =
+    cycloVχ χU g.hτ₀ L.hυ z =
       cycloCongr L.e L.hfill (gkIso hτ hU hτ₂ hU₂ Φ) L.he_gk z := by
   -- a cusp `W` of `U`
   obtain ⟨W₁, hW₁⟩ := exists_isCuspPlace₂ Ω C hc.out
@@ -150,12 +190,7 @@ theorem LiftData.cycloVχ_cycloIso (L : LiftData hτ hU hτ₂ hU₂ Φ g)
     ((congrArg (piT (curveGaloisData K₂ hτ₂) (curveGaloisData K₂ L.hυ) (F_cGD hτ₂ L.hυ)
       (hW_chart L.htV) (curveGaloisData_H_le K₂ hτ₂)) he'').trans
       (L.he ((σ : (curveGaloisData K g.hτ₀).H) : Pi (curveGaloisData K g.hτ₀)))).symm
-  have R1 : cycloIso hτ hU hτ₂ hU₂ Φ (tameGen p) = tameGen p' :=
-    cycloCongr_tameGen_of_cusps (bridgeIso hτ hU hτ₂ hU₂ Φ) (bridgeIso_fill hτ hU hτ₂ hU₂ Φ)
-      (gkIso hτ hU hτ₂ hU₂ Φ) (bridgeIso_gk hτ hU hτ₂ hU₂ Φ)
-      (fun W hW => exists_map_inertiaH_bridgeIso hτ hU hτ₂ hU₂ Φ W hW)
-      (fun W hW => exists_map_inertiaH_bridgeIso_symm hτ hU hτ₂ hU₂ Φ W hW)
-      (cuspSep_curve Ω hτ hU) (cuspSep_curve Ω₂ hτ₂ hU₂) p p' hW.2 ht₂ hWB hσB
+  have R1 : χU (tameGen p) = tameGen p' := hR p p' hW.2 ht₂ hWB hσB
   have hpq' : zHatRes (F (curveGaloisData K₂ hτ₂)) (F (curveGaloisData K₂ L.hυ))
       (FFClosure C₂.Xbar) (FFClosure C₂.Xbar) (tameGen p') = tameGen q' :=
     zHatRes_tameGen_eq p' q' (fun _ => rfl) (valuation_unif_eq_of_eq p' q'
@@ -166,9 +201,9 @@ theorem LiftData.cycloVχ_cycloIso (L : LiftData hτ hU hτ₂ hU₂ Φ g)
     rw [ContinuousMulEquiv.symm_apply_eq]
     exact hpq.symm
   rw [← hq]
-  calc cycloVχ (cycloIso hτ hU hτ₂ hU₂ Φ) g.hτ₀ L.hυ (tameGen q) =
+  calc cycloVχ χU g.hτ₀ L.hυ (tameGen q) =
         zHatResEquiv (FFClosure C₂.Xbar) (F (curveGaloisData K₂ hτ₂))
-          (F (curveGaloisData K₂ L.hυ)) (cycloIso hτ hU hτ₂ hU₂ Φ
+          (F (curveGaloisData K₂ L.hυ)) (χU
             ((zHatResEquiv (FFClosure C.Xbar) (F (curveGaloisData K hτ))
               (F (curveGaloisData K g.hτ₀))).symm (tameGen q))) := rfl
     _ = zHatResEquiv (FFClosure C₂.Xbar) (F (curveGaloisData K₂ hτ₂))
@@ -176,17 +211,28 @@ theorem LiftData.cycloVχ_cycloIso (L : LiftData hτ hU hτ₂ hU₂ Φ g)
     _ = tameGen q' := hpq'
     _ = _ := R2.symm
 
+/-- **The coefficients of the stage are the cyclotome of the normalised lift**:
+`cycloVχ (cycloIso Φ) = cycloCongr L.e`. -/
+theorem LiftData.cycloVχ_cycloIso (L : LiftData hτ hU hτ₂ hU₂ Φ g)
+    (z : ZHatOne (F (curveGaloisData K g.hτ₀)) (FFClosure C.Xbar)) :
+    cycloVχ (cycloIso hτ hU hτ₂ hU₂ Φ) g.hτ₀ L.hυ z =
+      cycloCongr L.e L.hfill (gkIso hτ hU hτ₂ hU₂ Φ) L.he_gk z :=
+  L.cycloVχ_of_tameBridge _ (tameBridge_cycloIso hτ hU hτ₂ hU₂ Φ) z
+
 set_option maxHeartbeats 3200000 in
 -- the quotients `Π_V`, the modules `M_X` and `Ẑ(1)` unify slowly
 set_option synthInstance.maxHeartbeats 400000 in
 -- the group structures on the quotients `Π_V` are found slowly
-/-- **`TameCompat` for `χU = cycloIso Φ`** ([AbsTopIII] Thm 1.9 (b), (c) along the stage
-isomorphisms): the tame generator of a cusp of the stage `U_{K₁}` is that of `U` read in
-`Ẑ(1)_{F_{K₁}}` (`zHatRes_tameGen_eq`; `F ⊆ F_{K₁} ⊆ F k̄` is unramified, `isUnif_baseChange`),
-and `cycloVχ (cycloIso Φ) = cycloCongr L.e` carries tame generators to tame generators
-(`cycloVχ_cycloIso`, `cycloCongr_tameGen_of_cusps`). -/
-theorem LiftData.tameCompat_cycloIso (L : LiftData hτ hU hτ₂ hU₂ Φ g) :
-    L.TameCompat (cycloIso hτ hU hτ₂ hU₂ Φ) := by
+/-- **`TameCompat` for every `χU` with `TameBridge`** (e.g. `χU = cycloIso Φ`; [AbsTopIII]
+Thm 1.9 (b), (c) along the stage isomorphisms): the tame generator of a cusp of the stage
+`U_{K₁}` is that of `U` read in `Ẑ(1)_{F_{K₁}}` (`zHatRes_tameGen_eq`; `F ⊆ F_{K₁} ⊆ F k̄` is
+unramified, `isUnif_baseChange`), and `cycloVχ χU = cycloCongr L.e` carries tame generators to
+tame generators (`cycloVχ_of_tameBridge`, `cycloCongr_tameGen_of_cusps`). -/
+theorem LiftData.tameCompat_of_tameBridge
+    (χU : ZHatOne (F (curveGaloisData K hτ)) (FFClosure C.Xbar) ≃ₜ*
+      ZHatOne (F (curveGaloisData K₂ hτ₂)) (FFClosure C₂.Xbar))
+    (hR : TameBridge hτ hU hτ₂ hU₂ Φ χU) (L : LiftData hτ hU hτ₂ hU₂ Φ g) :
+    L.TameCompat χU := by
   intro p p' hp hp' hEq hσ
   have hk₀ : ∀ c : K, algebraMap K (FFClosure C.Xbar) c ∈ p.1.1 := fun c => by
     have := p.2.1 (algebraMap K g.K c)
@@ -235,13 +281,19 @@ theorem LiftData.tameCompat_cycloIso (L : LiftData hτ hU hτ₂ hU₂ Φ g) :
   have e1 : (zKEquiv (curveGaloisData K g.hτ₀) g.K).symm (tameGen p) = tameGen p₀ := by
     rw [ContinuousMulEquiv.symm_apply_eq]
     exact T0.symm
-  calc constCyclo (gkIso hτ hU hτ₂ hU₂ Φ) (cycloVχ (cycloIso hτ hU hτ₂ hU₂ Φ) g.hτ₀ L.hυ) g.K
+  calc constCyclo (gkIso hτ hU hτ₂ hU₂ Φ) (cycloVχ χU g.hτ₀ L.hυ) g.K
         (tameGen p) =
-        zKEquiv (curveGaloisData K₂ L.hυ) L.tgt.K (cycloVχ (cycloIso hτ hU hτ₂ hU₂ Φ) g.hτ₀ L.hυ
+        zKEquiv (curveGaloisData K₂ L.hυ) L.tgt.K (cycloVχ χU g.hτ₀ L.hυ
           ((zKEquiv (curveGaloisData K g.hτ₀) g.K).symm (tameGen p))) := rfl
     _ = zKEquiv (curveGaloisData K₂ L.hυ) L.tgt.K (tameGen p₀') := by
-        rw [e1, L.cycloVχ_cycloIso, hT]
+        rw [e1, L.cycloVχ_of_tameBridge χU hR, hT]
     _ = tameGen p' := T0'
+
+/-- **`TameCompat` for `χU = cycloIso Φ`** ([AbsTopIII] Thm 1.9 (b), (c) along the stage
+isomorphisms). -/
+theorem LiftData.tameCompat_cycloIso (L : LiftData hτ hU hτ₂ hU₂ Φ g) :
+    L.TameCompat (cycloIso hτ hU hτ₂ hU₂ Φ) :=
+  L.tameCompat_of_tameBridge _ (tameBridge_cycloIso hτ hU hτ₂ hU₂ Φ)
 
 set_option maxHeartbeats 1600000 in
 -- the quotients `Π_V`, the coefficients and the sections unify slowly

@@ -1581,3 +1581,17 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `ofG_kummerMapZHat`, `exists_units_of_le`, `exists_units_of_gle`, **`exists_ratStage_of_mem`** (B: every
   class of `kummerNFRange` is `ofG g (κ v)` at a geometric stage with rational cusps carrying a unit that is
   not an algebraic number).
+* Addendum (session s, second push): **piece D** and the `TameBridge` refactor.
+  `Thm19/ClosedPtLift.lean`: `map_piT_decompH`, `map_piT_inertiaPi'` (two Galois models with the same
+  function field, possibly different fields of constants), `map_map_eq_conj`, `map_eq_conj_of_square`,
+  `GStage.F_of_K_le` (the function field of a geometric stage depends only on `K₁`), **`exists_coord_pole`**
+  (a coordinate `τ₀''` over `k` with `chartOne τ₀'' ⊆ chartOne τ₀` and a pole at a given place nontrivial on
+  `F`: a coefficient `y ∉ A` of the minimal polynomial over `K(X)`, `exists_coordinate_V_rev`),
+  `LiftData.coordT_mem_of_inertiaPi_eq_bot`, **`LiftData.exists_closedPoint_decomp`** (D: for a closed point
+  `A` of `g` (`K₁, τ₀ ∈ A`, `A ∩ F ≠ F`) there are a closed point `A''` of `L.tgt` and `M` with
+  `constIso (D_A) = M D_{A''} M⁻¹`; `A` is made a cusp of `g'' = (K₁, τ₀'')`, `map_decompH_constIso` there,
+  pushed down by `exists_conj_const`; `A''` is not a cusp of `L.tgt` since its inertia there is trivial).
+  `Thm19/SyncStageLift.lean`: the Prop-valued def **`TameBridge hτ hU hτ₂ hU₂ Φ χU`** ("`χU` maps `θ_p` to
+  `θ_{p'}` for cusps matched by `bridgeIso Φ`"), `tameBridge_cycloIso`, `LiftData.cycloVχ_of_tameBridge`,
+  `LiftData.tameCompat_of_tameBridge` (generic forms; `cycloVχ_cycloIso`, `tameCompat_cycloIso` are now
+  corollaries). Needed for `(cycloIso Φ).symm` along `Φ.symm` (piece H, reverse inclusion).

@@ -508,6 +508,7 @@ import Iut.Reconstruction.Thm19.BelyiGalFill
 import Iut.Reconstruction.Thm19.BelyiLift
 import Iut.Reconstruction.Thm19.BelyiMono
 import Iut.Reconstruction.Thm19.ClosedPointDecomp
+import Iut.Reconstruction.Thm19.ClosedPtLift
 import Iut.Reconstruction.Thm19.ConstExtThmC
 import Iut.Reconstruction.Thm19.ConstGk
 import Iut.Reconstruction.Thm19.ConstInertia
