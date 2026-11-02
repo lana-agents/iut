@@ -1651,3 +1651,13 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `isUnif_baseChange` + `mem_F_baseChange_stage_iff`), **`LiftData.val_eq_mul_of_pow`** (for cusps `W` of `g`,
   `W''` of `L.tgt` with inertia groups and elements matched by `constIso L.e`, `TameCompat`, and
   `(L.S κ(v))^M = κ(w')`: `ord_{x''}(w') = M · ord_x(v)`).
+* Addendum (session t, third push): **`Thm19/MatchCusp.lean`** (well-definedness of the matched cusp):
+  `placeBarOfRat`, **`mem_iff_of_ratPoint`** (two places over the same rational point of `F` agree on `F k̄`,
+  via curves-jacobian `eq_placeOf_of_liesOver`), `mem_F_curveGaloisData_iff` (the function field of the Galois
+  model of a curve does not depend on the coordinate), **`GStage.map_piT_inertiaPi`** (for `g ≤ g'` the transition
+  maps inertia onto inertia, through `piRes` which is injective; a `MonoidHom` equality `piRes ∘ piT = piT ∘ piRes`
+  proved by `MonoidHom.ext fun y => piRes_piT _ _ _ …` with `_` for the proof arguments timed out — state it
+  pointwise with all implicit arguments named), `Thm19.GStage.mem_of_le_K`, **`LiftData.comap_eq_of_le`** (for
+  `g ≤ g₃`, the cusps of `L.tgt` and `L₃.tgt` matched with the same cusp `W` agree on `F_{L.tgt}`:
+  `exists_conj_const`, `map_eq_conj_of_square`, `comap_eq_of_conj_inertiaH`), **`LiftData.mem_iff_of_le`** (for a
+  rational cusp `x.A` of `g`, the two matched cusps agree on `F k̄₂`: `cuspPoint` + `mem_iff_of_ratPoint`).
