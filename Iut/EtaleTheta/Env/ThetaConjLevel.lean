@@ -34,7 +34,8 @@ mod `l`).
   (`exists_cX_of_invariant_ker`); the `lℤ`-direction is `g = g₁^l`.
 * **`exists_thetaEnvU_rigidity_cX`** (concrete): `exists_thetaEnvU_rigidity` with `cX` produced
   instead of assumed, for the theta system of `exists_thetaRep_inputs`, under C1, the geometric
-  input (Z_2) (`ZTwo`, which gives debt Z at `j = 0`; TFGD run 2) and 13a (`g₁`).
+  input (Z_2) (`ZTwo`, which gives debt Z at `j = 0`; TFGD run 2); 13a (`g₁` with `χ̂(g₁) = 1`
+  for the normalised character `χ̂ = TateObject.charN`) from Theorem B.
 -/
 
 open CategoryTheory AlgebraicGeometry Polynomial Belyi Belyi.P1 Belyi.Anabelian Pi1.Orbifold
@@ -241,7 +242,7 @@ theorem exists_cX_of_moves {η : ∀ j, units (fieldData ht (L j) (hL j))}
     (hstab : ∀ j, ∀ σ ∈ LX.fixingSubgroup, ∀ x ∈ L j, σ x ∈ L j)
     {l : ℕ} [NeZero l] (hl : Odd l) {N : ℕ} [NeZero N] {j : ℕ} (hlj : l ∣ 2 * (j + 1))
     (hmove : ∀ (γ : TempPi (fieldData ht LX hLX) O V hV) (m : ℤ),
-      TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV γ =
+      Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV γ =
         Multiplicative.ofAdd ((l : ℤ) * m) →
       ∀ σ : (fieldData ht LX hLX).H,
         (σ : Pi (fieldData ht LX hLX)) = tempToPi (fieldData ht LX hLX) O V hV γ →
@@ -251,7 +252,7 @@ theorem exists_cX_of_moves {η : ∀ j, units (fieldData ht (L j) (hL j))}
             F (fieldData ht (L j) (hL j))) : Ω)))
     (hZ : PiYIndexTwoAt V hV T hL 0)
     {g₁ : TempPi (fieldData ht LX hLX) O V hV}
-    (hg₁ : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV g₁ =
+    (hg₁ : Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV g₁ =
       Multiplicative.ofAdd 1)
     (r : ContH1.cocycles (piYddotX V hV T hL) (Mu (l * N) Ω))
     (hr : ContH1.mk r = thetaClassTemp η hC1 (l * N)) :
@@ -269,7 +270,7 @@ theorem exists_cX_of_moves {η : ∀ j, units (fieldData ht (L j) (hL j))}
   have hcl : transTemp T hL (Dvd.intro N rfl : l ∣ l * N) (ContH1.mk r) = classAt η hC1 j l := by
     rw [hr, transTemp_thetaClassTemp hC1 htr, thetaClassTemp_eq hC1 htr l j hlj]
   have key : ∀ (γ : TempPi (fieldData ht LX hLX) O V hV) (m : ℤ),
-      TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV γ =
+      Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV γ =
         Multiplicative.ofAdd ((l : ℤ) * m) →
       conjH1Sub _ γ (hconj γ) (classAt η hC1 j l) = classAt η hC1 j l := by
     intro γ m hγ
@@ -277,7 +278,7 @@ theorem exists_cX_of_moves {η : ∀ j, units (fieldData ht (L j) (hL j))}
     obtain ⟨z, hz, hzη⟩ := hmove γ m hγ σ hσ
     exact conjH1Sub_classAt_of_pow η hC1 j l γ (hconj γ) σ hσ (hstab j σ σ.2) hz hzη
   -- the `lℤ`-direction `g = g₁^l`
-  have hg : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV
+  have hg : Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV
       (g₁ ^ l) = Multiplicative.ofAdd (l : ℤ) := by
     rw [map_pow, hg₁, ← ofAdd_nsmul, nsmul_eq_mul, mul_one]
   have hclg : conjH1Sub _ (g₁ ^ l) (hconj (g₁ ^ l))
@@ -289,9 +290,9 @@ theorem exists_cX_of_moves {η : ∀ j, units (fieldData ht (L j) (hL j))}
   · -- `[Π^tp_Y : Π^tp_Ÿ] = 2`
     obtain ⟨e, heY, he⟩ := hex
     obtain ⟨he2, hidx⟩ := piYddotX_index hZ heY he
-    have hχe : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV
+    have hχe : Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV
         e = Multiplicative.ofAdd ((l : ℤ) * 0) := by
-      rw [mul_zero, ofAdd_zero]; exact heY
+      rw [mul_zero, ofAdd_zero]; exact (Iut.EtaleTheta.TateObject.charN_eq_one_iff _ _ _ _).2 heY
     refine exists_cX_of_classInvariant r hl hHn heY he he2 hidx hg (hconj e) (hconj (g₁ ^ l))
       ?_ hclg
     rw [hcl]; exact key e 0 hχe
@@ -323,18 +324,22 @@ variable [t.tateCurve.IsElliptic] (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0
 
 set_option maxHeartbeats 1000000 in
 -- unifying with `exists_thetaRep_inputs` (concrete Tate-curve levels) is slow
-variable [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] in
+variable [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
+  [PerfectField (IsLocalRing.ResidueField O)] in
 include h2 in
 /-- **[EtTh] §2 for `X̲`, with the splitting cocycle constructed** (obligation 13 discharged
-modulo C1, (Z_2) and 13a): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
-For the theta system of `exists_thetaRep_inputs`, every base point `V` over `O`, under C1, the
-geometric input (Z_2) (`ZTwo`, `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`, which gives debt Z at `j = 0`,
-`[Π^tp_Y : Π^tp_Ÿ] ≤ 2`; owner TFGD/tfg) and 13a (`g₁` with
-`χ(g₁) = 1`; owner tfg), every odd `l`, every `N ≥ 1` and every representative `r` of the theta
-class mod `lN` on `Π^tp_Ÿ`, there is a splitting cocycle `cX : Π^tp_X̿ → μ_l` with `hcXr`
-(`exists_cX_of_moves`, at the level `j = 2l − 1`), and `EnvUConclusions` hold for the curve `X̲`
-it defines. -/
-theorem exists_thetaEnvU_rigidity_cX :
+modulo C1 and (Z_2)): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
+For the theta system of `exists_thetaRep_inputs`, `O` a complete discrete valuation ring of mixed
+characteristic `(0, p)` with perfect residue field, every base point `V` over `O`, under C1 and
+the geometric input (Z_2) (`ZTwo`, `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`, which gives debt Z at `j = 0`,
+`[Π^tp_Y : Π^tp_Ÿ] ≤ 2`; owner TFGD/tfg), every odd `l`, every `N ≥ 1` and every
+representative `r` of the theta class mod `lN` on `Π^tp_Ÿ`, there is a splitting cocycle
+`cX : Π^tp_X̿ → μ_l` with `hcXr` (`exists_cX_of_moves`, at the level `j = 2l − 1`), and
+`EnvUConclusions` hold for the curve `X̲` it defines. Debt 13a is discharged (TFGD run 2):
+`Π^tp_X̿ = χ̂⁻¹(lℤ)` for the normalised character `χ̂` (`TateObject.charN`), and `g₁` with
+`χ̂(g₁) = 1` comes from Theorem B (`exists_charN_eq_one_tateDataX`). -/
+theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
+    (hpm : (p : O) ∈ IsLocalRing.maximalIdeal O) :
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
       (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
       (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
@@ -345,9 +350,6 @@ theorem exists_thetaEnvU_rigidity_cX :
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL),
         ZTwo h2 h12 O hO hs V hV →
-        ∀ (g₁ : TempPi DXc O V hV),
-          TemperedFundamentalGroups.TateObject.character (A := (DXc).A)
-            (tateDataX O hO hs h12) V hV g₁ = Multiplicative.ofAdd (1 : ℤ) →
         ∀ (l N : ℕ) [NeZero l] [NeZero N], Odd l →
         ∀ (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu (l * N) Ω)),
         ContH1.mk r = thetaClassTemp η hC1 (l * N) →
@@ -362,8 +364,9 @@ theorem exists_thetaEnvU_rigidity_cX :
               CuspInertiaWeil (DXc)) := by
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
     Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
-      ⟨h.1, fun V hV hC1 hZ2 g₁ hg₁ l N _ _ hl r hr => ?_⟩
+      ⟨h.1, fun V hV hC1 hZ2 l N _ _ hl r hr => ?_⟩
   obtain ⟨hZ, hmv⟩ := h.2.2.1 V hV hZ2
+  obtain ⟨g₁, hg₁⟩ := exists_charN_eq_one_tateDataX h12 O hO hs p hp hpm V hV
   have hlj : 2 * l ∣ 2 * (2 * l - 1 + 1) := by
     rw [Nat.sub_add_cancel (by have := NeZero.ne l; omega)]
     exact Dvd.intro_left 2 rfl

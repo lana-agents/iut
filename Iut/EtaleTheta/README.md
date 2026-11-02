@@ -342,6 +342,13 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   **`ZTwo`** (`Π^tp_Y ≤ Π^tp_{L_2}`) and **`piYIndexTwoAt_zero_of_zTwo`** ((Z_2) ⇒ Z_0 for every
   system with `L 0 ≤ L_{[2]}`). `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs` and
   MR15's `exists_thetaEnvU_rigidity_cX` now take `ZTwo` instead of `PiYIndexTwoAt … 0`.
+* (11o) **Debt 13a discharged (TFGD run 2, lead decision D-T2)**: `TemperedCovering.lean` gains
+  `normChar`/`charGen` and **`TateObject.charN`** (the normalised character `χ/n` of `Y → X`, image
+  of `χ` = `nℤ`; same kernel `Π^tp_Y`); `piXdd = χ̂⁻¹(lℤ)` and the 13a/13c(i) statements
+  (`of_mem_piXdd`, `exists_cX_of_*`, `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`) use
+  `χ̂`. `TemperedLevelTwo.lean`: Theorem B for `tateDataX` (`exists_character_ne_one_tateDataX`)
+  and `exists_charN_eq_one_tateDataX`; `exists_thetaEnvU_rigidity_cX` no longer assumes `g₁`
+  (new hypotheses: perfect residue field, residue characteristic `p`).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 

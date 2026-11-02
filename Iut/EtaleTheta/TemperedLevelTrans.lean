@@ -126,10 +126,10 @@ theorem of_mem_piXdd {G : Type*} [CommGroup G] (j : ℕ) (w : (fieldData ht LX h
     (hP : ∀ σ ρ τ : (fieldData ht LX hLX).H, w σ = w ρ ^ l * w τ → w τ ^ 2 = 1 → P σ)
     (hZ : PiYIndexTwoAt V hV T hL j)
     {g₁ : TempPi (fieldData ht LX hLX) O V hV}
-    (hg₁ : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV
+    (hg₁ : Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV
       g₁ = Multiplicative.ofAdd (1 : ℤ))
     {γ : TempPi (fieldData ht LX hLX) O V hV} {m : ℤ}
-    (hγ : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV
+    (hγ : Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV
       γ = Multiplicative.ofAdd ((l : ℤ) * m))
     (σ : (fieldData ht LX hLX).H)
     (hσ : (σ : Pi (fieldData ht LX hLX)) = tempToPi (fieldData ht LX hLX) O V hV γ) :
@@ -137,8 +137,8 @@ theorem of_mem_piXdd {G : Type*} [CommGroup G] (j : ℕ) (w : (fieldData ht LX h
   set φ := tempToPi (fieldData ht LX hLX) O V hV
   set y := g₁ ^ (-((l : ℤ) * m)) * γ with hydef
   have hy : y ∈ TateObject.piY (A := (fieldData ht LX hLX).A) T V hV := by
-    change _ ∈ MonoidHom.ker _
-    rw [MonoidHom.mem_ker, hydef, map_mul, map_zpow, hg₁, hγ, ← ofAdd_zsmul, ← ofAdd_add]
+    rw [← TateObject.charN_eq_one_iff, hydef, map_mul, map_zpow, hg₁, hγ, ← ofAdd_zsmul,
+      ← ofAdd_add]
     simp
   have hfix : ∀ (δ : TempPi (fieldData ht LX hLX) O V hV),
       δ ∈ (temperedPi1Map (muL ht hLX (L j) (hL j)) V hV).range →

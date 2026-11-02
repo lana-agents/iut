@@ -39,7 +39,9 @@ Here `X` is `[Spec R / A]` (for `A` trivial) and `Π^tp_X = temperedPi1 O R A V 
 
 The image of `χ` is `nℤ` for some `n ≠ 0`; that `n = 1` (transitivity of `Π^tp_X` on the fibre
 of the connected covering `Y`) is not available from the dependency, and is not needed for
-`Π^tp_X / Π^tp_Y ≅ ℤ`.
+`Π^tp_X / Π^tp_Y ≅ ℤ`. **`TateObject.charN`** is the normalised character `χ/n`
+(`normChar`, `charGen`): same kernel `Π^tp_Y` (`charN_eq_one_iff`), and it takes the value `1`
+when `χ ≠ 1` (`exists_charN_eq_ofAdd_one`); it is the character used for `Π^tp_X̿` (TFGD run 2).
 
 The covering `Ÿ → Y` (`Ü² = U`) is not constructed: its finite étale level is the `2`-isogeny
 `E_{√q} ∖ {±1} → E_q ∖ {0}`, which would need the `TateObject` construction over a nontrivial
@@ -94,6 +96,56 @@ noncomputable def quotKerEquivInt (χ : G →* Multiplicative ℤ) (h : ∃ g, �
     intro hb
     exact hg ((Subgroup.mem_bot).1 (hb ▸ MonoidHom.mem_range.2 ⟨g, rfl⟩))))
 
+/-- **A generator of the image of a character** `χ : G → ℤ` (the image is `charGen χ · ℤ`). -/
+noncomputable def charGen (χ : G →* Multiplicative ℤ) : ℤ :=
+  ((IsCyclic.exists_generator (α := χ.range)).choose : Multiplicative ℤ).toAdd
+
+theorem charGen_dvd (χ : G →* Multiplicative ℤ) (x : G) : charGen χ ∣ (χ x).toAdd := by
+  obtain ⟨k, hk⟩ := (IsCyclic.exists_generator (α := χ.range)).choose_spec ⟨χ x, x, rfl⟩
+  refine ⟨k, ?_⟩
+  have h := congrArg (fun y : χ.range => (y : Multiplicative ℤ).toAdd) hk
+  simp only [SubgroupClass.coe_zpow, toAdd_zpow, smul_eq_mul] at h
+  rw [← h, charGen, mul_comm]
+
+/-- **The normalised character** `χ̂ = χ / m` of `χ : G → ℤ` with image `mℤ`: it has the same
+kernel (`normChar_eq_one_iff`) and, if `χ ≠ 1`, takes the value `1`
+(`exists_normChar_eq_ofAdd_one`), i.e. it induces the isomorphism `G / ker χ ≅ ℤ`. -/
+noncomputable def normChar (χ : G →* Multiplicative ℤ) : G →* Multiplicative ℤ where
+  toFun x := Multiplicative.ofAdd ((χ x).toAdd / charGen χ)
+  map_one' := by simp
+  map_mul' x y := by
+    simp only [map_mul, toAdd_mul]
+    rw [Int.add_ediv_of_dvd_left (charGen_dvd χ x)]
+    rfl
+
+theorem normChar_apply (χ : G →* Multiplicative ℤ) (x : G) :
+    normChar χ x = Multiplicative.ofAdd ((χ x).toAdd / charGen χ) := rfl
+
+theorem normChar_eq_one_iff (χ : G →* Multiplicative ℤ) (x : G) :
+    normChar χ x = 1 ↔ χ x = 1 := by
+  obtain ⟨k, hk⟩ := charGen_dvd χ x
+  rw [normChar_apply, ← ofAdd_zero, ← ofAdd_toAdd (χ x), hk]
+  simp only [toAdd_ofAdd, EmbeddingLike.apply_eq_iff_eq]
+  rcases eq_or_ne (charGen χ) 0 with h0 | h0
+  · simp [h0]
+  · rw [Int.mul_ediv_cancel_left _ h0, mul_eq_zero]
+    simp [h0]
+
+/-- **A nontrivial character has normalised value `1`** somewhere (at a preimage of a generator
+of its image). -/
+theorem exists_normChar_eq_ofAdd_one (χ : G →* Multiplicative ℤ) (h : ∃ g, χ g ≠ 1) :
+    ∃ g, normChar χ g = Multiplicative.ofAdd (1 : ℤ) := by
+  obtain ⟨g₀, hg₀⟩ := ((IsCyclic.exists_generator (α := χ.range)).choose : χ.range).2
+  have hm : charGen χ = (χ g₀).toAdd := congrArg Multiplicative.toAdd hg₀.symm
+  have hm0 : charGen χ ≠ 0 := by
+    intro h0
+    obtain ⟨g, hg⟩ := h
+    obtain ⟨k, hk⟩ := charGen_dvd χ g
+    rw [h0, zero_mul] at hk
+    exact hg (by rw [← ofAdd_toAdd (χ g), hk]; rfl)
+  refine ⟨g₀, ?_⟩
+  rw [normChar_apply, ← hm, Int.ediv_self hm0]
+
 lemma isOpen_ker_of_continuous [TopologicalSpace G] [IsTopologicalGroup G]
     (χ : G →* Multiplicative ℤ) (hχ : Continuous χ) : IsOpen (χ.ker : Set G) :=
   (isOpen_discrete ({1} : Set (Multiplicative ℤ))).preimage hχ
@@ -123,6 +175,27 @@ instance piY_normal : (piY (A := A) T V hV).Normal := MonoidHom.normal_ker _
 
 lemma isOpen_piY : IsOpen (piY (A := A) T V hV : Set (temperedPi1 O R A V hV)) :=
   isOpen_ker_of_continuous _ (continuous_character T V hV)
+
+/-- **The normalised character `χ̂ : Π^tp_X → ℤ` of `Y → X`** (`normChar` of
+`TateObject.character`): `χ / m` for the image `mℤ` of `χ`. Same kernel `Π^tp_Y`
+(`charN_eq_one_iff`); `χ̂` induces `Π^tp_X / Π^tp_Y ≅ ℤ` and takes the value `1` as soon as
+`χ ≠ 1` (Theorem B; `exists_charN_eq_ofAdd_one`). ([EtTh] uses `Gal(Y/X) ≅ ℤ`; the subgroups
+`χ̂⁻¹(lℤ)` are the intrinsic `l`-cyclic quotients of `Gal(Y/X)`.) -/
+noncomputable def charN : temperedPi1 O R A V hV →* Multiplicative ℤ :=
+  normChar (character (A := A) T V hV)
+
+theorem charN_eq_one_iff (α : temperedPi1 O R A V hV) :
+    charN (A := A) T V hV α = 1 ↔ α ∈ piY (A := A) T V hV :=
+  normChar_eq_one_iff _ α
+
+lemma continuous_charN : Continuous (charN (A := A) T V hV) :=
+  (continuous_of_discreteTopology (f := fun x : Multiplicative ℤ =>
+    Multiplicative.ofAdd (x.toAdd / charGen (character (A := A) T V hV)))).comp
+    (continuous_character T V hV)
+
+theorem exists_charN_eq_ofAdd_one (h : ∃ α, character (A := A) T V hV α ≠ 1) :
+    ∃ α, charN (A := A) T V hV α = Multiplicative.ofAdd (1 : ℤ) :=
+  exists_normChar_eq_ofAdd_one _ h
 
 /-- **`Π^tp_Y` is the stabilizer of the base point of the fibre of `Y`**: an automorphism of the
 fibre functor lies in `Π^tp_Y` iff it fixes the base point `x₀` of the fibre of `Y = X₀`. -/

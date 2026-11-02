@@ -6,6 +6,7 @@ Authors: LANA Project
 import Iut.EtaleTheta.TemperedDomination
 import EllipticCurves.FunctionField.TranslationAction
 import EllipticCurves.FunctionField.TranslationMulByNCommGeneral
+import Pi1.Orbifold.Smooth
 
 /-!
 # The level `L_2 = K(E_{q²})` and the debt Z_0 as the domination statement (Z_2) (TFGD, run 2)
@@ -29,6 +30,11 @@ input (Z_2) `Π^tp_Y ≤ Π^tp_{L_2}` (`TFGD-plan.md`, lead decision D-T1), for 
 * **`ZTwo`** (the named geometric input (Z_2)): `Π^tp_Y ≤ Π^tp_{L_2}` for the Tate data
   `tateDataX`; **`piYIndexTwoAt_zero_of_zTwo`**: (Z_2) implies Z_0 for every system of levels
   with `L 0 ≤ L_{[2]}` (`piYIndexTwoAt_zero_of_quadratic`).
+* **Debt 13a** (lead decision D-T2): `exists_character_ne_one_tateDataX` (Theorem B of
+  `tempered-fundamental-groups` for `tateDataX`: `b₆ = a₆/q` is a unit, `Δ ≠ 0`, `x`
+  transcendental; `O` a complete DVR of mixed characteristic with perfect residue field) and
+  **`exists_charN_eq_one_tateDataX`**: the normalised character `χ̂ = TateObject.charN` takes
+  the value `1`. MR15's `Π^tp_X̿` is `χ̂⁻¹(lℤ)` (`Env/ThetaLTors.lean`, `piXdd`).
 -/
 
 open CategoryTheory AlgebraicGeometry Belyi Belyi.P1 Belyi.Anabelian Pi1.Orbifold
@@ -226,6 +232,79 @@ theorem piYIndexTwoAt_zero_of_zTwo {V : ValuationSubring Ω} {hV : V.comap (alge
   exact piYIndexTwoAt_zero_of_quadratic (isOpen_levelTwo h2 h12) hZ α hα
     fun σ hσ e => (IntermediateField.mem_fixingSubgroup_iff _ _).2 fun z hz =>
       hgen σ hσ e z (hL02 hz)
+
+/-! ### Theorem B for the Tate data of `X`, and debt 13a for the normalised character -/
+
+omit [t.tateCurve.IsElliptic] [CharZero K] in
+include h12 in
+/-- `‖a₆(q)‖ = ‖q‖`, from `‖a₆ + q‖ ≤ ‖q‖²`. -/
+theorem norm_a₆_eq : ‖t.a₆‖ = ‖(t.q : K)‖ := by
+  have hq1 : ‖(t.q : K)‖ < 1 := t.norm_lt_one
+  have hqpos : 0 < ‖(t.q : K)‖ := norm_pos_iff.2 t.q.ne_zero
+  have ha₆q : ‖t.a₆ + t.q‖ < ‖(t.q : K)‖ :=
+    (t.norm_a₆_add_q_le h12).trans_lt (by nlinarith)
+  apply le_antisymm
+  · calc ‖t.a₆‖ = ‖(t.a₆ + t.q) + (-(t.q : K))‖ := by ring_nf
+      _ ≤ max ‖t.a₆ + t.q‖ ‖-(t.q : K)‖ := IsUltrametricDist.norm_add_le_max _ _
+      _ = ‖(t.q : K)‖ := by rw [norm_neg]; exact max_eq_right ha₆q.le
+  · have : ‖(t.q : K)‖ ≤ max ‖t.a₆ + t.q‖ ‖-t.a₆‖ := by
+      calc ‖(t.q : K)‖ = ‖(t.a₆ + t.q) + (-t.a₆)‖ := by ring_nf
+        _ ≤ _ := IsUltrametricDist.norm_add_le_max _ _
+    rw [norm_neg] at this
+    rcases le_max_iff.1 this with h | h
+    · exact absurd h (not_le.2 ha₆q)
+    · exact h
+
+/-- **Theorem B for the Tate data `tateDataX` of `X = E_q ∖ {O}`**: the character
+`χ : Π^tp_X → ℤ` of `Y → X` is nontrivial (`TateObject.exists_character_ne_one'`, Theorem B of
+`tempered-fundamental-groups`), for `O` a complete discrete valuation ring of mixed
+characteristic `(0, p)` with perfect residue field. -/
+theorem exists_character_ne_one_tateDataX [IsDiscreteValuationRing O]
+    [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [PerfectField (IsLocalRing.ResidueField O)]
+    (p : ℕ) (hp : p.Prime) (hpm : (p : O) ∈ IsLocalRing.maximalIdeal O)
+    (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) :
+    ∃ α, TemperedFundamentalGroups.TateObject.character (A := (DX t).A)
+      (tateDataX O hO hs h12) V hV α ≠ 1 := by
+  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
+  have hs0 : ((s : K) ^ 2) ≠ 0 := pow_ne_zero _ s.ne_zero
+  have hsq : ((s : K) ^ 2) = t.q := by rw [← Units.val_pow_eq_pow_val, hs]
+  -- `Δ ≠ 0`, so the discriminant polynomial is squarefree
+  have hΔ : TemperedFundamentalGroups.TateNormal.tateDisc (tateDataX O hO hs h12).π
+      (tateDataX O hO hs h12).b₄ (tateDataX O hO hs h12).b₆ ≠ 0 := by
+    intro h
+    have hW := TemperedFundamentalGroups.TateNormal.Δ_eq_tateDisc
+      (π := (tateDataX O hO hs h12).π) (b₄ := (tateDataX O hO hs h12).b₄)
+      (b₆ := (tateDataX O hO hs h12).b₆) O.subtype t.tateCurve rfl rfl rfl
+      (by simp [tateDataX, mul_div_cancel₀ _ hs0]) (by simp [tateDataX, mul_div_cancel₀ _ hs0])
+    rw [h, map_zero] at hW
+    exact t.tateCurve.isUnit_Δ.ne_zero hW
+  have h2O : (2 : O) ≠ 0 := fun h => two_ne_zero (congrArg Subtype.val h : ((2 : O) : K) = 0)
+  -- `b₆ = a₆/q` is a unit
+  have hb₆ : ‖t.a₆ / (s : K) ^ 2‖ = 1 := by
+    rw [norm_div, hsq, norm_a₆_eq h12, div_self (norm_pos_iff.2 t.q.ne_zero).ne']
+  have hb₆' : ‖(t.a₆ / (s : K) ^ 2)⁻¹‖ = 1 := by rw [norm_inv, hb₆, inv_one]
+  have hb₆0 : t.a₆ / (s : K) ^ 2 ≠ 0 := by
+    intro h; rw [h, norm_zero] at hb₆; exact zero_ne_one hb₆
+  have hunit : IsUnit (tateDataX O hO hs h12).b₆ :=
+    ⟨Units.mkOfMulEqOne (tateDataX O hO hs h12).b₆
+      ⟨(t.a₆ / (s : K) ^ 2)⁻¹, (hO _).2 hb₆'.le⟩ (Subtype.ext (mul_inv_cancel₀ hb₆0)), rfl⟩
+  -- `x` is transcendental over `K`
+  have hx : Transcendental K (tateDataX O hO hs h12).x := fun h =>
+    transcendental_tau t.tateCurve (by rw [← algebraMap_xX]; exact h.algebraMap)
+  exact TateObject.exists_character_ne_one' (tateDataX O hO hs h12) V hV p hp hpm
+    (GaloisData.ringKrullDim_R _) ϖ hϖ
+    (TemperedFundamentalGroups.TateNormal.squarefree_dpoly _ _ _ h2O hΔ) (Or.inl hunit) hx
+
+/-- **Debt 13a for the normalised character** (TFGD run 2, lead decision D-T2): there is
+`g₁ ∈ Π^tp_X` with `χ̂(g₁) = 1` (`TateObject.charN`; Theorem B and `exists_charN_eq_ofAdd_one`). -/
+theorem exists_charN_eq_one_tateDataX [IsDiscreteValuationRing O]
+    [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [PerfectField (IsLocalRing.ResidueField O)]
+    (p : ℕ) (hp : p.Prime) (hpm : (p : O) ∈ IsLocalRing.maximalIdeal O)
+    (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) :
+    ∃ g₁, TateObject.charN (A := (DX t).A) (tateDataX O hO hs h12) V hV g₁ =
+      Multiplicative.ofAdd (1 : ℤ) :=
+  TateObject.exists_charN_eq_ofAdd_one _ V hV
+    (exists_character_ne_one_tateDataX h12 O hO hs p hp hpm V hV)
 
 end Tate
 

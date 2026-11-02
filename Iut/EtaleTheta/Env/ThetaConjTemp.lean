@@ -136,7 +136,7 @@ theorem exists_cX_of_classInvariant (hl : Odd l)
     (he : e ∉ piYddotX V hV T hL) (he2 : e * e ∈ piYddotX V hV T hL)
     (hidx : ∀ y ∈ Iut.EtaleTheta.TateObject.piY (A := (fieldData ht LX hLX).A) T V hV,
       y ∈ piYddotX V hV T hL ∨ y * e⁻¹ ∈ piYddotX V hV T hL)
-    (hg : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV g =
+    (hg : Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV g =
       Multiplicative.ofAdd (l : ℤ))
     (hHe : ∀ h ∈ piYddotX V hV T hL, e⁻¹ * h * e ∈ piYddotX V hV T hL)
     (hHg : ∀ h ∈ piYddotX V hV T hL, g⁻¹ * h * g ∈ piYddotX V hV T hL)

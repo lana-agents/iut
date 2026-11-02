@@ -14,8 +14,9 @@ import Iut.EtaleTheta.Env.ThetaTower
 
 * `X̿ → X` (type `(1, ℤ/lℤ)`, Def. 2.1, Def. 2.5(i)): the covering of a quotient
   `Π̲^ell_X ↠ Q ≅ ℤ/l` that factors through `Π_X ↠ Ẑ` coming from `Π^tp_X ↠ ℤ`. Here
-  **`piXdd V hV T l = χ⁻¹(lℤ)`**, `χ : Π^tp_X → ℤ` the character of the `ℤ`-covering `Y → X`
-  (`TateObject.character`, `Π^tp_Y = Ker χ`).
+  **`piXdd V hV T l = χ̂⁻¹(lℤ)`**, `χ̂ : Π^tp_X → ℤ` the normalised character of the
+  `ℤ`-covering `Y → X` (`TateObject.charN`, `χ/m` for the image `mℤ` of `TateObject.character`,
+  `Π^tp_Y = Ker χ̂`).
 * `X̲ → X̿` (type `(1, (ℤ/lℤ)^Θ)`, Prop. 2.2(ii), Def. 2.3): a splitting `s` of `D̲_x ↠ G_K`
   gives `Π_X̲ = ` the preimage of `Im(s_ι)·s(G_K)` in `Π_X̿`, i.e. the kernel of the cocycle
   `cX : Π_X̿ → Π̲_X̿/Im(s_ι) ≅ D̲_x = Δ̲_Θ ⋊ s(G_K) → Δ̲_Θ ≅ μ_l`. Here **`piXu hcX`** is the
@@ -220,16 +221,17 @@ local notation "PYg" => Iut.EtaleTheta.TateObject.piY
 local notation "PYddg" => piYddotX V hV T hL
 
 variable (V hV T) in
-/-- **`Π^tp_X̿ = χ⁻¹(lℤ)`** ([EtTh] Def. 2.1, Def. 2.5(i): the quotient `Q ≅ ℤ/l` factors through
-the `ℤ`-character `χ : Π^tp_X ↠ ℤ` of `Y → X`). -/
+/-- **`Π^tp_X̿ = χ̂⁻¹(lℤ)`** ([EtTh] Def. 2.1, Def. 2.5(i): the quotient `Q ≅ ℤ/l` factors through
+`Gal(Y/X) ≅ ℤ`; `χ̂ = TateObject.charN : Π^tp_X → ℤ` is the normalised character of `Y → X`,
+`χ/m` for the image `mℤ` of `χ`, so that `χ̂` induces `Π^tp_X/Π^tp_Y ≅ ℤ`; TFGD run 2). -/
 def piXdd (l : ℕ) : Subgroup PXg :=
   (Subgroup.zpowers (Multiplicative.ofAdd (l : ℤ))).comap
-    (TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV)
+    (Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV)
 
 omit [IsGalois (K₀ k t) Ω] [CharZero k] [IsAlgClosed Ω] in
 theorem piY_le_piXdd (l : ℕ) : PYg ≤ piXdd V hV T l := fun γ hγ => by
   change _ ∈ Subgroup.zpowers _
-  rw [(MonoidHom.mem_ker).1 hγ]
+  rw [(Iut.EtaleTheta.TateObject.charN_eq_one_iff _ _ _ _).2 hγ]
   exact one_mem _
 
 omit [IsGalois (K₀ k t) Ω] [CharZero k] [IsAlgClosed Ω] in
@@ -259,7 +261,7 @@ theorem isOpen_piXu (hcXc : Continuous cX) : IsOpen (piXu hcX : Set PXg) := by
   have hdd : IsOpen (piXdd V hV T l : Set PXg) :=
     (isOpen_discrete (Subgroup.zpowers (Multiplicative.ofAdd (l : ℤ)) :
       Set (Multiplicative ℤ))).preimage
-      (TemperedFundamentalGroups.TateObject.continuous_character T V hV)
+      (Iut.EtaleTheta.TateObject.continuous_charN T V hV)
   have : (piXu hcX : Set PXg) = Subtype.val '' (cocycleKer hcX : Set (piXdd V hV T l)) := rfl
   rw [this]
   exact hdd.isOpenMap_subtype_val _ (isOpen_cocycleKer hcX hcXc)
@@ -722,7 +724,7 @@ theorem discreteRigidity_thetaEnvU [((piYddotX V hV T hL).subgroupOf
 omit [IsGalois (K₀ k t) Ω] [CharZero k] [IsAlgClosed Ω] [NeZero l] in
 theorem dvd_character_piXdd (x : piXdd V hV T l) :
     (l : ℤ) ∣ Multiplicative.toAdd
-      (TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV x) := by
+      (Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV x) := by
   obtain ⟨n, hn⟩ := Subgroup.mem_zpowers_iff.1 x.2
   refine ⟨n, ?_⟩
   rw [← hn, toAdd_zpow, toAdd_ofAdd, smul_eq_mul, mul_comm]
@@ -746,7 +748,7 @@ theorem exists_cX_of_invariant (hl : Odd l)
     (hHn : ∀ x ∈ piXdd V hV T l, ∀ h ∈ PYddg, x * h * x⁻¹ ∈ PYddg)
     {e g : PXg} (heY : e ∈ PYg) (he : e ∉ PYddg) (he2 : e * e ∈ PYddg)
     (hidx : ∀ y ∈ PYg, y ∈ PYddg ∨ y * e⁻¹ ∈ PYddg)
-    (hg : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV g =
+    (hg : Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV g =
       Multiplicative.ofAdd (l : ℤ))
     (me mg : Mu l Ω)
     (hce : ∀ (h : PXg) (hh : h ∈ PYddg),
@@ -763,12 +765,12 @@ theorem exists_cX_of_invariant (hl : Odd l)
       ∀ (γ : PYddg) (h : (γ : PXg) ∈ piXdd V hV T l),
         cX ⟨γ, h⟩ = Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ) := by
   have hl0 : (l : ℤ) ≠ 0 := by exact_mod_cast NeZero.ne l
-  set χ := divChar ((TemperedFundamentalGroups.TateObject.character
+  set χ := divChar ((Iut.EtaleTheta.TateObject.charN
     (A := (fieldData ht LX hLX).A) T V hV).comp (piXdd V hV T l).subtype) (l : ℤ)
     (dvd_character_piXdd (l := l)) with hχ
   have hker : ∀ x : piXdd V hV T l, x ∈ χ.ker ↔ (x : PXg) ∈ PYg := fun x => by
     rw [MonoidHom.mem_ker, hχ, divChar_eq_one_iff hl0]
-    exact Iff.rfl
+    exact Iut.EtaleTheta.TateObject.charN_eq_one_iff _ _ _ _
   set H := (piYddotX V hV T hL).subgroupOf (piXdd V hV T l) with hHdef
   have hHn' : H.Normal := ⟨fun n hn x => hHn x.1 x.2 n.1 hn⟩
   have hgdd : g ∈ piXdd V hV T l := by
@@ -792,7 +794,7 @@ theorem exists_cX_of_invariant (hl : Odd l)
 theorem exists_cX_of_invariant_ker
     (hHn : ∀ x ∈ piXdd V hV T l, ∀ h ∈ PYddg, x * h * x⁻¹ ∈ PYddg)
     (hYY : ∀ y ∈ PYg, y ∈ PYddg) {g : PXg}
-    (hg : TemperedFundamentalGroups.TateObject.character (A := (fieldData ht LX hLX).A) T V hV g =
+    (hg : Iut.EtaleTheta.TateObject.charN (A := (fieldData ht LX hLX).A) T V hV g =
       Multiplicative.ofAdd (l : ℤ))
     (mg : Mu l Ω)
     (hcg : ∀ (h : PXg) (hh : h ∈ PYddg),
@@ -805,12 +807,12 @@ theorem exists_cX_of_invariant_ker
       ∀ (γ : PYddg) (h : (γ : PXg) ∈ piXdd V hV T l),
         cX ⟨γ, h⟩ = Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ) := by
   have hl0 : (l : ℤ) ≠ 0 := by exact_mod_cast NeZero.ne l
-  set χ := divChar ((TemperedFundamentalGroups.TateObject.character
+  set χ := divChar ((Iut.EtaleTheta.TateObject.charN
     (A := (fieldData ht LX hLX).A) T V hV).comp (piXdd V hV T l).subtype) (l : ℤ)
     (dvd_character_piXdd (l := l)) with hχ
   have hker : ∀ x : piXdd V hV T l, x ∈ χ.ker ↔ (x : PXg) ∈ PYg := fun x => by
     rw [MonoidHom.mem_ker, hχ, divChar_eq_one_iff hl0]
-    exact Iff.rfl
+    exact Iut.EtaleTheta.TateObject.charN_eq_one_iff _ _ _ _
   set H := (piYddotX V hV T hL).subgroupOf (piXdd V hV T l) with hHdef
   have hHn' : H.Normal := ⟨fun n hn x => hHn x.1 x.2 n.1 hn⟩
   have hgdd : g ∈ piXdd V hV T l := by
@@ -935,10 +937,10 @@ theorem exists_thetaRep_inputs :
         ZTwo h2 h12 O hO hs V hV → PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 ∧
         ∀ (j l : ℕ), Odd l → 2 * l ∣ 2 * (j + 1) → LevelsDominated V hV (tateDataX O hO hs h12) hL →
         ∀ (g₁ : TempPi DXc O V hV),
-          TemperedFundamentalGroups.TateObject.character (A := (DXc).A)
+          Iut.EtaleTheta.TateObject.charN (A := (DXc).A)
             (tateDataX O hO hs h12) V hV g₁ = Multiplicative.ofAdd (1 : ℤ) →
         ∀ (γ : TempPi DXc O V hV) (m : ℤ),
-          TemperedFundamentalGroups.TateObject.character (A := (DXc).A)
+          Iut.EtaleTheta.TateObject.charN (A := (DXc).A)
             (tateDataX O hO hs h12) V hV γ = Multiplicative.ofAdd ((l : ℤ) * m) →
         ∀ σ : (DXc).H, (σ : Pi (DXc)) = tempToPi DXc O V hV γ →
           MovesByPow (L j) (σ : Ω ≃ₐ[K₀ K τ] Ω)

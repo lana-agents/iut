@@ -617,10 +617,10 @@ theorem exists_thetaClassTemp_prop13 :
         ZTwo h2 h12 O hO hs V hV → PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 ∧
         ∀ (j l : ℕ), Odd l → 2 * l ∣ 2 * (j + 1) → LevelsDominated V hV (tateDataX O hO hs h12) hL →
         ∀ (g₁ : TempPi (DX t) O V hV),
-          TemperedFundamentalGroups.TateObject.character (A := (DX t).A)
+          Iut.EtaleTheta.TateObject.charN (A := (DX t).A)
             (tateDataX O hO hs h12) V hV g₁ = Multiplicative.ofAdd (1 : ℤ) →
         ∀ (γ : TempPi (DX t) O V hV) (m : ℤ),
-          TemperedFundamentalGroups.TateObject.character (A := (DX t).A)
+          Iut.EtaleTheta.TateObject.charN (A := (DX t).A)
             (tateDataX O hO hs h12) V hV γ = Multiplicative.ofAdd ((l : ℤ) * m) →
         ∀ σ : (DX t).H, (σ : Pi (DX t)) = tempToPi (DX t) O V hV γ →
           MovesByPow (L j) (σ : Ω ≃ₐ[K₀ K τ] Ω)
