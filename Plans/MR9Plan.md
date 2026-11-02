@@ -1661,3 +1661,11 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `g ≤ g₃`, the cusps of `L.tgt` and `L₃.tgt` matched with the same cusp `W` agree on `F_{L.tgt}`:
   `exists_conj_const`, `map_eq_conj_of_square`, `comap_eq_of_conj_inertiaH`), **`LiftData.mem_iff_of_le`** (for a
   rational cusp `x.A` of `g`, the two matched cusps agree on `F k̄₂`: `cuspPoint` + `mem_iff_of_ratPoint`).
+  **`Thm19/OrdCompat.lean`**: `Uchida.ValEvalData.val_pow`, `GStage.exists_fnf_unit` (a unit of a geometric stage
+  as an NF-rational function with its Kummer class), **`val_eq_of_matched`**: for any `ψ : H1Lim → H1Lim'` with
+  `ψ [g, y] = [L.tgt, L.S y]` (`L = LiftData.choose Φ hS g`) and `TameCompat` for all lift data, a rational cusp
+  `x.A` of `g₀` (NF-point), and the cusp `W''` of `L₀.tgt` matched with it (any `L₀`):
+  `ord_{W''}(ψ ξ) = ord_{x.A}(ξ)` for every `ξ ∈ kummerNFRange` with `ψ ξ ∈ kummerNFRange` (B at a stage
+  `g₂ ≥ g₀` with rational cusps, G, `val_eq_mul_of_pow`, `mem_iff_of_le`, cancel `M`). Applies to
+  `h1LimCycloEquiv` (`h1LimCycloEquiv_ofG`, `tameCompat_cycloIso`) and to its inverse (`h1LimCycloEquiv_symm_ofG`
+  with `Φ.symm`, `(cycloIso Φ).symm`, `tameCompat_of_tameBridge _ tameBridge_cycloIso_symm`). Module build 177 s.

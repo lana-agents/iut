@@ -547,6 +547,7 @@ import Iut.Reconstruction.Thm19.NFPoints
 import Iut.Reconstruction.Thm19.NFShrink
 import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Thm19.NFTransition
+import Iut.Reconstruction.Thm19.OrdCompat
 import Iut.Reconstruction.Thm19.OrdMatch
 import Iut.Reconstruction.Thm19.PUStage
 import Iut.Reconstruction.Thm19.PiJCongr
