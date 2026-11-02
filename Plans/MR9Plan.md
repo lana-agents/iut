@@ -1595,3 +1595,35 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `θ_{p'}` for cusps matched by `bridgeIso Φ`"), `tameBridge_cycloIso`, `LiftData.cycloVχ_of_tameBridge`,
   `LiftData.tameCompat_of_tameBridge` (generic forms; `cycloVχ_cycloIso`, `tameCompat_cycloIso` are now
   corollaries). Needed for `(cycloIso Φ).symm` along `Φ.symm` (piece H, reverse inclusion).
+* Addendum (session s, third push): **piece G.** `Thm19/KummerLift.lean`: `exists_notMem_of_isIntegral` (a
+  place with residue field algebraic over `k` is nontrivial on `F`), `not_isAlgebraic_mul`,
+  `pow_mul_eq_of_eq_mul_inv`, `LiftData.S_apply`, `GStage.nfModel` (`nfModelNF g.data`),
+  **`LiftData.exists_restrict_iff`** (every closed point `A` of the stage with the data of `RestrictTrivAt` has a
+  closed NF-point `A''` of `L.tgt` with `η|_A = 0 ↔ (L.S η)|_{A''} = 0` for all `η`: D + E),
+  **`LiftData.isNFKummerTest_S`** (the test of Prop 1.8 (i) is carried along `L.S`),
+  `GStage.isKummerFaithfulJac`, `GStage.hkF`, `GStage.notMem_range_constUnit`,
+  `LiftData.S_kummer_pow_of_nonconst`, **`LiftData.S_kummer_pow`** (G: at a rational-cusp stage with a unit `f₀`
+  that is not an algebraic number, `(L.S κ(w))^M = κ(w')` for every unit `w`, any `χU` with `TameCompat`).
+
+* Hand-off 2026-11-02 (MR9 track agent, session s, lead christian-aa): worktree `~/mr8-iut`, branch `mr9-r`.
+  Pushed via `~/iut-push.sh`: A, B (`KummerRangeG`, 8637687), D + `TameBridge` (`ClosedPtLift`, ceaf9de), G
+  (`KummerLift`, hash in ~/session2-status.md). **WIP** (local branch `mr9-s-wip`, file
+  `Thm19/KummerRangeIso.lean`, not imported in `Iut.lean`): piece H — `tameBridge_cycloIso_symm`,
+  `gLimEquiv_symm_mk`, `h1LimEquiv_symm_ofG`, `h1LimCycloEquiv_mem_kummerNFRange`,
+  `h1LimCycloEquiv_symm_mem_kummerNFRange`, **`map_kummerNFRange_h1LimCycloEquiv`**
+  (`(kummerNFRange N).map (h1LimCycloEquiv …) = kummerNFRange N'`). All proofs are written; the module build
+  ran > 40 min (killed by `timeout 3000`, no error output yet), so some declaration hangs.
+  **Next steps:** (1) bisect `KummerRangeIso` with `#exit` / truncated copies (scratch `scratchpad/mr9-s/`),
+  one declaration at a time; suspects: the `change h1LimEquiv … ∈ _; rw [e]` steps (replace by
+  `e ▸ …` on the membership, or state `h1LimEquiv_ofG` for `cycloIso` in the exact use-site form
+  `h1LimCycloEquiv … (ofG g y) = …`), the `set L : LiftData … := LiftData.choose …` (use the term directly,
+  session-r lesson), and `exists_ratStage_of_mem`'s `rfl` pattern substituting `ξ` (use `hξ ▸` instead).
+  (2) push H; (3) step 5 (`recTriple N ≅ recTriple N'`, plan in the session-r hand-off above).
+  Elaboration lessons (session s): `obtain ⟨…⟩` on the nested existentials of `exists_closedPoint_decomp` /
+  `exists_restrict_iff` (with `letI` instances in the body) timed out — `Exists.elim` chains are instant;
+  `rw [← map_pow]` / `e ▸ h` on goals containing `restrictClosed … ` timed out — transport the small
+  Prop-valued defs (`RestrictTrivAt`, `RestrictNontrivAt`) with `▸` instead; an anonymous constructor
+  `⟨x, h⟩ : F D` with `h : x ∈ F D'` for a different Galois model `D'` makes `whnf` time out (map with the
+  inclusion first); `let g'' : GStage := ⟨…⟩` breaks instance search (`IsGalois (K₀ …)`) — introduce it with
+  `obtain ⟨g'', …⟩ : ∃ g'', …`. Debts unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational
+  points / genus `≠ 0` (item 1), `CKStrictSemiAbs`. Decisions for the lead: none.
