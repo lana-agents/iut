@@ -532,9 +532,10 @@ import Iut.Reconstruction.Thm19.KummerRangeG
 import Iut.Reconstruction.Thm19.KummerRangeIso
 import Iut.Reconstruction.Thm19.LimCongr
 import Iut.Reconstruction.Thm19.LimEquiv
-import Iut.Reconstruction.Thm19.MatchCusp
 import Iut.Reconstruction.Thm19.LimIso
 import Iut.Reconstruction.Thm19.LimOfG
+import Iut.Reconstruction.Thm19.MatchCusp
+import Iut.Reconstruction.Thm19.MatchPoint
 import Iut.Reconstruction.Thm19.NFAdditive
 import Iut.Reconstruction.Thm19.NFCanon
 import Iut.Reconstruction.Thm19.NFColimit

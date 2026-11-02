@@ -1669,3 +1669,8 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `g₂ ≥ g₀` with rational cusps, G, `val_eq_mul_of_pow`, `mem_iff_of_le`, cancel `M`). Applies to
   `h1LimCycloEquiv` (`h1LimCycloEquiv_ofG`, `tameCompat_cycloIso`) and to its inverse (`h1LimCycloEquiv_symm_ofG`
   with `Φ.symm`, `(cycloIso Φ).symm`, `tameCompat_of_tameBridge _ tameBridge_cycloIso_symm`). Module build 177 s.
+  **`Thm19/MatchPoint.lean`**: `GStage.mem_K_of_mem_k`, **`exists_ratCusp_nfPlace`** (every point of `Z_NF` is
+  `nfPlace` of a rational cusp `x.A` of a geometric stage with rational cusps: `exists_finite_mem_F_constExt`,
+  `exists_coord_pole`, `GStage.exists_ge_ratCusps`, `mem_iff_of_ratPoint`). With `exists_map_inertiaH_constIso`
+  this is the input of `val_eq_of_matched` for every point. (Push 3 first failed only because `Iut.lean` imports
+  were not sorted: `MatchCusp` must come after `LimOfG`; keep the `Thm19` block sorted.)
