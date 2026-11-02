@@ -131,6 +131,7 @@ challenge or by `Iut/Concrete/*`.
        `map_thetaDdK`), `bUK`, `bOneK`; [EtTh] Prop 1.4(ii) for the Tate action:
        **`galDeckHom_tateGalDeckK_thetaDd`** (`g ↦ (-1)^ε (-1)^n s^{-n²} Ü^{-2n} Θ̈`), `gal_thetaDd`;
        `div_thetaEltK`, **`div_bThetaK_inl`** (`-(a + χ(g))²/2`), `div_bThetaK_inr` (`1` at cusps);
+       `deckYdd`, **`rv_pb_deckYdd_bThetaK`** (Prop 1.4(ii) in `B₀(Ÿ)`: pull-back along `τ_d`);
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;

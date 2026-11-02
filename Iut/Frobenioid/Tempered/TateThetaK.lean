@@ -30,6 +30,8 @@ deck part is `tateDeckOfChar 1 = 1` and its Galois part fixes `k`. Hence:
 * **[EtTh] Prop 1.4(ii) for the Tate action** (l.1324–1328): `gal_thetaDd` (`Θ̈` has `σ`-fixed
   coefficients), `scale_tateDeckOfChar_thetaDd`, **`galDeckHom_tateGalDeckK_thetaDd`**: `g ∈ Π^tp_X`
   maps `Θ̈` to `(-1)^ε (-1)^n s^{-n²} Ü^{-2n} Θ̈`, `(n, ε) = character₂ g`.
+  In `B₀(Ÿ)`: `deckYdd d` (the deck transformation `x ↦ x·d` of `Ÿ`), **`rv_pb_deckYdd_bThetaK`**
+  (the pull-back of `bThetaK` along `τ_d`).
 -/
 
 noncomputable section
@@ -325,5 +327,64 @@ theorem galDeckHom_tateGalDeckK_thetaDd {s : Kˣ} (hs : (s : K) ^ 2 = t.q) {s₀
   exact scale_tateDeckOfChar_thetaDd hs _
 
 end Prop14Pi
+
+section Pb
+
+variable {k : Type u} [NontriviallyNormedField k] [CompleteSpace k] [IsUltrametricDist k]
+  {Ω : Type u} [Field Ω] [Algebra k Ω] {tΩ : Ω}
+  (DG : Pi1.Orbifold.GaloisData k tΩ) [CharZero k] [IsGalois (K₀ k tΩ) Ω] [IsAlgClosed Ω]
+  {O : ValuationSubring k} (V : ValuationSubring Ω) (hV : V.comap (algebraMap k Ω) = O)
+  {K : Type u} [NontriviallyNormedField K] [CompleteSpace K] [IsUltrametricDist K]
+  [NormedAlgebra k K] {ι : kbar k Ω →ₐ[k] K} (hι : DenseRange ι) {t : TateParameter K}
+  [IsReduced DG.R] [Subsingleton DG.A] (D : TateObject.DoubleData O DG.R) (sΩ : Ω)
+  (hsΩ : sΩ ^ 2 = algebraMap DG.R Ω D.c)
+  (hval : ValueGroupRat t) {s : Kˣ} (hs : (s : K) ^ 2 = t.q) {s₀ : k}
+  (hs₀ : algebraMap k K s₀ = s)
+
+lemma smul_eq_mk_mul_Ydd (g : TempPi DG O V hV)
+    (x : TempPi DG O V hV ⧸ piYddot (A := DG.A) D V hV sΩ hsΩ) :
+    g • x = (QuotientGroup.mk g : TempPi DG O V hV ⧸ piYddot (A := DG.A) D V hV sΩ hsΩ) * x := by
+  induction x using QuotientGroup.induction_on with
+  | H a => rfl
+
+/-- **The deck transformation `τ_d` of `Ÿ`** (`d ∈ Π^tp_X`): `x ↦ x·d`. -/
+def deckYdd (d : TempPi DG O V hV) :
+    objYdd DG V hV D sΩ hsΩ ⟶ objYdd DG V hV D sΩ hsΩ where
+  toFun x := x * QuotientGroup.mk d
+  map_smul g x := by
+    rw [smul_eq_mk_mul_Ydd, smul_eq_mk_mul_Ydd, mul_assoc]
+
+lemma character₂_rep_deckYdd (d : TempPi DG O V hV) :
+    character₂ (A := DG.A) D V hV sΩ hsΩ (rep (deckYdd DG V hV D sΩ hsΩ d)) =
+      character₂ (A := DG.A) D V hV sΩ hsΩ d := by
+  have h := mk_rep (deckYdd DG V hV D sΩ hsΩ d)
+  change (QuotientGroup.mk (rep (deckYdd DG V hV D sΩ hsΩ d)) :
+      TempPi DG O V hV ⧸ piYddot (A := DG.A) D V hV sΩ hsΩ) =
+    QuotientGroup.mk 1 * QuotientGroup.mk d at h
+  rw [← QuotientGroup.mk_mul, one_mul] at h
+  have := MonoidHom.mem_ker.mp (QuotientGroup.eq.mp h)
+  rw [map_mul, map_inv, inv_mul_eq_one] at this
+  exact this
+
+/-- **[EtTh] Prop 1.4(ii) in `B₀(Ÿ)` over `k`**: the pull-back of `Θ̈` along the deck
+transformation `τ_d` of `Ÿ` is `(-1)^ε (-1)^n s^{-n²} Ü^{-2n} Θ̈`, `(n, ε) = character₂ d`. -/
+theorem rv_pb_deckYdd_bThetaK (d : TempPi DG O V hV) :
+    rv ((tateFrobK DG V hV hι D sΩ hsΩ hval hs hs₀).B₀.pb (deckYdd DG V hV D sΩ hsΩ d)
+        (bThetaK DG V hV hι D sΩ hsΩ hval hs hs₀)).1 =
+      Mero.const ((if (character₂ (A := DG.A) D V hV sΩ hsΩ d).2 = 1 then 1 else -1) *
+          (-1 : K) ^ Multiplicative.toAdd (character₂ (A := DG.A) D V hV sΩ hsΩ d).1 *
+          (s : K) ^ (-(Multiplicative.toAdd (character₂ (A := DG.A) D V hV sΩ hsΩ d).1 ^ 2))) *
+        Mero.ofE (thetaDd t) *
+        Mero.ofE (Entire.mono 1) ^
+          (2 * -Multiplicative.toAdd (character₂ (A := DG.A) D V hV sΩ hsΩ d).1) := by
+  change rep (deckYdd DG V hV D sΩ hsΩ d) •
+      rv (bThetaK DG V hV hι D sΩ hsΩ hval hs hs₀).1 = _
+  rw [rv_bThetaK]
+  change galDeckHom t (tateGalDeckK (DG := DG) (V := V) (hV := hV) hι D sΩ hsΩ hs hs₀
+    (rep (deckYdd DG V hV D sΩ hsΩ d))) (Mero.ofE (thetaDd t)) = _
+  rw [galDeckHom_tateGalDeckK_thetaDd, character₂_rep_deckYdd]
+  rfl
+
+end Pb
 
 end Iut.Frobenioid.BAn
