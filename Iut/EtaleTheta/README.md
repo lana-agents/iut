@@ -320,6 +320,14 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `ThetaLevelHeisenberg.lean` (`exists_levelEmb`); `TemperedLevelGalois.lean` (tempered Galois
   correspondence **`mem_range_muL_iff`**, `mem_range_muL_iff_forall`, **`normal_range_muL`**,
   **`normal_piYddotX`**: `Π^tp_Ÿ ⊴ Π^tp_X`; `piY_not_le_range_muL`).
+* (11l) **MR15 obligation 13b (index), 13c(i) tempered (MR14 run 18)**: `ThetaLevelTranslation.lean`
+  `exp_eq_of_mk_cuspElt_eq`, `dvd_of_mk_cuspElt_eq_mul`, `dvd_of_mk_cuspElt_sq`, `level_pow_of_dvd`,
+  **`transHom_level_pow_mul`** (`w σ = (w ρ)^l·w τ`, `(w τ)² = 1`, `2l ∣ N` ⇒ `σ η = (d·y)^l·η`), `MovesByPow`,
+  new conjunct of `exists_etaleThetaSystem`; `TemperedLevelTrans.lean` (new): debt Z
+  **`PiYIndexTwoAt`** (`[Π^tp_Y : Π^tp_Y ∩ Π^tp_{L_j}] ≤ 2`), `mul_self_mem_of_indexTwo`,
+  **`piYddotX_index`** (`e² ∈ Π^tp_Ÿ`, `Π^tp_Y = Π^tp_Ÿ ∪ Π^tp_Ÿ e`), **`of_mem_piXdd`** (lifts of
+  `γ ∈ Π^tp_X̿` move `η_j` by `l`-th powers, from Z and `χ(g₁) = 1`); `exists_thetaClassTemp_prop13`
+  (`ThetaKerTheta.lean`) gains the conjuncts `σ(L_j) ⊆ L_j` and this tempered 13c(i).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 

@@ -213,6 +213,7 @@ import Iut.EtaleTheta.TempSlimPiY
 import Iut.EtaleTheta.TemperedCovering
 import Iut.EtaleTheta.TemperedDouble
 import Iut.EtaleTheta.TemperedLevelGalois
+import Iut.EtaleTheta.TemperedLevelTrans
 import Iut.EtaleTheta.Theta
 import Iut.EtaleTheta.ThetaClassSystem
 import Iut.EtaleTheta.ThetaCohomology

@@ -543,7 +543,7 @@ theorem exists_thetaEnv_rigidity :
                   (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV) m) =
               inlY (augT DXc O V hV) (psiMu n)
                 (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV) m) := by
-  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta⟩ :=
+  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta, -⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
   refine ⟨L, hL, hX, het, η, htr, hcomp, fun V hV hC1 n _ hPY hG hLgen => ?_⟩
   have hdvd : n ∣ 2 * (n - 1 + 1) :=

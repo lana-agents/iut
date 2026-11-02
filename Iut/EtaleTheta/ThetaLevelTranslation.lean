@@ -463,6 +463,76 @@ theorem dvd_of_mk_cuspElt_eq {l : ℕ} (hlN : l ∣ N) {e e' : Fin 2} {a a' : �
     rw [this, hc]; push_cast; ring⟩
   exact_mod_cast hz
 
+omit [CompleteSpace K] [IsUltrametricDist K] [CharZero K] [T.tateCurve.IsElliptic] in
+include hT hN in
+/-- The exponent of `s` in a kernel point is determined modulo `N` by its class mod `Q^ℤ`
+(`Q = s^N`): if `(-1)^e s^a ≡ x` then `a = A + N n` whenever `‖x‖ = ‖s‖^A`. -/
+theorem exp_eq_of_mk_cuspElt_eq {e : Fin 2} {a : ℕ} {x : Kˣ} {A : ℤ}
+    (hx : ‖(x : K)‖ = ‖(s : K)‖ ^ A) (h : (cuspElt s e a : Kˣ ⧸ T.qpowers) = x) :
+    ∃ n : ℤ, (a : ℤ) = A + N * n := by
+  rw [QuotientGroup.eq, T.mem_qpowers_iff] at h
+  obtain ⟨n, hn⟩ := h
+  have hs1 := norm_s_lt_one_of_q hT hN
+  have hs0 : 0 < ‖(s : K)‖ := norm_pos_iff.mpr s.ne_zero
+  have hr0 : ‖(s : K)‖ ≠ 0 := hs0.ne'
+  have hnorm := congrArg norm hn
+  simp only [Units.val_mul, Units.val_inv_eq_inv_val, norm_mul, norm_inv, norm_zpow,
+    norm_cuspElt, hT, Units.val_pow_eq_pow_val, norm_pow, norm_one, hx] at hnorm
+  have ha : ‖(s : K)‖ ^ a ≠ 0 := pow_ne_zero _ hr0
+  have key : ‖(s : K)‖ ^ a = (‖(s : K)‖ ^ N) ^ n * ‖(s : K)‖ ^ A :=
+    calc ‖(s : K)‖ ^ a = ‖(s : K)‖ ^ a * ((‖(s : K)‖ ^ N) ^ n * ((‖(s : K)‖ ^ a)⁻¹ *
+          ‖(s : K)‖ ^ A)) := by rw [hnorm, mul_one]
+      _ = (‖(s : K)‖ ^ N) ^ n * ‖(s : K)‖ ^ A := by field_simp
+  refine ⟨n, zpow_right_injective₀ hs0 (ne_of_lt hs1) ?_⟩
+  change ‖(s : K)‖ ^ (a : ℤ) = ‖(s : K)‖ ^ (A + N * n)
+  rw [zpow_add₀ hr0, zpow_mul, zpow_natCast, zpow_natCast, key, mul_comm]
+
+omit [CompleteSpace K] [IsUltrametricDist K] [CharZero K] [T.tateCurve.IsElliptic] in
+include hT hN in
+/-- If `(-1)^e s^a ≡ ((-1)^{e'} s^{a'})^l · (-1)^{e''} s^{a''}` mod `Q^ℤ`, `l ∣ N` and `l ∣ a''`,
+then `l ∣ a`. -/
+theorem dvd_of_mk_cuspElt_eq_mul {l : ℕ} (hlN : l ∣ N) {e e' e'' : Fin 2} {a a' a'' : ℕ}
+    (hla : l ∣ a'')
+    (h : (cuspElt s e a : Kˣ ⧸ T.qpowers) =
+      (cuspElt s e' a' : Kˣ ⧸ T.qpowers) ^ l * (cuspElt s e'' a'' : Kˣ ⧸ T.qpowers)) :
+    l ∣ a := by
+  rw [← QuotientGroup.mk_pow, ← QuotientGroup.mk_mul] at h
+  have hx : ‖((cuspElt s e' a' ^ l * cuspElt s e'' a'' : Kˣ) : K)‖ =
+      ‖(s : K)‖ ^ ((l * a' + a'' : ℕ) : ℤ) := by
+    rw [Units.val_mul, Units.val_pow_eq_pow_val, norm_mul, norm_pow, norm_cuspElt, norm_cuspElt,
+      zpow_natCast]
+    ring
+  obtain ⟨n, hn⟩ := exp_eq_of_mk_cuspElt_eq hT hN hx h
+  obtain ⟨c, hc⟩ := hlN
+  obtain ⟨c', hc'⟩ := hla
+  have hz : (l : ℤ) ∣ (a : ℤ) := ⟨a' + c' + c * n, by rw [hn, hc, hc']; push_cast; ring⟩
+  exact_mod_cast hz
+
+omit [CompleteSpace K] [IsUltrametricDist K] [CharZero K] [T.tateCurve.IsElliptic] in
+include hT hN in
+/-- A kernel point of order `≤ 2` mod `Q^ℤ` has `a ∈ {0, N/2}` (mod `N`): if `2l ∣ N` then
+`l ∣ a`. -/
+theorem dvd_of_mk_cuspElt_sq {l : ℕ} (hlN : 2 * l ∣ N) {e : Fin 2} {a : ℕ}
+    (h : (cuspElt s e a : Kˣ ⧸ T.qpowers) ^ 2 = 1) : l ∣ a := by
+  rw [← QuotientGroup.mk_pow, ← QuotientGroup.mk_one] at h
+  have hc2 : ((cuspElt s e a ^ 2 : Kˣ) : Kˣ ⧸ T.qpowers) = cuspElt s 0 (2 * a) := by
+    congr 1
+    apply Units.ext
+    simp only [cuspElt, Units.val_pow_eq_pow_val, Units.val_mul, Fin.val_zero, pow_zero, one_mul]
+    rw [mul_pow, ← pow_mul, mul_comm (e : ℕ) 2, pow_mul]
+    simp only [Units.val_neg, Units.val_one, neg_one_sq, one_pow, one_mul]
+    ring
+  rw [hc2] at h
+  have hx : ‖((1 : Kˣ) : K)‖ = ‖(s : K)‖ ^ (0 : ℤ) := by simp
+  obtain ⟨n, hn⟩ := exp_eq_of_mk_cuspElt_eq hT hN hx h
+  obtain ⟨c, hc⟩ := hlN
+  have hz : (l : ℤ) ∣ (a : ℤ) := ⟨c * n, by
+    have : (2 : ℤ) * a = 2 * (l * (c * n)) := by
+      have h' : ((2 * a : ℕ) : ℤ) = 0 + N * n := hn
+      rw [hc] at h'; push_cast at h'; linarith
+    linarith⟩
+  exact_mod_cast hz
+
 end Index
 
 section Level
@@ -545,19 +615,16 @@ theorem transHom_level_eq_one (σ : (hemiData t.tateCurve).L.fixingSubgroup)
   transHom_eq_one_of rfl hN h12 h2 _ _ hidx σ
     (AlgHom.ext fun g => hσ _ (levelEmb_mem hs hN hpt htr g))
 
-/-- **[EtTh] Prop. 1.5(iii) mod `l` at the level `Ÿ'_N`** (MR15 obligation 13c(ii)): if the
-translation of `σ ∈ Gal(Ω/L_X)` on the level is an `l`-th power of a translation
-(`w(σ) = w(ρ)^l`, `l` odd, `l ∣ N`, `N` even), then `σ(η) = (d·y)^l·η` with `d ∈ K` and `y` in
-the level `L = K(τ)(φ x_Q∘ψ, φ y_Q∘ψ)` itself, where `η = φ(F_N)`. -/
-theorem transHom_level_pow (hev : Even N)
+include h2 in
+/-- The core of `transHom_level_pow`: if `l` divides the exponent `a` of the translation
+index `(e, a)` of `σ`, then `σ(η) = (d·y)^l·η` with `d ∈ K`, `y ∈ L`. -/
+theorem level_pow_of_dvd (hev : Even N)
     {f : TateField (sqrtPow hs N hN)}
     (hfv : ∀ (U : Kˣ) (hU : OffOrbit (sqrtPow hs N hN) U), etaleTheta (tatePow t N hN) U ≠ 0 →
       HasTateValue (sqrtPow hs N hN) h12 f hU (thetaLevel t N hN U))
-    {l : ℕ} (hl : Odd l) (hlN : l ∣ N) (σ ρ : (hemiData t.tateCurve).L.fixingSubgroup)
-    (h : transHom rfl hN h12 h2 ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr))
-        (hemiData t.tateCurve).L.fixingSubgroup hidx σ =
-      transHom rfl hN h12 h2 ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr))
-        (hemiData t.tateCurve).L.fixingSubgroup hidx ρ ^ l) :
+    {l : ℕ} (hl : Odd l) (hlN : l ∣ N) (σ : (hemiData t.tateCurve).L.fixingSubgroup)
+    (hla : l ∣ ((transIdx rfl hN h12 ((mulByNEmb t.tateCurve (2 * N)).comp
+      (pullbackT gX gY hpt htr)) (hemiData t.tateCurve).L.fixingSubgroup hidx σ).2 : ℕ)) :
     ∃ (d : K), ∃ y ∈ IntermediateField.adjoin (K₀ K τ) (mulByNEmb t.tateCurve (2 * N) '' {gX, gY}),
       (σ : Ω ≃ₐ[K₀ K τ] Ω) (((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr)) f) =
         (algebraMap K Ω d * y) ^ l *
@@ -565,8 +632,6 @@ theorem transHom_level_pow (hev : Even N)
   set ι := (mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr) with hιdef
   have hspec := transIdx_spec rfl hN h12 ι (hemiData t.tateCurve).L.fixingSubgroup hidx σ
   set p := transIdx rfl hN h12 ι (hemiData t.tateCurve).L.fixingSubgroup hidx σ with hpdef
-  rw [transHom_apply, transHom_apply] at h
-  have hla : l ∣ (p.2 : ℕ) := dvd_of_mk_cuspElt_eq rfl hN hlN h
   have key : (σ : Ω ≃ₐ[K₀ K τ] Ω) (ι f) =
       ι (baseAut (rfl : (sqrtPow hs N hN).q = s ^ N) hN h12 p.1 p.2 f) := by
     have := congrArg (fun g : TateField (sqrtPow hs N hN) →ₐ[K] Ω => g f) hspec
@@ -587,6 +652,54 @@ theorem transHom_level_pow (hev : Even N)
     refine ⟨d, ι H, levelEmb_mem hs hN hpt htr H, ?_⟩
     rw [baseAut, dif_neg h00, hH]
     simp only [map_mul, map_pow, AlgHom.commutes, mul_pow]
+
+
+/-- **[EtTh] Prop. 1.5(iii) mod `l` at the level `Ÿ'_N`** (MR15 obligation 13c(ii)): if the
+translation of `σ ∈ Gal(Ω/L_X)` on the level is an `l`-th power of a translation
+(`w(σ) = w(ρ)^l`, `l` odd, `l ∣ N`, `N` even), then `σ(η) = (d·y)^l·η` with `d ∈ K` and `y` in
+the level `L = K(τ)(φ x_Q∘ψ, φ y_Q∘ψ)` itself, where `η = φ(F_N)`. -/
+theorem transHom_level_pow (hev : Even N)
+    {f : TateField (sqrtPow hs N hN)}
+    (hfv : ∀ (U : Kˣ) (hU : OffOrbit (sqrtPow hs N hN) U), etaleTheta (tatePow t N hN) U ≠ 0 →
+      HasTateValue (sqrtPow hs N hN) h12 f hU (thetaLevel t N hN U))
+    {l : ℕ} (hl : Odd l) (hlN : l ∣ N) (σ ρ : (hemiData t.tateCurve).L.fixingSubgroup)
+    (h : transHom rfl hN h12 h2 ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr))
+        (hemiData t.tateCurve).L.fixingSubgroup hidx σ =
+      transHom rfl hN h12 h2 ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr))
+        (hemiData t.tateCurve).L.fixingSubgroup hidx ρ ^ l) :
+    ∃ (d : K), ∃ y ∈ IntermediateField.adjoin (K₀ K τ) (mulByNEmb t.tateCurve (2 * N) '' {gX, gY}),
+      (σ : Ω ≃ₐ[K₀ K τ] Ω) (((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr)) f) =
+        (algebraMap K Ω d * y) ^ l *
+          ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr)) f := by
+  rw [transHom_apply, transHom_apply] at h
+  exact level_pow_of_dvd h2 h12 hs hN hpt htr hidx hev hfv hl hlN σ
+    (dvd_of_mk_cuspElt_eq rfl hN hlN h)
+
+/-- **[EtTh] Prop. 1.5(iii) mod `l` at the level, general form** (MR15 obligation 13c(i)+(ii)):
+if `w(σ) = w(ρ)^l·w(τ)` with `w(τ)² = 1` (`l` odd, `2l ∣ N`), then `σ(η) = (d·y)^l·η` with
+`d ∈ K`, `y ∈ L`. (`w(τ) ∈ {±1, ±s^{N/2}}`, all `l`-th powers of kernel points as `l ∣ N/2`.) -/
+theorem transHom_level_pow_mul (hev : Even N)
+    {f : TateField (sqrtPow hs N hN)}
+    (hfv : ∀ (U : Kˣ) (hU : OffOrbit (sqrtPow hs N hN) U), etaleTheta (tatePow t N hN) U ≠ 0 →
+      HasTateValue (sqrtPow hs N hN) h12 f hU (thetaLevel t N hN U))
+    {l : ℕ} (hl : Odd l) (hlN : 2 * l ∣ N) (σ ρ τ' : (hemiData t.tateCurve).L.fixingSubgroup)
+    (h : transHom rfl hN h12 h2 ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr))
+        (hemiData t.tateCurve).L.fixingSubgroup hidx σ =
+      transHom rfl hN h12 h2 ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr))
+        (hemiData t.tateCurve).L.fixingSubgroup hidx ρ ^ l *
+      transHom rfl hN h12 h2 ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr))
+        (hemiData t.tateCurve).L.fixingSubgroup hidx τ')
+    (hτ : transHom rfl hN h12 h2 ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr))
+        (hemiData t.tateCurve).L.fixingSubgroup hidx τ' ^ 2 = 1) :
+    ∃ (d : K), ∃ y ∈ IntermediateField.adjoin (K₀ K τ) (mulByNEmb t.tateCurve (2 * N) '' {gX, gY}),
+      (σ : Ω ≃ₐ[K₀ K τ] Ω) (((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr)) f) =
+        (algebraMap K Ω d * y) ^ l *
+          ((mulByNEmb t.tateCurve (2 * N)).comp (pullbackT gX gY hpt htr)) f := by
+  have hlN' : l ∣ N := Dvd.dvd.trans (Dvd.intro_left 2 rfl) hlN
+  rw [transHom_apply, transHom_apply, transHom_apply] at h
+  rw [transHom_apply] at hτ
+  exact level_pow_of_dvd h2 h12 hs hN hpt htr hidx hev hfv hl hlN' σ
+    (dvd_of_mk_cuspElt_eq_mul rfl hN hlN' (dvd_of_mk_cuspElt_sq rfl hN hlN hτ) h)
 
 end Level
 
@@ -653,6 +766,12 @@ theorem levelData_two_eq_pb (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) [t.t
     change evalTate t h12 hum (mkT t X) = _
     rw [evalTate_mk_Y]
 
+/-- `σ` moves `x` by an `l`-th power of `d·y`, `d ∈ K` (the field of constants), `y ∈ L'`:
+`σ x = (d·y)^l·x` ([EtTh] Prop. 1.5(iii) mod `l`, the conclusion of `transHom_level_pow_mul`). -/
+def MovesByPow {B : Type*} [Field B] [Algebra B Ω] (L' : IntermediateField B Ω) (σ : Ω → Ω)
+    (x : Ω) (l : ℕ) : Prop :=
+  ∃ (d : K), ∃ y ∈ L', σ x = (algebraMap K Ω d * y) ^ l * x
+
 set_option maxHeartbeats 1000000 in
 -- the system now carries the translation homomorphisms of all levels (run 17)
 /-- **The étale theta classes form a projective system** (module docstring of
@@ -701,7 +820,7 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
         (∀ j (σ : (hemiData t.tateCurve).L.fixingSubgroup),
           (∀ z ∈ L j, (σ : Ω ≃ₐ[K₀ K τ] Ω) z = z) → w j σ = 1) ∧
         (∀ j, ∀ σ ∈ (hemiData t.tateCurve).L.fixingSubgroup, ∀ x ∈ L j, σ x ∈ L j) ∧
-        ∀ (j l : ℕ), Odd l → l ∣ 2 * (j + 1) →
+        (∀ (j l : ℕ), Odd l → l ∣ 2 * (j + 1) →
           ∀ σ ρ : (hemiData t.tateCurve).L.fixingSubgroup, w j σ = w j ρ ^ l →
             ∃ (d : K), ∃ y ∈ L j,
               (σ : Ω ≃ₐ[K₀ K τ] Ω)
@@ -709,7 +828,13 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
                     F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω) =
                 (algebraMap K Ω d * y) ^ l *
                   (((η j : (F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
-                    F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω) := by
+                    F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω)) ∧
+        ∀ (j l : ℕ), Odd l → 2 * l ∣ 2 * (j + 1) →
+          ∀ σ ρ τ' : (hemiData t.tateCurve).L.fixingSubgroup, w j σ = w j ρ ^ l * w j τ' →
+            w j τ' ^ 2 = 1 →
+            MovesByPow (L j) (σ : Ω ≃ₐ[K₀ K τ] Ω)
+              (((η j : (F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
+                F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω) l := by
   haveI : t.tateCurve.IsElliptic := t.tateCurve_isElliptic h12
   choose gX gY F hF hmul hunit hval using fun j : ℕ =>
     exists_levelData (t := t) h12 h2 hs (N := 2 * (j + 1)) (by omega) ⟨j + 1, by ring⟩
@@ -749,7 +874,7 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
       (∀ j (σ : (hemiData t.tateCurve).L.fixingSubgroup),
         (∀ z ∈ L j, (σ : Ω ≃ₐ[K₀ K τ] Ω) z = z) → w j σ = 1) ∧
       (∀ j, ∀ σ ∈ (hemiData t.tateCurve).L.fixingSubgroup, ∀ x ∈ L j, σ x ∈ L j) ∧
-      ∀ (j l : ℕ), Odd l → l ∣ 2 * (j + 1) →
+      (∀ (j l : ℕ), Odd l → l ∣ 2 * (j + 1) →
         ∀ σ ρ : (hemiData t.tateCurve).L.fixingSubgroup, w j σ = w j ρ ^ l →
           ∃ (d : K), ∃ y ∈ L j,
             (σ : Ω ≃ₐ[K₀ K τ] Ω)
@@ -761,13 +886,21 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
                 (((η j : (KummerTheory.Curve.F
                   (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
                   KummerTheory.Curve.F (fieldData (transcendental_tau t.tateCurve) (L j)
-                    (hL j))) : Ω) := by
+                    (hL j))) : Ω)) ∧
+      ∀ (j l : ℕ), Odd l → 2 * l ∣ 2 * (j + 1) →
+        ∀ σ ρ τ' : (hemiData t.tateCurve).L.fixingSubgroup, w j σ = w j ρ ^ l * w j τ' →
+          w j τ' ^ 2 = 1 →
+          MovesByPow (L j) (σ : Ω ≃ₐ[K₀ K τ] Ω)
+            (((η j : (KummerTheory.Curve.F
+              (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
+              KummerTheory.Curve.F (fieldData (transcendental_tau t.tateCurve) (L j)
+                (hL j))) : Ω) l := by
     have hW' : ∀ j, ∃ w : (hemiData t.tateCurve).L.fixingSubgroup →*
           Kˣ ⧸ (sqrtPow hs (2 * (j + 1)) (by omega)).qpowers,
         (∀ σ : (hemiData t.tateCurve).L.fixingSubgroup,
           (∀ z ∈ L j, (σ : Ω ≃ₐ[K₀ K τ] Ω) z = z) → w σ = 1) ∧
         (∀ σ ∈ (hemiData t.tateCurve).L.fixingSubgroup, ∀ x ∈ L j, σ x ∈ L j) ∧
-        ∀ l : ℕ, Odd l → l ∣ 2 * (j + 1) →
+        (∀ l : ℕ, Odd l → l ∣ 2 * (j + 1) →
           ∀ σ ρ : (hemiData t.tateCurve).L.fixingSubgroup, w σ = w ρ ^ l →
             ∃ (d : K), ∃ y ∈ L j,
               (σ : Ω ≃ₐ[K₀ K τ] Ω)
@@ -779,7 +912,15 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
                   (((η j : (KummerTheory.Curve.F
                     (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
                     KummerTheory.Curve.F (fieldData (transcendental_tau t.tateCurve) (L j)
-                      (hL j))) : Ω) := by
+                      (hL j))) : Ω)) ∧
+        ∀ l : ℕ, Odd l → 2 * l ∣ 2 * (j + 1) →
+          ∀ σ ρ τ' : (hemiData t.tateCurve).L.fixingSubgroup, w σ = w ρ ^ l * w τ' →
+            w τ' ^ 2 = 1 →
+            MovesByPow (L j) (σ : Ω ≃ₐ[K₀ K τ] Ω)
+              (((η j : (KummerTheory.Curve.F
+                (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
+                KummerTheory.Curve.F (fieldData (transcendental_tau t.tateCurve) (L j)
+                  (hL j))) : Ω) l := by
       intro j
       have hNj : 0 < 2 * (j + 1) := by omega
       have hev : Even (2 * (j + 1)) := ⟨j + 1, by ring⟩
@@ -790,7 +931,7 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
         hNj hev (hmul j) (hval j)
       have hidx' := fun σ hσ => hidx σ ((IntermediateField.mem_fixingSubgroup_iff _ _).1 hσ)
       refine ⟨transHom rfl hNj h12 h2 _ _ hidx', fun σ hσ => ?_, fun σ hσ x hx => ?_,
-        fun l hl hlN σ ρ h => ?_⟩
+        fun l hl hlN σ ρ h => ?_, fun l hl hlN σ ρ τ' h hτ' => ?_⟩
       · exact transHom_level_eq_one h2 h12 hs hNj hpt' htr _ σ hσ
       · exact level_stable h12 hs hNj hpt' htr hidx' σ hσ hx
       · obtain ⟨d, y, hy, e⟩ := transHom_level_pow h2 h12 hs hNj hpt' htr _
@@ -802,8 +943,18 @@ theorem exists_etaleThetaSystem (h2 : ‖(2 : K)‖ = 1) (h12 : (12 : K) ≠ 0) 
           rw [AlgHom.comp_apply, hjf]
         rw [hη j, ← hιf]
         exact e
-    choose w hw1 hw2 hw3 using hW'
-    exact ⟨w, hw1, hw2, hw3⟩
+      · unfold MovesByPow
+        obtain ⟨d, y, hy, e⟩ := transHom_level_pow_mul h2 h12 hs hNj hpt' htr _
+          hev hfv hl hlN σ ρ τ' h hτ'
+        refine ⟨d, y, hy, ?_⟩
+        have hιf : ((mulByNEmb t.tateCurve (2 * (2 * (j + 1)))).comp
+            (pullbackT (gX j) (gY j) hpt' htr)) f =
+              mulByNEmb t.tateCurve (2 * (2 * (j + 1))) (F j) := by
+          rw [AlgHom.comp_apply, hjf]
+        rw [hη j, ← hιf]
+        exact e
+    choose w hw1 hw2 hw3 hw4 using hW'
+    exact ⟨w, hw1, hw2, hw3, hw4⟩
   refine ⟨L, hL, fun j => hemiL_le_adjoin _ _ (hmul j), η,
     fun j => etale_adjoin_image _ _ (hmul j), fun j => ?_, fun j => ?_, fun j => ?_,
     fun j j' M hjM hevM => ?_, fun j W hk hτ n _ hn => ?_, fun j n hn =>

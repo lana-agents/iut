@@ -900,7 +900,7 @@ theorem exists_thetaRep_inputs :
           CuspInertiaWeil (DXc) →
           ∀ m : Mu n Ω, ∃ γ : piYddotX V hV (tateDataX O hO hs h12) hL,
             (γ : TempPi DXc O V hV) ∈ thetaL (tateDataX O hO hs h12) hL ∧ r γ = m := by
-  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta⟩ :=
+  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta, -⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
   refine ⟨L, hL, hX, het, η, htr, hcomp, fun V hV hC1 n _ r hr => ⟨fun γ hγ => ?_,
     fun W hk hτ hVW hG5 m => ?_⟩⟩
