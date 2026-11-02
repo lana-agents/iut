@@ -1639,3 +1639,15 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   **`map_kummerNFRange_h1LimCycloEquiv`**: `(kummerNFRange N).map (h1LimCycloEquiv …) = kummerNFRange N₂`.
   Bisection lesson: time each declaration with `#exit`-truncated copies and `sorry`'d predecessors in
   parallel (two slots); slot waiting inflates the wall time, measure inside the slot.
+* Addendum (session t, second push): step 5 started. **`Thm19/TripleIso.lean`**:
+  `Uchida.ofFunctionField.val_injective` (distinct places have distinct valuations, `exists_zero_only_at`),
+  `val_eq_zero_of_mem_U`; the Prop-valued defs `ValEvalData.ValInjective`, `UInKer` and their transport along
+  isomorphisms; **`Uchida.ValEvalData.Iso.ofVal`** (an isomorphism of triples from a group isomorphism `φ`
+  such that every point on either side has a partner with the same valuations along `φ`, respecting `U_x` for
+  partners: `σ` is determined by `φ`); `recTriple_valInjective`, `recTriple_uInKer`.
+  **`Thm19/OrdMatch.lean`**: `res_kummerMapZHat_eq_tameGen_zpow_of_data`, `idxVal_ne_top_of_data` (for a Galois
+  model equal to a stage's, by `subst`; used with `GStage.toStage_data`), `GStage.exists_inertiaIndex`,
+  **`GStage.exists_unif_nf`** (a uniformiser of the place of a geometric stage at `W` is one of `Z_NF = F k̄`:
+  `isUnif_baseChange` + `mem_F_baseChange_stage_iff`), **`LiftData.val_eq_mul_of_pow`** (for cusps `W` of `g`,
+  `W''` of `L.tgt` with inertia groups and elements matched by `constIso L.e`, `TameCompat`, and
+  `(L.S κ(v))^M = κ(w')`: `ord_{x''}(w') = M · ord_x(v)`).

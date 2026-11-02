@@ -545,6 +545,7 @@ import Iut.Reconstruction.Thm19.NFPoints
 import Iut.Reconstruction.Thm19.NFShrink
 import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Thm19.NFTransition
+import Iut.Reconstruction.Thm19.OrdMatch
 import Iut.Reconstruction.Thm19.PUStage
 import Iut.Reconstruction.Thm19.PiJCongr
 import Iut.Reconstruction.Thm19.PlaceConj
@@ -572,6 +573,7 @@ import Iut.Reconstruction.Thm19.SyncGroupTheoretic
 import Iut.Reconstruction.Thm19.SyncStage
 import Iut.Reconstruction.Thm19.SyncStageLift
 import Iut.Reconstruction.Thm19.SyncTame
+import Iut.Reconstruction.Thm19.TripleIso
 import Iut.Reconstruction.Thm19.Unramified
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
