@@ -1569,3 +1569,15 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `X ▸ h` with `inertiaPi` (abbrev) vs its unfolded form fails; use `heq.le h`.
   Debts (unchanged): `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points / genus `≠ 0` (item 1),
   `CKStrictSemiAbs`. Decision for the lead: none blocking. Estimate: step 4 ≈ 3 sessions, step 5 ≈ 2–3 sessions.
+
+### Lead decision after session r (2026-11-02, christian-aa)
+- Confirmed: the signature change of `LiftData.TameCompat` and of `h1Congr_mem_PU`'s `hT` (the extra
+  inertia-group equality `E(I_p) = I_{p'}`) is accepted.
+
+* Addendum 2026-11-02 (MR9 track agent, session s, lead christian-aa): **pieces A and B of step 4.**
+  `Thm19/KummerRangeG.lean`: `mk_mem_kummerNFRange_of_pow` (generic over a number field: `η ∈ P_V`,
+  `η^M = κ_V(w)` ⇒ `[V, η] ∈ kummerNFRange`; the `M`-th root over `V_{K(b^{1/M})}`, every function of
+  `F k̄` is NF-rational), `resT_mem_PU_of_eq`, `ofG_eq_mk`, **`ofG_mem_kummerNFRange`** (A),
+  `ofG_kummerMapZHat`, `exists_units_of_le`, `exists_units_of_gle`, **`exists_ratStage_of_mem`** (B: every
+  class of `kummerNFRange` is `ofG g (κ v)` at a geometric stage with rational cusps carrying a unit that is
+  not an algebraic number).
