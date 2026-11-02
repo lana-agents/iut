@@ -579,6 +579,7 @@ import Iut.Reconstruction.Thm19.SyncStageLift
 import Iut.Reconstruction.Thm19.SyncTame
 import Iut.Reconstruction.Thm19.TripleIso
 import Iut.Reconstruction.Thm19.Unramified
+import Iut.Reconstruction.Thm19.ValCompat
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
 import Iut.Reconstruction.Uchida.FunctionField

@@ -1674,3 +1674,41 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `exists_coord_pole`, `GStage.exists_ge_ratCusps`, `mem_iff_of_ratPoint`). With `exists_map_inertiaH_constIso`
   this is the input of `val_eq_of_matched` for every point. (Push 3 first failed only because `Iut.lean` imports
   were not sorted: `MatchCusp` must come after `LimOfG`; keep the `Thm19` block sorted.)
+
+* Hand-off 2026-11-02 (MR9 track agent, session t, lead christian-aa): worktree `~/mr8-iut`, branch `mr9-t`;
+  everything pushed via `~/iut-push.sh` (hashes in ~/session2-status.md), no WIP branch (`mr9-s-wip` is merged and
+  obsolete). **Step 4 is finished** (piece H, `map_kummerNFRange_h1LimCycloEquiv`). **Step 5** started:
+  `TripleIso` (`Iso.ofVal`), `OrdMatch`, `MatchCusp`, `OrdCompat` (**`val_eq_of_matched`**), `MatchPoint`,
+  `ValCompat`: the bijection of points and `ord_eq` are done up to assembly; only `mem_U_iff` is missing.
+  **Next steps (step 5), in order:**
+  1. *(done, `Thm19/ValCompat.lean`)* `kummerNFRangeEquiv` (`φ`, restriction of `h1LimCycloEquiv`),
+     **`exists_val_kummerNFRangeEquiv`** (every `P` has `P₂` with `ord_{P₂} ∘ φ = ord_P`) and
+     **`exists_val_kummerNFRangeEquiv_symm`** (the same for `φ⁻¹`): these are `hex`, `hex'` of `Iso.ofVal`
+     (for `hex'` use `φ.apply_symm_apply`); `hD`, `hD'` are `recTriple_valInjective`.
+  2. `mem_U_iff` (the `hU` argument of `Iso.ofVal`), at matched points `P ↔ P₂`:
+     - at points of `U` (`t ∈ x.A`; these are closed points of stages): `mem_U_recTriple_iff` (stated for
+       `StageIdx`; generalise by `subst` as in `res_kummerMapZHat_eq_tameGen_zpow_of_data`) +
+       `LiftData.exists_restrict_iff`, which must be refactored to also return the matched data (`g''`, `L''`,
+       `A ∈ CuspW g''`, `E''(I_A) = I_{A''}`) so that `A''` is identified with the matched point (`mem_iff_of_le`);
+       on the target the class is only `κ(w')^{1/M}`: show `f₂(x'') = 1` from the restriction of `(L.S κ v)`
+       (`exists_eq_kummerMapZHat_mul_constMapZHat` NFColimit:442, `kummerMapZHat_injective_of_numberField`;
+       scoping estimate ~330 l.). One direction suffices (apply it to `Φ.symm`).
+     - **at the cusps of `U` (`t ∉ x.A`) there is no route yet** (no stage has them as closed points, so
+       `mem_U_recTriple_iff` does not apply): **decision needed** (below).
+  3. `recTriple N ≅ recTriple N₂` by `Iso.ofVal` (`recTriple_valInjective` both sides), then `ringEquivOfIso`.
+  **Decision for the lead (blocking the last part of step 5):** how to obtain `U_x` at the cusps `x` of `U`:
+  (i) a local lemma "for `ord_x f = 0` at a cusp, `κ(f)|_{D_x}` is inflated from `κ(f(x))`" and matching of the
+  cuspidal decomposition groups (`map_decompH_constIso`) with tangential sections (`exists_cusp_tSection`), est.
+  300–500 l. new; or (ii) an `S`-restricted Uchida algorithm (`AddRel_S` with configurations avoiding the finite set
+  of cusps; needs a weil-curves variant of `Divisor.exists_uchidaConfig` avoiding a finite set — pin bump), then
+  recover `U` at the cusps from the field isomorphism, est. ~300 l.; or (iii) state the final `Iso` with the
+  cusp part of `mem_U_iff` as an explicit, honestly named theorem argument recorded as a debt here.
+  Elaboration lessons (session t): the `h1LimEquiv_symm_ofG` hang was `congrArg … (toG_ofG g y)` against
+  `h1LimEquivG.symm.symm` (unfolds `mulEquivOfCocones`): go through `MulEquiv.symm_trans_apply`/`symm_symm`;
+  `LiftData.choose Φ hS g` outside an expected type needs all of `(hτ := ) (hU := ) (hτ₂ := ) (hU₂ := )`, and is
+  best generalised at once (`obtain ⟨L, h⟩ : ∃ L, ψ ξ = ofG L.tgt (L.S …) := ⟨_, …⟩`); `MonoidHom.ext fun y =>
+  piRes_piT _ _ _ …` timed out — state the square pointwise with named implicits; `ValuationSubring.ext` does not
+  take a function — use `SetLike.ext`; slot waiting inflates wall times (measure inside the slot).
+  Debts unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points / genus `≠ 0` (item 1),
+  `CKStrictSemiAbs`. Estimate for the rest of step 5: item 3 is ~40 l. once `hU` exists; item 2 (points of `U`) one to two
+  sessions; cusps of `U` per the decision.
