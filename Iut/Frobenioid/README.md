@@ -122,6 +122,10 @@ challenge or by `Iut/Concrete/*`.
        `isoExt`/`isoExtGrp` by density), `sigmaTemp_galoisToTempered`; **`tateGalDeckK`** (the Tate
        action with this `σ`), **`galDeckHom_tateGalDeckK_dataRingHom`** (`Π^tp_X` fixes the
        `k`-curve of `D` in `Mero K`), `_kumM`, `_tateFieldHom`, `isTateLift_gammaMeroK`;
+       `Tempered/TateFrobK.lean`: **`isLRat_tateGalDeckK`** (the Tate action is defined over `k`),
+       **`tateFrobK`** (`radDataL` for `G = Π^tp_X` with the Tate action: the tempered Frobenioid
+       data over `k` on the unramified layer), `tateFrobK_isFrobenioid`,
+       `tateFrobK_div_eq_zero_iff` (kernel `O_k^×`), `tateFrobK_gal`;
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;
