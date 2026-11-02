@@ -1483,3 +1483,36 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
 ### Lead decision after session q (2026-11-02, christian-aa)
 - Confirmed: (c) proceeds under the named `LiftData.TameCompat`; (b-i) stays in MR9 and is finished now (session r:
   cusp bookkeeping for `cycloCongr_tameGen`, then `TameCompat` discharged at the stages, then steps 4–5).
+
+* Addendum 2026-11-02 (MR9 track agent, session r, lead christian-aa): **item (b-i) is finished and the debt
+  `LiftData.TameCompat` is discharged** for `χU = cycloIso Φ`. Files (pushed via `~/iut-push.sh`, hash in
+  ~/session2-status.md):
+  * `Thm19/Unramified.lean` (written by a session-r helper): `placeBarOf`, **`isUnif_baseChange`** (`F ⊆ F k̄`
+    is unramified at every place `W ⊇ k`, not only at rational points; proof of curves-jacobian
+    `ord_placeOf_ιF_of_ord_eq_one` with `x.A` replaced by `W`), **`proj_tameChar_inertiaBar'`** (no rational
+    point), **`zHatRes_tameGen_eq`** (tame generators of two Galois models at the same place and inertia
+    element agree when the uniformisers have the same value), `valuation_unif_eq_of_le`,
+    `valuation_unif_eq_of_eq`, `exists_inertiaH_ne_one`.
+  * `Thm19/SyncCusp.lean` (step 1, cusp bookkeeping): `exists_bcToDeltaU_eq_of_mem`,
+    **`exists_deltaU_conj_of_comap_eq`**, the Prop-valued def **`CuspSep D`** (cusps with `Δ_U`-conjugate
+    inertia lie over the same point of `X_{k̄}`; used only as an explicit argument and proved for curves over
+    number fields in `SyncStage`), `deltaBarUCongr_rhoBarU_iff` (`hp`), `exists_rhoBarU_of_map(_symm)` (`h₁`,
+    `h₂`), `isCentredOn_chartBar_iff`, `comapK_eq_iff`, **`isCentredOn_iff_comapK_ne`** (`(U_x)ᶜ = {x̄}`),
+    `mem_kernel_of_cusps`, **`hK_of_cusps`** (the kernel of `H_{k̄} ↠ π₁(U_x)` is matched: the comap of
+    `ker(fillUx')` is a closed normal subgroup containing `S_{U_x}`; no finiteness of `(U_{k̄})ᶜ` needed).
+  * `Thm19/SyncCuspTame.lean`: `syncEquivBar_inertiaToCusp'`, `exists_syncData'` (with `U_{k̄} ⊆ U_x`),
+    `cycloCongr_tameGen'` (no rational points), **`cycloCongr_tameGen_of_cusps`**: for `Φ` matching cuspidal
+    inertia groups both ways and `CuspSep` on both sides, `cycloCongr Φ (θ_p) = θ_{p'}` whenever
+    `Φ(I_p) = I_{p'}` and `Φ[σ_p] = [σ_{p'}]`.
+  * `Thm19/SyncStage.lean`: `kernel_fix_F_baseChange`, `mem_F_baseChange_of_constExt`, `map_piT_inertiaPi`,
+    **`mk_ne_one_of_cusp`** (cuspidal inertia injects into `Π_U`, genus ≥ 1), `coordT_notMem_of_map`,
+    **`cuspSep_curve`** (`CuspSep` for curves over number fields).
+  * `Thm19/SyncStageLift.lean` (step 2): `LiftData.hfill`, `gStage_cuspSep`, `LiftData.cuspSep`,
+    **`LiftData.cycloVχ_cycloIso`** (`cycloVχ (cycloIso Φ) = cycloCongr L.e`: at a cusp of `U` every element of
+    `Ẑ(1)` is a tame generator, `tameChar_surjective`), **`LiftData.tameCompat_cycloIso`**,
+    **`LiftData.S_mem_PU_cycloIso`** (`S (P_V) ⊆ P_{V'}` with no `TameCompat` argument).
+  * `PUStage`: `TameCompat` and `h1Congr_mem_PU`'s `hT` now also take the inertia-group equality
+    `E(I_p) = I_{p'}` (always available at the use site, from `exists_inertiaIndex_symm`); without it the
+    element condition alone would need "cuspidal inertia groups meeting nontrivially are equal".
+  Debts now: `TameCompat` gone; unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points /
+  genus `≠ 0` of both compactifications (item 1), `CKStrictSemiAbs`.

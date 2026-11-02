@@ -207,6 +207,7 @@ theorem h1Congr_mem_PU [Fact (Function.Surjective (piJ1ToGk D))]
       (W₁.comap (algebraMap (F D) Ω) = W₂.comap (algebraMap (F D) Ω) ↔
         W₁''.comap (algebraMap (F D') Ω') = W₂''.comap (algebraMap (F D') Ω')))
     (hT : ∀ (p : InertiaIndex D) (p' : InertiaIndex D'), t ∉ p.1.1 → t' ∉ p'.1.1 →
+      (inertiaPi D p.1.1).map e.toMulEquiv.toMonoidHom = inertiaPi D' p'.1.1 →
       ((p'.1.2 : D'.H) : Pi D') = e ((p.1.2 : D.H) : Pi D) → χ (tameGen p) = tameGen p')
     (hrat : ∀ P : Place k (F D), IsCuspPlaceF P → ∃ x : RatPoint D, placeOfF x = P)
     (η : ContH1 (Pi D) (ZHatOne (F D) Ω)) (hη : η ∈ PU D) : h1Congr e χ hχ η ∈ PU D' := by
@@ -226,7 +227,7 @@ theorem h1Congr_mem_PU [Fact (Function.Surjective (piJ1ToGk D))]
       rw [hE'0 p' hp', zpow_zero]
     · obtain ⟨p, hp, hEq, hpp⟩ := hsymm p' hp'
       have h1 : res D η p = tameGen p ^ divAt (ratDivF f) p := hfr p
-      have h2 : χ (tameGen p) = tameGen p' := hT p p' hp hp' hpp
+      have h2 : χ (tameGen p) = tameGen p' := hT p p' hp hp' hEq hpp
       have h3 : divAt E' p' = divAt (ratDivF f) p := hE' p p' hp hp' hEq
       calc res D' (h1Congr e χ hχ η) p' = χ (res D η p) := res_h1Congr_of_eq e χ hχ p p' hpp η
         _ = χ (tameGen p ^ divAt (ratDivF f) p) := congrArg χ h1
@@ -327,14 +328,21 @@ variable (χU : ZHatOne (F (curveGaloisData K hτ)) (FFClosure C.Xbar) ≃ₜ*
 
 /-- **Tame generators along the stage isomorphism**: the coefficient isomorphism
 `constCyclo (cycloVχ χU)` sends the tame generator `θ_p` at a cusp `p = (W, σ)` of the stage to
-the tame generator at every cusp `p' = (W', σ')` of the target stage with `[σ'] = constIso e [σ]`.
+the tame generator at every cusp `p' = (W', σ')` of the target stage with
+`constIso e (I_W) = I_{W'}` and `[σ'] = constIso e [σ]`.
 For `χU = cycloIso Φ` this is the functoriality of the synchronizations of [AbsTopIII]
 Prop 1.4 (ii) (`Topics in Absolute Anabelian Geometry III.txt` l.1771–1802), used by Thm 1.9 (b),
 (c) (l.2144–2157); it enters the results below as an explicit argument (`Plans/MR9Plan.md`,
-item 4 (b-i)). -/
+item 4 (b-i)) and is proved for `χU = cycloIso Φ` in `Thm19/SyncStage.lean`
+(`LiftData.tameCompat_cycloIso`). -/
 def LiftData.TameCompat (L : LiftData hτ hU hτ₂ hU₂ Φ g) : Prop :=
   ∀ (p : InertiaIndex g.data) (p' : InertiaIndex L.tgt.data), coordT g.τ₀ ∉ p.1.1 →
     coordT L.υ ∉ p'.1.1 →
+    ((inertiaH g.data p.1.1).map (QuotientGroup.mk' (GaloisPi1.kernel g.data.H g.data.S))).map
+        (constIso L.e (gkIso hτ hU hτ₂ hU₂ Φ) L.he_gk (piToGk_surjective_curve g.hτ₀)
+          g.K).toMulEquiv.toMonoidHom =
+      (inertiaH L.tgt.data p'.1.1).map
+        (QuotientGroup.mk' (GaloisPi1.kernel L.tgt.data.H L.tgt.data.S)) →
     ((p'.1.2 : L.tgt.data.H) : Pi L.tgt.data) =
       constIso L.e (gkIso hτ hU hτ₂ hU₂ Φ) L.he_gk (piToGk_surjective_curve g.hτ₀) g.K
         ((p.1.2 : g.data.H) : Pi g.data) →
