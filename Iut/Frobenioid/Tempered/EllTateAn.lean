@@ -43,10 +43,9 @@ part `Π^tp_X → Deck t` by `(n, ε) ↦ (-1)^ε s^{-n}`. Here the comparison w
   `Π^tp_X ↠ ℤ` only up to `Aut(ℤ) = {±1}`, l.445–447). The comparison of *all* tempered coverings
   (André's analytic `π₁^tp` of `E_t` with tfg's schematic `Π^tp_X`) is not formalised, so
   `tateDeck` remains a definition beyond `X'`.
-* The Galois part `σ : Π^tp_X → IsoAut t` is still an explicit input. tfg now provides
-  `Π^tp_X → G_k` (`piToGk ∘ tempToPi`, `Tempered/GaloisSurjective.lean`); what is missing is an
-  embedding of `k̄ ⊆ Ω` into `K` and the extension of Galois elements to the completion. Its
-  compatibility with `K(E_t) ⊆ Mero K` is proved in `TateGalMero` (`gal_comp_tateFieldHom`).
+* The Galois part `σ : Π^tp_X → IsoAut t` is a parameter here; `TateGalSigma.sigmaTemp`
+  constructs it from tfg's `Π^tp_X → G_k` (`piToGk ∘ tempToPi`) for `K` the completion of `k̄`,
+  and `TateGalMero` proves its compatibility with `K(E_t) ⊆ Mero K` (`gal_comp_tateFieldHom`).
 * For `RR` an algebraic closure of `Mero K` no `γ` through `ℤ × ℤ/2` exists (`EllTate`); a
   genuine one needs the full comparison.
 -/

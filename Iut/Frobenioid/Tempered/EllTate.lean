@@ -87,9 +87,11 @@ of `|U| = 1`, fixed by the base point of the fibre functor). Consequently:
 * `tateDeck` is *defined* by the deck formula found above (consumers may use only what is proved
   about it). Its comparison with the analytic `Ü`-model is proved on the function field of `X'`
   (`EllTateAn`: `K(E_t) ⊆ Mero K`, `√(x - e) ∈ Mero K`); the comparison of all tempered
-  coverings (`Π^tp` acting on `Ÿ_∞ = 𝔾_m^an`) is not formalised, and `σ` (the image of
-  `Π^tp_X → G_F` in `IsoAut t`) is an explicit input. `hσ` (σ fixes `s`) holds
-  when `s ∈ φ(F)`, which tfg's `DoubleData` (the `2`-torsion point `√q` is `F`-rational) forces.
+  coverings (`Π^tp` acting on `Ÿ_∞ = 𝔾_m^an`) is not formalised. `σ` (the image of
+  `Π^tp_X → G_F` in `IsoAut t`) is a parameter here; `TateGalSigma.sigmaTemp` constructs it from
+  tfg's `piToGk ∘ tempToPi` for `K` the completion of `k̄` (`tateGalDeckK`). `hσ` (σ fixes `s`)
+  holds when `s ∈ φ(F)`, which tfg's `DoubleData` (the `2`-torsion point `√q` is `F`-rational)
+  forces.
 * A lift `γ` of `tateGalDeck σ hσ` with nontrivial `ℤ/2`-part does not factor through
   `ℤ × ℤ/2` when `K` is algebraically closed (an involution of `R` fixing `K ∋ √-1` would have a
   real closed fixed field), so no such `γ` is constructed; `gammaChi` covers the `χ`-part.

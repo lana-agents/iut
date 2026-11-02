@@ -116,6 +116,12 @@ challenge or by `Iut/Concrete/*`.
        (`σ` fixing `φ(F)` fixes the `F`-curve of `D`); **`galDeckHom_tateGalDeck_kumM`**,
        **`galDeckHom_tateGalDeck_tateFieldHom`** (the Tate action of `Π^tp_X` on
        `K(X') ⊆ Mero K`: `σ(g)_*` on `K(E_t)`, the sign of `character₂ g` on `√(x - e)`);
+       `Tempered/TateGalSigma.lean`: the Galois part **`sigmaTemp`** `Π^tp_X →* IsoAut t`
+       (tfg `piToGk ∘ tempToPi`, then `galToIsoAut`: `G_k` extended isometrically to the
+       completion `K` of `k̄`, `norm_algHom_algEquiv` by uniqueness of the spectral norm,
+       `isoExt`/`isoExtGrp` by density), `sigmaTemp_galoisToTempered`; **`tateGalDeckK`** (the Tate
+       action with this `σ`), **`galDeckHom_tateGalDeckK_dataRingHom`** (`Π^tp_X` fixes the
+       `k`-curve of `D` in `Mero K`), `_kumM`, `_tateFieldHom`, `isTateLift_gammaMeroK`;
      - (c4') `Tempered/EllTheta.lean`: `thetaData χ hval hs` = `radData` for the deck action on
        `R = Mero K` (`B₀(G/H)` = `H`-fixed log-meromorphic functions), `thetaData_isFrobenioid`;
        `bOne`, `bU`, `bTheta` (= `q^{1/2}`, `Ü`, `Θ̈` as elements of `B₀(Y)`), `div_thetaElt`;
