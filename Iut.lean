@@ -553,6 +553,7 @@ import Iut.Reconstruction.Thm19.ResIso
 import Iut.Reconstruction.Thm19.ResKer
 import Iut.Reconstruction.Thm19.ResStage
 import Iut.Reconstruction.Thm19.ResTransport
+import Iut.Reconstruction.Thm19.RestrictCongr
 import Iut.Reconstruction.Thm19.StageCompat
 import Iut.Reconstruction.Thm19.StageGeom
 import Iut.Reconstruction.Thm19.StageIso

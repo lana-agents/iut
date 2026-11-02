@@ -1524,3 +1524,48 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   of constants every cusp is rational), **`GStage.exists_ge_ratCusps`** (geometric stages with rational cusps are
   cofinal — the hypothesis `hrat` of `S_mem_PU_cycloIso`). **`Thm19/LimOfG.lean`**: `gLimEquiv_mk`,
   **`h1LimEquiv_ofG`** (`h1LimEquiv [g, y] = [L.tgt, L.S y]` for `L = LiftData.choose Φ hS g`).
+* Addendum (session r, third push): **`Thm19/RestrictCongr.lean`** (written by a session-r helper; piece "E" of the
+  plan below): `CobOn`, `cobOn_conj_iff`, `cobOn_map_iff`, `cobOn_transport_iff`, `cobOn_cocyclesMap_iff`,
+  `zHatOne_proj_surjective` (Ω algebraically closed), `proj_map_eq_one_iff`, `reduceMu_bijective` (local re-proof;
+  curves-jacobian `LocAn/ThmCUnits` is not built in iut — replace when it is), `restrictClosed_mk_eq_one_iff`,
+  **`restrictClosed_h1Congr_eq_one_iff`** (if `e(range decompToPi A) = M · range decompToPi A' · M⁻¹`, then
+  `η|_x = 0 ↔ (h1Congr e χ η)|_{x'} = 0`).
+
+* Hand-off 2026-11-02 (MR9 track agent, session r, lead christian-aa): worktree `~/mr8-iut`, branch `mr9-r`; all
+  work pushed via `~/iut-push.sh` (hashes in ~/session2-status.md), no WIP branch. **Item (b-i) is finished and
+  `LiftData.TameCompat` is discharged** (`LiftData.tameCompat_cycloIso`, `LiftData.S_mem_PU_cycloIso`); item 4 step 4
+  started (NFCanon, RatCusps, LimOfG, RestrictCongr).
+  **Plan for item 4 steps 4–5** (scoped by a read-only session-r helper; file:line references checked there):
+  - Over a number field every NF-model is canonical (`NFModel.mem_FNF_iff_numberField`), every stage is NF, so only
+    the test of Prop 1.8 (i) must be transported; the test (ii) is avoided by `κ(b) = κ(b f)·κ(f)⁻¹` with `f` a
+    nonconstant unit.
+  - **A** `ofG_mem_kummerNFRange` (~100 l.): `y ∈ PU g.data`, `y^M = κ(w)` ⇒ `ofG g y ∈ kummerNFRange` (the "⇐"
+    half of `exists_kummerNF_not_isAlgebraic_iff`, `exists_resKH1_eq_kummerMapZHat` NFColimit:470, `StageIdx.extend`,
+    `kummerNF_eq_mk`), passing GStage → StageIdx by `ofG_apply`/`toStage_data`.
+  - **B** `exists_ratStage_of_mem` (~80 l.): `ξ ∈ kummerNFRange` ⇒ `ξ = ofG g (κ v)` at a stage `g` with rational
+    cusps and a nonconstant unit (`exists_nfStage_units` StageNF:272, `GStage.exists_ge_ratCusps`, `ofG_compat`).
+  - **C** done (`h1LimEquiv_ofG`); the symm version is the same for `Φ.symm`, `χU.symm`, `hS₂`.
+  - **D** `LiftData.exists_closedPoint_decomp` (~300 l., main new geometry): for a closed point `A` of `g` a closed
+    point `A''` of `L.tgt` and `M` with `E(range decompToPi A) = M · range decompToPi A'' · M⁻¹`: make `A` a cusp of a
+    larger rational-cusp stage `g''` (a unit vanishing at `A`), use `exists_map_inertiaH_constIso` /
+    `map_decompH_constIso` (CuspDecomp:418/443) there, push down along `g ≤ g''` (`exists_conj_e` LimIso:325,
+    `le_tgt`, a new `map_piT_decompH` like `map_piT_inertiaPi`), and show `A''` is not a cusp of `L.tgt`
+    (`mk_ne_one_of_cusp`, `res_eq_one_of_mem`).
+  - **E** done (`restrictClosed_h1Congr_eq_one_iff`).
+  - **G** `LiftData.S_kummer_pow` (~150 l.): at a rational-cusp stage `(L.S κ(w))^{M'} = κ(w')` via
+    `isNFKummerTest_iff` (NFKummer:127) both ways with D, E and `S_mem_PU_cycloIso`.
+  - **H** assembly (~80 l.): `(kummerNFRange N).map (h1LimCycloEquiv …) = kummerNFRange N'` (B → C → G → A, and the
+    reverse with `Φ.symm`). Needs `TameCompat` for `(cycloIso Φ).symm` (copy `cycloVχ_cycloIso` with R1 replaced by
+    the symm statement, ~120 l.), or state D–H for general `χU` with `∀ g L, L.TameCompat χU` as an internal input.
+  - **Step 5** (`recTriple N ≅ recTriple N'`, ~1000 l.): `φ` = restriction of `h1LimCycloEquiv`; places
+    `σ`: image cusp at a rational-cusp stage (D(a),(b)), well-defined via `GStage.comap_eq_of_conj_inertiaH` and a
+    new lemma "two places over the same rational place of `F_{K'}` lie over the same place of `F k̄`"
+    (`ratPoint_exists_piToGk_decompToPi` CuspDecomp:86); `mem_U_iff` via `mem_U_recTriple_iff` + D, E; `ord_eq` via
+    `val_recTriple_eq_iff_exists` (RecOrd:325) + `exists_res_S` + `tameCompat_cycloIso`; then `ringEquivOfIso`.
+    Catch: exact Kummer classes on the target only after the root extension `StageIdx.extend`.
+  Elaboration lessons (session r): `set x := …` on terms with `LiftData.choose` and a final `rfl` through
+  `mulEquivOfCocones`/`h1LimEquivG` hung > 15 min; separate lemmas in the exact use-site form (`gLimEquiv_mk`,
+  `h1LimEquiv_apply`, `h1LimEquivG_ofG`, `h1LimEquivG_symm_mk`) chained by `Eq.trans`/`congrArg` take seconds.
+  `X ▸ h` with `inertiaPi` (abbrev) vs its unfolded form fails; use `heq.le h`.
+  Debts (unchanged): `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points / genus `≠ 0` (item 1),
+  `CKStrictSemiAbs`. Decision for the lead: none blocking. Estimate: step 4 ≈ 3 sessions, step 5 ≈ 2–3 sessions.
