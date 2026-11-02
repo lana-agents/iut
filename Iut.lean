@@ -527,6 +527,7 @@ import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Thm19.NFTransition
 import Iut.Reconstruction.Thm19.PiJCongr
 import Iut.Reconstruction.Thm19.PlaceConj
+import Iut.Reconstruction.Thm19.PUStage
 import Iut.Reconstruction.Thm19.PointDecomp
 import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd

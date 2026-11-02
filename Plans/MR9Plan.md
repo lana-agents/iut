@@ -1422,3 +1422,15 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   **Decision for the lead:** (b-i) is a self-contained, large piece (functoriality of Prop 1.4 (ii)). Either keep it in
   MR9 (2–3 sessions before (c)), or let (c)/steps 4–5 proceed in parallel with an honestly named hypothesis
   `hsync : ∀ p p', … → χ (tameGen p) = tameGen p'` recorded as a debt here, discharged later by (b-i).
+
+* Addendum 2026-11-02 (MR9 track agent, session q, lead christian-aa): the session-p question ((b-i) first, or (c) in
+  parallel under a named hypothesis) had no recorded lead answer; session q took the second option so that (c) and
+  steps 4–5 are not blocked, and (b-i) stays in MR9. **`Thm19/PUStage.lean`** (item 4 step 3 (c)): generic
+  `res_h1Congr_of_eq`, `mem_PU_iff_eta_of`, `hrat_of`, **`h1Congr_mem_PU`** (`h1Congr e χ` maps `P_U` into `P_{U'}` given
+  cusp matching, `η_f` transport and tame generators); **`eta_eq_one_iff_principal_constExt`** (Prop 1.6 (ii) for `U_K`,
+  `K` finite over a number field, via `fBcConstExt` as in ConstExtThmC); `LiftData.exists_inertiaIndex_symm`;
+  **`LiftData.S_mem_PU`** (`LiftData.S (P_V) ⊆ P_{V'}` at stages whose cusps are `K₁`-rational).
+  **New named debt: `LiftData.TameCompat χU L`** (a Prop-valued `def`, used only as an explicit theorem argument):
+  `constCyclo (cycloVχ χU)` sends `tameGen p` to `tameGen p'` whenever `[σ'] = constIso e [σ]` at cusps. For
+  `χU = cycloIso Φ` this is the functoriality of the synchronisations of [AbsTopIII] Prop 1.4 (ii) (T3 l.1771–1802),
+  i.e. item (b-i); to be discharged there.
