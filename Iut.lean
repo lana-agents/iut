@@ -513,6 +513,7 @@ import Iut.Reconstruction.Thm19.CycloIso
 import Iut.Reconstruction.Thm19.DecompIso
 import Iut.Reconstruction.Thm19.DeltaUCongr
 import Iut.Reconstruction.Thm19.DeltaUEquiv
+import Iut.Reconstruction.Thm19.DeltaUxCongr
 import Iut.Reconstruction.Thm19.GalInertia
 import Iut.Reconstruction.Thm19.GeomLim
 import Iut.Reconstruction.Thm19.InertiaConj
@@ -550,6 +551,7 @@ import Iut.Reconstruction.Thm19.StageLift
 import Iut.Reconstruction.Thm19.StageNF
 import Iut.Reconstruction.Thm19.StagePiJ
 import Iut.Reconstruction.Thm19.SyncGroupTheoretic
+import Iut.Reconstruction.Thm19.SyncTame
 import Iut.Reconstruction.Transfer
 import Iut.Reconstruction.Uchida.Basic
 import Iut.Reconstruction.Uchida.FunctionField
