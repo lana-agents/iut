@@ -1479,3 +1479,7 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Debts: `LiftData.TameCompat` (new, = item (b-i), discharged by 1–2 above); unchanged: `BelyiCuspSpec` (MR8),
   `RelIsomDGC.Exists` (MR7), rational points / genus `≠ 0` of both compactifications (item 1), `CKStrictSemiAbs`.
   Decision for the lead: confirm the session-q choice (proceed with (c) under the named `TameCompat`, (b-i) in MR9).
+
+### Lead decision after session q (2026-11-02, christian-aa)
+- Confirmed: (c) proceeds under the named `LiftData.TameCompat`; (b-i) stays in MR9 and is finished now (session r:
+  cusp bookkeeping for `cycloCongr_tameGen`, then `TameCompat` discharged at the stages, then steps 4–5).
