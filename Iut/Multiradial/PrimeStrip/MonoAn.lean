@@ -5,6 +5,7 @@ Authors: LANA Project
 -/
 import Iut.Multiradial.PrimeStrip.Strip
 import Iut.Frobenioid.Tempered.BaseRecon
+import Iut.Multiradial.PrimeStrip.PivTemp
 import Mathlib.CategoryTheory.ObjectProperty.Equivalence
 
 /-!
@@ -41,10 +42,11 @@ of categories". This gives the mono-analyticisation `†D ↦ †D^⊢` of `D`-p
   Geometry.txt` l.977–985), the debt `ArithQuotientPreservedPadic` of MR13 (curves-jacobian
   `CuspChar/RigidityPadic.lean`), here for iut's `Π_v` (the cj statement is about `π₁ᵉᵗ` of
   `HypCurve`s, which are not identified with iut's `Orbicurve.genuinePi1` / tempered `Π_v`); at
-  `v ∈ V^bad` in addition `TempRecon D v` (`Π_v` Hausdorff with a basis of open normal subgroups,
-  complete for them, and with a countable cofinal chain — the hypotheses of [SemiAnbd],
-  Proposition 3.2 in `BaseRecon.lean`; the first three are proved for tfg's `temperedPi1` in
-  `PiTpONS.lean`, the chain is MR18's debt `hctbl`).
+  `v ∈ V^bad` in addition `PivCountable D v` (MR18's debt `hctbl`: the pointed Galois objects of
+  the presentation of `X̲_v` have a dominating sequence). From it, `TempRecon D v` (`Π_v`
+  Hausdorff with a basis of open normal subgroups, complete for them, and with a countable cofinal
+  chain — the hypotheses of [SemiAnbd], Proposition 3.2 in `BaseRecon.lean`) follows by
+  `tempRecon_of_countable` (`PivTemp.lean`: the first three hold unconditionally).
 * **The mono-analyticisation** `DComp.toVdash`, `DStripNon.toVdash` (Definition 4.1 (iv)): the
   constituent `†D^⊢_v ⊆ †D_v` is the full subcategory `transportProp (D^⊢_v ⊆ D_v)`; on
   isomorphisms `DStripNon.isoToVdash` (no input needed); that it is a `D^⊢`-prime-strip uses the
@@ -316,16 +318,21 @@ def DeltaCharacteristic : Prop :=
   ∀ α : (Piv D v).carrier ≃ₜ* (Piv D v).carrier, (deltaV D v).map (α : _ →* _) = deltaV D v
 
 /-- **The hypotheses of [SemiAnbd], Proposition 3.2 for the tempered `Π_v`** (`v ∈ V^bad`):
-Hausdorff, a basis of open normal subgroups, completeness for them (proved for tfg's
-`temperedPi1` in `Frobenioid/Tempered/PiTpONS.lean`, not yet instantiated at `X̲_v`) and a
-countable cofinal chain (MR18's debt `hctbl`). -/
+Hausdorff, a basis of open normal subgroups, completeness for them and a countable cofinal
+chain. -/
 def TempRecon : Prop :=
   T2Space (Piv D v).carrier ∧ HasONSBasis (Piv D v).carrier ∧ HasONSChain (Piv D v).carrier ∧
     IsONSComplete (Piv D v).carrier
 
+/-- **`TempRecon` from the countability input** (`PivTemp.lean`, instantiating `PiTpONS.lean` at
+`X̲_v`): only MR18's debt `hctbl` (`PivCountable D v`) remains. -/
+theorem tempRecon_of_countable (hv : v ∈ D.VBad) (hc : PivCountable D v) : TempRecon D v :=
+  let h := piv_temp D v hv
+  ⟨h.1, h.2.1, h.2.2.2 hc, h.2.2.1⟩
+
 /-- **The named inputs of the mono-analyticisation at `v`**: Lemma 1.3.8 for `Π_v`, and at
-`v ∈ V^bad` the reconstruction hypotheses for the tempered `Π_v`. -/
-def VdashInputs : Prop := DeltaCharacteristic D v ∧ (v ∈ D.VBad → TempRecon D v)
+`v ∈ V^bad` the countability of the pointed Galois objects of `X̲_v` (MR18's `hctbl`). -/
+def VdashInputs : Prop := DeltaCharacteristic D v ∧ (v ∈ D.VBad → PivCountable D v)
 
 /-- At `v ∉ V^bad`, `Π_v` is profinite. -/
 theorem piv_profinite (hv : v ∉ D.VBad) :
@@ -339,7 +346,7 @@ theorem piv_profinite (hv : v ∉ D.VBad) :
 3.3 (iii)(a)), given the named inputs. -/
 theorem isVdashObj_autoInvariant (h : VdashInputs D v) : AutoInvariant (isVdashObj D v) := by
   by_cases hv : v ∈ D.VBad
-  · obtain ⟨h1, hb, hs, hc⟩ := h.2 hv
+  · obtain ⟨h1, hb, hs, hc⟩ := tempRecon_of_countable D v hv (h.2 hv)
     exact subProp_autoInvariant hb (orbitRecon_of_temp hb hs hc) h.1
   · obtain ⟨h1, h2, h3⟩ := piv_profinite D v hv
     exact subProp_autoInvariant (hasONSBasis_of_profinite (G := (Piv D v).carrier))

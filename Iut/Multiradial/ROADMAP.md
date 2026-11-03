@@ -588,6 +588,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 - **Depends on:** MR20, MR9, MR16, MR18. **Status:** P (`StripLift.lean`, non-arch, rigidification as data). **Size:** 10–20 k / 8–15.
 - **Repo:** iut.
 - **Done when:** `theorem cor53 (P Q : FStrip D) : (P ≅ Q) ≃ (P.toD ≅ Q.toD)` (bijection, i.e. existence *and uniqueness*) with `kappa` a def. Shells #11, #20, #21 are gone.
+- **Progress (2026-11-03, MR21 session 1):** `Multiradial/PrimeStrip/PivTemp.lean`: at `v ∈ V^bad` the tempered `Π_v` is Hausdorff, has a basis of open normal subgroups and is complete for them (`PiTpONS.lean` instantiated at the Galois presentation of `X̲_v` over `K_v`); the mono-analyticisation input `TempRecon` (`MonoAn.lean`) is reduced to the countability debt `hctbl` (`PivCountable`). Plan: `~/iut-scratch/multiradial/MR21-plan.md`.
 
 **MR22 — Hodge theaters at object level.**
 - **Content:**
