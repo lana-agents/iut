@@ -439,6 +439,10 @@ import Iut.LogLink.Thm311
 import Iut.LogLink.Thm311LGP
 import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
+import Iut.Multiradial.PrimeStrip.Components
+import Iut.Multiradial.PrimeStrip.Local
+import Iut.Multiradial.PrimeStrip.Mu
+import Iut.Multiradial.PrimeStrip.Strip
 import Iut.Multiradial.Spec
 import Iut.Multiradial.ThetaData
 import Iut.NumberTheory.SixExponentials.Basic

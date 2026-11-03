@@ -1759,3 +1759,8 @@ TemperedFundamentalGroups.NGon.Red.gam1	def
 TemperedFundamentalGroups.NGon.Red.gamD	def
 TemperedFundamentalGroups.NGon.Red.pairA	def
 TemperedFundamentalGroups.NGon.Red.pairB	def
+Iut.Multiradial.PrimeStrip.DComp.equiv_model	def
+Iut.Multiradial.PrimeStrip.DVdashComp.equiv_model	def
+Iut.Multiradial.PrimeStrip.FComp.equiv_model	def
+Iut.Multiradial.PrimeStrip.FVdashComp.equiv_model	def
+Iut.Multiradial.PrimeStrip.FMuComp.equiv_model	def
