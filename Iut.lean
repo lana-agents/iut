@@ -475,6 +475,7 @@ import Iut.Reconstruction.Cusp.HemiGenuineTwist
 import Iut.Reconstruction.Cusp.HemiInvConj
 import Iut.Reconstruction.Cusp.HemiSelfComm
 import Iut.Reconstruction.Cusp.OutSemidirect
+import Iut.Reconstruction.Cusp.Pi1GaloisAlgebra
 import Iut.Reconstruction.Cusp.Pi1GaloisQuotient
 import Iut.Reconstruction.Cusp.SurfaceDiscrete
 import Iut.Reconstruction.Cusp.SurfaceGeom
