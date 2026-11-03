@@ -1783,6 +1783,8 @@ Iut.Multiradial.PrimeStrip.FMuArcComp.equiv_model	def
 Iut.Multiradial.PrimeStrip.FVdashArcComp.equiv_model	def
 Iut.Multiradial.PrimeStrip.FrobCat.Iso.phiInv_pos	def
 Iut.Multiradial.PrimeStrip.FrobCat.Iso.phi_pos	def
+Iut.Multiradial.PrimeStrip.FrobCat.Iso.phi_pb	def
+Iut.Multiradial.PrimeStrip.FrobCat.Iso.phiInv_pb	def
 Iut.Multiradial.PrimeStrip.TMVdash.Iso.ray	def
 Iut.Multiradial.PrimeStrip.TMVdash.iso_orhd	def
 Iut.Multiradial.PrimeStrip.TMVdash.split	def
