@@ -168,7 +168,8 @@ lemma resG_conj {g g' : GStage k hτ} (h : g ≤ g') (hgK : ∀ x ∈ g.K, a x �
 
 set_option maxHeartbeats 1600000 in
 -- the Kummer classes at the stages unify slowly
-/-- **Conjugation of a class equal to the Kummer class of an algebraic number.** For `a` fixing `F` and
+/-- **Conjugation of a class equal to the Kummer class of an algebraic number.** For `a` fixing
+`F` and
 restricting to `h ∈ G_k` on `k̄`, a class `w` at a stage `g` with `a(K₁) ⊆ K₁` and `[g, w] = κ(c)`
 for an algebraic number `c` satisfies `[g, a_* w] = κ(a(c))`. -/
 theorem ofG_stageConj_eq (N : NFModel (curveGaloisData k hτ)) (h : Gk k (FFClosure X))
