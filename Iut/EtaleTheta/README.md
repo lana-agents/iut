@@ -387,6 +387,9 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   `NGon.exists_object`, the `2N`-gon model). **`zM`**: `ZM j` for all `j`. The `∀ j, ZM j`
   hypotheses of the C1 conjuncts of `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`,
   `exists_thetaEnvU_rigidity(_cX)` are removed: `LevelsDominated` holds for the system.
+  TFGD run 9: these statements (and `exists_thetaClassTemp_thetaKernel`, `exists_thetaEnv_rigidity`)
+  carry C1 as a binder `hC1 : ∀ V hV, LevelsDominated …` of the existential; the inner
+  `∀ hC1 : LevelsDominated …` premises are gone (classes taken at `hC1 V hV`).
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 

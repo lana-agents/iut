@@ -470,7 +470,7 @@ set_option maxHeartbeats 4000000 in
 include h2 in
 /-- **[EtTh], Cor. 2.19(i) and the `μ_n`-part of Cor. 2.18(iv) for the mono-theta environments
 of the étale theta system** (`X = E_q ∖ {O}`, `Δ_Θ`; Layer B). For the theta system of
-`exists_thetaClassTemp_prop13` and every base point `V` over `O`, under C1:
+`exists_thetaClassTemp_prop13` (which satisfies C1, binder `hC1`) and every base point `V` over `O`:
 
 * (**cyclotomic rigidity**) if `V` lies over a `K`-rational point (`V ≤ x.A` for a `RatPoint` `x`;
   e.g. under a place over the cusp, `cuspRatPoint`, `exists_basePoint_cusp`), for every `n ≥ 1`,
@@ -493,13 +493,14 @@ theorem exists_thetaEnv_rigidity :
       (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
       (_ : ∀ j, Algebra.Etale (Iut.EtaleTheta.DX t).R
         (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
-      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
+      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))
+      (hC1 : ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        LevelsDominated V hV (tateDataX O hO hs h12) hL),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
           (LX := (hemiData t.tateCurve).L) (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η) ∧
-      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
-        (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (n : ℕ) [NeZero n]
+      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (n : ℕ) [NeZero n]
         (hPY : Envelope.FISlim (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV))
         (_ : ∀ τ' : Gk K Ω, (∀ σ, τ' * σ = σ * τ') → τ' = 1)
         (_ : Subgroup.closure {c | c ∈ thetaL (tateDataX O hO hs h12) hL ∧ ∃ a b,
@@ -508,7 +509,8 @@ theorem exists_thetaEnv_rigidity :
             augT DXc O V hV b = 1 ∧ c = ⁅a, b⁆} ⊔ thetaK (tateDataX O hO hs h12) hL =
           thetaL (tateDataX O hO hs h12) hL),
         ((∃ x : RatPoint (DXc), V ≤ x.A) → ∀ {M : MonoThetaEnv.{u}}
-          (f : MonoThetaEnv.Iso M (thetaEnv (tateDataX O hO hs h12) hL n (thetaClassTemp η hC1 n)))
+          (f : MonoThetaEnv.Iso M
+            (thetaEnv (tateDataX O hO hs h12) hL n (thetaClassTemp η (hC1 V hV) n)))
           {Lsub Ksub Dsub : Subgroup M.G}
           (_ : Lsub.map f.hom = rightSub (augT DXc O V hV) (psiMu n)
             (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV)
@@ -525,30 +527,31 @@ theorem exists_thetaEnv_rigidity :
                 (piYddotX_le_piY (tateDataX O hO hs h12) hL) l ∧
               f.e m = inlY (augT DXc O V hV) (psiMu n)
                 (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV)
-                (ContH1.evalTriv l (smul_eq_of_mem_thetaL hl n) (thetaClassTemp η hC1 n))⁻¹) ∧
+                (ContH1.evalTriv l (smul_eq_of_mem_thetaL hl n)
+                  (thetaClassTemp η (hC1 V hV) n))⁻¹) ∧
         ∀ (W : ValuationSubring Ω) (_ : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W → V ≤ W →
           CuspInertiaWeil (DXc) →
           ∀ {a : CategoryTheory.Aut
-              (thetaEnv (tateDataX O hO hs h12) hL n (thetaClassTemp η hC1 n))},
+              (thetaEnv (tateDataX O hO hs h12) hL n (thetaClassTemp η (hC1 V hV) n))},
             a ∈ (autPY (augT DXc O V hV) (psiMu n) (contCocycles (psiMu n))
               (piYddotX_le_piY (tateDataX O hO hs h12) hL) (isOpen_ker_act_augT DXc O V hV n)
               (isCocycle_of_mem_contCocycles _)
-              (isCocycle_repCocycle_theta n (thetaClassTemp η hC1 n)) hPY).ker →
+              (isCocycle_repCocycle_theta n (thetaClassTemp η (hC1 V hV) n)) hPY).ker →
             ∀ m : Mu n Ω,
               autE (augT DXc O V hV) (psiMu n) (contCocycles (psiMu n))
                 (piYddotX_le_piY (tateDataX O hO hs h12) hL) (isOpen_ker_act_augT DXc O V hV n)
                 (isCocycle_of_mem_contCocycles _)
-                (isCocycle_repCocycle_theta n (thetaClassTemp η hC1 n)) a
+                (isCocycle_repCocycle_theta n (thetaClassTemp η (hC1 V hV) n)) a
                 (inlY (augT DXc O V hV) (psiMu n)
                   (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV) m) =
               inlY (augT DXc O V hV) (psiMu n)
                 (TateObject.piY (A := (DXc).A) (tateDataX O hO hs h12) V hV) m) := by
-  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta, -⟩ :=
+  obtain ⟨L, hL, hX, het, η, hL0, hC1, htr, hcomp, hker, hcusp, hdelta, -⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
-  refine ⟨L, hL, hX, het, η, htr, hcomp, fun V hV hC1 n _ hPY hG hLgen => ?_⟩
+  refine ⟨L, hL, hX, het, η, hC1, htr, hcomp, fun V hV n _ hPY hG hLgen => ?_⟩
   have hdvd : n ∣ 2 * (n - 1 + 1) :=
     ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩
-  have hx13 := hker V hV hC1 (n - 1) n hdvd
+  have hx13 := hker V hV (n - 1) n hdvd
   refine ⟨fun hx => ?_, fun W hk hτ hVW hG5 a ha m => ?_⟩
   · obtain ⟨x, hVx⟩ := hx
     exact fun f _ _ _ hLs hKs hDs t' m => cyclotomicRigidity_thetaEnv n hPY hG
@@ -557,8 +560,8 @@ theorem exists_thetaEnv_rigidity :
   refine ker_autPY_inlY_eq_thetaEnv n hPY hG
     (surj_augT_of_ratPoint (tateDataX O hO hs h12) (cuspRatPoint hk hτ) hVW) hLgen hx13
     (fun m => ?_) ha m
-  obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW hC1 n m
-  obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW hC1 σ
+  obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW n m
+  obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW σ
   exact ⟨⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩,
     inertiaToTempered_mem_thetaL hk hVW σ (hL0 W hk hτ σ) hσΘ, hσ⟩
 

@@ -909,10 +909,11 @@ set_option maxHeartbeats 4000000 in
 -- destructuring `exists_thetaClassTemp_prop13` (concrete Tate-curve levels) is slow to unify
 include h2 in
 /-- **The inputs of the theorems on `X̲` for the étale theta system of the Tate curve.** For the
-theta system of `exists_thetaClassTemp_prop13`, every base point `V` over `O`, under C1, every
+theta system of `exists_thetaClassTemp_prop13`, every base point `V` over `O` (C1 holds: binder
+`hC1`), every
 `n ≥ 1` and every representative `r` of the theta class mod `n` on `Π^tp_Ÿ`:
 
-* (`hr13`, [EtTh] Prop. 1.3) `r = 1` on `Π^tp_Ÿ ∩ Kθ` (MR14, modulo C1 only);
+* (`hr13`, [EtTh] Prop. 1.3) `r = 1` on `Π^tp_Ÿ ∩ Kθ` (MR14);
 * (`hrL`) if `V` lies under a place `W` over the cusp, then under the debt
   `CuspInertiaWeil`, `r` maps `Π^tp_Ÿ ∩ (preimage of Δ_Θ)` onto
   `μ_n` (cusp inertia).
@@ -930,12 +931,14 @@ theorem exists_thetaRep_inputs :
       (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
       (_ : ∀ j, Algebra.Etale (Iut.EtaleTheta.DX t).R
         (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
-      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
+      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))
+      (hC1 : ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        LevelsDominated V hV (tateDataX O hO hs h12) hL),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       (∀ j, ∀ σ ∈ (hemiData t.tateCurve).L.fixingSubgroup, ∀ x ∈ L j, σ x ∈ L j) ∧
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         PiYIndexTwoAt V hV (tateDataX O hO hs h12) hL 0 ∧
-        ∀ (j l : ℕ), Odd l → 2 * l ∣ 2 * (j + 1) → LevelsDominated V hV (tateDataX O hO hs h12) hL →
+        ∀ (j l : ℕ), Odd l → 2 * l ∣ 2 * (j + 1) →
         ∀ (g₁ : TempPi DXc O V hV),
           Iut.EtaleTheta.TateObject.charN (A := (DXc).A)
             (tateDataX O hO hs h12) V hV g₁ = Multiplicative.ofAdd (1 : ℤ) →
@@ -949,31 +952,28 @@ theorem exists_thetaRep_inputs :
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
           (LX := (hemiData t.tateCurve).L) (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η) ∧
-      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
-        LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
-      ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
-        (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (n : ℕ) [NeZero n]
+      ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (n : ℕ) [NeZero n]
         (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu n Ω)),
-        ContH1.mk r = thetaClassTemp η hC1 n →
+        ContH1.mk r = thetaClassTemp η (hC1 V hV) n →
         (∀ γ : piYddotX V hV (tateDataX O hO hs h12) hL,
           (γ : TempPi DXc O V hV) ∈ thetaK (tateDataX O hO hs h12) hL → r γ = 1) ∧
         ∀ (W : ValuationSubring Ω) (_ : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W → V ≤ W →
           CuspInertiaWeil (DXc) →
           ∀ m : Mu n Ω, ∃ γ : piYddotX V hV (tateDataX O hO hs h12) hL,
             (γ : TempPi DXc O V hV) ∈ thetaL (tateDataX O hO hs h12) hL ∧ r γ = m := by
-  obtain ⟨L, hL, hX, het, η, hL0, htr, hcomp, hker, hcusp, hdelta, hstab, hmove, hzm⟩ :=
+  obtain ⟨L, hL, hX, het, η, hL0, hC1, htr, hcomp, hker, hcusp, hdelta, hstab, hmove⟩ :=
     exists_thetaClassTemp_prop13 h2 h12 hs O hO
-  refine ⟨L, hL, hX, het, η, htr, hstab, hmove, hcomp, hzm,
-    fun V hV hC1 n _ r hr => ⟨fun γ hγ => ?_,
+  refine ⟨L, hL, hX, het, η, hC1, htr, hstab, hmove, hcomp,
+    fun V hV n _ r hr => ⟨fun γ hγ => ?_,
     fun W hk hτ hVW hG5 m => ?_⟩⟩
   · have hdvd : n ∣ 2 * (n - 1 + 1) :=
       ⟨2, by rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero (NeZero.ne n))]; ring⟩
-    have h := hker V hV hC1 (n - 1) n hdvd γ hγ.2
+    have h := hker V hV (n - 1) n hdvd γ hγ.2
     rw [← ContH1.evalTriv_mk γ (thetaKernelTemp_smul_mu hγ.2 n) r]
     exact (congrArg _ hr).trans h
   · obtain ⟨e, he⟩ := hdelta hG5
-    obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW hC1 n m
-    obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW hC1 σ
+    obtain ⟨σ, hσ⟩ := (hcusp W hk hτ).2 V hV hVW n m
+    obtain ⟨hσΘ, -⟩ := (he W hk hτ).2 V hV hVW σ
     refine ⟨⟨_, inertiaToTempered_mem_piYddotX V hV _ hL hVW σ (hL0 W hk hτ σ)⟩,
       inertiaToTempered_mem_thetaL hk hVW σ (hL0 W hk hτ σ) hσΘ, ?_⟩
     rw [← ContH1.evalTriv_mk _ (inertiaToTempered_piYddotX_smul hk hVW σ (hL0 W hk hτ σ) n) r,
@@ -986,13 +986,14 @@ variable [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O
 include h2 in
 /-- **[EtTh] §2 for `X̲` and `l·Δ_Θ`, for one étale theta system of the Tate curve** (all
 conclusions in one existential; consumed by MR23). For the theta system of
-`exists_thetaRep_inputs`, every base point `V` over `O`, under C1, every `l, N ≥ 1`, every
+`exists_thetaRep_inputs` (C1 holds: binder `hC1`), every base point `V` over `O`, every
+`l, N ≥ 1`, every
 representative `r` of the theta class mod `lN` on `Π^tp_Ÿ` and every splitting cocycle
 `cX : Π^tp_X̿ → μ_l` with `hcXr` (this defines `X̲`; existence of `cX`: obligation 13):
 `EnvUConclusions` with `y` = the theta class mod `N` and `P` = "`V` lies under a place `W` over the
 cusp, and the debt `CuspInertiaWeil` holds". That is: the `l`-th root
 property `(η̈^Θ̲)^l = η̈^Θ|_{Ÿ̲}` mod `N`; under `hPY`, `hG`, `hLgen` (for `X̲`) and `P` the
-cyclotomic rigidity of Cor. 2.19(i) (Prop. 1.3 input discharged modulo C1) and the triviality on
+cyclotomic rigidity of Cor. 2.19(i) (Prop. 1.3 input discharged) and the triviality on
 `μ_N` of the automorphisms over the identity of `Π^tp_Y̲`. `O` is a complete discrete valuation
 ring. Obligation 5 (`Π^tp_Y ↠ G_k`) is discharged under `P`: the place `W` over the cusp is a
 `K`-rational point (`cuspRatPoint`, `surj_augT_of_ratPoint`); with the cusp inertia this gives
@@ -1003,30 +1004,30 @@ theorem exists_thetaEnvU_rigidity :
       (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
       (_ : ∀ j, Algebra.Etale (Iut.EtaleTheta.DX t).R
         (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
-      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
+      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))
+      (hC1 : ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        LevelsDominated V hV (tateDataX O hO hs h12) hL),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
-      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
-        LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
-      ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
-        (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (l N : ℕ) [NeZero l] [NeZero N]
+      ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O) (l N : ℕ)
+        [NeZero l] [NeZero N]
         (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu (l * N) Ω)),
-        ContH1.mk r = thetaClassTemp η hC1 (l * N) →
+        ContH1.mk r = thetaClassTemp η (hC1 V hV) (l * N) →
         ∀ {cX : piXdd V hV (tateDataX O hO hs h12) l → Mu l Ω}
           (hcX : IsCocycle (actDD (augT DXc O V hV) (psiMu l)
             (piXdd V hV (tateDataX O hO hs h12) l)) cX)
           (hcXr : ∀ (γ : piYddotX V hV (tateDataX O hO hs h12) hL)
             (h : (γ : TempPi DXc O V hV) ∈ piXdd V hV (tateDataX O hO hs h12) l),
             cX ⟨γ, h⟩ = Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ)),
-          EnvUConclusions hcX r hcXr (thetaClassTemp η hC1 N)
+          EnvUConclusions hcX r hcXr (thetaClassTemp η (hC1 V hV) N)
             (∃ (W : ValuationSubring Ω) (_ : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W ∧ V ≤ W ∧
               CuspInertiaWeil (DXc)) := by
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
-    Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
-      ⟨h.1, h.2.2.2.2.1, fun V hV hC1 l N _ _ r hr {_} hcX hcXr => ?_⟩
-  obtain ⟨hr13, hrL⟩ := h.2.2.2.2.2 V hV hC1 (l * N) r hr
+    Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η => Exists.imp fun hC1 h =>
+      ⟨h.1, fun V hV l N _ _ r hr {_} hcX hcXr => ?_⟩
+  obtain ⟨hr13, hrL⟩ := h.2.2.2.2 V hV (l * N) r hr
   exact envUConclusions_of hcX r hcXr
     ((congrArg (transTemp (tateDataX O hO hs h12) hL (Dvd.intro_left l rfl : N ∣ l * N)) hr).trans
-      ((h.2.2.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))
+      ((h.2.2.2.1 V hV (hC1 V hV)).2 N (l * N) (Dvd.intro_left l rfl)))
     hr13 (fun ⟨W, hk, hτ, hVW, _⟩ => surj_augT_of_ratPoint (tateDataX O hO hs h12)
       (cuspRatPoint hk hτ) hVW) fun ⟨W, hk, hτ, hVW, hG5⟩ => hrL W hk hτ hVW hG5
 

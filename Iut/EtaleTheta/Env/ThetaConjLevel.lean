@@ -327,10 +327,10 @@ set_option maxHeartbeats 1000000 in
 variable [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
   [PerfectField (IsLocalRing.ResidueField O)] in
 include h2 in
-/-- **[EtTh] §2 for `X̲`, with the splitting cocycle constructed** (obligation 13 discharged
-modulo C1): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
+/-- **[EtTh] §2 for `X̲`, with the splitting cocycle constructed** (obligation 13
+discharged): `exists_thetaEnvU_rigidity` with `∃ cX` in place of `∀ cX`.
 For the theta system of `exists_thetaRep_inputs`, `O` a complete discrete valuation ring of mixed
-characteristic `(0, p)` with perfect residue field, every base point `V` over `O`, under C1
+characteristic `(0, p)` with perfect residue field, every base point `V` over `O`
 (debt Z at `j = 0`, `[Π^tp_Y : Π^tp_Ÿ] ≤ 2`, is discharged by (Z_2) = `zM_zero`,
 `Π^tp_Y ≤ Π^tp_{K(E_{q²})}`), every odd `l`, every `N ≥ 1` and every
 representative `r` of the theta class mod `lN` on `Π^tp_Ÿ`, there is a splitting cocycle
@@ -338,7 +338,7 @@ representative `r` of the theta class mod `lN` on `Π^tp_Ÿ`, there is a splitti
 `EnvUConclusions` hold for the curve `X̲` it defines. Debt 13a is discharged (TFGD run 2):
 `Π^tp_X̿ = χ̂⁻¹(lℤ)` for the normalised character `χ̂` (`TateObject.charN`), and `g₁` with
 `χ̂(g₁) = 1` comes from Theorem B (`exists_charN_eq_one_tateDataX`). C1 holds for the system
-(second conjunct; TFGD run 8: (Z_{N_j}) for all `j`, `zM`). -/
+(binder `hC1`, used for every `V`; TFGD runs 8, 9: (Z_{N_j}) for all `j`, `zM`). -/
 theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
     (hpm : (p : O) ∈ IsLocalRing.maximalIdeal O) :
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
@@ -346,44 +346,43 @@ theorem exists_thetaEnvU_rigidity_cX (p : ℕ) (hp : p.Prime)
       (_ : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j))
       (_ : ∀ j, Algebra.Etale (Iut.EtaleTheta.DX t).R
         (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)).R)
-      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
+      (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))
+      (hC1 : ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
+        LevelsDominated V hV (tateDataX O hO hs h12) hL),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
-      (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
-        LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
-      ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
-        (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL),
+      ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
         ∀ (l N : ℕ) [NeZero l] [NeZero N], Odd l →
         ∀ (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu (l * N) Ω)),
-        ContH1.mk r = thetaClassTemp η hC1 (l * N) →
+        ContH1.mk r = thetaClassTemp η (hC1 V hV) (l * N) →
         ∃ (cX : piXdd V hV (tateDataX O hO hs h12) l → Mu l Ω)
           (hcX : IsCocycle (actDD (augT DXc O V hV) (psiMu l)
             (piXdd V hV (tateDataX O hO hs h12) l)) cX)
           (hcXr : ∀ (γ : piYddotX V hV (tateDataX O hO hs h12) hL)
             (h : (γ : TempPi DXc O V hV) ∈ piXdd V hV (tateDataX O hO hs h12) l),
             cX ⟨γ, h⟩ = Mu.transition (Dvd.intro N rfl : l ∣ l * N) (r γ)),
-          EnvUConclusions hcX r hcXr (thetaClassTemp η hC1 N)
+          EnvUConclusions hcX r hcXr (thetaClassTemp η (hC1 V hV) N)
             (∃ (W : ValuationSubring Ω) (_ : ∀ c : K, algebraMap K Ω c ∈ W), τ ∉ W ∧ V ≤ W ∧
               CuspInertiaWeil (DXc)) := by
   refine (exists_thetaRep_inputs h2 h12 hs O hO).imp fun L => Exists.imp fun hL =>
-    Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η h =>
-      ⟨h.1, h.2.2.2.2.1, fun V hV hC1 l N _ _ hl r hr => ?_⟩
+    Exists.imp fun hX => Exists.imp fun het => Exists.imp fun η => Exists.imp fun hC1 h =>
+      ⟨h.1, fun V hV l N _ _ hl r hr => ?_⟩
   obtain ⟨hZ, hmv⟩ := h.2.2.1 V hV
   obtain ⟨g₁, hg₁⟩ := exists_charN_eq_one_tateDataX h12 O hO hs p hp hpm V hV
   have hlj : 2 * l ∣ 2 * (2 * l - 1 + 1) := by
     rw [Nat.sub_add_cancel (by have := NeZero.ne l; omega)]
     exact Dvd.intro_left 2 rfl
-  obtain ⟨cX, hcX, hcXr⟩ := exists_cX_of_moves hC1 h.1 h.2.1 hl
+  obtain ⟨cX, hcX, hcXr⟩ := exists_cX_of_moves (hC1 V hV) h.1 h.2.1 hl
     ((Dvd.intro_left 2 rfl).trans hlj)
     (fun γ m hγ σ hσ => by
-      obtain ⟨d, y, hy, e⟩ := hmv (2 * l - 1) l hl hlj hC1 g₁ hg₁ γ m hγ σ hσ
+      obtain ⟨d, y, hy, e⟩ := hmv (2 * l - 1) l hl hlj g₁ hg₁ γ m hγ σ hσ
       refine ⟨algebraMap K Ω d * y, mul_mem ?_ hy, e⟩
       rw [IsScalarTower.algebraMap_apply K (K₀ K τ) Ω]
       exact (L (2 * l - 1)).algebraMap_mem _)
     hZ hg₁ r hr
-  obtain ⟨hr13, hrL⟩ := h.2.2.2.2.2 V hV hC1 (l * N) r hr
+  obtain ⟨hr13, hrL⟩ := h.2.2.2.2 V hV (l * N) r hr
   exact ⟨cX, hcX, hcXr, envUConclusions_of hcX r hcXr
     ((congrArg (transTemp (tateDataX O hO hs h12) hL (Dvd.intro_left l rfl : N ∣ l * N)) hr).trans
-      ((h.2.2.2.1 V hV hC1).2 N (l * N) (Dvd.intro_left l rfl)))
+      ((h.2.2.2.1 V hV (hC1 V hV)).2 N (l * N) (Dvd.intro_left l rfl)))
     hr13 (fun ⟨W, hk, hτ, hVW, _⟩ => surj_augT_of_ratPoint (tateDataX O hO hs h12)
       (cuspRatPoint hk hτ) hVW) fun ⟨W, hk, hτ, hVW, hG5⟩ => hrL W hk hτ hVW hG5⟩
 
