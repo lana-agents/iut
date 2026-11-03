@@ -30,8 +30,8 @@ For the models (`\bar{ℚ}_p`, `G_v = Gal(\bar{ℚ}_p / ι K_v)`, the splitting 
   constituents and **`F^{⊢▶×μ}`-prime-strips** (`FBlackStrip`) with isomorphisms and the
   tautological strip.
 
-Not done (MR20 plan): `F^{⊩▶×μ}`-prime-strips (Definition 4.9 (viii), the `F^⊩` data with an
-`F^{⊢▶×μ}`-strip), the passages `F^⊢ ↦ F^{⊢▶×μ}`, `F^⊢ ↦ F^{⊢×μ}` on abstract split Frobenioids,
+The `F^{⊩▶×μ}`-prime-strips (Definition 4.9 (viii)) are in `FRlfBlack.lean`. Not done (MR20
+plan): the passages `F^⊢ ↦ F^{⊢▶×μ}`, `F^⊢ ↦ F^{⊢×μ}` on abstract split Frobenioids,
 and the `×μ`-Kummer structures (`Ism`-orbits, MR21).
 -/
 
