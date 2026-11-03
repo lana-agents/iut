@@ -1844,3 +1844,64 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   4. Discharge `CKSemiAbsConj` in `DStarDescent` from 1–3 (`CKStrictSemiAbs` stays a named literature debt).
   Debts unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points / genus `≠ 0`, `CKStrictSemiAbs`.
   Decisions for the lead: none blocking; item 5 route (a)–(c) is proposed above.
+
+* Hand-off 2026-11-03 (MR9 track agent, session w, lead christian-aa): worktree `~/mr8-iut`, branch `mr9-w`;
+  pushed via `~/iut-push.sh` (hash in ~/session2-status.md). **Tasks (1) and (2) done: `σ(j) = j`.** New files
+  (~1000 lines):
+  * `Thm19/NFConstEquiv.lean`: `kbarRestrict` (generic: a ring isomorphism of NF-portions restricts to
+    `k̄ ≃+* k̄'`), **`nfConstEquiv`** (`σ` as a field isomorphism, `= nfConst`), `nfRingEquiv_constFnf`,
+    `ord_ringEquivOfIso` (generic) / **`ord_nfRingEquiv`** (`ord_{e P}(ψ f) = ord_P f` along
+    `nfPlaceEquiv = recTripleIso.σ`), **`gkIso_eq_conj`** (`ψ(g) = σ ∘ g ∘ σ⁻¹` on `k̄'`: `ψ = conj σ`).
+  * `Thm19/EllipticJ.lean` (generic, weil-curves function fields): `ord_O x = -2`, `ord_O y = -3`,
+    **`exists_eq_of_regular`** (Riemann–Roch `ℓ(3O) = 3` in genus one: functions regular away from `O`
+    with a pole of order `≤ 3` are `c y + a x + b`, `c = 0` for order `≤ 2`), `weierstrass_unique`,
+    `finrank_eq_two_of_le`, **`j_eq_of_semilinear`** (a `σ`-semilinear `F ≃+* F'` preserving
+    regularity away from the origins and `ord_O` gives `ψ x = u²x' + r`, `ψ y = u³y' + u²s x' + t`, so
+    `W' = (u,r,s,t) • W^σ` and `j(W') = σ(j(W))`; `c² = a³` by `eq_zero_of_aeval_add_mul₂` +
+    `compute_degree`).
+  * `Thm19/EllipticNF.lean`: **`XE_eq_chartOne`** (`E ∖ {O} = x⁻¹(𝔸¹)`), **`hypCurveE`** (cj's
+    `hypCurveX E` with reducible fields — with `hypCurveX` itself the elaboration of `nfRingEquiv`
+    timed out), `curveGenus_hypCurveE_ne`; generic transport along semilinear isomorphisms
+    (`transcendental_tr`, `finrank_adjoin_tr` via the divisor of poles); `finrank_tF_le_index`,
+    `index_baseChange_H_le` (Galois index bound for `[F k̄ : k̄(t)]`); `kbarQbar`, `fbcEquiv`
+    (`F k̄ = F_NF`); **`weq_fnf`, `transcendental_xNF`, `finrank_fnf_xNF`, `genus_fnf`** (Weierstrass
+    data, `[F_NF : k̄(x)] = 2`, `g(F_NF) = 1` from cj `genus_baseChange_eq_curveGenus`,
+    `curveGenus_curveE₂`).
+  * `Thm19/OriginMatch.lean` (item 5 (a)): `geomCusps_ne_bot_of_card_eq_one`,
+    `arithCusps_ne_bot_of_card_eq_one`, **`cusps_ne_bot_hypCurveE`** (one cusp, genus `≥ 1`: cj
+    `cuspInertia_ne_bot_of_card_eq_one`); `tNF`; **`not_mem_nfPlaceEquiv`** (generic: if cuspidal inertia
+    of `Π_U` is nontrivial, `nfPlaceEquiv` maps cusps of `U` to cusps of `U'` — the matched cusp `W''`
+    of the lift data; if `t' ∈ W''`, `LiftData.he` + `map_piT_inertiaPi` + `inertiaPi_eq_bot_of_mem`
+    kill the inertia of the cusp in `Π_U`).
+  * `Thm19/NFJInvariant.lean`: `psiE`, `sigmaE`, `placeE`, `qbarConst`; `nfConstEquiv_j` (with the
+    origin fixed) and **`nfConstEquiv_fix_j`**: `σ(j(E)) = j(E)` for every automorphism `Φ` of
+    `Π_{E ∖ {O}}` (`arithmeticExt`). Remaining inputs: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists K`
+    (MR7) and the rational point `σ₀` (the origin; a `K`-point of `Ē` — constructing it from `O` is
+    a small task, not a debt).
+  Elaboration lesson (session w): `nfRingEquiv`/`nfConstEquiv`/`nfPlaceEquiv` for a concrete curve
+  timed out (`whnf`, 200k) with implicit arguments even after `hypCurveE`; the fully explicit
+  `@nfRingEquiv K _ _ Ω _ _ _ _ _ C hc K _ _ Ω _ _ _ _ _ C hc τ hτ _ hU τ hτ _ hU Φ _ _ _ _ …` form
+  elaborates in 0.2 s (abbrevs `psiE`/`sigmaE`/`placeE` in `NFJInvariant`).
+  **Next steps**, in order:
+  1. *Items 1–2* (`Π_{X_K} ⊆ Π_{C_K}` group-theoretically and the bridge to `arithmeticExt`).
+     Looked up IUT I Rem 3.1.2 (i) (`Inter-universal Teichmuller Theory I.txt` l.4155–4168): there
+     `Δ_X` is the `[EtTh]` cover, and the argument uses "decomposition groups of `Π_{C_K}` at the
+     nonzero cusps" ([AbsTopI] Lemma 4.5). For our `C_K = (E ∖ {O})/±1` the needed statement is: a
+     `Δ`-preserving automorphism `α` of `Π_C` maps `Π_X` onto itself. `Δ_X` is the unique torsion-free
+     index-2 subgroup of `Δ_C` (the `e_i` of order 2 at the 2-torsion orbifold points), and
+     `Π_C/Δ_X ≅ ℤ/2 × G_K` has several index-2 subgroups surjecting onto `G_K` (quadratic characters
+     of `G_K`), so `Π_X` is pinned down by a further group-theoretic property (e.g. the image of the
+     decomposition groups of the orbifold points / the cusp). This needs a decision on the route
+     (literature: [AbsTopI] Lemma 4.5, IUT I Rem 3.1.2; MR8-plan rounds 40–42). Bridge pieces that
+     exist: `genuinePi1HemiEquiv` (`π₁(C_K) ≅ Π_C` Galois model), `genuinePi1HemiXEquiv`
+     (`π₁(X_K) ≅ H_L ⧸ ⟨⟨S⟩⟩` of `hemiData E = galoisDataTop (curveGaloisData K (transcendental_xN E))`),
+     `piBridge` (Galois model `≅ arithmeticExt`, needs `hU`: now `XE_eq_chartOne`).
+  2. *`σ₀`*: the origin as a section `Spec K ⟶ Ē` (`hσ₀`).
+  3. *Assembly / step 4*: from `α : π₁(C_K) ≃ₜ* π₁(C_K)` preserving `Δ`, `α|_{Π_X}` → `Φ` (an
+     `arithmeticExt` iso of `hypCurveE E` over `K = D.Kt`), `σ = sigmaE`, `ψ = conj σ`
+     (`gkIso_eq_conj`), `σ(j) = j` (`nfConstEquiv_fix_j`) ⇒ a lift `g ∈ Gal(F̄/F_mod)` of `σ` with
+     `piCmodPr (α x) = g · piCmodPr x · g⁻¹` (needs `kbar K FFClosure ≅ F̄` compatible with
+     `galConstEquiv`/`piCmodPr` and with `gkBridge`). Then `CKSemiAbsConj D` with the named inputs
+     `BelyiCuspSpec`, `RelIsomDGC.Exists` (and `CKStrictSemiAbs` stays a literature debt).
+  Debts unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), `CKStrictSemiAbs`.
+  Decisions for the lead: the route for item 1 (above).

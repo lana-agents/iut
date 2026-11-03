@@ -72,16 +72,13 @@ theorem XE_eq_chartOne : XE E = chartOne K (curveE E) (xN E) := by
       by_contra h'
       exact xN_not_mem_of_not_mem_XE₂ E Q (hQ ▸ h') h
 
-/-- **`E ∖ {O}` as a hyperbolic curve** (curves-jacobian `hypCurveX E`, reducibly: its
-compactification is `Ē = curveE E`, its open `XE E`). -/
-@[reducible] def hypCurveE : HypCurve K where
-  Xbar := curveE E
-  over := (hypCurveX E).over
-  isCurve := (hypCurveX E).isCurve
-  U := XE E
-  nonempty := (hypCurveX E).nonempty
-  cusps_finite := (hypCurveX E).cusps_finite
-  hyperbolic := (hypCurveX E).hyperbolic
+/-- **`E ∖ {O}` as a hyperbolic curve** (the fields of curves-jacobian's `hypCurveX E`, reducibly:
+its compactification is `Ē = curveE E`, its open `XE E`). -/
+@[reducible] def hypCurveE : HypCurve K :=
+  @HypCurve.mk K _ (curveE E) inferInstance inferInstance (XE E)
+    ((VE_nonempty E).mono (VE_le_XE E))
+    (finite_compl_of_isCurveOver (k := K) (curveE E) _ ((VE_nonempty E).mono (VE_le_XE E)))
+    (hyperbolic_of_le E (VE_le_XE E) le_rfl)
 
 /-- `g(Ē) ≠ 0`. -/
 theorem curveGenus_hypCurveE_ne : CurvesJacobian.curveGenus K (hypCurveE E).Xbar ≠ 0 := by

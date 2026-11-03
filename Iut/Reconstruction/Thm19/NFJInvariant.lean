@@ -54,24 +54,34 @@ variable {Φ : (arithmeticExt Ω (hypCurveE E) hc.out).Iso (arithmeticExt Ω (hy
 
 local notation "hgE" => curveGenus_hypCurveE_ne E
 
+instance isGalois_hypCurveE :
+    IsGalois (K₀ K (coordT (xN E))) (FFClosure (hypCurveE E).Xbar) :=
+  isGalois_K₀_hemi E
+
+instance charZero_hypCurveE : CharZero (FFClosure (hypCurveE E).Xbar) :=
+  charZero_FFClosure_curveE E
+
 variable (Φ) in
 /-- `nfRingEquiv` for `X = E ∖ {O}` (`F_NF ≃+* F_NF`). -/
 abbrev psiE : fnf N ≃+* fnf N :=
-  nfRingEquiv (transcendental_xN E) (XE_eq_chartOne E) (transcendental_xN E) (XE_eq_chartOne E) Φ
-    hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
+  @nfRingEquiv K _ _ Ω _ _ _ _ _ (hypCurveE E) hc K _ _ Ω _ _ _ _ _ (hypCurveE E) hc
+    (xN E) (transcendental_xN E) _ (XE_eq_chartOne E) (xN E) (transcendental_xN E) _
+    (XE_eq_chartOne E) Φ _ _ _ _ hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
 
 variable (Φ) in
 /-- `σ = nfConstEquiv` for `X = E ∖ {O}`. -/
 abbrev sigmaE : kbar K (FFClosure (curveE E)) ≃+* kbar K (FFClosure (curveE E)) :=
-  nfConstEquiv (transcendental_xN E) (XE_eq_chartOne E) (transcendental_xN E) (XE_eq_chartOne E) Φ
-    hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
+  @nfConstEquiv K _ _ Ω _ _ _ _ _ (hypCurveE E) hc K _ _ Ω _ _ _ _ _ (hypCurveE E) hc
+    (xN E) (transcendental_xN E) _ (XE_eq_chartOne E) (xN E) (transcendental_xN E) _
+    (XE_eq_chartOne E) Φ _ _ _ _ hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
 
 variable (Φ) in
 /-- The bijection of points for `X = E ∖ {O}`. -/
 abbrev placeE : Place (algebraicClosure ℚ (FFClosure (curveE E))) (fnf N) ≃
     Place (algebraicClosure ℚ (FFClosure (curveE E))) (fnf N) :=
-  nfPlaceEquiv (transcendental_xN E) (XE_eq_chartOne E) (transcendental_xN E) (XE_eq_chartOne E) Φ
-    hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
+  @nfPlaceEquiv K _ _ Ω _ _ _ _ _ (hypCurveE E) hc K _ _ Ω _ _ _ _ _ (hypCurveE E) hc
+    (xN E) (transcendental_xN E) _ (XE_eq_chartOne E) (xN E) (transcendental_xN E) _
+    (XE_eq_chartOne E) Φ _ _ _ _ hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
 
 variable (Φ) in
 /-- **`σ` on `k̄_NF = ℚ̄`**. -/
@@ -85,7 +95,9 @@ lemma nfRingEquiv_algebraMap (c : algebraicClosure ℚ (FFClosure (curveE E))) :
     psiE E Φ hS σ₀ hσ₀ hDGC N (algebraMap (algebraicClosure ℚ (FFClosure (curveE E))) (fnf N) c) =
       algebraMap (algebraicClosure ℚ (FFClosure (curveE E))) (fnf N)
         (qbarConst E Φ hS σ₀ hσ₀ hDGC N c) :=
-  nfRingEquiv_constFnf hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
+  @nfRingEquiv_constFnf K _ _ Ω _ _ _ _ _ (hypCurveE E) hc K _ _ Ω _ _ _ _ _ (hypCurveE E) hc
+    (xN E) (transcendental_xN E) _ (XE_eq_chartOne E) (xN E) (transcendental_xN E) _
+    (XE_eq_chartOne E) Φ _ _ _ _ hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
     ((kbarQbar K (FFClosure (curveE E))).symm c)
 
 set_option maxHeartbeats 800000 in
@@ -99,7 +111,10 @@ theorem nfConstEquiv_j
       algebraMap K (kbar K (FFClosure (curveE E))) E.j := by
   have hord : ∀ (P : Place (algebraicClosure ℚ (FFClosure (curveE E))) (fnf N)) (f : fnf N),
       f ≠ 0 → (placeE E Φ hS σ₀ hσ₀ hDGC N P).ord (psiE E Φ hS σ₀ hσ₀ hDGC N f) = P.ord f :=
-    fun P f hf => ord_nfRingEquiv hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N P f hf
+    fun P f hf => @ord_nfRingEquiv K _ _ Ω _ _ _ _ _ (hypCurveE E) hc K _ _ Ω _ _ _ _ _
+      (hypCurveE E) hc
+      (xN E) (transcendental_xN E) _ (XE_eq_chartOne E) (xN E) (transcendental_xN E) _
+      (XE_eq_chartOne E) Φ _ _ _ _ hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N P f hf
   have hj := EllipticJ.j_eq_of_semilinear (psiE E Φ hS σ₀ hσ₀ hDGC N)
     (qbarConst E Φ hS σ₀ hσ₀ hDGC N) (nfRingEquiv_algebraMap E hS σ₀ hσ₀ hDGC N)
     (weq_fnf E N) (transcendental_xNF E N) (finrank_fnf_xNF E N)
@@ -110,9 +125,8 @@ theorem nfConstEquiv_j
         exact zero_mem _
       obtain ⟨Q, rfl⟩ := (placeE E Φ hS σ₀ hσ₀ hDGC N).surjective Q'
       have hQ : Q ≠ P₀ := fun h => hQ' (by rw [h, hO])
-      refine Place.mem_of_ord_nonneg ?_
-      rw [hord Q f hf0]
-      exact Place.ord_nonneg_of_mem (hf Q hQ))
+      exact (placeE E Φ hS σ₀ hσ₀ hDGC N Q).mem_of_ord_nonneg
+        (by rw [hord Q f hf0]; exact Q.ord_nonneg_of_mem (hf Q hQ)))
     (fun f hf => by
       have := hord P₀ f hf
       rwa [hO] at this)
@@ -122,8 +136,7 @@ theorem nfConstEquiv_j
     rfl
   rw [hjNF] at hj
   apply (kbarQbar K (FFClosure (curveE E))).injective
-  rw [hj]
-  simp [qbarConst]
+  rw [hj, qbarConst, RingEquiv.trans_apply, RingEquiv.trans_apply, RingEquiv.symm_apply_apply]
 
 /-- **`σ(j) = j`** (MR9, `CKSemiAbsConj` item 5), unconditionally on `Φ`: the bijection of points
 fixes the origin `O`, the unique pole of `x`, because it maps cusps of `X` to cusps of `X`
@@ -135,9 +148,11 @@ theorem nfConstEquiv_fix_j :
   obtain ⟨P₀, hP₀, -, huniq⟩ := exists_unique_pole_of_weq₂ (eNF E) (weq_fnf E N)
     (transcendental_xNF E N) (finrank_fnf_xNF E N)
   refine nfConstEquiv_j E hS σ₀ hσ₀ hDGC N P₀ hP₀ (huniq _ ?_)
-  exact not_mem_nfPlaceEquiv (hτ := transcendental_xN E) (hU := XE_eq_chartOne E)
-    (hτ₂ := transcendental_xN E) (hU₂ := XE_eq_chartOne E) (Φ := Φ) hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE
-    hDGC hDGC N N (fun I hI => cusps_ne_bot_hypCurveE Ω E hc.out hI) P₀ hP₀
+  exact @not_mem_nfPlaceEquiv K _ _ Ω _ _ _ _ _ (hypCurveE E) hc K _ _ Ω _ _ _ _ _
+    (hypCurveE E) hc
+    (xN E) (transcendental_xN E) _ (XE_eq_chartOne E) (xN E) (transcendental_xN E) _
+    (XE_eq_chartOne E) Φ _ _ _ _ hS hS σ₀ hσ₀ hgE σ₀ hσ₀ hgE hDGC hDGC N N
+    (fun I hI => cusps_ne_bot_hypCurveE Ω E hc.out hI) P₀ hP₀
 
 end J
 
