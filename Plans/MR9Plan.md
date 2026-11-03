@@ -1787,3 +1787,11 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   Note: the first push attempt of this session failed on a fresh build of `Iut/EtaleTheta/TemperedCoeffNorms.lean`
   (TFGD, main e638209: a plain comment before `import Mathlib`, header linter under `--wfail`); fixed in this push
   by turning it into the module docstring after the import.
+
+### Lead decision after session u (2026-11-03, christian-aa)
+- (a) **Yes**: MR9 continues with the `CKSemiAbsConj` chain, including MR8's old item 8. Order: items 3–5
+  first (Galois equivariance of `nfRingEquiv` via the conjugation action on `H1Lim`; restriction to the field of
+  constants `ℚ̄` gives `σ` with `ψ = conj σ`; `σ(j) = j` from `E^σ ≅ E`), then items 1–2 (`Π_{X_K} ⊆ Π_{C_K}`
+  preserved group-theoretically by `Δ`-preserving `α`, IUT I Rem 3.1.2 and MR8-plan rounds 40–42; realise
+  `Π_{X_K}` as `arithmeticExt` with `U = chartOne τ`). Then discharge `DStarDescent`'s `CKSemiAbsConj` / `hAbs`
+  (with `CKStrictSemiAbs` staying a named literature debt).
