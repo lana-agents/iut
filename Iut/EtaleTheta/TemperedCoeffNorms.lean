@@ -3,12 +3,15 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
-/-
+import Mathlib
+
+/-!
+# Norm bounds for the coefficient matrices
+
 Elementary ultrametric norm bounds for the entries of the explicit `3 × 3` coefficient
 matrices `matR1`, `matR2`, `matR3`, `matB1`, `matB2`, `matBY`, after dividing each entry by
 the weight `s ^ (coeffWt a + coeffWt b)` of the homogenising coordinate `W = s` (slot `0`).
 -/
-import Mathlib
 
 namespace Iut.EtaleTheta
 
