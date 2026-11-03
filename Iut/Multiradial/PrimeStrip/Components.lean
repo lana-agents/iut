@@ -40,7 +40,8 @@ of `~/iut-scratch/papers/txt/Inter-universal Teichmuller Theory I.txt`:
   concerning 2-torsion … together with the definition of K", Example 3.2 (iv)); this existence is
   not yet derived from `D` in iut (`QRootExists D v`, debt H6; the analogous statement for the
   concrete Tate families is `Iut.exists_qroot`), so `tauVdash` takes the chosen root when it
-  exists and the splitting statement `tauVdash_isCharSplitting` assumes `QRootExists` at `V^bad`.
+  exists; `tauVdash_isCharSplitting_good` is unconditional, `tauVdash_isCharSplitting_bad` assumes
+  `QRootExists` (and uses `‖ι q̲_v‖ < 1`, from the continuity of `ι`: `norm_iota_lt_one`).
 -/
 
 noncomputable section
