@@ -441,6 +441,7 @@ import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
 import Iut.Multiradial.PrimeStrip.Arc
 import Iut.Multiradial.PrimeStrip.Components
+import Iut.Multiradial.PrimeStrip.FRlf
 import Iut.Multiradial.PrimeStrip.Full
 import Iut.Multiradial.PrimeStrip.Local
 import Iut.Multiradial.PrimeStrip.Mu
