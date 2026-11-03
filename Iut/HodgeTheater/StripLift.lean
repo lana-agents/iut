@@ -3,7 +3,8 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
-import Iut.HodgeTheater.PrimeStrip
+import Iut.HodgeTheater.FRlfGlobal
+import Iut.Frobenioid.PAdic
 import Iut.Reconstruction.Local.Valuation
 import Iut.Reconstruction.Local.LogVolumeCompletion
 
@@ -13,9 +14,9 @@ import Iut.Reconstruction.Local.LogVolumeCompletion
 IUT I, Corollary 5.3 states that the passage from an `F`- (resp. `F^⊢`-) prime-strip to its
 `D`- (resp. `D^⊢`-) prime-strip induces a **surjection** on isomorphism sets: the Frobenioids
 are reconstructed functorially from their base categories, so isomorphisms of the bases lift.
-In the P18 model (`PrimeStrip.lean`) the Frobenioid components are categories recorded up to
-equivalence, over the trivial Galois extension and not tied to a base; the passage `F ↦ D` is
-not defined there. Here we
+In this (P18, MR21 legacy) model the Frobenioid components are categories recorded up to
+equivalence, over the trivial Galois extension and not tied to a base (the genuine prime-strips,
+with Frobenioids over their bases and `F ↦ D`, are `Iut/Multiradial/PrimeStrip/`, MR20). Here we
 
 1. construct the **Galois-induced autoequivalence of the `p`-adic Frobenioid**: an automorphism
    `φ` of `G_v = Gal(K̄_v/K_v)` gives, through P17's reconstruction `Kˣ ≃* Kˣ`
@@ -50,8 +51,8 @@ not defined there. Here we
 ## Deviations
 
 * Only `v ∈ V^non`. The model of `G_v` is `Gal(K̄_v/K_v)` (the group on which P17 operates), not
-  the decomposition group `galModel` of `PrimeStrip.lean` (a closed subgroup of `Gal(F̄/K)`; the
-  isomorphism of the two is not formalised).
+  the group `Gal(\bar{ℚ}_p/ι K_v)` of the genuine prime-strips (`Multiradial.PrimeStrip.Gv`),
+  nor the decomposition group in `Gal(F̄/K)`; the isomorphisms of the three are not formalised.
 * The rigidifications `κ_v` are data; they stand for the Kummer structures of IUT. Without them
   the arithmetic of the model does not see the abstract strip, and the lift of
   `FGalStrip.exists_lift` is the weak (non-unique) one.
@@ -362,50 +363,62 @@ of the prime-strips. -/
 abbrev Vnon : Type u := FinitePlace ↥(fieldOfModuli D.F D.E)
 
 /-- **The local Galois group `G_v = Gal(K̄_v/K_v)`** at `v ∈ V^non`, as a topological group. -/
-noncomputable def locGalModel (w : Vnon D) : Kind.TGrp.{u} := ⟨LocGal (D.V.sectFin w)⟩
+noncomputable def locGalModel (w : Vnon D) : TGrp.{u} := ⟨LocGal (D.V.sectFin w)⟩
 
-/-- The kinds of the constituents of a `D^⊢`-prime-strip (non-archimedean portion). -/
-def dGalKind : Vnon D → Kind.{u} := fun _ => Kind.tgrp
+/-- **The `p`-adic Frobenioid of `K_v`** (P15, over the trivial Galois extension), as a
+category. -/
+noncomputable def padicFrobCat (w : Vnon D) : Cat.{u, u} := Cat.of (PAdic (D.V.sectFin w))
 
 /-- **`D^⊢`-prime-strips (non-archimedean portion), with the local Galois groups**
-`G_v = Gal(K̄_v/K_v)` as models (IUT I, Definition 4.1(iii); the decomposition group of
-`galModel` is replaced by the Galois group of the completion, on which P17 operates). -/
-abbrev DGalStrip : Type (u + 1) := PrimeStrip (dGalKind D) (locGalModel D)
+`G_v = Gal(K̄_v/K_v)` as models (IUT I, Definition 4.1(iii); the Galois group of the completion,
+on which P17 operates, recorded as a topological group). -/
+structure DGalStrip where
+  /-- The constituent topological groups. -/
+  obj : Vnon D → TGrp.{u}
+  /-- Each constituent is isomorphic to the model `G_v`. -/
+  iso_model : ∀ w, Nonempty ((obj w).carrier ≃ₜ* (locGalModel D w).carrier)
 
-/-- The kinds of the constituents of an `F^⊢`-prime-strip (non-archimedean portion): a category
-(the Frobenioid, up to equivalence) and a topological group (its base `G_v`). -/
-def fGalKind : Vnon D → Kind.{u} := fun _ => Kind.prod Kind.cat Kind.tgrp
-
-/-- **The tautological `F^⊢`-prime-strip** (non-archimedean portion): the `p`-adic Frobenioid of
-`K_v` with the base `G_v` (IUT I, Definition 5.2(ii)). -/
-noncomputable def fGalModel : ∀ w : Vnon D, (fGalKind D w).Obj :=
-  fun w => (padicModel D w, locGalModel D w)
-
-/-- **`F^⊢`-prime-strips (non-archimedean portion), with the local Galois groups as bases.** -/
-abbrev FGalStrip : Type (u + 1) := PrimeStrip (fGalKind D) (fGalModel D)
-
-/-- The passage `F^⊢ ↦ D^⊢` (the base), componentwise. -/
-def forgetKind (w : Vnon D) : PrimeStrip.KindMap (fGalKind D w) (dGalKind D w) :=
-  ⟨fun X => X.2, fun f => f.2⟩
+/-- **`F^⊢`-prime-strips (non-archimedean portion), with the local Galois groups as bases**: a
+category (the Frobenioid, up to equivalence) and a topological group (its base `G_v`) at every
+`v ∈ V^non`, isomorphic to the `p`-adic Frobenioid of `K_v` with the base `G_v`. -/
+structure FGalStrip where
+  /-- The constituents: the Frobenioid and its base. -/
+  obj : Vnon D → Cat.{u, u} × TGrp.{u}
+  /-- Each constituent is isomorphic to the model. -/
+  iso_model : ∀ w, Nonempty (((obj w).1 ≌ padicFrobCat D w) ×
+    ((obj w).2.carrier ≃ₜ* (locGalModel D w).carrier))
 
 variable {D}
 
+/-- **Isomorphisms of `D^⊢`-prime-strips**: constituentwise isomorphisms. -/
+def DGalStrip.Iso (P Q : DGalStrip D) : Type u := ∀ w, (P.obj w).carrier ≃ₜ* (Q.obj w).carrier
+
+/-- The identity. -/
+def DGalStrip.Iso.refl (P : DGalStrip D) : P.Iso P := fun _ => ContinuousMulEquiv.refl _
+
+/-- The composite. -/
+def DGalStrip.Iso.trans {P Q R : DGalStrip D} (f : P.Iso Q) (g : Q.Iso R) : P.Iso R :=
+  fun w => (f w).trans (g w)
+
+/-- **Isomorphisms of `F^⊢`-prime-strips**: constituentwise equivalences of the Frobenioids and
+isomorphisms of the bases. -/
+def FGalStrip.Iso (P Q : FGalStrip D) : Type u :=
+  ∀ w, ((P.obj w).1 ≌ (Q.obj w).1) × ((P.obj w).2.carrier ≃ₜ* (Q.obj w).2.carrier)
+
 /-- **The `D^⊢`-prime-strip of an `F^⊢`-prime-strip** (IUT I, Corollary 5.3(i)-(iii): the
-functor `†F^⊢ ↦ †D^⊢`). -/
+functor `†F^⊢ ↦ †D^⊢`): the bases. -/
 def FGalStrip.toD (P : FGalStrip D) : DGalStrip D :=
-  PrimeStrip.map (forgetKind D) (fun w => ⟨(dGalKind D w).refl _⟩) P
+  ⟨fun w => (P.obj w).2, fun w => (P.iso_model w).map fun e => e.2⟩
 
 /-- The induced map `Isom(†F^⊢, ‡F^⊢) → Isom(†D^⊢, ‡D^⊢)`. -/
-def FGalStrip.forget {P Q : FGalStrip D} (g : P.Iso Q) : P.toD.Iso Q.toD :=
-  PrimeStrip.mapIso (forgetKind D) (fun w => ⟨(dGalKind D w).refl _⟩) g
+def FGalStrip.forget {P Q : FGalStrip D} (g : P.Iso Q) : P.toD.Iso Q.toD := fun w => (g w).2
 
 /-- **The set of lifts of an isomorphism of `D^⊢`-prime-strips** to arbitrary `F^⊢`-prime-strips
 is the set of families of equivalences of the Frobenioid components: in the model the
 Frobenioids are recorded up to equivalence and are not tied to their bases, so the lifts exist
 but are not unique (in IUT I, Corollary 5.3, the Frobenioid is reconstructed from the base). -/
 def FGalStrip.liftsEquiv {P Q : FGalStrip D} (f : P.toD.Iso Q.toD) :
-    {g : P.Iso Q // FGalStrip.forget g = f} ≃
-      ∀ w, Kind.cat.Iso (P.obj w).1 (Q.obj w).1 where
+    {g : P.Iso Q // FGalStrip.forget g = f} ≃ ∀ w, (P.obj w).1 ≌ (Q.obj w).1 where
   toFun g w := (g.1 w).1
   invFun e := ⟨fun w => (e w, f w), rfl⟩
   left_inv g := by
@@ -429,14 +442,14 @@ structure RigidDGalStrip where
   /-- The `D^⊢`-prime-strip. -/
   strip : DGalStrip D
   /-- The rigidification `κ_v : †G_v ≅ Gal(K̄_v/K_v)`. -/
-  kappa : ∀ w, (strip.obj w : Kind.TGrp.{u}).carrier ≃ₜ* LocGal (D.V.sectFin w)
+  kappa : ∀ w, (strip.obj w).carrier ≃ₜ* LocGal (D.V.sectFin w)
 
 namespace RigidDGalStrip
 
 variable (D) in
 /-- The tautological rigidified `D^⊢`-prime-strip. -/
 noncomputable def taut : RigidDGalStrip D :=
-  ⟨PrimeStrip.tautological _ _, fun _ => ContinuousMulEquiv.refl _⟩
+  ⟨⟨locGalModel D, fun _ => ⟨ContinuousMulEquiv.refl _⟩⟩, fun _ => ContinuousMulEquiv.refl _⟩
 
 /-- **The Galois automorphisms read off from an isomorphism of `D^⊢`-prime-strips**:
 `φ_v = κ^Q_v ∘ f_v ∘ (κ^P_v)⁻¹ ∈ Aut(G_v)`. -/
@@ -445,18 +458,17 @@ def gal {P Q : RigidDGalStrip D} (f : P.strip.Iso Q.strip) (w : Vnon D) :
   ((P.kappa w).symm.trans (f w)).trans (Q.kappa w)
 
 theorem gal_refl (P : RigidDGalStrip D) (w : Vnon D) :
-    gal (PrimeStrip.Iso.refl P.strip) w = ContinuousMulEquiv.refl _ := by
+    gal (DGalStrip.Iso.refl P.strip) w = ContinuousMulEquiv.refl _ := by
   apply ContinuousMulEquiv.ext
   intro x
   exact (P.kappa w).apply_symm_apply x
 
 theorem gal_trans {P Q R : RigidDGalStrip D} (f : P.strip.Iso Q.strip) (g : Q.strip.Iso R.strip)
-    (w : Vnon D) : gal (PrimeStrip.Iso.trans f g) w = (gal f w).trans (gal g w) := by
+    (w : Vnon D) : gal (DGalStrip.Iso.trans f g) w = (gal f w).trans (gal g w) := by
   apply ContinuousMulEquiv.ext
   intro x
-  simp only [gal, PrimeStrip.Iso.trans, ContinuousMulEquiv.trans_apply,
+  simp only [gal, DGalStrip.Iso.trans, ContinuousMulEquiv.trans_apply,
     ContinuousMulEquiv.symm_apply_apply]
-  rfl
 
 end RigidDGalStrip
 
@@ -479,7 +491,7 @@ namespace RigidDGalStrip
 /-- **The reconstruction `†D^⊢ ↦ †F^⊢`** (IUT I, Corollary 5.3, in the model): the `p`-adic
 Frobenioid of `K_v` over the rigidified `†G_v`. -/
 noncomputable def toF (P : RigidDGalStrip D) : FGalStrip D :=
-  ⟨fun w => (padicModel D w, P.strip.obj w), fun w => ⟨(CategoryTheory.Equivalence.refl,
+  ⟨fun w => (padicFrobCat D w, P.strip.obj w), fun w => ⟨(CategoryTheory.Equivalence.refl,
     P.kappa w)⟩⟩
 
 /-- The `D^⊢`-prime-strip of the reconstructed `F^⊢`-prime-strip is the given one. -/
@@ -506,7 +518,7 @@ theorem exists_lift {P Q : RigidDGalStrip D} (f : P.strip.Iso Q.strip) :
 
 /-- **The lift is functorial** (identities). -/
 theorem liftIso_refl_functor (P : RigidDGalStrip D) (w : Vnon D) :
-    (liftIso (PrimeStrip.Iso.refl P.strip) w).1.functor = 𝟭 _ := by
+    (liftIso (DGalStrip.Iso.refl P.strip) w).1.functor = 𝟭 _ := by
   change (galFrobAt D w _).functor = _
   rw [gal_refl]
   haveI : Fact (residueChar (D.V.sectFin w)).Prime := ⟨residueChar_prime _⟩
@@ -515,7 +527,7 @@ theorem liftIso_refl_functor (P : RigidDGalStrip D) (w : Vnon D) :
 /-- **The lift is functorial** (composites). -/
 theorem liftIso_trans_functor {P Q R : RigidDGalStrip D} (f : P.strip.Iso Q.strip)
     (g : Q.strip.Iso R.strip) (w : Vnon D) :
-    (liftIso (PrimeStrip.Iso.trans f g) w).1.functor =
+    (liftIso (DGalStrip.Iso.trans f g) w).1.functor =
       (liftIso f w).1.functor ⋙ (liftIso g w).1.functor := by
   change (galFrobAt D w _).functor = (galFrobAt D w _).functor ⋙ (galFrobAt D w _).functor
   rw [gal_trans]

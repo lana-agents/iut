@@ -218,10 +218,10 @@ variable (L) in
 def trivial : StripKummer L where
   strip _ := RigidDGalStrip.taut D
   coric := RigidDGalStrip.taut D
-  link _ := PrimeStrip.Iso.refl _
+  link _ := DGalStrip.Iso.refl _
   kum _ := 1
   scale _ := by
-    have h : RigidDGalStrip.gal (PrimeStrip.Iso.refl (RigidDGalStrip.taut D).strip) =
+    have h : RigidDGalStrip.gal (DGalStrip.Iso.refl (RigidDGalStrip.taut D).strip) =
         fun _ => ContinuousMulEquiv.refl _ := funext (RigidDGalStrip.gal_refl _)
     rw [h]
     exact stripScaling_one D

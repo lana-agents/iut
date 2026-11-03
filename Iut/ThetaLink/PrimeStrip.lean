@@ -21,8 +21,9 @@ morphisms are isomorphisms of all these data.
 
 `RlfMuStrip D` has two portions:
 
-* **the unit portion** `unit : FMuStrip D` — the `F^{⊢×μ}`-prime-strip of P18
-  (`Iut/HodgeTheater/PrimeStrip.lean`: `G_v ↷ O^{×μ}(K_v)`);
+* **the unit portion** `unit : FMuStrip D` — the `F^{⊢×μ}`-prime-strip
+  (`Multiradial.PrimeStrip.FMuStrip`, MR20: `G_v ↷ O^{×μ}_{\bar{ℚ}_p}` with the natural Galois
+  action at `v ∈ V^non`, `{1} ↷ S¹/μ_∞` at `v ∈ V^arc`);
 * **the value-group portion** `val : ValBPS (Pl D) bad` — the realified global value-group line
   `C` (the realification of `C^⊩` is a real line, [FrdI], Theorem 6.4) with the local pilots
   `φ_v ∈ C`, the images under `ρ_v` of the generators of the splitting monoids `O^▶` at `V^bad`
@@ -64,92 +65,55 @@ open HodgeTheater Wall NumberField
 
 /-! ### Groupoid laws for isomorphisms of `F^{⊢×μ}`-prime-strips -/
 
-section Groupoid
-
-universe u
-
-variable {X Y Z W : Kind.GM.{u}}
-
-theorem gmIso_ext {e e' : Kind.GMIso X Y} (hG : ∀ g, e.G g = e'.G g) (hM : ∀ m, e.M m = e'.M m) :
-    e = e' := by
-  obtain ⟨G, M, h1, h2⟩ := e
-  obtain ⟨G', M', h1', h2'⟩ := e'
-  have hG' : G = G' := ContinuousMulEquiv.ext hG
-  have hM' : M = M' := MulEquiv.ext hM
-  subst hG' hM'
-  rfl
-
-@[simp] lemma gm_trans_G (e : Kind.GMIso X Y) (f : Kind.GMIso Y Z) (g : X.G) :
-    (Kind.gm.trans e f).G g = f.G (e.G g) := rfl
-
-@[simp] lemma gm_trans_M (e : Kind.GMIso X Y) (f : Kind.GMIso Y Z) (m : X.M) :
-    (Kind.gm.trans e f).M m = f.M (e.M m) := rfl
-
-@[simp] lemma gm_symm_G (e : Kind.GMIso X Y) (g : Y.G) : (Kind.gm.symm e).G g = e.G.symm g := rfl
-
-@[simp] lemma gm_symm_M (e : Kind.GMIso X Y) (m : Y.M) : (Kind.gm.symm e).M m = e.M.symm m := rfl
-
-@[simp] lemma gm_refl_G (g : X.G) : (Kind.gm.refl X).G g = g := rfl
-
-@[simp] lemma gm_refl_M (m : X.M) : (Kind.gm.refl X).M m = m := rfl
-
-end Groupoid
-
 namespace FMuIso
+
+open Multiradial.PrimeStrip (FMuStrip GMObj)
 
 variable {D : InitialThetaData.{0}} {P Q R : FMuStrip D}
 
-theorem ext {f g : P.Iso Q} (h : ∀ x, (∀ a, (f x).G a = (g x).G a) ∧ ∀ m, (f x).M m = (g x).M m) :
-    f = g :=
-  funext fun x => gmIso_ext (h x).1 (h x).2
+theorem ext {f g : P.Iso Q}
+    (h : ∀ x, (∀ a, (FMuStripAt.iso f x).G a = (FMuStripAt.iso g x).G a) ∧
+      ∀ m, (FMuStripAt.iso f x).M m = (FMuStripAt.iso g x).M m) : f = g :=
+  Prod.ext (funext fun v => GMObj.Iso.ext (h (Sum.inl v)).1 (h (Sum.inl v)).2)
+    (funext fun v => GMObj.Iso.ext (h (Sum.inr v)).1 (h (Sum.inr v)).2)
 
 /-- `f⁻¹ ∘ (f ∘ g) = g`. -/
 theorem symm_trans_trans (f : P.Iso Q) (g : Q.Iso R) :
-    PrimeStrip.Iso.trans f.symm (PrimeStrip.Iso.trans f g) = g :=
-  ext fun x => ⟨fun a => by
-      simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+    FMuStrip.Iso.trans f.symm (FMuStrip.Iso.trans f g) = g :=
+  ext fun _ => ⟨fun _ => by simp, fun _ => by simp⟩
 
 /-- `f ∘ (f⁻¹ ∘ g) = g`. -/
 theorem trans_symm_trans (f : Q.Iso P) (g : Q.Iso R) :
-    PrimeStrip.Iso.trans f (PrimeStrip.Iso.trans f.symm g) = g :=
-  ext fun x => ⟨fun a => by
-      simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+    FMuStrip.Iso.trans f (FMuStrip.Iso.trans f.symm g) = g :=
+  ext fun _ => ⟨fun _ => by simp, fun _ => by simp⟩
 
 /-- `(f ∘ g⁻¹) ∘ g = f`. -/
 theorem trans_symm_trans' (f : P.Iso Q) (g : R.Iso Q) :
-    PrimeStrip.Iso.trans (PrimeStrip.Iso.trans f g.symm) g = f :=
-  ext fun x => ⟨fun a => by
-      simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+    FMuStrip.Iso.trans (FMuStrip.Iso.trans f g.symm) g = f :=
+  ext fun _ => ⟨fun _ => by simp, fun _ => by simp⟩
 
 /-- `(f ∘ g) ∘ g⁻¹ = f`. -/
 theorem trans_trans_symm (f : P.Iso Q) (g : Q.Iso R) :
-    PrimeStrip.Iso.trans (PrimeStrip.Iso.trans f g) g.symm = f :=
-  ext fun x => ⟨fun a => by
-      simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+    FMuStrip.Iso.trans (FMuStrip.Iso.trans f g) g.symm = f :=
+  ext fun _ => ⟨fun _ => by simp, fun _ => by simp⟩
 
 /-- Conjugation cancels: `f ∘ ((f⁻¹ ∘ (u ∘ g)) ∘ g⁻¹) = u`. -/
 theorem conj_cancel {P' Q' : FMuStrip D} (f : P.Iso P') (g : Q.Iso Q') (u : P.Iso Q) :
-    PrimeStrip.Iso.trans f (PrimeStrip.Iso.trans (PrimeStrip.Iso.trans f.symm
-      (PrimeStrip.Iso.trans u g)) g.symm) = u :=
-  ext fun x => ⟨fun a => by
-      simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+    FMuStrip.Iso.trans f (FMuStrip.Iso.trans (FMuStrip.Iso.trans f.symm
+      (FMuStrip.Iso.trans u g)) g.symm) = u :=
+  ext fun _ => ⟨fun _ => by simp, fun _ => by simp⟩
 
 /-- Conjugation cancels: `f⁻¹ ∘ ((f ∘ (u ∘ g⁻¹)) ∘ g) = u`. -/
 theorem conj_cancel' {P' Q' : FMuStrip D} (f : P.Iso P') (g : Q.Iso Q') (u : P'.Iso Q') :
-    PrimeStrip.Iso.trans f.symm (PrimeStrip.Iso.trans (PrimeStrip.Iso.trans f
-      (PrimeStrip.Iso.trans u g.symm)) g) = u :=
-  ext fun x => ⟨fun a => by
-      simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+    FMuStrip.Iso.trans f.symm (FMuStrip.Iso.trans (FMuStrip.Iso.trans f
+      (FMuStrip.Iso.trans u g.symm)) g) = u :=
+  ext fun _ => ⟨fun _ => by simp, fun _ => by simp⟩
 
 end FMuIso
 
 variable (D : InitialThetaData.{0})
+
+open Multiradial.PrimeStrip (FMuStrip)
 
 /-! ### `F^{⊩▶×μ}`-prime-strips -/
 
@@ -175,7 +139,7 @@ structure Iso (P Q : RlfMuStrip D) where
   val : ValBPS.Iso P.val Q.val
 
 /-- The identity. -/
-def Iso.refl (P : RlfMuStrip D) : P.Iso P := ⟨PrimeStrip.Iso.refl _, ValBPS.Iso.refl _⟩
+def Iso.refl (P : RlfMuStrip D) : P.Iso P := ⟨FMuStrip.Iso.refl _, ValBPS.Iso.refl _⟩
 
 /-- The inverse. -/
 def Iso.symm {P Q : RlfMuStrip D} (f : P.Iso Q) : Q.Iso P := ⟨f.unit.symm, f.val.symm⟩
@@ -194,7 +158,7 @@ theorem Iso.map_pilot {P Q : RlfMuStrip D} (f : P.Iso Q) :
   ValBPS.Iso.map_pilot f.val
 
 /-- **Two `F^{⊩▶×μ}`-prime-strips are isomorphic iff their value-group portions have the same
-product formula** (any two unit portions are isomorphic, `PrimeStrip.nonempty_iso`; [LANA],
+product formula** (any two unit portions are isomorphic, `FMuStrip.nonempty_iso`; [LANA],
 Lemma 4.1.7 for the value-group portions). -/
 theorem nonempty_iso_iff (P Q : RlfMuStrip D) : Nonempty (P.Iso Q) ↔ P.val.PF = Q.val.PF := by
   rw [← ValBPS.nonempty_iso_iff]
@@ -202,7 +166,7 @@ theorem nonempty_iso_iff (P Q : RlfMuStrip D) : Nonempty (P.Iso Q) ↔ P.val.PF 
   · rintro ⟨f⟩
     exact ⟨f.val⟩
   · rintro ⟨g⟩
-    exact ⟨⟨(PrimeStrip.nonempty_iso _ _).some, g⟩⟩
+    exact ⟨⟨(FMuStrip.nonempty_iso _ _).some, g⟩⟩
 
 /-- **The value-group portion of a morphism is unique.** -/
 theorem Iso.val_eq {P Q : RlfMuStrip D} (f g : P.Iso Q) : f.val = g.val :=
@@ -251,7 +215,7 @@ theorem unit_gauStrip (H : ThetaPmEllNFHT D) : (gauStrip D H).unit = H.Fmu := rf
 /-- **The natural isomorphism of unit portions** `F^{⊢×μ}_Δ ≅ F^{⊢×μ}_gau` (IUT II, Corollary
 4.10(iv)): the identity. -/
 def unitIdent (H : ThetaPmEllNFHT D) : (qStrip D H).unit.Iso (gauStrip D H).unit :=
-  PrimeStrip.Iso.refl _
+  FMuStrip.Iso.refl _
 
 /-- The pilot of `‡F^{⊩▶×μ}_Δ` is `|log q|`. -/
 theorem pilot_qStrip (H : ThetaPmEllNFHT D) : (qStrip D H).pilot = D.qPilot.absLogQ :=

@@ -6,7 +6,7 @@ Authors: LANA Project
 import Iut.EtaleTheta.Wall
 import Iut.Wall.Pilots
 import Iut.Wall.Rss
-import Iut.HodgeTheater.PrimeStrip
+import Iut.HodgeTheater.FRlfGlobal
 
 /-!
 # Gaussian monoids and `q`-pilot monoids (IUT II, Corollaries 3.5, 3.6, 4.6; IUT III, Def. 3.8)

@@ -119,6 +119,7 @@ namespace Iut
 namespace LogLink
 
 open Wall ThetaLink HodgeTheater NumberField
+open Multiradial.PrimeStrip (FMuStrip)
 open scoped Valued
 
 noncomputable section
@@ -128,39 +129,39 @@ variable {D : InitialThetaData.{0}}
 /-! ### Conjugation of isomorphisms of `F^{⊢×μ}`-prime-strips -/
 
 /-- **Conjugation by Kummer isomorphisms** `κ : P ≅ Q`, `κ' : P' ≅ Q'`: `u ↦ κ⁻¹ ∘ u ∘ κ'` (in
-the diagrammatic order of `PrimeStrip.Iso.trans`). -/
+the diagrammatic order of `FMuStrip.Iso.trans`). -/
 def fmuConj {P P' Q Q' : FMuStrip D} (κ : P.Iso Q) (κ' : P'.Iso Q') : P.Iso P' ≃ Q.Iso Q' where
-  toFun u := PrimeStrip.Iso.trans κ.symm (PrimeStrip.Iso.trans u κ')
-  invFun v := PrimeStrip.Iso.trans κ (PrimeStrip.Iso.trans v κ'.symm)
+  toFun u := FMuStrip.Iso.trans κ.symm (FMuStrip.Iso.trans u κ')
+  invFun v := FMuStrip.Iso.trans κ (FMuStrip.Iso.trans v κ'.symm)
   left_inv u := FMuIso.ext fun x => ⟨fun a => by
-      simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+      simp,
+    fun m => by simp⟩
   right_inv v := FMuIso.ext fun x => ⟨fun a => by
-      simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+      simp,
+    fun m => by simp⟩
 
 theorem fmuConj_apply {P P' Q Q' : FMuStrip D} (κ : P.Iso Q) (κ' : P'.Iso Q') (u : P.Iso P') :
-    fmuConj κ κ' u = PrimeStrip.Iso.trans κ.symm (PrimeStrip.Iso.trans u κ') := rfl
+    fmuConj κ κ' u = FMuStrip.Iso.trans κ.symm (FMuStrip.Iso.trans u κ') := rfl
 
 /-- Conjugation is functorial: `conj(u ∘ u') = conj(u) ∘ conj(u')`. -/
 theorem fmuConj_trans {P P' P'' Q Q' Q'' : FMuStrip D} (κ : P.Iso Q) (κ' : P'.Iso Q')
     (κ'' : P''.Iso Q'') (u : P.Iso P') (u' : P'.Iso P'') :
-    fmuConj κ κ'' (PrimeStrip.Iso.trans u u') =
-      PrimeStrip.Iso.trans (fmuConj κ κ' u) (fmuConj κ' κ'' u') :=
+    fmuConj κ κ'' (FMuStrip.Iso.trans u u') =
+      FMuStrip.Iso.trans (fmuConj κ κ' u) (fmuConj κ' κ'' u') :=
   FMuIso.ext fun x => ⟨fun a => by
-      simp [fmuConj_apply, PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [fmuConj_apply, PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+      simp [fmuConj_apply],
+    fun m => by simp [fmuConj_apply]⟩
 
 /-- Conjugating by composites is composing conjugations. -/
 theorem fmuConj_comp {P P' Q Q' R R' : FMuStrip D} (κ : P.Iso Q) (κ' : P'.Iso Q')
     (ν : Q.Iso R) (ν' : Q'.Iso R') (u : P.Iso P') :
-    fmuConj (PrimeStrip.Iso.trans κ ν) (PrimeStrip.Iso.trans κ' ν') u =
+    fmuConj (FMuStrip.Iso.trans κ ν) (FMuStrip.Iso.trans κ' ν') u =
       fmuConj ν ν' (fmuConj κ κ' u) :=
   FMuIso.ext fun x => ⟨fun a => by
-      simp [fmuConj_apply, PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]
+      simp [fmuConj_apply]
       rfl,
     fun m => by
-      simp [fmuConj_apply, PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]
+      simp [fmuConj_apply]
       rfl⟩
 
 /-! ### (a), (b): bi-coric Kummer data (Theorem 1.5(iii)) -/
@@ -187,10 +188,10 @@ variable {L : LogThetaLattice D} (B : BiCoricKummer L)
 /-- **Every lattice carries bi-coric Kummer data** (all `F^{⊢×μ}`-prime-strips are
 isomorphic): the coric strips are the tautological ones. -/
 def ofLattice (L : LogThetaLattice D) : BiCoricKummer L where
-  cor _ := PrimeStrip.tautological _ _
-  kum _ _ := (PrimeStrip.nonempty_iso _ _).some
-  env _ := PrimeStrip.tautological _ _
-  envIso _ := PrimeStrip.Iso.refl _
+  cor _ := FMuStrip.ofThetaData D
+  kum _ _ := (FMuStrip.nonempty_iso _ _).some
+  env _ := FMuStrip.ofThetaData D
+  envIso _ := FMuStrip.Iso.refl _
 
 /-- **The coric isomorphism induced by a horizontal arrow** (Theorem 3.11(iii)(a)): a Θ-link
 `(n, m) → (n + 1, m)` induces, through the Kummer isomorphisms, an isomorphism
@@ -206,12 +207,12 @@ theorem horizCor_bijective (n m : ℤ) : Function.Bijective (B.horizCor n m) :=
 
 /-- **The Kummer square commutes**: `θ ∘ κ_{n+1,m} = κ_{n,m} ∘ horizCor θ`. -/
 theorem kum_comm (n m : ℤ) (θ : ThetaLinkIso D (L.H (n, m)) (L.H (n + 1, m))) :
-    PrimeStrip.Iso.trans (ThetaLinkIso.unitEquiv _ _ θ) (B.kum (n + 1) m) =
-      PrimeStrip.Iso.trans (B.kum n m) (B.horizCor n m θ) :=
+    FMuStrip.Iso.trans (ThetaLinkIso.unitEquiv _ _ θ) (B.kum (n + 1) m) =
+      FMuStrip.Iso.trans (B.kum n m) (B.horizCor n m θ) :=
   FMuIso.ext fun x => ⟨fun a => by
-      simp [horizCor, fmuConj_apply, PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
+      simp [horizCor, fmuConj_apply],
     fun m => by
-      simp [horizCor, fmuConj_apply, PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+      simp [horizCor, fmuConj_apply]⟩
 
 /-- The isomorphism of environment strips induced by a horizontal arrow. -/
 def horizEnv (n m : ℤ) :
@@ -222,8 +223,8 @@ def horizEnv (n m : ℤ) :
 the Kummer isomorphisms, the full poly-isomorphism of the environment strips is the full
 poly-isomorphism induced by the horizontal arrows. -/
 theorem horizEnv_eq (n m : ℤ) (θ : ThetaLinkIso D (L.H (n, m)) (L.H (n + 1, m))) :
-    B.horizEnv n m θ = fmuConj (PrimeStrip.Iso.trans (B.kum n m) (B.envIso n))
-      (PrimeStrip.Iso.trans (B.kum (n + 1) m) (B.envIso (n + 1)))
+    B.horizEnv n m θ = fmuConj (FMuStrip.Iso.trans (B.kum n m) (B.envIso n))
+      (FMuStrip.Iso.trans (B.kum (n + 1) m) (B.envIso (n + 1)))
       (ThetaLinkIso.unitEquiv _ _ θ) :=
   (fmuConj_comp _ _ _ _ _).symm
 
@@ -233,15 +234,15 @@ theorem horizEnv_bijective (n m : ℤ) : Function.Bijective (B.horizEnv n m) :=
 /-- **The vertical isomorphisms of Theorem 1.5(iii)** (first line of the fifth display): the
 `F^{⊢×μ}`-prime-strips of two vertices of a column are identified through the coric strip. -/
 def vertCor (n m m' : ℤ) : (L.H (n, m)).Fmu.Iso (L.H (n, m')).Fmu :=
-  PrimeStrip.Iso.trans (B.kum n m) (B.kum n m').symm
+  FMuStrip.Iso.trans (B.kum n m) (B.kum n m').symm
 
 /-- **Bi-coricity** (Theorem 1.5(iii)): Θ-links of the rows `m` and `m'` that induce the same
 coric isomorphism commute with the vertical isomorphisms. -/
 theorem biCoric_square (n m m' : ℤ) (θ : ThetaLinkIso D (L.H (n, m)) (L.H (n + 1, m)))
     (θ' : ThetaLinkIso D (L.H (n, m')) (L.H (n + 1, m')))
     (h : B.horizCor n m θ = B.horizCor n m' θ') :
-    PrimeStrip.Iso.trans (B.vertCor n m m') (ThetaLinkIso.unitEquiv _ _ θ') =
-      PrimeStrip.Iso.trans (ThetaLinkIso.unitEquiv _ _ θ) (B.vertCor (n + 1) m m') := by
+    FMuStrip.Iso.trans (B.vertCor n m m') (ThetaLinkIso.unitEquiv _ _ θ') =
+      FMuStrip.Iso.trans (ThetaLinkIso.unitEquiv _ _ θ) (B.vertCor (n + 1) m m') := by
   have h' : ThetaLinkIso.unitEquiv _ _ θ' =
       (fmuConj (B.kum n m') (B.kum (n + 1) m')).symm
         (fmuConj (B.kum n m) (B.kum (n + 1) m) (ThetaLinkIso.unitEquiv _ _ θ)) := by
@@ -249,8 +250,8 @@ theorem biCoric_square (n m m' : ℤ) (θ : ThetaLinkIso D (L.H (n, m)) (L.H (n 
     exact h.symm
   rw [h']
   exact FMuIso.ext fun x => ⟨fun a => by
-      simp [vertCor, fmuConj, PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind],
-    fun m => by simp [vertCor, fmuConj, PrimeStrip.Iso.trans, PrimeStrip.Iso.symm, fmuKind]⟩
+      simp [vertCor, fmuConj],
+    fun m => by simp [vertCor, fmuConj]⟩
 
 end BiCoricKummer
 
@@ -567,19 +568,19 @@ structure Thm311iii (L : LogThetaLattice D) (B : BiCoricKummer L) (M : MonoTheta
   a_full : ∀ n m : ℤ, Function.Bijective (B.horizCor n m)
   /-- (a) The Kummer isomorphisms commute with the horizontal arrows. -/
   a_kummer : ∀ (n m : ℤ) (θ : ThetaLinkIso D (L.H (n, m)) (L.H (n + 1, m))),
-    PrimeStrip.Iso.trans (ThetaLinkIso.unitEquiv _ _ θ) (B.kum (n + 1) m) =
-      PrimeStrip.Iso.trans (B.kum n m) (B.horizCor n m θ)
+    FMuStrip.Iso.trans (ThetaLinkIso.unitEquiv _ _ θ) (B.kum (n + 1) m) =
+      FMuStrip.Iso.trans (B.kum n m) (B.horizCor n m θ)
   /-- (a), Theorem 1.5(iii): bi-coricity. -/
   a_biCoric : ∀ (n m m' : ℤ) (θ : ThetaLinkIso D (L.H (n, m)) (L.H (n + 1, m)))
     (θ' : ThetaLinkIso D (L.H (n, m')) (L.H (n + 1, m'))),
     B.horizCor n m θ = B.horizCor n m' θ' →
-      PrimeStrip.Iso.trans (B.vertCor n m m') (ThetaLinkIso.unitEquiv _ _ θ') =
-        PrimeStrip.Iso.trans (ThetaLinkIso.unitEquiv _ _ θ) (B.vertCor (n + 1) m m')
+      FMuStrip.Iso.trans (B.vertCor n m m') (ThetaLinkIso.unitEquiv _ _ θ') =
+        FMuStrip.Iso.trans (ThetaLinkIso.unitEquiv _ _ θ) (B.vertCor (n + 1) m m')
   /-- (b) The full poly-isomorphism of the environment strips, relative to the natural and the
   Kummer isomorphisms. -/
   b_env : ∀ n m : ℤ, Function.Bijective (B.horizEnv n m) ∧
-    ∀ θ, B.horizEnv n m θ = fmuConj (PrimeStrip.Iso.trans (B.kum n m) (B.envIso n))
-      (PrimeStrip.Iso.trans (B.kum (n + 1) m) (B.envIso (n + 1)))
+    ∀ θ, B.horizEnv n m θ = fmuConj (FMuStrip.Iso.trans (B.kum n m) (B.envIso n))
+      (FMuStrip.Iso.trans (B.kum (n + 1) m) (B.envIso (n + 1)))
       (ThetaLinkIso.unitEquiv _ _ θ)
   /-- (c) Cyclotomic rigidity of the mono-theta environments is compatible with the horizontal
   arrows, after arbitrary automorphisms of domain and codomain. -/

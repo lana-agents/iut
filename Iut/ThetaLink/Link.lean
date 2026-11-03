@@ -63,6 +63,7 @@ namespace Iut
 namespace ThetaLink
 
 open HodgeTheater Wall NumberField CategoryTheory Frobenioid
+open Multiradial.PrimeStrip (FMuStrip)
 
 variable (D : InitialThetaData.{0})
 
@@ -146,8 +147,8 @@ theorem dLink_surjective : Function.Surjective (dLink : ThetaLinkIso D H₁ H₂
 Θ-links `H₁ → H₂` bijectively to Θ-links `H₁' → H₂'`. -/
 def congr {H₁' H₂' : ThetaPmEllNFHT D} (f : H₁.Iso H₁') (g : H₂.Iso H₂') :
     ThetaLinkIso D H₁ H₂ ≃ ThetaLinkIso D H₁' H₂' where
-  toFun lk := ⟨PrimeStrip.Iso.trans f.Fmu.symm (PrimeStrip.Iso.trans lk.unit g.Fmu), lk.val⟩
-  invFun μ := ⟨PrimeStrip.Iso.trans f.Fmu (PrimeStrip.Iso.trans μ.unit g.Fmu.symm), μ.val⟩
+  toFun lk := ⟨FMuStrip.Iso.trans f.Fmu.symm (FMuStrip.Iso.trans lk.unit g.Fmu), lk.val⟩
+  invFun μ := ⟨FMuStrip.Iso.trans f.Fmu (FMuStrip.Iso.trans μ.unit g.Fmu.symm), μ.val⟩
   left_inv lk := by
     obtain ⟨u, v⟩ := lk
     simp only [RlfMuStrip.Iso.mk.injEq, and_true]
@@ -161,7 +162,7 @@ def congr {H₁' H₂' : ThetaPmEllNFHT D} (f : H₁.Iso H₁') (g : H₂.Iso H�
 theorem dLink_congr {H₁' H₂' : ThetaPmEllNFHT D} (f : H₁.Iso H₁') (g : H₂.Iso H₂')
     (lk : ThetaLinkIso D H₁ H₂) :
     dLink (congr f g lk) =
-      PrimeStrip.Iso.trans f.Fmu.symm (PrimeStrip.Iso.trans (dLink lk) g.Fmu) :=
+      FMuStrip.Iso.trans f.Fmu.symm (FMuStrip.Iso.trans (dLink lk) g.Fmu) :=
   rfl
 
 /-- **The Θ-link depends on the theaters only up to isomorphism.** -/

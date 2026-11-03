@@ -20,8 +20,7 @@ pro-object are `O^×_{\bar{ℚ}_p} = {x : ‖x‖ = 1}` with the Galois action. 
 
 * `unitsOneBar p = O^×_{\bar{ℚ}_p}`, `OxMuBar p = O^{×μ}_{\bar{ℚ}_p}` (units of norm one modulo
   torsion), with the **genuine `Gal(\bar{ℚ}_p / K)`-action** (`MulDistribMulAction`, `actQ`; this
-  replaces the trivial action `trivialMulDistribMulAction` of `HodgeTheater/PrimeStrip.lean`,
-  shell #8);
+  replaces the trivial action of the deleted P18 model of the prime-strips, shell #8);
 * `GMObj` (a topological group acting on a commutative monoid, IUT II, Definition 4.9 (i):
   `G ↷ O^{×μ}(A)`), its isomorphisms `GMObj.Iso` (topological isomorphism of groups and an
   equivariant isomorphism of monoids);
@@ -155,6 +154,31 @@ def trans {X Y Z : GMObj} (e : X.Iso Y) (f : Y.Iso Z) : X.Iso Z :=
   ⟨e.G.trans f.G, e.M.trans f.M, fun g m => by
     change f.M (e.M (g • m)) = f.G (e.G g) • f.M (e.M m)
     rw [e.equivariant, f.equivariant]⟩
+
+theorem ext {X Y : GMObj} {e e' : X.Iso Y} (hG : ∀ g, e.G g = e'.G g)
+    (hM : ∀ m, e.M m = e'.M m) : e = e' := by
+  obtain ⟨G, M, h⟩ := e
+  obtain ⟨G', M', h'⟩ := e'
+  have hG' : G = G' := ContinuousMulEquiv.ext hG
+  have hM' : M = M' := MulEquiv.ext hM
+  subst hG' hM'
+  rfl
+
+variable {X Y Z : GMObj}
+
+@[simp] lemma trans_G (e : X.Iso Y) (f : Y.Iso Z) (g : X.G) : (e.trans f).G g = f.G (e.G g) :=
+  rfl
+
+@[simp] lemma trans_M (e : X.Iso Y) (f : Y.Iso Z) (m : X.M) : (e.trans f).M m = f.M (e.M m) :=
+  rfl
+
+@[simp] lemma symm_G (e : X.Iso Y) (g : Y.G) : e.symm.G g = e.G.symm g := rfl
+
+@[simp] lemma symm_M (e : X.Iso Y) (m : Y.M) : e.symm.M m = e.M.symm m := rfl
+
+@[simp] lemma refl_G (g : X.G) : (refl X).G g = g := rfl
+
+@[simp] lemma refl_M (m : X.M) : (refl X).M m = m := rfl
 
 end GMObj.Iso
 

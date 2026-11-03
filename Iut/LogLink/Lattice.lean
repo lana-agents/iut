@@ -125,7 +125,7 @@ theorem horizCoric_full (n m : ℤ) (f : (L.H (n, m)).Fmu.Iso (L.H (n + 1, m)).F
 /-- **Theorem 1.5(iii), bi-coricity**: the `F^{⊢×μ}`-prime-strips of any two vertices of the
 lattice are isomorphic. -/
 theorem biCoric (a b : ℤ × ℤ) : Nonempty ((L.H a).Fmu.Iso (L.H b).Fmu) :=
-  PrimeStrip.nonempty_iso _ _
+  Multiradial.PrimeStrip.FMuStrip.nonempty_iso _ _
 
 /-- **The `m`-th row**: a Frobenius-picture of Θ-links (P19). -/
 def row (m : ℤ) : FrobeniusPicture D := ⟨fun n => L.H (n, m), fun n => L.horiz n m⟩

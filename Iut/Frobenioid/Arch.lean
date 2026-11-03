@@ -22,8 +22,9 @@ Proved: it is a Frobenioid (`Arch.isFrobenioid`, [FrdI], Theorem 5.2(ii)); `O^�
 (`Arch.ounits_iff`), via the description of base-identity linear endomorphisms.
 
 **Simplification.** IUT I, Example 3.4 uses the Aut-holomorphic orbispace `D_v` and a Kummer
-structure `κ_v` as further data of `F_v`; they are not part of this Frobenioid (see
-`Iut/HodgeTheater/PrimeStrip.lean` for how `F_v` is recorded).
+structure `κ_v` as further data of `F_v`; they are not part of this Frobenioid (the archimedean
+constituents of the prime-strips use the angular-region Frobenioid with its Kummer structure,
+`Iut/Multiradial/PrimeStrip/Arc.lean`).
 -/
 
 namespace Iut

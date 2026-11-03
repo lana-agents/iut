@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.HodgeTheater.PmBridge
-import Iut.HodgeTheater.PrimeStrip
+import Iut.HodgeTheater.FRlfGlobal
+import Iut.Multiradial.PrimeStrip.FRlf
 
 /-!
 # `Θ^{±ell}NF`-Hodge theaters (IUT I, Definitions 6.11, 6.13; Remark 6.12.2)
@@ -16,11 +17,13 @@ import Iut.HodgeTheater.PrimeStrip
   Proposition 4.8(ii)). Isomorphisms: `DThetaPmEllNFHT.isoEquiv : Iso A B ≃ {±1}` (the analogue of
   Proposition 6.6(iii), Remark 6.12.2(ii)).
 * **`Θ^{±ell}NF`-Hodge theaters** (`ThetaPmEllNFHT D`, Definition 6.13(i)) relative to initial
-  Θ-data `D`: the label layer, with the objects built from `D` (`PrimeStrip.lean`) attached:
-  `F`-prime-strips `†F_t` (`t ∈ T`), `†F_≻` and `†F_>`, the global `†D^⊚`, `†D^⊚±`, the
-  `F^⊩`-prime-strip of the `ΘNF`-part and the `F^{⊢×μ}`-prime-strip of `†F_≻` (IUT II, Definition
-  4.9, used by the Θ-link). Isomorphisms: an isomorphism of the label layers with isomorphisms of
-  the attached objects along it; **every isomorphism of the associated `D-Θ^{±ell}NF`-Hodge
+  Θ-data `D`: the label layer, with the objects built from `D` attached: `F`-prime-strips
+  `†F_t` (`t ∈ T`), `†F_≻` and `†F_>` (`Multiradial.PrimeStrip.FStrip`, MR20), the global
+  `†D^⊚`, `†D^⊚±` (`FRlfGlobal.lean`), the `F^⊩`-prime-strip of the `ΘNF`-part
+  (`Multiradial.PrimeStrip.FRlfStrip`) and the `F^{⊢×μ}`-prime-strip of `†F_≻`
+  (`Multiradial.PrimeStrip.FMuStrip`; IUT II, Definition 4.9, used by the Θ-link).
+  Isomorphisms: an isomorphism of the label layers with isomorphisms of the attached objects
+  along it; **every isomorphism of the associated `D-Θ^{±ell}NF`-Hodge
   theaters lifts** (`toLabels_surjective`; the surjectivity half of IUT I, Corollaries 5.6(ii),
   6.12(i); uniqueness of the lift is Frobenioid-theoretic, [FrdI] / IUT I Corollary 5.3, and is not
   claimed, since the objects are recorded up to equivalence).
@@ -143,7 +146,7 @@ end DThetaPmEllNFHT
 
 /-! ### `Θ^{±ell}NF`-Hodge theaters relative to initial Θ-data -/
 
-variable (D : InitialThetaData.{u})
+variable (D : InitialThetaData.{0})
 
 /-- **A `Θ^{±ell}NF`-Hodge theater** relative to initial Θ-data `D` (IUT I, Definition 6.13(i);
 see the module docstring for the encoding). -/
@@ -151,19 +154,19 @@ structure ThetaPmEllNFHT where
   /-- The associated `D-Θ^{±ell}NF`-Hodge theater (label layer). -/
   labels : DThetaPmEllNFHT D.ℓ (Vp D)
   /-- The `F`-prime-strips `†F_t` of the capsule of the `Θ^±`-bridge (Definition 6.11(i)). -/
-  F : labels.toPmEll.T.carrier → FStrip D
+  F : labels.toPmEll.T.carrier → Multiradial.PrimeStrip.FStrip D
   /-- The target `†F_≻` of the `Θ^±`-bridge. -/
-  Fsucc : FStrip D
+  Fsucc : Multiradial.PrimeStrip.FStrip D
   /-- The target `†F_>` of the `Θ`-bridge (glued to `†F_≻` by Proposition 6.7). -/
-  Fgt : FStrip D
+  Fgt : Multiradial.PrimeStrip.FStrip D
   /-- `†D^⊚` of the `NF`-bridge. -/
   Dcirc : DCirc D
   /-- `†D^⊚±` of the `Θ^ell`-bridge. -/
   DcircPm : DCircPm D
   /-- The `F^⊩`-prime-strip of the `ΘNF`-part (IUT I, Definition 5.5). -/
-  Frlf : FRlfStrip D
+  Frlf : Multiradial.PrimeStrip.FRlfStrip D
   /-- The `F^{⊢×μ}`-prime-strip of `†F_≻` (IUT II, Definition 4.9). -/
-  Fmu : FMuStrip D
+  Fmu : Multiradial.PrimeStrip.FMuStrip D
 
 namespace ThetaPmEllNFHT
 
@@ -184,10 +187,9 @@ structure Iso (A B : ThetaPmEllNFHT D) where
   Dcirc : A.Dcirc.G.carrier ≃ₜ* B.Dcirc.G.carrier
   /-- `†D^⊚± ≅ ‡D^⊚±`. -/
   DcircPm : A.DcircPm.G.carrier ≃ₜ* B.DcircPm.G.carrier
-  /-- `†C^⊩ ≃ ‡C^⊩`, compatible with `Prime(−) ≅ V` and the `ρ_v` (`FRlfGlobal.Iso`). -/
-  Crlf : A.Frlf.glob.Iso B.Frlf.glob
-  /-- The `F^⊢`-prime-strips of the `F^⊩`-prime-strips. -/
-  Frlf : A.Frlf.strip.Iso B.Frlf.strip
+  /-- The `F^⊩`-prime-strips: `†C^⊩ ≃ ‡C^⊩` (`FRlfGlobal.Iso`) and the `F^⊢`-prime-strips,
+  compatible with the `ρ_v` (`Multiradial.PrimeStrip.FRlfData.Iso`). -/
+  Frlf : A.Frlf.Iso B.Frlf
   /-- The `F^{⊢×μ}`-prime-strips. -/
   Fmu : A.Fmu.Iso B.Fmu
 
@@ -196,12 +198,13 @@ structure Iso (A B : ThetaPmEllNFHT D) where
 theorem toLabels_surjective (A B : ThetaPmEllNFHT D) :
     Function.Surjective (fun f : A.Iso B => f.labels) := by
   intro g
-  refine ⟨⟨g, fun t => (PrimeStrip.nonempty_iso _ _).some,
-    (PrimeStrip.nonempty_iso _ _).some, (PrimeStrip.nonempty_iso _ _).some,
+  refine ⟨⟨g, fun t => (Multiradial.PrimeStrip.FStrip.nonempty_iso _ _).some,
+    (Multiradial.PrimeStrip.FStrip.nonempty_iso _ _).some,
+    (Multiradial.PrimeStrip.FStrip.nonempty_iso _ _).some,
     (A.Dcirc.iso_model.some.trans B.Dcirc.iso_model.some.symm),
     (A.DcircPm.iso_model.some.trans B.DcircPm.iso_model.some.symm),
-    FRlfGlobal.Iso.viaModel _ _,
-    (PrimeStrip.nonempty_iso _ _).some, (PrimeStrip.nonempty_iso _ _).some⟩, rfl⟩
+    (Multiradial.PrimeStrip.FRlfStrip.nonempty_iso _ _).some,
+    (Multiradial.PrimeStrip.FMuStrip.nonempty_iso _ _).some⟩, rfl⟩
 
 /-- **Any two `Θ^{±ell}NF`-Hodge theaters are isomorphic**, and the isomorphisms induce exactly the
 two (`{±1}`) isomorphisms of the associated `D-Θ^{±ell}NF`-Hodge theaters. -/
@@ -214,13 +217,13 @@ variable (D) in
 6.2, 6.3) with the tautological prime-strips and global objects. -/
 noncomputable def ofData : ThetaPmEllNFHT D where
   labels := DThetaPmEllNFHT.model D.ℓ (Vp D)
-  F _ := PrimeStrip.tautological _ _
-  Fsucc := PrimeStrip.tautological _ _
-  Fgt := PrimeStrip.tautological _ _
+  F _ := Multiradial.PrimeStrip.FStrip.ofThetaData D
+  Fsucc := Multiradial.PrimeStrip.FStrip.ofThetaData D
+  Fgt := Multiradial.PrimeStrip.FStrip.ofThetaData D
   Dcirc := DCirc.tautological D
   DcircPm := DCircPm.tautological D
-  Frlf := FRlfStrip.tautological D
-  Fmu := PrimeStrip.tautological _ _
+  Frlf := Multiradial.PrimeStrip.FRlfStrip.ofThetaData D
+  Fmu := Multiradial.PrimeStrip.FMuStrip.ofThetaData D
 
 /-- The index set of the theater built from `D` is `F_ℓ`; its `ℓ±`-procession has `ℓ±` capsules
 and its last capsule is `|F_ℓ|` (`prcPm_last`). -/

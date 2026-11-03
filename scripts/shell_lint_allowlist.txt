@@ -246,13 +246,12 @@ Iut.HodgeTheater.DThetaPmEllHT.pos	baseline
 Iut.HodgeTheater.DThetaPmEllHT.θ_zero	baseline
 Iut.HodgeTheater.DThetaPmEllNFHT.Iso.glue	shell
 Iut.HodgeTheater.DThetaPmEllNFHT.γ₀_apply	shell
-Iut.HodgeTheater.Kind.GMIso.compact	def
-Iut.HodgeTheater.Kind.GMIso.equivariant	def
 Iut.HodgeTheater.LabelHom.maps_to	def
 Iut.HodgeTheater.OddPrime.prime	def
 Iut.HodgeTheater.OddPrime.two_lt	def
 Iut.HodgeTheater.PmTorsor.Iso.chart_apply	def
-Iut.HodgeTheater.PrimeStrip.iso_model	baseline
+Iut.HodgeTheater.DGalStrip.iso_model	baseline
+Iut.HodgeTheater.FGalStrip.iso_model	baseline
 Iut.HodgeTheater.StarTorsor.Iso.chart_apply	def
 Iut.HullSystem.hull_admissible	baseline
 Iut.HullSystem.integralRegion_mem	baseline

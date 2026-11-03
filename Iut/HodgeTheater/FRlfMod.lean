@@ -3,7 +3,7 @@ Copyright (c) 2026 LANA Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
-import Iut.HodgeTheater.PrimeStrip
+import Iut.HodgeTheater.FRlfGlobal
 import Iut.Frobenioid.GlobalRho
 import Iut.Frobenioid.GlobalPrimeZ
 
@@ -11,8 +11,9 @@ import Iut.Frobenioid.GlobalPrimeZ
 # The global part of `F^⊩_mod` (IUT I, Example 3.5(i), (ii))
 
 IUT I, Example 3.5(ii) (l.5654–5665): "`F⊩_mod def= (C⊩_mod, Prime(C⊩_mod) ∼→ V, {F⊢_v}v∈V,
-{ρv}v∈V)`". The global data of `F^⊩_mod` that do not involve the local Frobenioids `F^⊢_v` (those
-are MR20) are defined in `HodgeTheater/PrimeStrip.lean`, where `FRlfStrip` carries them:
+{ρv}v∈V)`". The global data of `F^⊩_mod` that do not involve the local Frobenioids `F^⊢_v` are
+defined in `HodgeTheater/FRlfGlobal.lean` (the `F^⊩`-prime-strips, with the `F^⊢_v` and the
+`ρ_v` into their realified divisor monoids, are `Multiradial.PrimeStrip.FRlfStrip`, MR20):
 
 * `FRlfMod.sectPlace D v ∈ V ⊆ V(K)`: the place of the section over `v ∈ V_mod`;
 * **`FRlfGlobal D`**: `C^⊩` with an equivalence to `rlfModel D = C^⊩_mod` (data only, no Prop

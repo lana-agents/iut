@@ -403,6 +403,7 @@ import Iut.HodgeTheater.Bridge
 import Iut.HodgeTheater.DStar
 import Iut.HodgeTheater.DStarCore
 import Iut.HodgeTheater.DStarDescent
+import Iut.HodgeTheater.FRlfGlobal
 import Iut.HodgeTheater.FRlfIso
 import Iut.HodgeTheater.FRlfMod
 import Iut.HodgeTheater.FStarMod
@@ -412,7 +413,6 @@ import Iut.HodgeTheater.Gluing
 import Iut.HodgeTheater.HodgeTheater
 import Iut.HodgeTheater.Labels
 import Iut.HodgeTheater.PmBridge
-import Iut.HodgeTheater.PrimeStrip
 import Iut.HodgeTheater.Procession
 import Iut.HodgeTheater.StripLift
 import Iut.HodgeTheater.Wall

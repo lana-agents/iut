@@ -55,32 +55,79 @@ noncomputable def underPl : Pl D → Vp D
 
 /-! ### GM-data of the wall -/
 
-/-- The GM-data of the wall from universe-`0` GM-data. -/
-def gmToWall (X : Kind.GM.{0}) : GMData where
+open Multiradial.PrimeStrip in
+/-- **The GM-data of the wall from `G ↷ O^{×μ}` data**, with the full compact structure
+`Set.univ` (the wall's simplified compact structure, shell #4 of the ROADMAP: the family
+`{N_{v,H}}_H` is not recorded). -/
+def gmToWall (X : GMObj) : GMData where
   G := X.G
   M := X.M
-  compact := X.compact
+  compact := Set.univ
 
-/-- Isomorphisms of GM-data, for the wall. -/
-def gmIsoToWall {X Y : Kind.GM.{0}} (e : Kind.GMIso X Y) : GMIso (gmToWall X) (gmToWall Y) where
+open Multiradial.PrimeStrip in
+/-- Isomorphisms of `G ↷ O^{×μ}` data, for the wall. -/
+def gmIsoToWall {X Y : GMObj} (e : X.Iso Y) : GMIso (gmToWall X) (gmToWall Y) where
   G := e.G
   M := e.M
   equivariant := e.equivariant
-  compact := e.compact
+  compact := Set.image_univ_of_surjective e.M.surjective
+
+open Multiradial.PrimeStrip in
+/-- The model constituent of an `F^{⊢×μ}`-prime-strip at `v ∈ V ≅ V_mod`: `G_v ↷ O^{×μ}` at
+`V^non` (`fmuModel`), `{1} ↷ O^{×μ}_ℂ` at `V^arc` (`fmuArcModel`). -/
+noncomputable def fmuModelAt : Vp D → GMObj
+  | Sum.inl v => fmuModel D v
+  | Sum.inr _ => fmuArcModel
+
+namespace FMuStripAt
+
+open Multiradial.PrimeStrip
+
+variable {D}
+
+/-- The constituent of an `F^{⊢×μ}`-prime-strip at `v ∈ V ≅ V_mod`. -/
+def obj (P : FMuStrip D) : Vp D → GMObj
+  | Sum.inl v => (P.non.comp v).X
+  | Sum.inr v => (P.arc v).X
+
+/-- The constituent is isomorphic to the model constituent. -/
+theorem iso_model (P : FMuStrip D) : ∀ x, Nonempty ((obj P x).Iso (fmuModelAt D x))
+  | Sum.inl v => (P.non.comp v).equiv_model
+  | Sum.inr v => (P.arc v).equiv_model
+
+/-- The constituent at `v` of an isomorphism of `F^{⊢×μ}`-prime-strips. -/
+def iso {P Q : FMuStrip D} (f : P.Iso Q) : ∀ x, (obj P x).Iso (obj Q x)
+  | Sum.inl v => f.1 v
+  | Sum.inr v => f.2 v
+
+@[simp] lemma iso_refl (P : FMuStrip D) (x : Vp D) :
+    iso (FMuStrip.Iso.refl P) x = GMObj.Iso.refl _ := by
+  cases x <;> rfl
+
+@[simp] lemma iso_symm {P Q : FMuStrip D} (f : P.Iso Q) (x : Vp D) :
+    iso (FMuStrip.Iso.symm f) x = (iso f x).symm := by
+  cases x <;> rfl
+
+@[simp] lemma iso_trans {P Q R : FMuStrip D} (f : P.Iso Q) (g : Q.Iso R) (x : Vp D) :
+    iso (FMuStrip.Iso.trans f g) x = (iso f x).trans (iso g x) := by
+  cases x <;> rfl
+
+end FMuStripAt
 
 /-- **The model étale-unit BPS of the wall**: the tautological `F^{⊢×μ}`-prime-strip
-`{G_v ↷ O^{×μ}(K_v)}`, pulled back to the places of `F`. -/
-noncomputable def etModel : Pl D → GMData := fun w => gmToWall (fmuModel D (underPl D w))
+`{G_v ↷ O^{×μ}}` (`Multiradial.PrimeStrip.FMuStrip.ofThetaData`), pulled back to the places
+of `F`. -/
+noncomputable def etModel : Pl D → GMData := fun w => gmToWall (fmuModelAt D (underPl D w))
 
 /-- **The étale-unit BPS of an `F^{⊢×μ}`-prime-strip.** -/
-noncomputable def etUnitOf (P : FMuStrip D) : EtUnitBPS (etModel D) where
-  gm w := gmToWall (P.obj (underPl D w))
-  iso_model w := ⟨gmIsoToWall (P.iso_model (underPl D w)).some⟩
+noncomputable def etUnitOf (P : Multiradial.PrimeStrip.FMuStrip D) : EtUnitBPS (etModel D) where
+  gm w := gmToWall (FMuStripAt.obj P (underPl D w))
+  iso_model w := ⟨gmIsoToWall (FMuStripAt.iso_model P (underPl D w)).some⟩
 
 /-- **Isomorphisms of `F^{⊢×μ}`-prime-strips induce isomorphisms of étale-unit BPSs.** -/
-noncomputable def etUnitIsoOfStrip {P Q : FMuStrip D} (f : P.Iso Q) :
+noncomputable def etUnitIsoOfStrip {P Q : Multiradial.PrimeStrip.FMuStrip D} (f : P.Iso Q) :
     EtUnitIso (etUnitOf D P) (etUnitOf D Q) :=
-  fun w => gmIsoToWall (f (underPl D w))
+  fun w => gmIsoToWall (FMuStripAt.iso f (underPl D w))
 
 /-! ### The η-algorithm with Hodge theaters as sides -/
 
@@ -164,10 +211,12 @@ theorem placeSect_fin : D.placeSect.fin = D.V.sectFin := rfl
 places. -/
 theorem placeSect_inf : D.placeSect.inf = D.V.sectInf := rfl
 
-/-- The local field of the container at a finite place of the section is the base field of the
-`p`-adic Frobenioid of the theaters' `F`-prime-strips there. -/
-theorem padicModel_eq (w : FinitePlace ↥(fieldOfModuli D.F D.E)) :
-    padicModel D w = CategoryTheory.Cat.of (Frobenioid.PAdic (D.placeSect.fin w)) := rfl
+/-- The local field of the container at a finite place of the section is the field `K_v` of
+the theaters' prime-strips there (`Multiradial.PrimeStrip.Kv`, whose absolute Galois group,
+transported into `\bar{ℚ}_p`, is the base `G_v` of `C^⊢_v` and acts in the
+`F^{⊢×μ}`-prime-strips). -/
+theorem kv_eq (w : FinitePlace ↥(fieldOfModuli D.F D.E)) :
+    Multiradial.PrimeStrip.Kv D w = completionAt D.Kt (D.placeSect.fin w) := rfl
 
 /-- The container procession is the standard procession of `ℓ* = nC D` capsules. -/
 theorem container_proc : (VC D).proc = Procession.standard (ellStar D.ℓ) := rfl
