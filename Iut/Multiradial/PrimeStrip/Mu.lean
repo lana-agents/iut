@@ -28,10 +28,11 @@ pro-object are `O^×_{\bar{ℚ}_p} = {x : ‖x‖ = 1}` with the Galois action. 
   `FMuComp D v` and the non-archimedean part `FMuStripNon D` of `F^{⊢×μ}`-prime-strips, with the
   tautological strip `FMuStripNon.ofThetaData`.
 
-**Not done here** (recorded in `MR20-plan.md`): the `×μ`-Kummer structures (`Ism`-orbits, Def 4.9
-(i): their construction is MR21), the passage `F^⊢ ↦ F^{⊢×μ}` on abstract split Frobenioids
-(evaluation of `O^×(−)` at a universal covering pro-object), `O^⊥`, `O^▶` (Def 4.9 (ii)), the
-archimedean constituents (Def 4.9 (v)) and `F^{⊩▶×μ}` (Def 4.9 (viii)).
+**Not done here** (recorded in `MR20-plan.md`): the `×μ`-Kummer structures (`Ism`-orbits,
+Def 4.9 (i)) are in `Kummer.lean` (their construction from the Frobenioid is MR21); the passage
+`F^⊢ ↦ F^{⊢×μ}` on abstract split Frobenioids (evaluation of `O^×(−)` at a universal covering
+pro-object). `O^⊥`, `O^▶`, the archimedean constituents and `F^{⊩▶×μ}` (Def 4.9 (ii), (v), (viii))
+are in `Black.lean`, `Full.lean`, `FRlfBlack.lean`.
 -/
 
 noncomputable section

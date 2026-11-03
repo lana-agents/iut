@@ -445,7 +445,9 @@ import Iut.Multiradial.PrimeStrip.Components
 import Iut.Multiradial.PrimeStrip.FRlf
 import Iut.Multiradial.PrimeStrip.FRlfBlack
 import Iut.Multiradial.PrimeStrip.Full
+import Iut.Multiradial.PrimeStrip.Kummer
 import Iut.Multiradial.PrimeStrip.Local
+import Iut.Multiradial.PrimeStrip.MonoAn
 import Iut.Multiradial.PrimeStrip.Mu
 import Iut.Multiradial.PrimeStrip.Strip
 import Iut.Multiradial.Spec
