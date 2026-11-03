@@ -151,9 +151,9 @@ lemma smul_eq_zConj (L : Type*) [Field L] (w : ZHatOne L Ω) :
 variable (K' : IntermediateField k Ω) [Algebra.IsAlgebraic k K'] (hK' : ∀ x ∈ K', a x ∈ K')
   (hH₀ : D₀.H ≤ D₀.HL)
 
-omit [CharZero k] in
 set_option synthInstance.maxHeartbeats 400000 in
 -- the group structure on the quotient `Π_U` is found slowly
+omit [CharZero k] in
 /-- **On `Π_{U_{K'}} ⊆ Π_U` conjugation by `a` is conjugation by `piOf a`.** -/
 lemma piRes_stageConjPi (p : Pi (constExt K' D₀)) :
     piRes K' D₀ (stageConjPi D₀ K' a hfix hK' hH₀ p) =

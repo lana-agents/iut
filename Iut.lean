@@ -536,6 +536,10 @@ import Iut.Reconstruction.Thm19.DecompIso
 import Iut.Reconstruction.Thm19.DeltaUCongr
 import Iut.Reconstruction.Thm19.DeltaUEquiv
 import Iut.Reconstruction.Thm19.DeltaUxCongr
+import Iut.Reconstruction.Thm19.GalConj
+import Iut.Reconstruction.Thm19.GalConjPi
+import Iut.Reconstruction.Thm19.GalConjStage
+import Iut.Reconstruction.Thm19.GalEquiv
 import Iut.Reconstruction.Thm19.GalInertia
 import Iut.Reconstruction.Thm19.GeomLim
 import Iut.Reconstruction.Thm19.InertiaConj

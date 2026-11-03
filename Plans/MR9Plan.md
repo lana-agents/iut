@@ -1795,3 +1795,52 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   preserved group-theoretically by `Δ`-preserving `α`, IUT I Rem 3.1.2 and MR8-plan rounds 40–42; realise
   `Π_{X_K}` as `arithmeticExt` with `U = chartOne τ`). Then discharge `DStarDescent`'s `CKSemiAbsConj` / `hAbs`
   (with `CKStrictSemiAbs` staying a named literature debt).
+
+* Addendum 2026-11-03 (MR9 track agent, session v, lead christian-aa): **`CKSemiAbsConj` items 3–4 done on the
+  field of constants** (`σ(g c) = ψ(g) σ(c)`), ~900 lines in four files:
+  * `Thm19/GalConj.lean` (generic fields): `muConj`, **`zConj`** (a ring automorphism `a` of `Ω` on `μ_n`, `Ẑ(1)`),
+    `restrictE`, **`galConjInv`** (`σ ↦ a⁻¹σa` on `Gal(Ω/E)` for `a(E) ⊆ E`, continuous), `conjH1`, `conjH1Mu`,
+    **`conjH1_kummerZHat`** (`a_*(κ_E(u)) = κ_E(a u)`: `h1ToLimit_injective`, level `n` with the root `a(α)`).
+  * `Thm19/GalConjPi.lean` (generic Galois models): `conjHInv`, **`conjPiInv`** (inertia at `W` ↦ inertia at
+    `a⁻¹W`, `galConjInv_mem_inertia`), **`conjPiH1`**, `mem_F_conj`, **`conjPiH1_kummerMapZHat`** (inflation to `H`,
+    restriction from `Gal(Ω/F)`), **`resT_conjPiH1`** (commutes with the transition maps), and the generic
+    **`h1Congr_map_comm`**.
+  * `Thm19/GalConjStage.lean`: the hypotheses at a stage `constExt K' D₀` for `a` fixing `F₀` with `a(K') ⊆ K'`
+    (`stage_hK₀/hH/hHL/hW`), `stageConj`, `algOf`, `piOf`, `smul_eq_zConj`, `piRes_stageConjPi`,
+    **`constIso_stageConjPi`**, **`constCyclo_zConj`**, **`h1Congr_stageConj`** (the stage isomorphisms
+    `constH1Iso e` intertwine conjugation by `a` and by `a'` when `e(piOf a) = piOf a'`), **`mem_fieldOf_conj`**.
+  * `Thm19/GalEquiv.lean`: `directLimit_exact`, `exists_resG_eq_of_ofG_eq`, **`GStage.exists_fieldOf`** (Galois
+    stages `fieldOf N`, `N` open normal, are cofinal), `kummerNF_eq_ofG_const`, `resG_kummerMapZHat`, `GStage.conj`,
+    `resG_conj`, **`ofG_stageConj_eq`** (a class equal to `κ(c)`, `c` a constant, goes to `κ(a c)`), `constFnf`,
+    **`nfConst`** (`σ = nfRingEquiv|_{k̄} : k̄ → k̄'`), **`nfConst_galois`**: `σ(g y) = gkIso Φ g (σ y)` for
+    `g ∈ G_K`, `y ∈ k̄` (lift `a` of `g` to `Π_U`, a Galois stage `g₁ ∋ y`, lift `a₂` of `L.e [a]`;
+    `h1Congr_stageConj` along `LiftData.S`; `kummerNF_injective`). Same debts as `nfRingEquiv`.
+  The full Galois equivariance of `nfRingEquiv` on all of `F_NF` (item 3 in general) was not needed: item 5 only
+  uses multiplicativity (`nfRingEquiv (c f) = σ(c) nfRingEquiv f`).
+  Elaboration lessons (session v): `set g₄ := g₃.ofField …` / `rw [e₃]` on stages built from `fieldOf` timed out —
+  generalise stages at once (`obtain ⟨g₄, hle, hK⟩ : ∃ g₄, g₃ ≤ g₄ ∧ …`) and chain `Eq.trans`; state transition
+  lemmas in use-site form (`resG_kummerMapZHat`, `resT_three`); `omit … in` must come after `set_option … in`
+  (style linter); slot waits of 20–35 min per check on 2026-11-03 (batch fixes).
+
+* Hand-off 2026-11-03 (MR9 track agent, session v, lead christian-aa): worktree `~/mr8-iut`, branch `mr9-v`; the four
+  files above + plan pushed via `~/iut-push.sh` (hash in ~/session2-status.md; if the push failed, the branch `mr9-v`
+  holds the validated-by-module-build commit). **Items 3–4 of the `CKSemiAbsConj` chain done** (`nfConst_galois`).
+  **Next steps**, in order:
+  1. *(small)* `nfConst` as a ring isomorphism `k̄ ≃+* k̄'` (`map_add/mul` from `nfRingEquiv`, inverse from
+     `nfRingEquiv.symm`, which also maps algebraic numbers to algebraic numbers), and the restatement
+     `ψ(g) = σ ∘ g ∘ σ⁻¹` on `k̄'` (with `K₂ = K`, `C₂ = C`: `ψ = conj σ`).
+  2. *Item 5, `σ(j) = j`* (main missing mathematics; estimate 600–1000 l.): (a) the cusp `O` of `X_K = E ∖ {O}` is
+     matched with the cusp (the matched point of a cusp of `U` is a cusp of `U'`: its inertia survives in `Π_U`,
+     `LiftData.he` + `Φ.cusps_map`); (b) the elements of `F_NF` regular away from `O` (`ord_x ≥ 0` for `x ≠ O`) are
+     `ℚ̄[x, y]`, with `-ord_O(p(x) + y q(x)) = max(2 deg p, 2 deg q + 3)` (Mathlib
+     `WeierstrassCurve.Affine.CoordinateRing.degree_norm_smul_basis`); needs the bridge `fnf N ≅` the function field of
+     the Weierstrass model over `ℚ̄`; (c) `nfRingEquiv` is `σ`-semilinear (`nfConst`), preserves `ord`, so
+     `x ↦ u²x + r`, `y ↦ u³y + s u² x + t` and `E^σ` is a variable change of `E`: `σ(j) = j`
+     (`WeierstrassCurve.variableChange_j`, `map_j`). Alternative (if (b) is too heavy): `RelIsomDGC` cannot be used
+     (it needs isomorphisms over `G_K`).
+  3. Items 1–2 (`Π_{X_K} ⊆ Π_{C_K}` group-theoretic, IUT I Rem 3.1.2 (i) l.4155–4168 — looked up this session:
+     `Δ_X ⊆ Π_{C_K}` by an explicit algorithm, decomposition groups of the nonzero cusps group-theoretic by [AbsTopI]
+     Lemma 4.5; realise `Π_{X_K}` as `arithmeticExt` with `U = chartOne τ`).
+  4. Discharge `CKSemiAbsConj` in `DStarDescent` from 1–3 (`CKStrictSemiAbs` stays a named literature debt).
+  Debts unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points / genus `≠ 0`, `CKStrictSemiAbs`.
+  Decisions for the lead: none blocking; item 5 route (a)–(c) is proposed above.

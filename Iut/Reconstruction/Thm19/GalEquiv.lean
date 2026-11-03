@@ -30,13 +30,23 @@ satisfies `σ(g c) = ψ(g) σ(c)`. Here:
 
 open CategoryTheory AlgebraicGeometry Pi1 Pi1.Orbifold KummerTheory KummerTheory.Curve
   AffOrbicurve WeilCurves.FunctionField CurvesJacobian CurvesJacobian.Kummer CurvesJacobian.Cusp
-  CurvesJacobian.LocAn Belyi Belyi.Anabelian GStage
+  CurvesJacobian.LocAn Belyi Belyi.Anabelian
 
 universe u
 
 noncomputable section
 
 namespace Iut.Reconstruction.Thm19
+
+open GStage
+
+/-- Equal classes in a direct limit agree at a common later index. -/
+lemma directLimit_exact {ι : Type*} [Preorder ι] [IsDirectedOrder ι] {G : ι → Type*}
+    {T : ∀ ⦃i j : ι⦄, i ≤ j → Type*} {f : ∀ i j (h : i ≤ j), T h}
+    [∀ ⦃i j⦄ (h : i ≤ j), FunLike (T h) (G i) (G j)] [DirectedSystem G (f · · ·)] {i j : ι}
+    {x : G i} {y : G j} (h : (⟦⟨i, x⟩⟧ : DirectLimit G f) = ⟦⟨j, y⟩⟧) :
+    ∃ (l : ι) (hi : i ≤ l) (hj : j ≤ l), f i l hi x = f j l hj y :=
+  Quotient.exact h
 
 /-! ### One curve: the colimit, Galois stages and constants -/
 
@@ -47,24 +57,38 @@ variable {k : Type u} [Field k] [CharZero k] [NumberField k] {X : Scheme.{u}}
   {hτ : Transcendental k τ} [IsGalois (K₀ k (coordT τ)) (FFClosure X)] [CharZero (FFClosure X)]
   [IsAlgClosed (FFClosure X)]
 
+omit [NumberField k] [CharZero (FFClosure X)] in
+lemma resT_three {s : StageIdx (curveGaloisData k hτ)} {g g'' : GStage k hτ}
+    (h₁ : g.toStage ≤ s) (h₂ : s ≤ g''.toStage) (hg : g ≤ g'') (y : H1G g) :
+    resT s.data g''.data (F_le_of_le_toStage h₂) (hW_le h₂) (stage_H_le _ s.K s.ht' s.htr')
+      (resS h₁ (resT g.data g.toStage.data (F_toStage g) (fun _ hK ht => ⟨hK, ht⟩)
+        g.data_H_le y)) = resG hg y := by
+  have e1 : resS h₁ (resT g.data g.toStage.data (F_toStage g) (fun _ hK ht => ⟨hK, ht⟩)
+      g.data_H_le y) = resT g.data s.data _ _ g.data_H_le y := resT_trans _ _ _ _ _ _ y
+  have e2 : resT s.data g''.data (F_le_of_le_toStage h₂) (hW_le h₂)
+      (stage_H_le _ s.K s.ht' s.htr') (resT g.data s.data (fun z hz =>
+        Thm19.F_le h₁ z (F_toStage g z hz)) (fun W hK ht =>
+          ⟨(hW_le h₁ W hK ht).1, (hW_le h₁ W hK ht).2⟩) g.data_H_le y) =
+      resT g.data g''.data _ _ g.data_H_le y := resT_trans _ _ _ _ _ _ y
+  exact (congrArg _ e1).trans e2
+
 set_option maxHeartbeats 800000 in
 -- the transition maps of three stages unify slowly
+omit [NumberField k] [CharZero (FFClosure X)] in
 /-- **Equal classes in the colimit agree at a common later stage.** -/
 theorem exists_resG_eq_of_ofG_eq {g g' : GStage k hτ} {y : H1G g} {y' : H1G g'}
     (h : ofG g y = ofG g' y') :
     ∃ (g'' : GStage k hτ) (h₁ : g ≤ g'') (h₂ : g' ≤ g''), resG h₁ y = resG h₂ y' := by
-  rw [ofG_eq_mk, ofG_eq_mk] at h
-  obtain ⟨s, hs₁, hs₂, e⟩ := Quotient.exact h
+  obtain ⟨s, hs₁, hs₂, e⟩ :=
+    directLimit_exact (f := fun _ _ h => resS (D := curveGaloisData k hτ) h) h
   obtain ⟨g'', hg''⟩ := GStage.exists_ge_toStage s
   have h₁ : g ≤ g'' := toStage_le_iff.1 (hs₁.trans hg'')
   have h₂ : g' ≤ g'' := toStage_le_iff.1 (hs₂.trans hg'')
-  refine ⟨g'', h₁, h₂, ?_⟩
-  have e' := congrArg (resT s.data g''.data (F_le_of_le_toStage hg'') (hW_le hg'')
-    (stage_H_le _ s.K s.ht' s.htr')) e
-  simp only [resS] at e'
-  rw [resT_trans, resT_trans, resT_trans, resT_trans] at e'
-  exact e'
+  exact ⟨g'', h₁, h₂, (resT_three hs₁ hg'' h₁ y).symm.trans
+    ((congrArg _ e).trans (resT_three hs₂ hg'' h₂ y'))⟩
 
+omit [NumberField k] [IsCurveOver k X] [IsGalois (K₀ k (coordT τ)) (FFClosure X)]
+  [CharZero (FFClosure X)] in
 /-- **Galois stages are cofinal**: `g` and an algebraic `x` lie below a stage with field of
 constants `fieldOf N`, `N ⊆ G_k` open and normal. -/
 theorem GStage.exists_fieldOf (g : GStage k hτ) (x : FFClosure X) (hx : IsAlgebraic k x) :
@@ -93,11 +117,21 @@ abbrev GStage.ofField (g : GStage k hτ) (N : Subgroup (Gk k (FFClosure X)))
   haveI := finiteDimensional_fieldOf hN
   ⟨fieldOf N, g.τ₀, g.hτ₀, g.htV⟩
 
+omit [NumberField k] [IsCurveOver k X] [IsGalois (K₀ k (coordT τ)) (FFClosure X)]
+  [CharZero (FFClosure X)] in
 lemma GStage.le_ofField (g : GStage k hτ) (N : Subgroup (Gk k (FFClosure X)))
     (hN : IsOpen (N : Set (Gk k (FFClosure X)))) (hK : ∀ y ∈ g.K, y ∈ fieldOf N) :
     g ≤ g.ofField N hN :=
   ⟨fun y hy => hK y hy, self_mem_chartRing k _⟩
 
+omit [NumberField k] [CharZero (FFClosure X)] in
+lemma resG_kummerMapZHat {g g' : GStage k hτ} (h : g ≤ g') (u : units g.data) :
+    resG h (kummerMapZHat g.data u) =
+      kummerMapZHat g'.data (unitsT g.data g'.data (F_mono h) (hW_mono h) u) :=
+  resT_kummerMapZHat _ _ _ _ _ u
+
+omit [NumberField k] [IsGalois (K₀ k (coordT τ)) (FFClosure X)] [CharZero (FFClosure X)]
+  [IsAlgClosed (FFClosure X)] in
 lemma resG_resG' {g₁ g₂ g₃ : GStage k hτ} (h₁₂ : g₁ ≤ g₂) (h₂₃ : g₂ ≤ g₃) (y : H1G g₁) :
     resG h₂₃ (resG h₁₂ y) = resG (h₁₂.trans h₂₃) y :=
   resT_resT y
@@ -111,6 +145,8 @@ lemma kummerNF_eq_ofG_const (N : NFModel (curveGaloisData k hτ)) (g : GStage k 
 
 variable (a : FFClosure X ≃+* FFClosure X) (hfix : ∀ x ∈ F (curveGaloisData k hτ), a x = x)
 
+omit [NumberField k] [IsGalois (K₀ k (coordT τ)) (FFClosure X)] [CharZero (FFClosure X)]
+  [IsAlgClosed (FFClosure X)] in
 include hfix in
 lemma fix_of_fix (g : GStage k hτ) : ∀ x ∈ F (curveGaloisData k g.hτ₀), a x = x :=
   fun _ hx => hfix _ ((mem_F_curveGaloisData_iff hτ).2 ((mem_F_curveGaloisData_iff g.hτ₀).1 hx))
@@ -122,6 +158,8 @@ abbrev GStage.conj (g : GStage k hτ) (hgK : ∀ x ∈ g.K, a x ∈ g.K) : H1G g
 
 set_option maxHeartbeats 1600000 in
 -- the transition maps and the conjugations at two stages unify slowly
+omit [NumberField k] [IsGalois (K₀ k (coordT τ)) (FFClosure X)] [CharZero (FFClosure X)]
+  [IsAlgClosed (FFClosure X)] in
 /-- Conjugation commutes with the transition maps of geometric stages. -/
 lemma resG_conj {g g' : GStage k hτ} (h : g ≤ g') (hgK : ∀ x ∈ g.K, a x ∈ g.K)
     (hgK' : ∀ x ∈ g'.K, a x ∈ g'.K) (y : H1G g) :
@@ -139,25 +177,24 @@ theorem ofG_stageConj_eq (N : NFModel (curveGaloisData k hτ)) (h : Gk k (FFClos
     (hf' : ((f' : fnf N) : FFClosure X) = a ((f : fnf N) : FFClosure X))
     (hw : ofG g w = kummerNF N (mem_range_of_isAlgebraic_F k hτ) f) :
     ofG g (g.conj a hfix hgK w) = kummerNF N (mem_range_of_isAlgebraic_F k hτ) f' := by
-  obtain ⟨N₂, hN₂n, hN₂o, hN₂K, hN₂f⟩ := g.exists_fieldOf _ hc
-  have hle₂ := g.le_ofField N₂ hN₂o hN₂K
-  have hf₂ : ((f : fnf N) : FFClosure X) ∈ (g.ofField N₂ hN₂o).K := hN₂f
-  let c₂ : (g.ofField N₂ hN₂o).Kˣ := Units.mk0 ⟨_, hf₂⟩ (fun h0 => f.ne_zero (Subtype.ext
+  obtain ⟨g₂, hle₂, hf₂⟩ : ∃ g₂ : GStage k hτ, g ≤ g₂ ∧ ((f : fnf N) : FFClosure X) ∈ g₂.K := by
+    obtain ⟨N₂, -, hN₂o, hN₂K, hN₂f⟩ := g.exists_fieldOf _ hc
+    exact ⟨g.ofField N₂ hN₂o, g.le_ofField N₂ hN₂o hN₂K, hN₂f⟩
+  let c₂ : g₂.Kˣ := Units.mk0 ⟨_, hf₂⟩ (fun h0 => f.ne_zero (Subtype.ext
     (congrArg Subtype.val h0 :)))
-  have hw₂ : ofG g w = ofG (g.ofField N₂ hN₂o)
-      (kummerMapZHat (g.ofField N₂ hN₂o).data (constUnit _ c₂)) :=
+  have hw₂ : ofG g w = ofG g₂ (kummerMapZHat g₂.data (constUnit _ c₂)) :=
     hw.trans (kummerNF_eq_ofG_const N _ c₂ f rfl)
   obtain ⟨g₃, h₁, h₂, e₃⟩ := exists_resG_eq_of_ofG_eq hw₂
-  obtain ⟨N₄, hN₄n, hN₄o, hN₄K, -⟩ := g₃.exists_fieldOf _ hc
-  have hle₄ := g₃.le_ofField N₄ hN₄o hN₄K
-  set g₄ := g₃.ofField N₄ hN₄o
-  have hg₄K : ∀ x ∈ g₄.K, a x ∈ g₄.K := fun x hx => mem_fieldOf_conj N₄ a h hag hx
+  obtain ⟨g₄, hle₄, hg₄K⟩ : ∃ g₄ : GStage k hτ, g₃ ≤ g₄ ∧ ∀ x ∈ g₄.K, a x ∈ g₄.K := by
+    obtain ⟨N₄, hN₄n, hN₄o, hN₄K, -⟩ := g₃.exists_fieldOf _ hc
+    exact ⟨g₃.ofField N₄ hN₄o, g₃.le_ofField N₄ hN₄o hN₄K,
+      fun x hx => mem_fieldOf_conj N₄ a h hag hx⟩
   -- at `g₄`, the class `w` is the Kummer class of `f`
   have e₄ : resG (h₁.trans hle₄) w =
       kummerMapZHat g₄.data (unitsT _ _ (F_mono (h₂.trans hle₄)) (hW_mono (h₂.trans hle₄))
-        (constUnit _ c₂)) := by
-    rw [← resG_resG' h₁ hle₄, e₃, resG_resG']
-    exact resT_kummerMapZHat _ _ _ _ _ _
+        (constUnit _ c₂)) :=
+    (resG_resG' h₁ hle₄ w).symm.trans ((congrArg (resG hle₄) e₃).trans
+      ((resG_resG' h₂ hle₄ _).trans (resG_kummerMapZHat (h₂.trans hle₄) _)))
   have hfK : ((f : fnf N) : FFClosure X) ∈ g₄.K := hle₄.1 (h₂.1 hf₂)
   let c₄' : g₄.Kˣ := Units.mk0 ⟨_, hg₄K _ hfK⟩ (fun h0 => f'.ne_zero (Subtype.ext (by
     rw [hf']
@@ -166,8 +203,9 @@ theorem ofG_stageConj_eq (N : NFModel (curveGaloisData k hτ)) (h : Gk k (FFClos
       kummerMapZHat g₄.data (constUnit _ c₄') := by
     rw [e₄]
     exact conjPiH1_kummerMapZHat _ _ _ _ _ _ _ _ (by rw [coe_unitsT]; rfl)
-  rw [ofG_compat g g₄ (h₁.trans hle₄), resG_conj a hfix _ hgK hg₄K, hconj]
-  exact (kummerNF_eq_ofG_const N g₄ c₄' f' hf').symm
+  exact (ofG_compat g g₄ (h₁.trans hle₄) _).trans ((congrArg (ofG g₄)
+    ((resG_conj a hfix _ hgK hg₄K w).trans hconj)).trans
+      (kummerNF_eq_ofG_const N g₄ c₄' f' hf').symm)
 
 end One
 
@@ -287,6 +325,7 @@ theorem nfConst_galois (gal : Gk K (FFClosure C.Xbar)) (y : kbar K (FFClosure C.
   obtain ⟨N₁, hN₁n, hN₁o, -, hyN₁⟩ :=
     (⟨⊥, τ, hτ, self_mem_chartRing K _⟩ : GStage K hτ).exists_fieldOf _ hya
   let g₁ : GStage K hτ := (⟨⊥, τ, hτ, self_mem_chartRing K _⟩ : GStage K hτ).ofField N₁ hN₁o
+  haveI : FiniteDimensional K g₁.K := finiteDimensional_fieldOf hN₁o
   have hg₁K : ∀ x ∈ g₁.K, a x ∈ g₁.K := fun x hx => mem_fieldOf_conj N₁ a gal hag hx
   have hy0 : (y : FFClosure C.Xbar) ≠ 0 := fun h0 => hy (Subtype.ext h0)
   let c₁ : g₁.Kˣ := Units.mk0 ⟨y, hyN₁⟩ fun h0 => hy0 (congrArg Subtype.val h0 :)
@@ -381,7 +420,7 @@ theorem nfConst_galois (gal : Gk K (FFClosure C.Xbar)) (y : kbar K (FFClosure C.
     (mem_algebraicClosure_iff.1
       (nfConst hτ hU hτ₂ hU₂ Φ hS hS₂ σ₀ hσ₀ hg σ₂ hσ₂ hg₂ hDGC hDGC₁ N N₂ y).2)
     (hag₂ _).symm k2
-  have hinj := kummerNF_injective N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂) (k1.trans k3.symm)
+  have hinj := kummerNF_injective N₂ (mem_range_of_isAlgebraic_F K₂ hτ₂) (k1.trans k3)
   exact Subtype.ext (congrArg (fun u : (fnf N₂)ˣ => ((u : fnf N₂) : FFClosure C₂.Xbar)) hinj)
 
 end Lift
