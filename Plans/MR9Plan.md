@@ -1764,8 +1764,9 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   (item 1), `CKStrictSemiAbs` (literature debt, elasticity of `G_K`).
   **What remains for `CKSemiAbsConj` (the `hAbs` chain of `DStarDescent`)**, in order:
   1. *`Π_{X_K} ⊆ Π_{C_K}` group-theoretically* (IUT I Rem 3.1.2 (i), l.4155–4168; MR8's item 8): an `α` of
-     `π₁(C_K)` preserving `Δ_{C_K}` (over `ψ ∈ Aut(G_K)`) maps `π₁(X_K)` onto itself. Check MR8's
-     `HemiCuspDecomp` / item-8 results first.
+     `π₁(C_K)` preserving `Δ_{C_K}` (over `ψ ∈ Aut(G_K)`) maps `π₁(X_K)` onto itself. This is MR8's
+     item 8, moved to MR9 by the lead decision after MR8 round 42 and not done yet (MR8-plan: "cheap-ish, cuspidal
+     decomposition groups exist via CuspDataIso").
   2. *Bridge to the Galois model*: realise `π₁(X_K)` (`genuinePi1` of the orbicurve data, `X_K = E ∖ {O}`) as
      `arithmeticExt Ω C` of a `HypCurve C` with `C.U = chartOne τ` (e.g. `τ = x`, regular exactly on `E ∖ {O}`),
      so that `α|_{π₁(X_K)}` is a `Φ : (arithmeticExt Ω C).Iso (arithmeticExt Ω C)`; inputs of `nfRingEquiv`:
@@ -1781,5 +1782,8 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
      `E^σ ≅ E` over `ℚ̄` and `σ(j) = j` (Mathlib `WeierstrassCurve.j` / variable changes), i.e. a lift of `σ` lies in
      `Gal(F̄/F_mod)` — the conclusion of `CKSemiAbsConj`.
   Estimate: 1–2 depend on MR8's item 8 (unknown); 3 ≈ 1–2 sessions; 4–5 ≈ 1–2 sessions.
-  **Decisions for the lead:** (a) whether MR9 continues with the `CKSemiAbsConj` chain (items 3–5 above are
-  self-contained in iut; 1–2 need MR8's item 8 status); (b) none blocking otherwise.
+  **Decisions for the lead:** (a) whether MR9 continues with the `CKSemiAbsConj` chain (all five items are iut
+  work; 3–5 are independent of 1–2); (b) none blocking otherwise.
+  Note: the first push attempt of this session failed on a fresh build of `Iut/EtaleTheta/TemperedCoeffNorms.lean`
+  (TFGD, main e638209: a plain comment before `import Mathlib`, header linter under `--wfail`); fixed in this push
+  by turning it into the module docstring after the import.
