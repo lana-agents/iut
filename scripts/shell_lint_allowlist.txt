@@ -1764,3 +1764,7 @@ Iut.Multiradial.PrimeStrip.DVdashComp.equiv_model	def
 Iut.Multiradial.PrimeStrip.FComp.equiv_model	def
 Iut.Multiradial.PrimeStrip.FVdashComp.equiv_model	def
 Iut.Multiradial.PrimeStrip.FMuComp.equiv_model	def
+Iut.Multiradial.PrimeStrip.GMObj.Iso.equivariant	def
+Iut.Multiradial.PrimeStrip.SplitFrobCat.Iso.inv_tau	def
+Iut.Multiradial.PrimeStrip.SplitFrobCat.Iso.map_tau	def
+Iut.Multiradial.PrimeStrip.TopGrp.isTop	def

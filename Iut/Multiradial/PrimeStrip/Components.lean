@@ -288,6 +288,108 @@ def tauVdash (A : DVdash D v) :=
   GaloisModel.piSplit (PAdicGalois.ord (pv D v)) (PAdicGalois.ord_smul (pv D v) (Lv D v))
     (gammaVdash D v) (tauElt D v) A
 
+/-! ### `τ^⊢_v` at `V^bad` -/
+
+/-- `ι : K_v → \bar{ℚ}_p` is continuous (a `ℚ_p`-linear map out of a finite-dimensional
+space). -/
+theorem continuous_iota :
+    letI := padicAlg D v
+    haveI := isAlgebraic_padicAlg D v
+    Continuous (iota (pv D v) (Kv D v)) := by
+  letI := padicAlg D v
+  haveI := isAlgebraic_padicAlg D v
+  haveI : FiniteDimensional ℚ_[pv D v] (Kv D v) :=
+    LocalConstruct.finite_padicAlgebra (p := pv D v) rfl
+  haveI : ContinuousSMul ℚ_[pv D v] (Kv D v) :=
+    continuousSMul_of_algebraMap ℚ_[pv D v] _
+      (LocalConstruct.continuous_padicEmb (p := pv D v) rfl)
+  exact (iota (pv D v) (Kv D v)).toLinearMap.continuous_of_finiteDimensional
+
+/-- **`‖ι x‖ < 1` for `‖x‖ < 1`**. -/
+theorem norm_iota_lt_one (x : Kv D v) (hx : ‖x‖ < 1) :
+    letI := padicAlg D v
+    haveI := isAlgebraic_padicAlg D v
+    ‖iota (pv D v) (Kv D v) x‖ < 1 := by
+  letI := padicAlg D v
+  haveI := isAlgebraic_padicAlg D v
+  have h0 : Filter.Tendsto (fun n : ℕ => x ^ n) Filter.atTop (nhds 0) :=
+    tendsto_pow_atTop_nhds_zero_of_norm_lt_one hx
+  have h1 : Filter.Tendsto (fun n : ℕ => iota (pv D v) (Kv D v) x ^ n) Filter.atTop
+      (nhds 0) := by
+    have := ((continuous_iota D v).tendsto 0).comp h0
+    simpa [Function.comp_def, map_pow] using this
+  by_contra hge
+  push Not at hge
+  have h2 := (h1.norm).eventually (gt_mem_nhds (show ‖(0 : PadicAlgCl (pv D v))‖ < 1 by simp))
+  obtain ⟨n, hn⟩ := h2.exists
+  rw [norm_pow] at hn
+  exact absurd (one_le_pow₀ hge : (1 : ℝ) ≤ _) (not_le.mpr hn)
+
+lemma toMul_val (x : (Kv D v)ˣ) :
+    letI := padicAlg D v
+    haveI := isAlgebraic_padicAlg D v
+    ((Additive.toMul (toMul D v x) : (PadicAlgCl (pv D v))ˣ) : PadicAlgCl (pv D v)) =
+      iota (pv D v) (Kv D v) x := rfl
+
+lemma toMul_pow (x : (Kv D v)ˣ) (n : ℕ) : toMul D v (x ^ n) = n • toMul D v x := by
+  unfold toMul
+  rw [map_pow]
+  rfl
+
+/-- The image of `K_v^×` is fixed by `G_v`. -/
+lemma toMul_fixed (σ : Gv D v) (x : (Kv D v)ˣ) : σ • toMul D v x = toMul D v x := by
+  letI := padicAlg D v
+  haveI := isAlgebraic_padicAlg D v
+  apply congrArg Additive.ofMul
+  apply Units.ext
+  change σ (iota (pv D v) (Kv D v) x) = iota (pv D v) (Kv D v) x
+  rw [← eL_apply]
+  exact σ.commutes (eL (pv D v) (Kv D v) x)
+
+lemma ord_toMul_pos (x : (Kv D v)ˣ) (hx : ‖(x : Kv D v)‖ < 1) :
+    0 < PAdicGalois.ord (pv D v) (toMul D v x) := by
+  letI := padicAlg D v
+  haveI := isAlgebraic_padicAlg D v
+  have hp : (1 : ℝ) < pv D v := by exact_mod_cast (Fact.out : (pv D v).Prime).one_lt
+  have hlt := norm_iota_lt_one D v x hx
+  have hpos : 0 < ‖iota (pv D v) (Kv D v) x‖ :=
+    norm_pos_iff.mpr ((map_ne_zero _).mpr x.ne_zero)
+  change 0 < -Real.logb (pv D v) ‖iota (pv D v) (Kv D v) x‖
+  rw [neg_pos]
+  exact Real.logb_neg hp hpos hlt
+
+/-- **`τ^⊢_v = q̲_v^ℕ` is a characteristic splitting of `C^⊢_v`** at `v ∈ V^bad` (IUT I,
+Example 3.2 (iv)), given the root `q̲_v ∈ K_v` (debt H6). -/
+theorem tauVdash_isCharSplitting_bad (hv : v ∈ D.VBad) (hq : QRootExists D v hv) :
+    Model.IsCharSplitting
+      (divB := divGal (Gv D v) (PAdicGalois.ord (pv D v)) (PAdicGalois.ord_smul (pv D v) (Lv D v))
+        (gammaVdash D v)) (tauVdash D v) := by
+  have hτ : tauElt D v = toMul D v hq.choose := by simp [tauElt, hv, hq]
+  have hℓ : (0 : ℝ) < 2 * D.ℓ := by
+    have := D.prime.ℓ_prime.pos
+    have : (0 : ℝ) < D.ℓ := by exact_mod_cast this
+    linarith
+  have hord : PAdicGalois.ord (pv D v) (toMul D v hq.choose) =
+      PAdicGalois.ord (pv D v) (toMul D v (qv D v hv)) / (2 * D.ℓ) := by
+    have hqx : toMul D v (qv D v hv) = (2 * D.ℓ) • toMul D v hq.choose := by
+      rw [← toMul_pow]; exact congrArg _ hq.choose_spec.symm
+    rw [hqx, map_nsmul, nsmul_eq_mul, eq_div_iff hℓ.ne']
+    push_cast
+    ring
+  have hqlt : ‖((qv D v hv : (Kv D v)ˣ) : Kv D v)‖ < 1 := (D.localData.tateX v hv).t.norm_lt_one
+  have hxlt : ‖((hq.choose : (Kv D v)ˣ) : Kv D v)‖ < 1 := by
+    have h := hq.choose_spec
+    have h' : ‖((hq.choose : (Kv D v)ˣ) : Kv D v)‖ ^ (2 * D.ℓ) < 1 := by
+      rw [← norm_pow, ← Units.val_pow_eq_pow_val, h]; exact hqlt
+    by_contra hge
+    push Not at hge
+    exact absurd (one_le_pow₀ hge) (not_le.mpr h')
+  have hΓ : gammaVdash D v = AddSubgroup.zmultiples (PAdicGalois.ord (pv D v) (tauElt D v)) := by
+    rw [hτ, hord]; simp [gammaVdash, ordTau, hv]
+  refine GaloisModel.isCharSplitting_piSplit _ (fun σ => ?_) ?_ hΓ
+  · rw [hτ]; exact toMul_fixed D v σ _
+  · rw [hτ]; exact ord_toMul_pos D v _ hxlt
+
 end Theta
 
 end PrimeStrip
