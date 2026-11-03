@@ -1718,3 +1718,68 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   inflated from `κ(f(x))`) plus matching of the cuspidal decomposition groups, reusing the existing cusp results
   (iut `CuspDecomp` / `Comm(I_W) = D_W`, cj `SectionBridgeCusp`, MR8's `HemiCuspDecomp`). If it exceeds ~800 lines,
   stop and fall back to (iii) (named debt) temporarily, recording why. No weil-curves pin bump.
+
+* Addendum 2026-11-03 (MR9 track agent, session u, lead christian-aa): **step 5 finished — the functoriality of
+  Thm 1.9 along `Φ`** (`recTriple N ≅ recTriple N₂` and the field isomorphism `K_{Z_NF} ≃+* K_{Z'_NF}`), via
+  option (i). Every point of `Z_NF` is a rational cusp of a geometric stage (`exists_ratCusp_nfPlace`, session t),
+  so **one cusp route covers the points of `U` and the cusps of `U` alike**: task (1) (`mem_U_recTriple_iff` +
+  `exists_restrict_iff` at closed points, ~330 l. estimated) was not needed. New code ~950 lines with docstrings
+  (three files), within the ~800-line budget for the new mathematics (the rest is the assembly of item 3).
+  * `Thm19/CuspEval.lean` (generic Galois models, any place `A ⊇ k`, closed point or cusp): `decompRes`, the
+    Prop-valued def **`DecompTriv D A η`** (at every level the restriction of `η` along `D_A → Π_U` vanishes;
+    for closed points this is `η|_x = 0`, `restrictClosed_eq_one_iff`), `decompTriv_mk_iff` (coboundaries on the
+    image of `D_A`), **`decompTriv_h1Congr_iff`** (transport along isomorphisms of Galois models mapping `D_A`
+    onto a conjugate of `D_{A'}`; same proof as `restrictClosed_h1Congr_eq_one_iff`), **`decompTriv_kummer`**
+    (`u(x) = 1` ⇒ `DecompTriv κ(u)`; continuous-kummer-theory `decompToPi_kummerMap_eq_one_iff` needs no
+    `t ∈ A`), `proj_constMapZHat_congr`, **`exists_kummer_of_decompTriv`** (at a rational point, cusps included:
+    `DecompTriv (κ(u) · c)` with `c ∈ (k^×)^∧` ⇒ `c = κ(a)`, `a = u(x)⁻¹ ∈ k^×`, and `(u a)(x) = 1`; at level `n`
+    the fixed `n`-th root of `u(x) c_n` lies in `k_x = k`, `mem_pointField_iff` + `RatPoint.hrat`),
+    `ratPointOfComap` (a place with the same trace on `F` as a rational point is rational), small coercion lemmas.
+  * `Thm19/UCompat.lean`: `GStage.ratPointOfCusp` (a cusp of a stage with rational cusps as a `RatPoint` with
+    the same place of `Ω`), `valuation_eq_one_of_ord_eq_zero`, `mem_and_inv_mem_of_valuation_sub_one`,
+    **`mem_U_of_matched`** (in the situation of `val_eq_of_matched`: `ξ ∈ U_{x.A}` ⇒ `ψ ξ ∈ U_{W''}`. Source:
+    `decompTriv_kummer` at the stage `g₂`; transport: `map_decompH_constIso` + `decompTriv_h1Congr_iff`; target:
+    `L.S κ(v) ∈ P_{V'}` with a power `κ(w')`, so `L.S κ(v) = κ(u) · c` (`exists_eq_kummerMapZHat_mul_constMapZHat`);
+    `ord_{W''}(u) = 0` from `val_eq_of_matched` and `U_x ⊆ Ker ord_x`; `W''` is rational (`LiftData.cuspPoint`);
+    `exists_kummer_of_decompTriv` gives `L.S κ(v) = κ(u a)` with `(u a)(W'') = 1`). Module build 60 s.
+  * `Thm19/RecTripleIso.lean`: `Uchida.ValEvalData.Iso.mem_U_iff_of_forward` (generic), `recEquiv_coe`,
+    **`kummerNF_ringEquivOfIso`** (generic: the field isomorphism of an isomorphism of triples is the given
+    isomorphism on the Kummer classes), **`mem_U_kummerNFRangeEquiv`**, **`mem_U_kummerNFRangeEquiv_symm`** (the
+    partner `x'` is the matched cusp by `recTriple_valInjective`), **`recTripleIso`**
+    (`(recTriple N).Iso (recTriple N₂)` by `Iso.ofVal`, `recTripleIso_φ = kummerNFRangeEquiv`), **`nfRingEquiv`**
+    (`fnf N ≃+* fnf N₂`, `ringEquivOfIso`), **`kummerNF_nfRingEquiv`** (`κ(ψ f) = h1LimCycloEquiv (κ f)`).
+  Debts of `nfRingEquiv` (explicit arguments, unchanged): `BelyiCuspSpec` both sides (MR8), `RelIsomDGC.Exists K`,
+  `K₂` (MR7), rational points `σ₀, σ₂` and genus `≠ 0` of both compactifications (item 1). No weil-curves pin bump.
+  Elaboration lessons (session u): after `obtain ⟨x₂, h⟩ : ∃ x₂, x₂.A = x.A` the place is no longer `x.A`
+  definitionally — use a `def` (`GStage.ratPointOfCusp`, `.A = A` by `rfl`) or `subst` a *local* place (here the
+  matched cusp `W₂''`, from `obtain ⟨x'', h⟩ : ∃ x'' : RatPoint _, x''.A = W₂''`); `rw [coe_kummerNFRangeEquiv]`
+  fails under the `recTriple … .G` types (instances differ syntactically) — chain the `rfl` lemmas with `Eq.trans`;
+  `(x : (recTriple N hkF).G) : WithZero _` does not insert the coercion (write `WithZero.coe (α := …)`).
+
+* Hand-off 2026-11-03 (MR9 track agent, session u, lead christian-aa): worktree `~/mr8-iut`, branch `mr9-u`; the
+  session's work (`CuspEval`, `UCompat`, `RecTripleIso`, plan) pushed via `~/iut-push.sh` (hash in
+  ~/session2-status.md), no WIP branch. **Item 4 (Thm 1.9 functoriality along `Φ`) is finished:**
+  `recTripleIso`, `nfRingEquiv`, `kummerNF_nfRingEquiv`. Debts unchanged (explicit, named):
+  `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), rational points / genus `≠ 0` of both compactifications
+  (item 1), `CKStrictSemiAbs` (literature debt, elasticity of `G_K`).
+  **What remains for `CKSemiAbsConj` (the `hAbs` chain of `DStarDescent`)**, in order:
+  1. *`Π_{X_K} ⊆ Π_{C_K}` group-theoretically* (IUT I Rem 3.1.2 (i), l.4155–4168; MR8's item 8): an `α` of
+     `π₁(C_K)` preserving `Δ_{C_K}` (over `ψ ∈ Aut(G_K)`) maps `π₁(X_K)` onto itself. Check MR8's
+     `HemiCuspDecomp` / item-8 results first.
+  2. *Bridge to the Galois model*: realise `π₁(X_K)` (`genuinePi1` of the orbicurve data, `X_K = E ∖ {O}`) as
+     `arithmeticExt Ω C` of a `HypCurve C` with `C.U = chartOne τ` (e.g. `τ = x`, regular exactly on `E ∖ {O}`),
+     so that `α|_{π₁(X_K)}` is a `Φ : (arithmeticExt Ω C).Iso (arithmeticExt Ω C)`; inputs of `nfRingEquiv`:
+     `σ₀ = O`, genus 1, `BelyiCuspSpec` (MR8 debt), `RelIsomDGC.Exists K` (MR7 debt).
+  3. *Galois equivariance of `nfRingEquiv`* (new, the main missing mathematics): for `γ ∈ Π_U` acting on `F_NF`
+     through `Π_U → Gal(F_NF / F_K)`, `nfRingEquiv (γ · f) = Φ(γ) · nfRingEquiv f`. Route: the conjugation action of
+     `Π_U` on `lim→_V H¹(Π_V, Ẑ(1))` (stages permuted), equivariance of `kummerNF` (Kummer classes of `γ f`) and of
+     `h1LimCycloEquiv` (built from `Φ`), then `kummerNF_nfRingEquiv` + injectivity of `kummerNF`.
+  4. *`ψ = conj σ`*: restricted to the field of constants `K̄_NF = ℚ̄`, `nfRingEquiv` is a field automorphism `σ`
+     (constants = elements with `ord_x = 0` for all `x`, `Uchida.ValEvalData.consts`), and 3 gives
+     `σ ∘ g = ψ(g) ∘ σ` on `ℚ̄` for `g ∈ G_K`.
+  5. *`σ(j) = j`*: `nfRingEquiv` is a `σ`-semilinear automorphism of `ℚ̄(E)` respecting the places (`ord_x`), so
+     `E^σ ≅ E` over `ℚ̄` and `σ(j) = j` (Mathlib `WeierstrassCurve.j` / variable changes), i.e. a lift of `σ` lies in
+     `Gal(F̄/F_mod)` — the conclusion of `CKSemiAbsConj`.
+  Estimate: 1–2 depend on MR8's item 8 (unknown); 3 ≈ 1–2 sessions; 4–5 ≈ 1–2 sessions.
+  **Decisions for the lead:** (a) whether MR9 continues with the `CKSemiAbsConj` chain (items 3–5 above are
+  self-contained in iut; 1–2 need MR8's item 8 status); (b) none blocking otherwise.

@@ -521,6 +521,7 @@ import Iut.Reconstruction.Thm19.ConstGk
 import Iut.Reconstruction.Thm19.ConstInertia
 import Iut.Reconstruction.Thm19.ConstRestrict
 import Iut.Reconstruction.Thm19.CuspDecomp
+import Iut.Reconstruction.Thm19.CuspEval
 import Iut.Reconstruction.Thm19.CuspPrincipal
 import Iut.Reconstruction.Thm19.CuspSync
 import Iut.Reconstruction.Thm19.CycloBridge
@@ -564,6 +565,7 @@ import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
 import Iut.Reconstruction.Thm19.RecPoints
 import Iut.Reconstruction.Thm19.RecRange
+import Iut.Reconstruction.Thm19.RecTripleIso
 import Iut.Reconstruction.Thm19.ResIso
 import Iut.Reconstruction.Thm19.ResKer
 import Iut.Reconstruction.Thm19.ResStage
@@ -583,6 +585,7 @@ import Iut.Reconstruction.Thm19.SyncStage
 import Iut.Reconstruction.Thm19.SyncStageLift
 import Iut.Reconstruction.Thm19.SyncTame
 import Iut.Reconstruction.Thm19.TripleIso
+import Iut.Reconstruction.Thm19.UCompat
 import Iut.Reconstruction.Thm19.Unramified
 import Iut.Reconstruction.Thm19.ValCompat
 import Iut.Reconstruction.Transfer
