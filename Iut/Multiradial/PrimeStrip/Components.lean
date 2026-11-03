@@ -41,9 +41,10 @@ of `~/iut-scratch/papers/txt/Inter-universal Teichmuller Theory I.txt`:
   `V^bad` the root `q̲_v ∈ K_v` of `q_v` exists by Definition 3.1 (b), (c) ("our assumption
   concerning 2-torsion … together with the definition of K", Example 3.2 (iv)): `qRootExists`
   (`E(K_v)[l]` has `l²` points by the type `(1, l-tors)` of `X̲_K`, `E(K_v)[2]` four by the
-  rationality of `E_F[2]`; `TateStructure.exists_pow_eq_q`). Both `tauVdash_isCharSplitting_good`
-  and `tauVdash_isCharSplitting_bad` are unconditional (the latter uses `‖ι q̲_v‖ < 1`, from the
-  continuity of `ι`: `norm_iota_lt_one`).
+  rationality of `E_F[2]`; `TateStructure.exists_pow_eq_q`). Both
+  `tauVdash_isCharSplitting_good` (in `Black.lean`) and `tauVdash_isCharSplitting_bad` are
+  unconditional (the latter uses `‖ι q̲_v‖ < 1`, from the continuity of `ι`:
+  `norm_iota_lt_one`).
 -/
 
 noncomputable section

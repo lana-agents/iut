@@ -1792,3 +1792,5 @@ Iut.Multiradial.PrimeStrip.FRlfData.Iso.rhoNonInv	def
 Iut.Multiradial.PrimeStrip.FRlfData.Iso.rhoArc	def
 Iut.Multiradial.PrimeStrip.FRlfData.Iso.rhoArcInv	def
 Iut.Multiradial.PrimeStrip.FRlfStrip.equiv_model	def
+Iut.Multiradial.PrimeStrip.FBlackComp.equiv_model	def
+Iut.Multiradial.PrimeStrip.FBlackArcComp.equiv_model	def

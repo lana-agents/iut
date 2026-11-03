@@ -14,8 +14,8 @@ IUT I, Example 3.5 (i) (l.5485–5543) and Definition 5.2 (iv) (l.9183–9220) o
 collection `(‡C^⊩, Prime(‡C^⊩) ≅ V, ‡F^⊢, {‡ρ_v}_{v ∈ V})` with (e)
 `‡ρ_v : Φ_{‡C^⊩,v} ≅ Φ^rlf_{‡C^⊢_v}` isomorphisms of topological monoids (both `≅ ℝ_{≥0}`) and (f)
 the collection isomorphic to `F^⊩_mod`; "the realification `Φ^rlf_{C^⊢_v}` of the divisor monoid
-`Φ_{C^⊢_v}` of `C^⊢_v` [which, as is easily verified, is a constant monoid over the corresponding
-base category] may be regarded as a single abstract monoid isomorphic to `ℝ_{≥0}`", and for
+`Φ_{C^⊢_v}` of `C^⊢_v` […] may be regarded as a single abstract monoid isomorphic to `ℝ_{≥0}`"
+(the divisor monoid of `C^⊢_v` does not vary over the base category), and for
 `F^⊩_mod`, `ρ_v` is "given by the assignment `log⊢_mod(p_v) ↦ (1/[K_v : (F_mod)_v]) logΦ(p_v)`".
 
 ## Formalisation
@@ -162,7 +162,7 @@ structure FRlfData : Type 1 where
   /-- `ρ_v`, `v ∈ V^non`. -/
   rhoNon : ∀ (w : Vnon D) (A : (strip.non.comp w).F.F.D),
     phiAt (Sum.inl w : GlobalRealified.Place (Kmod D)) ≃+ (strip.non.comp w).F.F.PhiRlf A
-  /-- `ρ_v` lands in the constant monoid `Φ^rlf`. -/
+  /-- `ρ_v` is compatible with the pull-backs (`Φ^rlf` does not vary over the base). -/
   rhoNon_pb : ∀ (w : Vnon D) {A B : (strip.non.comp w).F.F.D} (f : A ⟶ B) x,
     rlfMap ((strip.non.comp w).F.F.posPb f) (rhoNon w B x) = rhoNon w A x
   /-- `ρ_v`, `v ∈ V^arc` (`Φ_{C^⊢_v}` is already real). -/
