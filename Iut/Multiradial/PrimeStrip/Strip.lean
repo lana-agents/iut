@@ -24,10 +24,14 @@ IUT I, Definition 4.1 (i), (iii), (iv) (l.6363–6450) and Definition 5.2 (i)–
 
 ## Formalisation
 
-* A Frobenioid constituent is recorded **with its base functor** (`FrobCat`: `C ⥤ D`), as in
-  [FrdI], Definition 1.3 (a Frobenioid is a category with a functor to `D × F_Φ`), and an
-  isomorphism of Frobenioids (`FrobCat.Iso`) is an equivalence `C ≌ C'` with an equivalence of
-  base categories `D ≌ D'` and a natural isomorphism making the square commute (`CatCommSq`).
+* A Frobenioid constituent is recorded **with its base category, divisor monoid and structure
+  functor** (`FrobCat`: `P : C ⥤ F_Φ` over `D`), as in [FrdI], Definition 1.3 (a Frobenioid is a
+  category with a functor to `D × F_Φ`), and an isomorphism of Frobenioids (`FrobCat.Iso`) is an
+  equivalence `C ≌ C'` with an equivalence of base categories `D ≌ D'`, a natural isomorphism
+  making the square of base functors commute (`CatCommSq`), and isomorphisms of the divisor
+  monoids `Φ(A) ≅ Φ'(A')` (both directions; these are what the isomorphisms `ρ_v` of
+  `F^⊩`-prime-strips are compared through, IUT I, Definition 5.2 (iv)). The divisor monoids of
+  the split Frobenioids `C^⊢_v` are of rank one (`≅ ℕ`), where such an isomorphism is unique.
   For the models every equivalence of the categories admits such a base equivalence when the base
   is slim ([FrdI], Theorem 3.4 (v); `Frobenioid.thm34_galois_preservesBase`, MR16), so this is the
   isomorphism notion of Definition 5.2 (iii); recording the base equivalence makes the passage
@@ -63,19 +67,27 @@ universe u
 
 /-! ### Frobenioids with base functor, and their isomorphisms -/
 
-/-- **A Frobenioid with its base functor** `C ⥤ D` ([FrdI], Definition 1.3). -/
+/-- **A Frobenioid with its base category, divisor monoid and structure functor**
+`P : C ⥤ F_Φ` ([FrdI], Definition 1.3: a Frobenioid is a category with a functor to
+`D × F_Φ`, recorded through `F_Φ = Elem Φ`, whose objects lie over `D`). -/
 structure FrobCat : Type 1 where
   /-- The Frobenioid (a category). -/
   C : Cat.{0, 0}
   /-- The base category. -/
   D : Cat.{0, 0}
-  /-- The base functor. -/
-  base : C ⥤ D
+  /-- The divisor monoid `Φ` on the base. -/
+  Φ : DivMonoid.{0} D
+  /-- The structure functor `C ⥤ F_Φ`. -/
+  P : C ⥤ Elem Φ
 
 namespace FrobCat
 
+/-- The base functor `C ⥤ D`. -/
+def base (X : FrobCat) : X.C ⥤ X.D := X.P ⋙ Elem.proj
+
 /-- **An isomorphism of Frobenioids**: equivalences of the Frobenioids and of the bases,
-compatible with the base functors. -/
+compatible with the base functors, with isomorphisms of the divisor monoids `Φ(A) ≅ Φ'(A')`
+(in both directions) preserving the effective parts. -/
 structure Iso (X Y : FrobCat) where
   /-- The equivalence of Frobenioids. -/
   C : X.C ≌ Y.C
@@ -83,6 +95,15 @@ structure Iso (X Y : FrobCat) where
   D : X.D ≌ Y.D
   /-- Compatibility with the base functors: `C ⋙ base' ≅ base ⋙ D`. -/
   comm : CatCommSq C.functor X.base Y.base D.functor
+  /-- `Φ^gp(A) ≅ Φ'^gp(D(A))`. -/
+  phi : ∀ A : X.D, X.Φ.obj A ≃+ Y.Φ.obj (D.functor.obj A)
+  /-- `phi` identifies `Φ(A)` with `Φ'(D(A))`. -/
+  phi_pos : ∀ (A : X.D) (x : X.Φ.obj A), x ∈ X.Φ.pos A ↔ phi A x ∈ Y.Φ.pos (D.functor.obj A)
+  /-- `Φ'^gp(B) ≅ Φ^gp(D⁻¹(B))`. -/
+  phiInv : ∀ B : Y.D, Y.Φ.obj B ≃+ X.Φ.obj (D.inverse.obj B)
+  /-- `phiInv` identifies `Φ'(B)` with `Φ(D⁻¹(B))`. -/
+  phiInv_pos : ∀ (B : Y.D) (y : Y.Φ.obj B),
+    y ∈ Y.Φ.pos B ↔ phiInv B y ∈ X.Φ.pos (D.inverse.obj B)
 
 namespace Iso
 
@@ -91,18 +112,30 @@ def refl (X : FrobCat) : X.Iso X where
   C := CategoryTheory.Equivalence.refl
   D := CategoryTheory.Equivalence.refl
   comm := CatCommSq.hId X.base
+  phi _ := AddEquiv.refl _
+  phi_pos _ _ := Iff.rfl
+  phiInv _ := AddEquiv.refl _
+  phiInv_pos _ _ := Iff.rfl
 
 /-- The inverse. -/
 def symm {X Y : FrobCat} (f : X.Iso Y) : Y.Iso X where
   C := f.C.symm
   D := f.D.symm
   comm := CatCommSq.hInv f.C X.base Y.base f.D f.comm
+  phi := f.phiInv
+  phi_pos := f.phiInv_pos
+  phiInv := f.phi
+  phiInv_pos := f.phi_pos
 
 /-- The composite. -/
 def trans {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) : X.Iso Z where
   C := f.C.trans g.C
   D := f.D.trans g.D
   comm := CatCommSq.hComp' f.comm g.comm
+  phi A := (f.phi A).trans (g.phi (f.D.functor.obj A))
+  phi_pos A x := (f.phi_pos A x).trans (g.phi_pos _ _)
+  phiInv B := (g.phiInv B).trans (f.phiInv (g.D.inverse.obj B))
+  phiInv_pos B y := (g.phiInv_pos B y).trans (f.phiInv_pos _ _)
 
 end Iso
 
@@ -111,7 +144,8 @@ def ofModel {D : Type} [Category.{0} D] {Φ : DivMonoid.{0} D} (C : Type) [Categ
     (P : C ⥤ Elem Φ) : FrobCat where
   C := Cat.of C
   D := Cat.of D
-  base := P ⋙ Elem.proj
+  Φ := Φ
+  P := P
 
 end FrobCat
 

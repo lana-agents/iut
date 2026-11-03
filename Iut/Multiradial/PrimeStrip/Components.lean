@@ -6,6 +6,8 @@ Authors: LANA Project
 import Iut.Multiradial.PrimeStrip.Local
 import Iut.Frobenioid.OrbitMap
 import Iut.Frobenioid.Tempered.SplitFrob
+import Iut.Concrete.ThetaLocalConstruct.Roots
+import Iut.Cor312.ThetaData.TwoTorsion
 
 /-!
 # The non-archimedean constituents `D_v`, `D^⊢_v`, `C_v`, `F^⊢_v` (MR20 T2, T3)
@@ -37,11 +39,11 @@ of `~/iut-scratch/papers/txt/Inter-universal Teichmuller Theory I.txt`:
   determined by `p_v`"), `q̲_v^ℕ` at `V^bad` (Example 3.2 (iv)); generic statement
   `GaloisModel.isCharSplitting_piSplit` ([FrdI], Definition 2.3, `Model.IsCharSplitting`). At
   `V^bad` the root `q̲_v ∈ K_v` of `q_v` exists by Definition 3.1 (b), (c) ("our assumption
-  concerning 2-torsion … together with the definition of K", Example 3.2 (iv)); this existence is
-  not yet derived from `D` in iut (`QRootExists D v`, debt H6; the analogous statement for the
-  concrete Tate families is `Iut.exists_qroot`), so `tauVdash` takes the chosen root when it
-  exists; `tauVdash_isCharSplitting_good` is unconditional, `tauVdash_isCharSplitting_bad` assumes
-  `QRootExists` (and uses `‖ι q̲_v‖ < 1`, from the continuity of `ι`: `norm_iota_lt_one`).
+  concerning 2-torsion … together with the definition of K", Example 3.2 (iv)): `qRootExists`
+  (`E(K_v)[l]` has `l²` points by the type `(1, l-tors)` of `X̲_K`, `E(K_v)[2]` four by the
+  rationality of `E_F[2]`; `TateStructure.exists_pow_eq_q`). Both `tauVdash_isCharSplitting_good`
+  and `tauVdash_isCharSplitting_bad` are unconditional (the latter uses `‖ι q̲_v‖ < 1`, from the
+  continuity of `ι`: `norm_iota_lt_one`).
 -/
 
 noncomputable section
@@ -267,9 +269,71 @@ theorem CVdash_isFrobenioid : IsFrobenioid (cvdElem D v) := GaloisModel.isFroben
 /-- The base functor `C^⊢_v ⥤ D^⊢_v`. -/
 abbrev cvdBase : CVdash D v ⥤ DVdash D v := cvdElem D v ⋙ Elem.proj
 
-/-- **Debt H6**: `q_v` has a `2l`-th root in `K_v` (IUT I, Example 3.2 (iv), from Definition 3.1
-(b), (c)). -/
+/-- `q_v` has a `2l`-th root in `K_v` (IUT I, Example 3.2 (iv), from Definition 3.1 (b), (c));
+proved as `qRootExists`. -/
 def QRootExists (hv : v ∈ D.VBad) : Prop := ∃ x : (Kv D v)ˣ, x ^ (2 * D.ℓ) = qv D v hv
+
+open scoped Classical in
+/-- An injective homomorphism of abelian groups does not decrease the size of the `n`-torsion. -/
+lemma card_torsionBy_le_of_injective {A B : Type*} [AddCommGroup A] [AddCommGroup B]
+    (φ : A →+ B) (hφ : Function.Injective φ) (n : ℕ)
+    [Finite ↥(AddSubgroup.torsionBy B (n : ℤ))] :
+    Nat.card ↥(AddSubgroup.torsionBy A (n : ℤ)) ≤ Nat.card ↥(AddSubgroup.torsionBy B (n : ℤ)) := by
+  refine Nat.card_le_card_of_injective (fun P => ⟨φ P.1, ?_⟩) fun P Q h => ?_
+  · have := P.2
+    rw [AddSubgroup.torsionBy.nsmul_iff] at this ⊢
+    rw [← map_nsmul, this, map_zero]
+  · exact Subtype.ext (hφ (congrArg Subtype.val h))
+
+open scoped Classical in
+/-- Four rational `2`-torsion points of `E_F` stay `2`-torsion points of any curve `W` over `K`
+equal to `E_F ×_F K`, after a further base change `g : K → L`. -/
+lemma four_le_card_torsion_two_map {F K L : Type*} [Field F] [Field K] [Field L]
+    (E : WeierstrassCurve F) (f : F →+* K) (g : K →+* L) (W : WeierstrassCurve K)
+    (hW : W = E.map f)
+    [Finite ↥(AddSubgroup.torsionBy (W.map g).toAffine.Point ((2 : ℕ) : ℤ))]
+    (htwo : 2 * 2 ≤ Nat.card ↥(AddSubgroup.torsionBy E.toAffine.Point ((2 : ℕ) : ℤ))) :
+    2 * 2 ≤ Nat.card ↥(AddSubgroup.torsionBy (W.map g).toAffine.Point ((2 : ℕ) : ℤ)) := by
+  subst hW
+  exact htwo.trans (card_torsionBy_le_of_injective ((pointMap (E.map f) g).comp (pointMap E f))
+    ((pointMap_injective _ g).comp (pointMap_injective E f)) 2)
+
+open scoped Classical in
+/-- For `X` of type `(1, l-tors)` over `K` (`E(K)[l]` of order `l²`), `E(L)[l]` has at least `l²`
+elements after any base change `K → L`. -/
+lemma sq_le_card_torsion_baseChange {K L : Type*} [Field K] [Field L] (X : Orbicurve K)
+    (f : K →+* L) (ℓ : ℕ) (hX : X.IsTypeOneEllTors ℓ)
+    (hfin : Finite ↥(AddSubgroup.torsionBy (X.E.map f).toAffine.Point (ℓ : ℤ))) :
+    ℓ * ℓ ≤ Nat.card ↥(AddSubgroup.torsionBy (X.E.map f).toAffine.Point (ℓ : ℤ)) := by
+  obtain ⟨-, hlev, -, -, -, hcard⟩ := hX
+  rw [← pow_two, ← hcard, Orbicurve.torsion, hlev]
+  exact card_torsionBy_le_of_injective (pointMap X.E f) (pointMap_injective _ _) ℓ
+
+open scoped Classical in
+/-- **`q_v` has a `2l`-th root in `K_v`** (IUT I, Example 3.2 (iv): "our assumption concerning
+2-torsion … together with the definition of `K`"): `E(K_v)[l]` has `l²` elements since `X̲_K` is of
+type `(1, l-tors)` (Definition 3.1 (d)), `E(K_v)[2]` has four since `E_F[2]` is rational over `F`
+(Definition 3.1 (b)); `TateStructure.exists_pow_eq_q`. -/
+theorem qRootExists (hv : v ∈ D.VBad) : QRootExists D v hv := by
+  have hℓ := D.prime.ℓ_prime
+  haveI : NeZero D.prime.ℓ := ⟨hℓ.ne_zero⟩
+  have hodd : Odd D.prime.ℓ := hℓ.odd_of_ne_two (by have := D.prime.five_le; omega)
+  let S := D.localData.tateX v hv
+  haveI := S.finite_torsion D.prime.ℓ
+  haveI := S.finite_torsion 2
+  have hl : D.prime.ℓ * D.prime.ℓ ≤ Nat.card ↥(TateStructure.torsion D.prime.ℓ (Xv D v).E) :=
+    sq_le_card_torsion_baseChange D.orb.XKu (FinitePlace.embedding (D.V.sectFin v).maximalIdeal)
+      D.prime.ℓ D.orb.XKu_type (S.finite_torsion D.prime.ℓ)
+  have h2 : 2 * 2 ≤ Nat.card ↥(TateStructure.torsion 2 (Xv D v).E) :=
+    @four_le_card_torsion_two_map _ _ _ _ _ _ D.E (algebraMap D.F D.Kt)
+      (FinitePlace.embedding (D.V.sectFin v).maximalIdeal) D.orb.XKu.E D.orb.XKu_to_XK.E_eq
+      (S.finite_torsion 2) (four_le_card_torsionBy_two D.E D.global.six_torsion_rational)
+  obtain ⟨x, hx⟩ := S.exists_pow_eq_q D.prime.ℓ hodd hl h2
+  have hx0 : x ≠ 0 := by
+    rintro rfl
+    rw [zero_pow (mul_ne_zero two_ne_zero hℓ.ne_zero)] at hx
+    exact (qv D v hv).ne_zero hx.symm
+  exact ⟨Units.mk0 x hx0, Units.ext (by rw [Units.val_pow_eq_pow_val, Units.val_mk0]; exact hx)⟩
 
 /-- `p ∈ \bar{ℚ}_p^×`. -/
 def pMul : PAdicGalois.Mul (pv D v) :=
@@ -277,12 +341,10 @@ def pMul : PAdicGalois.Mul (pv D v) :=
     (by simpa using (Fact.out : (pv D v).Prime).ne_zero))
 
 open scoped Classical in
-/-- **The element `τ` generating the splitting**: a chosen root `q̲_v` at `V^bad` (`0` if none
-exists, which does not happen: debt H6), `p` at `V^good`. -/
+/-- **The element `τ` generating the splitting**: a chosen root `q̲_v` at `V^bad`, `p` at
+`V^good`. -/
 def tauElt : PAdicGalois.Mul (pv D v) :=
-  if hv : v ∈ D.VBad then
-    (if hq : QRootExists D v hv then toMul D v hq.choose else 0)
-  else pMul D v
+  if hv : v ∈ D.VBad then toMul D v (qRootExists D v hv).choose else pMul D v
 
 /-- **The characteristic splitting `τ^⊢_v`** of `C^⊢_v` (IUT I, Examples 3.2 (iv), 3.3 (i)). -/
 def tauVdash (A : DVdash D v) :=
@@ -360,12 +422,13 @@ lemma ord_toMul_pos (x : (Kv D v)ˣ) (hx : ‖(x : Kv D v)‖ < 1) :
   exact Real.logb_neg hp hpos hlt
 
 /-- **`τ^⊢_v = q̲_v^ℕ` is a characteristic splitting of `C^⊢_v`** at `v ∈ V^bad` (IUT I,
-Example 3.2 (iv)), given the root `q̲_v ∈ K_v` (debt H6). -/
-theorem tauVdash_isCharSplitting_bad (hv : v ∈ D.VBad) (hq : QRootExists D v hv) :
+Example 3.2 (iv)) (the root `q̲_v ∈ K_v`: `qRootExists`). -/
+theorem tauVdash_isCharSplitting_bad (hv : v ∈ D.VBad) :
     Model.IsCharSplitting
       (divB := divGal (Gv D v) (PAdicGalois.ord (pv D v)) (PAdicGalois.ord_smul (pv D v) (Lv D v))
         (gammaVdash D v)) (tauVdash D v) := by
-  have hτ : tauElt D v = toMul D v hq.choose := by simp [tauElt, hv, hq]
+  have hq := qRootExists D v hv
+  have hτ : tauElt D v = toMul D v hq.choose := by simp only [tauElt, dif_pos hv]
   have hℓ : (0 : ℝ) < 2 * D.ℓ := by
     have := D.prime.ℓ_prime.pos
     have : (0 : ℝ) < D.ℓ := by exact_mod_cast this
