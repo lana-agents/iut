@@ -27,11 +27,13 @@ IUT I, Definition 4.1 (i), (iii), (iv) (l.6363–6450) and Definition 5.2 (i)–
 * A Frobenioid constituent is recorded **with its base category, divisor monoid and structure
   functor** (`FrobCat`: `P : C ⥤ F_Φ` over `D`), as in [FrdI], Definition 1.3 (a Frobenioid is a
   category with a functor to `D × F_Φ`), and an isomorphism of Frobenioids (`FrobCat.Iso`) is an
-  equivalence `C ≌ C'` with an equivalence of base categories `D ≌ D'`, a natural isomorphism
-  making the square of base functors commute (`CatCommSq`), and isomorphisms of the divisor
-  monoids `Φ(A) ≅ Φ'(A')` (both directions; these are what the isomorphisms `ρ_v` of
-  `F^⊩`-prime-strips are compared through, IUT I, Definition 5.2 (iv)). The divisor monoids of
-  the split Frobenioids `C^⊢_v` are of rank one (`≅ ℕ`), where such an isomorphism is unique.
+  equivalence `C ≌ C'` with an equivalence of base categories `D ≌ D'` and isomorphisms of the
+  divisor monoids `Φ(A) ≅ Φ'(A')` (both directions) compatible with the pull-backs, such that
+  the structure functors commute up to natural isomorphism with the induced functor of
+  elementary Frobenioids `F_Φ ⥤ F_{Φ'}` (`elemMap`, `(f, Z, n) ↦ (D(f), φ(Z), n)`; a
+  `CatCommSq` for the functor and one for the inverse). The square of base functors
+  (`FrobCat.Iso.comm`) follows. The `Φ`-isomorphisms are what the isomorphisms `ρ_v` of
+  `F^⊩`-prime-strips are compared through (IUT I, Definition 5.2 (iv)).
   For the models every equivalence of the categories admits such a base equivalence when the base
   is slim ([FrdI], Theorem 3.4 (v); `Frobenioid.thm34_galois_preservesBase`, MR16), so this is the
   isomorphism notion of Definition 5.2 (iii); recording the base equivalence makes the passage
@@ -85,57 +87,141 @@ namespace FrobCat
 /-- The base functor `C ⥤ D`. -/
 def base (X : FrobCat) : X.C ⥤ X.D := X.P ⋙ Elem.proj
 
-/-- **An isomorphism of Frobenioids**: equivalences of the Frobenioids and of the bases,
-compatible with the base functors, with isomorphisms of the divisor monoids `Φ(A) ≅ Φ'(A')`
-(in both directions) preserving the effective parts. -/
+/-- **The functor `F_Φ ⥤ F_Ψ` induced by a functor of bases** `E : D ⥤ D'` and isomorphisms
+`φ_A : Φ^gp(A) ≅ Ψ^gp(E(A))` preserving the effective parts and compatible with the pull-backs:
+`(f, Z_f, n_f) ↦ (E(f), φ(Z_f), n_f)`. -/
+def elemMap {D₁ D₂ : Type} [Category.{0} D₁] [Category.{0} D₂] {Φ : DivMonoid.{0} D₁}
+    {Ψ : DivMonoid.{0} D₂} (E : D₁ ⥤ D₂) (φ : ∀ A, Φ.obj A ≃+ Ψ.obj (E.obj A))
+    (hpos : ∀ A x, x ∈ Φ.pos A ↔ φ A x ∈ Ψ.pos (E.obj A))
+    (hpb : ∀ {A B : D₁} (g : A ⟶ B) (x : Φ.obj B), φ A (Φ.pb g x) = Ψ.pb (E.map g) (φ B x)) :
+    Elem Φ ⥤ Elem Ψ where
+  obj A := ⟨E.obj A.base⟩
+  map f := ⟨E.map f.base, φ _ f.div, (hpos _ _).mp f.div_mem, f.deg⟩
+  map_id A := Elem.hom_ext (E.map_id _) (map_zero _) rfl
+  map_comp f g := Elem.hom_ext (E.map_comp _ _)
+    (by simp only [Elem.comp_div, map_add, map_nsmul, hpb]) rfl
+
+/-- `elemMap` lies over `E`: `elemMap ⋙ proj = proj ⋙ E`. -/
+def elemMapProj {D₁ D₂ : Type} [Category.{0} D₁] [Category.{0} D₂] {Φ : DivMonoid.{0} D₁}
+    {Ψ : DivMonoid.{0} D₂} (E : D₁ ⥤ D₂) (φ : ∀ A, Φ.obj A ≃+ Ψ.obj (E.obj A))
+    (hpos : ∀ A x, x ∈ Φ.pos A ↔ φ A x ∈ Ψ.pos (E.obj A))
+    (hpb : ∀ {A B : D₁} (g : A ⟶ B) (x : Φ.obj B), φ A (Φ.pb g x) = Ψ.pb (E.map g) (φ B x)) :
+    elemMap E φ hpos hpb ⋙ Elem.proj ≅ Elem.proj ⋙ E :=
+  NatIso.ofComponents (fun _ => Iso.refl _)
+    (fun _ => (Category.comp_id _).trans (Category.id_comp _).symm)
+
+/-- `elemMap` of the identity is the identity. -/
+def elemMapId {D₁ : Type} [Category.{0} D₁] (Φ : DivMonoid.{0} D₁) :
+    𝟭 (Elem Φ) ≅ elemMap (𝟭 D₁) (fun A => AddEquiv.refl (Φ.obj A)) (fun _ _ => Iff.rfl)
+      (fun _ _ => rfl) :=
+  NatIso.ofComponents (fun _ => Iso.refl _)
+    (fun _ => (Category.comp_id _).trans (Category.id_comp _).symm)
+
+/-- `elemMap` of a composite is the composite. -/
+def elemMapComp {D₁ D₂ D₃ : Type} [Category.{0} D₁] [Category.{0} D₂] [Category.{0} D₃]
+    {Φ : DivMonoid.{0} D₁} {Ψ : DivMonoid.{0} D₂} {Χ : DivMonoid.{0} D₃} (E : D₁ ⥤ D₂)
+    (E' : D₂ ⥤ D₃) (φ : ∀ A, Φ.obj A ≃+ Ψ.obj (E.obj A))
+    (hpos : ∀ A x, x ∈ Φ.pos A ↔ φ A x ∈ Ψ.pos (E.obj A))
+    (hpb : ∀ {A B : D₁} (g : A ⟶ B) (x : Φ.obj B), φ A (Φ.pb g x) = Ψ.pb (E.map g) (φ B x))
+    (φ' : ∀ A, Ψ.obj A ≃+ Χ.obj (E'.obj A))
+    (hpos' : ∀ A x, x ∈ Ψ.pos A ↔ φ' A x ∈ Χ.pos (E'.obj A))
+    (hpb' : ∀ {A B : D₂} (g : A ⟶ B) (x : Ψ.obj B), φ' A (Ψ.pb g x) = Χ.pb (E'.map g) (φ' B x)) :
+    elemMap E φ hpos hpb ⋙ elemMap E' φ' hpos' hpb' ≅
+      elemMap (E ⋙ E') (fun A => (φ A).trans (φ' (E.obj A)))
+        (fun A x => (hpos A x).trans (hpos' _ _))
+        (fun g x => by simp only [AddEquiv.trans_apply, hpb]; exact hpb' _ _) :=
+  NatIso.ofComponents (fun _ => Iso.refl _)
+    (fun _ => (Category.comp_id _).trans (Category.id_comp _).symm)
+
+/-- The isomorphism `T ⋙ R ≅ L ⋙ B` of an explicitly given square. -/
+abbrev sqIso {C₁ C₂ C₃ C₄ : Type*} [Category* C₁] [Category* C₂] [Category* C₃] [Category* C₄]
+    {T : C₁ ⥤ C₂} {L : C₁ ⥤ C₃} {R : C₂ ⥤ C₄} {B : C₃ ⥤ C₄} (h : CatCommSq T L R B) :
+    T ⋙ R ≅ L ⋙ B :=
+  letI := h
+  CatCommSq.iso T L R B
+
+/-- **An isomorphism of Frobenioids**: equivalences of the Frobenioids and of the bases, and
+isomorphisms of the divisor monoids `Φ^gp(A) ≅ Φ'^gp(A')` (in both directions) preserving the
+effective parts and compatible with the pull-backs, such that the equivalence of Frobenioids
+is compatible with the structure functors `P : C ⥤ F_Φ`, `P' : C' ⥤ F_{Φ'}` through the induced
+functors of elementary Frobenioids (`elemMap`; both directions). The compatibility with the base
+functors (`Iso.comm`) follows. -/
 structure Iso (X Y : FrobCat) where
   /-- The equivalence of Frobenioids. -/
   C : X.C ≌ Y.C
   /-- The equivalence of base categories. -/
   D : X.D ≌ Y.D
-  /-- Compatibility with the base functors: `C ⋙ base' ≅ base ⋙ D`. -/
-  comm : CatCommSq C.functor X.base Y.base D.functor
   /-- `Φ^gp(A) ≅ Φ'^gp(D(A))`. -/
   phi : ∀ A : X.D, X.Φ.obj A ≃+ Y.Φ.obj (D.functor.obj A)
   /-- `phi` identifies `Φ(A)` with `Φ'(D(A))`. -/
   phi_pos : ∀ (A : X.D) (x : X.Φ.obj A), x ∈ X.Φ.pos A ↔ phi A x ∈ Y.Φ.pos (D.functor.obj A)
+  /-- `phi` is compatible with the pull-backs. -/
+  phi_pb : ∀ {A B : X.D} (g : A ⟶ B) (x : X.Φ.obj B),
+    phi A (X.Φ.pb g x) = Y.Φ.pb (D.functor.map g) (phi B x)
   /-- `Φ'^gp(B) ≅ Φ^gp(D⁻¹(B))`. -/
   phiInv : ∀ B : Y.D, Y.Φ.obj B ≃+ X.Φ.obj (D.inverse.obj B)
   /-- `phiInv` identifies `Φ'(B)` with `Φ(D⁻¹(B))`. -/
   phiInv_pos : ∀ (B : Y.D) (y : Y.Φ.obj B),
     y ∈ Y.Φ.pos B ↔ phiInv B y ∈ X.Φ.pos (D.inverse.obj B)
+  /-- `phiInv` is compatible with the pull-backs. -/
+  phiInv_pb : ∀ {A B : Y.D} (g : A ⟶ B) (y : Y.Φ.obj B),
+    phiInv A (Y.Φ.pb g y) = X.Φ.pb (D.inverse.map g) (phiInv B y)
+  /-- Compatibility with the structure functors: `C ⋙ P' ≅ P ⋙ F_{(D, phi)}`. -/
+  commP : CatCommSq C.functor X.P Y.P (elemMap D.functor phi phi_pos phi_pb)
+  /-- Compatibility of the inverse with the structure functors. -/
+  commPInv : CatCommSq C.inverse Y.P X.P (elemMap D.inverse phiInv phiInv_pos phiInv_pb)
 
 namespace Iso
+
+/-- Compatibility with the base functors: `C ⋙ base' ≅ base ⋙ D`. -/
+@[implicit_reducible]
+def comm {X Y : FrobCat} (f : X.Iso Y) : CatCommSq f.C.functor X.base Y.base f.D.functor :=
+  ⟨(Functor.associator _ _ _).symm ≪≫ Functor.isoWhiskerRight (sqIso f.commP) Elem.proj ≪≫
+    Functor.associator _ _ _ ≪≫ Functor.isoWhiskerLeft X.P (elemMapProj _ _ _ _) ≪≫
+    (Functor.associator _ _ _).symm⟩
 
 /-- The identity. -/
 def refl (X : FrobCat) : X.Iso X where
   C := CategoryTheory.Equivalence.refl
   D := CategoryTheory.Equivalence.refl
-  comm := CatCommSq.hId X.base
   phi _ := AddEquiv.refl _
   phi_pos _ _ := Iff.rfl
+  phi_pb _ _ := rfl
   phiInv _ := AddEquiv.refl _
   phiInv_pos _ _ := Iff.rfl
+  phiInv_pb _ _ := rfl
+  commP := ⟨Functor.leftUnitor _ ≪≫ (Functor.rightUnitor _).symm ≪≫
+    Functor.isoWhiskerLeft X.P (elemMapId X.Φ)⟩
+  commPInv := ⟨Functor.leftUnitor _ ≪≫ (Functor.rightUnitor _).symm ≪≫
+    Functor.isoWhiskerLeft X.P (elemMapId X.Φ)⟩
 
 /-- The inverse. -/
 def symm {X Y : FrobCat} (f : X.Iso Y) : Y.Iso X where
   C := f.C.symm
   D := f.D.symm
-  comm := CatCommSq.hInv f.C X.base Y.base f.D f.comm
   phi := f.phiInv
   phi_pos := f.phiInv_pos
+  phi_pb := f.phiInv_pb
   phiInv := f.phi
   phiInv_pos := f.phi_pos
+  phiInv_pb := f.phi_pb
+  commP := f.commPInv
+  commPInv := f.commP
 
 /-- The composite. -/
 def trans {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) : X.Iso Z where
   C := f.C.trans g.C
   D := f.D.trans g.D
-  comm := CatCommSq.hComp' f.comm g.comm
   phi A := (f.phi A).trans (g.phi (f.D.functor.obj A))
   phi_pos A x := (f.phi_pos A x).trans (g.phi_pos _ _)
+  phi_pb _ _ := by simp only [AddEquiv.trans_apply, f.phi_pb]; exact g.phi_pb _ _
   phiInv B := (g.phiInv B).trans (f.phiInv (g.D.inverse.obj B))
   phiInv_pos B y := (g.phiInv_pos B y).trans (f.phiInv_pos _ _)
+  phiInv_pb _ _ := by simp only [AddEquiv.trans_apply, g.phiInv_pb]; exact f.phiInv_pb _ _
+  commP := ⟨sqIso (CatCommSq.hComp' f.commP g.commP) ≪≫
+    Functor.isoWhiskerLeft X.P (elemMapComp _ _ _ _ _ _ _ _)⟩
+  commPInv := ⟨sqIso (CatCommSq.hComp' g.commPInv f.commPInv) ≪≫
+    Functor.isoWhiskerLeft Z.P (elemMapComp _ _ _ _ _ _ _ _)⟩
 
 end Iso
 
