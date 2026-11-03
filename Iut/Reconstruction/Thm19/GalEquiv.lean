@@ -18,9 +18,9 @@ satisfies `σ(g c) = ψ(g) σ(c)`. Here:
 * `exists_resG_eq_of_ofG_eq`: equal classes in the colimit agree at a common later stage;
 * `GStage.exists_fieldOf`: every stage and algebraic number lie below a stage whose field of
   constants is `fieldOf N`, `N ⊆ G_k` open and normal (Galois over `k`);
-* `kummerNF_eq_ofG_const`: the Kummer class of a constant at a stage containing it;
+* `kummerNF_eq_ofG_const`: the Kummer class of an algebraic number at a stage containing it;
 * **`ofG_stageConj_eq`**: for `a` fixing `F` and restricting to an element of `G_k`, a class `w` at
-  a stage `g` (`a(K₁) ⊆ K₁`) with `[g, w] = κ(c)`, `c` a constant, has `[g, a_* w] = κ(a(c))`
+  a stage `g` (`a(K₁) ⊆ K₁`) with `[g, w] = κ(c)`, `c` algebraic, has `[g, a_* w] = κ(a(c))`
   (go to a later Galois stage, `resT_conjPiH1`, `conjPiH1_kummerMapZHat`);
 * `constFnf`: an algebraic number as an NF-rational function; **`nfConst`**: `nfRingEquiv` on the
   algebraic numbers `k̄ → k̄'`;
@@ -136,7 +136,7 @@ lemma resG_resG' {g₁ g₂ g₃ : GStage k hτ} (h₁₂ : g₁ ≤ g₂) (h₂
     resG h₂₃ (resG h₁₂ y) = resG (h₁₂.trans h₂₃) y :=
   resT_resT y
 
-/-- **The Kummer class of a constant** at a stage containing it. -/
+/-- **The Kummer class of an algebraic number** at a stage containing it. -/
 lemma kummerNF_eq_ofG_const (N : NFModel (curveGaloisData k hτ)) (g : GStage k hτ) (c : g.Kˣ)
     (f : (fnf N)ˣ) (hf : ((f : fnf N) : FFClosure X) = algebraMap g.K (FFClosure X) c) :
     kummerNF N (mem_range_of_isAlgebraic_F k hτ) f =
@@ -168,9 +168,9 @@ lemma resG_conj {g g' : GStage k hτ} (h : g ≤ g') (hgK : ∀ x ∈ g.K, a x �
 
 set_option maxHeartbeats 1600000 in
 -- the Kummer classes at the stages unify slowly
-/-- **Conjugation of a class equal to the Kummer class of a constant.** For `a` fixing `F` and
+/-- **Conjugation of a class equal to the Kummer class of an algebraic number.** For `a` fixing `F` and
 restricting to `h ∈ G_k` on `k̄`, a class `w` at a stage `g` with `a(K₁) ⊆ K₁` and `[g, w] = κ(c)`
-for a constant `c` satisfies `[g, a_* w] = κ(a(c))`. -/
+for an algebraic number `c` satisfies `[g, a_* w] = κ(a(c))`. -/
 theorem ofG_stageConj_eq (N : NFModel (curveGaloisData k hτ)) (h : Gk k (FFClosure X))
     (hag : ∀ y : kbar k (FFClosure X), a y = h y) (g : GStage k hτ) (hgK : ∀ x ∈ g.K, a x ∈ g.K)
     (w : H1G g) (f f' : (fnf N)ˣ) (hc : IsAlgebraic k ((f : fnf N) : FFClosure X))
