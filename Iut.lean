@@ -540,6 +540,8 @@ import Iut.Reconstruction.Thm19.DecompIso
 import Iut.Reconstruction.Thm19.DeltaUCongr
 import Iut.Reconstruction.Thm19.DeltaUEquiv
 import Iut.Reconstruction.Thm19.DeltaUxCongr
+import Iut.Reconstruction.Thm19.EllipticJ
+import Iut.Reconstruction.Thm19.EllipticNF
 import Iut.Reconstruction.Thm19.GalConj
 import Iut.Reconstruction.Thm19.GalConjPi
 import Iut.Reconstruction.Thm19.GalConjStage
@@ -559,9 +561,11 @@ import Iut.Reconstruction.Thm19.MatchPoint
 import Iut.Reconstruction.Thm19.NFAdditive
 import Iut.Reconstruction.Thm19.NFCanon
 import Iut.Reconstruction.Thm19.NFColimit
+import Iut.Reconstruction.Thm19.NFConstEquiv
 import Iut.Reconstruction.Thm19.NFDecomp
 import Iut.Reconstruction.Thm19.NFDirectLimit
 import Iut.Reconstruction.Thm19.NFEval
+import Iut.Reconstruction.Thm19.NFJInvariant
 import Iut.Reconstruction.Thm19.NFKummer
 import Iut.Reconstruction.Thm19.NFLimit
 import Iut.Reconstruction.Thm19.NFPoints
@@ -570,6 +574,7 @@ import Iut.Reconstruction.Thm19.NFStage
 import Iut.Reconstruction.Thm19.NFTransition
 import Iut.Reconstruction.Thm19.OrdCompat
 import Iut.Reconstruction.Thm19.OrdMatch
+import Iut.Reconstruction.Thm19.OriginMatch
 import Iut.Reconstruction.Thm19.PUStage
 import Iut.Reconstruction.Thm19.PiJCongr
 import Iut.Reconstruction.Thm19.PlaceConj
