@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.EtaleTheta.ThetaProp13
-import Iut.EtaleTheta.TemperedFourGonInput
+import Iut.EtaleTheta.TemperedNGonInput
 
 /-!
 # [EtTh] Prop. 1.3: the theta class comes from `(Π^tp_Y)^Θ` — the reduction to a Heisenberg
@@ -563,9 +563,9 @@ include h2 in
   `χ(g₁) = 1` (MR15 13a): for `l` odd with `2l ∣ N_j`, every lift `σ ∈ Gal(Ω/L_X)` of the
   image of `γ ∈ Π^tp_X` with `χ(γ) = l·m` moves `η_j` by an `l`-th power,
   `σ η_j = (d·y)^l·η_j` (`d ∈ K`, `y ∈ L_j`);
-* (TFGD run 3, lead decision D-T5) C1 for this system from the geometric inputs (Z_{N_j})
-  (`ZM`, `Π^tp_Y ≤ Π^tp_{K(E_{q^{N_j}})}` for all `j`; `levelsDominated_of_zM`, using
-  `L j ≤ L 0 ⊔ K(E_{q^{N_j}})`). -/
+* (TFGD runs 3, 8) C1 for this system, unconditionally: the domination statements (Z_{N_j})
+  (`ZM`, `Π^tp_Y ≤ Π^tp_{K(E_{q^{N_j}})}`) hold for all `j` (`zM`: the `2N`-gon models of
+  `E_{q^{N_j}}`), and `levelsDominated_of_zM` uses `L j ≤ L 0 ⊔ K(E_{q^{N_j}})`. -/
 theorem exists_thetaClassTemp_prop13 :
     ∃ (L : ℕ → IntermediateField (K₀ K τ) Ω)
       (hL : ∀ j, IsOpen ((L j).fixingSubgroup : Set (Ω ≃ₐ[K₀ K τ] Ω)))
@@ -630,7 +630,7 @@ theorem exists_thetaClassTemp_prop13 :
             (((η j : (F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j)))ˣ) :
               F (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))) : Ω) l) ∧
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
-        (∀ j, ZM h2 h12 O hO hs j V hV) → LevelsDominated V hV (tateDataX O hO hs h12) hL) := by
+        LevelsDominated V hV (tateDataX O hO hs h12) hL) := by
   obtain ⟨L, hL, h₁, η, het, -, -, -, htr, hcusp, hF, hL02, hsup, w, hw1, hw2, -, hw4⟩ :=
     exists_etaleThetaSystem h2 h12 hs
   haveI hX : ∀ j, Fact ((hemiData t.tateCurve).L ≤ L j) := fun j => ⟨h₁ j⟩
@@ -654,7 +654,7 @@ theorem exists_thetaClassTemp_prop13 :
         (hcc W hk hτ V hV hVW hC1 n) ζ⟩, fun hG5 => ?_, hw2,
     fun V hV => ⟨piYIndexTwoAt_zero_of_zM h2 h12 O hO hs (zM_zero h2 h12 hs O hO V hV) hL02,
       fun j l hl hlN hC1 g₁ hg₁ γ m hγ σ hσ => ?_⟩,
-    fun V hV hZ => levelsDominated_of_zM h2 h12 O hO hs hZ hsup⟩
+    fun V hV => levelsDominated_of_zM h2 h12 O hO hs (zM h2 h12 hs O hO V hV) hsup⟩
   · obtain ⟨hLB, hF2⟩ := hF j n hn
     refine classAt_eq_one_of_thetaKernel η hC1 j n _ hLB (fun σ hσ ρ hρ x hx => ?_)
       (fun σ hσ => ?_) γ hγ

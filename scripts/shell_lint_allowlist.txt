@@ -1745,3 +1745,17 @@ TemperedFundamentalGroups.FourGon.Rels.cub₂	def
 TemperedFundamentalGroups.FourGon.Rels.q₃	def
 TemperedFundamentalGroups.FourGon.Rels.q₄	def
 TemperedFundamentalGroups.FourGon.Rels.q₅	def
+# 2026-11-03 (TFGD run 8, tfg pin 04ab863, lead decision D-T10): the 2N-gon model of E_{q^N} (tfg Andre/TateNGon*).
+# `NGon.Red` (the reductions mod 𝔪 of the model equations at a prime; constructed by tfg `NGon.red_of_rels`) and
+# `NGon.Input` (the model data of E_{q^N} → E_q; constructed in iut `exists_NGonInput`, used only by `zM_succ`) are
+# defining condition/data bundles, never assumed in a final consumer: `def`.
+TemperedFundamentalGroups.NGon.Input.eq	def
+TemperedFundamentalGroups.NGon.Input.gam	def
+TemperedFundamentalGroups.NGon.Input.good	def
+TemperedFundamentalGroups.NGon.Input.pair	def
+TemperedFundamentalGroups.NGon.Input.vx	def
+TemperedFundamentalGroups.NGon.Input.vy	def
+TemperedFundamentalGroups.NGon.Red.gam1	def
+TemperedFundamentalGroups.NGon.Red.gamD	def
+TemperedFundamentalGroups.NGon.Red.pairA	def
+TemperedFundamentalGroups.NGon.Red.pairB	def

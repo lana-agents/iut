@@ -950,7 +950,7 @@ theorem exists_thetaRep_inputs :
         ThetaClassCompatible (ht := transcendental_tau t.tateCurve)
           (LX := (hemiData t.tateCurve).L) (hLX := hemiL_open t) V hV (tateDataX O hO hs h12) η) ∧
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
-        (∀ j, ZM h2 h12 O hO hs j V hV) → LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
+        LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (n : ℕ) [NeZero n]
         (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu n Ω)),
@@ -1006,7 +1006,7 @@ theorem exists_thetaEnvU_rigidity :
       (η : ∀ j, units (fieldData (transcendental_tau t.tateCurve) (L j) (hL j))),
       ThetaTransitions (transcendental_tau t.tateCurve) hL η ∧
       (∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O),
-        (∀ j, ZM h2 h12 O hO hs j V hV) → LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
+        LevelsDominated V hV (tateDataX O hO hs h12) hL) ∧
       ∀ (V : ValuationSubring Ω) (hV : V.comap (algebraMap K Ω) = O)
         (hC1 : LevelsDominated V hV (tateDataX O hO hs h12) hL) (l N : ℕ) [NeZero l] [NeZero N]
         (r : ContH1.cocycles (piYddotX V hV (tateDataX O hO hs h12) hL) (Mu (l * N) Ω)),

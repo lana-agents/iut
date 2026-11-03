@@ -375,6 +375,18 @@ The model cocycle on a discrete group (`ThetaClass.lean`, shell #30) was deleted
   Tate `2`-gon, and `piY_le_range_of_hom`). The `ZM 0` hypotheses of
   `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`, `exists_thetaEnvU_rigidity_cX` are
   removed (Z_0 is discharged); C1 still takes `∀ j, ZM j`.
+* (11s) **(Z_{N_j}) = `ZM j` for every `j`, C1 unconditional (TFGD run 8)**:
+  `TemperedNGonInput.lean` (new): Vélu for `E_{q^N} → E_q` as splitting of the Tate series mod `N`
+  (`veluN_X`, `veluN_Y`), the block functions `x_k, y_k` (`k ∈ ℤ/N`) on `E_{s^N}` and their
+  translations, the pair relations for translation by `P(q^d)` (`addD_rels`, A-type `R1, R2/δ, R3`
+  and B-type `B1, B2, B_YY`), the cyclic quadrics `Γ_d` (`gam_rel`, from
+  `TemperedGammaConst.lean`: `Γ_d` takes one value on Tate points, by the theta-family engine), the
+  norms of all coefficients (`TemperedCoeffNorms.lean`, `K_d` bounds), integrality of the blocks
+  (`TemperedBlockIntegral.lean`, valuations), the fibre property via Galois automorphisms
+  (`TemperedLevelAut.lean`, `fibreN`), **`exists_NGonInput`** and **`zM_succ`** (tfg's
+  `NGon.exists_object`, the `2N`-gon model). **`zM`**: `ZM j` for all `j`. The `∀ j, ZM j`
+  hypotheses of the C1 conjuncts of `exists_thetaClassTemp_prop13`, `exists_thetaRep_inputs`,
+  `exists_thetaEnvU_rigidity(_cX)` are removed: `LevelsDominated` holds for the system.
 
 ### (12), (13) The arithmetic abelian model, automorphisms of the mod `N` models — deleted
 
