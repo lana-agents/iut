@@ -442,6 +442,7 @@ import Iut.MainTheorem
 import Iut.Multiradial.PrimeStrip.Arc
 import Iut.Multiradial.PrimeStrip.Black
 import Iut.Multiradial.PrimeStrip.Components
+import Iut.Multiradial.PrimeStrip.Cor53
 import Iut.Multiradial.PrimeStrip.FRlf
 import Iut.Multiradial.PrimeStrip.FRlfBlack
 import Iut.Multiradial.PrimeStrip.Full
@@ -452,6 +453,7 @@ import Iut.Multiradial.PrimeStrip.MonoAn
 import Iut.Multiradial.PrimeStrip.Mu
 import Iut.Multiradial.PrimeStrip.PivTemp
 import Iut.Multiradial.PrimeStrip.Strip
+import Iut.Multiradial.PrimeStrip.Transport
 import Iut.Multiradial.Spec
 import Iut.Multiradial.ThetaData
 import Iut.NumberTheory.SixExponentials.Basic
