@@ -2036,3 +2036,13 @@ injective; bijective if `T = TM`, or for strictly Belyi type) and Cor. 1.10 (b)�
     along open continuous surjections), `piv_hasONSBasis`, `exists_descend_piv`, **`kummerLift (hΔ :
     DeltaCharacteristic D v) (h3 : PiToGQuotient D v) : KummerLift D v`**. No new named inputs; MR21 can replace its
     hypothesis `hk : ∀ v, KummerLift D v` by `fun v => kummerLift D v (hΔ v) (h3 v)` (MR20 inputs Lemma 1.3.8, H3).
+
+* **Hand-off 2026-11-21 (MR9 track agent, session y, lead christian-aa).** Merged **7192bf5** (`KummerLift D v` from
+  `DeltaCharacteristic` + H3; G-level `mulLift`, `exists_mulLift`). No WIP branch. No new named inputs; the inputs of
+  `kummerLift` are MR20's `DeltaCharacteristic D v` ([AbsAnab] Lemma 1.3.8 for `Π_v`, = MR13's
+  `ArithQuotientPreservedPadic` transported) and H3 `PiToGQuotient D v`.
+  **Next steps (candidates):** (1) for MR21 R5 (Cor 5.3 (iii)): whether the lift can be chosen to preserve the splitting
+  `τ^⊢_v` (`mulLift` on `K_v^×` is `galEquiv_multEquiv φ`, which maps `p` to `p·u`, `u` a unit, in general) — look up IUT I
+  Cor 5.3 (iii) proof and AbsTopIII Prop 5.8 (ii) first; (2) Cor 1.10 (c) (weights) remains blocked (MR3(b)) and is not
+  needed for `T = TM`. **Decisions for the lead:** none blocking; the rigidity draft (scratchpad `mr9-y/MulRigid-draft.lean`)
+  was handed to MR21 per the lead's message.
