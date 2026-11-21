@@ -6,6 +6,7 @@ Authors: LANA Project
 import Iut.HodgeTheater.PmBridge
 import Iut.HodgeTheater.FRlfGlobal
 import Iut.Multiradial.PrimeStrip.FRlf
+import Iut.Multiradial.Theater.Global
 
 /-!
 # `Θ^{±ell}NF`-Hodge theaters (IUT I, Definitions 6.11, 6.13; Remark 6.12.2)
@@ -19,7 +20,8 @@ import Iut.Multiradial.PrimeStrip.FRlf
 * **`Θ^{±ell}NF`-Hodge theaters** (`ThetaPmEllNFHT D`, Definition 6.13(i)) relative to initial
   Θ-data `D`: the label layer, with the objects built from `D` attached: `F`-prime-strips
   `†F_t` (`t ∈ T`), `†F_≻` and `†F_>` (`Multiradial.PrimeStrip.FStrip`, MR20), the global
-  `†D^⊚`, `†D^⊚±` (`FRlfGlobal.lean`), the `F^⊩`-prime-strip of the `ΘNF`-part
+  categories `†D^⊚ ≅ B(C̲_K)⁰`, `†D^⊚± ≅ B(X̲_K)⁰` (`Multiradial.Theater.DCircCat`, `DCircPmCat`;
+  isomorphisms are equivalences), the `F^⊩`-prime-strip of the `ΘNF`-part
   (`Multiradial.PrimeStrip.FRlfStrip`) and the `F^{⊢×μ}`-prime-strip of `†F_≻`
   (`Multiradial.PrimeStrip.FMuStrip`; IUT II, Definition 4.9, used by the Θ-link).
   Isomorphisms: an isomorphism of the label layers with isomorphisms of the attached objects
@@ -159,10 +161,10 @@ structure ThetaPmEllNFHT where
   Fsucc : Multiradial.PrimeStrip.FStrip D
   /-- The target `†F_>` of the `Θ`-bridge (glued to `†F_≻` by Proposition 6.7). -/
   Fgt : Multiradial.PrimeStrip.FStrip D
-  /-- `†D^⊚` of the `NF`-bridge. -/
-  Dcirc : DCirc D
-  /-- `†D^⊚±` of the `Θ^ell`-bridge. -/
-  DcircPm : DCircPm D
+  /-- `†D^⊚` of the `NF`-bridge (a category equivalent to `B(C̲_K)⁰`). -/
+  Dcirc : Multiradial.Theater.DCircCat D
+  /-- `†D^⊚±` of the `Θ^ell`-bridge (a category equivalent to `B(X̲_K)⁰`). -/
+  DcircPm : Multiradial.Theater.DCircPmCat D
   /-- The `F^⊩`-prime-strip of the `ΘNF`-part (IUT I, Definition 5.5). -/
   Frlf : Multiradial.PrimeStrip.FRlfStrip D
   /-- The `F^{⊢×μ}`-prime-strip of `†F_≻` (IUT II, Definition 4.9). -/
@@ -183,10 +185,10 @@ structure Iso (A B : ThetaPmEllNFHT D) where
   Fsucc : A.Fsucc.Iso B.Fsucc
   /-- `†F_> ≅ ‡F_>`. -/
   Fgt : A.Fgt.Iso B.Fgt
-  /-- `†D^⊚ ≅ ‡D^⊚`. -/
-  Dcirc : A.Dcirc.G.carrier ≃ₜ* B.Dcirc.G.carrier
-  /-- `†D^⊚± ≅ ‡D^⊚±`. -/
-  DcircPm : A.DcircPm.G.carrier ≃ₜ* B.DcircPm.G.carrier
+  /-- `†D^⊚ ≅ ‡D^⊚` (an equivalence of categories). -/
+  Dcirc : A.Dcirc.C ≌ B.Dcirc.C
+  /-- `†D^⊚± ≅ ‡D^⊚±` (an equivalence of categories). -/
+  DcircPm : A.DcircPm.C ≌ B.DcircPm.C
   /-- The `F^⊩`-prime-strips: `†C^⊩ ≃ ‡C^⊩` (`FRlfGlobal.Iso`) and the `F^⊢`-prime-strips,
   compatible with the `ρ_v` (`Multiradial.PrimeStrip.FRlfData.Iso`). -/
   Frlf : A.Frlf.Iso B.Frlf
@@ -201,8 +203,8 @@ theorem toLabels_surjective (A B : ThetaPmEllNFHT D) :
   refine ⟨⟨g, fun t => (Multiradial.PrimeStrip.FStrip.nonempty_iso _ _).some,
     (Multiradial.PrimeStrip.FStrip.nonempty_iso _ _).some,
     (Multiradial.PrimeStrip.FStrip.nonempty_iso _ _).some,
-    (A.Dcirc.iso_model.some.trans B.Dcirc.iso_model.some.symm),
-    (A.DcircPm.iso_model.some.trans B.DcircPm.iso_model.some.symm),
+    (Multiradial.Theater.DCircCat.nonempty_equiv _ _).some,
+    (Multiradial.Theater.DCircPmCat.nonempty_equiv _ _).some,
     (Multiradial.PrimeStrip.FRlfStrip.nonempty_iso _ _).some,
     (Multiradial.PrimeStrip.FMuStrip.nonempty_iso _ _).some⟩, rfl⟩
 
@@ -220,8 +222,8 @@ noncomputable def ofData : ThetaPmEllNFHT D where
   F _ := Multiradial.PrimeStrip.FStrip.ofThetaData D
   Fsucc := Multiradial.PrimeStrip.FStrip.ofThetaData D
   Fgt := Multiradial.PrimeStrip.FStrip.ofThetaData D
-  Dcirc := DCirc.tautological D
-  DcircPm := DCircPm.tautological D
+  Dcirc := Multiradial.Theater.DCircCat.ofThetaData D
+  DcircPm := Multiradial.Theater.DCircPmCat.ofThetaData D
   Frlf := Multiradial.PrimeStrip.FRlfStrip.ofThetaData D
   Fmu := Multiradial.PrimeStrip.FMuStrip.ofThetaData D
 

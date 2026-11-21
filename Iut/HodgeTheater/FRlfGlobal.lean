@@ -7,7 +7,7 @@ import Iut.Frobenioid.GlobalRho
 import Iut.Cor312.ThetaData.Basic
 
 /-!
-# The global data of `F^⊩_mod`, `D^⊚` and `D^⊚±` (IUT I, Ex. 3.5, Defs. 4.1 (v), 6.1 (v))
+# The global data of `F^⊩_mod` (IUT I, Ex. 3.5)
 
 The global (non-prime-strip) objects of a `Θ^{±ell}NF`-Hodge theater built from initial Θ-data
 `D`; the prime-strips themselves are in `Iut/Multiradial/PrimeStrip/` (MR20).
@@ -17,9 +17,8 @@ The global (non-prime-strip) objects of a `Θ^{±ell}NF`-Hodge theater built fro
 * **`FRlfGlobal D`**: the global realified Frobenioid `C^⊩` with an equivalence to
   `rlfModel D = C^⊩_mod` (IUT I, Example 3.5 (ii)); `Prime(C^⊩) ≅ V` and `ρ_v` derived from it;
   isomorphisms `FRlfGlobal.Iso` (properties in `FRlfMod.lean`, `FRlfIso.lean`);
-* `DCirc`, `DCircPm`: isomorphs of `D^⊚ = B(C̲_K)^0` and `D^⊚± = B(X̲_K)^0` (IUT I,
-  Definitions 4.1 (v), 6.1 (v)), recorded by their (étale) fundamental groups (a category
-  `B(Π)^0` determines and is determined by `Π` up to inner automorphism, [AbsTopI]);
+* the global categories `D^⊚ = B(C̲_K)⁰`, `D^⊚± = B(X̲_K)⁰` are `Multiradial.Theater.DCircCat`,
+  `DCircPmCat` (`Iut/Multiradial/Theater/Global.lean`);
 * `unitsOne`, `OxMu`: the units of norm one of a normed field and `O^{×μ} = O^×/μ`.
 -/
 
@@ -130,33 +129,6 @@ end FRlfGlobal
 noncomputable def FRlfGlobal.ofThetaData : FRlfGlobal D where
   C := rlfModel D
   equiv := CategoryTheory.Equivalence.refl
-
-/-! ### The global objects `D^⊚`, `D^⊚±` -/
-
-/-- **`π_1(D^⊚) = Π_{C̲_K}`** (IUT I, Definition 4.1(v): `D^⊚ = B(C̲_K)^0`). -/
-noncomputable def dCircModel : TGrp.{u} := ⟨D.orb.CKu.genuinePi1⟩
-
-/-- **`π_1(D^⊚±) = Π_{X̲_K}`** (IUT I, Definition 6.1(v): `D^⊚± = B(X̲_K)^0`). -/
-noncomputable def dCircPmModel : TGrp.{u} := ⟨D.orb.XKu.genuinePi1⟩
-
-/-- An isomorph of `D^⊚` (recorded by its fundamental group). -/
-structure DCirc where
-  /-- The fundamental group. -/
-  G : TGrp.{u}
-  iso_model : Nonempty (G.carrier ≃ₜ* (dCircModel D).carrier)
-
-/-- An isomorph of `D^⊚±` (recorded by its fundamental group). -/
-structure DCircPm where
-  /-- The fundamental group. -/
-  G : TGrp.{u}
-  iso_model : Nonempty (G.carrier ≃ₜ* (dCircPmModel D).carrier)
-
-/-- The tautological `D^⊚`. -/
-noncomputable def DCirc.tautological : DCirc D := ⟨dCircModel D, ⟨ContinuousMulEquiv.refl _⟩⟩
-
-/-- The tautological `D^⊚±`. -/
-noncomputable def DCircPm.tautological : DCircPm D :=
-  ⟨dCircPmModel D, ⟨ContinuousMulEquiv.refl _⟩⟩
 
 end Models
 

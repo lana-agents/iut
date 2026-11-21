@@ -228,8 +228,6 @@ Iut.Frobenioid.Model.Hom.rel	def
 Iut.Frobenioid.OrbitHom.map_smul	def
 Iut.Frobenioid.OrbitObj.isOpen	def
 Iut.Frobenioid.TotallyEpimorphic.epi	def
-Iut.HodgeTheater.DCirc.iso_model	baseline
-Iut.HodgeTheater.DCircPm.iso_model	baseline
 Iut.HodgeTheater.DNFBridge.Iso.compat	def
 Iut.HodgeTheater.DThetaBridge.Iso.compat	def
 Iut.HodgeTheater.DThetaEllBridge.Iso.compat_ε	def
@@ -1803,6 +1801,8 @@ Iut.Multiradial.PrimeStrip.FRlfStrip.equiv_model	def
 Iut.Multiradial.PrimeStrip.FRlfBlackData.Iso.rhoNon	def
 Iut.Multiradial.PrimeStrip.FRlfBlackData.Iso.rhoArc	def
 Iut.Multiradial.PrimeStrip.FRlfBlackStrip.equiv_model	def
+Iut.Multiradial.Theater.DCircCat.equiv_model	def
+Iut.Multiradial.Theater.DCircPmCat.equiv_model	def
 Iut.Multiradial.PrimeStrip.FBlackComp.equiv_model	def
 Iut.Multiradial.PrimeStrip.FBlackArcComp.equiv_model	def
 # 2026-11-21 (MR13 run 17b, iut tfg pin 80bbc80): Prop fields of tfg construction data reaching the Iut import

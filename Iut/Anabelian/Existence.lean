@@ -358,9 +358,9 @@ lemma coord₂_surjective : Function.Surjective P.coord₂ := by
 
 open scoped Classical in
 /-- **The identification `Q = E(K)[ℓ]/M ≃ ℤ/ℓℤ`.** -/
-def QIso : P.CKu.Q ≃ ZMod P.ℓ :=
-  ((QuotientAddGroup.quotientAddEquivOfEq P.coord₂_ker.symm).trans
-    (QuotientAddGroup.quotientKerEquivOfSurjective P.coord₂ P.coord₂_surjective)).toEquiv
+def QIso : P.CKu.Q ≃+ ZMod P.ℓ :=
+  (QuotientAddGroup.quotientAddEquivOfEq P.coord₂_ker.symm).trans
+    (QuotientAddGroup.quotientKerEquivOfSurjective P.coord₂ P.coord₂_surjective)
 
 open scoped Classical in
 omit [NumberField ↥P.torsionField] [IsAlgClosure F Fbar] in

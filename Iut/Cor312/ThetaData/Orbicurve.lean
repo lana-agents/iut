@@ -109,10 +109,10 @@ structure OrbicurveData : Type u where
   fundamental groups are `genuinePi1Cover` of the four covers (open immersions,
   `genuinePi1Cover_isOpenEmbedding`; see `OrbicurveData.pi1XKu_to_CKu` and its siblings). -/
   diagram_cartesian : Orbicurve.IsCartesianSquare XKu_to_XK XK_to_CK XKu_to_CKu CKu_to_CK
-  /-- The identification of the rank-one quotient `Q` of `C̲_K` with `ℤ/ℓℤ` (chosen
-  identification; only the nonvanishing in `epsilon_spec` depends on it, and that
+  /-- The identification of the rank-one quotient `Q` of `C̲_K` with `ℤ/ℓℤ`, an isomorphism of
+  groups (chosen identification; only the nonvanishing in `q_ne_zero` depends on it, and that
   condition is invariant under the choice). -/
-  QIso : CKu.Q ≃ ZMod P.ℓ
+  QIso : CKu.Q ≃+ ZMod P.ℓ
   /-- The element of `Q` giving rise to the distinguished cusp. -/
   q : CKu.Q
   /-- The chosen element of `Q` is nonzero (IUT I, Definition 3.1(f)). -/

@@ -461,6 +461,10 @@ import Iut.Multiradial.PrimeStrip.PivTemp
 import Iut.Multiradial.PrimeStrip.Strip
 import Iut.Multiradial.PrimeStrip.Transport
 import Iut.Multiradial.Spec
+import Iut.Multiradial.Theater.GalMor
+import Iut.Multiradial.Theater.Global
+import Iut.Multiradial.Theater.LabCuspModel
+import Iut.Multiradial.Theater.OuterHom
 import Iut.Multiradial.ThetaData
 import Iut.NumberTheory.SixExponentials.Basic
 import Iut.NumberTheory.SixExponentials.ExpPolyZeros
