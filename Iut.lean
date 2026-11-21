@@ -449,6 +449,7 @@ import Iut.Multiradial.PrimeStrip.FRlfBlack
 import Iut.Multiradial.PrimeStrip.Full
 import Iut.Multiradial.PrimeStrip.IsoClass
 import Iut.Multiradial.PrimeStrip.Kummer
+import Iut.Multiradial.PrimeStrip.KummerLiftPf
 import Iut.Multiradial.PrimeStrip.Local
 import Iut.Multiradial.PrimeStrip.MonoAn
 import Iut.Multiradial.PrimeStrip.Mu
@@ -520,6 +521,8 @@ import Iut.Reconstruction.Local.LogVolume
 import Iut.Reconstruction.Local.LogVolumeCompletion
 import Iut.Reconstruction.Local.LogVolumeLCFT
 import Iut.Reconstruction.Local.MonoAnalytic
+import Iut.Reconstruction.Local.MulLift
+import Iut.Reconstruction.Local.MulLiftOrd
 import Iut.Reconstruction.Local.PadicValued
 import Iut.Reconstruction.Local.PowerIndex
 import Iut.Reconstruction.Local.Torsion

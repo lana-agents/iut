@@ -1986,3 +1986,53 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
   `hAbs_of_strict` at the downstream uses of `piCmodAutEquiv` / `piCK_aut_eq_conj` (currently unused outside
   `DStarDescent`); `CKStrictSemiAbs` needs the elasticity of `G_K` ([AbsTopI] Thm. 1.7 (iii)).
   Decisions for the lead: whether MR9 takes on `CKStrictSemiAbs` next, or the track is closed.
+
+### Lead decision after session x2 (2026-11-21, christian-aa) and scoping (session y)
+Lead: the `CKSemiAbsConj` chain is closed (`CKStrictSemiAbs` stays a named literature debt). Next MR9 deliverable:
+what MR21 needs from [AbsTopIII] Prop. 3.2 (iv) (T3 l.4111–4124: `Isom_{C^MLF_T}((Π↷M),(Π*↷M*)) → Isom_TG(Π,Π*)`
+injective; bijective if `T = TM`, or for strictly Belyi type) and Cor. 1.10 (b)–(d′) at all levels, local version.
+
+* **Scoping (session y, literature looked up: T3 l.4111–4155 statement and proof).** The proof of (iv): injectivity
+  "follows from the functorial algorithms of assertions (i), (ii) [which imply that automorphisms of `(Π ↷ M_TM)`
+  that act trivially on `Π` necessarily act trivially on `M_TM`]" (cyclotomic rigidity + Kummer maps); surjectivity
+  for `T = TM` "from considering the copy of `M_TM ≅ O^▷_k` embedded in abelianizations of open subgroups of
+  `G ≅ G_k` via local class field theory [[Mzk9] Prop. 1.2.1 (iii), (iv)], together with (i), (ii) [and Cor. 1.10 (b)]".
+* **What MR21 consumes** (`Multiradial/PrimeStrip/Cor53.lean`, MR21-plan "Hand-off session 2"):
+  - `KummerLift D v` (debt R4b, surjectivity): every `σ ∈ Aut(Π_v)` has a `σ`-equivariant `ψ : \bar{ℚ}_p^× ≃ \bar{ℚ}_p^×`
+    (additive `PiMul D v`, action through `Π_v → G_v`) with `ordPi ∘ ψ = ordPi`;
+  - proposed `KummerRigid D v` (R3, injectivity): a `Π_v`-equivariant additive automorphism `ψ` of `PiMul D v` with
+    `ordPi ∘ ψ = λ · ordPi`, `λ > 0`, is the identity.
+* **What exists**: `Local/Cor110WeilBar.lean`: `weilBar G ⊆ lim→_U U^ab` (colimit along the transfer of the Weil parts =
+  Cor. 1.10 (b), (d) / [Mzk9] 1.2.1 (iii), (iv) at all levels), group-theoretic (`barMap_mem_weilBar`), and for
+  `G = G_k`: `weilBarEquiv : weilBar G_k ≃* Ωˣ`, `G_k`-equivariant (`weilBarHom_barConj`), extending
+  `unitsBarEquiv` (units), `weilBarHom_topBar` (top level = `k^×` via the Artin map); `Valuation.lean`
+  `v_galEquiv_multEquiv`; CKT `isTorallyKummerFaithful_padic`.
+* **Route.**
+  1. `Local/MulLift.lean` (generic, `K ⊆ \bar{ℚ}_p` finite over `ℚ_p`, `φ : G_K ≃ₜ* G_{K'}`): `mulLift φ := weilBarEquiv ∘
+     barMap φ ∘ weilBarEquiv⁻¹ : \bar{ℚ}_p^× ≃* \bar{ℚ}_p^×`; `φ`-equivariant (`barMap_trans`, `conjCont`); preserves units
+     (`map_unitsBar`); on `K^×` it is `galEquiv_multEquiv φ` (`barMap_topBar`), hence preserves `v`, hence `‖·‖` on `K^×`;
+     a homomorphism `Ωˣ → ℝ` killing units and `p` vanishes (`ord(Ωˣ) ⊆ ℚ`), so `ord ∘ mulLift φ = ord`. ≈300 lines.
+  2. `Local/MulRigid.lean` (elementary Kummer argument, no cohomology): an equivariant `ψ` with `ord ∘ ψ = λ ord`,
+     `λ > 0`: (a) `ψ(E^×) = E^×` for finite `E ⊇ K` (fixed fields); (b) `λ = 1` (`ord(K^×)` discrete);
+     (c) `ψ|μ_n = (·)^a` and `w = ψ(y) y^{-a} ∈ E^×` for `y^n = π_E`, `E ⊇ μ_n`, so `n | 1 − a`, i.e. `ψ = id` on `μ_∞`;
+     (d) for `x ∈ E^×`, `y^n = x`: `ψ(y)/y ∈ E^×`, so `ψ(x)/x ∈ ⋂_n (E^×)^n = 1` (CKT Kummer-faithfulness). ≈400–600 lines.
+  3. `Multiradial/PrimeStrip/KummerLiftPf.lean`: descent `Aut(Π_v) → Aut(G_v)` from `DeltaCharacteristic` (Lemma 1.3.8,
+     MR20 named input) and H3 (`PiToGQuotient`; openness of `Π_v → G_v` from a basis of open subgroups: profinite at
+     `V^good`, `piv_temp` at `V^bad`); **`kummerLift`** (`KummerLift D v` from `DeltaCharacteristic`, H3) and
+     **`kummerRigid`** (from H3 only); uniqueness of the lift. ≈200–300 lines.
+  Cor. 1.10 (c) (weights) is not needed: `T = TM` uses `μ_Ẑ(G)` (Prop. 3.2 (ii)), and MR21's `C_v` is over `G_v`-modules.
+  Total ≈1–1.2k lines, one session. No new named inputs (the MR20 inputs `DeltaCharacteristic`, H3 remain).
+
+* **Lead message (session y): MR21 proves the rigidity half (`KummerRigid`) itself; MR9 delivers `KummerLift` only.**
+  Route item 2 (`MulRigid.lean`) was therefore dropped from this branch (unvalidated draft left for MR21 at
+  `scratchpad/mr9-y/MulRigid-draft.lean`, noted in MR21-plan.md).
+* 2026-11-21 (session y): **`KummerLift D v` proved** (MR21 debt R4b), new code ≈430 lines:
+  - `Reconstruction/Local/MulLift.lean`: `weilBarMap`, **`mulLift φ : Ωˣ ≃* Ωˣ`** for `φ : Gal(Ω/k) ≃ₜ* Gal(Ω/k')`
+    (finite `k, k'/ℚ_p` in one algebraically closed `Ω`), `mulLift_smul` (φ-equivariant), `mulLift_mem_unitsΩ(_iff)`,
+    `mulLift_algebraMap` (= P17 `galEquiv_multEquiv φ` on `k^×`), `nrm_mulLift_algebraMap`.
+  - `Reconstruction/Local/MulLiftOrd.lean` (`Ω = \bar{ℚ}_p`): `ordU`, `ordU_ιF` (`ord(ι x)·v(p) = v(x)`),
+    **`ord_mulLift`**, **`exists_mulLift`** ([AbsTopIII] Prop. 3.2 (iv) surjectivity, `T = TM`, for `G_K ↷ \bar{ℚ}_p^×`).
+  - `Multiradial/PrimeStrip/KummerLiftPf.lean`: `isOpenMap_of_hasONSBasis`, `exists_descend` (automorphisms descend
+    along open continuous surjections), `piv_hasONSBasis`, `exists_descend_piv`, **`kummerLift (hΔ :
+    DeltaCharacteristic D v) (h3 : PiToGQuotient D v) : KummerLift D v`**. No new named inputs; MR21 can replace its
+    hypothesis `hk : ∀ v, KummerLift D v` by `fun v => kummerLift D v (hΔ v) (h3 v)` (MR20 inputs Lemma 1.3.8, H3).
