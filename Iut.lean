@@ -488,9 +488,12 @@ import Iut.Reconstruction.Cusp.HemiPiXChar
 import Iut.Reconstruction.Cusp.HemiSelfComm
 import Iut.Reconstruction.Cusp.LineCuspGenerators
 import Iut.Reconstruction.Cusp.OutSemidirect
+import Iut.Reconstruction.Cusp.P1ThreeCuspStab
+import Iut.Reconstruction.Cusp.P1ThreeLineQuotient
 import Iut.Reconstruction.Cusp.Pi1GaloisAlgebra
 import Iut.Reconstruction.Cusp.Pi1GaloisPoint
 import Iut.Reconstruction.Cusp.Pi1GaloisQuotient
+import Iut.Reconstruction.Cusp.Pi1GaloisTransport
 import Iut.Reconstruction.Cusp.SurfaceDiscrete
 import Iut.Reconstruction.Cusp.SurfaceGeom
 import Iut.Reconstruction.Cusp.SurfaceH2
