@@ -1786,6 +1786,7 @@ Iut.Multiradial.PrimeStrip.FrobCat.Iso.phi_pb	def
 Iut.Multiradial.PrimeStrip.FrobCat.Iso.phiInv_pb	def
 Iut.Multiradial.PrimeStrip.FrobCat.Iso.phi_unit	def
 Iut.Multiradial.PrimeStrip.FrobCat.Iso.phi_counit	def
+Iut.Multiradial.PrimeStrip.FrobCat.Iso.Hom2.phi_compat	def
 Iut.Multiradial.PrimeStrip.FMuKComp.Iso.kappa	def
 Iut.Multiradial.PrimeStrip.TMVdash.Iso.ray	def
 Iut.Multiradial.PrimeStrip.TMVdash.iso_orhd	def
