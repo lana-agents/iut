@@ -174,22 +174,32 @@ lemma Model.transportCounitInv_naturality {X Y : Model Φ' B' divB'} (φ : X ⟶
 
 /-- **The equivalence of model Frobenioids along an equivalence of bases**, for maps of the data
 in both directions inverse to each other through the unit and counit of `E`. -/
-def Model.transportEquiv : Model Φ B divB ≌ Model Φ' B' divB' :=
-  CategoryTheory.Equivalence.mk (Model.transport E.functor c hc hpos cb hcb hdiv)
-    (Model.transport E.inverse c' hc' hpos' cb' hcb' hdiv')
-    (NatIso.ofComponents
+def Model.transportEquiv : Model Φ B divB ≌ Model Φ' B' divB' where
+  functor := Model.transport E.functor c hc hpos cb hcb hdiv
+  inverse := Model.transport E.inverse c' hc' hpos' cb' hcb' hdiv'
+  unitIso := NatIso.ofComponents
       (fun X =>
         @asIso _ _ _ _ (Model.transportUnitHom E c hc hpos cb hcb hdiv c' hc' hpos' cb' hcb'
           hdiv' hcu X) (Model.isIso_of _ rfl (inferInstanceAs (IsIso (E.unit.app X.base))) rfl))
       (fun φ => Model.transportUnit_naturality E c hc hpos cb hcb hdiv c' hc' hpos' cb' hcb'
-        hdiv' hcu hcbu φ))
-    (NatIso.ofComponents
+        hdiv' hcu hcbu φ)
+  counitIso := (NatIso.ofComponents
       (fun Y =>
         @asIso _ _ _ _ (Model.transportCounitInvHom E c hc hpos cb hcb hdiv c' hc' hpos' cb'
           hcb' hdiv' hcc Y) (Model.isIso_of _ rfl
             (inferInstanceAs (IsIso (E.counitInv.app Y.base))) rfl))
       (fun φ => Model.transportCounitInv_naturality E c hc hpos cb hcb hdiv c' hc' hpos' cb'
         hcb' hdiv' hcc hcbc φ)).symm
+  functor_unitIso_comp X := by
+    -- `T(η_X) = ε⁻¹_{T X}` (both are `(1, E(η), 0, 0) = (1, ε⁻¹_E, 0, 0)`)
+    have h : (Model.transport E.functor c hc hpos cb hcb hdiv).map
+        (Model.transportUnitHom E c hc hpos cb hcb hdiv c' hc' hpos' cb' hcb' hdiv' hcu X) =
+        Model.transportCounitInvHom E c hc hpos cb hcb hdiv c' hc' hpos' cb' hcb' hdiv' hcc
+          ((Model.transport E.functor c hc hpos cb hcb hdiv).obj X) :=
+      Model.hom_ext rfl (E.counitInv_app_functor X.base).symm (map_zero _) (map_zero _)
+    erw [h]
+    exact @IsIso.hom_inv_id _ _ _ _ _
+      (Model.isIso_of _ rfl (inferInstanceAs (IsIso (E.counitInv.app _))) rfl)
 
 lemma Model.transportEquiv_functor :
     (Model.transportEquiv E c hc hpos cb hcb hdiv c' hc' hpos' cb' hcb' hdiv' hcu hcbu hcc
@@ -442,15 +452,53 @@ variable {D D' : Type} [Category.{0} D] [Category.{0} D']
 
 include hcbu hcbc
 
+/-- `Model.transportEquiv` for divisor-monoid isomorphisms `c`, `c'`. -/
+abbrev Model.transportEquiv' : Model Φ B divB ≌ Model Φ' B' divB' :=
+  Model.transportEquiv E (fun A => (c A).toAddMonoidHom) (fun f x => hc f x)
+    (fun A x hx => (hpos A x).1 hx) cb hcb hdiv (fun A => (c' A).toAddMonoidHom)
+    (fun f x => hc' f x) (fun A x hx => (hpos' A x).1 hx) cb' hcb' hdiv' hcu hcbu hcc hcbc
+
+set_option quotPrecheck false in
+local notation "𝐓" =>
+  Model.transportEquiv' E c hpos hc cb hcb hdiv c' hpos' hc' cb' hcb' hdiv' hcu hcbu hcc hcbc
+
+/-- The counit of `Model.transportEquiv'` in `F_Φ`: `(1, ε_E, 0)`. -/
+lemma Model.toElem_transportEquiv'_counit (Y : Model Φ' B' divB') :
+    (Model.toElem Φ' B' divB').map (𝐓.counit.app Y) =
+      (FrobCat.elemIsoOfBase
+        (A := (Model.toElem Φ' B' divB').obj (𝐓.functor.obj
+          (𝐓.inverse.obj Y)))
+        (B := (Model.toElem Φ' B' divB').obj Y) (E.counitIso.app Y.base)).hom :=
+  FrobCat.map_inv_of_map_hom (Model.toElem Φ' B' divB')
+    (𝐓.counitIso.app Y).symm
+    (FrobCat.elemIsoOfBase
+        (A := (Model.toElem Φ' B' divB').obj (𝐓.functor.obj
+          (𝐓.inverse.obj Y)))
+        (B := (Model.toElem Φ' B' divB').obj Y) (E.counitIso.app Y.base)).symm
+    (Elem.hom_ext rfl rfl rfl)
+
+/-- The inverse unit of `Model.transportEquiv'` in `F_Φ`: `(1, η_E⁻¹, 0)`. -/
+lemma Model.toElem_transportEquiv'_unitInv (X : Model Φ B divB) :
+    (Model.toElem Φ B divB).map (𝐓.unitInv.app X) =
+      (FrobCat.elemIsoOfBase (A := (Model.toElem Φ B divB).obj X)
+        (B := (Model.toElem Φ B divB).obj (𝐓.inverse.obj
+          (𝐓.functor.obj X)))
+        (E.unitIso.app X.base)).inv :=
+  FrobCat.map_inv_of_map_hom (Model.toElem Φ B divB)
+    (𝐓.unitIso.app X)
+    (FrobCat.elemIsoOfBase (A := (Model.toElem Φ B divB).obj X)
+        (B := (Model.toElem Φ B divB).obj (𝐓.inverse.obj
+          (𝐓.functor.obj X)))
+        (E.unitIso.app X.base))
+    (Elem.hom_ext rfl rfl rfl)
+
 /-- **The isomorphism of model Frobenioids along an equivalence of bases** `E` (with
 `Model.transportEquiv` as the equivalence of Frobenioids, `E` as base equivalence and `c`, `c'`
 as divisor-monoid isomorphisms). -/
 def FrobCat.Iso.ofTransport :
     (FrobCat.ofModel (Model Φ B divB) (Model.toElem Φ B divB)).Iso
       (FrobCat.ofModel (Model Φ' B' divB') (Model.toElem Φ' B' divB')) where
-  C := Model.transportEquiv E (fun A => (c A).toAddMonoidHom) (fun f x => hc f x)
-    (fun A x hx => (hpos A x).1 hx) cb hcb hdiv (fun A => (c' A).toAddMonoidHom)
-    (fun f x => hc' f x) (fun A x hx => (hpos' A x).1 hx) cb' hcb' hdiv' hcu hcbu hcc hcbc
+  C := 𝐓
   D := E
   phi := c
   phi_pos := hpos
@@ -464,6 +512,16 @@ def FrobCat.Iso.ofTransport :
     (fun _ => (Category.comp_id _).trans (Category.id_comp _).symm)⟩
   commPInv := ⟨NatIso.ofComponents (fun _ => CategoryTheory.Iso.refl _)
     (fun _ => (Category.comp_id _).trans (Category.id_comp _).symm)⟩
+  commP_counit B := by
+    refine ((Category.id_comp _).trans ((congrArg (· ≫ _)
+      (CategoryTheory.Functor.map_id _ _)).trans (Category.id_comp _))).trans ?_
+    exact (Model.toElem_transportEquiv'_counit E c hpos hc cb hcb hdiv c' hpos' hc' cb' hcb'
+      hdiv' hcu hcbu hcc hcbc B).symm
+  commP_unit A := by
+    refine ((Category.id_comp _).trans ((congrArg (· ≫ _)
+      (CategoryTheory.Functor.map_id _ _)).trans (Category.id_comp _))).trans ?_
+    exact (Model.toElem_transportEquiv'_unitInv E c hpos hc cb hcb hdiv c' hpos' hc' cb' hcb'
+      hdiv' hcu hcbu hcc hcbc A).symm
 
 lemma FrobCat.Iso.ofTransport_D :
     (FrobCat.Iso.ofTransport E c hpos hc cb hcb hdiv c' hpos' hc' cb' hcb' hdiv' hcu hcbu hcc

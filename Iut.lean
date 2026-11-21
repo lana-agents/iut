@@ -441,15 +441,18 @@ import Iut.LogLink.Thm311LGP
 import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
 import Iut.Multiradial.PrimeStrip.Arc
+import Iut.Multiradial.PrimeStrip.AutRigid
 import Iut.Multiradial.PrimeStrip.Black
 import Iut.Multiradial.PrimeStrip.Components
 import Iut.Multiradial.PrimeStrip.Cor53
+import Iut.Multiradial.PrimeStrip.Cor53Bij
 import Iut.Multiradial.PrimeStrip.FRlf
 import Iut.Multiradial.PrimeStrip.FRlfBlack
 import Iut.Multiradial.PrimeStrip.Full
 import Iut.Multiradial.PrimeStrip.IsoClass
 import Iut.Multiradial.PrimeStrip.Kummer
 import Iut.Multiradial.PrimeStrip.KummerLiftPf
+import Iut.Multiradial.PrimeStrip.KummerRigid
 import Iut.Multiradial.PrimeStrip.Local
 import Iut.Multiradial.PrimeStrip.MonoAn
 import Iut.Multiradial.PrimeStrip.Mu
@@ -526,6 +529,7 @@ import Iut.Reconstruction.Local.LogVolumeLCFT
 import Iut.Reconstruction.Local.MonoAnalytic
 import Iut.Reconstruction.Local.MulLift
 import Iut.Reconstruction.Local.MulLiftOrd
+import Iut.Reconstruction.Local.MulRigid
 import Iut.Reconstruction.Local.PadicValued
 import Iut.Reconstruction.Local.PowerIndex
 import Iut.Reconstruction.Local.Torsion

@@ -33,8 +33,9 @@ IUT I, Definition 4.1 (i), (iii), (iv) (l.6363–6450) and Definition 5.2 (i)–
   so they induce an equivalence `F_Φ ≌ F_{Φ'}`, `FrobCat.Iso.elemEquiv`), such that
   the structure functors commute up to natural isomorphism with the induced functor of
   elementary Frobenioids `F_Φ ⥤ F_{Φ'}` (`elemMap`, `(f, Z, n) ↦ (D(f), φ(Z), n)`; a
-  `CatCommSq` for the functor and one for the inverse). The square of base functors
-  (`FrobCat.Iso.comm`) follows. The `Φ`-isomorphisms are what the isomorphisms `ρ_v` of
+  `CatCommSq` for the functor and one for the inverse), the two squares being coherent through
+  the units and counits of the equivalences (`commP_counit`, `commP_unit`). The square of base
+  functors (`FrobCat.Iso.comm`) follows. The `Φ`-isomorphisms are what the isomorphisms `ρ_v` of
   `F^⊩`-prime-strips are compared through (IUT I, Definition 5.2 (iv)).
   For the models every equivalence of the categories admits such a base equivalence when the base
   is slim ([FrdI], Theorem 3.4 (v); `Frobenioid.thm34_galois_preservesBase`, MR16), so this is the
@@ -142,6 +143,21 @@ abbrev sqIso {C₁ C₂ C₃ C₄ : Type*} [Category* C₁] [Category* C₂] [Ca
   letI := h
   CatCommSq.iso T L R B
 
+/-- If a functor maps the morphism of an isomorphism `i` to that of `κ`, it maps the inverse
+of `i` to the inverse of `κ`. -/
+lemma map_inv_of_map_hom {C₁ C₂ : Type*} [Category* C₁] [Category* C₂] (P : C₁ ⥤ C₂)
+    {a b : C₁} (i : a ≅ b) (κ : P.obj a ≅ P.obj b) (h : P.map i.hom = κ.hom) :
+    P.map i.inv = κ.inv :=
+  congrArg CategoryTheory.Iso.inv (CategoryTheory.Iso.ext h : P.mapIso i = κ)
+
+/-- The isomorphism of `F_Φ` with divisor `0` and degree `1` over an isomorphism of bases. -/
+def elemIsoOfBase {D₁ : Type} [Category.{0} D₁] {Φ : DivMonoid.{0} D₁} {A B : Elem Φ}
+    (e : A.base ≅ B.base) : A ≅ B where
+  hom := ⟨e.hom, 0, (Φ.pos _).zero_mem, 1⟩
+  inv := ⟨e.inv, 0, (Φ.pos _).zero_mem, 1⟩
+  hom_inv_id := Elem.hom_ext (by simp) (by simp) rfl
+  inv_hom_id := Elem.hom_ext (by simp) (by simp) rfl
+
 /-- **An isomorphism of Frobenioids**: equivalences of the Frobenioids and of the bases, and
 isomorphisms of the divisor monoids `Φ^gp(A) ≅ Φ'^gp(A')` (in both directions) preserving the
 effective parts and compatible with the pull-backs, such that the equivalence of Frobenioids
@@ -178,6 +194,22 @@ structure Iso (X Y : FrobCat) where
   commP : CatCommSq C.functor X.P Y.P (elemMap D.functor phi phi_pos phi_pb)
   /-- Compatibility of the inverse with the structure functors. -/
   commPInv : CatCommSq C.inverse Y.P X.P (elemMap D.inverse phiInv phiInv_pos phiInv_pb)
+  /-- `commP` and `commPInv` are compatible through the counits of `C` and `D`:
+  `P'(C C⁻¹ B) ≅ E P(C⁻¹ B) ≅ E E⁻¹ P'(B) ≅ P'(B)` is `P'` of the counit. -/
+  commP_counit : ∀ B : Y.C,
+    (sqIso commP).hom.app (C.inverse.obj B) ≫
+      (elemMap D.functor phi phi_pos phi_pb).map ((sqIso commPInv).hom.app B) ≫
+        (elemIsoOfBase (A := (elemMap D.functor phi phi_pos phi_pb).obj
+          ((elemMap D.inverse phiInv phiInv_pos phiInv_pb).obj (Y.P.obj B))) (B := Y.P.obj B)
+          (D.counitIso.app (Y.P.obj B).base)).hom = Y.P.map (C.counit.app B)
+  /-- `commP` and `commPInv` are compatible through the units of `C` and `D`:
+  `P(C⁻¹ C A) ≅ E⁻¹ P'(C A) ≅ E⁻¹ E P(A) ≅ P(A)` is `P` of the inverse unit. -/
+  commP_unit : ∀ A : X.C,
+    (sqIso commPInv).hom.app (C.functor.obj A) ≫
+      (elemMap D.inverse phiInv phiInv_pos phiInv_pb).map ((sqIso commP).hom.app A) ≫
+        (elemIsoOfBase (A := X.P.obj A) (B := (elemMap D.inverse phiInv phiInv_pos phiInv_pb).obj
+          ((elemMap D.functor phi phi_pos phi_pb).obj (X.P.obj A)))
+          (D.unitIso.app (X.P.obj A).base)).inv = X.P.map (C.unitInv.app A)
 
 namespace Iso
 
@@ -187,6 +219,33 @@ def comm {X Y : FrobCat} (f : X.Iso Y) : CatCommSq f.C.functor X.base Y.base f.D
   ⟨(Functor.associator _ _ _).symm ≪≫ Functor.isoWhiskerRight (sqIso f.commP) Elem.proj ≪≫
     Functor.associator _ _ _ ≪≫ Functor.isoWhiskerLeft X.P (elemMapProj _ _ _ _) ≪≫
     (Functor.associator _ _ _).symm⟩
+
+/-- The square `commP` of the identity (identity components). -/
+@[implicit_reducible]
+def reflCommP (X : FrobCat) :
+    CatCommSq (𝟭 X.C) X.P X.P
+      (elemMap (𝟭 X.D) (fun A => AddEquiv.refl (X.Φ.obj A)) (fun _ _ => Iff.rfl)
+        (fun _ _ => rfl)) :=
+  ⟨NatIso.ofComponents (fun _ => CategoryTheory.Iso.refl _)
+    (fun _ => (Category.comp_id _).trans (Category.id_comp _).symm)⟩
+
+lemma refl_coh_counit (X : FrobCat) (B : X.C) :
+    𝟙 (X.P.obj B) ≫
+      (elemMap (𝟭 X.D) (fun A => AddEquiv.refl (X.Φ.obj A)) (fun _ _ => Iff.rfl)
+        (fun _ _ => rfl)).map (𝟙 (X.P.obj B)) ≫
+      (elemIsoOfBase (A := X.P.obj B) (B := X.P.obj B) (CategoryTheory.Iso.refl _)).hom =
+    X.P.map (𝟙 B) :=
+  (Category.id_comp _).trans (((congrArg (· ≫ _) (CategoryTheory.Functor.map_id _ _)).trans
+    (Category.id_comp _)).trans ((Elem.hom_ext rfl rfl rfl).trans (X.P.map_id B).symm))
+
+lemma refl_coh_unit (X : FrobCat) (A : X.C) :
+    𝟙 (X.P.obj A) ≫
+      (elemMap (𝟭 X.D) (fun A => AddEquiv.refl (X.Φ.obj A)) (fun _ _ => Iff.rfl)
+        (fun _ _ => rfl)).map (𝟙 (X.P.obj A)) ≫
+      (elemIsoOfBase (A := X.P.obj A) (B := X.P.obj A) (CategoryTheory.Iso.refl _)).inv =
+    X.P.map (𝟙 A) :=
+  (Category.id_comp _).trans (((congrArg (· ≫ _) (CategoryTheory.Functor.map_id _ _)).trans
+    (Category.id_comp _)).trans ((Elem.hom_ext rfl rfl rfl).trans (X.P.map_id A).symm))
 
 /-- The identity. -/
 def refl (X : FrobCat) : X.Iso X where
@@ -200,10 +259,10 @@ def refl (X : FrobCat) : X.Iso X where
   phiInv_pb _ _ := rfl
   phi_unit A x := X.Φ.pb_id A x
   phi_counit B y := X.Φ.pb_id B y
-  commP := ⟨Functor.leftUnitor _ ≪≫ (Functor.rightUnitor _).symm ≪≫
-    Functor.isoWhiskerLeft X.P (elemMapId X.Φ)⟩
-  commPInv := ⟨Functor.leftUnitor _ ≪≫ (Functor.rightUnitor _).symm ≪≫
-    Functor.isoWhiskerLeft X.P (elemMapId X.Φ)⟩
+  commP := reflCommP X
+  commPInv := reflCommP X
+  commP_counit B := refl_coh_counit X B
+  commP_unit A := refl_coh_unit X A
 
 /-- The inverse. -/
 def symm {X Y : FrobCat} (f : X.Iso Y) : Y.Iso X where
@@ -219,6 +278,8 @@ def symm {X Y : FrobCat} (f : X.Iso Y) : Y.Iso X where
   phi_counit := f.phi_unit
   commP := f.commPInv
   commPInv := f.commP
+  commP_counit := f.commP_unit
+  commP_unit := f.commP_counit
 
 /-- The unit of a composite equivalence. -/
 lemma trans_unit_app {C₁ C₂ C₃ : Type*} [Category* C₁] [Category* C₂] [Category* C₃]
@@ -251,37 +312,6 @@ lemma trans_counitInv_app {C₁ C₂ C₃ : Type*} [Category* C₁] [Category* C
   erw [h1, h2]
   erw [Category.id_comp, Category.id_comp, Category.comp_id]; rfl
 
-/-- The composite. -/
-def trans {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) : X.Iso Z where
-  C := f.C.trans g.C
-  D := f.D.trans g.D
-  phi A := (f.phi A).trans (g.phi (f.D.functor.obj A))
-  phi_pos A x := (f.phi_pos A x).trans (g.phi_pos _ _)
-  phi_pb _ _ := by simp only [AddEquiv.trans_apply, f.phi_pb]; exact g.phi_pb _ _
-  phiInv B := (g.phiInv B).trans (f.phiInv (g.D.inverse.obj B))
-  phiInv_pos B y := (g.phiInv_pos B y).trans (f.phiInv_pos _ _)
-  phiInv_pb _ _ := by simp only [AddEquiv.trans_apply, g.phiInv_pb]; exact f.phiInv_pb _ _
-  phi_unit A x := by
-    rw [trans_unit_app]
-    refine (X.Φ.pb_comp _ _ _).trans ?_
-    refine (congrArg (X.Φ.pb (f.D.unit.app A))
-      (f.phiInv_pb (g.D.unit.app (f.D.functor.obj A)) _).symm).trans ?_
-    refine (congrArg (fun z => X.Φ.pb (f.D.unit.app A) (f.phiInv _ z))
-      (g.phi_unit _ _)).trans ?_
-    exact f.phi_unit A x
-  phi_counit B y := by
-    rw [trans_counitInv_app]
-    refine (Z.Φ.pb_comp _ _ _).trans ?_
-    refine (congrArg (Z.Φ.pb (g.D.counitInv.app B))
-      (g.phi_pb (f.D.counitInv.app (g.D.inverse.obj B)) _).symm).trans ?_
-    refine (congrArg (fun z => Z.Φ.pb (g.D.counitInv.app B) (g.phi _ z))
-      (f.phi_counit _ _)).trans ?_
-    exact g.phi_counit B y
-  commP := ⟨sqIso (CatCommSq.hComp' f.commP g.commP) ≪≫
-    Functor.isoWhiskerLeft X.P (elemMapComp _ _ _ _ _ _ _ _)⟩
-  commPInv := ⟨sqIso (CatCommSq.hComp' g.commPInv f.commPInv) ≪≫
-    Functor.isoWhiskerLeft Z.P (elemMapComp _ _ _ _ _ _ _ _)⟩
-
 /-- `phi ∘ phiInv` is the pull-back along the counit `D(D⁻¹(B)) ⟶ B`. -/
 lemma phi_phiInv {X Y : FrobCat} (f : X.Iso Y) (B : Y.D) (y : Y.Φ.obj B) :
     f.phi (f.D.inverse.obj B) (f.phiInv B y) = Y.Φ.pb (f.D.counit.app B) y := by
@@ -301,14 +331,6 @@ lemma phiInv_phi {X Y : FrobCat} (f : X.Iso Y) (A : X.D) (x : X.Φ.obj A) :
   have e : f.D.unitInv.app A ≫ f.D.unit.app A = 𝟙 _ := f.D.unitIso.inv_hom_id_app A
   exact ((congrArg (fun g => X.Φ.pb g (f.phiInv (f.D.functor.obj A) (f.phi A x))) e).trans
     (X.Φ.pb_id _ _)).symm
-
-/-- The isomorphism of `F_Φ` with divisor `0` and degree `1` over an isomorphism of bases. -/
-def elemIsoOfBase {D₁ : Type} [Category.{0} D₁] {Φ : DivMonoid.{0} D₁} {A B : Elem Φ}
-    (e : A.base ≅ B.base) : A ≅ B where
-  hom := ⟨e.hom, 0, (Φ.pos _).zero_mem, 1⟩
-  inv := ⟨e.inv, 0, (Φ.pos _).zero_mem, 1⟩
-  hom_inv_id := Elem.hom_ext (by simp) (by simp) rfl
-  inv_hom_id := Elem.hom_ext (by simp) (by simp) rfl
 
 /-- The unit of `elemEquiv`. -/
 def elemUnit {X Y : FrobCat} (f : X.Iso Y) :
@@ -345,6 +367,216 @@ lemma elemEquiv_functor {X Y : FrobCat} (f : X.Iso Y) :
 
 lemma elemEquiv_inverse {X Y : FrobCat} (f : X.Iso Y) :
     (elemEquiv f).inverse = elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb := rfl
+
+/-- The counit of a composite equivalence. -/
+lemma trans_counit_app {C₁ C₂ C₃ : Type*} [Category* C₁] [Category* C₂] [Category* C₃]
+    (e : C₁ ≌ C₂) (e' : C₂ ≌ C₃) (B : C₃) :
+    (e.trans e').counit.app B =
+      e'.functor.map (e.counit.app (e'.inverse.obj B)) ≫ e'.counit.app B :=
+  (CategoryTheory.Iso.inv_eq_inv ((e.trans e').counitIso.app B)
+    (e'.functor.mapIso (e.counitIso.app (e'.inverse.obj B)) ≪≫ e'.counitIso.app B)).1
+      (trans_counitInv_app e e' B)
+
+/-- The inverse unit of a composite equivalence. -/
+lemma trans_unitInv_app {C₁ C₂ C₃ : Type*} [Category* C₁] [Category* C₂] [Category* C₃]
+    (e : C₁ ≌ C₂) (e' : C₂ ≌ C₃) (A : C₁) :
+    (e.trans e').unitInv.app A =
+      e.inverse.map (e'.unitInv.app (e.functor.obj A)) ≫ e.unitInv.app A :=
+  congrArg CategoryTheory.Iso.inv (CategoryTheory.Iso.ext (trans_unit_app e e' A) :
+    (e.trans e').unitIso.app A =
+      e.unitIso.app A ≪≫ e.inverse.mapIso (e'.unitIso.app (e.functor.obj A)))
+
+/-- `elemIsoOfBase` is compatible with composition. -/
+lemma elemIsoOfBase_comp {D₁ : Type} [Category.{0} D₁] {Φ : DivMonoid.{0} D₁} {A B E : Elem Φ}
+    (e : A.base ≅ B.base) (e' : B.base ≅ E.base) :
+    (elemIsoOfBase e).hom ≫ (elemIsoOfBase e').hom = (elemIsoOfBase (e ≪≫ e')).hom :=
+  Elem.hom_ext rfl (by simp [elemIsoOfBase]) rfl
+
+/-- The divisor of `elemMap(x) ≫ y` for `x`, `y` with zero divisor and `y` of degree `1`. -/
+lemma elemMap_comp_div_eq_zero {D₁ D₂ : Type} [Category.{0} D₁] [Category.{0} D₂]
+    {Φ : DivMonoid.{0} D₁} {Ψ : DivMonoid.{0} D₂} (E : D₁ ⥤ D₂)
+    (φ : ∀ A, Φ.obj A ≃+ Ψ.obj (E.obj A))
+    (hpos : ∀ A x, x ∈ Φ.pos A ↔ φ A x ∈ Ψ.pos (E.obj A))
+    (hpb : ∀ {A B : D₁} (g : A ⟶ B) (x : Φ.obj B), φ A (Φ.pb g x) = Ψ.pb (E.map g) (φ B x))
+    {a b : Elem Φ} {c : Elem Ψ} (x : a ⟶ b) (y : (elemMap E φ hpos hpb).obj b ⟶ c)
+    (hx : x.div = 0) (hy : y.div = 0) (hyd : y.deg = 1) :
+    ((elemMap E φ hpos hpb).map x ≫ y).div = 0 := by
+  change Ψ.pb (E.map x.base) y.div + (y.deg : ℕ) • φ a.base x.div = 0
+  rw [hy, hyd, hx, PNat.one_coe, one_smul, map_zero (φ a.base)]
+  exact (add_zero _).trans (map_zero _)
+
+/-- **Pasting of the coherences `commP_counit` (resp. `commP_unit`) of a composite**, in an
+arbitrary category (the objects are left implicit, so it applies up to definitional equality). -/
+lemma paste_coh {C₀ : Type*} [Category* C₀] {o1 o2 o3 o4 o5 o6 o7 o8 o9 : C₀}
+    {L1 : o1 ⟶ o3} {P1 : o1 ⟶ o2} {a : o2 ⟶ o3} (h1 : L1 = P1 ≫ a)
+    {L2 : o3 ⟶ o5} {b : o3 ⟶ o4} {c : o4 ⟶ o5} (h2 : L2 = b ≫ c)
+    {L3 : o5 ⟶ o7} {d : o5 ⟶ o6} {κ : o6 ⟶ o7} (h3 : L3 = d ≫ κ)
+    {R : o1 ⟶ o7} {Q1 : o1 ⟶ o9} {Q2 : o9 ⟶ o7} (hR : R = Q1 ≫ Q2)
+    {d2 : o4 ⟶ o8} {e2 : o8 ⟶ o6} {y : o2 ⟶ o8} {P2 : o9 ⟶ o8}
+    (hnat : c ≫ d = d2 ≫ e2) (hf : a ≫ b ≫ d2 = y) (hP : Q1 ≫ P2 = P1 ≫ y)
+    (hg : P2 ≫ e2 ≫ κ = Q2) : L1 ≫ L2 ≫ L3 = R := by
+  subst h1 h2 h3 hR
+  simp only [Category.assoc]
+  rw [reassoc_of% hnat, reassoc_of% hf, ← reassoc_of% hP, hg]
+
+/-- Naturality of a composite of squares, in an arbitrary category. -/
+lemma paste_nat {C₀ : Type*} [Category* C₀] {o1 o2 o3 o4 o5 o6 : C₀}
+    {m1 : o1 ⟶ o2} {p : o2 ⟶ o3} {q : o3 ⟶ o5} {p' : o1 ⟶ o4} {n : o4 ⟶ o3} {q' : o4 ⟶ o6}
+    {m2 : o6 ⟶ o5}
+    (h1 : m1 ≫ p = p' ≫ n) (h2 : n ≫ q = q' ≫ m2) : m1 ≫ (p ≫ q) = (p' ≫ q') ≫ m2 := by
+  rw [reassoc_of% h1, h2, Category.assoc]
+
+/-- The square `commP` of a composite. -/
+@[implicit_reducible]
+def transCommP {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) :
+    CatCommSq (f.C.trans g.C).functor X.P Z.P
+      (elemMap (f.D.trans g.D).functor (fun A => (f.phi A).trans (g.phi (f.D.functor.obj A)))
+        (fun A x => (f.phi_pos A x).trans (g.phi_pos _ _))
+        (fun _ _ => by simp only [AddEquiv.trans_apply, f.phi_pb]; exact g.phi_pb _ _)) :=
+  ⟨NatIso.ofComponents (fun A => (sqIso g.commP).app (f.C.functor.obj A) ≪≫
+      (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).mapIso ((sqIso f.commP).app A))
+    (fun {_ _} m => paste_nat ((sqIso g.commP).hom.naturality (f.C.functor.map m))
+      (((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map_comp _ _).symm.trans
+        ((congrArg (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map
+          ((sqIso f.commP).hom.naturality m)).trans
+          ((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map_comp _ _))))⟩
+
+lemma transCommP_app {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) (A : X.C) :
+    (sqIso (transCommP f g)).hom.app A = (sqIso g.commP).hom.app (f.C.functor.obj A) ≫
+      (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map ((sqIso f.commP).hom.app A) := rfl
+
+/-- The square `commPInv` of a composite. -/
+@[implicit_reducible]
+def transCommPInv {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) :
+    CatCommSq (f.C.trans g.C).inverse Z.P X.P
+      (elemMap (f.D.trans g.D).inverse (fun B => (g.phiInv B).trans (f.phiInv (g.D.inverse.obj B)))
+        (fun B y => (g.phiInv_pos B y).trans (f.phiInv_pos _ _))
+        (fun _ _ => by simp only [AddEquiv.trans_apply, g.phiInv_pb]; exact f.phiInv_pb _ _)) :=
+  ⟨NatIso.ofComponents (fun B => (sqIso f.commPInv).app (g.C.inverse.obj B) ≪≫
+      (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).mapIso ((sqIso g.commPInv).app B))
+    (fun {_ _} m => paste_nat ((sqIso f.commPInv).hom.naturality (g.C.inverse.map m))
+      (((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map_comp _ _).symm.trans
+        ((congrArg (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map
+          ((sqIso g.commPInv).hom.naturality m)).trans
+          ((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map_comp _ _))))⟩
+
+lemma transCommPInv_app {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) (B : Z.C) :
+    (sqIso (transCommPInv f g)).hom.app B = (sqIso f.commPInv).hom.app (g.C.inverse.obj B) ≫
+      (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map
+        ((sqIso g.commPInv).hom.app B) := rfl
+
+/-- The counit isomorphism of `F_Φ` of a composite. -/
+lemma trans_elemCounit {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) (b : Elem Z.Φ) :
+    (elemIsoOfBase (A := ⟨(f.D.trans g.D).functor.obj ((f.D.trans g.D).inverse.obj b.base)⟩)
+      (B := b) ((f.D.trans g.D).counitIso.app b.base)).hom =
+    (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map
+      (elemIsoOfBase (A := (elemMap f.D.functor f.phi f.phi_pos f.phi_pb).obj
+          ((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).obj
+            ((elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).obj b)))
+        (B := (elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).obj b)
+        (f.D.counitIso.app (g.D.inverse.obj b.base))).hom ≫
+    (elemIsoOfBase (A := (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).obj
+        ((elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).obj b))
+      (B := b) (g.D.counitIso.app b.base)).hom :=
+  Elem.hom_ext (trans_counit_app f.D g.D b.base)
+    (elemMap_comp_div_eq_zero (E := g.D.functor) (φ := g.phi) (hpos := g.phi_pos)
+      (hpb := g.phi_pb)
+      (elemIsoOfBase (A := (elemMap f.D.functor f.phi f.phi_pos f.phi_pb).obj
+          ((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).obj
+            ((elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).obj b)))
+        (B := (elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).obj b)
+        (f.D.counitIso.app (g.D.inverse.obj b.base))).hom
+      (elemIsoOfBase (A := (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).obj
+        ((elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).obj b))
+        (B := b) (g.D.counitIso.app b.base)).hom rfl rfl rfl).symm rfl
+
+/-- The inverse unit isomorphism of `F_Φ` of a composite. -/
+lemma trans_elemUnitInv {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) (a : Elem X.Φ) :
+    (elemIsoOfBase (A := a)
+      (B := ⟨(f.D.trans g.D).inverse.obj ((f.D.trans g.D).functor.obj a.base)⟩)
+      ((f.D.trans g.D).unitIso.app a.base)).inv =
+    (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map
+      (elemIsoOfBase (A := (elemMap f.D.functor f.phi f.phi_pos f.phi_pb).obj a)
+        (B := (elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).obj
+          ((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).obj
+            ((elemMap f.D.functor f.phi f.phi_pos f.phi_pb).obj a)))
+        (g.D.unitIso.app (f.D.functor.obj a.base))).inv ≫
+    (elemIsoOfBase (A := a) (B := (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).obj
+        ((elemMap f.D.functor f.phi f.phi_pos f.phi_pb).obj a))
+      (f.D.unitIso.app a.base)).inv :=
+  Elem.hom_ext (trans_unitInv_app f.D g.D a.base)
+    (elemMap_comp_div_eq_zero (E := f.D.inverse) (φ := f.phiInv) (hpos := f.phiInv_pos)
+      (hpb := f.phiInv_pb)
+      (elemIsoOfBase (A := (elemMap f.D.functor f.phi f.phi_pos f.phi_pb).obj a)
+        (B := (elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).obj
+          ((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).obj
+            ((elemMap f.D.functor f.phi f.phi_pos f.phi_pb).obj a)))
+        (g.D.unitIso.app (f.D.functor.obj a.base))).inv
+      (elemIsoOfBase (A := a) (B := (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).obj
+        ((elemMap f.D.functor f.phi f.phi_pos f.phi_pb).obj a))
+        (f.D.unitIso.app a.base)).inv rfl rfl rfl).symm rfl
+
+/-- The composite. -/
+def trans {X Y Z : FrobCat} (f : X.Iso Y) (g : Y.Iso Z) : X.Iso Z where
+  C := f.C.trans g.C
+  D := f.D.trans g.D
+  phi A := (f.phi A).trans (g.phi (f.D.functor.obj A))
+  phi_pos A x := (f.phi_pos A x).trans (g.phi_pos _ _)
+  phi_pb _ _ := by simp only [AddEquiv.trans_apply, f.phi_pb]; exact g.phi_pb _ _
+  phiInv B := (g.phiInv B).trans (f.phiInv (g.D.inverse.obj B))
+  phiInv_pos B y := (g.phiInv_pos B y).trans (f.phiInv_pos _ _)
+  phiInv_pb _ _ := by simp only [AddEquiv.trans_apply, g.phiInv_pb]; exact f.phiInv_pb _ _
+  phi_unit A x := by
+    rw [trans_unit_app]
+    refine (X.Φ.pb_comp _ _ _).trans ?_
+    refine (congrArg (X.Φ.pb (f.D.unit.app A))
+      (f.phiInv_pb (g.D.unit.app (f.D.functor.obj A)) _).symm).trans ?_
+    refine (congrArg (fun z => X.Φ.pb (f.D.unit.app A) (f.phiInv _ z))
+      (g.phi_unit _ _)).trans ?_
+    exact f.phi_unit A x
+  phi_counit B y := by
+    rw [trans_counitInv_app]
+    refine (Z.Φ.pb_comp _ _ _).trans ?_
+    refine (congrArg (Z.Φ.pb (g.D.counitInv.app B))
+      (g.phi_pb (f.D.counitInv.app (g.D.inverse.obj B)) _).symm).trans ?_
+    refine (congrArg (fun z => Z.Φ.pb (g.D.counitInv.app B) (g.phi _ z))
+      (f.phi_counit _ _)).trans ?_
+    exact g.phi_counit B y
+  commP := transCommP f g
+  commPInv := transCommPInv f g
+  commP_counit B := paste_coh (transCommP_app f g _)
+    ((congrArg (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map
+      ((elemMap f.D.functor f.phi f.phi_pos f.phi_pb).map_comp _ _)).trans
+      ((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map_comp _ _))
+    (trans_elemCounit f g (Z.P.obj B))
+    ((congrArg Z.P.map (trans_counit_app f.C g.C B)).trans (Z.P.map_comp _ _))
+    (((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map_comp _ _).symm.trans
+      ((congrArg (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map
+        ((elemCounit f).hom.naturality ((sqIso g.commPInv).hom.app B))).trans
+        ((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map_comp _ _)))
+    ((congrArg (_ ≫ ·) ((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map_comp _ _).symm).trans
+      (((elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map_comp _ _).symm.trans
+        (congrArg (elemMap g.D.functor g.phi g.phi_pos g.phi_pb).map
+          (f.commP_counit (g.C.inverse.obj B)))))
+    ((sqIso g.commP).hom.naturality (f.C.counit.app (g.C.inverse.obj B)))
+    (g.commP_counit B)
+  commP_unit A := paste_coh (transCommPInv_app f g _)
+    ((congrArg (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map
+      ((elemMap g.D.inverse g.phiInv g.phiInv_pos g.phiInv_pb).map_comp _ _)).trans
+      ((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map_comp _ _))
+    (trans_elemUnitInv f g (X.P.obj A))
+    ((congrArg X.P.map (trans_unitInv_app f.C g.C A)).trans (X.P.map_comp _ _))
+    (((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map_comp _ _).symm.trans
+      ((congrArg (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map
+        ((elemUnit g).inv.naturality ((sqIso f.commP).hom.app A))).trans
+        ((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map_comp _ _)))
+    ((congrArg (_ ≫ ·)
+      ((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map_comp _ _).symm).trans
+      (((elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map_comp _ _).symm.trans
+        (congrArg (elemMap f.D.inverse f.phiInv f.phiInv_pos f.phiInv_pb).map
+          (g.commP_unit (f.C.functor.obj A)))))
+    ((sqIso f.commPInv).hom.naturality (g.C.unitInv.app (f.C.functor.obj A)))
+    (f.commP_unit A)
 
 end Iso
 
