@@ -1802,3 +1802,28 @@ Iut.Multiradial.PrimeStrip.FRlfBlackData.Iso.rhoArc	def
 Iut.Multiradial.PrimeStrip.FRlfBlackStrip.equiv_model	def
 Iut.Multiradial.PrimeStrip.FBlackComp.equiv_model	def
 Iut.Multiradial.PrimeStrip.FBlackArcComp.equiv_model	def
+# 2026-11-21 (MR13 run 17b, iut tfg pin 80bbc80): Prop fields of tfg construction data reaching the Iut import
+# closure via P1ThreeCuspStab (Algebraization/Hom of adic chart-algebra systems, Overlap.BaseMap, Piece0.Bottom,
+# the special covers P1Three.CuspChart.Special and their morphisms HomG): defining conditions of data constructed in tfg: `def`.
+ProjectiveLine.AdicChartAlgSystem.Algebraization.fin0	def
+ProjectiveLine.AdicChartAlgSystem.Algebraization.fin1	def
+ProjectiveLine.AdicChartAlgSystem.Algebraization.hB	def
+ProjectiveLine.AdicChartAlgSystem.Algebraization.hc	def
+ProjectiveLine.AdicChartAlgSystem.Algebraization.hα	def
+ProjectiveLine.AdicChartAlgSystem.Hom.comm	def
+ProjectiveLine.AdicChartAlgSystem.Hom.isHom	def
+SemistableReduction.NodeEtaleGlue.Overlap.BaseMap.h0	def
+SemistableReduction.NodeEtaleGlue.Overlap.BaseMap.h1	def
+SemistableReduction.NodeEtaleGlue.Overlap.BaseMap.hO0	def
+SemistableReduction.NodeEtaleGlue.Overlap.BaseMap.hO1	def
+SemistableReduction.NodeEtaleGlue.Overlap.BaseMap.hx	def
+SemistableReduction.NodeEtaleGlue.Overlap.BaseMap.hy	def
+SemistableReduction.NodeEtaleGlue.Piece0.Bottom.hP	def
+SemistableReduction.NodeEtaleGlue.Piece0.Bottom.hloc	def
+SemistableReduction.NodeEtaleGlue.Piece0.Bottom.hℓ	def
+SemistableReduction.P1Three.CuspChart.Special.etale	def
+SemistableReduction.P1Three.CuspChart.Special.finite	def
+SemistableReduction.P1Three.CuspChart.Special.hι	def
+SemistableReduction.P1Three.CuspChart.Special.hι₀	def
+SemistableReduction.P1Three.CuspChart.Special.noNodes	def
+SemistableReduction.P1Three.HomG.hω	def
