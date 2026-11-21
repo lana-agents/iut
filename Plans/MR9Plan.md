@@ -1946,3 +1946,43 @@ Order: U1 → L1, C1, K1, K2 in parallel → U2 → (after MR8.5) A1 → K3, K4 
     inputs present in cj (`hemi_semiElliptic_iff'`, `hemi_hgen`, `MulNSubgroup`). **Decision (b): implement**
     (well under 2k lines); no named input for item 1. The transport into iut's `π₁(C_K)` is shared with the
     assembly (constants compatibility of `piCKToCmod`, below).
+
+* Hand-off 2026-11-21 (MR9 track agent, sessions x/x2, lead christian-aa): **`CKSemiAbsConj` proved; the
+  `hAbs` chain of `DStarDescent` is discharged up to `CKStrictSemiAbs`.** Session x (killed by a usage limit
+  on 2026-11-03) wrote the files below; session x2 committed, repaired and validated them. New code ~1350 lines:
+  * `Reconstruction/Cusp/HemiPiXChar.lean` (item 1, decision (b) of the scoping above, implemented as
+    proposed): `hemiCentN` (the `γ ∈ Π_C` acting trivially on `Δ_X / Δ_X^N [Δ_X, Δ_X]`),
+    **`range_hemiPiXEmb_eq_hemiCentN`** (`Π_X = hemiCentN` for `E[N] ⊆ E(K)`, `N > 1` odd; IUT I Def. 3.1
+    (c), (d)), **`map_DeltaX_hemi`** (`Δ_C`-preserving automorphisms preserve `Δ_X`, [AbsTopII] Cor. 3.3 (ii)
+    via cj `hemi_semiElliptic_iff'`), **`mem_hemiPiX_iff_aut`** (`α(Π_X) = Π_X`). No named input for item 1.
+  * `Reconstruction/Cusp/HemiGenuineConst.lean`: `mkC`, **`genuine_CM_emb_const`**,
+    **`genuine_CF_emb_const`** (`π₁(C_F) ↪ π₁(C_K)` is induced on the field of constants by a ring
+    isomorphism `ψ` extending `embConst`).
+  * `Reconstruction/Thm19/RatSection.lean` (`σ₀`): `ratSection` (a point `(x, y)` with `2y + a₁x + a₃ ≠ 0`
+    as a section `Spec K → Ē`), **`exists_ratSection`** (from a point `P ≠ 0` with `2P ≠ 0`; for `E_K` a
+    nonzero `ℓ`-torsion point, `ℓ` odd, `exists_section_EK`).
+  * `Reconstruction/Thm19/AutConj.lean`: `autG`, `isoOfAut`, `isoOfAutX` (automorphisms of `Π_U` / of the
+    Galois model as isomorphisms of cuspidal extensions), `gkIso_isoOfAutX`, **`exists_conj_of_aut`**
+    (an automorphism of `Π_{E ∖ {O}}` preserving `Δ` acts on `Gal(k̄/K)` by conjugation by `σ`, `σ(j) = j`).
+  * `HodgeTheater/DStarDescent.lean`: `exists_piCK_emb` also records the field-of-constants compatibility,
+    hidden in the `def` **`PiCKConstCompat`** (with the conjunct inline, extracting the other conjuncts of
+    `exists_piCK_emb` timed out), `piCKToCmod_spec'`, `piCKToCmod_constCompat`.
+  * `HodgeTheater/DStarConj.lean`: `restrictAutOfRange`, `piConstC_orbiIncl`,
+    `mem_range_orbiIncl_iff_of_aut`, `exists_conj_hemi`, `resK`, `psiK`, `qbarConstFmod`, **`iotaK`**
+    (`k̄ ≃ F̄`), **`iotaK_resK`**, `fix_Fmod_of_fix_j` (`σ(j) = j` ⇒ `σ` fixes `F_mod = ℚ(j)`),
+    **`ckSemiAbsConj`** (`CKSemiAbsConj D` from `BelyiCuspSpec` (MR8) and `RelIsomDGC.Exists D.Kt` (MR7)),
+    **`hAbs_of_strict`**, **`piCmodAutEquivOfStrict`** (`π₁(C_{F_mod}) ≃* Aut(π₁(C_K))` with
+    `CKStrictSemiAbs` as the only new named input).
+  Elaboration lessons (session x2): `iotaK` through `(kbarQbar (Fmod D) _).symm.trans constFmodEquiv` timed
+  out at `whnf` even at 3M heartbeats (unifying `kbar (Fmod D) _` with `constFmod D`); a direct
+  `qbarConstFmod : algebraicClosure ℚ _ ≃+* constFmod D` elaborates instantly. `change` to unfold
+  `galConstEquiv` took 160 s; a `rfl` lemma `galConstEquiv_apply` + `rw` is instant. In `exists_conj_hemi`
+  the local instances of `AutConj` (`isIntegral_Xbar`, `algFF`, …) must be repeated, otherwise the types of
+  `Pi (curveGaloisData …)` differ and the call times out. `TorsionCardN` uses `Classical.propDecidable`:
+  `letI` that instance instead of `classical`. `exists_conj_of_aut` needs `maxRecDepth 20000`.
+  Debts (explicit, named): `CKStrictSemiAbs` (literature, [AbsTopI] Cor. 2.8 (ii)), `BelyiCuspSpec` (MR8),
+  `RelIsomDGC.Exists` (MR7).
+  **Next steps:** none left in the `CKSemiAbsConj` chain. Possible follow-ups: replace `hAbs` by
+  `hAbs_of_strict` at the downstream uses of `piCmodAutEquiv` / `piCK_aut_eq_conj` (currently unused outside
+  `DStarDescent`); `CKStrictSemiAbs` needs the elasticity of `G_K` ([AbsTopI] Thm. 1.7 (iii)).
+  Decisions for the lead: whether MR9 takes on `CKStrictSemiAbs` next, or the track is closed.

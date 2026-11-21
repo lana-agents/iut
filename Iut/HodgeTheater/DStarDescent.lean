@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.HodgeTheater.DStarCore
+import Iut.Reconstruction.Cusp.HemiGenuineConst
 
 /-!
 # `π₁(†D^⊛)` as the automorphism group of `π₁(C_K)` (descent from `K` to `F_mod`)
@@ -33,7 +34,9 @@ This file records that input as the named hypothesis `hAbs` and derives the reco
 * **`hAbs_of`**: `hAbs` follows from two smaller named statements, `CKStrictSemiAbs` ([AbsTopI]
   Cor. 2.8 (ii): automorphisms preserve `Δ_{C_K}`) and `CKSemiAbsConj` (the same conclusion for
   automorphisms preserving `Δ_{C_K}`, i.e. over an automorphism `ψ` of `G_K`; the functoriality of
-  [AbsTopIII] Thm. 1.9 over `ψ`, MR9);
+  [AbsTopIII] Thm. 1.9 over `ψ`, MR9; proved in `HodgeTheater/DStarConj.lean`, `ckSemiAbsConj`,
+  from `BelyiCuspSpec` (MR8) and `RelIsomDGC.Exists` (MR7), so that `CKStrictSemiAbs` is the
+  remaining named literature debt, `hAbs_of_strict`);
 * **`piCK_aut_eq_conj`**: under `hAbs` (and the existing inputs `hDGC`, `hj`), every continuous
   automorphism of `π₁(C_K)` is the restriction of conjugation by a unique element of
   `π₁(C_{F_mod})` (existence: self-commensuration `piCmod_selfComm`; uniqueness: `π₁(C_{F_mod})` is
@@ -73,29 +76,46 @@ lemma piCmodPr_apply (y : piCmod D) :
       (piConstC (hemiData (curveMod D.E)) (genuinePi1HemiEquiv (curveMod D.E) y)) :=
   rfl
 
+/-- `C_K = (E_K ∖ {O}) / ±1` for `E_K = E_F ×_F K`. -/
+lemma CK_eq : OrbicurveDataSection.CK D.F D.E D.Fbar D.VBad D.prime = Orbicurve.pmQuotient
+    (Orbicurve.oncePunctured (D.E.map (algebraMap D.F D.Kt))) := by
+  rw [OrbicurveDataSection.CK, OrbicurveDataSection.CF, Orbicurve.baseChange_pmQuotient,
+    Orbicurve.baseChange_oncePunctured]
+
+/-- The embedding `f : π₁(C_K) ↪ π₁(C_{F_mod})` is induced on the field of constants by a ring
+isomorphism `ψ : K(E_K)^alg ≃ F_mod(Ē_mod)^alg` extending the `F_mod`-embedding `embConst` of `K`
+(a `def`, so that the instance-heavy statement is not unfolded where it is not used). -/
+def PiCKConstCompat (f : piCK D →ₜ* piCmod D) : Prop :=
+  ∃ ψ : Genuine.Ω (D.E.map (algebraMap D.F D.Kt)) ≃+* FFClosure (curveE (curveMod D.E)),
+    (∀ c : D.Kt, ψ (algebraMap D.Kt (Genuine.Ω (D.E.map (algebraMap D.F D.Kt))) c) =
+      ((embConst (curveMod D.E) c : constFmod D) : FFClosure (curveE (curveMod D.E)))) ∧
+    ∀ (σ : Genuine.Gal (D.E.map (algebraMap D.F D.Kt))) (z : constFmod D),
+      ((piConstC (hemiData (curveMod D.E)) (genuinePi1HemiEquiv (curveMod D.E)
+        (f ((genuinePi1EqEquiv (CK_eq D)).symm (mkC _ σ)))) z : constFmod D) :
+          FFClosure (curveE (curveMod D.E))) = ψ (σ (ψ.symm z))
+
 set_option maxHeartbeats 1000000 in
 -- matching `genuine_CF_emb`'s `piConstC (hemiData (curveMod D.E))` (instances over `F_mod` found
 -- generically) with the one in `piCmodPr` (instances of `Fmod D`) unfolds the instance terms
 /-- **`π₁(C_K) ↪ π₁(C_{F_mod})`**, open with normal image (`genuine_CF_emb`; `K/F_mod` is Galois,
 IUT I Rem. 3.1.5), compatible with the projections to the Galois groups: the image is the full
 preimage of its image in `Gal(F̄/F_mod)` (the preimage of `Gal(K̄/K)` under the restriction to the
-field of constants, `genuine_CF_emb`). -/
+field of constants, `genuine_CF_emb`); on the field of constants it is induced by a ring
+isomorphism `ψ : K(E_K)^alg ≃ F_mod(Ē_mod)^alg` extending a `F_mod`-embedding of `K`
+(`genuine_CF_emb_const`). -/
 theorem exists_piCK_emb :
     ∃ f : piCK D →ₜ* piCmod D, IsOpenEmbedding f ∧ f.toMonoidHom.range.Normal ∧
-      ∀ y z, piCmodPr D y = piCmodPr D (f z) → y ∈ f.toMonoidHom.range := by
-  have hCK : OrbicurveDataSection.CK D.F D.E D.Fbar D.VBad D.prime = Orbicurve.pmQuotient
-      (Orbicurve.oncePunctured (D.E.map (algebraMap D.F D.Kt))) := by
-    rw [OrbicurveDataSection.CK, OrbicurveDataSection.CF, Orbicurve.baseChange_pmQuotient,
-      Orbicurve.baseChange_oncePunctured]
+      (∀ y z, piCmodPr D y = piCmodPr D (f z) → y ∈ f.toMonoidHom.range) ∧
+      PiCKConstCompat D f := by
   have hj : (D.E.map (algebraMap D.F D.Kt)).j =
       algebraMap (fieldOfModuli D.F D.E) D.Kt (curveMod D.E).j := by
     rw [WeierstrassCurve.map_j, show (curveMod D.E).j = jMod D.E from WeierstrassCurve.ofJ_j _]
     rfl
   have hj0 : (curveMod D.E).j = jMod D.E := WeierstrassCurve.ofJ_j _
-  obtain ⟨g, hg, hn, -, hgal⟩ := genuine_CF_emb (K := fieldOfModuli D.F D.E) (F := D.Kt)
-    (curveMod D.E) (D.E.map (algebraMap D.F D.Kt)) hj (by rw [hj0]; exact (jMod_ne D).1)
+  obtain ⟨g, hg, hn, -, hgal, ψ, hψC, hψ⟩ := genuine_CF_emb_const (K := fieldOfModuli D.F D.E)
+    (F := D.Kt) (curveMod D.E) (D.E.map (algebraMap D.F D.Kt)) hj (by rw [hj0]; exact (jMod_ne D).1)
     (by rw [hj0]; exact (jMod_ne D).2)
-  let e := genuinePi1EqEquiv hCK
+  let e := genuinePi1EqEquiv (CK_eq D)
   have hr : (g.comp (ContinuousMonoidHom.toContinuousMonoidHom e)).toMonoidHom.range =
       g.toMonoidHom.range := by
     ext y
@@ -106,7 +126,7 @@ theorem exists_piCK_emb :
       exact ⟨e.symm x, by
         change g (e (e.symm x)) = g x
         rw [ContinuousMulEquiv.apply_symm_apply]⟩
-  refine ⟨g.comp (ContinuousMonoidHom.toContinuousMonoidHom e), ?_, ?_, fun y z hyz => ?_⟩
+  refine ⟨g.comp (ContinuousMonoidHom.toContinuousMonoidHom e), ?_, ?_, fun y z hyz => ?_, ?_⟩
   · exact hg.comp e.toHomeomorph.isOpenEmbedding
   · rw [hr]
     exact hn
@@ -118,6 +138,11 @@ theorem exists_piCK_emb :
     have h2 := (hgal w).1 hz
     have h3 := (hgal y).2
     exact h3 (hP ▸ h2)
+  · refine ⟨ψ, hψC, fun σ z => ?_⟩
+    have he : (g.comp (ContinuousMonoidHom.toContinuousMonoidHom e)) (e.symm (mkC _ σ)) =
+        g (mkC _ σ) := congrArg g (e.apply_symm_apply _)
+    rw [he]
+    exact hψ σ z
 
 /-- The chosen embedding `π₁(C_K) ↪ π₁(C_{F_mod})`. -/
 def piCKToCmod : piCK D →ₜ* piCmod D := (exists_piCK_emb D).choose
@@ -128,6 +153,16 @@ lemma isOpenEmbedding_piCKToCmod : IsOpenEmbedding (piCKToCmod D) :=
 instance normal_range_piCKToCmod : (piCKToCmod D).toMonoidHom.range.Normal :=
   (exists_piCK_emb D).choose_spec.2.1
 
+/-- `π₁(C_K) ↪ π₁(C_{F_mod})` is compatible with the projections to the Galois groups. -/
+lemma piCKToCmod_spec' : ∀ y z, piCmodPr D y = piCmodPr D (piCKToCmod D z) →
+    y ∈ (piCKToCmod D).toMonoidHom.range :=
+  (exists_piCK_emb D).choose_spec.2.2.1
+
+/-- `π₁(C_K) ↪ π₁(C_{F_mod})` is induced on the field of constants by a ring isomorphism
+(`PiCKConstCompat`). -/
+lemma piCKToCmod_constCompat : PiCKConstCompat D (piCKToCmod D) :=
+  (exists_piCK_emb D).choose_spec.2.2.2
+
 /-- **`G_K`**: the image of `π₁(C_K)` in `Gal(F̄/F_mod)` (an open normal subgroup; `Gal(F̄/K)` for
 the realisation of `K` inside `F̄` given by the chosen embedding). -/
 def galK : Subgroup (GalG (Fmod D) D.Fbar) := (piCKToCmod D).toMonoidHom.range.map (piCmodPr D)
@@ -137,7 +172,7 @@ lemma mem_range_piCKToCmod_iff (y : piCmod D) :
     y ∈ (piCKToCmod D).toMonoidHom.range ↔ piCmodPr D y ∈ galK D := by
   refine ⟨fun hy => ⟨y, hy, rfl⟩, ?_⟩
   rintro ⟨_, ⟨z, rfl⟩, hz⟩
-  exact (exists_piCK_emb D).choose_spec.2.2 y z hz.symm
+  exact piCKToCmod_spec' D y z hz.symm
 
 omit D in
 /-- A topological group mapping to a slim group with open image and slim kernel is slim (as in

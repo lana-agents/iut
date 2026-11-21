@@ -401,6 +401,7 @@ import Iut.Frobenioid.UnrPairing
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
 import Iut.HodgeTheater.DStar
+import Iut.HodgeTheater.DStarConj
 import Iut.HodgeTheater.DStarCore
 import Iut.HodgeTheater.DStarDescent
 import Iut.HodgeTheater.FRlfGlobal
@@ -477,9 +478,11 @@ import Iut.Reconstruction.Cusp.HemiCuspDecomp
 import Iut.Reconstruction.Cusp.HemiCuspDecompC
 import Iut.Reconstruction.Cusp.HemiCuspidal
 import Iut.Reconstruction.Cusp.HemiGenuine
+import Iut.Reconstruction.Cusp.HemiGenuineConst
 import Iut.Reconstruction.Cusp.HemiGenuineField
 import Iut.Reconstruction.Cusp.HemiGenuineTwist
 import Iut.Reconstruction.Cusp.HemiInvConj
+import Iut.Reconstruction.Cusp.HemiPiXChar
 import Iut.Reconstruction.Cusp.HemiSelfComm
 import Iut.Reconstruction.Cusp.LineCuspGenerators
 import Iut.Reconstruction.Cusp.OutSemidirect
@@ -529,6 +532,7 @@ import Iut.Reconstruction.Local.ZHat
 import Iut.Reconstruction.Thm19.ArithBridge
 import Iut.Reconstruction.Thm19.ArithBridgeDecomp
 import Iut.Reconstruction.Thm19.ArithBridgeGk
+import Iut.Reconstruction.Thm19.AutConj
 import Iut.Reconstruction.Thm19.BelyiGalFill
 import Iut.Reconstruction.Thm19.BelyiLift
 import Iut.Reconstruction.Thm19.BelyiMono
@@ -588,6 +592,7 @@ import Iut.Reconstruction.Thm19.PiJCongr
 import Iut.Reconstruction.Thm19.PlaceConj
 import Iut.Reconstruction.Thm19.PointDecomp
 import Iut.Reconstruction.Thm19.RatCusps
+import Iut.Reconstruction.Thm19.RatSection
 import Iut.Reconstruction.Thm19.RecFunctionField
 import Iut.Reconstruction.Thm19.RecOrd
 import Iut.Reconstruction.Thm19.RecPoints
