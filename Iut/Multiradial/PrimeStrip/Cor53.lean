@@ -22,8 +22,10 @@ This file proves the **surjectivity** at `V^non` (`FStripNon.isoClassToD_surject
   functor `Π_v/H ↦ Π_v/σ(H)` of an automorphism `σ` of the topological group `Π_v`. This is
   [Mzk2], Proposition 3.2 / [SemiAnbd], Proposition 3.2 in functorial form; the group
   isomorphism with compatible base points is formalised (`OrbitObj.exists_continuousMulEquiv`,
-  profinite; `exists_continuousMulEquiv_temp`, tempered, given `PivCountable`), the passage from
-  the base points to a natural isomorphism of functors is not yet (**MR21 debt R4a**);
+  profinite; `exists_continuousMulEquiv_temp`, tempered, given `PivCountable`); the passage from
+  the base points to a natural isomorphism of functors is `OrbitIsoRecon.lean`
+  (`orbitIsoRecon_piv`: unconditional at `V^good`, from `PivCountable` at `V^bad`; debt R4a
+  discharged there, with `FStripNon.isoClassToD_surjective_of_kummerLift`);
 * **`KummerLift D v`**: every automorphism `σ` of `Π_v` lifts to a `σ`-equivariant automorphism
   of the `Π_v`-module `\bar{ℚ}_p^×` (acting through `Π_v → G_v`) preserving `ord` — the
   surjectivity in [AbsTopIII], Proposition 3.2 (iv) for `T = TM` (an automorphism of
