@@ -2046,3 +2046,40 @@ injective; bijective if `T = TM`, or for strictly Belyi type) and Cor. 1.10 (b)�
   Cor 5.3 (iii) proof and AbsTopIII Prop 5.8 (ii) first; (2) Cor 1.10 (c) (weights) remains blocked (MR3(b)) and is not
   needed for `T = TM`. **Decisions for the lead:** none blocking; the rigidity draft (scratchpad `mr9-y/MulRigid-draft.lean`)
   was handed to MR21 per the lead's message.
+
+### Session z (2026-11-22, lead christian-aa): `C̲_K` semi-absoluteness for MR22 T6
+* **Scoping.** Literature looked up: [AbsTopI] Def. 2.4 (l.1018–1033), Prop. 2.5 (ii) (l.1046–1060:
+  for NF, semi-absoluteness of absolute homs follows from `Δ₁` top. f.g., Prop. 2.2, and `G₂` very elastic,
+  Thm 1.7 (iii), l.712), Cor. 2.8 (ii) (l.1348–1379), Prop. 1.3 (ii) (l.539–541: very elastic ⇔ top. f.g.
+  closed normal subgroups of open subgroups are trivial); IUT I Def. 3.1 (d) (l.3990–4000, `K`-core `C_K`),
+  Rem. 3.1.7 (i) (l.4316–4322, `K`-coricity). Findings:
+  - *Semi-absolute conjugacy* for `π₁(C̲_K)` **does** follow from `ckSemiAbsConj` with no new input, but not
+    by "restriction": `π₁(C̲_K)` is not normal in `π₁(C_K)` (index `ℓ`, dihedral quotient), so an automorphism
+    of it does not obviously extend. The extension comes from the coricity of `C_K`, i.e. the existing
+    self-commensuration `piCmod_selfComm` (`hDGC`, `hj`): for `ρ ∈ π₁(C_K)`, conjugation by `ρ` on the normal
+    core `N` of `π₁(C̲_K)`, transported by `α`, lies over `G` up to conjugation by `pr(α(x))`
+    (`x ∈ π₁(C̲_K)` with `pr x = pr ρ`), so it is conjugation by a unique `γ_ρ ∈ π₁(C_K)`; `ρ ↦ γ_ρ` extends
+    `α` to `π₁(C_K)` and `ckSemiAbsConj` applies. Needs `π₁(C̲_K) ↠ G_K` (proved: cusp-place transitivity
+    over `k̄(x)`).
+  - *Strict semi-absoluteness* for `π₁(C̲_K)` does **not** follow from `CKStrictSemiAbs` as stated (an
+    automorphism of the open subgroup is not known to extend before it is known to be semi-absolute). It is
+    the same literature result ([AbsTopI] Cor. 2.8 (ii) applied to `C̲_K`), recorded as the named statement
+    `CKuStrictSemiAbs`. Both `CKStrictSemiAbs` and `CKuStrictSemiAbs` follow from one more primitive input
+    (`G_K` very elastic, [AbsTopI] Thm 1.7 (iii) + Prop. 1.3 (ii)) together with `Δ` topologically finitely
+    generated (provable: `Δ_U ≃ₜ* Π̂_{g,r}`, cj `nonempty_kerProjGk_equiv`, plus Schreier for open subgroups)
+    — see next steps.
+* **Done** (new files, ≈620 lines):
+  - `HodgeTheater/ExtendAut.lean` (generic): `Rel`, `exists_rel`, `ext_mul`, `ext_symm`,
+    **`exists_extend`**: a semi-absolute continuous automorphism of an open subgroup `H ⊆ P` with the same
+    image in `G` extends to a continuous automorphism of `P`, given `SelfComm pr` (self-commensuration of
+    `M ⊇ P` over `G`), `M`, `G` slim and `P = pr⁻¹(pr P)`.
+  - `Multiradial/Theater/CuspGalConst.lean`: `mem_of_isIntegral`, `kbarX`, **`exists_fixAlg_placeSmul`**
+    (cuspidal places are `Aut(Ω/k̄(x))`-conjugate), **`exists_fixAlg_mul_mem_Hgp`** (`Hgp E ℓ M true` meets
+    every class of `Gal(Ω/k(x))` modulo automorphisms fixing `k̄`; also gives MR22 the geometric
+    (`k̄`-fixing) automorphisms it asked for in T6).
+  - `HodgeTheater/DStarCKu.lean`: `exists_genuinePi1Cover_eq_mkC`, `piCKuCmod` (`= piCKToCmod ∘ piCKuToCK`),
+    **`exists_piCKu_resK`/`exists_piCKu_pr`** (`π₁(C̲_K) ↠ G_K`), `CKuStrictSemiAbs` (named literature
+    statement), `CKuSemiAbsConj`, **`ckuSemiAbsConj`** (proved; inputs those of `ckSemiAbsConj` and
+    `piCmod_selfComm`), **`hAbsCKu_of_strict`**, **`piCKu_aut_eq_conj`** (every continuous automorphism of
+    `π₁(C̲_K)` is conjugation by a unique `γ ∈ π₁(C_{F_mod})` along `piCKuCmod`; inputs `CKuStrictSemiAbs`,
+    `BelyiCuspSpec`, `RelIsomDGC.Exists`, `hj`).

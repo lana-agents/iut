@@ -401,9 +401,11 @@ import Iut.Frobenioid.UnrPairing
 import Iut.Frobenioid.Wall
 import Iut.HodgeTheater.Bridge
 import Iut.HodgeTheater.DStar
+import Iut.HodgeTheater.DStarCKu
 import Iut.HodgeTheater.DStarConj
 import Iut.HodgeTheater.DStarCore
 import Iut.HodgeTheater.DStarDescent
+import Iut.HodgeTheater.ExtendAut
 import Iut.HodgeTheater.FRlfGlobal
 import Iut.HodgeTheater.FRlfIso
 import Iut.HodgeTheater.FRlfMod
@@ -467,6 +469,7 @@ import Iut.Multiradial.PrimeStrip.VdashRes
 import Iut.Multiradial.Spec
 import Iut.Multiradial.Theater.Capsule
 import Iut.Multiradial.Theater.CuspConj
+import Iut.Multiradial.Theater.CuspGalConst
 import Iut.Multiradial.Theater.CuspPlaces
 import Iut.Multiradial.Theater.GalMor
 import Iut.Multiradial.Theater.GenuineBaseChange
