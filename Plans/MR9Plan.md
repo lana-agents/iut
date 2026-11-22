@@ -2108,3 +2108,21 @@ injective; bijective if `T = TM`, or for strictly Belyi type) and Cor. 1.10 (b)�
   (cj `nonempty_kerProjGk_equiv`, index 2 from `Δ_X`, Schreier for open subgroups), 400–600 lines; (2) PFixedLift
   route above. **Decisions for the lead:** whether to take (1) (trades two named statements for one more
   primitive standard input) and whether MR9 starts the PFixedLift route.
+
+### Session z2 (2026-11-22, lead christian-aa): `CKStrictSemiAbs`, `CKuStrictSemiAbs` from "`G_{F_mod}` very elastic"
+* Lead decision (z hand-off): discharge both strict semi-absoluteness statements from one standard input. Literature
+  looked up: [AbsTopI] Def. 1.1 (ii) (l.453–456, elastic / very elastic), Prop. 1.3 (ii) (l.539–549), Thm. 1.7 (iii)
+  (l.705–712, `G_k` very elastic for NF `k`), Prop. 2.5 (ii) (l.1046–1060), Cor. 2.8 (ii) (l.1348–1379).
+* **Done:**
+  - `HodgeTheater/VeryElastic.lean` (generic): `Elastic.IsTopFG`, `IsElastic`, `IsVeryElastic` (literal Def. 1.1 (ii)),
+    `IsTopFG.map`/`.of_map` (closed embeddings)/`.inf_open` (topological Schreier via Mathlib
+    `Subgroup.fg_of_index_ne_zero`)/`.of_inf_open`/`.top_of_finiteIndex`, `isTopFG_top_of_dense`,
+    `IsVeryElastic.eq_bot` (Prop. 1.3 (ii) necessity), **`map_eq_one_of_isVeryElastic`** (open embedding `Q ↪ P` of
+    compact groups, `P ↠ G` with top. f.g. kernel, `G` very elastic ⇒ every continuous automorphism of `Q` preserves
+    `ker(Q → G)`).
+  - `HodgeTheater/DStarElastic.lean`: `isTopFG_ker_arith` (`Δ_X ≃ₜ* Π̂_{g,r}`, cj `nonempty_kerProjGk_equiv`),
+    `isTopFG_ker_hemiCorePr₄` (`Δ_C`, via `Δ_X = Δ_C ∩ Π_X` open), **`isTopFG_ker_piCmodPr`**, **`ckStrictSemiAbs (hEl)`**.
+  - `DStarCKu.ckuStrictSemiAbs (hEl)`. `hAbs_of_strict`, `piCmodAutEquivOfStrict`, `hAbsCKu_of_strict`,
+    `piCKu_aut_eq_conj` now take `hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar)` instead of `hStrict`.
+  Debts: `CKStrictSemiAbs`, `CKuStrictSemiAbs` removed; new standard input `hEl` ([AbsTopI] Thm. 1.7 (iii) for `F_mod`,
+  i.e. [Mzk11] Cor. 2.2, Thm. 2.4 per l.714–715). Unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), `PFixedLift`.

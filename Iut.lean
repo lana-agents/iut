@@ -406,6 +406,7 @@ import Iut.HodgeTheater.DStarCKu
 import Iut.HodgeTheater.DStarConj
 import Iut.HodgeTheater.DStarCore
 import Iut.HodgeTheater.DStarDescent
+import Iut.HodgeTheater.DStarElastic
 import Iut.HodgeTheater.ExtendAut
 import Iut.HodgeTheater.FRlfGlobal
 import Iut.HodgeTheater.FRlfIso
@@ -418,6 +419,7 @@ import Iut.HodgeTheater.HodgeTheater
 import Iut.HodgeTheater.Labels
 import Iut.HodgeTheater.PmBridge
 import Iut.HodgeTheater.Procession
+import Iut.HodgeTheater.VeryElastic
 import Iut.HodgeTheater.Wall
 import Iut.Implication.ChebyshevExplicit
 import Iut.Implication.Corollary22

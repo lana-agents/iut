@@ -35,8 +35,8 @@ This file records that input as the named hypothesis `hAbs` and derives the reco
   Cor. 2.8 (ii): automorphisms preserve `Δ_{C_K}`) and `CKSemiAbsConj` (the same conclusion for
   automorphisms preserving `Δ_{C_K}`, i.e. over an automorphism `ψ` of `G_K`; the functoriality of
   [AbsTopIII] Thm. 1.9 over `ψ`, MR9; proved in `HodgeTheater/DStarConj.lean`, `ckSemiAbsConj`,
-  from `BelyiCuspSpec` (MR8) and `RelIsomDGC.Exists` (MR7), so that `CKStrictSemiAbs` is the
-  remaining named literature debt, `hAbs_of_strict`);
+  from `BelyiCuspSpec` (MR8) and `RelIsomDGC.Exists` (MR7); `CKStrictSemiAbs` is proved in
+  `HodgeTheater/DStarElastic.lean` from the very elasticity of `Gal(F̄/F_mod)`, `hAbs_of_strict`);
 * **`piCK_aut_eq_conj`**: under `hAbs` (and the existing inputs `hDGC`, `hj`), every continuous
   automorphism of `π₁(C_K)` is the restriction of conjugation by a unique element of
   `π₁(C_{F_mod})` (existence: self-commensuration `piCmod_selfComm`; uniqueness: `π₁(C_{F_mod})` is
@@ -244,7 +244,8 @@ theorem piCK_conj_aut (γ : piCmod D) :
 /-- **Strict semi-absoluteness of the automorphisms of `π₁(C_K)`** ([AbsTopI] Cor. 2.8 (ii),
 `Topics in Absolute Anabelian Geometry I.txt` l.1348–1379, for a number field: an isomorphism of
 arithmetic fundamental groups satisfies `φ(Δ₁) = Δ₂`; the proof there uses that `G_K` is very
-elastic, [AbsTopI] Thm. 1.7 (iii), via Prop. 2.5 (ii)), as a **named statement**: every continuous
+elastic, [AbsTopI] Thm. 1.7 (iii), via Prop. 2.5 (ii); proved in `DStarElastic.ckStrictSemiAbs`
+from that input): every continuous
 automorphism of `π₁(C_K)` maps the geometric subgroup `Δ_{C_K} = ker(π₁(C_K) → Gal(F̄/F_mod))`
 into itself. -/
 def CKStrictSemiAbs : Prop :=

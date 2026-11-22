@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.HodgeTheater.DStarDescent
+import Iut.HodgeTheater.DStarElastic
 import Iut.Reconstruction.Cusp.HemiPiXChar
 import Iut.Reconstruction.Thm19.AutConj
 import Iut.Reconstruction.Thm19.RatSection
@@ -27,7 +28,9 @@ arguments: `BelyiCuspSpec` (MR8) and `RelIsomDGC.Exists` (MR7).
 * `resK` (`π₁(C_K) → Gal(k̄ / K)`), `iotaK` (`k̄ ≃ F̄`, an `F_mod`-embedding), **`iotaK_resK`**:
   `π₁(C_K) ↪ π₁(C_{F_mod}) ↠ Gal(F̄/F_mod)` is `resK` conjugated by `iotaK`;
 * **`ckSemiAbsConj`**; **`hAbs_of_strict`**, **`piCmodAutEquivOfStrict`**: the input `hAbs` of
-  `DStarDescent` discharged, with `CKStrictSemiAbs` as the remaining named literature debt.
+  `DStarDescent` discharged; `CKStrictSemiAbs` is proved in `DStarElastic.lean` (`ckStrictSemiAbs`)
+  from the very elasticity of `Gal(F̄/F_mod)` ([AbsTopI] Thm. 1.7 (iii)), the remaining standard
+  input `hEl`.
 -/
 
 noncomputable section
@@ -435,26 +438,26 @@ theorem ckSemiAbsConj
   change iotaK D (resK D (α x) v) = gR (iotaK D (resK D x (σ.symm v)))
   rw [hgR, resK_apply, ← hβb, hσ, ← resK_apply]
 
-/-- **`hAbs` of `DStarDescent` discharged up to strict semi-absoluteness**: every continuous
-automorphism of `π₁(C_K)` acts on the image of `π₁(C_K)` in `Gal(F̄/F_mod)` by conjugation by an
-element of `Gal(F̄/F_mod)` (`hAbs_of`, `ckSemiAbsConj`). Named inputs: `CKStrictSemiAbs`
-(literature debt, [AbsTopI] Cor. 2.8 (ii)), `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7). -/
-theorem hAbs_of_strict (hStrict : CKStrictSemiAbs D)
+/-- **`hAbs` of `DStarDescent` discharged**: every continuous automorphism of `π₁(C_K)` acts on the
+image of `π₁(C_K)` in `Gal(F̄/F_mod)` by conjugation by an element of `Gal(F̄/F_mod)` (`hAbs_of`,
+`ckStrictSemiAbs`, `ckSemiAbsConj`). Inputs: `hEl` (`Gal(F̄/F_mod)` is very elastic, [AbsTopI]
+Thm. 1.7 (iii)), `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7). -/
+theorem hAbs_of_strict (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : RelIsomDGC.Exists D.Kt) (α : piCK D ≃ₜ* piCK D) :
     ∃ g : GalG (Fmod D) D.Fbar, ∀ x,
       piCmodPr D (piCKToCmod D (α x)) = g * piCmodPr D (piCKToCmod D x) * g⁻¹ :=
-  hAbs_of D hStrict (ckSemiAbsConj D hS hDGC) α
+  hAbs_of D (ckStrictSemiAbs D hEl) (ckSemiAbsConj D hS hDGC) α
 
 /-- **`π₁(C_{F_mod}) ≅ Aut(π₁(C_K))`** (`piCmodAutEquiv`, IUT I, Example 5.1 (i)) with `hAbs`
-discharged by `hAbs_of_strict`. Named inputs: `CKStrictSemiAbs` (literature debt),
-`BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7). -/
-def piCmodAutEquivOfStrict (hStrict : CKStrictSemiAbs D)
+discharged by `hAbs_of_strict`. Inputs: `hEl` (`Gal(F̄/F_mod)` very elastic, [AbsTopI] Thm. 1.7
+(iii)), `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7). -/
+def piCmodAutEquivOfStrict (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F)) :
     piCmod D ≃* contAut (piCK D) :=
-  piCmodAutEquiv D hDGC hj (hAbs_of_strict D hStrict hS (hDGC D.Kt))
+  piCmodAutEquiv D hDGC hj (hAbs_of_strict D hEl hS (hDGC D.Kt))
 
 end HodgeTheater
 

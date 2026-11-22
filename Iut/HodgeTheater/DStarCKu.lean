@@ -24,11 +24,14 @@ Prop. 2.7):
   automorphisms fixing `k̄` (`Multiradial/Theater/CuspGalConst.lean`);
 * `piCKuCmod` (`π₁(C̲_K) ↪ π₁(C_K) ↪ π₁(C_{F_mod})`), **`exists_piCKu_resK`**,
   **`exists_piCKu_pr`**: `π₁(C̲_K)` and `π₁(C_K)` have the same image in `Gal(F̄/F_mod)`;
-* `CKuStrictSemiAbs` (named statement: [AbsTopI] Cor. 2.8 (ii) for `C̲_K`), `CKuSemiAbsConj`;
+* `CKuStrictSemiAbs` ([AbsTopI] Cor. 2.8 (ii) for `C̲_K`), **`ckuStrictSemiAbs`** (proved from the
+  very elasticity of `Gal(F̄/F_mod)`, [AbsTopI] Thm. 1.7 (iii), as `ckStrictSemiAbs` in
+  `DStarElastic.lean`), `CKuSemiAbsConj`;
 * **`ckuSemiAbsConj`**: `CKuSemiAbsConj D` from the inputs of `ckSemiAbsConj` (`BelyiCuspSpec`,
   `RelIsomDGC.Exists`) and of `piCmod_selfComm` (`RelIsomDGC.Exists` for all number fields, the
   `j`-condition `hj`);
-* **`hAbsCKu_of_strict`**, **`piCKu_aut_eq_conj`**: under `CKuStrictSemiAbs`, every continuous
+* **`hAbsCKu_of_strict`**, **`piCKu_aut_eq_conj`**: given `hEl` (`Gal(F̄/F_mod)` very elastic),
+  `BelyiCuspSpec`, `RelIsomDGC.Exists` and `hj`, every continuous
   automorphism of `π₁(C̲_K)` is the restriction (along `piCKuCmod`) of conjugation by a unique
   element of `π₁(C_{F_mod})` (which then normalises the image of `π₁(C̲_K)`).
 -/
@@ -168,12 +171,21 @@ theorem exists_piCKu_pr (ρ : piCK D) :
 
 /-- **Strict semi-absoluteness of the automorphisms of `π₁(C̲_K)`** ([AbsTopI] Cor. 2.8 (ii),
 `Topics in Absolute Anabelian Geometry I.txt` l.1348–1379, applied to the hyperbolic orbicurve
-`C̲_K` over the number field `K`; the same literature input as `CKStrictSemiAbs`), as a **named
-statement**: every continuous automorphism of `π₁(C̲_K)` maps
-`Δ_{C̲_K} = ker(π₁(C̲_K) → Gal(F̄/F_mod))` into itself. -/
+`C̲_K` over the number field `K`): every continuous automorphism of `π₁(C̲_K)` maps
+`Δ_{C̲_K} = ker(π₁(C̲_K) → Gal(F̄/F_mod))` into itself. Proved in `ckuStrictSemiAbs`. -/
 def CKuStrictSemiAbs : Prop :=
   ∀ α : D.orb.CKu.genuinePi1 ≃ₜ* D.orb.CKu.genuinePi1, ∀ x,
     piCmodPr D (piCKuCmod D x) = 1 → piCmodPr D (piCKuCmod D (α x)) = 1
+
+/-- **`CKuStrictSemiAbs` from the very elasticity of `Gal(F̄/F_mod)`** ([AbsTopI] Cor. 2.8 (ii),
+via Prop. 2.5 (ii), l.1046–1060, and Thm. 1.7 (iii), l.705–712): as `ckStrictSemiAbs`, for the
+open embedding `piCKuCmod` (`Δ_{C̲_K}` is open in `Δ_{C_{F_mod}}`, `isTopFG_ker_piCmodPr`). -/
+theorem ckuStrictSemiAbs (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar)) :
+    CKuStrictSemiAbs D :=
+  fun α x hx => Elastic.map_eq_one_of_isVeryElastic
+    (piCKuCmod D : D.orb.CKu.genuinePi1 →* piCmod D) (isOpenEmbedding_piCKuCmod D) (piCmodPr D)
+    (continuous_piCmodPr D) (piCmodPr_surjective D) (isTopFG_ker_piCmodPr D) hEl
+    (α : D.orb.CKu.genuinePi1 →* D.orb.CKu.genuinePi1) α.continuous α.surjective x hx
 
 /-- **Semi-absolute conjugacy for `π₁(C̲_K)`**: every continuous automorphism of `π₁(C̲_K)`
 preserving `Δ_{C̲_K}` acts on the image of `π₁(C̲_K)` in `Gal(F̄/F_mod)` by conjugation by an
@@ -256,9 +268,9 @@ theorem ckuSemiAbsConj
 
 /-- **The absolute form for `π₁(C̲_K)`** (analogue of `hAbs_of_strict`): every continuous
 automorphism of `π₁(C̲_K)` acts on its image in `Gal(F̄/F_mod)` by conjugation by an element of
-`Gal(F̄/F_mod)`. Named inputs: `CKuStrictSemiAbs` (literature, [AbsTopI] Cor. 2.8 (ii)),
+`Gal(F̄/F_mod)`. Inputs: `hEl` (`Gal(F̄/F_mod)` very elastic, [AbsTopI] Thm. 1.7 (iii)),
 `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), `hj`. -/
-theorem hAbsCKu_of_strict (hStrict : CKuStrictSemiAbs D)
+theorem hAbsCKu_of_strict (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F))
@@ -266,8 +278,8 @@ theorem hAbsCKu_of_strict (hStrict : CKuStrictSemiAbs D)
     ∃ g : GalG (Fmod D) D.Fbar, ∀ x,
       piCmodPr D (piCKuCmod D (α x)) = g * piCmodPr D (piCKuCmod D x) * g⁻¹ :=
   ckuSemiAbsConj D hS hDGC hj α fun x => ⟨fun hx => by
-    have h := hStrict α.symm (α x) hx
-    rwa [ContinuousMulEquiv.symm_apply_apply] at h, hStrict α x⟩
+    have h := ckuStrictSemiAbs D hEl α.symm (α x) hx
+    rwa [ContinuousMulEquiv.symm_apply_apply] at h, ckuStrictSemiAbs D hEl α x⟩
 
 set_option maxHeartbeats 1000000 in
 -- `piCmod_selfComm` at `π₁(C̲_K)` unfolds heavy instance terms
@@ -277,14 +289,14 @@ IUT I, Ex. 4.3 (i), with `Aut(C̲_K) = N_{π₁(C_{F_mod})}(π₁(C̲_K)) / π�
 self-commensuration `piCmod_selfComm` applied to `piCKuCmod` and `piCKuCmod ∘ α`
 (`hAbsCKu_of_strict`), uniqueness by slimness (`isSlim_piCmod`). Named inputs as in
 `hAbsCKu_of_strict`. -/
-theorem piCKu_aut_eq_conj (hStrict : CKuStrictSemiAbs D)
+theorem piCKu_aut_eq_conj (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F))
     (α : D.orb.CKu.genuinePi1 ≃ₜ* D.orb.CKu.genuinePi1) :
     ∃! γ : piCmod D, ∀ x, piCKuCmod D (α x) = γ * piCKuCmod D x * γ⁻¹ := by
   have hι := isOpenEmbedding_piCKuCmod D
-  obtain ⟨g, hg⟩ := hAbsCKu_of_strict D hStrict hS hDGC hj α
+  obtain ⟨g, hg⟩ := hAbsCKu_of_strict D hEl hS hDGC hj α
   let f₂ : D.orb.CKu.genuinePi1 →ₜ* piCmod D :=
     (piCKuCmod D).comp (ContinuousMonoidHom.toContinuousMonoidHom α)
   have hf₂ : ⇑f₂ = piCKuCmod D ∘ α := rfl
