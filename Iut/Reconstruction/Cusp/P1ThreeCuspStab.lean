@@ -12,6 +12,7 @@ import TemperedFundamentalGroups.SemistableReduction.P1ThreeFlatStructure
 import TemperedFundamentalGroups.SemistableReduction.P1ThreeFixedPoint
 import TemperedFundamentalGroups.SemistableReduction.AlgStrLift01
 import TemperedFundamentalGroups.SemistableReduction.StabIdeal
+import TemperedFundamentalGroups.SemistableReduction.P1ThreeCuspCyclic
 
 /-!
 # Cusp generators of a tame special cover stabilise special points (MR13's B4′, "A2⁻")
@@ -30,7 +31,11 @@ special-side hypotheses, explicit arguments; MR13-plan, lead decision (ii) after
   `P1Three.Datum.exists_fixed_special_point`);
 * **`P1ThreeCuspStab.exists_cusp_stabilisers`** (**B4′**): there are `z₀, z₁, z₂ ∈ G` with
   `z₀ z₁ z₂ = 1`, any two generating `G`, and a numbering `τ` of the cusps `0, 1, a` such that each
-  `z j` is conjugate to an element of `G` fixing a special point of `C0` over `t̄ = τ̄ j`.
+  `z j` is conjugate to an element of `G` fixing a special point of `C0` over `t̄ = τ̄ j`;
+* **`P1ThreeCuspStab.exists_cusp_stabilisers_cyclic`** (B4′ + C2): moreover, if `|G|` is invertible
+  in `k` (tame), the stabiliser of each of these special points is cyclic (tfg
+  `P1Three.isCyclic_stab`, MR12's I5(c)); `mem_of_liesOver`: a special point over a cusp contains
+  `x̄ = t (t − 1)(t − ā)`.
 -/
 
 open Polynomial TensorProduct
@@ -445,6 +450,58 @@ theorem exists_cusp_stabilisers
   obtain ⟨𝔪, y, g, hmax, hover, hzg, hfix⟩ := key (c j)
   rw [hec] at hzg
   exact ⟨𝔪, y, g, hmax, hover, hzg, hfix⟩
+
+omit [IsDomain O] [IsDiscreteValuationRing O] [(Ideal.span {ϖ}).IsMaximal]
+  [IsAdicComplete (Ideal.span {ϖ}) O] [IsAlgClosed k] in
+/-- **A special point over a cusp contains `x̄ = t (t − 1)(t − ā)`.** -/
+lemma mem_of_liesOver (D : Datum O θ a) {τ : O} (hτ : τ = 0 ∨ τ = 1 ∨ τ = a) {𝔪 : Ideal D.S0.C0}
+    (h : LiesOver hϖ hker hO D τ 𝔪) :
+    algebraMap (Ts θ (R0 O a)) D.S0.C0 (Ideal.Quotient.mk _ (x0 O a)) ∈ 𝔪 := by
+  obtain ⟨u, hu⟩ : ∃ u, x0 O a = (t0 O a - algebraMap O (R0 O a) τ) * u := by
+    rcases hτ with h | h | h <;> rw [h]
+    · exact ⟨(t0 O a - 1) * (t0 O a - algebraMap O _ a), by
+        rw [x0_eq, map_zero, sub_zero, mul_assoc]⟩
+    · exact ⟨t0 O a * (t0 O a - algebraMap O _ a), by rw [x0_eq, map_one]; ring⟩
+    · exact ⟨t0 O a * (t0 O a - 1), by rw [x0_eq]; ring⟩
+  have e : ∀ r : R0 O a, (letI := (overlap D.Sp hϖ hker D.S0 D.om hO).algC0' 0
+      algebraMap (overlap D.Sp hϖ hker D.S0 D.om hO).B0' (overlap D.Sp hϖ hker D.S0 D.om hO).C0 r) =
+      algebraMap (Ts θ (R0 O a)) D.S0.C0 (Ideal.Quotient.mk _ r) := fun _ ↦ rfl
+  unfold LiesOver at h
+  rw [e] at h
+  have hx : algebraMap (Ts θ (R0 O a)) D.S0.C0 (Ideal.Quotient.mk _ (x0 O a)) =
+      algebraMap (Ts θ (R0 O a)) D.S0.C0
+        (Ideal.Quotient.mk _ (t0 O a - algebraMap O (R0 O a) τ)) *
+      algebraMap (Ts θ (R0 O a)) D.S0.C0 (Ideal.Quotient.mk _ u) := by
+    rw [← map_mul, ← map_mul, ← hu]
+  rw [hx]
+  exact Ideal.mul_mem_right _ _ h
+
+include hϖ0 hϖu K Kb ht ha0 ha1 hone hmul in
+/-- **B4′ with cyclic special cusp stabilisers (MR13 C2)**: as `exists_cusp_stabilisers`, and if
+moreover `|G|` is invertible in `k` (tameness), the stabiliser in `G` of each of the special points
+`𝔪` (a maximal ideal of `C0` over the cusp `t̄ = τ̄ j`) is cyclic (tfg `P1Three.isCyclic_stab`:
+`C0_𝔪` is a discrete valuation ring with residue field `k`, `C0` is a domain and the action is
+faithful on `C0`; MR12's I5(c) `StabilizerCyclic.isCyclic_of_faithful`). -/
+theorem exists_cusp_stabilisers_cyclic
+    (hfaith : ∀ g, (∀ c, (act g).φ1 c = c) → g = 1)
+    (hconn : ∀ e : D.Sp.C1, IsIdempotentElem e → e = 0 ∨ e = 1)
+    (hdeg : Module.finrank (Ts θ (R1 O a)) D.Sp.C1 = Nat.card G) (hG : (Nat.card G : k) ≠ 0) :
+    ∃ (z : Fin 3 → G) (τ : Fin 3 → O), z 0 * z 1 * z 2 = 1 ∧
+      (∀ i j, i ≠ j → Subgroup.closure {z i, z j} = ⊤) ∧
+      (∀ j, τ j = 0 ∨ τ j = 1 ∨ τ j = a) ∧ Function.Injective τ ∧
+      ∀ j, ∃ (𝔪 : Ideal D.S0.C0) (_ : 𝔪.IsMaximal) (y x : G), LiesOver hϖ hker hO D (τ j) 𝔪 ∧
+        z j = y * x * y⁻¹ ∧
+        x ∈ StabIdeal.stab (P1Three.φ0Act D act) (P1Three.φ0Act_one act hone)
+          (P1Three.φ0Act_mul act hmul) 𝔪 ∧
+        IsCyclic (StabIdeal.stab (P1Three.φ0Act D act) (P1Three.φ0Act_one act hone)
+          (P1Three.φ0Act_mul act hmul) 𝔪) := by
+  obtain ⟨z, τ, hprod, hgen, hτ, hinj, hj⟩ := exists_cusp_stabilisers hϖ hker ha0 ha1 hO hϖ0 hϖu
+    K Kb act hone hmul ht hfaith hconn hdeg
+  refine ⟨z, τ, hprod, hgen, hτ, hinj, fun j ↦ ?_⟩
+  obtain ⟨𝔪, y, x, hmax, hover, hzj, hfix⟩ := hj j
+  exact ⟨𝔪, hmax, y, x, hover, hzj, hfix,
+    P1Three.isCyclic_stab act hone hmul ha0 ha1 hfaith hconn hG 𝔪
+      (mem_of_liesOver hϖ hker hO D (hτ j) hover)⟩
 
 end Main
 
