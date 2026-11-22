@@ -22,15 +22,17 @@ As for the constituents (`VdashRes.lean`, `ArcVdash.lean`), the mono-analyticisa
 `F`-prime-strip is, up to isomorphism, the model (`F^⊢_mod`, `F^⊩_mod`); the content of the
 algorithm is its action on isomorphisms, here on isomorphism classes (IUT I, §0):
 
-* `FStrip.IsoClass`, `FVdashStrip.IsoClass` (constituentwise classes) and
-  **`FStrip.vdashClass : Isom(‡F, ‡F') → Aut(F^⊢_mod)`** (`FComp.vdashClass` at `V^non`,
+* `FStrip.IsoClass`, `FVdashStrip.IsoClass`, `DVdashStrip.IsoClass` (constituentwise classes);
+  **IUT I, Corollary 5.3 (iii) over all of `V`** (`FVdashStrip.isoClassToD_surjective`; at
+  `V^arc` the isomorphisms of `F^⊢_v`-data are componentwise, Definition 5.2 (iii));
+* **`FStrip.vdashClass : Isom(‡F, ‡F') → Aut(F^⊢_mod)`** (`FComp.vdashClass` at `V^non`,
   `FArcComp.vdashClass` at `V^arc`), functorial (`FStrip.vdashClass_trans`, `_refl`);
 * `FRlfData.IsoClass`: isomorphisms of `F^⊩`-data modulo natural isomorphism of the global
   equivalences and 2-isomorphism of the `F^⊢`-parts;
 * **`ρ_v` compatibility**: every class in the image of `F ↦ F^⊢` has a representative acting as
-  the identity on the divisor monoids (`PhiTriv`; at `V^non` the isomorphisms `resIso` are the
-  identity on `Φ`, at `V^arc` this is the rigidity `FArcData.Iso.phi_apply`), hence compatible with
-  the `ρ_v` of `F^⊩_mod` (`rlfIsoOf`);
+  the identity on the divisor monoids (`PhiTrivNon`, `PhiTrivArc`; at `V^non` the isomorphisms
+  `resIso` are the identity on `Φ`, at `V^arc` this is the rigidity `FArcData.Iso.phi_apply`),
+  hence compatible with the `ρ_v` of `F^⊩_mod` (`rlfIsoOf`);
 * **`FStrip.rlfClass : Isom(‡F, ‡F') → Aut(F^⊩_mod)`** (the global part acts as the identity),
   with `FStrip.rlfClass_toVdash` (its `F^⊢`-part is `FStrip.vdashClass`) and functoriality
   (`FStrip.rlfClass_trans`, `FStrip.rlfClass_refl`).
@@ -84,6 +86,32 @@ def FVdashStrip.IsoClass.refl (P : FVdashStrip D) : P.IsoClass P :=
 def FVdashStrip.IsoClass.trans {P Q R : FVdashStrip D} (a : P.IsoClass Q) (b : Q.IsoClass R) :
     P.IsoClass R :=
   (fun v => (a.1 v).trans (b.1 v), fun v => (a.2 v).trans (b.2 v))
+
+/-- **Isomorphisms of `D^⊢`-prime-strips in the sense of IUT I, §0**: classes of equivalences at
+`V^non`, isomorphisms in `TM^⊢` at `V^arc`. -/
+def DVdashStrip.IsoClass (P Q : DVdashStrip D) : Type :=
+  P.non.IsoClass Q.non × ∀ v, (P.arc v).T.Iso (Q.arc v).T
+
+/-- **The map `Isom(¹F^⊢, ²F^⊢) → Isom(¹D^⊢, ²D^⊢)` of IUT I, Corollary 5.3 (iii)** over all of
+`V`. -/
+def FVdashStrip.isoClassToD {P Q : FVdashStrip D} (a : P.IsoClass Q) : P.toD.IsoClass Q.toD :=
+  (FVdashStripNon.isoClassToD a.1, fun v => (a.2 v).toD)
+
+/-- **IUT I, Corollary 5.3 (iii)** (l.9895–9898) over all of `V`: `Isom(¹F^⊢, ²F^⊢) →
+Isom(¹D^⊢, ²D^⊢)` is surjective. At `V^non` this is `FVdashStripNon.isoClassToD_surjective`; at
+`V^arc` an `F^⊢_v` is a triple `(‡C^⊢_v, ‡D^⊢_v, ‡τ^⊢_v)` whose isomorphisms are isomorphisms of
+the collections of data (Definition 5.2 (ii)(b), (iii), l.9180–9193), so every isomorphism in
+`TM^⊢` lifts (with any isomorphism of the split Frobenioids). -/
+theorem FVdashStrip.isoClassToD_surjective (P Q : FVdashStrip D) :
+    Function.Surjective (FVdashStrip.isoClassToD : P.IsoClass Q → P.toD.IsoClass Q.toD) := by
+  intro a
+  obtain ⟨b, hb⟩ := FVdashStripNon.isoClassToD_surjective P.non Q.non a.1
+  have h : ∀ v, ∃ c : FVdashArcData.IsoClass (P.arc v).X (Q.arc v).X, c.toD = a.2 v := fun v => by
+    obtain ⟨m⟩ := (P.arc v).equiv_model
+    obtain ⟨m'⟩ := (Q.arc v).equiv_model
+    exact ⟨FVdashArcData.IsoClass.mk ⟨(m.trans m'.symm).F, a.2 v⟩, rfl⟩
+  choose c hc using h
+  exact ⟨(b, c), Prod.ext hb (funext hc)⟩
 
 /-! ### `F ↦ F^⊢` on classes of strips -/
 
