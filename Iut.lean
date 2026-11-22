@@ -490,6 +490,7 @@ import Iut.Multiradial.Theater.LabCuspModel
 import Iut.Multiradial.Theater.LocalToGlobal
 import Iut.Multiradial.Theater.OuterHom
 import Iut.Multiradial.Theater.Semilinear
+import Iut.Multiradial.Theater.SemilinearCusp
 import Iut.Multiradial.ThetaData
 import Iut.NumberTheory.SixExponentials.Basic
 import Iut.NumberTheory.SixExponentials.ExpPolyZeros
