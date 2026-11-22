@@ -443,6 +443,7 @@ import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
 import Iut.Multiradial.PrimeStrip.Arc
 import Iut.Multiradial.PrimeStrip.ArcCor53
+import Iut.Multiradial.PrimeStrip.ArcRigid
 import Iut.Multiradial.PrimeStrip.ArcVdash
 import Iut.Multiradial.PrimeStrip.AutRigid
 import Iut.Multiradial.PrimeStrip.Black

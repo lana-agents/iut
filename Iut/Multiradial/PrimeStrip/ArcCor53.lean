@@ -33,10 +33,8 @@ at `V^arc`. Here, for the constituents `F_v = (C_v, E_{Λ₀}, κ_v)` (`Arc.lean
 * `DStrip.IsoClass`, `FStrip.isoClassToD` and **`FStrip.isoClassToD_surjective`**: Corollary 5.3
   (ii), surjectivity, over all of `V` (inputs at `V^non` as in `FStripNon.isoClassToD_bijective`).
 
-Not done: injectivity at `V^arc` (an automorphism of `F_v` over the identity of `D_v` is
-2-isomorphic to the identity); this needs a natural isomorphism `F ≅ 𝟭` for autoequivalences of
-the Frobenioid of angular regions acting trivially on `μ` of isotropic objects ([FrdII], Example
-3.3; see the MR21 plan).
+Injectivity at `V^arc` (the `F ≅ 𝟭` rigidity of the Frobenioid of angular regions) and the
+bijectivity over all of `V` are in `ArcRigid.lean`.
 -/
 
 noncomputable section
