@@ -367,7 +367,7 @@ end CapStrip
 section Model
 
 /-- The prime `ℓ` of initial Θ-data is an odd prime (as in `Iut.HodgeTheater.HodgeTheater`). -/
-local instance oddPrimeEll (D : InitialThetaData.{0}) : HodgeTheater.OddPrime D.ℓ :=
+local instance oddPrimeEllCap (D : InitialThetaData.{0}) : HodgeTheater.OddPrime D.ℓ :=
   ⟨D.prime.ℓ_prime, by have := D.prime.five_le; change 2 < D.prime.ℓ; omega⟩
 
 variable (D : InitialThetaData.{0})
