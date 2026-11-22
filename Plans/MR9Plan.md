@@ -2150,3 +2150,15 @@ Thm 1.9 (a), (d), (e), Cor. 1.10 (d), (d′)), Rem. 3.1.7 (i), (ii) (l.4320–43
   (Rem. 3.1.7 (i): one pole, ≥2 zeroes, divisor over a number field avoiding critical points, roots of unity at strictly
   critical points) as subsets of `recFunctionField`, ≈300–500 lines, after (1). Recommended order: (1), (3) (the
   uniqueness in Def. 5.2 (vi) comes from MR21's Cor. 5.3 (ii)), then (2) jointly with PFixedLift.
+* Merged iut **8f67079**: R8b step A (`kummerMapZHat_stage_injective`, `kummerLim_injective`, `kummerNF_injective`,
+  `RecFunctionField` over `[Fact (IsTorallyKummerFaithful k)]`; instances `fact_isTorallyKummerFaithful_numberField`,
+  `fact_isTorallyKummerFaithful_localField`).
+
+* **Hand-off 2026-11-22 (MR9 track agent, session z2, lead christian-aa).** Merged iut **2f72fc0 + 2ba95a2** (strict
+  semi-absoluteness from `hEl`; AutCK switched) and **8f67079** (R8b step A + scoping). No WIP branch (`mr9-z2` = main).
+  Debts: `CKStrictSemiAbs`, `CKuStrictSemiAbs` removed; new standard input `hEl : Elastic.IsVeryElastic (GalG (Fmod D)
+  D.Fbar)` ([AbsTopI] Thm 1.7 (iii)); unchanged `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), `PFixedLift` (deferred).
+  **Next steps:** R8b (1) `NFModel` for `C_v`, (3) κ-coric subsets of `recFunctionField` (≈600–1100 lines total), then
+  (2) local functoriality jointly with PFixedLift (needs a local Belyi-cuspidalization input). **Decisions for the
+  lead:** whether to start R8b (1)+(3) next; whether `hEl` should be threaded further up (callers of
+  `piCmodAutEquivOfStrict` / `piCKu_aut_eq_conj`) as a global hypothesis of the Θ-Hodge theater.
