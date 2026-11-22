@@ -15,7 +15,11 @@ import Iut.Reconstruction.Thm19.CuspPrincipal
 `lim→_V H¹(Π_V, μ_Ẑ(Π_U))` by the Kummer map, and step (e) (l.2179–2185) applies "the functorial
 algorithm of Proposition 1.3 to the data of the form described in Proposition 1.3, (a), (b), (c),
 arising from the construction of (d) [cf. also the decomposition groups of (a), the isomorphisms
-of (b)]". Here, for the Galois model `D` of a curve over a number field `k` with NF-model `N`:
+of (b)]". Here, for the Galois model `D` of a curve over a torally Kummer-faithful field `k`
+(`[Fact (IsTorallyKummerFaithful k)]`: a number field, instance
+`fact_isTorallyKummerFaithful_numberField`, or a finite extension of `ℚ_p`,
+`isTorallyKummerFaithful_of_isNonarchimedeanLocalField`; [AbsTopIII] Thm 1.9 is stated over any
+sub-`p`-adic field) with NF-model `N`:
 
 * `kummerNFRange N hkF ⊆ H1Lim D`: the image of `K^×_{Z_NF}` in `lim→_V H¹(Π_V, Ẑ(1))`
   (`Thm19/NFDirectLimit.lean`), and `kummerNFEquiv : K^×_{Z_NF} ≃* kummerNFRange`;
@@ -56,7 +60,7 @@ section Rec
 
 variable {k Ω : Type u} [Field k] [Field Ω] [Algebra k Ω] {t : Ω}
   {D : Pi1.Orbifold.GaloisData k t} [CharZero k] [IsGalois (K₀ k t) Ω] [IsAlgClosed Ω]
-  [CharZero Ω] [Fact (D.H ≤ D.HL)] [NumberField k] (N : NFModel D)
+  [CharZero Ω] [Fact (D.H ≤ D.HL)] [Fact (IsTorallyKummerFaithful k)] (N : NFModel D)
   (hkF : ∀ x : F D, IsAlgebraic k x → x ∈ Set.range (algebraMap k (F D)))
 
 /-- **`K^×_{Z_NF}` inside `lim→_V H¹(Π_V, Ẑ(1))`**: the image of the Kummer map. -/
@@ -203,9 +207,8 @@ theorem mem_U_recTriple_iff (f : (fnf N)ˣ) {W : ValuationSubring Ω}
     (hu' : ((((v : (F s.data)ˣ)⁻¹ : (F s.data)ˣ) : F s.data) : Ω) ∈ W) :
     kummerNFEquiv N hkF f ∈ (recTriple N hkF).U (nfPlace hk hW) ↔
       restrictClosed s.data W hkW hkres rfl ht (kummerMapZHat s.data v) = 1 := by
-  haveI : NumberField s.K := NumberField.of_module_finite k s.K
   have h3 := restrictClosed_kummerMapZHat_eq_one_iff_valuation s.data W hkW hkres rfl ht
-    (NumberField.isTorallyKummerFaithful s.K) v hu hu'
+    ((Fact.out : IsTorallyKummerFaithful k).of_finite s.K) v hu hu'
   have h4 : W.valuation (((f : fnf N) : Ω) - 1) < 1 ↔
       W.valuation ((((v : (F s.data)ˣ) : F s.data) : Ω) - 1) < 1 := by
     rw [hv]
@@ -225,7 +228,7 @@ lemma mem_F_baseChange_of_stage (s : StageIdx D) {x : Ω} (hx : x ∈ F s.data) 
     (fun c => σ.commutes ⟨_, (K₀ (kbar k Ω) t).algebraMap_mem ⟨_, algebraMap_mem_kbar c⟩⟩)
 
 omit [CharZero k] [IsGalois (K₀ k t) Ω] [IsAlgClosed Ω] [CharZero Ω] [Fact (D.H ≤ D.HL)]
-  [NumberField k] in
+  [Fact (IsTorallyKummerFaithful k)] in
 /-- For a place cut out by `W`, two nonzero elements have the same `ord` iff the same value. -/
 lemma ord_eq_ord_iff_val {κ L : Type*} [Field κ] [Field L] [Algebra κ L] [IsFunctionField κ L]
     [PerfectField κ] {W : ValuationSubring Ω} (P : Place κ L) (φ : L →+* Ω)
@@ -235,7 +238,7 @@ lemma ord_eq_ord_iff_val {κ L : Type*} [Field κ] [Field L] [Algebra κ L] [IsF
     Place.ord_le_ord_iff P φ hP hy hx, and_comm]
 
 omit [CharZero k] [IsGalois (K₀ k t) Ω] [IsAlgClosed Ω] [CharZero Ω] [Fact (D.H ≤ D.HL)]
-  [NumberField k] in
+  [Fact (IsTorallyKummerFaithful k)] in
 /-- `v(x) = v(π)^n` for `ord x = n`, `ord π = 1`. -/
 lemma val_eq_zpow_of_ord {κ L : Type*} [Field κ] [Field L] [Algebra κ L] [IsFunctionField κ L]
     [PerfectField κ] {W : ValuationSubring Ω} (P : Place κ L) (φ : L →+* Ω)
@@ -354,11 +357,11 @@ section Functorial
 
 variable {k Ω : Type u} [Field k] [Field Ω] [Algebra k Ω] {t : Ω}
   {D : Pi1.Orbifold.GaloisData k t} [CharZero k] [IsGalois (K₀ k t) Ω] [IsAlgClosed Ω]
-  [CharZero Ω] [Fact (D.H ≤ D.HL)] [NumberField k] (N : NFModel D)
+  [CharZero Ω] [Fact (D.H ≤ D.HL)] [Fact (IsTorallyKummerFaithful k)] (N : NFModel D)
   (hkF : ∀ x : F D, IsAlgebraic k x → x ∈ Set.range (algebraMap k (F D)))
   {k' Ω' : Type u} [Field k'] [Field Ω'] [Algebra k' Ω'] {t' : Ω'}
   {D' : Pi1.Orbifold.GaloisData k' t'} [CharZero k'] [IsGalois (K₀ k' t') Ω'] [IsAlgClosed Ω']
-  [CharZero Ω'] [Fact (D'.H ≤ D'.HL)] [NumberField k'] (N' : NFModel D')
+  [CharZero Ω'] [Fact (D'.H ≤ D'.HL)] [Fact (IsTorallyKummerFaithful k')] (N' : NFModel D')
   (hkF' : ∀ x : F D', IsAlgebraic k' x → x ∈ Set.range (algebraMap k' (F D')))
 
 /-- **[AbsTopIII] Thm 1.9, functoriality**: every isomorphism of reconstructed triples (the

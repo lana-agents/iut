@@ -267,16 +267,17 @@ def kummerLim : UnitsLim D →* H1Lim D where
 lemma kummerLim_mk (s : StageIdx D) (u : US D s) :
     kummerLim D (UnitsLim.mk s u) = H1Lim.mk s (kummerMapZHat s.data u) := rfl
 
-/-- **[AbsTopIII] Thm 1.9 (d), the Kummer map into `lim→_V H¹(Π_V, Ẑ(1))` is injective**, `k` a
-number field (Prop 1.6 (i) at every stage, `kummerMapZHat_stage_injective_numberField`). -/
-theorem kummerLim_injective [NumberField k]
+/-- **[AbsTopIII] Thm 1.9 (d), the Kummer map into `lim→_V H¹(Π_V, Ẑ(1))` is injective**, `k`
+torally Kummer-faithful, e.g. a number field or a finite extension of `ℚ_p` (Prop 1.6 (i) at every
+stage, `kummerMapZHat_stage_injective`). -/
+theorem kummerLim_injective [Fact (IsTorallyKummerFaithful k)]
     (hkF : ∀ x : F D, IsAlgebraic k x → x ∈ Set.range (algebraMap k (F D))) :
     Function.Injective (kummerLim D) := by
   change Function.Injective (kummerLimFun D)
   exact directLimit_map_injective (fun _ _ h => unitsS (D := D) h)
     (fun _ _ h => resS (D := D) h) (fun s => ⇑(kummerMapZHat s.data))
     (fun _ _ h x => resS_kummerMapZHat h x) fun s =>
-      kummerMapZHat_stage_injective_numberField (D := D) (K := s.K) (ht' := s.ht')
+      kummerMapZHat_stage_injective (D := D) (K := s.K) (ht' := s.ht')
         (htr' := s.htr') (Fact.out : D.H ≤ D.HL) hkF
 
 /-- A unit of a stage as a unit of `Ω`. -/
@@ -354,9 +355,11 @@ lemma nfToLim_injective : Function.Injective (nfToLim N hkF) := by
 NF-rational functions in the colimit. -/
 def kummerNF : (fnf N)ˣ →* H1Lim D := (kummerLim D).comp (nfToLim N hkF)
 
-/-- **[AbsTopIII] Thm 1.9 (d), the "`↪`"**: over a number field, the Kummer map of the
-NF-portion into `lim→_V H¹(Π_V, Ẑ(1))` is injective. -/
-theorem kummerNF_injective [NumberField k] : Function.Injective (kummerNF N hkF) :=
+/-- **[AbsTopIII] Thm 1.9 (d), the "`↪`"**: over a torally Kummer-faithful field (a number
+field, or a finite extension of `ℚ_p`), the Kummer map of the NF-portion into
+`lim→_V H¹(Π_V, Ẑ(1))` is injective. -/
+theorem kummerNF_injective [Fact (IsTorallyKummerFaithful k)] :
+    Function.Injective (kummerNF N hkF) :=
   (kummerLim_injective D hkF).comp (nfToLim_injective N hkF)
 
 end Lim

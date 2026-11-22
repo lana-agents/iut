@@ -2126,3 +2126,27 @@ injective; bijective if `T = TM`, or for strictly Belyi type) and Cor. 1.10 (b)�
     `piCKu_aut_eq_conj` now take `hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar)` instead of `hStrict`.
   Debts: `CKStrictSemiAbs`, `CKuStrictSemiAbs` removed; new standard input `hEl` ([AbsTopI] Thm. 1.7 (iii) for `F_mod`,
   i.e. [Mzk11] Cor. 2.2, Thm. 2.4 per l.714–715). Unchanged: `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), `PFixedLift`.
+* Merged iut **2ba95a2** (with 2f72fc0): the above, plus MR22's `Theater/AutCK.lean` (landed 821d7bc meanwhile with
+  `hStrict : CKuStrictSemiAbs D`) switched to `hEl` (`exists_normCK_eq`, `outCK_surjective`, `exists_normCK_chiN`,
+  `chi_surjective`, `actStar_comp`, `phiNFStarEps_postcomp`); noted in MR22-plan.md.
+
+### R8b scoping (session z2; lead: "local version of recFunctionField at (F_mod)_v", MR21-plan R8 scoping)
+Literature looked up: IUT I Def. 5.2 (v) (l.9228–9268: `π₁^rat(‡D_v)`, `M^κ_v, M^{∞κ}_v, M^{∞κ×}_v` via [AbsTopIII]
+Thm 1.9 (a), (d), (e), Cor. 1.10 (d), (d′)), Rem. 3.1.7 (i), (ii) (l.4320–4380: κ-coric functions on `C_L`,
+`L = F_mod` or `(F_mod)_v`), [AbsTopIII] Thm 1.9 (l.2109–2196: stated over any sub-`p`-adic `k`, NF-portion over
+`k_NF = ℚ̄ ∩ k̄`). Code survey of `Reconstruction/Thm19/` (NF-dependence):
+* **Step A (done in this branch, see below):** the chain `RecFunctionField ← NFDirectLimit ← NFTransition` (11 files) used
+  `[NumberField k]` only for Kummer-faithfulness. Now stated with `[Fact (IsTorallyKummerFaithful k)]`
+  (instances `fact_isTorallyKummerFaithful_numberField`, `fact_isTorallyKummerFaithful_localField` in NFTransition), so
+  `recTriple`, `recFunctionField`, `recFunctionFieldEquiv`, `ringEquivOfIso`, `mem_U_recTriple_iff` hold over
+  `(F_mod)_v` for any Galois model `D` with an `NFModel N` (cj `Kummer/NF.lean`, general char-0 `k`).
+* **Missing for R8b proper:** (1) an `NFModel` for the base change `C_v` of `C_{F_mod}` (the canonical `nfModelNF`,
+  `NFCanon.lean:53`, is NF-only since there `F_NF = F k̄`): `F_NF :=` the function field of `C` over `ℚ̄ ⊆ \bar{K}_v`
+  (descent of `C_{F_mod}` via `F_mod ⊆ ℚ̄`), ≈300–600 lines; (2) the functoriality `RecTripleIso` along `Φ ∈ Aut(Π_v)`:
+  genuinely NF-only in the current proof (`NFModel.mem_FNF_iff_numberField`, `NFCanon.lean:69`, used in 9 further files; `BelyiCuspSpec` (Cor. 3.8
+  lifting, `DecompIso.lean:214`, `BelyiLift.lean:89`) and `constFnf`/`isAlgebraic_rat_of_isAlgebraic` in `GalEquiv`);
+  a local version needs restricting to NF-stages (`StageIdx.IsNF`) and a local Belyi-cuspidalization input (the same
+  local input as in the PFixedLift route, session z scoping) — 25–30 files, 1–3k lines; (3) the κ-coric subsets
+  (Rem. 3.1.7 (i): one pole, ≥2 zeroes, divisor over a number field avoiding critical points, roots of unity at strictly
+  critical points) as subsets of `recFunctionField`, ≈300–500 lines, after (1). Recommended order: (1), (3) (the
+  uniqueness in Def. 5.2 (vi) comes from MR21's Cor. 5.3 (ii)), then (2) jointly with PFixedLift.

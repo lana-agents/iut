@@ -590,6 +590,21 @@ end Injective
 
 section StageInjective
 
+/-- Number fields are torally Kummer-faithful (as a `Fact`, so that the reconstruction
+[AbsTopIII] Thm 1.9 (d), (e) can be stated over any torally Kummer-faithful base field, e.g. a
+finite extension of `ℚ_p`, `isTorallyKummerFaithful_of_isNonarchimedeanLocalField`). -/
+instance (priority := 100) fact_isTorallyKummerFaithful_numberField {k : Type u} [Field k]
+    [NumberField k] : Fact (IsTorallyKummerFaithful k) :=
+  ⟨NumberField.isTorallyKummerFaithful k⟩
+
+open ValuativeRel in
+/-- Finite extensions of `ℚ_p` (non-archimedean local fields of characteristic zero) are torally
+Kummer-faithful (as a `Fact`; the local base fields `(F_mod)_v` of IUT I, Def. 5.2 (v)). -/
+instance (priority := 100) fact_isTorallyKummerFaithful_localField {K : Type u} [Field K]
+    [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] [CharZero K] :
+    Fact (IsTorallyKummerFaithful K) :=
+  ⟨isTorallyKummerFaithful_of_isNonarchimedeanLocalField K⟩
+
 open CurvesJacobian
 
 set_option linter.unusedSectionVars false
@@ -624,14 +639,23 @@ theorem mem_range_of_isAlgebraic_stage (hH : D.H ≤ D.HL)
       exact (mem_L_constExt_iff D K).1 hxL h (hH h.2) hfixK
   exact ⟨c, Subtype.ext hc⟩
 
+/-- **[AbsTopIII] Prop 1.6 (i) at every stage over a torally Kummer-faithful field** (e.g. a
+number field or a finite extension of `ℚ_p`): for `K / k` finite, the Kummer map of every stage
+`V ⊆ U_K` is injective. -/
+theorem kummerMapZHat_stage_injective [Fact (IsTorallyKummerFaithful k)] [FiniteDimensional k K]
+    (hH : D.H ≤ D.HL)
+    (hkF : ∀ x : F D, IsAlgebraic k x → x ∈ Set.range (algebraMap k (F D))) :
+    Function.Injective (kummerMapZHat (stage D K ht' htr')) :=
+  kummerMapZHat_injective_of_isTorallyKummerFaithful (mem_range_of_isAlgebraic_stage hH hkF)
+    ((Fact.out : IsTorallyKummerFaithful k).of_finite K)
+
 /-- **[AbsTopIII] Prop 1.6 (i) at every stage over a number field**: for `k` a number field and
 `K / k` finite, the Kummer map of every stage `V ⊆ U_K` is injective. -/
 theorem kummerMapZHat_stage_injective_numberField [NumberField k] [FiniteDimensional k K]
     (hH : D.H ≤ D.HL)
     (hkF : ∀ x : F D, IsAlgebraic k x → x ∈ Set.range (algebraMap k (F D))) :
-    Function.Injective (kummerMapZHat (stage D K ht' htr')) := by
-  haveI : NumberField K := NumberField.of_module_finite k K
-  exact kummerMapZHat_injective_of_numberField (mem_range_of_isAlgebraic_stage hH hkF)
+    Function.Injective (kummerMapZHat (stage D K ht' htr')) :=
+  kummerMapZHat_stage_injective hH hkF
 
 end StageInjective
 
