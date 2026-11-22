@@ -25,9 +25,9 @@ normaliser of the image of `π₁(C̲_K)` in `π₁(C_{F_mod}) = π₁(†D^⊛)
   slim and `P` open, `N(P)/P ↪ Out(P)` (**`outOf_injective`**);
 * **`outCK_injective`**: `Aut(C̲_K) ↪ Out(π₁(C̲_K))` (slimness of `π₁(C_{F_mod})`);
 * **`exists_normCK_eq`**, **`outCK_surjective`**: every continuous automorphism of `π₁(C̲_K)` is
-  conjugation by an element of the normaliser (MR9's `hAbsCKu_of_strict`, with the named
-  literature input `CKuStrictSemiAbs` = [AbsTopI] Cor. 2.8 (ii) for `C̲_K`, and the existing
-  inputs `BelyiCuspSpec`, `hDGC`, `hj`);
+  conjugation by an element of the normaliser (MR9's `hAbsCKu_of_strict`, with the standard
+  input `hEl` (`Gal(F̄/F_mod)` very elastic, [AbsTopI] Thm. 1.7 (iii), from which MR9 proves
+  [AbsTopI] Cor. 2.8 (ii) for `C̲_K`) and the existing inputs `BelyiCuspSpec`, `hDGC`, `hj`);
 * **`chiN`**, **`chi`**: `γ ∈ N` acts on `π₁(C_K)` (normal in `π₁(C_{F_mod})`) preserving
   `π₁(C̲_K)`, hence on `π₁(C_K)/π₁(C̲_K) ≅ Q ≅ F_ℓ` (`rhoCK`, the dihedral action of
   `CuspAction.lean`) by a scalar (`AutScalar.lean`); `π₁(C̲_K)` acts by `±1`, so
@@ -318,14 +318,14 @@ theorem outCK_injective : Function.Injective (outCK D) :=
 
 /-- **Every continuous automorphism of `π₁(C̲_K)` is conjugation by an element of
 `N(π₁(C̲_K))`** (`piCmod_selfComm`; the action on the Galois image is conjugation by
-`hAbsCKu_of_strict` of `DStarCKu.lean`, with the named literature input `CKuStrictSemiAbs`). -/
-theorem exists_normCK_eq (hStrict : CKuStrictSemiAbs D)
+`hAbsCKu_of_strict` of `DStarCKu.lean`, with the standard input `hEl`, [AbsTopI] Thm. 1.7 (iii)). -/
+theorem exists_normCK_eq (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F))
     (α : PiCK D ≃ₜ* PiCK D) : ∃ γ : normCK D, ∀ x, conjCK D γ x = α x := by
   have hι := isOpenEmbedding_iotaCK D
-  obtain ⟨g, hg⟩ := hAbsCKu_of_strict D hStrict hS hDGC hj α
+  obtain ⟨g, hg⟩ := hAbsCKu_of_strict D hEl hS hDGC hj α
   let f₂ : PiCK D →ₜ* piCmod D :=
     (iotaCK D).comp (ContinuousMonoidHom.toContinuousMonoidHom α)
   have hf₂ : ∀ x, f₂ x = iotaCK D (α x) := fun _ => rfl
@@ -355,13 +355,13 @@ theorem exists_normCK_eq (hStrict : CKuStrictSemiAbs D)
 
 /-- **`Aut(C̲_K) → Out(π₁(C̲_K))` hits every outer automorphism** (named inputs as in
 `hAbsCKu_of_strict`), so `Aut(C̲_K) ≅ Out(π₁(C̲_K))` (IUT I, Example 4.3 (i)). -/
-theorem outCK_surjective (hStrict : CKuStrictSemiAbs D)
+theorem outCK_surjective (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F))
     (α : PiCK D ≃ₜ* PiCK D) :
     ∃ a : AutCK D, outCK D a = OuterHom.mk (ContinuousMonoidHom.toContinuousMonoidHom α) := by
-  obtain ⟨γ, hγ⟩ := exists_normCK_eq D hStrict hS hDGC hj α
+  obtain ⟨γ, hγ⟩ := exists_normCK_eq D hEl hS hDGC hj α
   refine ⟨QuotientGroup.mk γ, ?_⟩
   change OuterHom.mk _ = _
   congr 1
@@ -484,7 +484,7 @@ element of the Borel subgroup of `SL₂(F_ℓ)` stabilising `M` with scalar `s` 
 (`exists_semilin_of_cover`) preserves `π₁(C̲_K)`; its restriction is conjugation by some
 `γ ∈ N(π₁(C̲_K))` (`exists_normCK_eq`), which agrees with it on all of `π₁(C_K)` by slimness of
 `π₁(C_{F_mod})`. Named inputs as in `exists_normCK_eq`. -/
-theorem exists_normCK_chiN (hStrict : CKuStrictSemiAbs D)
+theorem exists_normCK_chiN (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F)) (s : (ZMod D.ℓ)ˣ) :
@@ -502,7 +502,7 @@ theorem exists_normCK_chiN (hStrict : CKuStrictSemiAbs D)
     exact Units.mul_right_eq_zero s
   have he₀ : IsOpenEmbedding (piCKuToCK D) := D.orb.pi1CKu_to_CK_isOpenEmbedding
   let α := restrictAutOfRange (piCKuToCK D) he₀.isEmbedding β hβR
-  obtain ⟨γ, hγ⟩ := exists_normCK_eq D hStrict hS hDGC hj α
+  obtain ⟨γ, hγ⟩ := exists_normCK_eq D hEl hS hDGC hj α
   have hι := isOpenEmbedding_piCKToCmod D
   let A : MulAut (piCK D) := ((piCmodToAut D γ : contAut (piCK D)) : MulAut (piCK D))
   have hAu : ∀ u, A (piCKuToCK D u) = β (piCKuToCK D u) := fun u => hι.injective (by
@@ -552,12 +552,12 @@ theorem exists_normCK_chiN (hStrict : CKuStrictSemiAbs D)
 
 /-- **`χ : Aut(C̲_K) → F_ℓ^⋇` is surjective**, i.e. `Aut(C̲_K)/Aut_ϵ(C̲_K) ≅ F_ℓ^⋇` (IUT I,
 Example 4.3 (i)). Named inputs as in `exists_normCK_eq`. -/
-theorem chi_surjective (hStrict : CKuStrictSemiAbs D)
+theorem chi_surjective (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F)) : Function.Surjective (chi D) := fun j => by
   obtain ⟨s, rfl⟩ := QuotientGroup.mk_surjective j
-  obtain ⟨γ, hγ⟩ := exists_normCK_chiN D hStrict hS hDGC hj s
+  obtain ⟨γ, hγ⟩ := exists_normCK_chiN D hEl hS hDGC hj s
   exact ⟨QuotientGroup.mk γ, by rw [chi_mk, hγ]⟩
 
 /-! ### Poly-automorphisms of `D^⊚` -/
@@ -587,14 +587,14 @@ theorem actStar_comp_subset (j j' : FlStar D.ℓ) :
 
 /-- **`act j ∘ act j' = act (j j')`** (IUT I, Example 4.3 (i): `Aut(C̲_K)/Aut_ϵ(C̲_K) ≅ F_ℓ^⋇`,
 `chi_surjective`). Named inputs as in `exists_normCK_eq`. -/
-theorem actStar_comp (hStrict : CKuStrictSemiAbs D)
+theorem actStar_comp (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F)) (j j' : FlStar D.ℓ) :
     (actStar D j).comp (actStar D j') = actStar D (j * j') :=
   autPolyN_fiber_comp _ _ (hasONSBasis_profinite D.orb.CKu.genuinePi1)
     (isONSComplete_profinite D.orb.CKu.genuinePi1) (chi D)
-    (chi_surjective D hStrict hS hDGC hj) j j'
+    (chi_surjective D hEl hS hDGC hj) j j'
 
 /-- **`φ^NF_v` for `A = Aut_ϵ(D^⊚)`** (IUT I, Example 4.3 (ii)). -/
 def phiNFEps (v : NumberField.FinitePlace ↥(fieldOfModuli D.F D.E)) :
@@ -619,12 +619,12 @@ theorem phiNFStarEps_one_subset (v : NumberField.FinitePlace ↥(fieldOfModuli D
 
 /-- **Equivariance of `φ^NF_⋇`** (IUT I, Example 4.3 (iv)). Named inputs as in
 `exists_normCK_eq`. -/
-theorem phiNFStarEps_postcomp (hStrict : CKuStrictSemiAbs D)
+theorem phiNFStarEps_postcomp (hEl : Elastic.IsVeryElastic (GalG (Fmod D) D.Fbar))
     (hS : BelyiCuspSpec (AlgebraicClosure D.Kt) (hypCurveE (EK D)) (factEK D).out)
     (hDGC : ∀ (k : Type) [Field k] [NumberField k], RelIsomDGC.Exists k)
     (hj : ∀ c ∈ AffOrbicurve.excJ, D.E.j ≠ (c : D.F)) (j j' : FlStar D.ℓ) :
     (phiNFStarEps D j).postcomp (actStar D j') = phiNFStarEps D (j * j') :=
-  phiNFStar_postcomp D _ _ j j' (actStar_comp D hStrict hS hDGC hj j j')
+  phiNFStar_postcomp D _ _ j j' (actStar_comp D hEl hS hDGC hj j j')
 
 end AutCK
 
