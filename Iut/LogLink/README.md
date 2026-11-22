@@ -82,7 +82,6 @@ the modelling inputs listed below.
 | (5) Theorem 3.11 and the chain to ABC | `Thm311.lean` | `logShellCompat_mul`, `logShellCompat_inv`, `act_lgp`, `act_le`, `ind3Map`, `ind3Act`; `horizRel`, `vertRel`; **`Thm311`**; `LatticeKummer.model_multiradial3` (Thm 3.11(i) in the model), `model_thetaShift`; **`thm311_model`**; **`XiPrinciple`**; **`variant_of_thm311`**, **`wall_of_thm311`** (the input of `Iut/Wall`), **`classicalABC_of_thm311`**, `classicalABC_of_xi`, **`xi_iff_ss`**, `xi_iff_xi`; `logVol_transport_out`, **`answer`**, `alt_alien_horiz`, `alt_alien_vert` | done |
 | (6) Galois-induced identifications are unit-induced | `Galois.lean` | `norm_eq_one_of_unitInduced_scale`; `pow_q_sub_one_iff` (`U¹ = (𝒪ˣ)^{q−1}`), `logTensor_bijective`, `logEquiv` (`ℚ ⊗ 𝒪ˣ ≅ k`); `unitLogEquiv` (identification induced by `β ∈ Aut(𝒪ˣ)`), **`unitInduced_unitLogEquiv`**, `image_logShell_unitLogEquiv`, `unitLogEquiv_refl`, `unitLogEquiv_inv`, `unitLogEquiv_ne_scale`; `galUnitsEquiv` (P17's `𝒪ˣ ≅ 𝒪ˣ` from `φ ∈ Aut(G_k)`), `coe_galUnitsEquiv` (= `galEquiv_multEquiv`), `galLogEquiv`, **`galLogEquiv_transport`** (= transport of P17's `unitsQEquiv φ` through `log`), **`galLogEquiv_image_logShell`** (via `map_monoLogShell` + `image_logTensor_monoLogShell`), **`unitInduced_galLogEquiv`**, `galLogEquiv_refl`, `galLogEquiv_ne_scale`, `galEquiv_multEquiv_ne_zpow_mul` | done |
 | (7) Kummer data from the reconstruction | `GalKummer.lean` | `CompGal`, `CompUnits`, `compGalLogEquiv`, `compUnitLogEquiv` (completions of `Iut/Concrete`), `unitInduced_compGalLogEquiv`, `compGalLogEquiv_image_logShell`; `FactorGalInduced`, `FactorUnitsAut`, **`FactorUnitsAut.factorUnitInduced`**, `exists_factorGalInduced_of_linear`, `norm_eq_one_of_factorUnitsAut`; `GalInducedScaling`, `AnabelianScaling`, **`AnabelianScaling.unitInduced`**, `.logShellCompat`, `.shift_eq_zero`, `galInducedScaling_one`, `anabelianScaling_negScale`; **`not_anabelianScaling_of_shift_ne_zero`**, `not_anabelianScaling_qScale_zpow`, `not_galInducedScaling_qScale_zpow`; `AnabelianKummer`, `GalKummer`, **`toLatticeKummer`**, `distortion_eq_zero`, `xi_iff_ss`, `kum_ne_qScale_zpow`, `GalKummer.trivial`, `AnabelianKummer.alt` (`= LatticeKummer.trivial`, `.alt`), `classicalABC_of_thm311_anabelian`, `classicalABC_of_thm311_gal`, `classicalABC_of_xi_gal` | done |
-| (7') Galois automorphisms read off the strips (IUT I, Cor. 5.3(ii)) | `StripKummer.lean` (with `../HodgeTheater/StripLift.lean`) | `galMult_coe_units`, `compGalLogEquiv_eq_units` (the lifted Frobenioid equivalence acts on `𝒪ˣ` by `compGalUnits`, whose log-transport is `compGalLogEquiv`); `factorGal`, `factorGal_refl`; `StripScaling`, **`StripScaling.galInduced`**, `.unitInduced`, `.shift_eq_zero`, `stripScaling_one`; `StripKummer` (`gal`, **`toGalKummer`**, `toLatticeKummer`, `distortion_eq_zero`, **`xi_iff_ss`**, `kum_ne_qScale_zpow`, `liftIso`, `forget_liftIso`, `liftIso_functor`, `trivial`, `trivial_toLatticeKummer`); `classicalABC_of_thm311_strip`, `classicalABC_of_xi_strip` | done |
 | (6') Archimedean unit-inducedness | `GaloisArch.lean` | `log_circle`, `linear_apply`; `ArchUnitInduced` (angular datum `α ∈ Aut(S¹)` mod `2πiℤ`, radial datum `ρ` on `ℝ_{>0}`), `coe_apply_eq_zpow` (`α u = u^n`), `apply_I_eq_or`, **`archUnitInduced_iff`** (`ψ(1) ∈ ℝ`, `ψ(i) = ±i`), `archUnitInduced_neg`, `archUnitInduced_conj`; `radialScale`, `archUnitInduced_radialScale`, **`radialScale_image_closedBall`** (log-shell preserved iff `\|λ\| = 1`), `not_archPolyIso_radialScale`; `ArchPolyIso` (Prop 1.2(vii)), **`archPolyIso_iff_logShell`**, **`archPolyIso_iff_isometry`**, **`archPolyIso_iff_sign_algEquiv`** (`= {±1} × Gal(ℂ/ℝ)`), `signAlgEquiv`, `archPolyIso_of_ringEquiv`, `archPolyIso_neg`, `ArchPolyIso.toFun_mem_closedBall` | done |
 | (7'') Kummer data at all places | `GalKummerAll.lean` | `subalgebra_algHom_eq_or_conj`, `factorEmb`, `FactorArchUnitInduced`, `factorArchLogShell`, **`factorArchUnitInduced_iff`** (unit-induced + log-shell ⇔ `ε·σ`), **`mem_archIndAut_iff`**; `archIndMap_injective`, `archIndEquiv`, `image_archLogShell_archIndMap`, `abs_det_archIndMap`, **`haar_image_archIndMap`**, **`componentVol_image_archIndMap`**, `image_mem_admissible_archIndMap`, `archIndMap_mul`, `archIndMap_one`; `ArcScaling`, `FullScaling`, `fullAct`, `fullAct_mul`, `fullAct_one`, `isAdelic_fullAct`, **`logVol_fullAct`**, `logVol_fullAct_adelic`; `FullKummer` (`kum`, `arc_factor`, `arc_image_archLogShell`, `transport`, **`logVol_transport`**, `distortion_eq_zero`, `xi_iff_ss`, `trivial`, `alt`), `FullGalKummer` (`arc_mem_galAut`, `xi_iff_ss`, `trivial`), `classicalABC_of_thm311_full`, `classicalABC_of_xi_full` | done |
 | (8) Splitting monoids and LGP-monoids; Thm 3.11(ii)(b) | `Split.lean` | `norm_ringEquiv_eq_one_iff`; `perpMonoid` (`Ψ⊥ = μ_r·g^ℕ`), `perpMonoid_le_splitMonoid`, `IsStrictGen`, **`perp_unit`** (units of `Ψ⊥` = torsion), `perp_norm_lt_one`, `perp_pow_eq_one_of_mem_domain`, **`LocalLogLink.perp_toFun_eq_zero`**; `piMap`, `restrictAut`; `lgpMonoid` (Prop 3.4(ii)), **`lgpMonoid_eq`**, `lgpEquiv`, `lgpPerp`, `lgpPerp_eq`; `LGPColumn` (Prop 3.5(i)), `perpKummer`, `gaussKummer`, **`lgpKummer`**, **`image_perpKummer`** (vertical coricity: equality), `image_gaussKummer`, `norm_kum_of_mem_splitMonoid`, `avgDeg_kum_of_mem_splitMonoid`, `avgDeg_lgpKummer`, `perpLogKummer`, **`perp_compat`**, `perp_compat_action` (Thm 3.11(ii)(b), Prop 3.5(ii)(c)), `perp_not_mem_domain`, `shift`, `LGPColumn.taut` | done |
@@ -152,31 +151,17 @@ All theorems use only `propext`, `Classical.choice`, `Quot.sound`.
   identification preserves `Tr_{k/ℚ_p}`, and the only Galois-induced *scaling* is `b = 1`. P19's
   alien `x ↦ −x` therefore comes from the `F^{⊢×μ}`-data (`Ism`, the inversion of the units), not
   from an automorphism of `G_v`; the theorems above do not depend on this remark.
-* **Galois automorphisms read off the strips (`StripKummer.lean`, `../HodgeTheater/StripLift.lean`;
-  IUT I, Corollary 5.3(ii) in the model).** An automorphism `φ` of `G_v = Gal(K̄_v/K_v)` induces,
-  through P17's `galEquiv_multEquiv` (which preserves `ord_v`, `ordPres_of_norm_le_one`), an
-  autoequivalence `galFrob φ` of the `p`-adic Frobenioid of `K_v` (functorial in `φ`). For
-  rigidified non-archimedean `D^⊢`-prime-strips with the groups `Gal(K̄_v/K_v)`
-  (`RigidDGalStrip`), every isomorphism `f` lifts to the reconstructed `F^⊢`-prime-strips, with
-  Frobenioid portion `galFrob (gal f v)` (`RigidDGalStrip.exists_lift`, `liftIso`, functorial);
-  for unrigidified `F^⊢`-strips the lifts exist but are parametrised by arbitrary equivalences of
-  the Frobenioid components (`FGalStrip.liftsEquiv`). `StripKummer L` carries rigidified
-  `D^⊢`-strips at the vertices, isomorphisms `link a` to a coric strip, and Kummer
-  identifications whose factor scalings are `compGalLogEquiv` of **the** automorphisms
-  `gal (link a) v` read off these isomorphisms (`StripScaling`; no existential over `φ`);
-  `toGalKummer`, and `distortion_eq_zero`, `xi_iff_ss`, `classicalABC_of_xi_strip` are restated.
-  The lifted Frobenioid equivalence acts on `𝒪_vˣ` by `compGalUnits φ_v`, whose log-transport is
-  the factor identification (`galMult_coe_units`, `compGalLogEquiv_eq_units`).
+* **Galois automorphisms read off the strips.** P20's `StripKummer.lean` and its model
+  `../HodgeTheater/StripLift.lean` (rigidified `D^⊢`-prime-strips, rigidifications as data) were
+  deleted on 2026-11-22 (shells #11, #21). The lifting of isomorphisms on the genuine prime-strips
+  (IUT I, Corollary 5.3(ii), (iii), with uniqueness at `V^non`) is MR21's
+  `../Multiradial/PrimeStrip/Cor53Bij.lean`, `Cor53Vdash.lean`, `VdashRes.lean`; it is not yet
+  connected to the Kummer data of this directory.
 * **What remains an input.** (a) That the model's Kummer identifications are scalings (the
   equation `compGalLogEquiv φ = scale b` in the data; `exists_factorGalInduced_of_linear` builds
   `b = ψ(1)` from a `K_v`-linear `ψ`); (b) at the archimedean places (next item), the radial
-  normalization; (c) for Corollary 5.3(ii):
-  the Galois automorphisms are now read off isomorphisms of rigidified `D^⊢`-prime-strips
-  (`StripKummer`), but these strips, their rigidifications `κ_v` (the Kummer structures) and the
-  isomorphisms `link a` are data of `StripKummer`, not extracted from the Hodge theaters of the
-  lattice (the theaters' `F`-prime-strips are categories up to equivalence without base `G_v`);
-  `Gal(K̄_v/K_v)` is used instead of the decomposition group `galModel` of P18; the uniqueness
-  of the lift (the Frobenioid-theoretic part of Corollary 5.3) is not claimed; (d) the
+  normalization; (c) for Corollary 5.3(ii): the Galois automorphisms of the Kummer data are
+  data, not read off isomorphisms of the prime-strips of the Hodge theaters of the lattice; (d) the
   `G_v`-equivariance / `O^{×μ}_{k̄}` level of `Ism` (only the `G_v`-invariants `𝒪_kˣ` are used);
   P19's alien `x ↦ −x` is `F^{⊢×μ}`-data and is not strip-induced in this sense.
 
@@ -361,8 +346,8 @@ log-volume compatibility being Proposition 3.9(iv), `Thm311.volCompat`.)
   ring automorphisms of copies of one field; the `Π_v`-equivariance is not recorded.
 * `LogLinkHT` records only the isomorphism `Ξ` of the `D-Θ^{±ell}NF`-Hodge theaters (P18's label
   layer); the lifting of `D^⊢`-prime-strip isomorphisms to `F^⊢`-prime-strips (IUT I,
-  Corollary 5.3(ii)) is formalised only for separate rigidified non-archimedean strips
-  (`../HodgeTheater/StripLift.lean`), not on the theaters, and without uniqueness. The local vertical lines of a lattice are
+  Corollary 5.3) is formalised on the genuine prime-strips (`../Multiradial/PrimeStrip/`), not on
+  the theaters used here. The local vertical lines of a lattice are
   separate data (`loc`), not derived from the Frobenioids of the `F`-prime-strips.
 * The local LGP-monoids are the pull-backs of the Gaussian monoids along the ring isomorphism of
   the log-link (`Split.lean`); the `F_ℓ^{⋊±}`-symmetries and the processions (the capsules
@@ -375,10 +360,9 @@ log-volume compatibility being Proposition 3.9(iv), `Thm311.volCompat`.)
 
 ## What remains
 
-* The anabelian side beyond `Galois.lean` / `GalKummer.lean` / `StripKummer.lean`: extracting
-  the rigidified `D^⊢`-prime-strips and their isomorphisms from the Hodge theaters of a lattice
-  (the Galois automorphisms are read off strips that are data of `StripKummer`, IUT I,
-  Corollary 5.3(ii) in the model); `Ism` at the level of `O^{×μ}_{k̄}`; at `V^arc`, beyond
+* The anabelian side beyond `Galois.lean` / `GalKummer.lean`: extracting the `D^⊢`-prime-strips
+  and their isomorphisms from the Hodge theaters of a lattice and reading the Galois automorphisms
+  of the Kummer data off them (IUT I, Corollary 5.3(ii)); `Ism` at the level of `O^{×μ}_{k̄}`; at `V^arc`, beyond
   `GaloisArch.lean` / `GalKummerAll.lean`, the Aut-holomorphic orbispaces, the angular/radial
   log-volumes, the derivation of the radial normalization of the Kummer identifications and
   reading the archimedean Kummer data off the strips.

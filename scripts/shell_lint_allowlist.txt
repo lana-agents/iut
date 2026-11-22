@@ -248,8 +248,6 @@ Iut.HodgeTheater.LabelHom.maps_to	def
 Iut.HodgeTheater.OddPrime.prime	def
 Iut.HodgeTheater.OddPrime.two_lt	def
 Iut.HodgeTheater.PmTorsor.Iso.chart_apply	def
-Iut.HodgeTheater.DGalStrip.iso_model	baseline
-Iut.HodgeTheater.FGalStrip.iso_model	baseline
 Iut.HodgeTheater.StarTorsor.Iso.chart_apply	def
 Iut.HullSystem.hull_admissible	baseline
 Iut.HullSystem.integralRegion_mem	baseline
@@ -294,7 +292,6 @@ Iut.LogLink.LocalLogLink.cont	shell
 Iut.LogLink.LocalLogLink.cont_symm	shell
 Iut.LogLink.LogColumn.kum_cont	shell
 Iut.LogLink.LogColumn.kum_cont_symm	shell
-Iut.LogLink.StripKummer.scale	shell
 Iut.LogLink.Thm15v.cocycle	statement
 Iut.LogLink.Thm15v.frobScale	statement
 Iut.LogLink.Thm15v.horizScale	statement

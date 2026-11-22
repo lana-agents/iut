@@ -96,7 +96,9 @@ with the `ℝ_{>0}`-orbits of the isomorphisms `n,mC^⊩_△ ≅ D^⊩(n,mD^⊢_
 * The coric strips `F^{⊢×μ}_△(n,◦D^⊢_△)`, the environment strips and the mono-theta
   environments are **data** of `BiCoricKummer` / `MonoThetaKummer`, not constructed from the
   `D^⊢`-prime-strips or from the tempered Frobenioids of the theaters (P18's theaters do not
-  carry tempered Frobenioids, and the `D^⊢`-strip reconstruction is only in `StripKummer.lean`).
+  carry tempered Frobenioids; on the genuine prime-strips, the lifting of isomorphisms of
+  `D^⊢`-prime-strips (IUT I Cor. 5.3(iii)) and `F ↦ F^⊢` are `Iut/Multiradial/PrimeStrip/`
+  `Cor53Vdash.lean`, `VdashRes.lean`, not yet connected here).
   The natural isomorphisms `F^{⊢×μ}_△ ≅ F^{⊢×μ}_env` are arbitrary isomorphisms (identities in
   P19's model).
 * The environments are abstract mono-theta environments with the inputs of the algorithm as

@@ -97,7 +97,6 @@ Accordingly:
 | 3 Bridges (label layer) | `Bridge.lean`, `PmBridge.lean` | Prop. 4.8(i)–(iii): `DNFBridge.isoEquiv`, `Unique (DThetaBridge.Iso _ _)`, `Unique (DThetaNFHT.Iso _ _)`, `DThetaNFHT.glueEquiv`; Prop. 4.9: `DNFBridge.existsUnique_aut`; Prop. 4.11: `DThetaBridge.prc`, `prc_map`; Prop. 6.6(i)–(iii): `DThetaPmBridge.isoEquiv` (`{±1} × {±1}^V`), `DThetaEllBridge.isoEquiv` (`F_ℓ^{⋊±}`), `DThetaPmEllHT.isoEquiv` (`{±1}`); Prop. 6.7: `DThetaPmBridge.toTheta`, `card_fiber_toAbs`; Prop. 6.8(i): `DThetaEllBridge.card_aut_apply`; models of Ex. 4.3, 4.4, 6.2, 6.3 |
 | 3' Gluing | `Gluing.lean` | Prop. 6.6(iv): `DThetaPmEllHT.glueEquiv` (`≃ Iso(T_P, T_E) × {±1}^V`), `glueEquivSemi` (`F_ℓ^{⋊±} × {±1}^V`), `glued` |
 | 4 Prime-strips | `PrimeStrip.lean`, `../Frobenioid/Arch.lean` | `Kind`, `PrimeStrip`, `PrimeStrip.nonempty_iso`, `DStrip`, `DVdashStrip`, `FStrip`, `FVdashStrip`, `FMuStrip`, `FRlfStrip` (models from `D`; the global categories `D^⊚`, `D^⊚±` are `Multiradial.Theater.DCircCat`, `DCircPmCat`); `Frobenioid.Arch` (`Arch.isFrobenioid`, `orhd_iff`, `ounits_iff`) |
-| 4' Lifting `D^⊢`- to `F^⊢`-isomorphisms (Cor. 5.3(ii)) | `StripLift.lean` | `galEquiv_multEquiv_trans`/`_refl` (functoriality of P17's `Aut(G_v) → Aut(K_vˣ)`); `PAdic.ordPres_of_norm_le_one`, `PAdic.unitsEquiv`, **`PAdic.galFrob`** (Galois-induced autoequivalence of the `p`-adic Frobenioid, functorial); `DGalStrip`, `FGalStrip` (non-archimedean, with `Gal(K̄_v/K_v)`), `FGalStrip.toD`, **`FGalStrip.liftsEquiv`** (lifts ≃ equivalences of the Frobenioid components), `RigidDGalStrip` (`gal`, `toF`), **`RigidDGalStrip.exists_lift`** (`liftIso`, functorial: `liftIso_refl_functor`, `liftIso_trans_functor`) |
 | 5 `Θ^{±ell}NF`-Hodge theaters | `HodgeTheater.lean` | `DThetaPmEllNFHT` (`toThetaNF`, `isoEquiv : Iso ≃ {±1}`, `procPm`, `procStar`, `procStar_subset_procPm`), `ThetaPmEllNFHT D` (`toLabels_surjective`, `nonempty_iso`, `ofData`) |
 | 6 The wall | `Wall.lean` | `underPl`, `etUnitOf`, `theaterAlg`, `etUnitIsoOf`, `theaterModel`, `kummer_theaterModel`, `wall3_theaterModel_iff` (`↔ SSIneq D`), `chain`, `chainModel`, `container_capsule_eq`, `placeSect_fin` |
 
@@ -119,15 +118,11 @@ Accordingly:
   isomorphisms of the attached objects along them; that the latter are *uniquely* determined
   (IUT I, Corollaries 5.3, 5.6, 6.12) is Frobenioid-theoretic and not claimed (objects are recorded
   up to equivalence), only that every isomorphism of the label layers lifts.
-* **Corollary 5.3(ii)** (`StripLift.lean`) is formalised for separate non-archimedean
-  `D^⊢`/`F^⊢`-prime-strips whose groups are the local Galois groups `Gal(K̄_v/K_v)` (not the
-  decomposition groups `galModel`): for rigidified `D^⊢`-strips (identifications `κ_v` with the
-  model, standing for the Kummer structures) every isomorphism lifts to the reconstructed
-  `F^⊢`-strips with the Galois-induced Frobenioid autoequivalence `galFrob`; for arbitrary
-  `F^⊢`-strips lifts exist and are parametrised by equivalences of the Frobenioid components (no
-  uniqueness). The Hodge theaters (`ThetaPmEllNFHT`) do not carry these strips; P20's
-  `StripKummer` (`Iut/LogLink/StripKummer.lean`) takes them as data and reads the Galois
-  automorphisms of its Kummer identifications off their isomorphisms.
+* **Corollary 5.3** (lifting isomorphisms of `D`/`D^⊢`-prime-strips to `F`/`F^⊢`-prime-strips) is
+  formalised on the genuine prime-strips of `Iut/Multiradial/PrimeStrip/` (MR21: `Cor53Bij.lean`,
+  `Cor53Vdash.lean`, `VdashRes.lean`), not on the theaters of this directory. The legacy model
+  `StripLift.lean` (rigidifications `κ_v` as data) and P20's `StripKummer` were deleted
+  (2026-11-22, shells #11, #21).
 * **Mono-analyticization** and `F ↦ D` are not defined on abstract prime-strips (P17); only the
   interface `PrimeStrip.map`.
 * **The wall**: the η-algorithm over Hodge theaters uses the identified-copies output (the η-
@@ -140,8 +135,7 @@ Accordingly:
 * P17: the group-theoretic reconstruction of the labels and of the mono-analyticizations from the
   objects (and thereby the identification of the label layer with the object layer).
 * The tempered Frobenioids at `V^bad`, Aut-holomorphic orbispaces and Kummer structures at `V^arc`;
-  the Frobenioid-theoretic uniqueness of lifts of isomorphisms (IUT I, Corollary 5.3); the
-  `D^⊢`-strips with `Gal(K̄_v/K_v)` of `StripLift.lean` as part of the theaters (and the
-  isomorphism of `Gal(K̄_v/K_v)` with the decomposition group `galModel`).
+  the connection of MR21's lifting results on the genuine prime-strips (IUT I, Corollary 5.3,
+  including uniqueness of lifts) to the theaters (`ThetaPmEllNFHT` does not use them yet).
 * Θ-links between Hodge theaters as poly-isomorphisms of `F^{⊩▶×μ}`-prime-strips (IUT III), and a
   construction of the η-algorithm whose output is not the identified-copies output.

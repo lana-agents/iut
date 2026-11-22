@@ -65,8 +65,9 @@ volume neutrality are then theorems.
   i.e. that the identifications of the containers are those induced by the `D^⊢`/`F^{⊢×μ}`-data
   of the strips: the Hodge theaters of the model carry no `G_v` (P18's `F`-prime-strips record
   Frobenioids), so the Galois automorphisms are data of the Kummer structure, not read off from
-  the strips (`StripKummer.lean` reads them off isomorphisms of rigidified `D^⊢`-prime-strips,
-  which remain data there);
+  the strips (the lifting of isomorphisms on the genuine prime-strips, IUT I Corollary 5.3
+  (ii), (iii), is `Iut/Multiradial/PrimeStrip/Cor53Bij.lean` and `Cor53Vdash.lean`; it is not
+  yet connected to these Kummer data);
 * which automorphisms of `G_v` exist (and whether their identifications are scalings) is not
   decided here; the obstructions above hold for all of them.
 -/

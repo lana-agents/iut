@@ -190,8 +190,8 @@ Step (xi) is equivalent to the Scholze–Stix inequality; a proof of Step (xi) m
 (`classicalABC_of_forall_xi`). **Not shown**: that Step (xi) fails for some
 genuine `D`, or that the Scholze–Stix inequality or ABC fails. The statement is about the
 formalisation: the modelling inputs of the repository apply (local fields and the
-log-volume calculus in place of Frobenioids, Hodge theaters with data strips (`StripKummer`,
-`BiCoricKummer`, `MonoThetaKummer`), the identified-copies output law, the archimedean radial
+log-volume calculus in place of Frobenioids, Hodge theaters with data strips (`BiCoricKummer`,
+`MonoThetaKummer`), the identified-copies output law, the archimedean radial
 normalization as an input; see `Iut/LogLink/README.md`). A different formalisation of
 Theorem 3.11 (e.g. with an output law other than `LGP` acting on an (Ind3)-choice, or Kummer
 identifications that are not unit-induced) is not covered.
