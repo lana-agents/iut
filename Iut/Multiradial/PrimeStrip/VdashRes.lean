@@ -9,16 +9,18 @@ import Iut.Multiradial.PrimeStrip.OrbitInner
 import Iut.Multiradial.PrimeStrip.TransportNat
 
 /-!
-# `F ↦ F^⊢` on isomorphisms at `v ∈ V^good` (MR21 R7)
+# `F ↦ F^⊢` on isomorphisms at `v ∈ V^non` (MR21 R7)
 
-IUT I, Example 3.3 (iii)(d), (e) (l.5150–5170 of
+IUT I, Example 3.3 (iii)(d), (e) (`V^good`, l.5150–5170 of
 `~/iut-scratch/papers/txt/Inter-universal Teichmuller Theory I.txt`): `C^⊢_v ⊆ C_v` (the
 sub-Frobenioid over `D^⊢_v ⊆ D_v` with divisor monoid `ord(ℤ_p^▷) ⊆ Φ_{C_v}`) and the splitting
 `τ^⊢_v` are reconstructed category-theoretically from `F_v`, hence so is `F^⊢_v` (Remark 5.2.1
 (ii), l.9827: the mono-analyticisation `‡F ↦ ‡F^⊢`). "Reconstructed category-theoretically" means
 preserved by equivalences (Remark 3.2.1 (i), l.4784); so the content is: every automorphism of
-`F_v` restricts to an automorphism of `F^⊢_v`, functorially. This file constructs this
-restriction on isomorphism classes (IUT I, §0) at `v ∈ V^good`:
+`F_v` restricts to an automorphism of `F^⊢_v`, functorially. At `V^bad` the same holds by
+Example 3.2 (vi)(f) (l.4769–4783: `F^⊢_v`, with its `μ_{2l}`-orbit of splittings, is
+reconstructed from `C_v`). This file constructs this restriction on isomorphism classes (IUT I,
+§0) at `v ∈ V^non`:
 
 * `OrbitObj.isoFunctorTransIso`, `GaloisModel.rel_isoOfSub_trans` (composites),
   `GaloisModel.rel_isoOfSub_conj` (conjugation by `g ∈ G'`): 2-isomorphisms of the isomorphisms
@@ -26,12 +28,14 @@ restriction on isomorphism classes (IUT I, §0) at `v ∈ V^good`:
 * the named input **`PFixedLift D v`** (IUT I, Example 3.3 (iii)(e): `p_v` is reconstructed from
   `F_v` through the field structure on the image of the Kummer map, [AbsTopIII], Proposition 3.2
   (iii), Corollary 1.10 (h), for curves of strictly Belyi type): every automorphism of `Π_v` has
-  an equivariant `ord`-preserving lift to `\bar{ℚ}_p^×` fixing `p`;
+  an equivariant `ord`-preserving lift to `\bar{ℚ}_p^×` fixing `p`; it gives `TauLift D v` at
+  `V^good` (`tauLift_of_pFixedLift`); at `V^bad` **`TauLift D v`** (the lift maps `q̲_v` into its
+  `μ_{2l}`-orbit `tauOrbit D v`; Example 3.2 (vi)(f)) is itself the named input;
 * `resIso σ̄ ψ`: the automorphism of `F^⊢_v` from `σ̄ ∈ Aut(G_v)` and `ψ` (restricted to
-  `ord⁻¹(ℤ · ord p)`, `subRes`); `IsRes a b`: `a = [isoOf σ ψ]`, `b = [resIso σ̄ ψ]`, `σ̄` the
-  descent of `σ` (MR9's `exists_descend_piv`);
+  `ord⁻¹(ℤ · ord τ_v)`, `subRes`; it permutes the orbit of splittings); `IsRes a b`:
+  `a = [isoOf σ ψ]`, `b = [resIso σ̄ ψ]`, `σ̄` the descent of `σ` (MR9's `exists_descend_piv`);
 * `exists_isRes` (every class `a ∈ Aut(C_v)` is `[isoOf σ ψ]` by Corollary 5.3 (ii), injectivity,
-  and `PFixedLift`), **`isRes_unique`** (two such descriptions differ by an inner automorphism of
+  and `TauLift`), **`isRes_unique`** (two such descriptions differ by an inner automorphism of
   `Π_v`, `OrbitObj.exists_conj_of_natTrans`, and the lifts by its action, `KummerRigid`),
   `isRes_trans`;
 * **`vdashRes : Aut(C_v) → Aut(F^⊢_v)`** on classes with `vdashRes_trans`, `vdashRes_refl`
@@ -39,11 +43,11 @@ restriction on isomorphism classes (IUT I, §0) at `v ∈ V^good`:
 * `FComp.vdashClass`: `F ↦ F^⊢` on isomorphism classes of constituents `‡F_v ≅ ‡F'_v`
   (transport to the model), functorial (`FComp.vdashClass_trans`, `FComp.vdashClass_refl`).
 
-Inputs (`ResInputs D v`): `v ∉ V^bad`, `DeltaCharacteristic` ([AbsAnab], Lemma 1.3.8), H3
-(`PiToGQuotient`) and `PFixedLift`. At `v ∈ V^bad` IUT's `τ^⊢_v` is a `μ_{2l}`-orbit of
-splittings (Example 3.2 (iv)), while `fVdashModel` carries one splitting; there the analogue of
-`PFixedLift` would be false in general, and the bad places need the orbit version (MR20 model
-change) and the étale theta function (Example 3.2 (vi)(f)).
+Inputs (`ResInputs D v`): `DeltaCharacteristic` ([AbsAnab], Lemma 1.3.8), H3
+(`PiToGQuotient`), `PivCountable` at `V^bad`, and `TauLift` (from `PFixedLift` at `V^good`,
+`resInputs_of_good`). At `V^bad` a fixed root `q̲_v` could not be preserved in general (an
+automorphism may send `q̲_v ↦ ζ q̲_v`); this is why `τ^⊢_v` is the `μ_{2l}`-orbit
+(`fVdashModel`, Example 3.2 (iv)).
 -/
 
 noncomputable section
@@ -304,7 +308,7 @@ strictly Belyi type, Remark 2.8.3, l.3611): the lift of [AbsTopIII], Proposition
 (unique, `KummerRigid`) is then the restriction of an automorphism of the field
 `\bar{ℚ}_p`, which fixes `p`. Only used at `v ∉ V^bad` (at `V^bad` IUT's `τ^⊢_v` is a
 `μ_{2l}`-orbit of splittings, IUT I, Example 3.2 (iv), and is reconstructed through the étale
-theta function, Example 3.2 (vi)(f)). -/
+theta function, Example 3.2 (vi)(f); see `TauLift`). -/
 def PFixedLift : Prop :=
   ∀ σ : (Piv D v).carrier ≃ₜ* (Piv D v).carrier, ∃ ψ : PiMul D v ≃+ PiMul D v,
     (∀ (g : (Piv D v).carrier) (m : PiMul D v), ψ (g • m) = σ g • ψ m) ∧
@@ -323,6 +327,21 @@ theorem piv_conjData :
 /-- An automorphism of the `Π_v`-module `\bar{ℚ}_p^×` as an automorphism of `\bar{ℚ}_p^×`. -/
 def psiMul (ψ : PiMul D v ≃+ PiMul D v) : PAdicGalois.Mul (pv D v) ≃+ PAdicGalois.Mul (pv D v) := ψ
 
+/-- **The collection of splittings `τ^⊢_v` is reconstructed from `C_v`**: every automorphism `σ`
+of `Π_v` admits a `σ`-equivariant `ord`-preserving automorphism `ψ` of `\bar{ℚ}_p^×` mapping
+`τ_v` into the orbit `tauOrbit D v`. At `v ∉ V^bad` this follows from `PFixedLift`
+(`tauLift_of_pFixedLift`). At `v ∈ V^bad` it is a **named input** (IUT I, Example 3.2 (vi)(f),
+l.4769–4783 of `Inter-universal Teichmuller Theory I.txt`: `F^⊢_v`, with its `μ_{2l}`-orbit of
+splittings, is reconstructed from `C_v` through the Kummer classes of the étale theta function,
+which are reconstructed from `D_v` by [EtTh], Corollary 2.8 (i), with the cyclotomes of
+[AbsTopIII], Corollary 1.10 (c), Remark 3.2.1; the values of `Θ_v` give `q̲_v` up to `μ_{2l}`,
+Example 3.2 (ii), (iv)). By `KummerRigid` the lift is the unique Kummer lift of
+[AbsTopIII], Proposition 3.2 (iv) (MR9's `kummerLift`). -/
+def TauLift : Prop :=
+  ∀ σ : (Piv D v).carrier ≃ₜ* (Piv D v).carrier, ∃ ψ : PiMul D v ≃+ PiMul D v,
+    (∀ (g : (Piv D v).carrier) (m : PiMul D v), ψ (g • m) = σ g • ψ m) ∧
+      (∀ m, ordPi D v (ψ m) = ordPi D v m) ∧ psiMul D v ψ (tauElt D v) ∈ tauOrbit D v
+
 /-- `τ_v = p` at `v ∉ V^bad`. -/
 lemma tauElt_of_good (hv : v ∉ D.VBad) : tauElt D v = pMul D v := by
   simp only [tauElt, dif_neg hv]
@@ -331,6 +350,15 @@ lemma ord_tauElt_mem : PAdicGalois.ord (pv D v) (tauElt D v) ∈ gammaVdash D v 
   rw [gammaVdash_eq]
   exact AddSubgroup.mem_zmultiples _
 
+/-- At `v ∉ V^bad`, `PFixedLift` gives `TauLift` (`τ_v = p`, and `p` is in its orbit). -/
+theorem tauLift_of_pFixedLift (hv : v ∉ D.VBad) (hp : PFixedLift D v) : TauLift D v := by
+  intro σ
+  obtain ⟨ψ, hψ, hψℓ, hpψ⟩ := hp σ
+  refine ⟨ψ, hψ, hψℓ, ?_⟩
+  change psiMul D v ψ (tauElt D v) ∈ GaloisModel.orbitGen (Gv D v) (tauElt D v) (nOrb D v)
+  rw [tauElt_of_good D v hv, show psiMul D v ψ (pMul D v) = pMul D v from hpψ]
+  exact GaloisModel.self_mem_orbitGen (G := Gv D v) (pMul D v) (nOrb D v)
+
 variable {D v}
 
 /-- **The automorphism of `F^⊢_v`** induced by `σ̄ ∈ Aut(G_v)` and a `σ̄`-equivariant
@@ -338,18 +366,18 @@ variable {D v}
 def resIso (σ : Gv D v ≃ₜ* Gv D v) (ψ : PAdicGalois.Mul (pv D v) ≃+ PAdicGalois.Mul (pv D v))
     (hψ : ∀ (g : Gv D v) (m : PAdicGalois.Mul (pv D v)), ψ (g • m) = σ g • ψ m)
     (hψℓ : ∀ m, PAdicGalois.ord (pv D v) (ψ m) = PAdicGalois.ord (pv D v) m)
-    (hτ : ψ (tauElt D v) = tauElt D v) :
+    (hτ : ψ (tauElt D v) ∈ tauOrbit D v) :
     (fVdashModel D v).Iso (fVdashModel D v) :=
   GaloisModel.splitIsoOfSub (PAdicGalois.ord_smul (pv D v) (Lv D v)) σ
     (subRes (gammaVdash D v) ψ hψℓ)
     (smul_subRes (PAdicGalois.ord_smul (pv D v) (Lv D v)) _ (σ := (σ : Gv D v ≃* Gv D v)) ψ hψ
       hψℓ)
-    (ell_subRes _ ψ hψℓ) (ord_tauElt_mem D v) (ord_tauElt_mem D v) hτ
+    (ell_subRes _ ψ hψℓ) (nOrb_ne_zero D v) (ord_tauElt_mem D v) (ord_tauElt_mem D v) hτ
 
 lemma resIso_D (σ : Gv D v ≃ₜ* Gv D v) (ψ : PAdicGalois.Mul (pv D v) ≃+ PAdicGalois.Mul (pv D v))
     (hψ : ∀ (g : Gv D v) (m : PAdicGalois.Mul (pv D v)), ψ (g • m) = σ g • ψ m)
     (hψℓ : ∀ m, PAdicGalois.ord (pv D v) (ψ m) = PAdicGalois.ord (pv D v) m)
-    (hτ : ψ (tauElt D v) = tauElt D v) :
+    (hτ : ψ (tauElt D v) ∈ tauOrbit D v) :
     (resIso σ ψ hψ hψℓ hτ).iso.D = OrbitObj.equivOfIso σ := rfl
 
 end Res
@@ -418,7 +446,7 @@ def IsRes (a : FrobCat.IsoClass (cvFrob D v) (cvFrob D v))
     (_ : ∀ g, piToG D v (σ g) = σ' (piToG D v g))
     (hψ' : ∀ (g : Gv D v) (m : PAdicGalois.Mul (pv D v)),
       psiMul D v ψ (g • m) = σ' g • psiMul D v ψ m)
-    (hτ : psiMul D v ψ (tauElt D v) = tauElt D v),
+    (hτ : psiMul D v ψ (tauElt D v) ∈ tauOrbit D v),
     a = FrobCat.IsoClass.mk (GaloisModel.isoOf (Γ := PAdicGalois.gammaQ)
       (hℓ := ordPi_smul D v) (hℓ' := ordPi_smul D v) σ ψ hψ hψℓ) ∧
       b = SplitFrobCat.IsoClass.mk (resIso σ' (psiMul D v ψ) hψ' hψℓ hτ)
@@ -466,14 +494,13 @@ theorem cv_mk_isoOf_trans (h3 : PiToGQuotient D v)
   FrobCat.IsoClass.toD_injective (cvFrob_autRigid D v h3.1)
     (CatIsom.mk_eq_mk.2 ⟨OrbitObj.isoFunctorTransIso σ₁ σ₂⟩)
 
-/-- **Existence of the restriction** of an automorphism class of `C_v` to `F^⊢_v`
-(`v ∉ V^bad`). -/
-theorem exists_isRes (hv : v ∉ D.VBad) (hΔ : DeltaCharacteristic D v)
-    (h3 : PiToGQuotient D v) (hp : PFixedLift D v)
+/-- **Existence of the restriction** of an automorphism class of `C_v` to `F^⊢_v`. -/
+theorem exists_isRes (hΔ : DeltaCharacteristic D v) (h3 : PiToGQuotient D v)
+    (hc : v ∈ D.VBad → PivCountable D v) (ht : TauLift D v)
     (a : FrobCat.IsoClass (cvFrob D v) (cvFrob D v)) : ∃ b, IsRes a b := by
   obtain ⟨h, rfl⟩ := FrobCat.IsoClass.mk_surjective a
-  obtain ⟨σ, ⟨β⟩⟩ := orbitIsoRecon_piv D v (fun h => absurd h hv) h.D
-  obtain ⟨ψ, hψ, hψℓ, hpψ⟩ := hp σ
+  obtain ⟨σ, ⟨β⟩⟩ := orbitIsoRecon_piv D v hc h.D
+  obtain ⟨ψ, hψ, hψℓ, hτ⟩ := ht σ
   obtain ⟨σ', hσ'⟩ := exists_descend_piv D v hΔ h3 σ
   have hψ' : ∀ (g : Gv D v) (m : PAdicGalois.Mul (pv D v)),
       psiMul D v ψ (g • m) = σ' g • psiMul D v ψ m := by
@@ -481,8 +508,6 @@ theorem exists_isRes (hv : v ∉ D.VBad) (hΔ : DeltaCharacteristic D v)
     obtain ⟨π, rfl⟩ := h3.1 g
     rw [← hσ' π]
     exact hψ π m
-  have hτ : psiMul D v ψ (tauElt D v) = tauElt D v := by
-    rw [tauElt_of_good D v hv]; exact hpψ
   exact ⟨_, σ, ψ, hψ, hψℓ, σ', hσ', hψ', hτ,
     FrobCat.IsoClass.toD_injective (cvFrob_autRigid D v h3.1) (CatIsom.mk_eq_mk.2 ⟨β⟩), rfl⟩
 
@@ -558,9 +583,8 @@ theorem isRes_trans (h3 : PiToGQuotient D v)
     fun g m => by
       change psiMul D v ψ₂ (psiMul D v ψ (g • m)) = σ₂' (σ' g) • psiMul D v ψ₂ (psiMul D v ψ m)
       rw [hψ', hψ₂']
-  have hτ12 : psiMul D v (ψ.trans ψ₂) (tauElt D v) = tauElt D v := by
-    change psiMul D v ψ₂ (psiMul D v ψ (tauElt D v)) = _
-    rw [hτ, hτ₂]
+  have hτ12 : psiMul D v (ψ.trans ψ₂) (tauElt D v) ∈ tauOrbit D v :=
+    GaloisModel.map_mem_orbitGen (σ₂' : Gv D v ≃* Gv D v) (psiMul D v ψ₂) hψ₂' hτ₂ hτ
   refine ⟨σ.trans σ₂, ψ.trans ψ₂, h12, hℓ12, σ'.trans σ₂', hσ12, h12', hτ12,
     cv_mk_isoOf_trans h3 σ σ₂ ψ ψ₂ hψ hψℓ hψ₂ hψℓ₂ h12 hℓ12, ?_⟩
   refine SplitFrobCat.IsoClass.mk_eq_mk.2 ?_
@@ -570,9 +594,16 @@ theorem isRes_trans (h3 : PiToGQuotient D v)
 
 variable (D v)
 
-/-- The inputs of the restriction `Aut(F_v) → Aut(F^⊢_v)` at `v ∈ V^good`. -/
+/-- The inputs of the restriction `Aut(F_v) → Aut(F^⊢_v)`: `DeltaCharacteristic`, H3,
+`PivCountable` at `V^bad`, and `TauLift` (from `PFixedLift` at `V^good`, `resInputs_of_good`; a
+named input at `V^bad`). -/
 def ResInputs : Prop :=
-  v ∉ D.VBad ∧ DeltaCharacteristic D v ∧ PiToGQuotient D v ∧ PFixedLift D v
+  DeltaCharacteristic D v ∧ PiToGQuotient D v ∧ (v ∈ D.VBad → PivCountable D v) ∧ TauLift D v
+
+/-- The inputs at `v ∈ V^good`. -/
+theorem resInputs_of_good (hv : v ∉ D.VBad) (hΔ : DeltaCharacteristic D v)
+    (h3 : PiToGQuotient D v) (hp : PFixedLift D v) : ResInputs D v :=
+  ⟨hΔ, h3, fun h => absurd h hv, tauLift_of_pFixedLift D v hv hp⟩
 
 variable {D v}
 
@@ -592,12 +623,12 @@ theorem vdashRes_isRes (h : ResInputs D v) (a : FrobCat.IsoClass (cvFrob D v) (c
 theorem vdashRes_eq (h : ResInputs D v) {a : FrobCat.IsoClass (cvFrob D v) (cvFrob D v)}
     {b : SplitFrobCat.IsoClass (fVdashModel D v) (fVdashModel D v)} (hb : IsRes a b) :
     vdashRes h a = b :=
-  isRes_unique h.2.2.1 (vdashRes_isRes h a) hb
+  isRes_unique h.2.1 (vdashRes_isRes h a) hb
 
 /-- **Functoriality**: the restriction is compatible with composition. -/
 theorem vdashRes_trans (h : ResInputs D v) (a a' : FrobCat.IsoClass (cvFrob D v) (cvFrob D v)) :
     vdashRes h (a.trans a') = (vdashRes h a).trans (vdashRes h a') :=
-  vdashRes_eq h (isRes_trans h.2.2.1 (vdashRes_isRes h a) (vdashRes_isRes h a'))
+  vdashRes_eq h (isRes_trans h.2.1 (vdashRes_isRes h a) (vdashRes_isRes h a'))
 
 /-- **Functoriality**: the restriction maps the identity to the identity. -/
 theorem vdashRes_refl (h : ResInputs D v) :
@@ -644,7 +675,7 @@ lemma FrobCat.IsoClass.trans_symm_trans {X Y Z : FrobCat} (a : FrobCat.IsoClass 
 /-- A chosen isomorphism of a constituent `‡F_v` with the model `C_v`. -/
 def FComp.model (X : FComp D v) : X.F.Iso (cvFrob D v) := Classical.choice X.equiv_model
 
-/-- **`F ↦ F^⊢` on isomorphisms of constituents at `v ∈ V^good`** (IUT I, Example 3.3 (iii)(d),
+/-- **`F ↦ F^⊢` on isomorphisms of constituents at `v ∈ V^non`** (IUT I, Example 3.3 (iii)(d),
 (e); Remark 5.2.1 (ii)): the class of an isomorphism `‡F_v ≅ ‡F'_v`, transported to an
 automorphism class of the model `C_v` and restricted to `F^⊢_v` (`vdashRes`). Up to isomorphism
 the mono-analyticisation of every constituent is the model `F^⊢_v`; what the algorithm carries

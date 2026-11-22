@@ -121,18 +121,18 @@ abbrev galFrob : FrobCat :=
   FrobCat.ofModel (GaloisModel G ℓ hℓ Γ)
     (Model.toElem (constPhi (OrbitObj G) Γ) (bGal G ℓ hℓ Γ) (divGal G ℓ hℓ Γ))
 
-/-- The underlying element of `M` of a rational function. -/
-def bval {A : OrbitObj G} (u : (bGal G ℓ hℓ Γ).obj A) : M :=
-  (show ↥(fixedSub (preSub G ℓ hℓ Γ) A) from u).1
+/-- The underlying element of `M` of a rational function (`GaloisModel.bval` with implicit
+`ℓ`, `Γ`). -/
+def bval {A : OrbitObj G} (u : (bGal G ℓ hℓ Γ).obj A) : M := GaloisModel.bval ℓ hℓ Γ u
 
-/-- A rational function from an element of `M`. -/
+/-- A rational function from an element of `M` (`GaloisModel.bmk` with implicit `ℓ`, `Γ`). -/
 def bmk {A : OrbitObj G} (m : M) (hm : m ∈ fixedSub (preSub G ℓ hℓ Γ) A) :
     (bGal G ℓ hℓ Γ).obj A :=
-  (⟨m, hm⟩ : ↥(fixedSub (preSub G ℓ hℓ Γ) A))
+  GaloisModel.bmk ℓ hℓ Γ m hm
 
 lemma bval_mem {A : OrbitObj G} (u : (bGal G ℓ hℓ Γ).obj A) :
     bval u ∈ fixedSub (preSub G ℓ hℓ Γ) A :=
-  (show ↥(fixedSub (preSub G ℓ hℓ Γ) A) from u).2
+  GaloisModel.bval_mem ℓ hℓ Γ u
 
 @[simp] lemma bval_bmk {A : OrbitObj G} (m : M) (hm : m ∈ fixedSub (preSub G ℓ hℓ Γ) A) :
     bval (bmk (hℓ := hℓ) m hm) = m := rfl

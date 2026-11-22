@@ -20,16 +20,19 @@ l.9044–9057: a functorial — relative to `TG^⊢` — group-theoretic algorit
 constructing `O^×_{\bar{k}}(G) → \bar{k}^×(G)`, `k^∼(G) → (\bar{k}^×)^{pf}(G)`).
 
 At `v ∈ V^non` the model `F^⊢_v` is the Galois model Frobenioid over `B(G_v)⁰` with
-`Φ = ℤ_{≥0} · ord(τ)` and the splitting `τ^ℕ`, `τ = p` resp. `q̲_v` fixed by `G_v`
-(`fVdashModel`). An isomorphism of split Frobenioids lifting `σ ∈ Aut(G_v)` needs a
-`σ`-equivariant `ord`-preserving automorphism of `ord⁻¹(ℤ · ord τ) ⊆ \bar{ℚ}_p^×` fixing `τ`; it is
-obtained from any `σ`-equivariant `ord`-preserving automorphism `ψ₀` of `\bar{ℚ}_p^×` (the lift of
-[AbsTopIII], Proposition 3.2 (iv)) by the correction `x ↦ ψ₀(x) · u^{-n(x)}`,
+`Φ = ℤ_{≥0} · ord(τ)` and the splittings `(τ ζ)^ℕ`, `τ = p` resp. `q̲_v` fixed by `G_v`, `ζ = 1`
+resp. `ζ ∈ μ_{2l}(K_v)` (the `μ_{2l}`-orbit of IUT I, Example 3.2 (iv); `fVdashModel`). An
+isomorphism of split Frobenioids lifting `σ ∈ Aut(G_v)` is induced by a `σ`-equivariant
+`ord`-preserving automorphism of `ord⁻¹(ℤ · ord τ) ⊆ \bar{ℚ}_p^×` mapping `τ` into its orbit, e.g.
+fixing `τ`; one fixing `τ` is obtained from any `σ`-equivariant `ord`-preserving automorphism
+`ψ₀` of `\bar{ℚ}_p^×` (the lift of [AbsTopIII], Proposition 3.2 (iv)) by the correction
+`x ↦ ψ₀(x) · u^{-n(x)}`,
 `u = ψ₀(τ)/τ ∈ O^×_{K_v}`, `ord(x) = n(x) · ord(τ)` (`exists_subLift`). This file:
 
 * `GaloisModel.isoOfSub σ ψ`: the isomorphism of Galois model Frobenioids from `σ : G ≅ G'` and
   a `σ`-equivariant `ψ : ℓ⁻¹(Γ) ≅ ℓ'⁻¹(Γ)` with `ℓ' ∘ ψ = ℓ` (only the rational functions
-  `ℓ⁻¹(Γ)^H` occur); `splitIsoOfSub`: an isomorphism of split Frobenioids if `ψ(π) = π'`;
+  `ℓ⁻¹(Γ)^H` occur); `splitIsoOfSub`: an isomorphism of split Frobenioids (with the
+  `μ_n`-orbits of splittings `splitGal π n`) if `ψ(π) ∈ μ_n · π'` (`mem_orbitGen_sub`);
 * `SplitFrobCat.AutLift`, `SplitFrobCat.autLift_of_iso`, `SplitFrobCat.IsoClass.toD_surjective`;
 * `splitGal_autLift` (generic) and **`FVdashStripNon.isoClassToD_surjective_of`**: Corollary 5.3
   (iii) at `V^non` from the lifts `ψ₀` of automorphisms of `G_v` (`hlift`), and
@@ -155,9 +158,63 @@ lemma GaloisModel.isoOfSub_D :
 /-! ### Splittings `π^ℕ` -/
 
 variable (G ℓ hℓ Γ) in
-/-- **The Galois model Frobenioid with the splitting `π^ℕ`.** -/
-abbrev splitGal (π : M) : SplitFrobCat :=
-  ⟨galFrob G ℓ hℓ Γ, Model.splitEnd (GaloisModel.piSplit ℓ hℓ Γ π)⟩
+/-- **The Galois model Frobenioid with the `μ_n`-orbit of splittings `(π + ζ)^ℕ`**
+(`GaloisModel.orbitGen`; for `n = 1` the single splitting `π^ℕ`). -/
+abbrev splitGal (π : M) (n : ℕ) : SplitFrobCat :=
+  ⟨galFrob G ℓ hℓ Γ, Model.orbitSplitEnd (GaloisModel.piSplit ℓ hℓ Γ) (GaloisModel.orbitGen G π n)⟩
+
+omit [IsTopologicalGroup G] in
+/-- An `n`-torsion element has `ℓ = 0`. -/
+lemma ell_eq_zero_of_nsmul {n : ℕ} (hn : n ≠ 0) {ζ : M} (hζ : n • ζ = 0) : ℓ ζ = 0 := by
+  have h : (n : ℝ) * ℓ ζ = 0 := by rw [← nsmul_eq_mul, ← map_nsmul, hζ, map_zero]
+  exact (mul_eq_zero.mp h).resolve_left (by exact_mod_cast hn)
+
+omit [IsTopologicalGroup G] [IsTopologicalGroup G'] in
+include hψ in
+/-- **`ψ` maps the `μ_n`-orbit of `π` into that of `π'`** if it maps `π` into it. -/
+lemma mem_orbitGen_sub {π : M} {π' : M'} {n : ℕ} (hn : n ≠ 0) (hπΓ : ℓ π ∈ Γ)
+    (hπ : (ψ ⟨π, hπΓ⟩ : M') ∈ GaloisModel.orbitGen G' π' n) {x : M}
+    (hx : x ∈ GaloisModel.orbitGen G π n) :
+    ∃ hxΓ : ℓ x ∈ Γ, (ψ ⟨x, hxΓ⟩ : M') ∈ GaloisModel.orbitGen G' π' n := by
+  obtain ⟨ζ, hζ, hnζ, rfl⟩ := hx
+  have hℓζ : ℓ ζ = 0 := ell_eq_zero_of_nsmul hn hnζ
+  have hζΓ : ζ ∈ Γ.comap ℓ := show ℓ ζ ∈ Γ by rw [hℓζ]; exact Γ.zero_mem
+  have hxΓ : ℓ (π + ζ) ∈ Γ := by rw [map_add, hℓζ, add_zero]; exact hπΓ
+  refine ⟨hxΓ, ?_⟩
+  obtain ⟨ζ₀, hζ₀, hnζ₀, h0⟩ := hπ
+  have hsplit : (⟨π + ζ, hxΓ⟩ : Γ.comap ℓ) = ⟨π, hπΓ⟩ + ⟨ζ, hζΓ⟩ := rfl
+  refine ⟨ζ₀ + (ψ ⟨ζ, hζΓ⟩ : M'), fun g' => ?_, ?_, ?_⟩
+  · obtain ⟨g, rfl⟩ := σ.toMulEquiv.surjective g'
+    have hfix : smulSub hℓ g ⟨ζ, hζΓ⟩ = ⟨ζ, hζΓ⟩ := Subtype.ext (hζ g)
+    change σ g • (ζ₀ + (ψ ⟨ζ, hζΓ⟩ : M')) = ζ₀ + (ψ ⟨ζ, hζΓ⟩ : M')
+    rw [smul_add, hζ₀, ← hψ, hfix]
+  · have h1 : n • (⟨ζ, hζΓ⟩ : Γ.comap ℓ) = 0 := Subtype.ext hnζ
+    have h2 : n • ψ ⟨ζ, hζΓ⟩ = 0 := by rw [← map_nsmul, h1, map_zero]
+    rw [nsmul_add, hnζ₀, zero_add]
+    exact congrArg Subtype.val h2
+  · rw [hsplit, map_add, AddSubgroup.coe_add, h0, add_assoc]
+
+omit [IsTopologicalGroup G] [IsTopologicalGroup G'] in
+include hψ hℓ' in
+/-- If `ψ(π) ∈ μ_n · π'`, then `ψ⁻¹(π') ∈ μ_n · π`. -/
+lemma symm_mem_orbitGen_sub {π : M} {π' : M'} {n : ℕ} (hn : n ≠ 0) (hπΓ : ℓ π ∈ Γ)
+    (hπ'Γ : ℓ' π' ∈ Γ) (hπ : (ψ ⟨π, hπΓ⟩ : M') ∈ GaloisModel.orbitGen G' π' n) :
+    (ψ.symm ⟨π', hπ'Γ⟩ : M) ∈ GaloisModel.orbitGen G π n := by
+  obtain ⟨ζ₀, hζ₀, hnζ₀, h0⟩ := hπ
+  have hζ₀Γ : ζ₀ ∈ Γ.comap ℓ' :=
+    show ℓ' ζ₀ ∈ Γ by rw [ell_eq_zero_of_nsmul hn hnζ₀]; exact Γ.zero_mem
+  have hsplit : (⟨π', hπ'Γ⟩ : Γ.comap ℓ') = ψ ⟨π, hπΓ⟩ - ⟨ζ₀, hζ₀Γ⟩ :=
+    Subtype.ext (by rw [AddSubgroup.coe_sub, h0]; simp)
+  refine ⟨-(ψ.symm ⟨ζ₀, hζ₀Γ⟩ : M), fun g => ?_, ?_, ?_⟩
+  · have hfix : smulSub hℓ' (σ g) ⟨ζ₀, hζ₀Γ⟩ = ⟨ζ₀, hζ₀Γ⟩ := Subtype.ext (hζ₀ (σ g))
+    have h := symm_smulSub hℓ' σ ψ hψ (σ g) ⟨ζ₀, hζ₀Γ⟩
+    rw [hfix, ContinuousMulEquiv.symm_apply_apply] at h
+    rw [smul_neg, ← h]
+  · have h1 : n • (⟨ζ₀, hζ₀Γ⟩ : Γ.comap ℓ') = 0 := Subtype.ext hnζ₀
+    have h2 : n • ψ.symm ⟨ζ₀, hζ₀Γ⟩ = 0 := by rw [← map_nsmul, h1, map_zero]
+    rw [smul_neg, neg_eq_zero]
+    exact congrArg Subtype.val h2
+  · rw [hsplit, map_sub, AddEquiv.symm_apply_apply, AddSubgroup.coe_sub, sub_eq_add_neg]
 
 /-- The transport functor of model Frobenioids preserves the endomorphisms `(1, id, ·, u)` with
 `u ∈ π^ℕ` if `ψ(π) = π'`. -/
@@ -177,14 +234,22 @@ lemma map_splitEnd_sub {π : M} {π' : M'} (hπΓ : ℓ π ∈ Γ)
       Subtype.ext hn
     rw [h1, map_nsmul, AddSubgroup.coe_nsmul, hπ]
 
-/-- **The isomorphism of split Galois model Frobenioids** from `σ`, `ψ` with `ψ(π) = π'`. -/
-def GaloisModel.splitIsoOfSub {π : M} {π' : M'} (hπΓ : ℓ π ∈ Γ) (hπ'Γ : ℓ' π' ∈ Γ)
-    (hπ : (ψ ⟨π, hπΓ⟩ : M') = π') :
-    (splitGal G ℓ hℓ Γ π).Iso (splitGal G' ℓ' hℓ' Γ π') :=
-  ⟨GaloisModel.isoOfSub hℓ' σ ψ hψ hψℓ, map_splitEnd_sub hℓ' σ ψ hψ hψℓ hπΓ hπ,
-    map_splitEnd_sub hℓ σ.symm ψ.symm (symm_smulSub hℓ' σ ψ hψ) (symm_ellSub ψ hψℓ) hπ'Γ
-      (by rw [show (⟨π', hπ'Γ⟩ : Γ.comap ℓ') = ψ ⟨π, hπΓ⟩ from Subtype.ext hπ.symm,
-        ψ.symm_apply_apply])⟩
+/-- **The isomorphism of split Galois model Frobenioids** from `σ`, `ψ` with
+`ψ(π) ∈ μ_n · π'`: it maps the `μ_n`-orbit of splittings `(π + ζ)^ℕ` onto that of `π'`. -/
+def GaloisModel.splitIsoOfSub {π : M} {π' : M'} {n : ℕ} (hn : n ≠ 0) (hπΓ : ℓ π ∈ Γ)
+    (hπ'Γ : ℓ' π' ∈ Γ) (hπ : (ψ ⟨π, hπΓ⟩ : M') ∈ GaloisModel.orbitGen G' π' n) :
+    (splitGal G ℓ hℓ Γ π n).Iso (splitGal G' ℓ' hℓ' Γ π' n) where
+  iso := GaloisModel.isoOfSub hℓ' σ ψ hψ hψℓ
+  map_tau := by
+    rintro s ⟨x, hx, rfl⟩
+    obtain ⟨hxΓ, hx'⟩ := mem_orbitGen_sub σ ψ hψ hn hπΓ hπ hx
+    exact ⟨_, ⟨_, hx', rfl⟩, map_splitEnd_sub hℓ' σ ψ hψ hψℓ hxΓ rfl⟩
+  inv_tau := by
+    rintro s ⟨x, hx, rfl⟩
+    obtain ⟨hxΓ, hx'⟩ := mem_orbitGen_sub σ.symm ψ.symm (symm_smulSub hℓ' σ ψ hψ) hn hπ'Γ
+      (symm_mem_orbitGen_sub hℓ' σ ψ hψ hn hπΓ hπ'Γ hπ) hx
+    exact ⟨_, ⟨_, hx', rfl⟩, map_splitEnd_sub hℓ σ.symm ψ.symm (symm_smulSub hℓ' σ ψ hψ)
+      (symm_ellSub ψ hψℓ) hxΓ rfl⟩
 
 end SubIso
 
@@ -327,18 +392,20 @@ variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 /-- **Automorphisms of `B(G)⁰` lift to the split Galois model Frobenioid with `Γ = ℤ · ℓ(π)`**,
 from `OrbitIsoRecon G` and `σ`-equivariant `ℓ`-preserving automorphisms of `M` for every
 `σ ∈ Aut(G)`. -/
-theorem splitGal_autLift {Γ : AddSubgroup ℝ} (hΓ : Γ = AddSubgroup.zmultiples (ℓ π))
+theorem splitGal_autLift {Γ : AddSubgroup ℝ} {n : ℕ} (hn : n ≠ 0)
+    (hΓ : Γ = AddSubgroup.zmultiples (ℓ π))
     (hπfix : ∀ g : G, g • π = π) (hπ0 : ℓ π ≠ 0) (hrec : OrbitIsoRecon G)
     (hlift : ∀ σ : G ≃ₜ* G, ∃ ψ₀ : M ≃+ M, (∀ (g : G) (m : M), ψ₀ (g • m) = σ g • ψ₀ m) ∧
       ∀ m, ℓ (ψ₀ m) = ℓ m) :
-    (splitGal G ℓ hℓ Γ π).AutLift := by
+    (splitGal G ℓ hℓ Γ π n).AutLift := by
   subst hΓ
   intro e
   obtain ⟨σ, ⟨β⟩⟩ := hrec e
   obtain ⟨ψ₀, hψ₀, hψ₀ℓ⟩ := hlift σ
   obtain ⟨ψ, hψ, hψℓ, hψπ⟩ := exists_subLift hℓ (σ : G ≃* G) hπfix hπ0 ψ₀ hψ₀ hψ₀ℓ
   have hπΓ : ℓ π ∈ AddSubgroup.zmultiples (ℓ π) := AddSubgroup.mem_zmultiples _
-  exact ⟨GaloisModel.splitIsoOfSub hℓ σ ψ hψ hψℓ hπΓ hπΓ (hψπ hπΓ), ⟨β.symm⟩⟩
+  exact ⟨GaloisModel.splitIsoOfSub hℓ σ ψ hψ hψℓ hn hπΓ hπΓ
+    ((hψπ hπΓ).symm ▸ GaloisModel.self_mem_orbitGen π n), ⟨β.symm⟩⟩
 
 end Lift
 
@@ -376,7 +443,7 @@ theorem fVdashModel_autLift (v : FinitePlace ↥(fieldOfModuli D.F D.E))
         ψ₀ (g • m) = σ g • ψ₀ m) ∧ ∀ m, PAdicGalois.ord (pv D v) (ψ₀ m) =
           PAdicGalois.ord (pv D v) m) :
     (fVdashModel D v).AutLift :=
-  splitGal_autLift (gammaVdash_eq v) (fun σ => tauElt_fixed D v σ)
+  splitGal_autLift (nOrb_ne_zero D v) (gammaVdash_eq v) (fun σ => tauElt_fixed D v σ)
     (ord_tauElt_pos D v).ne' orbitIsoRecon_of_profinite hlift
 
 /-- **IUT I, Corollary 5.3 (iii), surjectivity** (non-archimedean part), from lifts of the

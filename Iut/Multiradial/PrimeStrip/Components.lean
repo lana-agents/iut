@@ -36,7 +36,9 @@ of `~/iut-scratch/papers/txt/Inter-universal Teichmuller Theory I.txt`:
   `Φ = ℕ · log_Φ(q̲_v)` at `V^bad` (Example 3.2 (iv), `q̲_v = q_v^{1/2l}`,
   `ord(q̲_v) = ord(q_v)/2l`);
 * **the splittings `τ^⊢_v`** (`tauVdash`): `p^ℕ` at `V^good` (Example 3.3 (i): "the splitting
-  determined by `p_v`"), `q̲_v^ℕ` at `V^bad` (Example 3.2 (iv)); generic statement
+  determined by `p_v`"), `q̲_v^ℕ` at `V^bad` (Example 3.2 (iv)), and the collection `τ^⊢_v`
+  of `F^⊢_v` (`tauOrbit`): `{p^ℕ}` at `V^good`, the `μ_{2l}`-orbit `{(ζ q̲_v)^ℕ}` at `V^bad`
+  (`q̲_v` is only determined up to `μ_{2l}`, Example 3.2 (iv)); generic statement
   `GaloisModel.isCharSplitting_piSplit` ([FrdI], Definition 2.3, `Model.IsCharSplitting`). At
   `V^bad` the root `q̲_v ∈ K_v` of `q_v` exists by Definition 3.1 (b), (c) ("our assumption
   concerning 2-torsion … together with the definition of K", Example 3.2 (iv)): `qRootExists`
@@ -102,6 +104,43 @@ def piSplit (π : M) (A : OrbitObj G) : AddSubmonoid ((bGal G ℓ hℓ Γ).obj A
     rintro ⟨m, hm⟩ ⟨n, hn⟩
     exact ⟨m + n, by change bval ℓ hℓ Γ (a + b) = _; rw [bval_add, hm, hn, add_nsmul]⟩
   zero_mem' := ⟨0, by rw [bval_zero, zero_nsmul]⟩
+
+variable (G) in
+/-- **The `μ_n`-orbit of `π`** (written additively): the elements `π + ζ` with `ζ` a `G`-fixed
+`n`-torsion element. For `n = 1` this is `{π}`. -/
+def orbitGen (π : M) (n : ℕ) : Set M :=
+  {x | ∃ ζ : M, (∀ g : G, g • ζ = ζ) ∧ n • ζ = 0 ∧ x = π + ζ}
+
+omit [TopologicalSpace G] [IsTopologicalGroup G] in
+lemma self_mem_orbitGen (π : M) (n : ℕ) : π ∈ orbitGen G π n :=
+  ⟨0, fun g => smul_zero g, nsmul_zero n, (add_zero π).symm⟩
+
+omit [TopologicalSpace G] [IsTopologicalGroup G] in
+lemma ell_eq_of_mem_orbitGen {π x : M} {n : ℕ} (hn : n ≠ 0) (hx : x ∈ orbitGen G π n) :
+    ℓ x = ℓ π := by
+  obtain ⟨ζ, -, hζ, rfl⟩ := hx
+  have h : (n : ℝ) * ℓ ζ = 0 := by rw [← nsmul_eq_mul, ← map_nsmul, hζ, map_zero]
+  rw [map_add, (mul_eq_zero.mp h).resolve_left (by exact_mod_cast hn), add_zero]
+
+omit [TopologicalSpace G] [IsTopologicalGroup G] in
+lemma fixed_of_mem_orbitGen {π x : M} {n : ℕ} (hπ : ∀ g : G, g • π = π)
+    (hx : x ∈ orbitGen G π n) (g : G) : g • x = x := by
+  obtain ⟨ζ, hζ, -, rfl⟩ := hx
+  rw [smul_add, hπ, hζ]
+
+omit [TopologicalSpace G] [IsTopologicalGroup G] in
+/-- A `σ`-equivariant additive automorphism mapping `π` into its `μ_n`-orbit maps the orbit into
+itself. -/
+lemma map_mem_orbitGen (σ : G ≃* G) (ψ : M ≃+ M) (hψ : ∀ (g : G) (m : M), ψ (g • m) = σ g • ψ m)
+    {π x : M} {n : ℕ} (hπ : ψ π ∈ orbitGen G π n) (hx : x ∈ orbitGen G π n) :
+    ψ x ∈ orbitGen G π n := by
+  obtain ⟨ζ, hζ, hnζ, rfl⟩ := hx
+  obtain ⟨ζ₀, hζ₀, hnζ₀, h0⟩ := hπ
+  refine ⟨ζ₀ + ψ ζ, fun g => ?_, ?_, ?_⟩
+  · obtain ⟨g', rfl⟩ := σ.surjective g
+    rw [smul_add, hζ₀, ← hψ, hζ]
+  · rw [nsmul_add, hnζ₀, ← map_nsmul, hnζ, map_zero, add_zero]
+  · rw [map_add, h0, add_assoc]
 
 variable {ℓ hℓ Γ}
 
@@ -351,6 +390,24 @@ def tauElt : PAdicGalois.Mul (pv D v) :=
 def tauVdash (A : DVdash D v) :=
   GaloisModel.piSplit (PAdicGalois.ord (pv D v)) (PAdicGalois.ord_smul (pv D v) (Lv D v))
     (gammaVdash D v) (tauElt D v) A
+
+open scoped Classical in
+/-- **The order of the roots of unity in `τ^⊢_v`**: `2l` at `V^bad`, `1` at `V^good`. -/
+def nOrb : ℕ := if v ∈ D.VBad then 2 * D.ℓ else 1
+
+lemma nOrb_ne_zero : nOrb D v ≠ 0 := by
+  unfold nOrb
+  split_ifs
+  · exact mul_ne_zero two_ne_zero D.prime.ℓ_prime.ne_zero
+  · exact one_ne_zero
+
+/-- **The generators of the splittings in `τ^⊢_v`** (IUT I, Example 3.2 (iv), l.4582–4625:
+`q̲_v = q_v^{1/2l}` is determined up to a `μ_{2l}(TX_v)`-multiple, and `τ^⊢_v` is the resulting
+`μ_{2l}(−)`-orbit of characteristic splittings; Example 3.3 (i): the single splitting determined
+by `p_v` at `V^good`): `τ + ζ` for `ζ` a `G_v`-fixed `nOrb`-torsion element of `\bar{ℚ}_p^×`
+(i.e. `ζ ∈ μ_{2l}(K_v)` at `V^bad`; `ζ = 0` at `V^good`). -/
+def tauOrbit : Set (PAdicGalois.Mul (pv D v)) :=
+  GaloisModel.orbitGen (Gv D v) (tauElt D v) (nOrb D v)
 
 /-! ### `τ^⊢_v` at `V^bad` -/
 

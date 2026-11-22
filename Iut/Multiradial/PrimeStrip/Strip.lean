@@ -42,11 +42,14 @@ IUT I, Definition 4.1 (i), (iii), (iv) (l.6363–6450) and Definition 5.2 (i)–
   isomorphism notion of Definition 5.2 (iii); recording the base equivalence makes the passage
   `F ↦ D` of Remark 5.2.1 (i) a functor on isomorphisms (`FComp.toD`, `FComp.isoToD`) without the
   slimness of `Π_v` (not available, MR13).
-* A split Frobenioid (`SplitFrobCat`) is a `FrobCat` with a family `τ(A) ⊆ End(A)` (the
-  characteristic splitting as a collection of base-identity linear endomorphisms, [FrdI],
-  Definition 2.3; for the models `Model.splitEnd τ`, the endomorphisms with `u ∈ τ(A_D)`); an
-  isomorphism of split Frobenioids is an isomorphism of Frobenioids whose functor and inverse
-  preserve the splittings.
+* A split Frobenioid (`SplitFrobCat`) is a `FrobCat` with a collection of splittings (IUT I,
+  Example 3.2 (v), l.4743: "a Frobenioid equipped with a collection of characteristic
+  splittings"), each a family `τ(A) ⊆ End(A)` of base-identity linear endomorphisms ([FrdI],
+  Definition 2.3; for the models `Model.splitEnd τ`, the endomorphisms with `u ∈ τ(A_D)`). For
+  `F^⊢_v` the collection is the `μ_{2l}`-orbit of `q̲_v^ℕ` at `V^bad` (Example 3.2 (iv)) and the
+  single splitting `p^ℕ` at `V^good` (`tauOrbit`). An isomorphism of split Frobenioids is an
+  isomorphism of Frobenioids whose functor and inverse map each splitting of the collection into
+  one of the other collection (`SplitFrobCat.MapsSplit`).
 * The **strip conditions** "`†D_v` admits an equivalence with `D_v`" etc. are the `Prop` fields
   `equiv_model` (defining conditions of the paper, not shells).
 * **The strips are the non-archimedean parts** (`DStripNon` etc., indexed by the finite places of
@@ -590,40 +593,52 @@ def ofModel {D : Type} [Category.{0} D] {Φ : DivMonoid.{0} D} (C : Type) [Categ
 
 end FrobCat
 
-/-- **A split Frobenioid** ([FrdI], Definition 2.3; IUT I, Example 3.2 (iv)): a Frobenioid with
-a characteristic splitting, recorded by the endomorphisms `τ(A) ⊆ O^▷(A) ⊆ End(A)`. -/
+/-- **A split Frobenioid** ([FrdI], Definition 2.3; IUT I, Example 3.2 (iv), (v), l.4743: "a
+Frobenioid equipped with a collection of characteristic splittings"): a Frobenioid with a
+collection of splittings, each recorded by the endomorphisms `τ(A) ⊆ O^▷(A) ⊆ End(A)`. -/
 structure SplitFrobCat : Type 1 where
   /-- The Frobenioid. -/
   F : FrobCat
-  /-- The splitting. -/
-  tau : ∀ A : F.C, Set (A ⟶ A)
+  /-- The collection of splittings. -/
+  tau : Set (∀ A : F.C, Set (A ⟶ A))
 
 namespace SplitFrobCat
 
+/-- A functor maps the splitting `s` into the splitting `s'`. -/
+def MapsSplit {C₁ C₂ : Type*} [Category* C₁] [Category* C₂] (F : C₁ ⥤ C₂)
+    (s : ∀ A : C₁, Set (A ⟶ A)) (s' : ∀ B : C₂, Set (B ⟶ B)) : Prop :=
+  ∀ (A : C₁) (e : A ⟶ A), e ∈ s A → F.map e ∈ s' (F.obj A)
+
 /-- **An isomorphism of split Frobenioids**: an isomorphism of Frobenioids whose functor and
-inverse preserve the splittings. -/
+inverse map every splitting of the collection into a splitting of the other collection. -/
 structure Iso (X Y : SplitFrobCat) where
   /-- The isomorphism of Frobenioids. -/
   iso : X.F.Iso Y.F
-  /-- The functor preserves the splittings. -/
-  map_tau : ∀ (A : X.F.C) (e : A ⟶ A), e ∈ X.tau A →
-    iso.C.functor.map e ∈ Y.tau (iso.C.functor.obj A)
-  /-- The inverse preserves the splittings. -/
-  inv_tau : ∀ (B : Y.F.C) (e : B ⟶ B), e ∈ Y.tau B →
-    iso.C.inverse.map e ∈ X.tau (iso.C.inverse.obj B)
+  /-- The functor preserves the collections of splittings. -/
+  map_tau : ∀ s ∈ X.tau, ∃ s' ∈ Y.tau, MapsSplit iso.C.functor s s'
+  /-- The inverse preserves the collections of splittings. -/
+  inv_tau : ∀ s ∈ Y.tau, ∃ s' ∈ X.tau, MapsSplit iso.C.inverse s s'
 
 namespace Iso
 
 /-- The identity. -/
-def refl (X : SplitFrobCat) : X.Iso X := ⟨FrobCat.Iso.refl _, fun _ _ h => h, fun _ _ h => h⟩
+def refl (X : SplitFrobCat) : X.Iso X :=
+  ⟨FrobCat.Iso.refl _, fun s hs => ⟨s, hs, fun _ _ h => h⟩, fun s hs => ⟨s, hs, fun _ _ h => h⟩⟩
 
 /-- The inverse. -/
 def symm {X Y : SplitFrobCat} (f : X.Iso Y) : Y.Iso X := ⟨f.iso.symm, f.inv_tau, f.map_tau⟩
 
 /-- The composite. -/
 def trans {X Y Z : SplitFrobCat} (f : X.Iso Y) (g : Y.Iso Z) : X.Iso Z :=
-  ⟨f.iso.trans g.iso, fun _ _ h => g.map_tau _ _ (f.map_tau _ _ h),
-    fun _ _ h => f.inv_tau _ _ (g.inv_tau _ _ h)⟩
+  ⟨f.iso.trans g.iso,
+    fun s hs => by
+      obtain ⟨s₁, hs₁, h₁⟩ := f.map_tau s hs
+      obtain ⟨s₂, hs₂, h₂⟩ := g.map_tau s₁ hs₁
+      exact ⟨s₂, hs₂, fun A e he => h₂ _ _ (h₁ A e he)⟩,
+    fun s hs => by
+      obtain ⟨s₁, hs₁, h₁⟩ := g.inv_tau s hs
+      obtain ⟨s₂, hs₂, h₂⟩ := f.inv_tau s₁ hs₁
+      exact ⟨s₂, hs₂, fun A e he => h₂ _ _ (h₁ A e he)⟩⟩
 
 end Iso
 
@@ -638,6 +653,13 @@ def Model.splitEnd {D : Type} [Category.{0} D] {Φ : DivMonoid.{0} D} {B : GrpOn
   {e | ∃ h : e ∈ Orhd (Model.toElem Φ B divB) X,
     ((Model.orhdEquivSub X ⟨e, h⟩ : Model.orhdSub divB X.base) : B.obj X.base) ∈ τ X.base}
 
+/-- **A collection of splittings of a model Frobenioid**: the splittings `Model.splitEnd (τ i)`
+for `i ∈ S`. -/
+def Model.orbitSplitEnd {D : Type} [Category.{0} D] {Φ : DivMonoid.{0} D} {B : GrpOn.{0} D}
+    {divB : DivHom B Φ.toGrpOn} {ι : Type} (τ : ι → ∀ A : D, AddSubmonoid (B.obj A)) (S : Set ι) :
+    Set (∀ X : Model Φ B divB, Set (X ⟶ X)) :=
+  {s | ∃ i ∈ S, s = Model.splitEnd (τ i)}
+
 /-! ### The models at `v ∈ V^non` -/
 
 section Models
@@ -650,10 +672,14 @@ def cvFrob : FrobCat := FrobCat.ofModel (Cv D v) (cvElem D v)
 /-- **`C^⊢_v` with its base `D^⊢_v`**. -/
 def cvdFrob : FrobCat := FrobCat.ofModel (CVdash D v) (cvdElem D v)
 
-/-- **`F^⊢_v = (C^⊢_v, τ^⊢_v)`** (IUT I, Examples 3.2 (iv), 3.3 (i)). -/
+/-- **`F^⊢_v = (C^⊢_v, τ^⊢_v)`** (IUT I, Examples 3.2 (iv), 3.3 (i)): `τ^⊢_v` the
+`μ_{2l}`-orbit of the splitting `q̲_v^ℕ` at `V^bad`, the splitting `p^ℕ` at `V^good`
+(`tauOrbit`). -/
 def fVdashModel : SplitFrobCat where
   F := cvdFrob D v
-  tau := Model.splitEnd (tauVdash D v)
+  tau := Model.orbitSplitEnd
+    (GaloisModel.piSplit (PAdicGalois.ord (pv D v)) (PAdicGalois.ord_smul (pv D v) (Lv D v))
+      (gammaVdash D v)) (tauOrbit D v)
 
 end Models
 

@@ -327,10 +327,10 @@ def fArcModel : FArcData where
 endomorphisms with `μ ∈ ℝ_{>0}` (`rot = 1`), i.e. `O^▷(C_v) ∩ (0, 1]` (IUT I, Example 3.4 (ii)). -/
 def tauArc (A : Angular.Obj) : Set (A ⟶ A) := {e | e.deg = 1 ∧ e.rot = 1}
 
-/-- **The archimedean split Frobenioid `(C^⊢_v, τ^⊢_v)`**. -/
+/-- **The archimedean split Frobenioid `(C^⊢_v, τ^⊢_v)`** (a single splitting). -/
 def cArcSplit : SplitFrobCat where
   F := FrobCat.ofModel Angular.Obj Angular.P
-  tau := tauArc
+  tau := {tauArc}
 
 /-! ### The constituents at `v ∈ V^arc` -/
 
