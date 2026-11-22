@@ -466,8 +466,10 @@ import Iut.Multiradial.PrimeStrip.TransportNat
 import Iut.Multiradial.PrimeStrip.VdashRes
 import Iut.Multiradial.Spec
 import Iut.Multiradial.Theater.GalMor
+import Iut.Multiradial.Theater.GenuineBaseChange
 import Iut.Multiradial.Theater.Global
 import Iut.Multiradial.Theater.LabCuspModel
+import Iut.Multiradial.Theater.LocalToGlobal
 import Iut.Multiradial.Theater.OuterHom
 import Iut.Multiradial.ThetaData
 import Iut.NumberTheory.SixExponentials.Basic
