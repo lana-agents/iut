@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: LANA Project
 -/
 import Iut.Frobenioid.Thm24iiAux
+import Iut.Reconstruction.Local.MulLiftOrd
 import ContinuousKummerTheory.Kummer.Faithful
 
 /-!
@@ -27,7 +28,8 @@ extension `K ⊆ \bar{ℚ}_p` of `ℚ_p` and the `G_K`-module `\bar{ℚ}_p^×` w
     `ψ(x)/x ∈ ⋂_n (L^×)^n = 1` (Kummer-faithfulness of `p`-adic fields, CKT
     `isTorallyKummerFaithful_padic`).
 
-All declarations live in the namespace `Iut.Frobenioid.PAdicGalois.Rigid`.
+All declarations live in the namespace `Iut.Frobenioid.PAdicGalois.Rigid`; `ordU`, `ιF` and
+their lemmas are MR9's (`MulLiftOrd.lean`).
 -/
 
 open PadicField IntermediateField Iut.Reconstruction
@@ -47,94 +49,6 @@ namespace Rigid
 variable {p : ℕ} [hp : Fact p.Prime] {E : IntermediateField ℚ_[p] (PadicAlgCl p)}
 
 local notation "K̄" => PadicAlgCl p
-
-/-! ### `ord` on finite subextensions -/
-
-section Ord
-
-/-- `ord` on `K̄ˣ` (multiplicative notation). -/
-abbrev ordU (x : K̄ˣ) : ℝ := ord p (Additive.ofMul x)
-
-theorem ordU_mul (x y : K̄ˣ) : ordU (x * y) = ordU x + ordU y := by
-  rw [ordU, ofMul_mul, map_add]
-
-theorem ordU_pow (x : K̄ˣ) (n : ℕ) : ordU (x ^ n) = n * ordU x := by
-  rw [ordU, ofMul_pow, map_nsmul, nsmul_eq_mul]
-
-theorem ordU_inv (x : K̄ˣ) : ordU x⁻¹ = -ordU x := by
-  rw [ordU, ofMul_inv, map_neg]
-
-theorem ordU_zpow (x : K̄ˣ) (n : ℤ) : ordU (x ^ n) = n * ordU x := by
-  rw [ordU, ofMul_zpow, map_zsmul, zsmul_eq_mul]
-
-theorem ordU_eq_zero_iff (x : K̄ˣ) : ordU x = 0 ↔ ‖(x : K̄)‖ = 1 := by
-  unfold ordU
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.out.one_lt
-  have hx : 0 < ‖(x : K̄)‖ := norm_pos_iff.2 x.ne_zero
-  rw [ord_units, neg_eq_zero, Real.logb_eq_zero]
-  constructor
-  · rintro (h | h | h | h | h | h)
-    · exact absurd h (by positivity)
-    · exact absurd h hp1.ne'
-    · linarith
-    · exact absurd h hx.ne'
-    · exact h
-    · linarith
-  · intro h
-    exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl h))))
-
-variable (F : Type*) [Field F] [Algebra ℚ_[p] F] [FiniteDimensional ℚ_[p] F]
-  [Algebra F (PadicAlgCl p)] [IsScalarTower ℚ_[p] F (PadicAlgCl p)]
-
-/-- `ι : Fˣ → K̄ˣ`. -/
-abbrev ιF : Fˣ →* K̄ˣ := Units.map (algebraMap F K̄ : F →* K̄)
-
-theorem ιF_injective : Function.Injective (ιF (p := p) F) := fun _ _ h =>
-  Units.ext ((algebraMap F K̄).injective (congrArg Units.val h))
-
-theorem norm_algebraMap_eq_nrm (x : F) : ‖algebraMap F K̄ x‖ = nrm p F x := by
-  rw [nrm_apply, spectralNorm.eq_of_tower (K := ℚ_[p]) (L := K̄) x]
-  rfl
-
-theorem p_ne_zero' : (p : F) ≠ 0 := by
-  haveI : CharZero F := charZero_of_injective_algebraMap (algebraMap ℚ_[p] F).injective
-  exact Nat.cast_ne_zero.2 hp.out.ne_zero
-
-theorem nrm_p : nrm p F (p : F) = (p : ℝ)⁻¹ := by
-  have h := nrm_algebraMap (p := p) (K := F) (p : ℚ_[p])
-  rw [map_natCast] at h
-  rw [h, Padic.norm_p]
-
-theorem v_p_pos : 0 < v p (p : F) := by
-  rw [← nrm_lt_one_iff_v_pos (p_ne_zero' F), nrm_p]
-  exact inv_lt_one_of_one_lt₀ (by exact_mod_cast hp.out.one_lt)
-
-/-- **`ord(ι x) · v(p) = v(x)`** for `x ∈ F^×`. -/
-theorem ordU_ιF (x : Fˣ) : ordU (ιF (p := p) F x) * v p (p : F) = v p (x : F) := by
-  set π := uniformizer p F
-  have hπ : IsUniformizer p F π := uniformizer_spec (p := p) (K := F)
-  have hπ0 : 0 < nrm p F π := nrm_pos_iff.2 hπ.ne_zero
-  have hn : ‖algebraMap F K̄ (x : F)‖ = nrm p F π ^ v p (x : F) :=
-    (norm_algebraMap_eq_nrm F _).trans (nrm_eq_nrm_uniformizer_zpow hπ x.ne_zero)
-  have hpn : (p : ℝ)⁻¹ = nrm p F π ^ v p (p : F) :=
-    (nrm_p F).symm.trans (nrm_eq_nrm_uniformizer_zpow hπ (p_ne_zero' F))
-  have hlp : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.out.one_lt)
-  have hlog : -Real.log p = (v p (p : F) : ℝ) * Real.log (nrm p F π) := by
-    rw [← Real.log_inv, hpn, Real.log_zpow]
-  unfold ordU
-  rw [ord_units]
-  change -Real.logb p ‖algebraMap F K̄ (x : F)‖ * _ = _
-  rw [hn, Real.logb, Real.log_zpow]
-  field_simp
-  linear_combination (v p (x : F) : ℝ) * hlog
-
-theorem ordU_ιF_p : ordU (ιF (p := p) F (Units.mk0 (p : F) (p_ne_zero' F))) = 1 := by
-  have h := ordU_ιF (p := p) F (Units.mk0 (p : F) (p_ne_zero' F))
-  have hv : (0 : ℝ) < v p (p : F) := by exact_mod_cast v_p_pos (p := p) F
-  rw [Units.val_mk0] at h
-  exact (mul_eq_right₀ hv.ne').1 h
-
-end Ord
 
 /-! ### Fixed fields -/
 

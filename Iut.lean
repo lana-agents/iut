@@ -457,10 +457,13 @@ import Iut.Multiradial.PrimeStrip.KummerRigid
 import Iut.Multiradial.PrimeStrip.Local
 import Iut.Multiradial.PrimeStrip.MonoAn
 import Iut.Multiradial.PrimeStrip.Mu
+import Iut.Multiradial.PrimeStrip.OrbitInner
 import Iut.Multiradial.PrimeStrip.OrbitIsoRecon
 import Iut.Multiradial.PrimeStrip.PivTemp
 import Iut.Multiradial.PrimeStrip.Strip
 import Iut.Multiradial.PrimeStrip.Transport
+import Iut.Multiradial.PrimeStrip.TransportNat
+import Iut.Multiradial.PrimeStrip.VdashRes
 import Iut.Multiradial.Spec
 import Iut.Multiradial.Theater.GalMor
 import Iut.Multiradial.Theater.Global
