@@ -419,6 +419,7 @@ import Iut.HodgeTheater.HodgeTheater
 import Iut.HodgeTheater.Labels
 import Iut.HodgeTheater.PmBridge
 import Iut.HodgeTheater.Procession
+import Iut.HodgeTheater.ThetaHT
 import Iut.HodgeTheater.VeryElastic
 import Iut.HodgeTheater.Wall
 import Iut.Implication.ChebyshevExplicit
