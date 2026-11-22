@@ -19,7 +19,7 @@ IUT I, §0 (l.1973–2087 of `~/iut-scratch/papers/txt/Inter-universal Teichmull
   poly-isomorphism** is the set of all isomorphisms.
 
 Following the lead decision 2 of `MR22-plan.md`, a morphism is represented group-theoretically,
-transported along equivalences with the models: for categories `C_i` that admit equivalences
+transported along equivalences with the models: for categories `C_i` that have equivalences
 `e_i : C_i ≌ B(G_i)⁰` with fixed model groups `G_i`, a **presentation** (`GalTriple`) is a triple
 `(e₁, e₂, f)` with `f : G₁ → G₂` a continuous homomorphism, and two presentations are identified
 (`tripleSetoid`) when they differ by automorphisms `σ` of `G₁`, `τ` of `G₂` and conjugation:
