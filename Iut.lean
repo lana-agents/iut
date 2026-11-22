@@ -468,7 +468,11 @@ import Iut.Multiradial.PrimeStrip.Transport
 import Iut.Multiradial.PrimeStrip.TransportNat
 import Iut.Multiradial.PrimeStrip.VdashRes
 import Iut.Multiradial.Spec
+import Iut.Multiradial.Theater.AutCK
+import Iut.Multiradial.Theater.AutScalar
+import Iut.Multiradial.Theater.AutXK
 import Iut.Multiradial.Theater.Capsule
+import Iut.Multiradial.Theater.CuspAction
 import Iut.Multiradial.Theater.CuspConj
 import Iut.Multiradial.Theater.CuspGalConst
 import Iut.Multiradial.Theater.CuspPlaces
