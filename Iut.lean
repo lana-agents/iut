@@ -507,6 +507,8 @@ import Iut.Reconstruction.Cusp.Pi1GaloisAlgebra
 import Iut.Reconstruction.Cusp.Pi1GaloisPoint
 import Iut.Reconstruction.Cusp.Pi1GaloisQuotient
 import Iut.Reconstruction.Cusp.Pi1GaloisTransport
+import Iut.Reconstruction.Cusp.RouteBLevel
+import Iut.Reconstruction.Cusp.RouteBVertex
 import Iut.Reconstruction.Cusp.SurfaceDiscrete
 import Iut.Reconstruction.Cusp.SurfaceGeom
 import Iut.Reconstruction.Cusp.SurfaceH2
