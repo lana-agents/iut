@@ -439,6 +439,7 @@ import Iut.LogLink.Thm311LGP
 import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
 import Iut.Multiradial.PrimeStrip.Arc
+import Iut.Multiradial.PrimeStrip.ArcVdash
 import Iut.Multiradial.PrimeStrip.AutRigid
 import Iut.Multiradial.PrimeStrip.Black
 import Iut.Multiradial.PrimeStrip.Components
@@ -458,6 +459,7 @@ import Iut.Multiradial.PrimeStrip.Mu
 import Iut.Multiradial.PrimeStrip.OrbitInner
 import Iut.Multiradial.PrimeStrip.OrbitIsoRecon
 import Iut.Multiradial.PrimeStrip.PivTemp
+import Iut.Multiradial.PrimeStrip.RlfClass
 import Iut.Multiradial.PrimeStrip.Strip
 import Iut.Multiradial.PrimeStrip.Transport
 import Iut.Multiradial.PrimeStrip.TransportNat
