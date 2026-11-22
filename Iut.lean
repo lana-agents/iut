@@ -446,6 +446,7 @@ import Iut.Multiradial.PrimeStrip.Black
 import Iut.Multiradial.PrimeStrip.Components
 import Iut.Multiradial.PrimeStrip.Cor53
 import Iut.Multiradial.PrimeStrip.Cor53Bij
+import Iut.Multiradial.PrimeStrip.Cor53Vdash
 import Iut.Multiradial.PrimeStrip.FRlf
 import Iut.Multiradial.PrimeStrip.FRlfBlack
 import Iut.Multiradial.PrimeStrip.Full
