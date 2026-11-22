@@ -481,6 +481,7 @@ import Iut.Multiradial.Theater.CuspAction
 import Iut.Multiradial.Theater.CuspConj
 import Iut.Multiradial.Theater.CuspGalConst
 import Iut.Multiradial.Theater.CuspPlaces
+import Iut.Multiradial.Theater.CuspSep
 import Iut.Multiradial.Theater.GalMor
 import Iut.Multiradial.Theater.GenuineBaseChange
 import Iut.Multiradial.Theater.Global
