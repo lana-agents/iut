@@ -150,6 +150,17 @@ challenge or by `Iut/Concrete/*`.
        `D_v = B^temp(Π_v)⁰`, hull `C_v`; **`tempSlot_cor53iv`**, `tempSlot_cor53iv_of_fixes`,
        `ThetaHT.isoToD_bijective_tempSlot`; named input `TempAutLift`; the data `T` remain a
        parameter, since `Π_v` is not yet identified with tfg's Tate-object group).
+     - (c7) MR18 run 17, the genuine `Π_v` at `V^bad`: `Anabelian/Genuine/TateChar.lean` (in
+       characteristic `0`, `Π^tp_X` is by definition the tempered group of the Galois
+       presentation, `Orbicurve.temperedPi1EquivGalois`; `A` trivial for curves; the generic point
+       in another Weierstrass model, `equation_variableChange`, as elements of `R`; tfg's
+       `TateObject.Data` from a Tate normal form, `tateData`; the `ℤ/2`-character `tempSign` of the
+       étale double cover `√c` for `a c + b g = 1`, `h² = c g`, through `tempToPi`, with
+       `fix_sqrt_of_mem_S` (inertia fixes `√c`)), `Multiradial/PrimeStrip/PivTate.lean` (for
+       initial Θ-data: `pivEquivTemp`, `tateDataV` with `π = q_v^{1/2}`, **`chiTemp`** (graph
+       character), **`epsTemp`** (`√(x − X(q_v^{1/2}))`), **`psiV`**, `isOpen_ker_psiV`) and
+       `Multiradial/PrimeStrip/PivTateFrob.lean` (`galDeckOfChar`, **`tempFrobV`**: tempered
+       Frobenioid data `radDataL` on the genuine `Π_v`, given the analytic field `𝕂`).
 4. **Category-theoreticity** (`Theoreticity.lean`): precise statements of [FrdI] Theorem
    3.4(iii)/(v) (`PreservesFrobeniusStructure`, `PreservesBase`); within the model Frobenioid,
    the elementary types are characterized category-theoretically, and for the global realified

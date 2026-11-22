@@ -38,7 +38,10 @@ of variables `(D.tate.S w hw).C` but not equal to it) in its Galois presentation
 `Genuine.orbifold` (the characteristic-`0` branch of `Orbicurve.temperedPresentation`). Relating
 the two would need (i) invariance of the tempered group under a change of Weierstrass model and
 (ii) a comparison of the geometric and the Galois presentation of the same orbicurve; neither is
-formalized here. No Θ-data definition is changed.
+formalized here. No Θ-data definition is changed. (For the Tate characters of `Π_v` neither is
+needed: tfg's Tate objects accept the Galois presentation directly, with the generic point in the
+coordinates of the Tate model; see `Iut.Anabelian.Genuine.TateChar` and
+`Iut.Multiradial.PrimeStrip.PivTate`.)
 -/
 
 namespace Iut

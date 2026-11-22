@@ -21,11 +21,9 @@ This file fills the slot with **model Frobenioids over the genuine base `D_v`**:
 
 * `tempFrob T v = modelFrob (T v).Φ₀ (T v).B₀ (T v).div₀`, the tempered Frobenioid ([EtTh],
   Definition 3.6) of tempered Frobenioid data `T v : TemperedFrobenioidData Π_v` on
-  `D_v = OrbitObj Π_v` (`Dv D v`). The genuine data of `X̲_v` are not available in iut (MR18
-  T7/T8 build them on tfg's Tate object `Π^tp_X` with the B-an rational functions, `tateFrobK`;
-  identifying `Π_v`, the tempered group of `X̲_v` in its Galois presentation, with a Tate object
-  group needs the comparisons listed in `Cor312/ThetaData/TateTheoremB.lean`), so `T` is a
-  parameter.
+  `D_v = OrbitObj Π_v` (`Dv D v`). `T` is a parameter here; the data of `X̲_v` on the genuine
+  `Π_v` at `v ∈ V^bad` are `PrimeStrip.tempFrobV` (`PrimeStrip/PivTateFrob.lean`, MR18 run 17;
+  it still takes the analytic field `𝕂` as a parameter).
 * **`tempSlot T`**: constituents at `v` are the Frobenioids isomorphic to `tempFrob T v`, with
   isomorphism classes `FrobCat.IsoClass` (IUT I, §0). The hull of a constituent is represented by
   the model `C_v = cvFrob D v` (MR20; that this model is the hull `C^{bs-fld}` of the tempered

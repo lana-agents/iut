@@ -27,6 +27,7 @@ import Iut.Anabelian.Genuine.Orbifold
 import Iut.Anabelian.Genuine.Pi1
 import Iut.Anabelian.Genuine.Punctured
 import Iut.Anabelian.Genuine.Realize
+import Iut.Anabelian.Genuine.TateChar
 import Iut.Anabelian.Genuine.Theory
 import Iut.Anabelian.GenuineEtale
 import Iut.Anabelian.Linear
@@ -469,6 +470,8 @@ import Iut.Multiradial.PrimeStrip.Mu
 import Iut.Multiradial.PrimeStrip.MvStr
 import Iut.Multiradial.PrimeStrip.OrbitInner
 import Iut.Multiradial.PrimeStrip.OrbitIsoRecon
+import Iut.Multiradial.PrimeStrip.PivTate
+import Iut.Multiradial.PrimeStrip.PivTateFrob
 import Iut.Multiradial.PrimeStrip.PivTemp
 import Iut.Multiradial.PrimeStrip.RlfClass
 import Iut.Multiradial.PrimeStrip.Strip
