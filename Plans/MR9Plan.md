@@ -2083,3 +2083,28 @@ injective; bijective if `T = TM`, or for strictly Belyi type) and Cor. 1.10 (b)�
     `piCmod_selfComm`), **`hAbsCKu_of_strict`**, **`piCKu_aut_eq_conj`** (every continuous automorphism of
     `π₁(C̲_K)` is conjugation by a unique `γ ∈ π₁(C_{F_mod})` along `piCKuCmod`; inputs `CKuStrictSemiAbs`,
     `BelyiCuspSpec`, `RelIsomDGC.Exists`, `hj`).
+* **PFixedLift scoping (session z, task 4; literature looked up: [AbsTopIII] Cor. 1.10 (h) l.2512–2530,
+  Prop. 3.2 (iii) l.4096–4106; MR21-plan "Lead decisions after session 4").** `PFixedLift D v` (VdashRes.lean:
+  every `σ ∈ Aut(Π_v)` has a `σ`-equivariant, ord-preserving lift `ψ` to `\bar{ℚ}_p^×` with `ψ(p) = p`) is,
+  by `KummerRigid`, the statement that the Kummer lift `mulLift` of the induced `φ ∈ Aut(G_v)` fixes `p`. This
+  is false for abstract `φ ∈ Aut(G_{K_v})` (LCFT transport only gives `p ↦ p·u`, `u` a unit); it holds because
+  `σ` comes from `Π_v` of a curve of strictly Belyi type: Cor. 1.10 (h) reconstructs the additive structure on
+  `\bar{k}^× ∪ {0}` as the continuous extension of the Uchida structure on `k̄^×_NF ∪ {0}` from Thm 1.9 (e) (NF-points
+  via Belyi cuspidalization). Route: (1) `Π_v ≅ Π_{X_K} ×_{G_K} G_{K_v}` (cj `DescentBase`, at points);
+  (2) local Belyi cuspidalization / decomposition groups of NF-points in `Π_v` (new named input analogous to
+  MR8's `BelyiCuspSpec`, for `k = K_v`); (3) MR9's NF-level reconstruction (`recFunctionField`, `NFAdditive`,
+  `NFEval`) with base `K_v` (currently stated over number fields: needs the NF-model `X_F` and `K̄_NF ⊆ \bar{K}_v`);
+  (4) the resulting field automorphism of `\bar{ℚ}_{NF}` is `p`-adically continuous, extends to `\bar{ℚ}_p`, fixes
+  `ℚ ∋ p`, and agrees with `mulLift φ` on Kummer classes (KummerRigid uniqueness). Estimate 3–5k lines plus one
+  local Belyi input; not started.
+* **Hand-off 2026-11-22 (MR9 track agent, session z, lead christian-aa).** Merged iut **7bd28c7** (ExtendAut,
+  CuspGalConst, DStarCKu, plan entry). No WIP branch (`mr9-z` = main). Result written into MR22-plan.md ("MR9
+  session z result"): MR22 can replace `CKbarSemiAbs` by `CKuStrictSemiAbs D` via `piCKu_aut_eq_conj`
+  (embedding `piCKuCmod`, not DStar's chosen `piCKuToCmod`). Debts: new named literature input
+  `CKuStrictSemiAbs` ([AbsTopI] Cor. 2.8 (ii) for `C̲_K`; same source as `CKStrictSemiAbs`); unchanged
+  `BelyiCuspSpec` (MR8), `RelIsomDGC.Exists` (MR7), `CKStrictSemiAbs`, `PFixedLift` (MR21, scoped above).
+  **Next steps:** (1) discharge `CKStrictSemiAbs` and `CKuStrictSemiAbs` together from "`G_K` very elastic"
+  ([AbsTopI] Thm 1.7 (iii) + Prop. 1.3 (ii)) and a proof that `Δ_{C_K}` is topologically finitely generated
+  (cj `nonempty_kerProjGk_equiv`, index 2 from `Δ_X`, Schreier for open subgroups), 400–600 lines; (2) PFixedLift
+  route above. **Decisions for the lead:** whether to take (1) (trades two named statements for one more
+  primitive standard input) and whether MR9 starts the PFixedLift route.
