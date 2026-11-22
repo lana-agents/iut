@@ -554,6 +554,7 @@ All paths are relative to `~/iut-wt-s2/Iut` unless a repo is named.
 - **Refs:** [EtTh] Def 3.6, Prop 5.1 (l.6900), 5.5 (l.7107), Lemma 5.9, Thm 5.6, 5.7, 5.10 (l.7508), Cor 5.12; IUT I Ex 3.2.
 - **Depends on:** MR16, MR14, MR15. **Status:** P. **Size:** 25–50 k / 20–40.
 - **Repo:** iut `Frobenioid`.
+- **Progress (2026-11-22, run 16, T10):** `HodgeTheater/TempSlotModel.lean`: MR21's abstract slot `TempSlot` is filled by `tempSlot T` (model Frobenioids `tempFrob T v` over the genuine base `D_v = B^temp(Π_v)⁰`, hull `C_v`). **IUT I Cor 5.3 (iv)** `tempSlot_cor53iv` follows from `ResInputs`, `FrobCat.AutRigid (tempFrob T v)` and the named input `TempAutLift` ([AbsTopIII] Thm 1.9 + functoriality). `PrimeStrip/ModelAutRigid.lean` gives `modelFrob_autRigid`: injectivity for any model Frobenioid follows from IUT's proof steps (rational functions fixed, `FixesRat`; cuspidal compatibility, `CuspCompat`; generation of divisors, `DivGen`; torsion-freeness, discharged for prime log-divisors). The data `T` is still a parameter: identifying `Π_v` (Galois presentation of `X̲_v`) with tfg's Tate-object group needs the comparisons of `Cor312/ThetaData/TateTheoremB.lean`. `CuspDecompFix` and T7c are unchanged (no upstream input yet).
 - **Done when:** `def temperedFrobenioid (D v) : Frobenioid (OrbitObj (temperedPi1 X_v))` with no data parameter; `theorem frobThetaEnv_equiv_groupThetaEnv` ([EtTh] Thm 5.10 shape). Shell #32 is gone.
 
 **MR19 — Global Frobenioids and κ-coric structures.**

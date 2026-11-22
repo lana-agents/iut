@@ -141,6 +141,15 @@ challenge or by `Iut/Concrete/*`.
      - (c5) `tateThetaData`: the instance for `Π = temperedPi1` of the Tate curve and
        `χ = TateObject.character` (`tempered-fundamental-groups`), with
        `tateThetaData_isFrobenioid`.
+     - (c6) MR18 T10, IUT I Cor 5.3 (iv): `Multiradial/PrimeStrip/ModelAutRigid.lean` (for any
+       model Frobenioid as a `FrobCat`, `modelFrob`: `ModelAut.rel_refl_of_fixes`, an
+       automorphism over the identity fixing divisors and rational functions is 2-isomorphic to
+       the identity; the divisor step `fixesDiv_divB`, `fixesDiv_of_fixesRat`;
+       **`modelFrob_autRigid`**) and `HodgeTheater/TempSlotModel.lean` (**`tempSlot T`**, the
+       `TempSlot` of `ThetaHT.lean` filled with model Frobenioids `tempFrob T v` over the genuine
+       `D_v = B^temp(Π_v)⁰`, hull `C_v`; **`tempSlot_cor53iv`**, `tempSlot_cor53iv_of_fixes`,
+       `ThetaHT.isoToD_bijective_tempSlot`; named input `TempAutLift`; the data `T` remain a
+       parameter, since `Π_v` is not yet identified with tfg's Tate-object group).
 4. **Category-theoreticity** (`Theoreticity.lean`): precise statements of [FrdI] Theorem
    3.4(iii)/(v) (`PreservesFrobeniusStructure`, `PreservesBase`); within the model Frobenioid,
    the elementary types are characterized category-theoretically, and for the global realified

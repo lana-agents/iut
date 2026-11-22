@@ -419,6 +419,7 @@ import Iut.HodgeTheater.HodgeTheater
 import Iut.HodgeTheater.Labels
 import Iut.HodgeTheater.PmBridge
 import Iut.HodgeTheater.Procession
+import Iut.HodgeTheater.TempSlotModel
 import Iut.HodgeTheater.ThetaHT
 import Iut.HodgeTheater.VeryElastic
 import Iut.HodgeTheater.Wall
@@ -462,6 +463,7 @@ import Iut.Multiradial.PrimeStrip.Kummer
 import Iut.Multiradial.PrimeStrip.KummerLiftPf
 import Iut.Multiradial.PrimeStrip.KummerRigid
 import Iut.Multiradial.PrimeStrip.Local
+import Iut.Multiradial.PrimeStrip.ModelAutRigid
 import Iut.Multiradial.PrimeStrip.MonoAn
 import Iut.Multiradial.PrimeStrip.Mu
 import Iut.Multiradial.PrimeStrip.MvStr
