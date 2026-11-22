@@ -386,3 +386,12 @@ No sorry, no new axioms, no Prop-field structures. All predicates are `def … :
    (MR17/MR26).
 
 **Blockers.** None.
+
+## Note from MR21 session 7 (2026-11-22; MR10 paused, lead decision after MR21 session 6)
+
+MR21 added `AutHolomorphic/Elliptic/EllNat.lean` (MR10's area): for an isomorphism
+`S : (E, A) ≅ (E', A')` of `IsEllModel` spaces, `ellMap` (extension to `OnePoint`, additive,
+`ellMap_add`), `ellTransport hS p : A_p ∪ {0} ≃+* A'_{S p} ∪ {0}` (conjugation by `ellMap`) and
+**naturality** `ellEquiv_trans : ellEquiv (hS.trans hψ) p = ellTransport hS p ≫ ellEquiv hψ (S p)`;
+generic `lieConj_lieConj`, `lieConj_congr`. Used for IUT I Cor 5.3 (ii) surjectivity at `V^arc`
+(`Multiradial/PrimeStrip/ArcCor53.lean`). No existing MR10 file was changed.

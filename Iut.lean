@@ -57,6 +57,7 @@ import Iut.AutHolomorphic.Elliptic.CuspModel
 import Iut.AutHolomorphic.Elliptic.Deck
 import Iut.AutHolomorphic.Elliptic.EllField
 import Iut.AutHolomorphic.Elliptic.EllModel
+import Iut.AutHolomorphic.Elliptic.EllNat
 import Iut.AutHolomorphic.Elliptic.Lie
 import Iut.AutHolomorphic.Elliptic.LieTransport
 import Iut.AutHolomorphic.Elliptic.Lift
@@ -441,6 +442,7 @@ import Iut.LogLink.Thm311LGP
 import Iut.LogLink.Thm311Rest
 import Iut.MainTheorem
 import Iut.Multiradial.PrimeStrip.Arc
+import Iut.Multiradial.PrimeStrip.ArcCor53
 import Iut.Multiradial.PrimeStrip.ArcVdash
 import Iut.Multiradial.PrimeStrip.AutRigid
 import Iut.Multiradial.PrimeStrip.Black
